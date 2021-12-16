@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DataMessages\BatteryMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\DataMessages.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\EarthAccelerationMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\ErrorMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\EulerAnglesMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\HighGMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\InertialMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\LinearAccelerationMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\MagnetometerMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\NotificationMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\QuaternionMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\RotationMatrixMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\RssiMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\SerialMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMessages\TemperatureMessage.h">
+      <Filter>DataMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="Connection.h" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ChargingStatus.h" />
+    <ClCompile Include="ConnectionInfo.h" />
+    <ClCompile Include="ConnectionType.h" />
+    <ClCompile Include="DataLogger.h" />
+    <ClCompile Include="DiscoveredNetworkDevice.h" />
+    <ClCompile Include="DiscoveredSerialDevice.h" />
+    <ClCompile Include="DecodeError.h" />
+    <ClCompile Include="EventArgs.h" />
+    <ClCompile Include="FileConverter.h" />
+    <ClCompile Include="FileConverterProgress.h" />
+    <ClCompile Include="FileConverterStatus.h" />
+    <ClCompile Include="Helpers.h" />
+    <ClCompile Include="NetworkDiscovery.h" />
+    <ClCompile Include="PingResponse.h" />
+    <ClCompile Include="Result.h" />
+    <ClCompile Include="SerialDiscovery.h" />
+    <ClCompile Include="Statistics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="DataMessages">
+      <UniqueIdentifier>{d6bc7a18-a207-4f5f-9028-c3eaaeef273f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

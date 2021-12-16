@@ -1,0 +1,122 @@
+<Types>
+    <Enum typeName="FusionAxesAlignment">
+        <Option displayName="+X+Y+Z" value="0"/>
+        <Option displayName="+X-Z+Y" value="1"/>
+        <Option displayName="+X-Y-Z" value="2"/>
+        <Option displayName="+X+Z-Y" value="3"/>
+        <Option displayName="-X+Y-Z" value="4"/>
+        <Option displayName="-X+Z+Y" value="5"/>
+        <Option displayName="-X-Y+Z" value="6"/>
+        <Option displayName="-X-Z-Y" value="7"/>
+        <Option displayName="+Y-X+Z" value="8"/>
+        <Option displayName="+Y-Z-X" value="9"/>
+        <Option displayName="+Y+X-Z" value="10"/>
+        <Option displayName="+Y+Z+X" value="11"/>
+        <Option displayName="-Y+X+Z" value="12"/>
+        <Option displayName="-Y-Z+X" value="13"/>
+        <Option displayName="-Y-X-Z" value="14"/>
+        <Option displayName="-Y+Z-X" value="15"/>
+        <Option displayName="+Z+Y-X" value="16"/>
+        <Option displayName="+Z+X+Y" value="17"/>
+        <Option displayName="+Z-Y+X" value="18"/>
+        <Option displayName="+Z-X-Y" value="19"/>
+        <Option displayName="-Z+Y+X" value="20"/>
+        <Option displayName="-Z-X+Y" value="21"/>
+        <Option displayName="-Z-Y-X" value="22"/>
+        <Option displayName="-Z+X-Y" value="23"/>
+    </Enum>
+    <Enum typeName="RS9116WlanCommandRegion">
+        <Option displayName="United States (US)" value="1"/>
+        <Option displayName="Europe (EU)" value="2"/>
+        <Option displayName="Japan (JP)" value="3"/>
+    </Enum>
+    <Enum typeName="SendAhrsMessageType">
+        <Option displayName="Quaternion" value="0"/>
+        <Option displayName="Rotation Matrix" value="1"/>
+        <Option displayName="Euler Angles" value="2"/>
+        <Option displayName="Linear Acceleration" value="3"/>
+        <Option displayName="Earth Acceleration" value="4"/>
+    </Enum>
+    <Enum typeName="SerialMode">
+        <Option displayName="Disabled" value="0"/>
+        <Option displayName="Normal" value="1"/>
+        <Option displayName="Accessory" value="2"/>
+    </Enum>
+    <Enum typeName="WirelessBTDiscoveryMode">
+        <Option displayName="Disabled" value="0"/>
+        <Option displayName="Enabled" value="1"/>
+        <Option displayName="Limited" value="2"/>
+    </Enum>
+    <Enum typeName="WirelessMode">
+        <Option displayName="Disabled" value="0"/>
+        <Option displayName="Wi-Fi Client" value="1"/>
+        <Option displayName="Wi-Fi AP" value="2"/>
+        <Option displayName="Bluetooth" value="3"/>
+    </Enum>
+    <Enum typeName="WirelessWlanAPChannel">
+        <Option displayName="1 (2.4 GHz)" value="1"/>
+        <Option displayName="2 (2.4 GHz)" value="2"/>
+        <Option displayName="3 (2.4 GHz)" value="3"/>
+        <Option displayName="4 (2.4 GHz)" value="4"/>
+        <Option displayName="5 (2.4 GHz)" value="5"/>
+        <Option displayName="6 (2.4 GHz)" value="6"/>
+        <Option displayName="7 (2.4 GHz)" value="7"/>
+        <Option displayName="8 (2.4 GHz)" value="8"/>
+        <Option displayName="9 (2.4 GHz)" value="9"/>
+        <Option displayName="10 (2.4 GHz)" value="10"/>
+        <Option displayName="11 (2.4 GHz)" value="11"/>
+        <Option displayName="12 (2.4 GHz, Invalid for US)" value="12"/>
+        <Option displayName="13 (2.4 GHz, Invalid for US)" value="13"/>
+        <Option displayName="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+        <Option displayName="36 (5 GHz)" value="36"/>
+        <Option displayName="40 (5 GHz)" value="40"/>
+        <Option displayName="44 (5 GHz)" value="44"/>
+        <Option displayName="48 (5 GHz)" value="48"/>
+        <Option displayName="149 (5 GHz)" value="149"/>
+        <Option displayName="153 (5 GHz)" value="153"/>
+        <Option displayName="157 (5 GHz)" value="157"/>
+        <Option displayName="161 (5 GHz)" value="161"/>
+        <Option displayName="165 (5 GHz)" value="165"/>
+    </Enum>
+    <Enum typeName="WirelessWlanClientChannel">
+        <Option displayName="All" value="0"/>
+        <Option displayName="1 (2.4 GHz)" value="1"/>
+        <Option displayName="2 (2.4 GHz)" value="2"/>
+        <Option displayName="3 (2.4 GHz)" value="3"/>
+        <Option displayName="4 (2.4 GHz)" value="4"/>
+        <Option displayName="5 (2.4 GHz)" value="5"/>
+        <Option displayName="6 (2.4 GHz)" value="6"/>
+        <Option displayName="7 (2.4 GHz)" value="7"/>
+        <Option displayName="8 (2.4 GHz)" value="8"/>
+        <Option displayName="9 (2.4 GHz)" value="9"/>
+        <Option displayName="10 (2.4 GHz)" value="10"/>
+        <Option displayName="11 (2.4 GHz)" value="11"/>
+        <Option displayName="12 (2.4 GHz, Invalid for US)" value="12"/>
+        <Option displayName="13 (2.4 GHz, Invalid for US)" value="13"/>
+        <Option displayName="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+        <Option displayName="36 (5 GHz)" value="36"/>
+        <Option displayName="40 (5 GHz)" value="40"/>
+        <Option displayName="44 (5 GHz)" value="44"/>
+        <Option displayName="48 (5 GHz)" value="48"/>
+        <Option displayName="52 (5 GHz, DFS)" value="52"/>
+        <Option displayName="56 (5 GHz, DFS)" value="56"/>
+        <Option displayName="60 (5 GHz, DFS)" value="60"/>
+        <Option displayName="64 (5 GHz, DFS)" value="64"/>
+        <Option displayName="100 (5 GHz, DFS)" value="100"/>
+        <Option displayName="104 (5 GHz, DFS)" value="104"/>
+        <Option displayName="108 (5 GHz, DFS)" value="108"/>
+        <Option displayName="112 (5 GHz, DFS)" value="112"/>
+        <Option displayName="116 (5 GHz, DFS)" value="116"/>
+        <Option displayName="120 (5 GHz, DFS, Invalid for US)" value="120"/>
+        <Option displayName="124 (5 GHz, DFS, Invalid for US)" value="124"/>
+        <Option displayName="128 (5 GHz, DFS, Invalid for US)" value="128"/>
+        <Option displayName="132 (5 GHz, DFS)" value="132"/>
+        <Option displayName="136 (5 GHz, DFS)" value="136"/>
+        <Option displayName="140 (5 GHz, DFS)" value="140"/>
+        <Option displayName="149 (5 GHz, Invalid for EU and JP)" value="149"/>
+        <Option displayName="153 (5 GHz, Invalid for EU and JP)" value="153"/>
+        <Option displayName="157 (5 GHz, Invalid for EU and JP)" value="157"/>
+        <Option displayName="161 (5 GHz, Invalid for EU and JP)" value="161"/>
+        <Option displayName="165 (5 GHz, Invalid for EU and JP)" value="165"/>
+    </Enum>
+</Types>

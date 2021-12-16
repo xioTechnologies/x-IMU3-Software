@@ -1,0 +1,31 @@
+# maxOS
+**/.DS_Store
+
+# CLion
+.idea/**
+!.idea/codeStyles
+!.idea/codeStyles/**
+!.idea/runConfigurations
+!.idea/runConfigurations/**
+!.idea/misc.xml
+cmake-build-debug
+cmake-build-release
+
+# Rust
+**/Cargo.lock
+**/target/**
+!**/target/release
+!**/target/release/README.md
+
+# Python
+**/__pycache__
+
+# Visual Studio
+**/.vs
+**/x64
+**/Debug
+**/CSharp/**/Release
+**/*.vcxproj.user
+
+# Misc
+**/token.txt

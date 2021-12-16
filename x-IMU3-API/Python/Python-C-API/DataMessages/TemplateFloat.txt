@@ -1,0 +1,82 @@
+#ifndef $NameMacroCase$_MESSAGE_H
+#define $NameMacroCase$_MESSAGE_H
+
+#include "../../../C/Ximu3.h"
+#include <Python.h>
+
+typedef struct
+{
+    PyObject_HEAD
+    XIMU3_$NamePascalCase$Message message;
+} $NamePascalCase$Message;
+
+static void $NameSnakeCase$_message_free($NamePascalCase$Message* self)
+{
+    Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject* $NameSnakeCase$_message_get_timestamp($NamePascalCase$Message* self)
+{
+    return Py_BuildValue("K", self->message.timestamp);
+}
+
+$GetFunctions$
+
+static PyObject* $NameSnakeCase$_message_to_string($NamePascalCase$Message* self, PyObject* args)
+{
+    return Py_BuildValue("s", XIMU3_$NameSnakeCase$_message_to_string(self->message));
+}
+
+static PyGetSetDef $NameSnakeCase$_message_get_set[] = {
+        { "timestamp", $WhiteSpace$(getter) $NameSnakeCase$_message_get_timestamp, $WhiteSpace$NULL, "", NULL },
+        $GetSetMembers$
+        { NULL }  /* sentinel */
+};
+
+static PyMethodDef $NameSnakeCase$_message_methods[] = {
+        { "to_string", (PyCFunction) $NameSnakeCase$_message_to_string, METH_NOARGS, "" },
+        { NULL } /* sentinel */
+};
+
+static PyTypeObject $NameSnakeCase$_message_type = {
+        PyVarObject_HEAD_INIT(NULL, 0)
+        .tp_name = "ximu3.$NamePascalCase$Message",
+        .tp_basicsize = sizeof($NamePascalCase$Message),
+        .tp_dealloc = (destructor) $NameSnakeCase$_message_free,
+        .tp_getset = $NameSnakeCase$_message_get_set,
+        .tp_methods = $NameSnakeCase$_message_methods,
+};
+
+static PyObject* $NameSnakeCase$_message_from(const XIMU3_$NamePascalCase$Message* const message)
+{
+    $NamePascalCase$Message* const self = ($NamePascalCase$Message*) $NameSnakeCase$_message_type.tp_alloc(&$NameSnakeCase$_message_type, 0);
+    self->message = *message;
+    return (PyObject*) self;
+}
+
+typedef struct
+{
+    PyObject* callable;
+    XIMU3_$NamePascalCase$Message data;
+} $NamePascalCase$PendingCallArg;
+
+static int $NameSnakeCase$_message_pending_call_func(void* arg)
+{
+    PyObject* const object = $NameSnakeCase$_message_from(&(($NamePascalCase$PendingCallArg*) arg)->data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((($NamePascalCase$PendingCallArg*) arg)->callable, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+    free(arg);
+    return 0;
+}
+
+static void $NameSnakeCase$_message_callback(XIMU3_$NamePascalCase$Message data, void* context)
+{
+    $NamePascalCase$PendingCallArg* const arg = malloc(sizeof($NamePascalCase$PendingCallArg));
+    arg->callable = (PyObject*) context;
+    arg->data = data;
+    Py_AddPendingCall(&$NameSnakeCase$_message_pending_call_func, arg);
+}
+
+#endif

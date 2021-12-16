@@ -1,0 +1,204 @@
+[
+    {
+        "name": "Inertial",
+        "asciiID": "I",
+        "argumentNames": [
+            "Gyroscope X",
+            "Gyroscope Y",
+            "Gyroscope Z",
+            "Accelerometer X",
+            "Accelerometer Y",
+            "Accelerometer Z"
+        ],
+        "argumentUnits": [
+            "deg/s",
+            "deg/s",
+            "deg/s",
+            "g",
+            "g",
+            "g"
+        ]
+    },
+    {
+        "name": "Magnetometer",
+        "asciiID": "M",
+        "argumentNames": [
+            "X Axis",
+            "Y Axis",
+            "Z Axis"
+        ],
+        "argumentUnits": [
+            "a.u.",
+            "a.u.",
+            "a.u."
+        ]
+    },
+    {
+        "name": "Quaternion",
+        "asciiID": "Q",
+        "argumentNames": [
+            "W Element",
+            "X Element",
+            "Y Element",
+            "Z Element"
+        ],
+        "argumentUnits": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "name": "Rotation Matrix",
+        "asciiID": "R",
+        "argumentNames": [
+            "XX Element",
+            "XY Element",
+            "XZ Element",
+            "YX Element",
+            "YY Element",
+            "YZ Element",
+            "ZX Element",
+            "ZY Element",
+            "ZZ Element"
+        ],
+        "argumentUnits": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "name": "Euler Angles",
+        "asciiID": "A",
+        "argumentNames": [
+            "Roll",
+            "Pitch",
+            "Yaw"
+        ],
+        "argumentUnits": [
+            "deg",
+            "deg",
+            "deg"
+        ]
+    },
+    {
+        "name": "Linear acceleration",
+        "asciiID": "L",
+        "argumentNames": [
+            "W Element",
+            "X Element",
+            "Y Element",
+            "Z Element",
+            "X Axis",
+            "Y Axis",
+            "Z Axis"
+        ],
+        "argumentUnits": [
+            "",
+            "",
+            "",
+            "",
+            "g",
+            "g",
+            "g"
+        ]
+    },
+    {
+        "name": "Earth acceleration",
+        "asciiID": "E",
+        "argumentNames": [
+            "W Element",
+            "X Element",
+            "Y Element",
+            "Z Element",
+            "X Axis",
+            "Y Axis",
+            "Z Axis"
+        ],
+        "argumentUnits": [
+            "",
+            "",
+            "",
+            "",
+            "g",
+            "g",
+            "g"
+        ]
+    },
+    {
+        "name": "High-g",
+        "asciiID": "H",
+        "argumentNames": [
+            "X Axis",
+            "Y Axis",
+            "Z Axis"
+        ],
+        "argumentUnits": [
+            "g",
+            "g",
+            "g"
+        ]
+    },
+    {
+        "name": "Temperature",
+        "asciiID": "T",
+        "argumentNames": [
+            "Temperature"
+        ],
+        "argumentUnits": [
+            "degC"
+        ]
+    },
+    {
+        "name": "Battery",
+        "asciiID": "B",
+        "argumentNames": [
+            "Percentage",
+            "Voltage",
+            "Charging Status"
+        ],
+        "argumentUnits": [
+            "%",
+            "V",
+            ""
+        ]
+    },
+    {
+        "name": "RSSI",
+        "asciiID": "W",
+        "argumentNames": [
+            "Percentage",
+            "Power"
+        ],
+        "argumentUnits": [
+            "%",
+            "dBm"
+        ]
+    },
+    {
+        "name": "Serial",
+        "asciiID": "S",
+        "argumentNames": [],
+        "argumentUnits": []
+    },
+    {
+        "name": "Notification",
+        "asciiID": "N",
+        "argumentNames": [],
+        "argumentUnits": []
+    },
+    {
+        "name": "Error",
+        "asciiID": "F",
+        "argumentNames": [],
+        "argumentUnits": []
+    }
+]

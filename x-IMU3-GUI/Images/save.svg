@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/save</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons_updates_01.03.21" transform="translate(-381.000000, -332.000000)" stroke="#E4E4E4">
+            <g id="icons/save" transform="translate(382.000000, 333.000000)">
+                <path d="M12.4737977,0.255615901 L15.7090909,3.49090909 L15.7090909,14.8363636 C15.7090909,15.3183576 15.3183576,15.7090909 14.8363636,15.7090909 L0.872727273,15.7090909 C0.390733309,15.7090909 0,15.3183576 0,14.8363636 L0,0.872727273 C0,0.390733309 0.390733309,0 0.872727273,0 L11.8566863,0 C12.088148,0 12.3101296,0.0919477876 12.4737977,0.255615901 Z" id="Path" stroke-width="1.5"></path>
+                <rect id="Rectangle" stroke-width="1.5" x="3.49090909" y="8.72727273" width="8.72727273" height="6.98181818"></rect>
+                <rect id="Rectangle" fill="#E4E4E4" x="4.36363636" y="0" width="6.98181818" height="4.36363636"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

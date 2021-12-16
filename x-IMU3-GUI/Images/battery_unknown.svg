@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="9px" viewBox="0 0 18 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/battery/disabled</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons_updates_01.03.21" transform="translate(-381.000000, -150.000000)" fill="#787878" fill-rule="nonzero">
+            <g id="icons/battery/disabled" transform="translate(381.000000, 150.000000)">
+                <g id="battery" transform="translate(8.666667, 4.250000) rotate(-270.000000) translate(-8.666667, -4.250000) translate(4.416667, -4.416667)">
+                    <path d="M7.579875,1.15555556 L5.84375,1.15555556 L5.84375,0 L2.65625,0 L2.65625,1.15555556 L0.920125,1.15555556 C0.41278125,1.15555556 0,1.60448889 0,2.15626667 L0,16.3326222 C0,16.8844 0.41278125,17.3333333 0.920125,17.3333333 L7.57960937,17.3333333 C8.08721875,17.3333333 8.5,16.8844 8.5,16.3326222 L8.5,2.15626667 C8.5,1.60448889 8.08721875,1.15555556 7.579875,1.15555556 Z" id="Path"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

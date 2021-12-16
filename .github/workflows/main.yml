@@ -1,0 +1,141 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: macos-latest
+    outputs:
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
+    
+    steps:
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  build-macOS:
+    runs-on: macos-latest
+    needs: create-release
+    
+    strategy:
+      matrix:
+        include:
+          - name: Intel
+            rust-target: x86_64-apple-darwin
+            cmake-target: x86_64
+          - name: Apple-Silicon
+            rust-target: aarch64-apple-darwin
+            cmake-target: arm64
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: build library
+        run: |
+          rustup target add ${{ matrix.rust-target }}
+          cargo build --release --manifest-path=x-IMU3-API/Rust/Cargo.toml --target ${{ matrix.rust-target }}
+
+      - name: build gui
+        run: |
+          mkdir cmake-build-release
+          cd cmake-build-release
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.cmake-target }}
+          cmake --build . --target x-IMU3-GUI --config Release
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: zip libray
+        run: |
+          cd x-IMU3-API/Rust/target/${{ matrix.rust-target }}/release/
+          zip -r libximu3-${{ matrix.name }}.zip libximu3.a
+          cd ../../../../..
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: zip gui
+        run: |
+          cd cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
+          zip -r x-IMU3-GUI-${{ matrix.name }}.zip "x-IMU3 GUI.app"
+          cd ../../../..
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: upload library
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: x-IMU3-API/Rust/target/${{ matrix.rust-target }}/release/libximu3-${{ matrix.name }}.zip
+          asset_name: libximu3-${{ matrix.name }}.zip
+          asset_content_type: application/octet-stream
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: upload gui
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI-${{ matrix.name }}.zip
+          asset_name: x-IMU3-GUI-${{ matrix.name }}.zip
+          asset_content_type: application/octet-stream
+
+
+  build-windows:
+    runs-on: windows-latest
+    needs: create-release
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: build library
+        run: |
+          cargo build --release --manifest-path=x-IMU3-API\Rust\Cargo.toml
+
+      - name: build gui
+        run: |
+          mkdir cmake-build-release
+          cd cmake-build-release
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --target x-IMU3-GUI --config Release
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: upload library
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: x-IMU3-API\Rust\target\release\ximu3.lib
+          asset_name: ximu3.lib
+          asset_content_type: application/octet-stream
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: upload gui
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: cmake-build-release\x-IMU3-GUI\x-IMU3-GUI_artefacts\Release\x-IMU3 GUI.exe
+          asset_name: x-IMU3-GUI.exe
+          asset_content_type: application/octet-stream

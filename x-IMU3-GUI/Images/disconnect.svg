@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/disconnect</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons_set-" transform="translate(-306.000000, -196.000000)" stroke="#E4E4E4" stroke-width="1.5">
+            <g id="Disconnect" transform="translate(307.000000, 197.000000)">
+                <path d="M10.8284271,10.8284271 L5.17157287,5.17157287 M10.8284271,5.17157287 L5.17157287,10.8284271" id="Shape"></path>
+                <path d="M2.34314575,13.6568542 C-0.781048584,10.5326599 -0.781048584,5.46734009 2.34314575,2.34314575 C5.46734009,-0.781048584 10.5326599,-0.781048584 13.6568542,2.34314575 C16.7810486,5.46734009 16.7810486,10.5326599 13.6568542,13.6568542 C10.5326599,16.7810486 5.46734009,16.7810486 2.34314575,13.6568542 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

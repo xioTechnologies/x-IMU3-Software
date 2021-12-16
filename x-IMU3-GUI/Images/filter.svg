@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/filter</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons_set-" transform="translate(-306.000000, -100.000000)" fill="#E4E4E4" fill-rule="nonzero">
+            <g id="Path" transform="translate(306.000000, 100.000000)">
+                <path d="M17.1554025,0 L0.84473063,0 C0.0952696926,0 -0.282906089,0.909351563 0.248129068,1.44038672 L6.74999626,7.94323828 L6.74999626,15.1875 C6.74999626,15.4628086 6.88432829,15.7208203 7.10989079,15.8787422 L9.92239079,17.8467891 C10.4772619,18.2351953 11.2499963,17.8415508 11.2499963,17.1555469 L11.2499963,7.94323828 L17.7520392,1.44038672 C18.2819845,0.91040625 17.9064103,0 17.1554025,0 Z" transform="translate(9.000002, 9.000003) scale(-1, 1) translate(-9.000002, -9.000003) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

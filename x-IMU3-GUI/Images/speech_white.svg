@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="18px" viewBox="0 0 24 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ic/speech/v1</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" transform="translate(-251.000000, -821.000000)">
+            <g id="ic/speech/v1" transform="translate(251.000000, 821.000000)">
+                <path d="M8.02678125,16.44525 L3.56249048,17.4375095 L4.55475,12.9732187 C3.90129241,11.7509483 3.56041329,10.3859825 3.56249048,9 C3.56249048,4.33996875 7.33996875,0.5625 12,0.5625 C16.6600312,0.5625 20.4375,4.33996875 20.4375,9 C20.4375,13.6600312 16.6600312,17.4375095 12,17.4375095 C10.6140175,17.4395867 9.24905171,17.0987076 8.02678125,16.44525 L8.02678125,16.44525 Z" id="Path" fill="#E4E4E4" fill-rule="nonzero" transform="translate(11.999995, 9.000005) scale(-1, 1) translate(-11.999995, -9.000005) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,102 @@
+<Settings>
+    <Group displayName="Device Information">
+        <Setting key="deviceName" displayName="Device Name" type="string" readOnly="false"/>
+        <Setting key="serialNumber" displayName="Serial Number" type="string" readOnly="true"/>
+        <Setting key="firmwareVersion" displayName="Firmware Version" type="string" readOnly="true"/>
+        <Setting key="bootloaderVersion" displayName="Bootloader Version" type="string" readOnly="true"/>
+        <Setting key="hardwareVersion" displayName="Hardware Version" type="string" readOnly="true"/>
+    </Group>
+    <Group displayName="Serial">
+        <Setting key="serialMode" displayName="Mode" type="SerialMode" readOnly="false"/>
+        <Setting key="serialBaudRate" displayName="Baud Rate" type="number" readOnly="false"/>
+        <Setting key="serialRtsCtsEnabled" displayName="RTS/CTS" type="bool" readOnly="false"/>
+        <Group displayName="Serial Accessory">
+            <Group displayName="Send Conditions">
+                <Setting key="serialAccessoryNumberOfBytes" displayName="Number Of Bytes" type="number" readOnly="false"/>
+                <Setting key="serialAccessoryTerminationByte" displayName="Termination Byte" type="number" readOnly="false"/>
+                <Setting key="serialAccessoryTimeout" displayName="Timeout" type="number" readOnly="false"/>
+            </Group>
+            <Setting key="serialAccessoryTransmitEnabled" displayName="Transmit" type="bool" readOnly="false"/>
+        </Group>
+    </Group>
+    <Group displayName="Wireless">
+        <Setting key="wirelessMode" displayName="Mode" type="WirelessMode" readOnly="false"/>
+        <Setting key="wirelessFirmwareVersion" displayName="Firmware Version" type="string" readOnly="true"/>
+        <Setting key="externalAntennaeEnabled" displayName="External Antennae" type="bool" readOnly="false"/>
+        <Group displayName="Wi-Fi">
+            <Setting key="wiFiRegion" displayName="Region" type="RS9116WlanCommandRegion" readOnly="false"/>
+            <Setting key="wiFiMacAddress" displayName="MAC Address" type="string" readOnly="true"/>
+            <Setting key="wiFiIPAddress" displayName="IP Address" type="string" readOnly="true"/>
+            <Group displayName="Client Mode">
+                <Setting key="wiFiClientSsid" displayName="SSID" type="string" readOnly="false"/>
+                <Setting key="wiFiClientKey" displayName="Key" type="string" readOnly="false"/>
+                <Setting key="wiFiClientChannel" displayName="Channel" type="WirelessWlanClientChannel" readOnly="false"/>
+                <Setting key="wiFiClientDhcpEnabled" displayName="DHCP" type="bool" readOnly="false"/>
+                <Setting key="wiFiClientIPAddress" displayName="IP Address" type="string" readOnly="false"/>
+                <Setting key="wiFiClientNetmask" displayName="Netmask" type="string" readOnly="false"/>
+                <Setting key="wiFiClientGateway" displayName="Gateway" type="string" readOnly="false"/>
+            </Group>
+            <Group displayName="AP Mode">
+                <Setting key="wiFiAPSsid" displayName="SSID" type="string" readOnly="false"/>
+                <Setting key="wiFiAPKey" displayName="Key" type="string" readOnly="false"/>
+                <Setting key="wiFiAPChannel" displayName="Channel" type="WirelessWlanAPChannel" readOnly="false"/>
+            </Group>
+            <Group displayName="TCP">
+                <Setting key="tcpPort" displayName="Port" type="number" readOnly="false"/>
+            </Group>
+            <Group displayName="UDP">
+                <Setting key="udpIPAddress" displayName="IP Address" type="string" readOnly="false"/>
+                <Setting key="udpSendPort" displayName="Send Port" type="number" readOnly="false"/>
+                <Setting key="udpReceivePort" displayName="Receive Port" type="number" readOnly="false"/>
+            </Group>
+            <Group displayName="Synchronisation">
+                <Setting key="synchronisationEnabled" displayName="Enabled" type="bool" readOnly="false"/>
+                <Setting key="synchronisationNetworkLatency" displayName="Network Latency" type="number" readOnly="false"/>
+            </Group>
+        </Group>
+        <Group displayName="Bluetooth">
+            <Setting key="bluetoothAddress" displayName="Bluetooth Address" type="string" readOnly="true"/>
+            <Setting key="bluetoothName" displayName="Name" type="string" readOnly="false"/>
+            <Setting key="bluetoothPinCode" displayName="Pin Code" type="string" readOnly="false"/>
+            <Setting key="bluetoothDiscoveryMode" displayName="Discovery Mode" type="WirelessBTDiscoveryMode" readOnly="false"/>
+            <Setting key="bluetoothPairedAddress" displayName="Paired Address" type="string" readOnly="true"/>
+            <Setting key="bluetoothPairedLinkKey" displayName="Paired Link Key" type="string" readOnly="true"/>
+        </Group>
+    </Group>
+    <Group displayName="Data Logger">
+        <Setting key="dataLoggerEnabled" displayName="Enabled" type="bool" readOnly="false"/>
+        <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false"/>
+        <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false"/>
+        <Setting key="dataLoggerFileNameIsTime" displayName="File Name Is Time" type="bool" readOnly="false"/>
+        <Setting key="dataLoggerMaximumFileSize" displayName="Maximum File Size" type="number" readOnly="false"/>
+        <Setting key="dataLoggerMaximumFilePeriod" displayName="Maximum File Period" type="number" readOnly="false"/>
+    </Group>
+    <Group displayName="AHRS">
+        <Setting key="axesAlignment" displayName="Axes Alignment" type="FusionAxesAlignment" readOnly="false"/>
+        <Setting key="gyroscopeOffsetCorrectionEnabled" displayName="Gyroscope Offset Correction" type="bool" readOnly="false"/>
+        <Setting key="ahrsGain" displayName="AHRS Gain" type="number" readOnly="false"/>
+        <Setting key="ahrsIgnoreMagnetometer" displayName="AHRS Ignore Magnetometer" type="bool" readOnly="false"/>
+    </Group>
+    <Group displayName="Data Messages">
+        <Setting key="binaryModeEnabled" displayName="Binary Mode" type="bool" readOnly="false"/>
+        <Group displayName="Communication Interface">
+            <Setting key="usbDataMessagesEnabled" displayName="USB" type="bool" readOnly="false"/>
+            <Setting key="serialDataMessagesEnabled" displayName="Serial" type="bool" readOnly="false"/>
+            <Setting key="tcpDataMessagesEnabled" displayName="TCP" type="bool" readOnly="false"/>
+            <Setting key="udpDataMessagesEnabled" displayName="UDP" type="bool" readOnly="false"/>
+            <Setting key="bluetoothDataMessagesEnabled" displayName="Bluetooth" type="bool" readOnly="false"/>
+            <Setting key="dataLoggerDataMessagesEnabled" displayName="Data Logger" type="bool" readOnly="false"/>
+        </Group>
+        <Setting key="ahrsMessageType" displayName="AHRS Message Type" type="SendAhrsMessageType" readOnly="false"/>
+        <Group displayName="Message Rates Divisor">
+            <Setting key="inertialMessageRateDivisor" displayName="Inertial" type="number" readOnly="false"/>
+            <Setting key="magnetometerMessageRateDivisor" displayName="Magnetometer" type="number" readOnly="false"/>
+            <Setting key="ahrsMessageRateDivisor" displayName="AHRS" type="number" readOnly="false"/>
+            <Setting key="highGMessageRateDivisor" displayName="High-g" type="number" readOnly="false"/>
+            <Setting key="temperatureMessageRateDivisor" displayName="Temperature" type="number" readOnly="false"/>
+            <Setting key="batteryMessageRateDivisor" displayName="Battery" type="number" readOnly="false"/>
+            <Setting key="rssiMessageRateDivisor" displayName="RSSI" type="number" readOnly="false"/>
+            <Setting key="serialAccessoryRateDivisor" displayName="Serial Accessory" type="number" readOnly="false"/>
+        </Group>
+    </Group>
+</Settings>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/manual</title>
+    <g id="UI-(8-screens)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons_set-" transform="translate(-306.000000, -148.000000)" stroke="#E4E4E4" stroke-width="1.5">
+            <g id="icons/manual" transform="translate(307.000000, 149.000000)">
+                <circle id="Oval" cx="4.8" cy="1.92" r="1.92"></circle>
+                <line x1="0" y1="1.92" x2="2.88" y2="1.92" id="Path"></line>
+                <line x1="6.72" y1="1.92" x2="15.36" y2="1.92" id="Path"></line>
+                <circle id="Oval" cx="4.8" cy="13.44" r="1.92"></circle>
+                <line x1="0" y1="13.44" x2="2.88" y2="13.44" id="Path"></line>
+                <line x1="6.72" y1="13.44" x2="15.36" y2="13.44" id="Path"></line>
+                <circle id="Oval" cx="10.56" cy="7.68" r="1.92"></circle>
+                <line x1="0" y1="7.68" x2="8.64" y2="7.68" id="Path"></line>
+                <line x1="12.48" y1="7.68" x2="15.36" y2="7.68" id="Path"></line>
+            </g>
+        </g>
+    </g>
+</svg>

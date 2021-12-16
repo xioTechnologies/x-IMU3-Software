@@ -1,0 +1,8 @@
+[package]
+name = "x-imu3-examples"
+version = "0.0.0"
+authors = ["x-io Technologies Limited <info@x-io.co.uk>"]
+edition = "2018"
+
+[dependencies]
+ximu3 = { path = "../../x-IMU3-API/Rust" }
