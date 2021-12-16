@@ -19,7 +19,7 @@ SearchForConnectionsDialog::SearchForConnectionsDialog() : Dialog(BinaryData::se
 
     setValid(false);
 
-    setSize(dialogWidth, calculateHeight(6));
+    setSize(600, calculateHeight(6));
 
     networkDiscoveryDispatcher.addChangeListener(this);
 }
