@@ -172,30 +172,8 @@ void DiscoveredDevicesTable::updateDiscoveredDevices(const std::vector<ximu3::XI
     table.updateContent();
 
     std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnectionsPerType;
-
     for (size_t rowIndex = 0; rowIndex < rows.size(); rowIndex++)
     {
-        if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent(selectionColumnID, (int) rowIndex)))
-        {
-            toggle->setToggleState(rows[rowIndex].selected, juce::dontSendNotification);
-
-            toggle->onClick = [this, rowIndex, toggle]
-            {
-                rows[rowIndex].selected = toggle->getToggleState();
-                selectionChanged();
-            };
-        }
-
-        if (auto* const nameAndSerialNumber = dynamic_cast<SimpleLabel*>(table.getCellComponent(nameAndSerialNumberColumnID, (int) rowIndex)))
-        {
-            nameAndSerialNumber->setText(rows[rowIndex].getNameAndSerialNumber());
-        }
-
-        if (auto* const info = dynamic_cast<SimpleLabel*>(table.getCellComponent(infoColumnID, (int) rowIndex)))
-        {
-            info->setText(rows[rowIndex].createConnectionInfo()->toString());
-        }
-
         numberOfConnectionsPerType[rows[rowIndex].connectionType]++;
     }
 
@@ -260,32 +238,46 @@ void DiscoveredDevicesTable::paintRowBackground(juce::Graphics& g, int rowNumber
 
 juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
-    jassert (rowNumber >= 0 && rowNumber < getNumRows());
-
-    if (rowNumber >= (int) rows.size())
+    switch (columnID)
     {
-        delete existingComponentToUpdate;
-        return nullptr;
-    }
-
-    if (existingComponentToUpdate == nullptr)
-    {
-        switch (columnID)
+        case selectionColumnID:
         {
-            case selectionColumnID:
+            if (existingComponentToUpdate == nullptr)
             {
-                auto* toggle = new CustomToggleButton("");
-                toggle->setWantsKeyboardFocus(false);
-                return toggle;
+                existingComponentToUpdate = new CustomToggleButton("");
             }
 
-            case nameAndSerialNumberColumnID:
-            case infoColumnID:
-                return new SimpleLabel();
-
-            default:
-                jassertfalse;
+            auto* toggle = static_cast<CustomToggleButton*>(existingComponentToUpdate);
+            toggle->setWantsKeyboardFocus(false);
+            toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
+            toggle->onClick = [this, rowNumber, toggle]
+            {
+                rows[(size_t) rowNumber].selected = toggle->getToggleState();
+                selectionChanged();
+            };
+            break;
         }
+
+        case nameAndSerialNumberColumnID:
+            if (existingComponentToUpdate == nullptr)
+            {
+                existingComponentToUpdate = new SimpleLabel();
+            }
+
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].getNameAndSerialNumber());
+            break;
+
+        case infoColumnID:
+            if (existingComponentToUpdate == nullptr)
+            {
+                existingComponentToUpdate = new SimpleLabel();
+            }
+
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].createConnectionInfo()->toString());
+            break;
+
+        default:
+            break;
     }
 
     return existingComponentToUpdate;

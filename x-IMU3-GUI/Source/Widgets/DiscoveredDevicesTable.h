@@ -41,7 +41,7 @@ private:
 
     CustomToggleButton buttonSelectAll { "" };
     SimpleLabel labelSelectAll { "Select All" };
-    SimpleLabel numConnectionsFoundLabel { "" };
+    SimpleLabel numConnectionsFoundLabel;
     juce::TableListBox table { "", this };
 
     struct TableRowModel

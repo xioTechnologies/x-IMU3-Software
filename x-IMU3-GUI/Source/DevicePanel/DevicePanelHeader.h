@@ -44,12 +44,12 @@ private:
     juce::String deviceName, serialNumber;
 
     IconButton menuButton { IconButton::Style::normal, BinaryData::menu_svg, 1.0f, "Device Actions", std::bind(&DevicePanelHeader::getMenu, this) };
-    SimpleLabel deviceNameAndSerialNumber { "", UIFonts::defaultFont };
+    SimpleLabel deviceNameAndSerialNumber;
     SimpleLabel connectionInfo;
     Icon rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
     Icon batteryIcon { BinaryData::battery_unknown_svg, "Battery Level" };
-    SimpleLabel rssiText { "", UIFonts::defaultFont };
-    SimpleLabel batteryText { "", UIFonts::defaultFont };
+    SimpleLabel rssiText;
+    SimpleLabel batteryText;
 
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     uint64_t batteryCallbackID;
