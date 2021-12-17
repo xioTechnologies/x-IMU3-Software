@@ -3,21 +3,29 @@
 #include "NetworkDiscoveryDispatcher.h"
 #include "SearchForConnectionsDialog.h"
 
-SearchForConnectionsDialog::SearchForConnectionsDialog() : Dialog(BinaryData::search_svg, "Search For Connections", "Connect", "Cancel", &filterButton, 50, true)
+SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_) : Dialog(BinaryData::search_svg, "Search For Connections", "Connect", "Cancel", &filterButton, 50, true),
+                                                                                                                                   existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);
 
     table.onSelectionChanged = [this]
     {
-        setValid(table.getConnectionInfos().size() > 0);
+        for (auto& device : devices)
+        {
+            if (device.selected)
+            {
+                setValid(true);
+                return;
+            }
+        }
+
+        setValid(false);
     };
 
-    updateTable();
+    update();
 
     filterButton.setWantsKeyboardFocus(false);
-
-    setValid(false);
 
     setSize(600, calculateHeight(6));
 
@@ -35,28 +43,93 @@ void SearchForConnectionsDialog::resized()
     table.setBounds(getContentBounds(true));
 }
 
-std::vector<std::unique_ptr<ximu3::ConnectionInfo>> SearchForConnectionsDialog::getConnectionInfos() const
+const std::vector<DiscoveredDevicesTable::DiscoveredDevice>& SearchForConnectionsDialog::getDiscoveredDevices() const
 {
-    return table.getConnectionInfos();
+    return devices;
 }
 
-void SearchForConnectionsDialog::updateTable()
+void SearchForConnectionsDialog::update()
 {
-    std::vector<ximu3::XIMU3_DiscoveredSerialDevice> discoveredSerialDevicesCopy;
+    std::vector<DiscoveredDevicesTable::DiscoveredDevice> newDevices;
 
+    // Create filtered devices
+    for (auto& serialDevice : serialDevices)
     {
-        std::lock_guard<std::mutex> lock(devicesMutex);
-        discoveredSerialDevicesCopy = devices;
+        if (((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
+            ((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && ApplicationSettings::getSingleton().searchSerial) ||
+            ((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth) && ApplicationSettings::getSingleton().searchBluetooth))
+        {
+            DiscoveredDevicesTable::DiscoveredDevice device;
+            device.deviceNameAndSerialNumber = juce::String(serialDevice.device_name) + " - " + juce::String(serialDevice.serial_number);
+            device.connectionType = serialDevice.connection_type;
+
+            switch (serialDevice.connection_type)
+            {
+                case ximu3::XIMU3_ConnectionTypeUsb:
+                    device.connectionInfo = std::make_unique<ximu3::UsbConnectionInfo>(serialDevice.usb_connection_info);
+                    break;
+                case ximu3::XIMU3_ConnectionTypeSerial:
+                    device.connectionInfo = std::make_unique<ximu3::SerialConnectionInfo>(serialDevice.serial_connection_info);
+                    break;
+                case ximu3::XIMU3_ConnectionTypeBluetooth:
+                    device.connectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>(serialDevice.bluetooth_connection_info);
+                    break;
+                case ximu3::XIMU3_ConnectionTypeTcp:
+                case ximu3::XIMU3_ConnectionTypeUdp:
+                case ximu3::XIMU3_ConnectionTypeFile:
+                    break;
+            }
+
+            newDevices.push_back(std::move(device));
+        }
     }
 
-    DiscoveredDevicesTable::Filter filter;
-    filter.usb = ApplicationSettings::getSingleton().searchUsb;
-    filter.serial = ApplicationSettings::getSingleton().searchSerial;
-    filter.tcp = ApplicationSettings::getSingleton().searchTcp;
-    filter.udp = ApplicationSettings::getSingleton().searchUdp;
-    filter.bluetooth = ApplicationSettings::getSingleton().searchBluetooth;
+    for (auto& networkDevice : networkDiscoveryDispatcher.getDevices())
+    {
+        DiscoveredDevicesTable::DiscoveredDevice device;
+        device.deviceNameAndSerialNumber = juce::String(networkDevice.device_name) + " - " + juce::String(networkDevice.serial_number);
 
-    table.updateDiscoveredDevices(discoveredSerialDevicesCopy, networkDiscoveryDispatcher.getDevices(), filter);
+        if (ApplicationSettings::getSingleton().searchUdp)
+        {
+            device.connectionType = ximu3::XIMU3_ConnectionTypeUdp;
+            device.connectionInfo = std::make_unique<ximu3::UdpConnectionInfo>(networkDevice.udp_connection_info);
+        }
+        if (ApplicationSettings::getSingleton().searchTcp)
+        {
+            device.connectionType = ximu3::XIMU3_ConnectionTypeTcp;
+            device.connectionInfo = std::make_unique<ximu3::TcpConnectionInfo>(networkDevice.tcp_connection_info);
+        }
+
+        newDevices.push_back(std::move(device));
+    }
+
+    // Remove existing connections
+    for (size_t index = 0; index < newDevices.size(); index++)
+    {
+        for (const auto& connection : existingConnections)
+        {
+            if (connection->toString() == newDevices[index].connectionInfo->toString())
+            {
+                newDevices.erase(newDevices.begin() + (int) index--);
+            }
+        }
+    }
+
+    // Preserve selected state
+    for (auto& newDevice : newDevices)
+    {
+        for (auto& device : devices)
+        {
+            if (newDevice.connectionInfo->toString() == device.connectionInfo->toString())
+            {
+                newDevice.selected = device.selected;
+            }
+        }
+    }
+
+    // Update table
+    devices = std::move(newDevices);
+    table.update();
 }
 
 juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
@@ -68,7 +141,7 @@ juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
         {
             value = !value;
             ApplicationSettings::getSingleton().save();
-            updateTable();
+            update();
         });
     };
     addFilterItem("USB", ApplicationSettings::getSingleton().searchUsb);
@@ -81,10 +154,5 @@ juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
 
 void SearchForConnectionsDialog::changeListenerCallback(juce::ChangeBroadcaster*)
 {
-    updateTable();
-}
-
-void SearchForConnectionsDialog::handleAsyncUpdate()
-{
-    updateTable();
+    update();
 }

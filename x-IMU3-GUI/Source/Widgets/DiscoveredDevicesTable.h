@@ -11,26 +11,21 @@ class DiscoveredDevicesTable : public juce::Component,
                                private juce::TableListBoxModel
 {
 public:
-    DiscoveredDevicesTable();
+    struct DiscoveredDevice
+    {
+        bool selected = false;
+        juce::String deviceNameAndSerialNumber;
+        ximu3::XIMU3_ConnectionType connectionType;
+        std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
+    };
+
+    DiscoveredDevicesTable(std::vector<DiscoveredDevice>& discoveredDevices_);
 
     void paint(juce::Graphics& g) override;
 
     void resized() override;
 
-    struct Filter
-    {
-        bool usb;
-        bool serial;
-        bool tcp;
-        bool udp;
-        bool bluetooth;
-    };
-
-    void updateDiscoveredDevices(const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>& discoveredSerialDevices,
-                                 const std::vector<ximu3::XIMU3_DiscoveredNetworkDevice>& discoveredNetworkDevices,
-                                 const Filter filter);
-
-    std::vector<std::unique_ptr<ximu3::ConnectionInfo>> getConnectionInfos() const;
+    void update();
 
     std::function<void()> onSelectionChanged;
 
@@ -39,23 +34,12 @@ private:
     static constexpr int nameAndSerialNumberColumnID = 2;
     static constexpr int infoColumnID = 3;
 
+    std::vector<DiscoveredDevice>& discoveredDevices;
+
     CustomToggleButton buttonSelectAll { "" };
     SimpleLabel labelSelectAll { "Select All" };
     SimpleLabel numConnectionsFoundLabel;
     juce::TableListBox table { "", this };
-
-    struct TableRowModel
-    {
-        std::variant<ximu3::XIMU3_DiscoveredNetworkDevice, ximu3::XIMU3_DiscoveredSerialDevice> device;
-        ximu3::XIMU3_ConnectionType connectionType;
-        bool selected = false;
-
-        juce::String getNameAndSerialNumber() const;
-
-        std::unique_ptr<ximu3::ConnectionInfo> createConnectionInfo() const;
-    };
-
-    std::vector<TableRowModel> rows;
 
     void selectionChanged();
 

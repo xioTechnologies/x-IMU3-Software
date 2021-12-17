@@ -35,13 +35,23 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     searchButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SearchForConnectionsDialog>(), [this]
+        std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
+
+        for (auto& devicePanel : devicePanelsContainer.getDevicePanels())
+        {
+            existingConnections.push_back(devicePanel->getConnection().getInfo());
+        }
+
+        DialogLauncher::launchDialog(std::make_unique<SearchForConnectionsDialog>(std::move(existingConnections)), [this]
         {
             if (auto* dialog = dynamic_cast<SearchForConnectionsDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                for (auto& info : dialog->getConnectionInfos())
+                for (auto& device : dialog->getDiscoveredDevices())
                 {
-                    devicePanelsContainer.connectToDevice(*info);
+                    if (device.selected)
+                    {
+                        devicePanelsContainer.connectToDevice(*device.connectionInfo);
+                    }
                 }
             }
         });

@@ -2,58 +2,7 @@
 #include "DiscoveredDevicesTable.h"
 #include "Ximu3.hpp"
 
-juce::String DiscoveredDevicesTable::TableRowModel::getNameAndSerialNumber() const
-{
-    const juce::String separator = " - ";
-    try
-    {
-        return std::get<ximu3::XIMU3_DiscoveredNetworkDevice>(device).device_name + separator + std::get<ximu3::XIMU3_DiscoveredNetworkDevice>(device).serial_number;
-    }
-    catch (const std::bad_variant_access&)
-    {
-        return std::get<ximu3::XIMU3_DiscoveredSerialDevice>(device).device_name + separator + std::get<ximu3::XIMU3_DiscoveredSerialDevice>(device).serial_number;
-    }
-}
-
-std::unique_ptr<ximu3::ConnectionInfo> DiscoveredDevicesTable::TableRowModel::createConnectionInfo() const
-{
-    switch (connectionType)
-    {
-        case ximu3::XIMU3_ConnectionTypeUdp:
-        {
-            const auto& connectionInfo = std::get<ximu3::XIMU3_DiscoveredNetworkDevice>(device).udp_connection_info;
-            return std::make_unique<ximu3::UdpConnectionInfo>(connectionInfo.ip_address, connectionInfo.send_port, connectionInfo.receive_port);
-        }
-        case ximu3::XIMU3_ConnectionTypeTcp:
-        {
-            const auto& connectionInfo = std::get<ximu3::XIMU3_DiscoveredNetworkDevice>(device).tcp_connection_info;
-            return std::make_unique<ximu3::TcpConnectionInfo>(connectionInfo.ip_address, connectionInfo.port);
-        }
-        case ximu3::XIMU3_ConnectionTypeUsb:
-        {
-            const auto& connectionInfo = std::get<ximu3::XIMU3_DiscoveredSerialDevice>(device).usb_connection_info;
-            return std::make_unique<ximu3::UsbConnectionInfo>(connectionInfo.port_name);
-        }
-        case ximu3::XIMU3_ConnectionTypeSerial:
-        {
-            const auto& connectionInfo = std::get<ximu3::XIMU3_DiscoveredSerialDevice>(device).serial_connection_info;
-            return std::make_unique<ximu3::SerialConnectionInfo>(connectionInfo.port_name, connectionInfo.baud_rate, connectionInfo.rts_cts_enabled);
-        }
-        case ximu3::XIMU3_ConnectionTypeBluetooth:
-        {
-            const auto& connectionInfo = std::get<ximu3::XIMU3_DiscoveredSerialDevice>(device).bluetooth_connection_info;
-            return std::make_unique<ximu3::BluetoothConnectionInfo>(connectionInfo.port_name);
-        }
-        case ximu3::XIMU3_ConnectionTypeFile:
-        {
-            return nullptr;
-        }
-    }
-
-    return nullptr; // avoid warning C4715: "not all control paths return a value"
-}
-
-DiscoveredDevicesTable::DiscoveredDevicesTable()
+DiscoveredDevicesTable::DiscoveredDevicesTable(std::vector<DiscoveredDevice>& discoveredDevices_) : discoveredDevices(discoveredDevices_)
 {
     addAndMakeVisible(numConnectionsFoundLabel);
 
@@ -71,13 +20,13 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
     buttonSelectAll.setWantsKeyboardFocus(false);
     buttonSelectAll.onClick = [&]
     {
-        for (size_t i = 0; i < rows.size(); i++)
+        for (size_t i = 0; i < discoveredDevices.size(); i++)
         {
-            rows[i].selected = buttonSelectAll.getToggleState();
+            discoveredDevices[i].selected = buttonSelectAll.getToggleState();
 
             if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent(selectionColumnID, (int) i)))
             {
-                toggle->setToggleState(rows[i].selected, juce::dontSendNotification);
+                toggle->setToggleState(discoveredDevices[i].selected, juce::dontSendNotification);
             }
         }
 
@@ -112,108 +61,52 @@ void DiscoveredDevicesTable::resized()
     table.setBounds(bounds);
 }
 
-void DiscoveredDevicesTable::updateDiscoveredDevices(const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>& discoveredSerialDevices,
-                                                     const std::vector<ximu3::XIMU3_DiscoveredNetworkDevice>& discoveredNetworkDevices,
-                                                     const Filter filter)
+void DiscoveredDevicesTable::update()
 {
-    std::vector<TableRowModel> newRows;
-
-    for (auto& device : discoveredSerialDevices)
+    if (buttonSelectAll.getToggleState())
     {
-        if (((device.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && filter.usb) ||
-            ((device.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && filter.serial) ||
-            ((device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth) && filter.bluetooth))
+        for (auto& device : discoveredDevices)
         {
-            TableRowModel item;
-            item.device = device;
-            item.connectionType = device.connection_type;
-            newRows.push_back(item);
+            device.selected = true;
         }
     }
 
-    for (auto& device : discoveredNetworkDevices)
-    {
-        TableRowModel item;
-        item.device = device;
-
-        if (filter.udp)
-        {
-            item.connectionType = ximu3::XIMU3_ConnectionTypeUdp;
-            newRows.push_back(item);
-        }
-        if (filter.tcp)
-        {
-            item.connectionType = ximu3::XIMU3_ConnectionTypeTcp;
-            newRows.push_back(item);
-        }
-    }
-
-    for (auto& newRow : newRows)
-    {
-        if (buttonSelectAll.getToggleState())
-        {
-            newRow.selected = true;
-        }
-        else
-        {
-            for (auto& row : rows)
-            {
-                if (row.createConnectionInfo()->toString() == newRow.createConnectionInfo()->toString())
-                {
-                    newRow.selected = row.selected;
-                }
-            }
-        }
-    }
-
-    rows = newRows;
     selectionChanged();
 
     table.updateContent();
 
-    std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnectionsPerType;
-    for (size_t rowIndex = 0; rowIndex < rows.size(); rowIndex++)
-    {
-        numberOfConnectionsPerType[rows[rowIndex].connectionType]++;
-    }
+    juce::String labelText = "Found: ";
 
-    juce::String labelText("Found: ");
-    if (numberOfConnectionsPerType.empty())
+    if (discoveredDevices.empty())
     {
         labelText += "0 Connections";
     }
     else
     {
-        for (auto it = numberOfConnectionsPerType.begin(); it != numberOfConnectionsPerType.end(); it++)
+        std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
+        for (auto& device : discoveredDevices)
         {
-            if (it != numberOfConnectionsPerType.begin())
+            numberOfConnections[device.connectionType]++;
+        }
+
+        for (const auto& pair : numberOfConnections)
+        {
+            labelText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first));
+            if (&pair != &*numberOfConnections.rbegin())
             {
                 labelText += ", ";
             }
-            labelText += juce::String(it->second) + " " + juce::String(XIMU3_connection_type_to_string(it->first));
         }
     }
-    numConnectionsFoundLabel.setText(labelText);
-}
 
-std::vector<std::unique_ptr<ximu3::ConnectionInfo>> DiscoveredDevicesTable::getConnectionInfos() const
-{
-    std::vector<std::unique_ptr<ximu3::ConnectionInfo>> connectionInfos;
-    for (auto& row : rows)
-    {
-        if (row.selected)
-        {
-            connectionInfos.push_back(row.createConnectionInfo());
-        }
-    }
-    return connectionInfos;
+    numConnectionsFoundLabel.setText(labelText);
 }
 
 void DiscoveredDevicesTable::selectionChanged()
 {
-    for (auto& row : rows)
+    for (auto& device : discoveredDevices)
     {
-        if (row.selected == false)
+        if (device.selected == false)
         {
             buttonSelectAll.setToggleState(false, juce::dontSendNotification);
             break;
@@ -228,7 +121,7 @@ void DiscoveredDevicesTable::selectionChanged()
 
 int DiscoveredDevicesTable::getNumRows()
 {
-    return (int) rows.size();
+    return (int) discoveredDevices.size();
 }
 
 void DiscoveredDevicesTable::paintRowBackground(juce::Graphics& g, int rowNumber, int, int, bool)
@@ -249,10 +142,10 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
 
             auto* toggle = static_cast<CustomToggleButton*>(existingComponentToUpdate);
             toggle->setWantsKeyboardFocus(false);
-            toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
+            toggle->setToggleState(discoveredDevices[(size_t) rowNumber].selected, juce::dontSendNotification);
             toggle->onClick = [this, rowNumber, toggle]
             {
-                rows[(size_t) rowNumber].selected = toggle->getToggleState();
+                discoveredDevices[(size_t) rowNumber].selected = toggle->getToggleState();
                 selectionChanged();
             };
             break;
@@ -264,7 +157,8 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].getNameAndSerialNumber());
+
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(discoveredDevices[(size_t) rowNumber].deviceNameAndSerialNumber);
             break;
 
         case infoColumnID:
@@ -273,7 +167,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].createConnectionInfo()->toString());
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(discoveredDevices[(size_t) rowNumber].connectionInfo->toString());
             break;
 
         default:
@@ -287,6 +181,6 @@ void DiscoveredDevicesTable::cellClicked(int rowNumber, int, const juce::MouseEv
 {
     if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent(selectionColumnID, rowNumber)))
     {
-        toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+        toggle->setToggleState(!discoveredDevices[(size_t) rowNumber].selected, juce::sendNotificationSync);
     }
 }
