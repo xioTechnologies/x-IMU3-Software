@@ -22,7 +22,7 @@ ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::sett
     {
         height += group->getHeight() + margin;
     }
-    setSize(500, calculateHeight(0) + height);
+    setSize(dialogWidth, calculateHeight(0) + height);
 }
 
 ApplicationSettingsDialog::~ApplicationSettingsDialog()

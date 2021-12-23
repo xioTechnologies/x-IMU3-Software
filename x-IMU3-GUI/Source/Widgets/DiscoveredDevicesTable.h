@@ -11,51 +11,37 @@ class DiscoveredDevicesTable : public juce::Component,
                                private juce::TableListBoxModel
 {
 public:
+    struct Row
+    {
+        bool selected = false;
+        juce::String deviceNameAndSerialNumber;
+        std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
+        ximu3::XIMU3_ConnectionType connectionType;
+    };
+
     DiscoveredDevicesTable();
+
+    void setRows(std::vector<Row> rows_);
+
+    const std::vector<Row>& getRows() const;
 
     void paint(juce::Graphics& g) override;
 
     void resized() override;
 
-    struct Filter
-    {
-        bool usb;
-        bool serial;
-        bool tcp;
-        bool udp;
-        bool bluetooth;
-    };
-
-    void updateDiscoveredDevices(const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>& discoveredSerialDevices,
-                                 const std::vector<ximu3::XIMU3_DiscoveredNetworkDevice>& discoveredNetworkDevices,
-                                 const Filter filter);
-
-    std::vector<std::unique_ptr<ximu3::ConnectionInfo>> getConnectionInfos() const;
-
     std::function<void()> onSelectionChanged;
 
 private:
-    static constexpr int selectionColumnID = 1;
+    static constexpr int selectedColumnID = 1;
     static constexpr int nameAndSerialNumberColumnID = 2;
-    static constexpr int infoColumnID = 3;
+    static constexpr int connectionInfoColumnID = 3;
+
+    std::vector<Row> rows;
 
     CustomToggleButton buttonSelectAll { "" };
     SimpleLabel labelSelectAll { "Select All" };
-    SimpleLabel numConnectionsFoundLabel { "" };
+    SimpleLabel numConnectionsFoundLabel;
     juce::TableListBox table { "", this };
-
-    struct TableRowModel
-    {
-        std::variant<ximu3::XIMU3_DiscoveredNetworkDevice, ximu3::XIMU3_DiscoveredSerialDevice> device;
-        ximu3::XIMU3_ConnectionType connectionType;
-        bool selected = false;
-
-        juce::String getNameAndSerialNumber() const;
-
-        std::unique_ptr<ximu3::ConnectionInfo> createConnectionInfo() const;
-    };
-
-    std::vector<TableRowModel> rows;
 
     void selectionChanged();
 

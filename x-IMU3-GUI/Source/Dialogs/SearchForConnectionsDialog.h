@@ -7,33 +7,36 @@
 #include "SerialDiscovery.hpp"
 
 class SearchForConnectionsDialog : public Dialog,
-                                   private juce::ChangeListener,
-                                   private juce::AsyncUpdater
+                                   private juce::ChangeListener
 {
 public:
-    SearchForConnectionsDialog();
+    SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_);
 
     ~SearchForConnectionsDialog() override;
 
     void resized() override;
 
-    std::vector<std::unique_ptr<ximu3::ConnectionInfo>> getConnectionInfos() const;
+    std::vector<ximu3::ConnectionInfo*> getConnectionInfos() const;
 
 private:
+    const std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
+
     NetworkDiscoveryDispatcher& networkDiscoveryDispatcher = NetworkDiscoveryDispatcher::getSingleton();
 
-    mutable std::mutex devicesMutex;
-    std::vector<ximu3::XIMU3_DiscoveredSerialDevice> devices;
+    std::vector<ximu3::XIMU3_DiscoveredSerialDevice> serialDevices;
 
     ximu3::SerialDiscovery serialDiscovery {
             [this](auto devices_)
             {
-                {
-                    std::lock_guard<std::mutex> lock(devicesMutex);
-                    devices = devices_;
-                }
-
-                triggerAsyncUpdate();
+                auto self = SafePointer<juce::Component>(this);
+                juce::MessageManager::callAsync([this, self, devices_]
+                                                {
+                                                    if (self != nullptr)
+                                                    {
+                                                        serialDevices = devices_;
+                                                        update();
+                                                    }
+                                                });
             }
     };
 
@@ -41,13 +44,11 @@ private:
 
     IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 
-    void updateTable();
+    void update();
 
     juce::PopupMenu getFilterMenu();
 
     void changeListenerCallback(juce::ChangeBroadcaster*) override;
-
-    void handleAsyncUpdate() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SearchForConnectionsDialog)
 };

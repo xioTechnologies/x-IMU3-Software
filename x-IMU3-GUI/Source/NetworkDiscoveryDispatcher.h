@@ -13,9 +13,8 @@ public:
         return *singleton;
     }
 
-    std::vector<ximu3::XIMU3_DiscoveredNetworkDevice> getDevices() const
+    const std::vector<ximu3::XIMU3_DiscoveredNetworkDevice>& getDevices() const
     {
-        std::lock_guard _(lock);
         return devices;
     }
 
@@ -27,13 +26,14 @@ private:
     ximu3::NetworkDiscovery discovery {
             [this](auto devices_)
             {
-                std::lock_guard _(lock);
-                devices = devices_;
-                sendChangeMessage();
+                juce::MessageManager::callAsync([this, devices_]
+                                                {
+                                                    devices = devices_;
+                                                    sendSynchronousChangeMessage();
+                                                });
             }
     };
 
-    mutable std::mutex lock;
     std::vector<ximu3::XIMU3_DiscoveredNetworkDevice> devices;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NetworkDiscoveryDispatcher)

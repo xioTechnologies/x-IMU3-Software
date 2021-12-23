@@ -12,7 +12,7 @@ public:
     juce::CachedValue<bool> checkDeviceTimeOnStartup { tree, "checkDeviceTimeOnStartup", nullptr, true };
     juce::CachedValue<bool> searchUsb { tree, "searchUsb", nullptr, true };
     juce::CachedValue<bool> searchSerial { tree, "searchSerial", nullptr, true };
-    juce::CachedValue<bool> searchTcp { tree, "searchTcp", nullptr, true };
+    juce::CachedValue<bool> searchTcp { tree, "searchTcp", nullptr, false };
     juce::CachedValue<bool> searchUdp { tree, "searchUdp", nullptr, true };
     juce::CachedValue<bool> searchBluetooth { tree, "searchBluetooth", nullptr, true };
     juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, 2 };
