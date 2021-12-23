@@ -16,7 +16,7 @@ public:
 
     void resized() override;
 
-    std::vector<ximu3::ConnectionInfo*> SearchForConnectionsDialog::getConnectionInfos() const;
+    std::vector<ximu3::ConnectionInfo*> getConnectionInfos() const;
 
 private:
     const std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
