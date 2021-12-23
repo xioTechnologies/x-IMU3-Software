@@ -11,30 +11,32 @@ class DiscoveredDevicesTable : public juce::Component,
                                private juce::TableListBoxModel
 {
 public:
-    struct DiscoveredDevice
+    struct Row
     {
         bool selected = false;
         juce::String deviceNameAndSerialNumber;
-        ximu3::XIMU3_ConnectionType connectionType;
         std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
+        ximu3::XIMU3_ConnectionType connectionType;
     };
 
-    DiscoveredDevicesTable(std::vector<DiscoveredDevice>& discoveredDevices_);
+    DiscoveredDevicesTable();
+
+    void setRows(std::vector<Row> rows_);
+
+    const std::vector<Row>& getRows() const;
 
     void paint(juce::Graphics& g) override;
 
     void resized() override;
 
-    void update();
-
     std::function<void()> onSelectionChanged;
 
 private:
-    static constexpr int selectionColumnID = 1;
+    static constexpr int selectedColumnID = 1;
     static constexpr int nameAndSerialNumberColumnID = 2;
-    static constexpr int infoColumnID = 3;
+    static constexpr int connectionInfoColumnID = 3;
 
-    std::vector<DiscoveredDevice>& discoveredDevices;
+    std::vector<Row> rows;
 
     CustomToggleButton buttonSelectAll { "" };
     SimpleLabel labelSelectAll { "Select All" };

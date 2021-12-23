@@ -46,12 +46,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         {
             if (auto* dialog = dynamic_cast<SearchForConnectionsDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                for (auto& device : dialog->getDiscoveredDevices())
+                for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
-                    if (device.selected)
-                    {
-                        devicePanelsContainer.connectToDevice(*device.connectionInfo);
-                    }
+                    devicePanelsContainer.connectToDevice(*connectionInfo);
                 }
             }
         });

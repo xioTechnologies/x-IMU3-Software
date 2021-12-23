@@ -16,7 +16,7 @@ public:
 
     void resized() override;
 
-    const std::vector<DiscoveredDevicesTable::DiscoveredDevice>& getDiscoveredDevices() const;
+    std::vector<ximu3::ConnectionInfo*> SearchForConnectionsDialog::getConnectionInfos() const;
 
 private:
     const std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
@@ -28,7 +28,8 @@ private:
     ximu3::SerialDiscovery serialDiscovery {
             [this](auto devices_)
             {
-                juce::MessageManager::callAsync([this, self = juce::Component::SafePointer<juce::Component>(this), devices_]
+                auto self = SafePointer<juce::Component>(this);
+                juce::MessageManager::callAsync([this, self, devices_]
                                                 {
                                                     if (self != nullptr)
                                                     {
@@ -39,8 +40,7 @@ private:
             }
     };
 
-    std::vector<DiscoveredDevicesTable::DiscoveredDevice> devices;
-    DiscoveredDevicesTable table { devices };
+    DiscoveredDevicesTable table;
 
     IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 
