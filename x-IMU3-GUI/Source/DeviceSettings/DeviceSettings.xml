@@ -32,9 +32,9 @@
                 <Setting key="wiFiClientKey" displayName="Key" type="string" readOnly="false"/>
                 <Setting key="wiFiClientChannel" displayName="Channel" type="WirelessWlanClientChannel" readOnly="false"/>
                 <Setting key="wiFiClientDhcpEnabled" displayName="DHCP" type="bool" readOnly="false"/>
-                <Setting key="wiFiClientIPAddress" displayName="IP Address" type="string" readOnly="false"/>
-                <Setting key="wiFiClientNetmask" displayName="Netmask" type="string" readOnly="false"/>
-                <Setting key="wiFiClientGateway" displayName="Gateway" type="string" readOnly="false"/>
+                <Setting key="wiFiClientIPAddress" displayName="IP Address" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
+                <Setting key="wiFiClientNetmask" displayName="Netmask" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
+                <Setting key="wiFiClientGateway" displayName="Gateway" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
             </Group>
             <Group displayName="AP Mode" hideKey="wirelessMode" hideValues="0 1 3">
                 <Setting key="wiFiAPSsid" displayName="SSID" type="string" readOnly="false"/>
