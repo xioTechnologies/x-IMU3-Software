@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../CustomLookAndFeel.h"
+#include "../Helpers.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting/SettingEnum.h"
 #include "Setting/SettingText.h"
@@ -9,13 +10,13 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    explicit DeviceSettingsItem(const juce::ValueTree& tree_) : tree(tree_)
+    DeviceSettingsItem(const std::vector<juce::ValueTree>& settings_, const juce::ValueTree& tree_) : settings(settings_), tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
         for (auto setting : tree)
         {
-            addSubItem(new DeviceSettingsItem(setting));
+            addSubItem(new DeviceSettingsItem(settings, setting));
         }
     }
 
@@ -26,6 +27,27 @@ public:
 
     int getItemHeight() const override
     {
+        if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
+        {
+            return 0;
+        }
+
+        if (tree.hasProperty(DeviceSettingsIDs::hideKey))
+        {
+            for (const auto& setting : settings)
+            {
+                if (setting[DeviceSettingsIDs::key] != tree[DeviceSettingsIDs::hideKey])
+                {
+                    continue;
+                }
+                if (juce::StringArray::fromTokens(tree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(setting[DeviceSettingsIDs::value].toString()))
+                {
+                    return 0;
+                }
+                break;
+            }
+        }
+
         return UILayout::textComponentHeight + Setting::rowMargin;
     }
 
@@ -62,6 +84,7 @@ public:
     std::function<void()> onOpennessChanged;
 
 private:
+    const std::vector<juce::ValueTree>& settings;
     const juce::ValueTree tree;
     const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsTypes_xml);
 
