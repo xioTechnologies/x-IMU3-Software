@@ -96,7 +96,6 @@
             <Setting key="temperatureMessageRateDivisor" displayName="Temperature" type="number" readOnly="false"/>
             <Setting key="batteryMessageRateDivisor" displayName="Battery" type="number" readOnly="false"/>
             <Setting key="rssiMessageRateDivisor" displayName="RSSI" type="number" readOnly="false"/>
-            <Setting key="serialAccessoryRateDivisor" displayName="Serial Accessory" type="number" readOnly="false"/>
         </Group>
     </Group>
 </Settings>

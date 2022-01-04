@@ -193,7 +193,7 @@
     },
     {
         "name": "Wi-Fi client key",
-        "declaration": "char name[64]",
+        "declaration": "char name[32]",
         "default": "{\"xiotechnologies\"}"
     },
     {
@@ -228,7 +228,7 @@
     },
     {
         "name": "Wi-Fi AP key",
-        "declaration": "char name[64]",
+        "declaration": "char name[32]",
         "default": "{\"\"}"
     },
     {
@@ -249,7 +249,7 @@
     {
         "name": "UDP send port",
         "declaration": "uint16_t name",
-        "default": "{8000}"
+        "default": "{0}"
     },
     {
         "name": "UDP receive port",
@@ -421,11 +421,6 @@
     },
     {
         "name": "RSSI message rate divisor",
-        "declaration": "uint32_t name",
-        "default": "{1}"
-    },
-    {
-        "name": "Serial accessory rate divisor",
         "declaration": "uint32_t name",
         "default": "{1}"
     }
