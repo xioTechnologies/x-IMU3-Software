@@ -11,13 +11,13 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    DeviceSettingsItem(const std::vector<juce::ValueTree>& settings, const juce::ValueTree& tree_) : tree(tree_)
+    DeviceSettingsItem(const juce::ValueTree& tree_, const std::vector<juce::ValueTree>& settings) : tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
         for (auto setting : tree)
         {
-            addSubItem(new DeviceSettingsItem(settings, setting));
+            addSubItem(new DeviceSettingsItem(setting, settings));
         }
 
         if (tree.hasProperty(DeviceSettingsIDs::hideKey))
@@ -89,9 +89,9 @@ public:
     std::function<void()> onOpennessChanged;
 
 private:
-    juce::ValueTree hideSetting;
     const juce::ValueTree tree;
     const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsTypes_xml);
+    juce::ValueTree hideSetting;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)
 

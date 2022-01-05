@@ -22,7 +22,7 @@ public:
 private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
     const std::vector<juce::ValueTree> settingsVector = flatten(settingsTree);
-    DeviceSettingsItem rootItem { settingsVector, settingsTree };
+    DeviceSettingsItem rootItem { settingsTree, settingsVector };
 
     static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 
