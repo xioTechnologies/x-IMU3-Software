@@ -87,7 +87,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             dataLogger.reset();
             stopTimer();
             dataLoggerStartStopButton.setToggleState(false, juce::dontSendNotification);
-            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
             return;
         }
 
@@ -103,24 +102,28 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     connections.push_back(&devicePanel->getConnection());
                 }
 
+                bool failed = false;
+
                 dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
                                                                  dataLoggerSettings.name.toStdString(),
                                                                  connections,
                                                                  [&](ximu3::XIMU3_Result result)
                                                                  {
-                                                                     if (result != ximu3::XIMU3_ResultOk)
+                                                                     if (result == ximu3::XIMU3_ResultOk)
                                                                      {
-                                                                         DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."), [&]
-                                                                         {
-                                                                             dataLoggerTime.setTime(juce::RelativeTime());
-                                                                             dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-                                                                         });
+                                                                         juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         failed = true; // callback will be on same thread if data logger fails
                                                                      }
                                                                  });
-
-                dataLoggerStartTime = juce::Time::getCurrentTime();
-                startTimerHz(25);
-                dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
+                if (failed == false)
+                {
+                    dataLoggerStartTime = juce::Time::getCurrentTime();
+                    startTimerHz(25);
+                    dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
+                }
             }
         });
     };
