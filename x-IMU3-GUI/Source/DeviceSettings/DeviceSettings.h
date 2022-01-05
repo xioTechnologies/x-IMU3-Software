@@ -9,6 +9,8 @@ class DeviceSettings : public juce::TreeView, private juce::ValueTree::Listener
 public:
     DeviceSettings();
 
+    ~DeviceSettings() override;
+
     std::vector<CommandMessage> getReadCommands() const;
 
     std::vector<CommandMessage> getWriteCommands() const;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../ApplicationSettings.h"
 #include "../CustomLookAndFeel.h"
 #include "../Helpers.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -10,13 +11,25 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    DeviceSettingsItem(const std::vector<juce::ValueTree>& settings_, const juce::ValueTree& tree_) : settings(settings_), tree(tree_)
+    DeviceSettingsItem(const std::vector<juce::ValueTree>& settings, const juce::ValueTree& tree_) : tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
         for (auto setting : tree)
         {
             addSubItem(new DeviceSettingsItem(settings, setting));
+        }
+
+        if (tree.hasProperty(DeviceSettingsIDs::hideKey))
+        {
+            for (const auto& setting : settings)
+            {
+                if (setting[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
+                {
+                    hideSetting = setting;
+                    break;
+                }
+            }
         }
     }
 
@@ -27,24 +40,16 @@ public:
 
     int getItemHeight() const override
     {
-        if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
+        if (ApplicationSettings::getSingleton().hideUnusedDeviceSettings)
         {
-            return 0;
-        }
-
-        if (tree.hasProperty(DeviceSettingsIDs::hideKey))
-        {
-            for (const auto& setting : settings)
+            if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
             {
-                if (setting[DeviceSettingsIDs::key] != tree[DeviceSettingsIDs::hideKey])
-                {
-                    continue;
-                }
-                if (juce::StringArray::fromTokens(tree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(setting[DeviceSettingsIDs::value].toString()))
-                {
-                    return 0;
-                }
-                break;
+                return 0;
+            }
+
+            if (juce::StringArray::fromTokens(tree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIDs::value].toString()))
+            {
+                return 0;
             }
         }
 
@@ -84,7 +89,7 @@ public:
     std::function<void()> onOpennessChanged;
 
 private:
-    const std::vector<juce::ValueTree>& settings;
+    juce::ValueTree hideSetting;
     const juce::ValueTree tree;
     const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsTypes_xml);
 

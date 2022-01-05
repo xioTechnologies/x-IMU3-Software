@@ -7,6 +7,12 @@ DeviceSettings::DeviceSettings()
     setDefaultOpenness(true);
 
     settingsTree.addListener(this);
+    ApplicationSettings::getSingleton().getTree().addListener(this);
+}
+
+DeviceSettings::~DeviceSettings()
+{
+    ApplicationSettings::getSingleton().getTree().removeListener(this);
 }
 
 std::vector<CommandMessage> DeviceSettings::getReadCommands() const

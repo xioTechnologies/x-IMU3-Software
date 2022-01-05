@@ -135,10 +135,16 @@ void CommandsGroup::resized()
     setBounds(timeoutLabel, timeoutValue);
 }
 
-MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 2)
+MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 3)
 {
+    addAndMakeVisible(hideUnusedDeviceSettingsButton);
     addAndMakeVisible(showApplicationErrorsButton);
     addAndMakeVisible(showNotificationsButton);
+
+    hideUnusedDeviceSettingsButton.onClick = [this]
+    {
+        ApplicationSettings::getSingleton().hideUnusedDeviceSettings = hideUnusedDeviceSettingsButton.getToggleState();
+    };
 
     showApplicationErrorsButton.onClick = [this]
     {
@@ -150,6 +156,7 @@ MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 2)
         ApplicationSettings::getSingleton().showNotificationAndErrorMessages = showNotificationsButton.getToggleState();
     };
 
+    hideUnusedDeviceSettingsButton.setToggleState(ApplicationSettings::getSingleton().hideUnusedDeviceSettings, juce::dontSendNotification);
     showApplicationErrorsButton.setToggleState(ApplicationSettings::getSingleton().showApplicationErrors, juce::dontSendNotification);
     showNotificationsButton.setToggleState(ApplicationSettings::getSingleton().showNotificationAndErrorMessages, juce::dontSendNotification);
 }
@@ -157,6 +164,7 @@ MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 2)
 void MiscGroup::resized()
 {
     auto bounds = getContentBounds();
+    hideUnusedDeviceSettingsButton.setBounds(bounds.removeFromTop(rowHeight));
     showApplicationErrorsButton.setBounds(bounds.removeFromTop(rowHeight));
     showNotificationsButton.setBounds(bounds.removeFromTop(rowHeight));
 }

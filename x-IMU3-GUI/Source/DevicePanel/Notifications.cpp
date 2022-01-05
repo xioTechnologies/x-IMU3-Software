@@ -21,7 +21,7 @@ Notifications::Notifications()
         show(false);
     };
 
-    ApplicationSettings::getSingleton().showNotificationAndErrorMessages.getValueTree().addListener(this);
+    ApplicationSettings::getSingleton().getTree().addListener(this);
 }
 
 Notifications::~Notifications()
