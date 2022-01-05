@@ -1,6 +1,6 @@
 #include "DataLoggerSettingsDialog.h"
 
-DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Close", "")
+DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start")
 {
     addAndMakeVisible(directoryLabel);
     addAndMakeVisible(directoryValue);
