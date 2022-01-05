@@ -1,5 +1,5 @@
-<Types>
-    <Enum typeName="FusionAxesAlignment">
+<DeviceSettingsEnums>
+    <Enum enumName="FusionAxesAlignment">
         <Option displayName="+X+Y+Z" value="0"/>
         <Option displayName="+X-Z+Y" value="1"/>
         <Option displayName="+X-Y-Z" value="2"/>
@@ -25,35 +25,35 @@
         <Option displayName="-Z-Y-X" value="22"/>
         <Option displayName="-Z+X-Y" value="23"/>
     </Enum>
-    <Enum typeName="RS9116WlanCommandRegion">
+    <Enum enumName="RS9116WlanCommandRegion">
         <Option displayName="United States (US)" value="1"/>
         <Option displayName="Europe (EU)" value="2"/>
         <Option displayName="Japan (JP)" value="3"/>
     </Enum>
-    <Enum typeName="SendAhrsMessageType">
+    <Enum enumName="SendAhrsMessageType">
         <Option displayName="Quaternion" value="0"/>
         <Option displayName="Rotation Matrix" value="1"/>
         <Option displayName="Euler Angles" value="2"/>
         <Option displayName="Linear Acceleration" value="3"/>
         <Option displayName="Earth Acceleration" value="4"/>
     </Enum>
-    <Enum typeName="SerialMode">
+    <Enum enumName="SerialMode">
         <Option displayName="Disabled" value="0"/>
         <Option displayName="Normal" value="1"/>
         <Option displayName="Accessory" value="2"/>
     </Enum>
-    <Enum typeName="WirelessBTDiscoveryMode">
+    <Enum enumName="WirelessBTDiscoveryMode">
         <Option displayName="Disabled" value="0"/>
         <Option displayName="Enabled" value="1"/>
         <Option displayName="Limited" value="2"/>
     </Enum>
-    <Enum typeName="WirelessMode">
+    <Enum enumName="WirelessMode">
         <Option displayName="Disabled" value="0"/>
         <Option displayName="Wi-Fi Client" value="1"/>
         <Option displayName="Wi-Fi AP" value="2"/>
         <Option displayName="Bluetooth" value="3"/>
     </Enum>
-    <Enum typeName="WirelessWlanAPChannel">
+    <Enum enumName="WirelessWlanAPChannel">
         <Option displayName="1 (2.4 GHz)" value="1"/>
         <Option displayName="2 (2.4 GHz)" value="2"/>
         <Option displayName="3 (2.4 GHz)" value="3"/>
@@ -78,7 +78,7 @@
         <Option displayName="161 (5 GHz)" value="161"/>
         <Option displayName="165 (5 GHz)" value="165"/>
     </Enum>
-    <Enum typeName="WirelessWlanClientChannel">
+    <Enum enumName="WirelessWlanClientChannel">
         <Option displayName="All" value="0"/>
         <Option displayName="1 (2.4 GHz)" value="1"/>
         <Option displayName="2 (2.4 GHz)" value="2"/>
@@ -119,4 +119,4 @@
         <Option displayName="161 (5 GHz, Invalid for EU and JP)" value="161"/>
         <Option displayName="165 (5 GHz, Invalid for EU and JP)" value="165"/>
     </Enum>
-</Types>
+</DeviceSettingsEnums>

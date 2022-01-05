@@ -48,7 +48,7 @@ with open("DeviceSettings.json") as file:
             read_onlys.append("false")
 
 with open("DeviceSettings.xml", "w") as file:
-    file.write("<Settings>\n")
+    file.write("<DeviceSettings>\n")
 
     for index in range(len(keys)):
         file.write("    <Setting " +
@@ -58,19 +58,19 @@ with open("DeviceSettings.xml", "w") as file:
                    "readOnly=\"" + read_onlys[index] + "\"" +
                    "/>\n")
 
-    file.write("</Settings>\n")
+    file.write("</DeviceSettings>\n")
 
-with open("DeviceSettingsTypes.xml", "w") as file:
-    file.write("<Types>\n")
+with open("DeviceSettingsEnums.xml", "w") as file:
+    file.write("<DeviceSettingsEnums>\n")
 
     enum_types = list(set(enum_types))
     enum_types.sort()
 
     for enum_type in enum_types:
         file.write("\
-    <Enum typeName=\"" + enum_type + "\">\n\
+    <Enum enumName=\"" + enum_type + "\">\n\
         <Option displayName=\"Zero\" value=\"0\"/>\n\
         <Option displayName=\"One\" value=\"1\"/>\n\
     </Enum>\n")
 
-    file.write("</Types>\n")
+    file.write("</DeviceSettingsEnums>\n")

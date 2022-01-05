@@ -75,7 +75,7 @@ public:
             return std::make_unique<SettingToggle>(tree);
         }
 
-        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::typeName, type));
+        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::enumName, type));
     }
 
     void itemOpennessChanged(bool) override
@@ -90,7 +90,7 @@ public:
 
 private:
     const juce::ValueTree tree;
-    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsTypes_xml);
+    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
     juce::ValueTree hideSetting;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)

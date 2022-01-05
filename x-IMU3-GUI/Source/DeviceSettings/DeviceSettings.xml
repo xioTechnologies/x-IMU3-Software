@@ -1,4 +1,4 @@
-<Settings>
+<DeviceSettings>
     <Group displayName="Device Information">
         <Setting key="deviceName" displayName="Device Name" type="string" readOnly="false"/>
         <Setting key="serialNumber" displayName="Serial Number" type="string" readOnly="true"/>
@@ -98,4 +98,4 @@
             <Setting key="rssiMessageRateDivisor" displayName="RSSI" type="number" readOnly="false"/>
         </Group>
     </Group>
-</Settings>
+</DeviceSettings>
