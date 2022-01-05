@@ -53,6 +53,18 @@ void SearchForConnectionsDialog::update()
 {
     std::vector<DiscoveredDevicesTable::Row> rows;
 
+    const auto add = [&](auto row)
+    {
+        for (const auto& existingConnection : existingConnections)
+        {
+            if (existingConnection->toString() == row.connectionInfo->toString())
+            {
+                return;
+            }
+        }
+        rows.push_back(std::move(row));
+    };
+
     for (const auto& serialDevice : serialDevices)
     {
         if (((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
@@ -79,7 +91,7 @@ void SearchForConnectionsDialog::update()
                     break;
             }
             row.connectionType = serialDevice.connection_type;
-            rows.push_back(std::move(row));
+            add(std::move(row));
         }
     }
 
@@ -91,7 +103,7 @@ void SearchForConnectionsDialog::update()
             row.deviceNameAndSerialNumber = juce::String(networkDevice.device_name) + " - " + juce::String(networkDevice.serial_number);
             row.connectionInfo = std::make_unique<ximu3::UdpConnectionInfo>(networkDevice.udp_connection_info);
             row.connectionType = ximu3::XIMU3_ConnectionTypeUdp;
-            rows.push_back(std::move(row));
+            add(std::move(row));
         }
         if (ApplicationSettings::getSingleton().searchTcp)
         {
@@ -99,18 +111,7 @@ void SearchForConnectionsDialog::update()
             row.deviceNameAndSerialNumber = juce::String(networkDevice.device_name) + " - " + juce::String(networkDevice.serial_number);
             row.connectionInfo = std::make_unique<ximu3::TcpConnectionInfo>(networkDevice.tcp_connection_info);
             row.connectionType = ximu3::XIMU3_ConnectionTypeTcp;
-            rows.push_back(std::move(row));
-        }
-    }
-
-    for (size_t index = 0; index < rows.size(); index++)
-    {
-        for (const auto& connection : existingConnections)
-        {
-            if (connection->toString() == rows[index].connectionInfo->toString())
-            {
-                rows.erase(rows.begin() + (int) index--);
-            }
+            add(std::move(row));
         }
     }
 
