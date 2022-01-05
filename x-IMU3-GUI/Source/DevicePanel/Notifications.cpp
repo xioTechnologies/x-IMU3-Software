@@ -21,12 +21,12 @@ Notifications::Notifications()
         show(false);
     };
 
-    ApplicationSettings::getSingleton().showNotificationAndErrorMessages.getValueTree().addListener(this);
+    ApplicationSettings::getSingleton().getTree().addListener(this);
 }
 
 Notifications::~Notifications()
 {
-    ApplicationSettings::getSingleton().showNotificationAndErrorMessages.getValueTree().removeListener(this);
+    ApplicationSettings::getSingleton().getTree().removeListener(this);
 }
 
 void Notifications::paint(juce::Graphics& g)

@@ -59,9 +59,9 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
     }
     if (type == WindowIDs::Magnetometer)
     {
-        setLabels("Intensity (uT)", {{ "X", UIColours::graphRed },
-                                     { "Y", UIColours::graphGreen },
-                                     { "Z", UIColours::graphBlue }});
+        setLabels("Intensity (a.u.)", {{ "X", UIColours::graphRed },
+                                       { "Y", UIColours::graphGreen },
+                                       { "Z", UIColours::graphBlue }});
 
         callbackIDs = { devicePanel.getConnection().addMagnetometerCallback(magnetometerCallback = [&](auto message)
         {

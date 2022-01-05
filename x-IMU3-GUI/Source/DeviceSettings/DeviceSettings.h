@@ -4,10 +4,12 @@
 #include "DeviceSettingsItem.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class DeviceSettings : public juce::TreeView
+class DeviceSettings : public juce::TreeView, private juce::ValueTree::Listener
 {
 public:
     DeviceSettings();
+
+    ~DeviceSettings() override;
 
     std::vector<CommandMessage> getReadCommands() const;
 
@@ -19,8 +21,12 @@ public:
 
 private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
-    std::vector<juce::ValueTree> settingsVector;
-    DeviceSettingsItem rootItem { settingsTree };
+    const std::vector<juce::ValueTree> settingsVector = flatten(settingsTree);
+    DeviceSettingsItem rootItem { settingsTree, settingsVector };
+
+    static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
+
+    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettings)
 };

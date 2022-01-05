@@ -9,11 +9,13 @@ namespace DeviceSettingsIDs
     DECLARE_ID(Group)
 
     DECLARE_ID(displayName)
+    DECLARE_ID(enumName)
+    DECLARE_ID(hideKey)
+    DECLARE_ID(hideValues)
     DECLARE_ID(key)
     DECLARE_ID(readOnly)
     DECLARE_ID(status)
     DECLARE_ID(type)
-    DECLARE_ID(typeName)
     DECLARE_ID(value)
 
 #undef DECLARE_ID

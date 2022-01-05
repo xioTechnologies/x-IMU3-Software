@@ -1,6 +1,8 @@
 #pragma once
 
+#include "../ApplicationSettings.h"
 #include "../CustomLookAndFeel.h"
+#include "../Helpers.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting/SettingEnum.h"
 #include "Setting/SettingText.h"
@@ -9,13 +11,25 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    explicit DeviceSettingsItem(const juce::ValueTree& tree_) : tree(tree_)
+    DeviceSettingsItem(const juce::ValueTree& tree_, const std::vector<juce::ValueTree>& settings) : tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
         for (auto setting : tree)
         {
-            addSubItem(new DeviceSettingsItem(setting));
+            addSubItem(new DeviceSettingsItem(setting, settings));
+        }
+
+        if (tree.hasProperty(DeviceSettingsIDs::hideKey))
+        {
+            for (const auto& setting : settings)
+            {
+                if (setting[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
+                {
+                    hideSetting = setting;
+                    break;
+                }
+            }
         }
     }
 
@@ -26,6 +40,19 @@ public:
 
     int getItemHeight() const override
     {
+        if (ApplicationSettings::getSingleton().hideUnusedDeviceSettings)
+        {
+            if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
+            {
+                return 0;
+            }
+
+            if (juce::StringArray::fromTokens(tree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIDs::value].toString()))
+            {
+                return 0;
+            }
+        }
+
         return UILayout::textComponentHeight + Setting::rowMargin;
     }
 
@@ -48,7 +75,7 @@ public:
             return std::make_unique<SettingToggle>(tree);
         }
 
-        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::typeName, type));
+        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::enumName, type));
     }
 
     void itemOpennessChanged(bool) override
@@ -63,7 +90,8 @@ public:
 
 private:
     const juce::ValueTree tree;
-    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsTypes_xml);
+    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
+    juce::ValueTree hideSetting;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)
 

@@ -1,4 +1,4 @@
-<Settings>
+<DeviceSettings>
     <Group displayName="Device Information">
         <Setting key="deviceName" displayName="Device Name" type="string" readOnly="false"/>
         <Setting key="serialNumber" displayName="Serial Number" type="string" readOnly="true"/>
@@ -8,35 +8,35 @@
     </Group>
     <Group displayName="Serial">
         <Setting key="serialMode" displayName="Mode" type="SerialMode" readOnly="false"/>
-        <Setting key="serialBaudRate" displayName="Baud Rate" type="number" readOnly="false"/>
-        <Setting key="serialRtsCtsEnabled" displayName="RTS/CTS" type="bool" readOnly="false"/>
-        <Group displayName="Serial Accessory">
+        <Setting key="serialBaudRate" displayName="Baud Rate" type="number" readOnly="false" hideKey="serialMode" hideValues="0"/>
+        <Setting key="serialRtsCtsEnabled" displayName="RTS/CTS" type="bool" readOnly="false" hideKey="serialMode" hideValues="0"/>
+        <Group displayName="Serial Accessory" hideKey="serialMode" hideValues="0 1">
             <Group displayName="Send Conditions">
                 <Setting key="serialAccessoryNumberOfBytes" displayName="Number Of Bytes" type="number" readOnly="false"/>
                 <Setting key="serialAccessoryTerminationByte" displayName="Termination Byte" type="number" readOnly="false"/>
-                <Setting key="serialAccessoryTimeout" displayName="Timeout" type="number" readOnly="false"/>
+                <Setting key="serialAccessoryTimeout" displayName="Timeout (ms)" type="number" readOnly="false"/>
             </Group>
             <Setting key="serialAccessoryTransmitEnabled" displayName="Transmit" type="bool" readOnly="false"/>
         </Group>
     </Group>
     <Group displayName="Wireless">
         <Setting key="wirelessMode" displayName="Mode" type="WirelessMode" readOnly="false"/>
-        <Setting key="wirelessFirmwareVersion" displayName="Firmware Version" type="string" readOnly="true"/>
-        <Setting key="externalAntennaeEnabled" displayName="External Antennae" type="bool" readOnly="false"/>
-        <Group displayName="Wi-Fi">
+        <Setting key="wirelessFirmwareVersion" displayName="Firmware Version" type="string" readOnly="true" hideKey="wirelessMode" hideValues="0"/>
+        <Setting key="externalAntennaeEnabled" displayName="External Antennae" type="bool" readOnly="false" hideKey="wirelessMode" hideValues="0"/>
+        <Group displayName="Wi-Fi" hideKey="wirelessMode" hideValues="0 3">
             <Setting key="wiFiRegion" displayName="Region" type="RS9116WlanCommandRegion" readOnly="false"/>
             <Setting key="wiFiMacAddress" displayName="MAC Address" type="string" readOnly="true"/>
             <Setting key="wiFiIPAddress" displayName="IP Address" type="string" readOnly="true"/>
-            <Group displayName="Client Mode">
+            <Group displayName="Client Mode" hideKey="wirelessMode" hideValues="0 2 3">
                 <Setting key="wiFiClientSsid" displayName="SSID" type="string" readOnly="false"/>
                 <Setting key="wiFiClientKey" displayName="Key" type="string" readOnly="false"/>
                 <Setting key="wiFiClientChannel" displayName="Channel" type="WirelessWlanClientChannel" readOnly="false"/>
                 <Setting key="wiFiClientDhcpEnabled" displayName="DHCP" type="bool" readOnly="false"/>
-                <Setting key="wiFiClientIPAddress" displayName="IP Address" type="string" readOnly="false"/>
-                <Setting key="wiFiClientNetmask" displayName="Netmask" type="string" readOnly="false"/>
-                <Setting key="wiFiClientGateway" displayName="Gateway" type="string" readOnly="false"/>
+                <Setting key="wiFiClientIPAddress" displayName="IP Address" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
+                <Setting key="wiFiClientNetmask" displayName="Netmask" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
+                <Setting key="wiFiClientGateway" displayName="Gateway" type="string" readOnly="false" hideKey="wiFiClientDhcpEnabled" hideValues="1"/>
             </Group>
-            <Group displayName="AP Mode">
+            <Group displayName="AP Mode" hideKey="wirelessMode" hideValues="0 1 3">
                 <Setting key="wiFiAPSsid" displayName="SSID" type="string" readOnly="false"/>
                 <Setting key="wiFiAPKey" displayName="Key" type="string" readOnly="false"/>
                 <Setting key="wiFiAPChannel" displayName="Channel" type="WirelessWlanAPChannel" readOnly="false"/>
@@ -51,10 +51,10 @@
             </Group>
             <Group displayName="Synchronisation">
                 <Setting key="synchronisationEnabled" displayName="Enabled" type="bool" readOnly="false"/>
-                <Setting key="synchronisationNetworkLatency" displayName="Network Latency" type="number" readOnly="false"/>
+                <Setting key="synchronisationNetworkLatency" displayName="Network Latency (ms)" type="number" readOnly="false" hideKey="synchronisationEnabled" hideValues="0"/>
             </Group>
         </Group>
-        <Group displayName="Bluetooth">
+        <Group displayName="Bluetooth" hideKey="wirelessMode" hideValues="0 1 2">
             <Setting key="bluetoothAddress" displayName="Bluetooth Address" type="string" readOnly="true"/>
             <Setting key="bluetoothName" displayName="Name" type="string" readOnly="false"/>
             <Setting key="bluetoothPinCode" displayName="Pin Code" type="string" readOnly="false"/>
@@ -65,11 +65,11 @@
     </Group>
     <Group displayName="Data Logger">
         <Setting key="dataLoggerEnabled" displayName="Enabled" type="bool" readOnly="false"/>
-        <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false"/>
-        <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false"/>
-        <Setting key="dataLoggerFileNameIsTime" displayName="File Name Is Time" type="bool" readOnly="false"/>
-        <Setting key="dataLoggerMaximumFileSize" displayName="Maximum File Size" type="number" readOnly="false"/>
-        <Setting key="dataLoggerMaximumFilePeriod" displayName="Maximum File Period" type="number" readOnly="false"/>
+        <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerFileNameIsTime" displayName="File Name Is Time" type="bool" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaximumFileSize" displayName="Maximum File Size (KB)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaximumFilePeriod" displayName="Maximum File Period (s)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
     </Group>
     <Group displayName="AHRS">
         <Setting key="axesAlignment" displayName="Axes Alignment" type="FusionAxesAlignment" readOnly="false"/>
@@ -96,7 +96,6 @@
             <Setting key="temperatureMessageRateDivisor" displayName="Temperature" type="number" readOnly="false"/>
             <Setting key="batteryMessageRateDivisor" displayName="Battery" type="number" readOnly="false"/>
             <Setting key="rssiMessageRateDivisor" displayName="RSSI" type="number" readOnly="false"/>
-            <Setting key="serialAccessoryRateDivisor" displayName="Serial Accessory" type="number" readOnly="false"/>
         </Group>
     </Group>
-</Settings>
+</DeviceSettings>

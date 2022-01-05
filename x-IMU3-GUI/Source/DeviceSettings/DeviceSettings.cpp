@@ -6,24 +6,13 @@ DeviceSettings::DeviceSettings()
     setRootItemVisible(false);
     setDefaultOpenness(true);
 
-    std::function<std::vector<juce::ValueTree>(juce::ValueTree)> flatten = [&](juce::ValueTree tree)
-    {
-        std::vector<juce::ValueTree> result;
-        for (auto child : tree)
-        {
-            for (auto flattenedChild : flatten(child))
-            {
-                result.push_back(flattenedChild);
-            }
-            if (child.getNumChildren() == 0)
-            {
-                result.push_back(child);
-            }
-        }
-        return result;
-    };
+    settingsTree.addListener(this);
+    ApplicationSettings::getSingleton().getTree().addListener(this);
+}
 
-    settingsVector = flatten(settingsTree);
+DeviceSettings::~DeviceSettings()
+{
+    ApplicationSettings::getSingleton().getTree().removeListener(this);
 }
 
 std::vector<CommandMessage> DeviceSettings::getReadCommands() const
@@ -88,4 +77,26 @@ void DeviceSettings::setStatus(const juce::String& key, const Setting::Status st
             return;
         }
     }
+}
+
+std::vector<juce::ValueTree> DeviceSettings::flatten(const juce::ValueTree& parent)
+{
+    std::vector<juce::ValueTree> vector;
+    for (const auto& child : parent)
+    {
+        for (const auto& flattened : flatten(child))
+        {
+            vector.push_back(flattened);
+        }
+        if (child.getNumChildren() == 0)
+        {
+            vector.push_back(child);
+        }
+    }
+    return vector;
+}
+
+void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&)
+{
+    rootItem.treeHasChanged();
 }

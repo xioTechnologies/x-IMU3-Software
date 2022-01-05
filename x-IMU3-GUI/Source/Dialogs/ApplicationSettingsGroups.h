@@ -78,6 +78,7 @@ public:
     void resized() override;
 
 private:
+    CustomToggleButton hideUnusedDeviceSettingsButton { "Hide Unused Device Settings" };
     CustomToggleButton showApplicationErrorsButton { "Show Application Errors" };
     CustomToggleButton showNotificationsButton { "Show Notification And Error Messages" };
 
