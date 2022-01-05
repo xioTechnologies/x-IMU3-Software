@@ -17,6 +17,11 @@ public:
         juce::String deviceNameAndSerialNumber;
         std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
         ximu3::XIMU3_ConnectionType connectionType;
+
+        bool operator==(const Row& row) const
+        {
+            return connectionInfo->toString() == row.connectionInfo->toString();
+        }
     };
 
     DiscoveredDevicesTable();

@@ -41,14 +41,7 @@ void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
 {
     static const auto contains = [](const auto& rows, const auto& row)
     {
-        for (const auto& row_ : rows)
-        {
-            if (row_.connectionInfo->toString() == row.connectionInfo->toString())
-            {
-                return true;
-            }
-        }
-        return false;
+        return std::find(rows.begin(), rows.end(), row) != rows.end();
     };
 
     for (auto& previousRow : std::vector<Row>(std::move(rows)))
