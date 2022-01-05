@@ -128,17 +128,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         });
     };
 
-    //    dataForwardingButton.setClickingTogglesState(true);
-    //    dataForwardingButton.onClick = []
-    //    {
-    //        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Feature not available."));
-    //    };
-    //
-    //    dataForwardingSettingsButton.onClick = []
-    //    {
-    //        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Feature not available."));
-    //    };
-
     applicationErrorsButton.onClick = []
     {
         DialogLauncher::launchDialog(std::make_unique<ApplicationErrorsDialog>());
@@ -541,8 +530,7 @@ void MenuStrip::componentChildrenChanged(juce::Component&)
     devicePanelLayoutButton.setEnabled(devicePanelsSize > 1);
 
     for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton,
-                                                                                  shutdownButton, sendCommandButton, dataLoggerStartStopButton,
-                                                                                  dataLoggerTime, /*dataForwardingButton, dataForwardingSettingsButton*/ }))
+                                                                                  shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime }))
     {
         component.get().setEnabled(devicePanelsSize > 0);
     }
