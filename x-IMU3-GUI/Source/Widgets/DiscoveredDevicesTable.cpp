@@ -39,9 +39,9 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
 
 void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
 {
-    static const auto contains = [](const auto& rows, const auto& row)
+    static const auto contains = [](const auto& vector, const auto& value)
     {
-        return std::find(rows.begin(), rows.end(), row) != rows.end();
+        return std::find(vector.begin(), vector.end(), value) != vector.end();
     };
 
     for (auto& previousRow : std::vector<Row>(std::move(rows)))
