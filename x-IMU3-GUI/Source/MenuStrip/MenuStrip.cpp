@@ -82,67 +82,45 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     dataLoggerStartStopButton.onClick = [&]
     {
-        if (dataLoggerStartStopButton.getToggleState())
-        {
-            std::vector<ximu3::Connection*> connections;
-            for (auto& devicePanel : devicePanelsContainer.getDevicePanels())
-            {
-                connections.push_back(&devicePanel->getConnection());
-            }
-
-            if (juce::File(dataLoggerSettings.directory).exists() == false)
-            {
-                DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Directory does not exist. Please check data logger settings."), [&]
-                {
-                    dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-                });
-                return;
-            }
-
-            if (juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).exists())
-            {
-                DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Name already exists. Please check data logger settings."), [&]
-                {
-                    dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-                });
-                return;
-            }
-
-            dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
-                                                             dataLoggerSettings.name.toStdString(),
-                                                             connections,
-                                                             [&](ximu3::XIMU3_Result result)
-                                                             {
-                                                                 if (result != ximu3::XIMU3_ResultOk)
-                                                                 {
-                                                                     DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."), [&]
-                                                                     {
-                                                                         dataLoggerTime.setTime(juce::RelativeTime());
-                                                                         dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-                                                                     });
-                                                                 }
-                                                             });
-
-            dataLoggerStartTime = juce::Time::getCurrentTime();
-            startTimerHz(25);
-        }
-        else
+        if (isTimerRunning())
         {
             dataLogger.reset();
             stopTimer();
+            dataLoggerStartStopButton.setToggleState(false, juce::dontSendNotification);
+            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
+            return;
         }
 
-        dataLoggerSettingsButton.setEnabled(!dataLoggerStartStopButton.getToggleState());
-    };
-
-    dataLoggerStartStopButton.setClickingTogglesState(true);
-    dataLoggerSettingsButton.onClick = [this]
-    {
         DialogLauncher::launchDialog(std::make_unique<DataLoggerSettingsDialog>(dataLoggerSettings), [this]
         {
             if (auto* dialog = dynamic_cast<DataLoggerSettingsDialog*>(DialogLauncher::getLaunchedDialog()))
             {
                 dataLoggerSettings = dialog->getSettings();
+
+                std::vector<ximu3::Connection*> connections;
+                for (auto& devicePanel : devicePanelsContainer.getDevicePanels())
+                {
+                    connections.push_back(&devicePanel->getConnection());
+                }
+
+                dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
+                                                                 dataLoggerSettings.name.toStdString(),
+                                                                 connections,
+                                                                 [&](ximu3::XIMU3_Result result)
+                                                                 {
+                                                                     if (result != ximu3::XIMU3_ResultOk)
+                                                                     {
+                                                                         DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."), [&]
+                                                                         {
+                                                                             dataLoggerTime.setTime(juce::RelativeTime());
+                                                                             dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
+                                                                         });
+                                                                     }
+                                                                 });
+
+                dataLoggerStartTime = juce::Time::getCurrentTime();
+                startTimerHz(25);
+                dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
             }
         });
     };
@@ -560,7 +538,7 @@ void MenuStrip::componentChildrenChanged(juce::Component&)
     devicePanelLayoutButton.setEnabled(devicePanelsSize > 1);
 
     for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton,
-                                                                                  shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerSettingsButton,
+                                                                                  shutdownButton, sendCommandButton, dataLoggerStartStopButton,
                                                                                   dataLoggerTime, /*dataForwardingButton, dataForwardingSettingsButton*/ }))
     {
         component.get().setEnabled(devicePanelsSize > 0);
