@@ -26,7 +26,7 @@ Notifications::Notifications()
 
 Notifications::~Notifications()
 {
-    ApplicationSettings::getSingleton().showNotificationAndErrorMessages.getValueTree().removeListener(this);
+    ApplicationSettings::getSingleton().getTree().removeListener(this);
 }
 
 void Notifications::paint(juce::Graphics& g)
