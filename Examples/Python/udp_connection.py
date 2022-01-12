@@ -7,7 +7,7 @@ if helpers.yes_or_no("Search for connections?"):
 
     devices = ximu3.NetworkDiscovery.scan(2000)
 
-    if len(devices) == 0:
+    if not devices:
         raise Exception("No UDP connections available")
 
     print("Found " + devices[0].device_name + " - " + devices[0].serial_number)
