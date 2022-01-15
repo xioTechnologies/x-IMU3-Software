@@ -1,4 +1,5 @@
 #include "DataLoggerSettingsDialog.h"
+#include <filesystem>
 
 DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start")
 {
@@ -13,10 +14,10 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     directoryButton.onClick = [&]
     {
-        juce::FileChooser fileChooser(directoryButton.getTooltip(), directoryValue.getText());
+        juce::FileChooser fileChooser(directoryButton.getTooltip(), std::filesystem::exists(directoryValue.getText().toStdString()) ? directoryValue.getText() : "");
         if (fileChooser.browseForDirectory())
         {
-            directoryValue.setText(juce::File::addTrailingSeparator(fileChooser.getResult().getFullPathName()), false);
+            directoryValue.setText(fileChooser.getResult().getFullPathName(), true);
         }
     };
 
@@ -30,6 +31,12 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     nameValue.setText(settings.name, false);
     secondsValue.setText(juce::String(settings.seconds), false);
     unlimitedToggle.setToggleState(settings.unlimited, juce::sendNotificationSync);
+
+    directoryValue.onTextChange = nameValue.onTextChange = [&]
+    {
+        setValid(std::filesystem::exists(directoryValue.getText().toStdString()) && juce::File(directoryValue.getText()).getChildFile(nameValue.getText()).exists() == false);
+    };
+    directoryValue.onTextChange();
 
     setSize(dialogWidth, calculateHeight(3));
 }

@@ -13,7 +13,7 @@ class DataLoggerSettingsDialog : public Dialog
 public:
     struct Settings
     {
-        juce::String directory = juce::File::addTrailingSeparator(ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName());
+        juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
         juce::String name = "Logged Data";
         int seconds = 60;
         bool unlimited = true;

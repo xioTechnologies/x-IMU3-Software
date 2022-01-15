@@ -138,7 +138,7 @@ void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
         });
         menu.addItem("Custom", true, settings.model == ThreeDView::Model::custom, [&]
         {
-            juce::FileChooser fileChooser("Select Custom Model", juce::File::getSpecialLocation(juce::File::userDesktopDirectory), "*.obj");
+            juce::FileChooser fileChooser("Select Custom Model", juce::File(), "*.obj");
 
             if (fileChooser.browseForFileToOpen())
             {

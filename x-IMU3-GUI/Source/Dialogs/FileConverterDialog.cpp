@@ -1,4 +1,5 @@
 #include "FileConverterDialog.h"
+#include <filesystem>
 
 FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, "File Converter", "Convert")
 {
@@ -11,25 +12,31 @@ FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, "File
 
     sourceButton.onClick = [&]
     {
-        juce::FileChooser fileChooser(sourceButton.getTooltip(), juce::File(sourceValue.getText()).getParentDirectory(), "*.ximu3");
+        juce::FileChooser fileChooser(sourceButton.getTooltip(), std::filesystem::exists(sourceValue.getText().toStdString()) ? sourceValue.getText() : "", "*.ximu3");
         if (fileChooser.browseForFileToOpen())
         {
-            sourceValue.setText(fileChooser.getResult().getFullPathName(), false);
+            sourceValue.setText(fileChooser.getResult().getFullPathName());
             if (destinationValue.isEmpty())
             {
-                destinationValue.setText(juce::File::addTrailingSeparator(fileChooser.getResult().getParentDirectory().getFullPathName()), false);
+                destinationValue.setText(fileChooser.getResult().getParentDirectory().getFullPathName());
             }
         }
     };
 
     destinationButton.onClick = [&]
     {
-        juce::FileChooser fileChooser(destinationButton.getTooltip(), juce::File(destinationValue.getText()));
+        juce::FileChooser fileChooser(destinationButton.getTooltip(), std::filesystem::exists(destinationValue.getText().toStdString()) ? destinationValue.getText() : "");
         if (fileChooser.browseForDirectory())
         {
-            destinationValue.setText(juce::File::addTrailingSeparator(fileChooser.getResult().getFullPathName()), false);
+            destinationValue.setText(fileChooser.getResult().getFullPathName());
         }
     };
+
+    sourceValue.onTextChange = destinationValue.onTextChange = [&]
+    {
+        setValid(std::filesystem::exists(sourceValue.getText().toStdString()) && std::filesystem::exists(destinationValue.getText().toStdString()));
+    };
+    setValid(false);
 
     setSize(dialogWidth, calculateHeight(2));
 }

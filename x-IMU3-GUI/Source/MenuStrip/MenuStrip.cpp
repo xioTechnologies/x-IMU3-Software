@@ -470,18 +470,6 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
         {
             if (const auto* const fileConverterDialog = dynamic_cast<FileConverterDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                if (juce::File(fileConverterDialog->getSource()).exists() == false)
-                {
-                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Source file does not exist."));
-                    return;
-                }
-
-                if (juce::File(fileConverterDialog->getDestination()).exists() == false)
-                {
-                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Destination directory does not exist."));
-                    return;
-                }
-
                 DialogLauncher::launchDialog(std::make_unique<FileConverterProgressDialog>(fileConverterDialog->getDestination(), fileConverterDialog->getSource()));
             }
         });
