@@ -56,12 +56,12 @@ jobs:
           rustup target add ${{ matrix.rust-target }}
           cargo build --release --manifest-path=x-IMU3-API/Rust/Cargo.toml --target ${{ matrix.rust-target }}
 
-      - name: build gui
+      - name: build targets
         run: |
           mkdir cmake-build-release
           cd cmake-build-release
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.cmake-target }}
-          cmake --build . --target x-IMU3-GUI --config Release
+          cmake --build . --target C-Examples Cpp-Examples x-IMU3-GUI --config Release
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: zip libray
@@ -111,12 +111,12 @@ jobs:
         run: |
           cargo build --release --manifest-path=x-IMU3-API\Rust\Cargo.toml
 
-      - name: build gui
+      - name: build targets
         run: |
           mkdir cmake-build-release
           cd cmake-build-release
           cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --target x-IMU3-GUI --config Release
+          cmake --build . --target C-Examples Cpp-Examples x-IMU3-GUI --config Release
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: upload library
