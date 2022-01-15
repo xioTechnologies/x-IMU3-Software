@@ -26,8 +26,6 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
         secondsValue.applyFontToAllText(secondsValue.isEnabled() ? UIFonts::defaultFont : UIFonts::defaultFont.withHorizontalScale(0.0f));
     };
 
-    unlimitedToggle.setWantsKeyboardFocus(false);
-
     directoryValue.setText(settings.directory, false);
     nameValue.setText(settings.name, false);
     secondsValue.setText(juce::String(settings.seconds), false);

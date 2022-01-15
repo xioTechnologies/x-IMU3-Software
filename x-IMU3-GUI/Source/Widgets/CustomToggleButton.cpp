@@ -71,6 +71,7 @@ CustomToggleButton::CustomToggleButton(const juce::String& buttonName) : juce::T
 {
     lookAndFeel = std::make_unique<LookAndFeel>();
     setLookAndFeel(lookAndFeel.get());
+    setWantsKeyboardFocus(false);
 }
 
 CustomToggleButton::~CustomToggleButton()

@@ -23,8 +23,6 @@ public:
 
     void resized() override;
 
-    bool keyPressed(const juce::KeyPress& key) override;
-
     juce::Rectangle<int> getContentBounds(bool noMargins = false) const noexcept;
 
     bool isResizable() const;
