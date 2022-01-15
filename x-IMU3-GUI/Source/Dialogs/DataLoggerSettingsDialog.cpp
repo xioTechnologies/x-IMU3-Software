@@ -34,7 +34,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     directoryValue.onTextChange = nameValue.onTextChange = [&]
     {
-        setValid(std::filesystem::exists(directoryValue.getText().toStdString()) && juce::File(directoryValue.getText()).getChildFile(nameValue.getText()).exists() == false);
+        setValid(std::filesystem::exists(directoryValue.getText().toStdString()) && juce::File(directoryValue.getText()).getChildFile(nameValue.getText()).exists() == false && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText());
     };
     directoryValue.onTextChange();
 
