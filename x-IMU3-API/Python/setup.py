@@ -22,7 +22,7 @@ ext_modules = Extension("ximu3",
 github_url = "https://github.com/xioTechnologies/x-IMU3-Software"
 
 setup(name="ximu3",
-      version="0.0.0",
+      version="0.1.0",
       author="x-io Technologies Limited",
       author_email="info@x-io.co.uk",
       url=github_url,
