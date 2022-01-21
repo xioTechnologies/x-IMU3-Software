@@ -24,7 +24,7 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
             replace(file_path, "version=\".*\"")
 
         if file == "CMakeLists.txt":
-            replace(file_path, "project\(GUI VERSION .*\)")
+            replace(file_path, "project\(X_IMU3_GUI VERSION .*\)")
 
         if file == "AssemblyInfo.cpp":
             replace(file_path, "AssemblyVersionAttribute\(\".*\"\)")
