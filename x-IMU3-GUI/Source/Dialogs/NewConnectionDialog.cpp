@@ -192,8 +192,6 @@ UdpConnectionDialog::UdpConnectionDialog() : NewConnectionDialog("New UDP Connec
         ipAddressValue.setEnabled(!broadcastToggle.getToggleState());
     };
 
-    broadcastToggle.setWantsKeyboardFocus(false);
-
     ipAddressValue.setText("192.168.1.1", false);
     sendPortValue.setText("9000", false);
     receivePortValue.setText("8000", false);

@@ -17,7 +17,6 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
     table.setWantsKeyboardFocus(false);
 
     addAndMakeVisible(buttonSelectAll);
-    buttonSelectAll.setWantsKeyboardFocus(false);
     buttonSelectAll.onClick = [&]
     {
         for (size_t index = 0; index < rows.size(); index++)
@@ -167,7 +166,6 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             }
 
             auto* toggle = static_cast<CustomToggleButton*>(existingComponentToUpdate);
-            toggle->setWantsKeyboardFocus(false);
             toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
             toggle->onClick = [this, rowNumber, toggle]
             {

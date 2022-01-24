@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Widgets/CustomToggleButton.h"
 #include "../Widgets/IconButton.h"
 #include "Dialog.h"
 

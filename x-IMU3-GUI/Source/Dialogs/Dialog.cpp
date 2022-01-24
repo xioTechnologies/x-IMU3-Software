@@ -69,16 +69,6 @@ void Dialog::resized()
     }
 }
 
-bool Dialog::keyPressed(const juce::KeyPress& key)
-{
-    if (key.getKeyCode() == juce::KeyPress::returnKey)
-    {
-        okButton.triggerClick();
-        return true;
-    }
-    return false;
-}
-
 juce::Rectangle<int> Dialog::getContentBounds(bool noMargins) const noexcept
 {
     const auto bounds = getLocalBounds().withTrimmedBottom(UILayout::textComponentHeight + margin);
