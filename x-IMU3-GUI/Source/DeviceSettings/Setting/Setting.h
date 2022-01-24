@@ -43,7 +43,7 @@ protected:
 private:
     juce::ValueTree tree;
     SimpleLabel name;
-    Icon hintIcon { BinaryData::info_svg, "Setting Modified But Not Written To Device" };
+    Icon hintIcon { BinaryData::upload_svg, "Value Modified But Not Written To Device" };
     Icon warningIcon { BinaryData::warning_orange_svg, "Read/Write Setting Command Failed" };
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
