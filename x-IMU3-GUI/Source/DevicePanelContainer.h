@@ -48,6 +48,8 @@ public:
 
     void toggleAccordionState(DevicePanel* const devicePanel);
 
+    std::function<void(const int oldSize, const int newSize)> onDevicePanelsSizeChanged;
+
 private:
     juce::ValueTree& windowLayout;
     GLRenderer& glRenderer;

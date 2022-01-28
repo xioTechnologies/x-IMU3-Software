@@ -10,7 +10,6 @@
 class DevicePanelContainer;
 
 class MenuStrip : public juce::Component,
-                  private juce::ComponentListener,
                   private juce::Value::Listener,
                   private juce::Timer
 {
@@ -89,8 +88,6 @@ private:
     juce::PopupMenu getToolsMenu() const;
 
     void setWindowLayout(juce::ValueTree windowLayout_);
-
-    void componentChildrenChanged(juce::Component&) override;
 
     void valueChanged(juce::Value& value) override;
 

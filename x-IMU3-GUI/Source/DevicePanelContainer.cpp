@@ -2,21 +2,6 @@
 #include "DevicePanel/DevicePanel.h"
 #include "DevicePanelContainer.h"
 
-template<typename Type>
-static void eraseThenDestroy(std::vector<std::unique_ptr<Type>>& vector, Type& objectToRemove)
-{
-    for (size_t index = 0; index < vector.size(); index++)
-    {
-        if (vector[index].get() == &objectToRemove)
-        {
-            auto removed = std::move(vector[index]);
-            vector.erase(vector.begin() + (int) index);
-            removed.reset();
-            return;
-        }
-    }
-}
-
 DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_)
         : windowLayout(windowLayout_),
           glRenderer(glRenderer_)
@@ -116,6 +101,8 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
 
                               juce::MessageManager::callAsync([&, connection]
                                                               {
+                                                                  onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() + 1);
+
                                                                   addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
                                                                   {
                                                                       static unsigned int counter;
@@ -145,18 +132,22 @@ std::vector<std::unique_ptr<DevicePanel>>& DevicePanelContainer::getDevicePanels
 
 void DevicePanelContainer::removeAllPanels()
 {
-    while (devicePanels.size() > 0)
-    {
-        devicePanels.front()->getConnection().close();
-        eraseThenDestroy(devicePanels, *devicePanels.front());
-    }
+    onDevicePanelsSizeChanged((int) devicePanels.size(), 0);
+    devicePanels.clear();
     resized();
 }
 
 void DevicePanelContainer::removePanel(DevicePanel& panel)
 {
-    panel.getConnection().close();
-    eraseThenDestroy(devicePanels, panel);
+    onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() - 1);
+    for (size_t index = 0; index < devicePanels.size(); index++)
+    {
+        if (devicePanels[index].get() == &panel)
+        {
+            devicePanels.erase(devicePanels.begin() + (int) index);
+            break;
+        }
+    }
     resized();
 }
 
