@@ -5,6 +5,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
+#include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
@@ -31,6 +32,7 @@ private:
     IconButton directoryButton { IconButton::Style::menuStrip, BinaryData::open_svg, 0.8f, "Select Directory" };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
+    Icon warningIcon { BinaryData::warning_orange_svg, "Invalid Name Or Name Already Exists" };
     SimpleLabel secondsLabel { "Seconds:" };
     CustomTextEditor secondsValue;
     CustomToggleButton unlimitedToggle { "Unlimited" };
