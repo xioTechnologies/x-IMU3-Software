@@ -20,6 +20,12 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
 
     commandValue.setText(commandValue.getNumItems() > 0 ? commandValue.getItemText(0) : "{\"note\":\"Hello, World!\"}", juce::dontSendNotification);
 
+    commandValue.onChange = [&]
+    {
+        setValid(commandValue.getText().isNotEmpty());
+    };
+    commandValue.onChange();
+
     setSize(dialogWidth, calculateHeight(1));
 }
 

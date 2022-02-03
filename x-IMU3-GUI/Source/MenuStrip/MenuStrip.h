@@ -36,10 +36,7 @@ private:
     IconButton shutdownButton { IconButton::Style::menuStrip, BinaryData::shutdown_svg, 0.8f, "Shutdown All Devices" };
     IconButton sendCommandButton { IconButton::Style::menuStrip, BinaryData::json_svg, 0.8f, "Send Command To All Devices" };
     IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start Data Logger", nullptr, BinaryData::stop_svg, 0.8f, "Stop Data Logger" };
-    IconButton dataLoggerSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Data Logger Settings", nullptr, "" };
     Stopwatch dataLoggerTime;
-    //    IconButton dataForwardingButton { IconButton::Style::menuStrip, BinaryData::forward_white_svg, 1.0f, "Start Data Forwarding", nullptr, BinaryData::forward_blue_svg, 1.0f, "Stop Data Forwarding" };
-    //    IconButton dataForwardingSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Data Forwarding Settings", nullptr, "" };
     IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
     IconButton applicationErrorsButton { IconButton::Style::menuStrip, BinaryData::warning_white_svg, 1.0f, "Application Error Messages", nullptr, BinaryData::warning_orange_svg };
     juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
@@ -49,7 +46,6 @@ private:
     SimpleLabel viewLabel { "View", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel commandsLabel { "Commands", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel dataLoggerLabel { "Data Logger", UIFonts::defaultFont, juce::Justification::centred };
-    //    SimpleLabel dataForwardingLabel { "Data Forwarding", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel toolsLabel { "Tools", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel applicationLabel { "Application", UIFonts::defaultFont, juce::Justification::centred };
 
@@ -61,13 +57,12 @@ private:
     };
 
     std::vector<ButtonGroup> buttonGroups {
-            { connectionLabel,  { searchButton,              manualButton,             disconnectButton }},
-            { viewLabel,        { showHideWindowButton,      windowLayoutButton,       devicePanelLayoutButton }},
+            { connectionLabel,  { searchButton,              manualButton,       disconnectButton }},
+            { viewLabel,        { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }},
             { commandsLabel,    { shutdownButton,            sendCommandButton }},
-            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerSettingsButton, dataLoggerTime }},
-            //            { dataForwardingLabel, { dataForwardingButton,       dataForwardingSettingsButton }},
+            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime }},
             { toolsLabel,       { toolsButton }},
-            { applicationLabel, { applicationErrorsButton,   versionButton,            mainSettingsButton }}
+            { applicationLabel, { applicationErrorsButton,   versionButton,      mainSettingsButton }}
     };
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
