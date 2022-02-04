@@ -72,7 +72,7 @@ private:
 
     Layout layout = Layout::rows;
     DevicePanel* expandedDevicePanel = nullptr;
-    int expandedPanelHeight = 500;
+    int expandedPanelHeight = 600;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelContainer)
 };
