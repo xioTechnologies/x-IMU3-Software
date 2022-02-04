@@ -19,33 +19,46 @@ public:
         devicePanelViewport.setViewedComponent(&devicePanelContainer, false);
         devicePanelViewport.setScrollBarsShown(true, false);
 
-        juce::LookAndFeel::setDefaultLookAndFeel(&lnf);
         setSize(1280, 768);
 
         tooltipWindow.setOpaque(false);
     }
 
-    ~MainComponent() override
-    {
-    }
-
     void resized() override
     {
         auto bounds = getLocalBounds();
+
         menuStrip.setBounds(bounds.removeFromTop(72));
         bounds.removeFromTop(UILayout::panelMargin);
 
         devicePanelViewport.setBounds(bounds);
-        devicePanelContainer.setBounds(0, 0, bounds.getWidth(), devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion ? devicePanelContainer.getHeight() : bounds.getHeight());
+
+        const auto height = (devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) ? devicePanelContainer.getHeight() : bounds.getHeight();
+        auto width = bounds.getWidth();
+        if ((devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) && (height > devicePanelViewport.getHeight()))
+        {
+            width -= devicePanelViewport.getScrollBarThickness();
+        }
+        devicePanelContainer.setSize(width, height);
     }
 
 private:
+    struct DefaultLookAndFeelSetter
+    {
+        DefaultLookAndFeelSetter()
+        {
+            juce::LookAndFeel::setDefaultLookAndFeel(&lookAndFeel);
+        }
+
+        CustomLookAndFeel lookAndFeel;
+    };
+
+    const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
     juce::ValueTree windowLayout { WindowIDs::Row };
     GLRenderer glRenderer { *this };
     DevicePanelContainer devicePanelContainer { windowLayout, glRenderer };
     juce::Viewport devicePanelViewport;
     MenuStrip menuStrip { windowLayout, devicePanelContainer };
-    CustomLookAndFeel lnf;
     juce::TooltipWindow tooltipWindow { nullptr, 1200 };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
