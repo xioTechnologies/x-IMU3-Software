@@ -72,10 +72,6 @@ impl DataMessage for RotationMatrixMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.xx_element, self.xy_element, self.xz_element, self.yx_element, self.yy_element, self.yz_element, self.zx_element, self.zy_element, self.zz_element)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4},{:.4},{:.4},{:.4},{:.4},{:.4},{:.4},{:.4},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.xx_element, self.xy_element, self.xz_element, self.yx_element, self.yy_element, self.yz_element, self.zx_element, self.zy_element, self.zz_element)
-    }
 }
 
 impl fmt::Display for RotationMatrixMessage {

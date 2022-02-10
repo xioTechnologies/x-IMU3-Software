@@ -66,10 +66,6 @@ impl DataMessage for InertialMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.gyroscope_x, self.gyroscope_y, self.gyroscope_z, self.accelerometer_x, self.accelerometer_y, self.accelerometer_z)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4},{:.4},{:.4},{:.4},{:.4},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.gyroscope_x, self.gyroscope_y, self.gyroscope_z, self.accelerometer_x, self.accelerometer_y, self.accelerometer_z)
-    }
 }
 
 impl fmt::Display for InertialMessage {

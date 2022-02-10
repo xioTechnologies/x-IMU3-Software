@@ -56,10 +56,6 @@ impl DataMessage for TemperatureMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6}\n", self.timestamp, self.temperature)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.temperature)
-    }
 }
 
 impl fmt::Display for TemperatureMessage {

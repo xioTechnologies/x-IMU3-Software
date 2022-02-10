@@ -54,10 +54,6 @@ impl DataMessage for $NamePascalCase$Message {
     fn to_csv_row(&self) -> String {
         format!("{},$ArgumentsCsvFormat$\n", self.timestamp, $ArgumentsSelfList$)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},$ArgumentsAsciiFormat$\r\n", Self::get_ascii_id() as char, self.timestamp, $ArgumentsSelfList$)
-    }
 }
 
 impl fmt::Display for $NamePascalCase$Message {

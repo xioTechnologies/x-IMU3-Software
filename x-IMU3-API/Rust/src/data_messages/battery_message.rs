@@ -60,10 +60,6 @@ impl DataMessage for BatteryMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6},{:.6},{:.6}\n", self.timestamp, self.percentage, self.voltage, self.charging_status)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4},{:.4},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.percentage, self.voltage, self.charging_status)
-    }
 }
 
 impl fmt::Display for BatteryMessage {

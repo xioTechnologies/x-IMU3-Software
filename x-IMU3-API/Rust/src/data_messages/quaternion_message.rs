@@ -62,10 +62,6 @@ impl DataMessage for QuaternionMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4},{:.4},{:.4},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element)
-    }
 }
 
 impl fmt::Display for QuaternionMessage {

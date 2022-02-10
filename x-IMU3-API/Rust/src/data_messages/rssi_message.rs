@@ -58,10 +58,6 @@ impl DataMessage for RssiMessage {
     fn to_csv_row(&self) -> String {
         format!("{},{:.6},{:.6}\n", self.timestamp, self.percentage, self.power)
     }
-
-    fn to_ascii(&self) -> String {
-        format!("{},{},{:.4},{:.4}\r\n", Self::get_ascii_id() as char, self.timestamp, self.percentage, self.power)
-    }
 }
 
 impl fmt::Display for RssiMessage {
