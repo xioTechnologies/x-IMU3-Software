@@ -42,7 +42,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         loadRecentSends();
     };
 
-    callbackID = devicePanel.getConnection().addSerialCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
+    callbackID = devicePanel.getConnection().addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
                                         {

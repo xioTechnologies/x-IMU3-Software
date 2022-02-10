@@ -16,7 +16,7 @@
     <ClCompile Include="DataMessages\EulerAnglesMessage.h">
       <Filter>DataMessages</Filter>
     </ClCompile>
-    <ClCompile Include="DataMessages\HighGMessage.h">
+    <ClCompile Include="DataMessages\HighGAccelerometerMessage.h">
       <Filter>DataMessages</Filter>
     </ClCompile>
     <ClCompile Include="DataMessages\InertialMessage.h">
@@ -40,7 +40,7 @@
     <ClCompile Include="DataMessages\RssiMessage.h">
       <Filter>DataMessages</Filter>
     </ClCompile>
-    <ClCompile Include="DataMessages\SerialMessage.h">
+    <ClCompile Include="DataMessages\SerialAccessoryMessage.h">
       <Filter>DataMessages</Filter>
     </ClCompile>
     <ClCompile Include="DataMessages\TemperatureMessage.h">

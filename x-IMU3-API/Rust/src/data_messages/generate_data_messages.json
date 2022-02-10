@@ -134,7 +134,7 @@
         ]
     },
     {
-        "name": "High-g",
+        "name": "High-g accelerometer",
         "asciiID": "H",
         "argumentNames": [
             "X Axis",
@@ -184,7 +184,7 @@
         ]
     },
     {
-        "name": "Serial",
+        "name": "Serial accessory",
         "asciiID": "S",
         "argumentNames": [],
         "argumentUnits": []

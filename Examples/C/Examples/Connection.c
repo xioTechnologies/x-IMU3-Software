@@ -27,7 +27,7 @@ void LinearAccelerationCallback(const XIMU3_LinearAccelerationMessage message, v
 
 void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, void* context);
 
-void HighGCallback(const XIMU3_HighGMessage message, void* context);
+void HighGAccelerometerCallback(const XIMU3_HighGAccelerometerMessage message, void* context);
 
 void TemperatureCallback(const XIMU3_TemperatureMessage message, void* context);
 
@@ -35,7 +35,7 @@ void BatteryCallback(const XIMU3_BatteryMessage message, void* context);
 
 void RssiCallback(const XIMU3_RssiMessage message, void* context);
 
-void SerialCallback(const XIMU3_SerialMessage message, void* context);
+void SerialAccessoryCallback(const XIMU3_SerialAccessoryMessage message, void* context);
 
 void NotificationCallback(const XIMU3_NotificationMessage message, void* context);
 
@@ -55,11 +55,11 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
         XIMU3_connection_add_euler_angles_callback(connection, EulerAnglesCallback, NULL);
         XIMU3_connection_add_linear_acceleration_callback(connection, LinearAccelerationCallback, NULL);
         XIMU3_connection_add_earth_acceleration_callback(connection, EarthAccelerationCallback, NULL);
-        XIMU3_connection_add_high_g_callback(connection, HighGCallback, NULL);
+        XIMU3_connection_add_high_g_accelerometer_callback(connection, HighGAccelerometerCallback, NULL);
         XIMU3_connection_add_temperature_callback(connection, TemperatureCallback, NULL);
         XIMU3_connection_add_battery_callback(connection, BatteryCallback, NULL);
         XIMU3_connection_add_rssi_callback(connection, RssiCallback, NULL);
-        XIMU3_connection_add_serial_callback(connection, SerialCallback, NULL);
+        XIMU3_connection_add_serial_accessory_callback(connection, SerialAccessoryCallback, NULL);
         XIMU3_connection_add_notification_callback(connection, NotificationCallback, NULL);
         XIMU3_connection_add_error_callback(connection, ErrorCallback, NULL);
     }
@@ -197,14 +197,14 @@ void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, voi
     // printf("%s\n", XIMU3_earth_acceleration_message_to_string(message)); // alternative to above
 }
 
-void HighGCallback(const XIMU3_HighGMessage message, void* context)
+void HighGAccelerometerCallback(const XIMU3_HighGAccelerometerMessage message, void* context)
 {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
            message.x_axis,
            message.y_axis,
            message.z_axis);
-    // printf("%s\n", XIMU3_high_g_message_to_string(message)); // alternative to above
+    // printf("%s\n", XIMU3_high_g_accelerometer_message_to_string(message)); // alternative to above
 }
 
 void TemperatureCallback(const XIMU3_TemperatureMessage message, void* context)
@@ -234,12 +234,12 @@ void RssiCallback(const XIMU3_RssiMessage message, void* context)
     // printf("%s\n", XIMU3_rssi_message_to_string(message)); // alternative to above
 }
 
-void SerialCallback(const XIMU3_SerialMessage message, void* context)
+void SerialAccessoryCallback(const XIMU3_SerialAccessoryMessage message, void* context)
 {
     printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
            message.timestamp,
            message.char_array);
-    // printf("%s\n", XIMU3_serial_message_to_string(message)); // alternative to above
+    // printf("%s\n", XIMU3_serial_accessory_message_to_string(message)); // alternative to above
 }
 
 void NotificationCallback(const XIMU3_NotificationMessage message, void* context)

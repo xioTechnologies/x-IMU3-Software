@@ -20,11 +20,11 @@ namespace Ximu3Examples
                 connection.EulerAnglesEvent += this.EulerAnglesEvent;
                 connection.LinearAccelerationEvent += this.LinearAccelerationEvent;
                 connection.EarthAccelerationEvent += this.EarthAccelerationEvent;
-                connection.HighGEvent += this.HighGEvent;
+                connection.HighGAccelerometerEvent += this.HighGAccelerometerEvent;
                 connection.TemperatureEvent += this.TemperatureEvent;
                 connection.BatteryEvent += this.BatteryEvent;
                 connection.RssiEvent += this.RssiEvent;
-                connection.SerialEvent += this.SerialEvent;
+                connection.SerialAccessoryEvent += this.SerialAccessoryEvent;
                 connection.NotificationEvent += this.NotificationEvent;
                 connection.ErrorEvent += this.ErrorEvent;
             }
@@ -170,7 +170,7 @@ namespace Ximu3Examples
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
-        private void HighGEvent(Object sender, Ximu3.HighGEventArgs args)
+        private void HighGAccelerometerEvent(Object sender, Ximu3.HighGAccelerometerEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
                 FloatFormat(args.message.XAxis) + " g" +
@@ -203,7 +203,7 @@ namespace Ximu3Examples
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
-        private void SerialEvent(Object sender, Ximu3.SerialEventArgs args)
+        private void SerialAccessoryEvent(Object sender, Ximu3.SerialAccessoryEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) + StringFormat(args.message.BytesAsString));
             // Console.WriteLine(args.message.ToString()); // alternative to above

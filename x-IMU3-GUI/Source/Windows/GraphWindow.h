@@ -61,11 +61,11 @@ private:
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
-    std::function<void(ximu3::XIMU3_HighGMessage)> highGCallback;
+    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;
     std::function<void(ximu3::XIMU3_TemperatureMessage)> temperatureCallback;
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
-    std::function<void(ximu3::XIMU3_SerialMessage)> serialCallback; // TODO: Add graph window
+    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback; // TODO: Add graph window
 
     std::vector<uint64_t> callbackIDs;
 

@@ -40,7 +40,7 @@ pub extern "C" fn XIMU3_earth_acceleration_message_to_string(message: EarthAccel
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_high_g_message_to_string(message: HighGMessage) -> *const c_char {
+pub extern "C" fn XIMU3_high_g_accelerometer_message_to_string(message: HighGAccelerometerMessage) -> *const c_char {
     string_to_char_ptr!(message.to_string())
 }
 
@@ -60,7 +60,7 @@ pub extern "C" fn XIMU3_rssi_message_to_string(message: RssiMessage) -> *const c
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_serial_message_to_string(message: SerialMessage) -> *const c_char {
+pub extern "C" fn XIMU3_serial_accessory_message_to_string(message: SerialAccessoryMessage) -> *const c_char {
     string_to_char_ptr!(message.to_string())
 }
 

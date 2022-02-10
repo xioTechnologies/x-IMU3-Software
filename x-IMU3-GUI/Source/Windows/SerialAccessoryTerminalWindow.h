@@ -29,7 +29,7 @@ private:
     juce::ValueTree recentSends;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Sends.xml");
 
-    std::function<void(ximu3::XIMU3_SerialMessage)> callback;
+    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackID;
 
     void loadRecentSends();

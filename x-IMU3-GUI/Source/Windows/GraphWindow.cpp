@@ -134,7 +134,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
                                        { "Y", UIColours::graphGreen },
                                        { "Z", UIColours::graphBlue }});
 
-        callbackIDs = { devicePanel.getConnection().addHighGCallback(highGCallback = [&](auto message)
+        callbackIDs = { devicePanel.getConnection().addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
         {
             update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
         }) };

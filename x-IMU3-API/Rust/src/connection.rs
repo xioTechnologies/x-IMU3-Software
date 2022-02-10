@@ -211,8 +211,8 @@ impl Connection {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_earth_acceleration_closure(closure)
     }
 
-    pub fn add_high_g_closure(&mut self, closure: Box<dyn Fn(HighGMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_high_g_closure(closure)
+    pub fn add_high_g_accelerometer_closure(&mut self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
     }
 
     pub fn add_temperature_closure(&mut self, closure: Box<dyn Fn(TemperatureMessage) + Send>) -> u64 {
@@ -227,8 +227,8 @@ impl Connection {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_rssi_closure(closure)
     }
 
-    pub fn add_serial_closure(&mut self, closure: Box<dyn Fn(SerialMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_serial_closure(closure)
+    pub fn add_serial_accessory_closure(&mut self, closure: Box<dyn Fn(SerialAccessoryMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
     }
 
     pub fn add_notification_closure(&mut self, closure: Box<dyn Fn(NotificationMessage) + Send>) -> u64 {

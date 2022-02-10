@@ -186,9 +186,9 @@ namespace ximu3
             return XIMU3_connection_add_earth_acceleration_callback(connection, Helpers::wrapCallable<XIMU3_EarthAccelerationMessage>(callback), &callback);
         }
 
-        uint64_t addHighGCallback(std::function<void(XIMU3_HighGMessage)>& callback)
+        uint64_t addHighGAccelerometerCallback(std::function<void(XIMU3_HighGAccelerometerMessage)>& callback)
         {
-            return XIMU3_connection_add_high_g_callback(connection, Helpers::wrapCallable<XIMU3_HighGMessage>(callback), &callback);
+            return XIMU3_connection_add_high_g_accelerometer_callback(connection, Helpers::wrapCallable<XIMU3_HighGAccelerometerMessage>(callback), &callback);
         }
 
         uint64_t addTemperatureCallback(std::function<void(XIMU3_TemperatureMessage)>& callback)
@@ -206,9 +206,9 @@ namespace ximu3
             return XIMU3_connection_add_rssi_callback(connection, Helpers::wrapCallable<XIMU3_RssiMessage>(callback), &callback);
         }
 
-        uint64_t addSerialCallback(std::function<void(XIMU3_SerialMessage)>& callback)
+        uint64_t addSerialAccessoryCallback(std::function<void(XIMU3_SerialAccessoryMessage)>& callback)
         {
-            return XIMU3_connection_add_serial_callback(connection, Helpers::wrapCallable<XIMU3_SerialMessage>(callback), &callback);
+            return XIMU3_connection_add_serial_accessory_callback(connection, Helpers::wrapCallable<XIMU3_SerialAccessoryMessage>(callback), &callback);
         }
 
         uint64_t addNotificationCallback(std::function<void(XIMU3_NotificationMessage)>& callback)
