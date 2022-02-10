@@ -58,7 +58,7 @@ impl DataMessage for SerialMessage {
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "SerialMessage.csv"
+        "Serial.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {

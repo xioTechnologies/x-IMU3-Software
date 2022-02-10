@@ -58,7 +58,7 @@ impl DataMessage for ErrorMessage {
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "ErrorMessage.csv"
+        "Error.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
