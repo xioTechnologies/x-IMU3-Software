@@ -26,5 +26,4 @@ pub trait DataMessage {
     fn get_csv_file_name(&self) -> &'static str;
     fn get_csv_headings(&self) -> &'static str;
     fn to_csv_row(&self) -> String;
-    fn to_ascii(&self) -> String;
 }
