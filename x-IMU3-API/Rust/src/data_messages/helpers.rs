@@ -27,7 +27,7 @@ pub fn char_array_to_string(char_array: &[c_char], number_of_bytes: usize) -> St
 
     let vector: Vec<u8> = bytes.to_vec().iter().map(|&byte| {
         if byte < 0x20 || byte > 0x7E {
-            '?' as u8
+            ' ' as u8
         } else {
             byte
         }
