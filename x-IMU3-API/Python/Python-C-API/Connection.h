@@ -3,7 +3,6 @@
 
 #include "../../C/Ximu3.h"
 #include "CharArraysCallback.h"
-#include "CharPtrCallback.h"
 #include "ConnectionInfo.h"
 #include "DataMessages/DataMessages.h"
 #include "DecodeErrorCallback.h"

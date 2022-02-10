@@ -69,7 +69,7 @@ static PyObject* serial_discovery_scan_filter(PyObject* null, PyObject* args)
         return NULL;
     }
 
-    for (int index = 0; index < strlen(connection_type_string); index++)
+    for (unsigned int index = 0; index < strlen(connection_type_string); index++)
     {
         connection_type_string[index] = tolower(connection_type_string[index]);
     }
