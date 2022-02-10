@@ -8,15 +8,15 @@ using namespace System;
 
 namespace Ximu3
 {
-    public ref class HighGMessage
+    public ref class HighGAccelerometerMessage
     {
     internal:
-        HighGMessage(ximu3::XIMU3_HighGMessage message) : message{ new ximu3::XIMU3_HighGMessage{message} }
+        HighGAccelerometerMessage(ximu3::XIMU3_HighGAccelerometerMessage message) : message{ new ximu3::XIMU3_HighGAccelerometerMessage{message} }
         {
         }
 
     public:
-        ~HighGMessage()
+        ~HighGAccelerometerMessage()
         {
             delete message;
         }
@@ -55,10 +55,10 @@ namespace Ximu3
 
         String^ ToString() override
         {
-            return gcnew String(ximu3::XIMU3_high_g_message_to_string(*message));
+            return gcnew String(ximu3::XIMU3_high_g_accelerometer_message_to_string(*message));
         }
 
     private:
-        ximu3::XIMU3_HighGMessage* message;
+        ximu3::XIMU3_HighGAccelerometerMessage* message;
     };
 }

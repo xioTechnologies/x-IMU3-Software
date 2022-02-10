@@ -139,7 +139,7 @@
     <ClCompile Include="DataMessages\EarthAccelerationMessage.h" />
     <ClCompile Include="DataMessages\ErrorMessage.h" />
     <ClCompile Include="DataMessages\EulerAnglesMessage.h" />
-    <ClCompile Include="DataMessages\HighGMessage.h" />
+    <ClCompile Include="DataMessages\HighGAccelerometerMessage.h" />
     <ClCompile Include="DataMessages\InertialMessage.h" />
     <ClCompile Include="DataMessages\LinearAccelerationMessage.h" />
     <ClCompile Include="DataMessages\MagnetometerMessage.h" />
@@ -147,7 +147,7 @@
     <ClCompile Include="DataMessages\QuaternionMessage.h" />
     <ClCompile Include="DataMessages\RotationMatrixMessage.h" />
     <ClCompile Include="DataMessages\RssiMessage.h" />
-    <ClCompile Include="DataMessages\SerialMessage.h" />
+    <ClCompile Include="DataMessages\SerialAccessoryMessage.h" />
     <ClCompile Include="DataMessages\TemperatureMessage.h" />
     <ClCompile Include="DecodeError.h" />
     <ClCompile Include="DiscoveredNetworkDevice.h" />

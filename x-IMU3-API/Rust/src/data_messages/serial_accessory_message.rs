@@ -9,19 +9,19 @@ use crate::decode_error::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SerialMessage {
+pub struct SerialAccessoryMessage {
     pub timestamp: u64,
     pub char_array: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE],
     pub number_of_bytes: size_t,
 }
 
-impl SerialMessage {
+impl SerialAccessoryMessage {
     pub fn char_array_as_string(self) -> String {
         char_array_to_string(&self.char_array, self.number_of_bytes)
     }
 }
 
-impl DataMessage for SerialMessage {
+impl DataMessage for SerialAccessoryMessage {
     fn get_ascii_id() -> u8 {
         'S' as u8
     }
@@ -30,7 +30,7 @@ impl DataMessage for SerialMessage {
         match scan_fmt!( message, "{},{d},{[^\n]}\r\n",  char, u64, String) {
             Ok((_, timestamp, string)) => {
                 let (char_array, number_of_bytes) = string_to_char_array(string);
-                Ok(SerialMessage { timestamp, char_array, number_of_bytes })
+                Ok(SerialAccessoryMessage { timestamp, char_array, number_of_bytes })
             }
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
@@ -54,11 +54,11 @@ impl DataMessage for SerialMessage {
 
         let (char_array, number_of_bytes) = slice_to_char_array(&message[size_of::<BinaryMessage>()..(message.len() - 1)]);
 
-        Ok(SerialMessage { timestamp: binary_message.timestamp, char_array, number_of_bytes })
+        Ok(SerialAccessoryMessage { timestamp: binary_message.timestamp, char_array, number_of_bytes })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "SerialMessage.csv"
+        "SerialAccessory.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
@@ -70,7 +70,7 @@ impl DataMessage for SerialMessage {
     }
 }
 
-impl fmt::Display for SerialMessage {
+impl fmt::Display for SerialAccessoryMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "{:>8} us \"{}\"", self.timestamp, char_array_to_string(&self.char_array, self.number_of_bytes))
     }

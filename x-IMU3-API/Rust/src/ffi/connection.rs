@@ -236,10 +236,10 @@ pub extern "C" fn XIMU3_connection_add_earth_acceleration_callback(connection: *
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_add_high_g_callback(connection: *mut Connection, callback: Callback<HighGMessage>, context: *mut c_void) -> u64 {
+pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection: *mut Connection, callback: Callback<HighGAccelerometerMessage>, context: *mut c_void) -> u64 {
     let connection: &mut Connection = unsafe { &mut *connection };
     let void_ptr = VoidPtr(context);
-    connection.add_high_g_closure(Box::new(move |message: HighGMessage| callback(message, void_ptr.0)))
+    connection.add_high_g_accelerometer_closure(Box::new(move |message: HighGAccelerometerMessage| callback(message, void_ptr.0)))
 }
 
 #[no_mangle]
@@ -264,10 +264,10 @@ pub extern "C" fn XIMU3_connection_add_rssi_callback(connection: *mut Connection
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_add_serial_callback(connection: *mut Connection, callback: Callback<SerialMessage>, context: *mut c_void) -> u64 {
+pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mut Connection, callback: Callback<SerialAccessoryMessage>, context: *mut c_void) -> u64 {
     let connection: &mut Connection = unsafe { &mut *connection };
     let void_ptr = VoidPtr(context);
-    connection.add_serial_closure(Box::new(move |message: SerialMessage| callback(message, void_ptr.0)))
+    connection.add_serial_accessory_closure(Box::new(move |message: SerialAccessoryMessage| callback(message, void_ptr.0)))
 }
 
 #[no_mangle]

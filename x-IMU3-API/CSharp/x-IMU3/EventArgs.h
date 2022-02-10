@@ -135,13 +135,13 @@ namespace Ximu3
         }
     };
 
-    public ref class HighGEventArgs : public EventArgs
+    public ref class HighGAccelerometerEventArgs : public EventArgs
     {
     public:
-        HighGMessage^ message;
+        HighGAccelerometerMessage^ message;
 
     internal:
-        HighGEventArgs(HighGMessage^ message) : message(message)
+        HighGAccelerometerEventArgs(HighGAccelerometerMessage^ message) : message(message)
         {
         }
     };
@@ -179,13 +179,13 @@ namespace Ximu3
         }
     };
 
-    public ref class SerialEventArgs : public EventArgs
+    public ref class SerialAccessoryEventArgs : public EventArgs
     {
     public:
-        SerialMessage^ message;
+        SerialAccessoryMessage^ message;
 
     internal:
-        SerialEventArgs(SerialMessage^ message) : message(message)
+        SerialAccessoryEventArgs(SerialAccessoryMessage^ message) : message(message)
         {
         }
     };

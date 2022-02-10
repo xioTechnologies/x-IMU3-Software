@@ -30,11 +30,11 @@ protected:
             connection.addEulerAnglesCallback(eulerAnglesCallback);
             connection.addLinearAccelerationCallback(linearAccelerationCallback);
             connection.addEarthAccelerationCallback(earthAccelerationCallback);
-            connection.addHighGCallback(highGCallback);
+            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
             connection.addTemperatureCallback(temperatureCallback);
             connection.addBatteryCallback(batteryCallback);
             connection.addRssiCallback(rssiCallback);
-            connection.addSerialCallback(serialCallback);
+            connection.addSerialAccessoryCallback(serialAccessoryCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
         }
@@ -164,14 +164,14 @@ private:
         // std::cout << XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_HighGMessage message)> highGCallback = [](auto message)
+    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message)
     {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
                message.x_axis,
                message.y_axis,
                message.z_axis);
-        // std::cout << XIMU3_high_g_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_TemperatureMessage message)> temperatureCallback = [](auto message)
@@ -201,12 +201,12 @@ private:
         // std::cout << XIMU3_rssi_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_SerialMessage message)> serialCallback = [](auto message)
+    std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](auto message)
     {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
-        // std::cout << XIMU3_serial_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_NotificationMessage message)> notificationCallback = [](auto message)

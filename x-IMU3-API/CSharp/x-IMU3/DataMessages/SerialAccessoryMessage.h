@@ -8,15 +8,15 @@ using namespace System;
 
 namespace Ximu3
 {
-    public ref class SerialMessage
+    public ref class SerialAccessoryMessage
     {
     internal:
-        SerialMessage(ximu3::XIMU3_SerialMessage message) : message{ new ximu3::XIMU3_SerialMessage{message} }
+        SerialAccessoryMessage(ximu3::XIMU3_SerialAccessoryMessage message) : message{ new ximu3::XIMU3_SerialAccessoryMessage{message} }
         {
         }
 
     public:
-        ~SerialMessage()
+        ~SerialAccessoryMessage()
         {
             delete message;
         }
@@ -54,10 +54,10 @@ namespace Ximu3
 
         String^ ToString() override
         {
-            return gcnew String(ximu3::XIMU3_serial_message_to_string(*message));
+            return gcnew String(ximu3::XIMU3_serial_accessory_message_to_string(*message));
         }
 
     private:
-        ximu3::XIMU3_SerialMessage* message;
+        ximu3::XIMU3_SerialAccessoryMessage* message;
     };
 }

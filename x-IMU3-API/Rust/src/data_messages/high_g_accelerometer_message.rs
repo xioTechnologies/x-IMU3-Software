@@ -7,21 +7,21 @@ use crate::decode_error::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct HighGMessage {
+pub struct HighGAccelerometerMessage {
     pub timestamp: u64,
     pub x_axis: f32,
     pub y_axis: f32,
     pub z_axis: f32,
 }
 
-impl DataMessage for HighGMessage {
+impl DataMessage for HighGAccelerometerMessage {
     fn get_ascii_id() -> u8 {
         'H' as u8
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{f},{f},{f}\r\n",  char, u64, f32, f32, f32) {
-            Ok((_, timestamp, x_axis, y_axis, z_axis)) => Ok(HighGMessage { timestamp, x_axis, y_axis, z_axis }),
+            Ok((_, timestamp, x_axis, y_axis, z_axis)) => Ok(HighGAccelerometerMessage { timestamp, x_axis, y_axis, z_axis }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -46,11 +46,11 @@ impl DataMessage for HighGMessage {
             binary_message
         };
 
-        Ok(HighGMessage { timestamp: binary_message.timestamp, x_axis: binary_message.x_axis, y_axis: binary_message.y_axis, z_axis: binary_message.z_axis })
+        Ok(HighGAccelerometerMessage { timestamp: binary_message.timestamp, x_axis: binary_message.x_axis, y_axis: binary_message.y_axis, z_axis: binary_message.z_axis })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "HighG.csv"
+        "HighGAccelerometer.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
@@ -62,7 +62,7 @@ impl DataMessage for HighGMessage {
     }
 }
 
-impl fmt::Display for HighGMessage {
+impl fmt::Display for HighGAccelerometerMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "{:>8} us {:>8.3} g {:>8.3} g {:>8.3} g", self.timestamp, self.x_axis, self.y_axis, self.z_axis)
     }

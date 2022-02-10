@@ -58,7 +58,7 @@ impl DataMessage for NotificationMessage {
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "NotificationMessage.csv"
+        "Notification.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
