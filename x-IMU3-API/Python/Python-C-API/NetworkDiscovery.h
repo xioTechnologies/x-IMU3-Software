@@ -64,7 +64,7 @@ static PyMethodDef network_discovery_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject network_discovery_type = {
+static PyTypeObject network_discovery_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.NetworkDiscovery",
         .tp_basicsize = sizeof(NetworkDiscovery),

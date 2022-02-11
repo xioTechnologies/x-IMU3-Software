@@ -61,7 +61,7 @@ static PyMethodDef quaternion_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject quaternion_message_type = {
+static PyTypeObject quaternion_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.QuaternionMessage",
         .tp_basicsize = sizeof(QuaternionMessage),
@@ -72,7 +72,7 @@ static PyTypeObject quaternion_message_type = {
 
 static PyObject* quaternion_message_from(const XIMU3_QuaternionMessage* const message)
 {
-    QuaternionMessage* const self = (QuaternionMessage*) quaternion_message_type.tp_alloc(&quaternion_message_type, 0);
+    QuaternionMessage* const self = (QuaternionMessage*) quaternion_message_object.tp_alloc(&quaternion_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

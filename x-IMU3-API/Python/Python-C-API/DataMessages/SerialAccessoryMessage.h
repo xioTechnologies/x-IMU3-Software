@@ -49,7 +49,7 @@ static PyMethodDef serial_accessory_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject serial_accessory_message_type = {
+static PyTypeObject serial_accessory_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.SerialAccessoryMessage",
         .tp_basicsize = sizeof(SerialAccessoryMessage),
@@ -60,7 +60,7 @@ static PyTypeObject serial_accessory_message_type = {
 
 static PyObject* serial_accessory_message_from(const XIMU3_SerialAccessoryMessage* const message)
 {
-    SerialAccessoryMessage* const self = (SerialAccessoryMessage*) serial_accessory_message_type.tp_alloc(&serial_accessory_message_type, 0);
+    SerialAccessoryMessage* const self = (SerialAccessoryMessage*) serial_accessory_message_object.tp_alloc(&serial_accessory_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

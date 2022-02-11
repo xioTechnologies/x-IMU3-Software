@@ -91,7 +91,7 @@ static PyMethodDef rotation_matrix_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject rotation_matrix_message_type = {
+static PyTypeObject rotation_matrix_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.RotationMatrixMessage",
         .tp_basicsize = sizeof(RotationMatrixMessage),
@@ -102,7 +102,7 @@ static PyTypeObject rotation_matrix_message_type = {
 
 static PyObject* rotation_matrix_message_from(const XIMU3_RotationMatrixMessage* const message)
 {
-    RotationMatrixMessage* const self = (RotationMatrixMessage*) rotation_matrix_message_type.tp_alloc(&rotation_matrix_message_type, 0);
+    RotationMatrixMessage* const self = (RotationMatrixMessage*) rotation_matrix_message_object.tp_alloc(&rotation_matrix_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

@@ -43,7 +43,7 @@ static PyMethodDef temperature_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject temperature_message_type = {
+static PyTypeObject temperature_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.TemperatureMessage",
         .tp_basicsize = sizeof(TemperatureMessage),
@@ -54,7 +54,7 @@ static PyTypeObject temperature_message_type = {
 
 static PyObject* temperature_message_from(const XIMU3_TemperatureMessage* const message)
 {
-    TemperatureMessage* const self = (TemperatureMessage*) temperature_message_type.tp_alloc(&temperature_message_type, 0);
+    TemperatureMessage* const self = (TemperatureMessage*) temperature_message_object.tp_alloc(&temperature_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

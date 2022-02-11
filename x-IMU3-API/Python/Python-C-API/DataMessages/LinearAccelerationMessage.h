@@ -79,7 +79,7 @@ static PyMethodDef linear_acceleration_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject linear_acceleration_message_type = {
+static PyTypeObject linear_acceleration_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.LinearAccelerationMessage",
         .tp_basicsize = sizeof(LinearAccelerationMessage),
@@ -90,7 +90,7 @@ static PyTypeObject linear_acceleration_message_type = {
 
 static PyObject* linear_acceleration_message_from(const XIMU3_LinearAccelerationMessage* const message)
 {
-    LinearAccelerationMessage* const self = (LinearAccelerationMessage*) linear_acceleration_message_type.tp_alloc(&linear_acceleration_message_type, 0);
+    LinearAccelerationMessage* const self = (LinearAccelerationMessage*) linear_acceleration_message_object.tp_alloc(&linear_acceleration_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

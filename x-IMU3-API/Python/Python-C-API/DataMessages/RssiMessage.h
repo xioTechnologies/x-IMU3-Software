@@ -49,7 +49,7 @@ static PyMethodDef rssi_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject rssi_message_type = {
+static PyTypeObject rssi_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.RssiMessage",
         .tp_basicsize = sizeof(RssiMessage),
@@ -60,7 +60,7 @@ static PyTypeObject rssi_message_type = {
 
 static PyObject* rssi_message_from(const XIMU3_RssiMessage* const message)
 {
-    RssiMessage* const self = (RssiMessage*) rssi_message_type.tp_alloc(&rssi_message_type, 0);
+    RssiMessage* const self = (RssiMessage*) rssi_message_object.tp_alloc(&rssi_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

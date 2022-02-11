@@ -104,7 +104,7 @@ static PyMethodDef serial_discovery_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject serial_discovery_type = {
+static PyTypeObject serial_discovery_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.SerialDiscovery",
         .tp_basicsize = sizeof(SerialDiscovery),

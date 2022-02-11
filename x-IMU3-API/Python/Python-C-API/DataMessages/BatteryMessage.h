@@ -55,7 +55,7 @@ static PyMethodDef battery_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject battery_message_type = {
+static PyTypeObject battery_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.BatteryMessage",
         .tp_basicsize = sizeof(BatteryMessage),
@@ -66,7 +66,7 @@ static PyTypeObject battery_message_type = {
 
 static PyObject* battery_message_from(const XIMU3_BatteryMessage* const message)
 {
-    BatteryMessage* const self = (BatteryMessage*) battery_message_type.tp_alloc(&battery_message_type, 0);
+    BatteryMessage* const self = (BatteryMessage*) battery_message_object.tp_alloc(&battery_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

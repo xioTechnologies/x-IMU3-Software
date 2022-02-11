@@ -63,7 +63,7 @@ static PyMethodDef file_converter_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject file_converter_type = {
+static PyTypeObject file_converter_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.FileConverter",
         .tp_basicsize = sizeof(FileConverter),

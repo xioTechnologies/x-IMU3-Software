@@ -39,7 +39,7 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
 
         PyObject* connection = PyList_GetItem(connections_list, index);
 
-        if (PyObject_IsInstance(connection, (PyObject*) &connection_type) != 1)
+        if (PyObject_IsInstance(connection, (PyObject*) &connection_object) != 1)
         {
             PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
             return NULL;
@@ -93,7 +93,7 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
 
         PyObject* connection = PyList_GetItem(connections_list, index);
 
-        if (PyObject_IsInstance(connection, (PyObject*) &connection_type) != 1)
+        if (PyObject_IsInstance(connection, (PyObject*) &connection_object) != 1)
         {
             PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
             return NULL;
@@ -110,7 +110,7 @@ static PyMethodDef data_logger_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject data_logger_type = {
+static PyTypeObject data_logger_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.DataLogger",
         .tp_basicsize = sizeof(DataLogger),

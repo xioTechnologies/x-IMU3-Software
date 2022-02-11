@@ -71,7 +71,7 @@ static PyMethodDef statistics_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject statistics_type = {
+static PyTypeObject statistics_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.Statistics",
         .tp_basicsize = sizeof(Statistics),
@@ -83,7 +83,7 @@ static PyTypeObject statistics_type = {
 
 static PyObject* statistics_from(const XIMU3_Statistics* const statistics)
 {
-    Statistics* const self = (Statistics*) statistics_type.tp_alloc(&statistics_type, 0);
+    Statistics* const self = (Statistics*) statistics_object.tp_alloc(&statistics_object, 0);
     self->statistics = *statistics;
     return (PyObject*) self;
 }
