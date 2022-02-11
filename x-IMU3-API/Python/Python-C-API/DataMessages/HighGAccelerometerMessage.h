@@ -55,7 +55,7 @@ static PyMethodDef high_g_accelerometer_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject high_g_accelerometer_message_type = {
+static PyTypeObject high_g_accelerometer_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.HighGAccelerometerMessage",
         .tp_basicsize = sizeof(HighGAccelerometerMessage),
@@ -66,7 +66,7 @@ static PyTypeObject high_g_accelerometer_message_type = {
 
 static PyObject* high_g_accelerometer_message_from(const XIMU3_HighGAccelerometerMessage* const message)
 {
-    HighGAccelerometerMessage* const self = (HighGAccelerometerMessage*) high_g_accelerometer_message_type.tp_alloc(&high_g_accelerometer_message_type, 0);
+    HighGAccelerometerMessage* const self = (HighGAccelerometerMessage*) high_g_accelerometer_message_object.tp_alloc(&high_g_accelerometer_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

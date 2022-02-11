@@ -47,7 +47,7 @@ static PyMethodDef usb_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject usb_connection_info_type = {
+static PyTypeObject usb_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.UsbConnectionInfo",
         .tp_basicsize = sizeof(UsbConnectionInfo),
@@ -58,7 +58,7 @@ static PyTypeObject usb_connection_info_type = {
 
 static PyObject* usb_connection_info_from(const XIMU3_UsbConnectionInfo* const connection_info)
 {
-    UsbConnectionInfo* const self = (UsbConnectionInfo*) usb_connection_info_type.tp_alloc(&usb_connection_info_type, 0);
+    UsbConnectionInfo* const self = (UsbConnectionInfo*) usb_connection_info_object.tp_alloc(&usb_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }
@@ -109,7 +109,7 @@ static PyMethodDef serial_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject serial_connection_info_type = {
+static PyTypeObject serial_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.SerialConnectionInfo",
         .tp_basicsize = sizeof(SerialConnectionInfo),
@@ -120,7 +120,7 @@ static PyTypeObject serial_connection_info_type = {
 
 static PyObject* serial_connection_info_from(const XIMU3_SerialConnectionInfo* const connection_info)
 {
-    SerialConnectionInfo* const self = (SerialConnectionInfo*) serial_connection_info_type.tp_alloc(&serial_connection_info_type, 0);
+    SerialConnectionInfo* const self = (SerialConnectionInfo*) serial_connection_info_object.tp_alloc(&serial_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }
@@ -169,7 +169,7 @@ static PyMethodDef tcp_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject tcp_connection_info_type = {
+static PyTypeObject tcp_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.TcpConnectionInfo",
         .tp_basicsize = sizeof(TcpConnectionInfo),
@@ -180,7 +180,7 @@ static PyTypeObject tcp_connection_info_type = {
 
 static PyObject* tcp_connection_info_from(const XIMU3_TcpConnectionInfo* const connection_info)
 {
-    TcpConnectionInfo* const self = (TcpConnectionInfo*) tcp_connection_info_type.tp_alloc(&tcp_connection_info_type, 0);
+    TcpConnectionInfo* const self = (TcpConnectionInfo*) tcp_connection_info_object.tp_alloc(&tcp_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }
@@ -231,7 +231,7 @@ static PyMethodDef udp_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject udp_connection_info_type = {
+static PyTypeObject udp_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.UdpConnectionInfo",
         .tp_basicsize = sizeof(UdpConnectionInfo),
@@ -242,7 +242,7 @@ static PyTypeObject udp_connection_info_type = {
 
 static PyObject* udp_connection_info_from(const XIMU3_UdpConnectionInfo* const connection_info)
 {
-    UdpConnectionInfo* const self = (UdpConnectionInfo*) udp_connection_info_type.tp_alloc(&udp_connection_info_type, 0);
+    UdpConnectionInfo* const self = (UdpConnectionInfo*) udp_connection_info_object.tp_alloc(&udp_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }
@@ -289,7 +289,7 @@ static PyMethodDef bluetooth_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject bluetooth_connection_info_type = {
+static PyTypeObject bluetooth_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.BluetoothConnectionInfo",
         .tp_basicsize = sizeof(BluetoothConnectionInfo),
@@ -300,7 +300,7 @@ static PyTypeObject bluetooth_connection_info_type = {
 
 static PyObject* bluetooth_connection_info_from(const XIMU3_BluetoothConnectionInfo* const connection_info)
 {
-    BluetoothConnectionInfo* const self = (BluetoothConnectionInfo*) bluetooth_connection_info_type.tp_alloc(&bluetooth_connection_info_type, 0);
+    BluetoothConnectionInfo* const self = (BluetoothConnectionInfo*) bluetooth_connection_info_object.tp_alloc(&bluetooth_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }
@@ -347,7 +347,7 @@ static PyMethodDef file_connection_info_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject file_connection_info_type = {
+static PyTypeObject file_connection_info_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.FileConnectionInfo",
         .tp_basicsize = sizeof(FileConnectionInfo),
@@ -358,7 +358,7 @@ static PyTypeObject file_connection_info_type = {
 
 static PyObject* file_connection_info_from(const XIMU3_FileConnectionInfo* const connection_info)
 {
-    FileConnectionInfo* const self = (FileConnectionInfo*) file_connection_info_type.tp_alloc(&file_connection_info_type, 0);
+    FileConnectionInfo* const self = (FileConnectionInfo*) file_connection_info_object.tp_alloc(&file_connection_info_object, 0);
     self->connection_info = *connection_info;
     return (PyObject*) self;
 }

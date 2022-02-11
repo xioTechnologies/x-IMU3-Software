@@ -48,7 +48,7 @@ static PyMethodDef ping_response_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject ping_response_type = {
+static PyTypeObject ping_response_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.PingResponse",
         .tp_basicsize = sizeof(PingResponse),
@@ -59,7 +59,7 @@ static PyTypeObject ping_response_type = {
 
 static PyObject* ping_response_from(const XIMU3_PingResponse* const pingResponse)
 {
-    PingResponse* const self = (PingResponse*) ping_response_type.tp_alloc(&ping_response_type, 0);
+    PingResponse* const self = (PingResponse*) ping_response_object.tp_alloc(&ping_response_object, 0);
     self->pingResponse = *pingResponse;
     return (PyObject*) self;
 }

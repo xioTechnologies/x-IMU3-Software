@@ -49,7 +49,7 @@ static PyMethodDef error_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject error_message_type = {
+static PyTypeObject error_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.ErrorMessage",
         .tp_basicsize = sizeof(ErrorMessage),
@@ -60,7 +60,7 @@ static PyTypeObject error_message_type = {
 
 static PyObject* error_message_from(const XIMU3_ErrorMessage* const message)
 {
-    ErrorMessage* const self = (ErrorMessage*) error_message_type.tp_alloc(&error_message_type, 0);
+    ErrorMessage* const self = (ErrorMessage*) error_message_object.tp_alloc(&error_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

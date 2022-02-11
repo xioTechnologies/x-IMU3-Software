@@ -57,7 +57,7 @@ static PyMethodDef discovered_serial_device_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject discovered_serial_device_type = {
+static PyTypeObject discovered_serial_device_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.DiscoveredSerialDevice",
         .tp_basicsize = sizeof(DiscoveredSerialDevice),
@@ -69,7 +69,7 @@ static PyTypeObject discovered_serial_device_type = {
 
 static PyObject* discovered_serial_device_from(const XIMU3_DiscoveredSerialDevice* const device)
 {
-    DiscoveredSerialDevice* const self = (DiscoveredSerialDevice*) discovered_serial_device_type.tp_alloc(&discovered_serial_device_type, 0);
+    DiscoveredSerialDevice* const self = (DiscoveredSerialDevice*) discovered_serial_device_object.tp_alloc(&discovered_serial_device_object, 0);
     self->device = *device;
     return (PyObject*) self;
 }

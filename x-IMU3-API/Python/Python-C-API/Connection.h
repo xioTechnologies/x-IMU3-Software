@@ -28,32 +28,32 @@ static PyObject* connection_new(PyTypeObject* subtype, PyObject* args, PyObject*
 
     if (PyArg_ParseTuple(args, "O", &connection_info))
     {
-        if (PyObject_IsInstance(connection_info, (PyObject*) &usb_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &usb_connection_info_object))
         {
             self->connection = XIMU3_connection_new_usb(((UsbConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
-        if (PyObject_IsInstance(connection_info, (PyObject*) &serial_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &serial_connection_info_object))
         {
             self->connection = XIMU3_connection_new_serial(((SerialConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
-        if (PyObject_IsInstance(connection_info, (PyObject*) &tcp_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &tcp_connection_info_object))
         {
             self->connection = XIMU3_connection_new_tcp(((TcpConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
-        if (PyObject_IsInstance(connection_info, (PyObject*) &udp_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &udp_connection_info_object))
         {
             self->connection = XIMU3_connection_new_udp(((UdpConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
-        if (PyObject_IsInstance(connection_info, (PyObject*) &bluetooth_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &bluetooth_connection_info_object))
         {
             self->connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
-        if (PyObject_IsInstance(connection_info, (PyObject*) &file_connection_info_type))
+        if (PyObject_IsInstance(connection_info, (PyObject*) &file_connection_info_object))
         {
             self->connection = XIMU3_connection_new_file(((FileConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
@@ -628,7 +628,7 @@ static PyMethodDef connection_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject connection_type = {
+static PyTypeObject connection_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.Connection",
         .tp_basicsize = sizeof(Connection),

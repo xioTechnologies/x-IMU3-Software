@@ -49,7 +49,7 @@ static PyMethodDef notification_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject notification_message_type = {
+static PyTypeObject notification_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.NotificationMessage",
         .tp_basicsize = sizeof(NotificationMessage),
@@ -60,7 +60,7 @@ static PyTypeObject notification_message_type = {
 
 static PyObject* notification_message_from(const XIMU3_NotificationMessage* const message)
 {
-    NotificationMessage* const self = (NotificationMessage*) notification_message_type.tp_alloc(&notification_message_type, 0);
+    NotificationMessage* const self = (NotificationMessage*) notification_message_object.tp_alloc(&notification_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

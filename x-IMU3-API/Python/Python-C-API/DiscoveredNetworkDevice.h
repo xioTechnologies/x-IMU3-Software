@@ -71,7 +71,7 @@ static PyMethodDef discovered_network_device_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject discovered_network_device_type = {
+static PyTypeObject discovered_network_device_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.DiscoveredNetworkDevice",
         .tp_basicsize = sizeof(DiscoveredNetworkDevice),
@@ -83,7 +83,7 @@ static PyTypeObject discovered_network_device_type = {
 
 static PyObject* discovered_network_device_from(const XIMU3_DiscoveredNetworkDevice* const device)
 {
-    DiscoveredNetworkDevice* const self = (DiscoveredNetworkDevice*) discovered_network_device_type.tp_alloc(&discovered_network_device_type, 0);
+    DiscoveredNetworkDevice* const self = (DiscoveredNetworkDevice*) discovered_network_device_object.tp_alloc(&discovered_network_device_object, 0);
     self->device = *device;
     return (PyObject*) self;
 }

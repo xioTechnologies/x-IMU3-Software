@@ -79,7 +79,7 @@ static PyMethodDef earth_acceleration_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject earth_acceleration_message_type = {
+static PyTypeObject earth_acceleration_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.EarthAccelerationMessage",
         .tp_basicsize = sizeof(EarthAccelerationMessage),
@@ -90,7 +90,7 @@ static PyTypeObject earth_acceleration_message_type = {
 
 static PyObject* earth_acceleration_message_from(const XIMU3_EarthAccelerationMessage* const message)
 {
-    EarthAccelerationMessage* const self = (EarthAccelerationMessage*) earth_acceleration_message_type.tp_alloc(&earth_acceleration_message_type, 0);
+    EarthAccelerationMessage* const self = (EarthAccelerationMessage*) earth_acceleration_message_object.tp_alloc(&earth_acceleration_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

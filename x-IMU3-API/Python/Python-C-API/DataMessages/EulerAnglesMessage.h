@@ -55,7 +55,7 @@ static PyMethodDef euler_angles_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject euler_angles_message_type = {
+static PyTypeObject euler_angles_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.EulerAnglesMessage",
         .tp_basicsize = sizeof(EulerAnglesMessage),
@@ -66,7 +66,7 @@ static PyTypeObject euler_angles_message_type = {
 
 static PyObject* euler_angles_message_from(const XIMU3_EulerAnglesMessage* const message)
 {
-    EulerAnglesMessage* const self = (EulerAnglesMessage*) euler_angles_message_type.tp_alloc(&euler_angles_message_type, 0);
+    EulerAnglesMessage* const self = (EulerAnglesMessage*) euler_angles_message_object.tp_alloc(&euler_angles_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

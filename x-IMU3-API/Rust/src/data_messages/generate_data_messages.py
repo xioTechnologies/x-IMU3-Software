@@ -260,7 +260,7 @@ with open("../../../Python/Python-C-API/DataMessages/DataMessages.h", "w") as he
             header_file.write("#include \"" + helpers.pascal_case(json_object["name"]) + "Message.h\"\n")
 
 # Insert code into x-IMU3-API/Python/Python-C-API/ximu3.c
-template = "        add_type(module, &$NameSnakeCase$_message_type, \"$NamePascalCase$Message\") &&\n"
+template = "        add_object(module, &$NameSnakeCase$_message_object, \"$NamePascalCase$Message\") &&\n"
 
 insert("../../../Python/Python-C-API/ximu3.c", template, "0")
 

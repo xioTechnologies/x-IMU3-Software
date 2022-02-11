@@ -73,7 +73,7 @@ static PyMethodDef inertial_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject inertial_message_type = {
+static PyTypeObject inertial_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.InertialMessage",
         .tp_basicsize = sizeof(InertialMessage),
@@ -84,7 +84,7 @@ static PyTypeObject inertial_message_type = {
 
 static PyObject* inertial_message_from(const XIMU3_InertialMessage* const message)
 {
-    InertialMessage* const self = (InertialMessage*) inertial_message_type.tp_alloc(&inertial_message_type, 0);
+    InertialMessage* const self = (InertialMessage*) inertial_message_object.tp_alloc(&inertial_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

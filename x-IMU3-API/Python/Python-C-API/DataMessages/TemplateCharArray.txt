@@ -47,7 +47,7 @@ static PyMethodDef $NameSnakeCase$_message_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject $NameSnakeCase$_message_type = {
+static PyTypeObject $NameSnakeCase$_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.$NamePascalCase$Message",
         .tp_basicsize = sizeof($NamePascalCase$Message),
@@ -58,7 +58,7 @@ static PyTypeObject $NameSnakeCase$_message_type = {
 
 static PyObject* $NameSnakeCase$_message_from(const XIMU3_$NamePascalCase$Message* const message)
 {
-    $NamePascalCase$Message* const self = ($NamePascalCase$Message*) $NameSnakeCase$_message_type.tp_alloc(&$NameSnakeCase$_message_type, 0);
+    $NamePascalCase$Message* const self = ($NamePascalCase$Message*) $NameSnakeCase$_message_object.tp_alloc(&$NameSnakeCase$_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }

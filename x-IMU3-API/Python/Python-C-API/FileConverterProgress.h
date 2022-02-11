@@ -53,7 +53,7 @@ static PyMethodDef file_converter_progress_methods[] = {
         { NULL } /* sentinel */
 };
 
-static PyTypeObject file_converter_progress_type = {
+static PyTypeObject file_converter_progress_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = "ximu3.FileConverterProgress",
         .tp_basicsize = sizeof(FileConverterProgress),
@@ -65,7 +65,7 @@ static PyTypeObject file_converter_progress_type = {
 
 static PyObject* file_converter_progress_from(const XIMU3_FileConverterProgress* const progress)
 {
-    FileConverterProgress* const self = (FileConverterProgress*) file_converter_progress_type.tp_alloc(&file_converter_progress_type, 0);
+    FileConverterProgress* const self = (FileConverterProgress*) file_converter_progress_object.tp_alloc(&file_converter_progress_object, 0);
     self->progress = *progress;
     return (PyObject*) self;
 }
