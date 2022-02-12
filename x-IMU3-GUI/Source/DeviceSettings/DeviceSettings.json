@@ -405,7 +405,7 @@
         "default": "{8}"
     },
     {
-        "name": "High-g message rate divisor",
+        "name": "High-g accelerometer message rate divisor",
         "declaration": "uint32_t name",
         "default": "{32}"
     },

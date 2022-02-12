@@ -92,7 +92,7 @@
             <Setting key="inertialMessageRateDivisor" displayName="Inertial" type="number" readOnly="false"/>
             <Setting key="magnetometerMessageRateDivisor" displayName="Magnetometer" type="number" readOnly="false"/>
             <Setting key="ahrsMessageRateDivisor" displayName="AHRS" type="number" readOnly="false"/>
-            <Setting key="highGMessageRateDivisor" displayName="High-g" type="number" readOnly="false"/>
+            <Setting key="highGAccelerometerMessageRateDivisor" displayName="High-g Accelerometer" type="number" readOnly="false"/>
             <Setting key="temperatureMessageRateDivisor" displayName="Temperature" type="number" readOnly="false"/>
             <Setting key="batteryMessageRateDivisor" displayName="Battery" type="number" readOnly="false"/>
             <Setting key="rssiMessageRateDivisor" displayName="RSSI" type="number" readOnly="false"/>
