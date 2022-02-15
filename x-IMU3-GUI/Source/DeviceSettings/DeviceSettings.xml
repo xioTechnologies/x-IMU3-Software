@@ -68,8 +68,8 @@
         <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerFileNameIsTime" displayName="File Name Is Time" type="bool" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerMaximumFileSize" displayName="Maximum File Size (KB)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerMaximumFilePeriod" displayName="Maximum File Period (s)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaxFileSize" displayName="Max File Size (MB)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaxFilePeriod" displayName="Max File Period (s)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
     </Group>
     <Group displayName="AHRS">
         <Setting key="axesAlignment" displayName="Axes Alignment" type="FusionAxesAlignment" readOnly="false"/>
