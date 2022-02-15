@@ -320,12 +320,12 @@
         "default": "{true}"
     },
     {
-        "name": "Data logger maximum file size",
+        "name": "Data logger max file size",
         "declaration": "uint32_t name",
         "default": "{0}"
     },
     {
-        "name": "Data logger maximum file period",
+        "name": "Data logger max file period",
         "declaration": "uint32_t name",
         "default": "{0}"
     },
