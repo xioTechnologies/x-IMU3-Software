@@ -15,8 +15,9 @@ public:
     enum class Status
     {
         normal,
-        changed,
-        failed
+        modified,
+        readFailed,
+        writeFailed,
     };
 
     static constexpr int rowMargin = 4;
@@ -43,8 +44,9 @@ protected:
 private:
     juce::ValueTree tree;
     SimpleLabel name;
-    Icon hintIcon { BinaryData::upload_svg, "Value Modified But Not Written To Device" };
-    Icon warningIcon { BinaryData::warning_orange_svg, "Read/Write Setting Command Failed" };
+    Icon modifiedIcon { BinaryData::upload_svg, "Value Modified But Not Written To Device" };
+    Icon readFailedIcon { BinaryData::warning_orange_svg, "Read Setting Command Failed" };
+    Icon writeFailedIcon { BinaryData::warning_orange_svg, "Write Setting Command Failed" };
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
 

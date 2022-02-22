@@ -29,7 +29,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
 
                                             for (const auto& failedCommand : failedCommands)
                                             {
-                                                settingsTree.setStatus(failedCommand.key, Setting::Status::failed);
+                                                settingsTree.setStatus(failedCommand.key, failedCommand.value.isVoid() ? Setting::Status::readFailed : Setting::Status::writeFailed);
                                             }
                                         });
     };
