@@ -62,7 +62,7 @@ void DeviceSettings::setValue(const CommandMessage& response)
         }
 
         setting.setProperty(DeviceSettingsIDs::value, response.value, nullptr);
-        setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::changed, nullptr);
+        setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
         return;
     }
 }
