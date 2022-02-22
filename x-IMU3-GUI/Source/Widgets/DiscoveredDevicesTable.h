@@ -37,9 +37,12 @@ public:
     std::function<void()> onSelectionChanged;
 
 private:
-    static constexpr int selectedColumnID = 1;
-    static constexpr int nameAndSerialNumberColumnID = 2;
-    static constexpr int connectionInfoColumnID = 3;
+    enum class ColumnIDs
+    {
+        selected = 1,
+        nameAndSerialNumber = 2,
+        connectionInfo = 3
+    };
 
     std::vector<Row> rows;
 

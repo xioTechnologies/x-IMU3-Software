@@ -1,6 +1,7 @@
-#include "../CustomLookAndFeel.h"
 #include "AxesRange.h"
+#include "../CustomLookAndFeel.h"
 #include "Graph.h"
+#include "../Helpers.h"
 
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
 {
@@ -146,7 +147,7 @@ void Graph::render()
     };
 
     // Render x axis label
-    const auto secondsText = "Seconds (" + juce::String(1E-6f * (float) graphDataBuffer.getMostRecentTimestamp(), 3) + ")";
+    const auto secondsText = "Seconds (" + Helpers::formatTimestamp(graphDataBuffer.getMostRecentTimestamp()) + ")";
     renderer.getResources().getGraphAxisLabelText().setText(secondsText.replaceCharacters("123456789", "000000000"));
     const auto secondsTextWidth = renderer.getResources().getGraphAxisLabelText().getTotalWidth();
     renderText(renderer.getResources().getGraphAxisLabelText(), secondsText, juce::Colours::white, (float) (bounds.getWidth() / 2) - secondsTextWidth / 2, (xAxisLabelHeight / 2.0f) * (float) context.getRenderingScale(), juce::Justification::centredLeft, false);
