@@ -169,7 +169,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 
     menu.addItem("Send Command", [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command To " + deviceNameAndSerialNumber.getText()), [this]
+        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to " + deviceNameAndSerialNumber.getText()), [this]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {

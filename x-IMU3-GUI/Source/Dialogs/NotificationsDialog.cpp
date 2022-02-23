@@ -3,7 +3,7 @@
 #include "../Widgets/Icon.h"
 
 NotificationsDialog::NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_, const std::function<void()>& onClear)
-        : Dialog(BinaryData::warning_white_svg, "Notifications", "Close", "", &clearAllButton, 80, true),
+        : Dialog(BinaryData::speech_white_svg, "Notification and Error Messages", "Close", "", &clearAllButton, 80, true),
           notificationMessages(notificationMessages_)
 {
     addAndMakeVisible(clearAllButton);

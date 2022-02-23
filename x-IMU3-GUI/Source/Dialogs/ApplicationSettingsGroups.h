@@ -29,7 +29,7 @@ public:
     void resized() override;
 
 private:
-    CustomToggleButton searchForConnectionsToggle { "Search For Connections" };
+    CustomToggleButton searchForConnectionsToggle { "Search for Connections" };
     CustomToggleButton checkFirmwareVersionToggle { "Check Firmware Version" };
     CustomToggleButton checkDeviceTimeToggle { "Check Device Time" };
 
@@ -80,7 +80,7 @@ public:
 private:
     CustomToggleButton hideUnusedDeviceSettingsButton { "Hide Unused Device Settings" };
     CustomToggleButton showApplicationErrorsButton { "Show Application Errors" };
-    CustomToggleButton showNotificationsButton { "Show Notification And Error Messages" };
+    CustomToggleButton showNotificationsButton { "Show Notification and Error Messages" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MiscGroup)
 };

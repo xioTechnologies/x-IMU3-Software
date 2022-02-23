@@ -12,7 +12,7 @@
         <Setting key="serialRtsCtsEnabled" displayName="RTS/CTS" type="bool" readOnly="false" hideKey="serialMode" hideValues="0"/>
         <Group displayName="Serial Accessory" hideKey="serialMode" hideValues="0 1">
             <Group displayName="Send Conditions">
-                <Setting key="serialAccessoryNumberOfBytes" displayName="Number Of Bytes" type="number" readOnly="false"/>
+                <Setting key="serialAccessoryNumberOfBytes" displayName="Number of Bytes" type="number" readOnly="false"/>
                 <Setting key="serialAccessoryTerminationByte" displayName="Termination Byte" type="number" readOnly="false"/>
                 <Setting key="serialAccessoryTimeout" displayName="Timeout (ms)" type="number" readOnly="false"/>
             </Group>
@@ -67,7 +67,7 @@
         <Setting key="dataLoggerEnabled" displayName="Enabled" type="bool" readOnly="false"/>
         <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerFileNameIsTime" displayName="File Name Is Time" type="bool" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerFileNameIsTime" displayName="File Name is Time" type="bool" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerMaxFileSize" displayName="Max File Size (MB)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerMaxFilePeriod" displayName="Max File Period (s)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
     </Group>

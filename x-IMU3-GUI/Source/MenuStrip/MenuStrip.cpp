@@ -69,7 +69,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     sendCommandButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command To All Devices"), [this]
+        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to All Devices"), [this]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {

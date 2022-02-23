@@ -46,7 +46,7 @@ void StartupGroup::resized()
     checkDeviceTimeToggle.setBounds(bounds.removeFromTop(rowHeight));
 }
 
-SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search For Connections", 1)
+SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search for Connections", 1)
 {
     addAndMakeVisible(searchUsbToggle);
     addAndMakeVisible(searchSerialToggle);
