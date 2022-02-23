@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Dialog.h"
+#include "../Widgets/SimpleLabel.h"
 
 class NotificationsDialog : public Dialog,
                             private juce::TableListBoxModel
@@ -14,13 +15,11 @@ public:
         bool isUnread = true;
     };
 
-    NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_);
+    NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_, const std::function<void()>& onClear);
 
     void resized() override;
 
     void notificationMessagesChanged();
-
-    std::function<void()> onClear;
 
 private:
     enum class ColumnIDs
@@ -32,21 +31,24 @@ private:
 
     std::vector<NotificationMessage>& notificationMessages;
 
-    juce::TableListBox table { "", this };
+    DialogButton clearAllButton { "Clear All" };
 
-    static bool isScrolledToBottom(const juce::TableListBox&);
+    SimpleLabel typeLabel { "Type", UIFonts::defaultFont, juce::Justification::centred };
+    SimpleLabel timestampLabel { "Timestamp" };
+    SimpleLabel messageLabel { "Message" };
+    juce::TableListBox table { "", this };
 
     int getNumRows() override;
 
-    void paintRowBackground(juce::Graphics& g, int rowNumber, int, int, bool) override;
+    void paintRowBackground(juce::Graphics&, int, int, int, bool) override
+    {
+    }
 
     void paintCell(juce::Graphics&, int, int, int, int, bool) override
     {
     }
 
     juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
-
-    void cellClicked(int, int, const juce::MouseEvent& mouseEvent) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotificationsDialog)
 };

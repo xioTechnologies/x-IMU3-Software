@@ -38,19 +38,17 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        DialogLauncher::launchDialog(std::make_unique<NotificationsDialog>(notificationMessages), [this]
-        {
-            for (auto& notificationMessage : notificationMessages)
-            {
-                notificationMessage.isUnread = false;
-            }
-            notificationMessagesChanged(false);
-        });
-
-        static_cast<NotificationsDialog*>(DialogLauncher::getLaunchedDialog())->onClear = [&]
+        DialogLauncher::launchDialog(std::make_unique<NotificationsDialog>(notificationMessages, [&]
         {
             notificationMessagesChanged(false);
-        };
+        }), [this]
+                                     {
+                                         for (auto& notificationMessage : notificationMessages)
+                                         {
+                                             notificationMessage.isUnread = false;
+                                         }
+                                         notificationMessagesChanged(false);
+                                     });
     };
 
     notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -157,17 +155,14 @@ void DevicePanelFooter::notificationMessagesChanged(const bool showLatest)
     {
         latestNotificationMessage.setText(notificationMessages.back().message);
         latestNotificationMessage.setColour(juce::Label::textColourId, notificationMessages.back().isError ? UIColours::warning : juce::Colours::white);
-        startTimer(5000);
+    }
+    else
+    {
+        latestNotificationMessage.setText("");
     }
 
     if (auto* dialog = dynamic_cast<NotificationsDialog*>(DialogLauncher::getLaunchedDialog()))
     {
         dialog->notificationMessagesChanged();
     }
-}
-
-void DevicePanelFooter::timerCallback()
-{
-    latestNotificationMessage.setText("");
-    stopTimer();
 }

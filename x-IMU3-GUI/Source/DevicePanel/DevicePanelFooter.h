@@ -7,7 +7,7 @@
 #include "../Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class DevicePanelFooter : public juce::Component, private juce::Timer
+class DevicePanelFooter : public juce::Component
 {
 public:
     DevicePanelFooter(Notifications& notificationsPopup_, ximu3::Connection& connection_);
@@ -41,8 +41,6 @@ private:
     std::vector<NotificationsDialog::NotificationMessage> notificationMessages;
 
     void notificationMessagesChanged(const bool showLatest);
-
-    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelFooter)
 };

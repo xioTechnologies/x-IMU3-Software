@@ -1,15 +1,28 @@
 #include "../Helpers.h"
 #include "NotificationsDialog.h"
 #include "../Widgets/Icon.h"
-#include "../Widgets/SimpleLabel.h"
 
-NotificationsDialog::NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_) : Dialog(BinaryData::warning_white_svg, "Notifications", "OK", "", nullptr, 0, true), notificationMessages(notificationMessages_)
+NotificationsDialog::NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_, const std::function<void()>& onClear) : Dialog(BinaryData::warning_white_svg, "Notifications", "OK", "", &clearAllButton, 80, true),
+                                                                                                                                          notificationMessages(notificationMessages_)
 {
+    addAndMakeVisible(clearAllButton);
+    clearAllButton.onClick = [&, onClear = onClear]
+    {
+        notificationMessages.clear();
+        onClear();
+    };
+
+    addAndMakeVisible(typeLabel);
+    addAndMakeVisible(timestampLabel);
+    addAndMakeVisible(messageLabel);
+
     addAndMakeVisible(table);
-    table.getHeader().addColumn("Type", (int) ColumnIDs::type, 100, 100, 100);
-    table.getHeader().addColumn("Timestamp", (int) ColumnIDs::timestamp, 100, 100, 100);
-    table.getHeader().addColumn("Message", (int) ColumnIDs::message, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::type, 70, 70, 70);
+    table.getHeader().addColumn("", (int) ColumnIDs::timestamp, 100, 100, 100);
+    table.getHeader().addColumn("", (int) ColumnIDs::message, 1);
     table.getHeader().setStretchToFitActive(true);
+    table.setHeaderHeight(0);
+    table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
 
     setSize(800, 480);
 }
@@ -18,27 +31,20 @@ void NotificationsDialog::resized()
 {
     Dialog::resized();
 
-    const auto wasScrolledToBottom = isScrolledToBottom(table);
-    table.setBounds(getContentBounds());
-    if (wasScrolledToBottom)
-    {
-        table.getVerticalScrollBar().scrollToBottom(juce::sendNotificationSync);
-    }
+    auto bounds = getContentBounds(true);
+
+    static constexpr int headerHeight = 30;
+    bounds.removeFromTop(headerHeight);
+    typeLabel.setBounds(table.getHeader().getColumnPosition(0).withHeight(headerHeight));
+    timestampLabel.setBounds(table.getHeader().getColumnPosition(1).withHeight(headerHeight));
+    messageLabel.setBounds(table.getHeader().getColumnPosition(2).withHeight(headerHeight));
+
+    table.setBounds(bounds);
 }
 
 void NotificationsDialog::notificationMessagesChanged()
 {
-    const auto wasScrolledToBottom = isScrolledToBottom(table);
     table.updateContent();
-    if (wasScrolledToBottom)
-    {
-        table.getVerticalScrollBar().scrollToBottom(juce::sendNotificationSync);
-    }
-}
-
-bool NotificationsDialog::isScrolledToBottom(const juce::TableListBox& table)
-{
-    return (table.getVerticalScrollBar().isVisible() == false) || (table.getVerticalScrollBar().getCurrentRange().getEnd() == table.getVerticalScrollBar().getMaximumRangeLimit());
 }
 
 int NotificationsDialog::getNumRows()
@@ -46,23 +52,18 @@ int NotificationsDialog::getNumRows()
     return (int) notificationMessages.size();
 }
 
-void NotificationsDialog::paintRowBackground(juce::Graphics& g, int rowNumber, int, int, bool)
-{
-    g.fillAll(rowNumber % 2 == 0 ? UIColours::menuStrip : UIColours::background);
-}
-
 juce::Component* NotificationsDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
     delete existingComponentToUpdate;
 
-    const auto& notificationMessage = notificationMessages[(size_t) rowNumber];
+    const auto& notificationMessage = notificationMessages[notificationMessages.size() - 1 - (size_t) rowNumber];
 
     switch ((ColumnIDs) columnID)
     {
         case ColumnIDs::type:
-            struct PaddedIcon : juce::Component
+            struct CustomIcon : juce::Component
             {
-                PaddedIcon(const juce::String& svg) : icon(svg, "")
+                CustomIcon(const juce::String& svg) : icon(svg, "")
                 {
                     addAndMakeVisible(icon);
                 }
@@ -75,42 +76,31 @@ juce::Component* NotificationsDialog::refreshComponentForCell(int rowNumber, int
                 Icon icon;
             };
 
-            return new PaddedIcon(notificationMessage.isError ? BinaryData::warning_orange_svg : BinaryData::speech_white_svg);
+            return new CustomIcon(notificationMessage.isError ?
+                                  (notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg) :
+                                  (notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg));
 
         case ColumnIDs::timestamp:
-            return new SimpleLabel(Helpers::formatTimestamp(notificationMessage.timestamp));
+        {
+            auto* label = new SimpleLabel(Helpers::formatTimestamp(notificationMessage.timestamp));
+            if (notificationMessage.isUnread == false)
+            {
+                label->setColour(juce::Label::textColourId, UIColours::grey);
+            }
+            return label;
+        }
 
         case ColumnIDs::message:
-            return new SimpleLabel(notificationMessage.message);
+        {
+            auto* label = new SimpleLabel(notificationMessage.message);
+            if (notificationMessage.isUnread == false)
+            {
+                label->setColour(juce::Label::textColourId, UIColours::grey);
+            }
+            return label;
+        }
 
         default:
             return nullptr;
-    }
-}
-
-void NotificationsDialog::cellClicked(int, int, const juce::MouseEvent& mouseEvent)
-{
-    if (mouseEvent.mods.isPopupMenu())
-    {
-        juce::PopupMenu menu;
-        menu.addItem("Copy To Clipboard", [this]
-        {
-            juce::String text;
-            for (const auto& notificationMessage : notificationMessages)
-            {
-                text += Helpers::formatTimestamp(notificationMessage.timestamp) + " " + notificationMessage.message + "\n";
-            }
-            juce::SystemClipboard::copyTextToClipboard(text);
-        });
-        menu.addItem("Clear All", [this]
-        {
-            notificationMessages.clear();
-            table.updateContent();
-            if (onClear != nullptr)
-            {
-                onClear();
-            }
-        });
-        menu.showAt({ mouseEvent.getMouseDownScreenX(), mouseEvent.getMouseDownScreenY() - 10, 10, 10 });
     }
 }
