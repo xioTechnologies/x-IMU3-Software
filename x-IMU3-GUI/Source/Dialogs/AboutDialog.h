@@ -24,7 +24,7 @@ private:
     SimpleLabel sourceCodeLabel { "Source Code:" };
     SimpleLabel applicationNameValue { juce::JUCEApplication::getInstance()->getApplicationName() };
     SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion() };
-    SimpleLabel expectedFirmwareVersionValue { "v0.3" };
+    SimpleLabel expectedFirmwareVersionValue { "v0.4" };
     SimpleLabel sourceCodeValue { "GitHub", UIFonts::defaultFont, juce::Justification::centredLeft, sourceCodeUrl };
 
     Icon logo { BinaryData::xio_logo_svg, logoUrl, logoUrl };
