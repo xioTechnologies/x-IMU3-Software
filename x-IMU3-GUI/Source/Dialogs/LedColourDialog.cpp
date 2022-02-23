@@ -3,7 +3,9 @@
 #include "LedColourDialog.h"
 #include <limits>
 
-LedColourDialog::LedColourDialog(DevicePanel& devicePanel_) : Dialog(BinaryData::json_svg, "LED Colour", "Close", "", &defaultButton, 60), devicePanel(devicePanel_)
+LedColourDialog::LedColourDialog(DevicePanel& devicePanel_)
+        : Dialog(BinaryData::json_svg, "LED Colour", "Close", "", &defaultButton, 60),
+          devicePanel(devicePanel_)
 {
     addAndMakeVisible(redLabel);
     addAndMakeVisible(greenLabel);
