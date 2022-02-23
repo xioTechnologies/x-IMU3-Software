@@ -1,15 +1,15 @@
 #include "../Helpers.h"
-#include "NotificationsDialog.h"
+#include "NotificationAndErrorMessagesDialog.h"
 #include "../Widgets/Icon.h"
 
-NotificationsDialog::NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_, const std::function<void()>& onClear)
+NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)
         : Dialog(BinaryData::speech_white_svg, "Notification and Error Messages", "Close", "", &clearAllButton, 80, true),
-          notificationMessages(notificationMessages_)
+          messages(messages_)
 {
     addAndMakeVisible(clearAllButton);
     clearAllButton.onClick = [&, onClear = onClear]
     {
-        notificationMessages.clear();
+        messages.clear();
         onClear();
     };
 
@@ -28,7 +28,7 @@ NotificationsDialog::NotificationsDialog(std::vector<NotificationMessage>& notif
     setSize(800, 480);
 }
 
-void NotificationsDialog::resized()
+void NotificationAndErrorMessagesDialog::resized()
 {
     Dialog::resized();
 
@@ -43,21 +43,21 @@ void NotificationsDialog::resized()
     table.setBounds(bounds);
 }
 
-void NotificationsDialog::notificationMessagesChanged()
+void NotificationAndErrorMessagesDialog::messagesChanged()
 {
     table.updateContent();
 }
 
-int NotificationsDialog::getNumRows()
+int NotificationAndErrorMessagesDialog::getNumRows()
 {
-    return (int) notificationMessages.size();
+    return (int) messages.size();
 }
 
-juce::Component* NotificationsDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
+juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
     delete existingComponentToUpdate;
 
-    const auto& notificationMessage = notificationMessages[notificationMessages.size() - 1 - (size_t) rowNumber];
+    const auto& notificationMessage = messages[messages.size() - 1 - (size_t) rowNumber];
 
     switch ((ColumnIDs) columnID)
     {

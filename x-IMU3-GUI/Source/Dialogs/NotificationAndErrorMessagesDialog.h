@@ -3,11 +3,11 @@
 #include "Dialog.h"
 #include "../Widgets/SimpleLabel.h"
 
-class NotificationsDialog : public Dialog,
-                            private juce::TableListBoxModel
+class NotificationAndErrorMessagesDialog : public Dialog,
+                                           private juce::TableListBoxModel
 {
 public:
-    struct NotificationMessage
+    struct Message
     {
         bool isError;
         uint64_t timestamp;
@@ -15,11 +15,11 @@ public:
         bool isUnread = true;
     };
 
-    NotificationsDialog(std::vector<NotificationMessage>& notificationMessages_, const std::function<void()>& onClear);
+    NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear);
 
     void resized() override;
 
-    void notificationMessagesChanged();
+    void messagesChanged();
 
 private:
     enum class ColumnIDs
@@ -29,7 +29,7 @@ private:
         message = 3
     };
 
-    std::vector<NotificationMessage>& notificationMessages;
+    std::vector<Message>& messages;
 
     DialogButton clearAllButton { "Clear All" };
 
@@ -50,5 +50,5 @@ private:
 
     juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotificationsDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotificationAndErrorMessagesDialog)
 };

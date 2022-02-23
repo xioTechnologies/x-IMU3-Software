@@ -17,16 +17,16 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
                                                 return;
                                             }
 
-                                            std::ostringstream statisticsLabelText;
-                                            statisticsLabelText << " " << message.message_rate << " messages/s";
-                                            statisticsLabelText << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
-                                            statisticsLabel.setText(statisticsLabelText.str());
+                                            std::ostringstream text;
+                                            text << " " << message.message_rate << " messages/s";
+                                            text << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
+                                            statisticsLabel.setText(text.str());
                                             resized();
                                         });
     };
     statisticsCallbackID = connection.addStatisticsCallback(statisticsCallback);
 
-    addAndMakeVisible(latestNotificationMessage);
+    addAndMakeVisible(latestMessageLabel);
 
     addAndMakeVisible(notificationsButton);
     addAndMakeVisible(errorsButton);
@@ -38,16 +38,16 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        DialogLauncher::launchDialog(std::make_unique<NotificationsDialog>(notificationMessages, [&]
+        DialogLauncher::launchDialog(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
         {
-            notificationMessagesChanged(false);
+            messagesChanged(false);
         }), [this]
                                      {
-                                         for (auto& notificationMessage : notificationMessages)
+                                         for (auto& notificationMessage : messages)
                                          {
                                              notificationMessage.isUnread = false;
                                          }
-                                         notificationMessagesChanged(false);
+                                         messagesChanged(false);
                                      });
     };
 
@@ -60,13 +60,9 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
                                                 return;
                                             }
 
-                                            NotificationsDialog::NotificationMessage notificationMessage;
-                                            notificationMessage.isError = false;
-                                            notificationMessage.timestamp = message.timestamp;
-                                            notificationMessage.message = message.char_array;
-                                            notificationMessages.push_back(notificationMessage);
+                                            messages.push_back({ false, message.timestamp, message.char_array });
 
-                                            notificationMessagesChanged(true);
+                                            messagesChanged(true);
                                         });
     };
     notificationCallbackID = connection.addNotificationCallback(notificationCallback);
@@ -80,13 +76,9 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
                                                 return;
                                             }
 
-                                            NotificationsDialog::NotificationMessage notificationMessage;
-                                            notificationMessage.isError = true;
-                                            notificationMessage.timestamp = message.timestamp;
-                                            notificationMessage.message = message.char_array;
-                                            notificationMessages.push_back(notificationMessage);
+                                            messages.push_back({ true, message.timestamp, message.char_array });
 
-                                            notificationMessagesChanged(true);
+                                            messagesChanged(true);
                                         });
     };
     errorCallbackID = connection.addErrorCallback(errorCallback);
@@ -94,9 +86,9 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
 
 DevicePanelFooter::~DevicePanelFooter()
 {
+    connection.removeCallback(statisticsCallbackID);
     connection.removeCallback(notificationCallbackID);
     connection.removeCallback(errorCallbackID);
-    connection.removeCallback(statisticsCallbackID);
 }
 
 void DevicePanelFooter::paint(juce::Graphics& g)
@@ -125,17 +117,17 @@ void DevicePanelFooter::resized()
     flexBox.performLayout(bounds.removeFromRight(juce::jlimit(minWidth, maxWidth, width)));
 
     statisticsLabel.setBounds(bounds.removeFromLeft((int) std::ceil(statisticsLabel.getTextWidth())));
-    latestNotificationMessage.setBounds(bounds);
+    latestMessageLabel.setBounds(bounds);
 }
 
-void DevicePanelFooter::notificationMessagesChanged(const bool showLatest)
+void DevicePanelFooter::messagesChanged(const bool showLatest)
 {
     const auto getNumberOfUnreadMessages = [&](const auto isError)
     {
         int count = 0;
-        for (const auto& notificationMessage : notificationMessages)
+        for (const auto& message : messages)
         {
-            if ((notificationMessage.isError == isError) && notificationMessage.isUnread && (count < 999))
+            if ((message.isError == isError) && message.isUnread && (count < 999))
             {
                 count++;
             }
@@ -153,16 +145,16 @@ void DevicePanelFooter::notificationMessagesChanged(const bool showLatest)
 
     if (showLatest)
     {
-        latestNotificationMessage.setText(notificationMessages.back().message);
-        latestNotificationMessage.setColour(juce::Label::textColourId, notificationMessages.back().isError ? UIColours::warning : juce::Colours::white);
+        latestMessageLabel.setText(messages.back().message);
+        latestMessageLabel.setColour(juce::Label::textColourId, messages.back().isError ? UIColours::warning : juce::Colours::white);
     }
     else
     {
-        latestNotificationMessage.setText("");
+        latestMessageLabel.setText("");
     }
 
-    if (auto* dialog = dynamic_cast<NotificationsDialog*>(DialogLauncher::getLaunchedDialog()))
+    if (auto* dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogLauncher::getLaunchedDialog()))
     {
-        dialog->notificationMessagesChanged();
+        dialog->messagesChanged();
     }
 }
