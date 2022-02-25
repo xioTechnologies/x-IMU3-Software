@@ -10,7 +10,6 @@
 class DevicePanelContainer;
 
 class MenuStrip : public juce::Component,
-                  private juce::ComponentListener,
                   private juce::Value::Listener,
                   private juce::Timer
 {
@@ -43,7 +42,7 @@ private:
     IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
 
     SimpleLabel connectionLabel { "Connection", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel viewLabel { "View", UIFonts::defaultFont, juce::Justification::centred };
+    SimpleLabel layoutLabel { "Layout", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel commandsLabel { "Commands", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel dataLoggerLabel { "Data Logger", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel toolsLabel { "Tools", UIFonts::defaultFont, juce::Justification::centred };
@@ -58,7 +57,7 @@ private:
 
     std::vector<ButtonGroup> buttonGroups {
             { connectionLabel,  { searchButton,              manualButton,       disconnectButton }},
-            { viewLabel,        { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }},
+            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }},
             { commandsLabel,    { shutdownButton,            sendCommandButton }},
             { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime }},
             { toolsLabel,       { toolsButton }},
@@ -89,8 +88,6 @@ private:
     juce::PopupMenu getToolsMenu() const;
 
     void setWindowLayout(juce::ValueTree windowLayout_);
-
-    void componentChildrenChanged(juce::Component&) override;
 
     void valueChanged(juce::Value& value) override;
 

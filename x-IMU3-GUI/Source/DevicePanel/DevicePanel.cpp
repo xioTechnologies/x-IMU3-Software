@@ -35,6 +35,7 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
 DevicePanel::~DevicePanel()
 {
     connection->removeCallback(decodeErrorCallbackID);
+    connection->close();
 }
 
 void DevicePanel::resized()

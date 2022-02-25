@@ -1,7 +1,6 @@
 #include "ApplicationSettings.h"
 #include "CustomLayouts.h"
 #include "CustomLookAndFeel.h"
-#include "DefaultLayout.h"
 #include "DevicePanelContainer.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationErrorsDialog.h"
@@ -143,15 +142,34 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         DialogLauncher::launchDialog(std::make_unique<ApplicationSettingsDialog>());
     };
 
-    devicePanelsContainer.addComponentListener(this);
-    componentChildrenChanged(devicePanelsContainer);
+    devicePanelsContainer.onDevicePanelsSizeChanged = [&](const int oldSize, const int newSize)
+    {
+        devicePanelLayoutButton.setEnabled(newSize > 1);
+
+        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton,
+                                                                                      shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
+        {
+            component.get().setEnabled(newSize > 0);
+        }
+
+        if (newSize > 1 && oldSize <= 1)
+        {
+            devicePanelsContainer.setLayout(DevicePanelContainer::Layout::accordion);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::accordion), {});
+        }
+        else if (newSize <= 1)
+        {
+            devicePanelsContainer.setLayout(DevicePanelContainer::Layout::rows);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::rows), {});
+        }
+    };
+    devicePanelsContainer.onDevicePanelsSizeChanged(0, 0);
 
     ApplicationErrorsDialog::numberOfUnreadErrors.addListener(this);
 }
 
 MenuStrip::~MenuStrip()
 {
-    devicePanelsContainer.removeComponentListener(this);
     ApplicationErrorsDialog::numberOfUnreadErrors.removeListener(this);
 }
 
@@ -450,7 +468,6 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
         {
             devicePanelsContainer.setLayout(type);
             devicePanelLayoutButton.setIcon(layoutIcons.at(type), {});
-            setWindowLayout({});
         });
     };
     addItem(DevicePanelContainer::Layout::rows, "Rows");
@@ -481,55 +498,25 @@ void MenuStrip::setWindowLayout(juce::ValueTree windowLayout_)
 {
     if (windowLayout_.isValid() == false)
     {
-        if (devicePanelsContainer.getDevicePanels().size() == 1)
-        {
-            windowLayout_ = DefaultLayout::single;
-        }
-        else
-        {
-            switch (devicePanelsContainer.getLayout())
-            {
-                case DevicePanelContainer::Layout::rows:
-                    windowLayout_ = DefaultLayout::rows;
-                    break;
-
-                case DevicePanelContainer::Layout::columns:
-                    windowLayout_ = DefaultLayout::columns;
-                    break;
-
-                case DevicePanelContainer::Layout::grid:
-                    windowLayout_ = DefaultLayout::grid;
-                    break;
-
-                case DevicePanelContainer::Layout::accordion:
-                    windowLayout_ = DefaultLayout::accordion;
-                    break;
-            }
-        }
+        windowLayout_ = { WindowIDs::Row, {},
+                          {
+                                  { WindowIDs::DeviceSettings, {{ WindowIDs::size, 0.4 }}},
+                                  { WindowIDs::Column, {}, {
+                                          { WindowIDs::Row, {}, {
+                                                  { WindowIDs::Gyroscope, {}},
+                                                  { WindowIDs::Accelerometer, {}},
+                                                  { WindowIDs::Magnetometer, {}},
+                                                  { WindowIDs::HighGAccelerometer, {}},
+                                          }},
+                                          { WindowIDs::Row, {}, {
+                                                  { WindowIDs::EulerAngles, {{ WindowIDs::size, 1 }}},
+                                                  { WindowIDs::ThreeDView, {{ WindowIDs::size, 3 }}},
+                                          }}
+                                  }}
+                          }};
     }
 
     windowLayout.copyPropertiesAndChildrenFrom(windowLayout_, nullptr);
-}
-
-void MenuStrip::componentChildrenChanged(juce::Component&)
-{
-    const auto devicePanelsSize = devicePanelsContainer.getDevicePanels().size();
-
-    devicePanelLayoutButton.setEnabled(devicePanelsSize > 1);
-
-    for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton,
-                                                                                  shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime }))
-    {
-        component.get().setEnabled(devicePanelsSize > 0);
-    }
-
-    const auto layout = devicePanelsSize <= 2 ? DevicePanelContainer::Layout::rows :
-                        devicePanelsSize == 3 ? DevicePanelContainer::Layout::columns :
-                        devicePanelsSize == 4 ? DevicePanelContainer::Layout::grid :
-                        DevicePanelContainer::Layout::accordion;
-    devicePanelsContainer.setLayout(layout);
-    devicePanelLayoutButton.setIcon(layoutIcons.at(layout), {});
-    setWindowLayout({});
 }
 
 void MenuStrip::valueChanged(juce::Value& value)
