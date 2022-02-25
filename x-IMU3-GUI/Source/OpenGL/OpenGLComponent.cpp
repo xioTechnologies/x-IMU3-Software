@@ -41,12 +41,9 @@ juce::Rectangle<int> OpenGLComponent::toOpenGLBounds(const juce::Rectangle<int>&
 
 void OpenGLComponent::unregisterParents()
 {
-    for (auto parent : registeredParents)
+    for (auto* const parent : registeredParents)
     {
-        if (parent != nullptr)
-        {
-            parent->removeComponentListener(this);
-        }
+        parent->removeComponentListener(this);
     }
 
     registeredParents.clear();

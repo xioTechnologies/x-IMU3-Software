@@ -24,7 +24,7 @@ protected:
     juce::Rectangle<int> toOpenGLBounds(const juce::Rectangle<int>& bounds) const;
 
 private:
-    std::vector<SafePointer<juce::Component>> registeredParents;
+    std::vector<juce::Component*> registeredParents;
 
     std::atomic<int> topLevelHeight = 0;
 
