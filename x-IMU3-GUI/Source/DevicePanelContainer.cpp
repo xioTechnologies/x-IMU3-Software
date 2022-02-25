@@ -12,19 +12,12 @@ DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRen
     addChildComponent(&accordionResizeBar);
 }
 
-DevicePanelContainer::~DevicePanelContainer()
-{
-}
-
 void DevicePanelContainer::resized()
 {
-    if (devicePanels.empty())
-    {
-        return;
-    }
-
     if (layout == Layout::accordion)
     {
+        const auto width = findParentComponentOfClass<juce::Viewport>()->getViewWidth();
+
         for (size_t index = 0; index < devicePanels.size(); index++)
         {
             auto& devicePanel = devicePanels[index];
@@ -32,12 +25,12 @@ void DevicePanelContainer::resized()
 
             if (expandedDevicePanel == devicePanel.get())
             {
-                devicePanel->setBounds(0, y, getWidth(), expandedPanelHeight);
-                accordionResizeBar.setBounds(0, devicePanel->getBottom(), getWidth(), UILayout::panelMargin);
+                devicePanel->setBounds(0, y, width, expandedPanelHeight);
+                accordionResizeBar.setBounds(0, devicePanel->getBottom(), width, UILayout::panelMargin);
             }
             else
             {
-                devicePanel->setBounds(0, y, getWidth(), DevicePanel::collapsedHeight);
+                devicePanel->setBounds(0, y, width, DevicePanel::collapsedHeight);
             }
         }
         return;
