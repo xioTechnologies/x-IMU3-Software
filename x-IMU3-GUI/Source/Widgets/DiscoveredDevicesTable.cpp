@@ -7,9 +7,9 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
     addAndMakeVisible(numConnectionsFoundLabel);
 
     addAndMakeVisible(table);
-    table.getHeader().addColumn("", selectedColumnID, 40, 40, 40);
-    table.getHeader().addColumn("", nameAndSerialNumberColumnID, 240);
-    table.getHeader().addColumn("", connectionInfoColumnID, 280);
+    table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
+    table.getHeader().addColumn("", (int) ColumnIDs::nameAndSerialNumber, 240);
+    table.getHeader().addColumn("", (int) ColumnIDs::connectionInfo, 280);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.setRowHeight(30);
@@ -23,7 +23,7 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
         {
             rows[index].selected = buttonSelectAll.getToggleState();
 
-            if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent(selectedColumnID, (int) index)))
+            if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
             {
                 toggle->setToggleState(rows[index].selected, juce::dontSendNotification);
             }
@@ -156,9 +156,9 @@ void DiscoveredDevicesTable::paintRowBackground(juce::Graphics& g, int rowNumber
 
 juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
-    switch (columnID)
+    switch ((ColumnIDs) columnID)
     {
-        case selectedColumnID:
+        case ColumnIDs::selected:
         {
             if (existingComponentToUpdate == nullptr)
             {
@@ -175,7 +175,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             break;
         }
 
-        case nameAndSerialNumberColumnID:
+        case ColumnIDs::nameAndSerialNumber:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
@@ -184,7 +184,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceNameAndSerialNumber);
             break;
 
-        case connectionInfoColumnID:
+        case ColumnIDs::connectionInfo:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
@@ -202,7 +202,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
 
 void DiscoveredDevicesTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
 {
-    if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent(selectedColumnID, rowNumber)))
+    if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, rowNumber)))
     {
         toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
     }

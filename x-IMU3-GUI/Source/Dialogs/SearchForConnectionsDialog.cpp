@@ -3,8 +3,9 @@
 #include "NetworkDiscoveryDispatcher.h"
 #include "SearchForConnectionsDialog.h"
 
-SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_) : Dialog(BinaryData::search_svg, "Search For Connections", "Connect", "Cancel", &filterButton, 50, true),
-                                                                                                                                   existingConnections(std::move(existingConnections_))
+SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
+        : Dialog(BinaryData::search_svg, "Search for Connections", "Connect", "Cancel", &filterButton, 50, true),
+          existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);

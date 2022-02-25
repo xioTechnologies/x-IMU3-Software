@@ -95,7 +95,7 @@ void ThreeDViewWindow::resized()
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 {
-    if (mouseEvent.mods.isRightButtonDown())
+    if (mouseEvent.mods.isPopupMenu())
     {
         juce::PopupMenu menu;
 

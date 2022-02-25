@@ -2,27 +2,52 @@
 #include "CustomLookAndFeel.h"
 #include "DevicePanelFooter.h"
 #include "DevicePanelHeader.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 
-DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::Connection& connection_) : notificationsPopup(notificationsPopup_),
-                                                                                                           connection(connection_)
+DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connection(connection_)
 {
+    addAndMakeVisible(statisticsLabel);
+
+    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
+    {
+        juce::MessageManager::callAsync([&, self, message]
+                                        {
+                                            if (self == nullptr)
+                                            {
+                                                return;
+                                            }
+
+                                            std::ostringstream text;
+                                            text << " " << message.message_rate << " messages/s";
+                                            text << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
+                                            statisticsLabel.setText(text.str());
+                                            resized();
+                                        });
+    };
+    statisticsCallbackID = connection.addStatisticsCallback(statisticsCallback);
+
+    addAndMakeVisible(latestMessageLabel);
+
     addAndMakeVisible(notificationsButton);
     addAndMakeVisible(errorsButton);
     addAndMakeVisible(numberOfNotificationsLabel);
     addAndMakeVisible(numberOfErrorsLabel);
 
-    const auto initialiseColours = [](auto& label)
-    {
-        label.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-        label.setColour(juce::Label::textColourId, UIColours::textEditor);
-    };
-    initialiseColours(numberOfErrorsLabel);
-    initialiseColours(numberOfNotificationsLabel);
+    numberOfErrorsLabel.setColour(juce::Label::textColourId, UIColours::textEditor);
+    numberOfNotificationsLabel.setColour(juce::Label::textColourId, UIColours::textEditor);
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        notificationsPopup.show(true);
+        DialogLauncher::launchDialog(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
+        {
+            messagesChanged();
+        }), [this]
+                                     {
+                                         for (auto& notificationMessage : messages)
+                                         {
+                                             notificationMessage.isUnread = false;
+                                         }
+                                         messagesChanged();
+                                     });
     };
 
     notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -34,17 +59,9 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
                                                 return;
                                             }
 
-                                            notificationsPopup.getFeed().add(message.timestamp, juce::String(message.char_array), juce::Colours::white);
-                                            if (ApplicationSettings::getSingleton().showNotificationAndErrorMessages)
-                                            {
-                                                notificationsPopup.show(true);
-                                            }
+                                            messages.push_back({ false, message.timestamp, message.char_array });
 
-                                            const auto numberOfNotifications = numberOfNotificationsLabel.getText().getIntValue();
-                                            if (numberOfNotifications < 999)
-                                            {
-                                                setNumberOfNotifications(numberOfNotifications + 1);
-                                            }
+                                            messagesChanged();
                                         });
     };
     notificationCallbackID = connection.addNotificationCallback(notificationCallback);
@@ -58,53 +75,19 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
                                                 return;
                                             }
 
-                                            notificationsPopup.getFeed().add(message.timestamp, juce::String(message.char_array), UIColours::warning);
-                                            if (ApplicationSettings::getSingleton().showNotificationAndErrorMessages)
-                                            {
-                                                notificationsPopup.show(true);
-                                            }
+                                            messages.push_back({ true, message.timestamp, message.char_array });
 
-                                            const auto numberOfErrors = numberOfErrorsLabel.getText().getIntValue();
-                                            if (numberOfErrors < 999)
-                                            {
-                                                setNumberOfErrors(numberOfErrors + 1);
-                                            }
+                                            messagesChanged();
                                         });
     };
     errorCallbackID = connection.addErrorCallback(errorCallback);
-
-    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
-    {
-        juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
-
-                                            std::ostringstream statisticsLabelText;
-                                            statisticsLabelText << " " << message.message_rate << " messages/s";
-                                            statisticsLabelText << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
-                                            statisticsLabel.setText(statisticsLabelText.str());
-                                            resized();
-                                        });
-    };
-    statisticsCallbackID = connection.addStatisticsCallback(statisticsCallback);
-
-    notificationsPopup.getFeed().onClear = [&]
-    {
-        setNumberOfNotifications(0);
-        setNumberOfErrors(0);
-    };
-
-    addAndMakeVisible(statisticsLabel);
 }
 
 DevicePanelFooter::~DevicePanelFooter()
 {
+    connection.removeCallback(statisticsCallbackID);
     connection.removeCallback(notificationCallbackID);
     connection.removeCallback(errorCallbackID);
-    connection.removeCallback(statisticsCallbackID);
 }
 
 void DevicePanelFooter::paint(juce::Graphics& g)
@@ -123,26 +106,54 @@ void DevicePanelFooter::resized()
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;
     flexBox.items.add(juce::FlexItem(numberOfNotificationsLabel).withFlex(1.0f).withMaxWidth((float) maxTextWidth));
-    flexBox.items.add(juce::FlexItem(notificationsButton).withMinWidth((float) iconWidth).withMaxWidth((float) iconWidth).withMargin({ (float) iconMargin }));
+    flexBox.items.add(juce::FlexItem(notificationsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
     flexBox.items.add(juce::FlexItem(numberOfErrorsLabel).withFlex(1.0f).withMaxWidth((float) maxTextWidth));
-    flexBox.items.add(juce::FlexItem(errorsButton).withMinWidth((float) iconWidth).withMaxWidth((float) iconWidth).withMargin({ (float) iconMargin }));
+    flexBox.items.add(juce::FlexItem(errorsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
 
     const auto minWidth = 2 * iconWidth + 4 * iconMargin;
     const auto maxWidth = minWidth + 2 * maxTextWidth;
-    const auto width = bounds.getWidth() - (int) std::ceil(statisticsLabel.getTextWidth()) - DevicePanelHeader::margin;
+    const auto width = bounds.getWidth() - (int) std::ceil(statisticsLabel.getTextWidth());
     flexBox.performLayout(bounds.removeFromRight(juce::jlimit(minWidth, maxWidth, width)));
 
-    statisticsLabel.setBounds(bounds.withTrimmedRight(DevicePanelHeader::margin));
+    statisticsLabel.setBounds(bounds.removeFromLeft((int) std::ceil(statisticsLabel.getTextWidth())));
+    latestMessageLabel.setBounds(bounds);
 }
 
-void DevicePanelFooter::setNumberOfNotifications(const int number)
+void DevicePanelFooter::messagesChanged()
 {
-    numberOfNotificationsLabel.setText(juce::String(number));
-    notificationsButton.setToggleState(number > 0, juce::dontSendNotification);
-}
+    const auto getNumberOfUnreadMessages = [&](const auto isError)
+    {
+        int count = 0;
+        for (const auto& message : messages)
+        {
+            if ((message.isError == isError) && message.isUnread && (count < 999))
+            {
+                count++;
+            }
+        }
+        return count;
+    };
 
-void DevicePanelFooter::setNumberOfErrors(const int number)
-{
-    numberOfErrorsLabel.setText(juce::String(number));
-    errorsButton.setToggleState(number > 0, juce::dontSendNotification);
+    const auto numberOfNotifications = getNumberOfUnreadMessages(false);
+    numberOfNotificationsLabel.setText(juce::String(numberOfNotifications));
+    notificationsButton.setToggleState(numberOfNotifications > 0, juce::dontSendNotification);
+
+    const auto numberOfErrors = getNumberOfUnreadMessages(true);
+    numberOfErrorsLabel.setText(juce::String(getNumberOfUnreadMessages(true)));
+    errorsButton.setToggleState(numberOfErrors > 0, juce::dontSendNotification);
+
+    if (messages.empty() == false && messages.back().isUnread)
+    {
+        latestMessageLabel.setText(messages.back().message);
+        latestMessageLabel.setColour(juce::Label::textColourId, messages.back().isError ? UIColours::warning : juce::Colours::white);
+    }
+    else
+    {
+        latestMessageLabel.setText("");
+    }
+
+    if (auto* const dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogLauncher::getLaunchedDialog()))
+    {
+        dialog->messagesChanged();
+    }
 }

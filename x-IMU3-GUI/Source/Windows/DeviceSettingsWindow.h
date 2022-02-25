@@ -21,10 +21,10 @@ public:
 private:
     DeviceSettings settingsTree;
 
-    IconButton readAllButton { IconButton::Style::normal, BinaryData::download_svg, 1.0f, "Read Settings From Device" };
-    IconButton writeAllButton { IconButton::Style::normal, BinaryData::upload_svg, 1.0f, "Write Settings To Device" };
-    IconButton saveToFileButton { IconButton::Style::normal, BinaryData::save_svg, 1.0f, "Save Settings To File" };
-    IconButton loadFromFileButton { IconButton::Style::normal, BinaryData::open_svg, 1.0f, "Load Settings From File" };
+    IconButton readAllButton { IconButton::Style::normal, BinaryData::download_svg, 1.0f, "Read Settings from Device" };
+    IconButton writeAllButton { IconButton::Style::normal, BinaryData::upload_svg, 1.0f, "Write Settings to Device" };
+    IconButton saveToFileButton { IconButton::Style::normal, BinaryData::save_svg, 1.0f, "Save Settings to File" };
+    IconButton loadFromFileButton { IconButton::Style::normal, BinaryData::open_svg, 1.0f, "Load Settings from File" };
     IconButton defaultsButton { IconButton::Style::normal, BinaryData::default_svg, 1.0f, "Restore Default Settings" };
 
     std::function<void(const std::vector<CommandMessage>&, const std::vector<CommandMessage>&)> sendCommandsCallback;

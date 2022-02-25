@@ -6,9 +6,8 @@ Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
         JUCE
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 6.1.3
+        GIT_TAG 7eee7cd892c468f9b58270886332060c0fcb2ceb # TODO: Use version >6.1.5 once available
         GIT_PROGRESS TRUE
-        GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(JUCE)
 

@@ -74,4 +74,9 @@ namespace Helpers
 
         return juce::Vector3D<float> { roll, pitch, yaw };
     }
+
+    inline juce::String formatTimestamp(const uint64_t timestamp)
+    {
+        return juce::String(1E-6f * (float) timestamp, 3);
+    }
 }

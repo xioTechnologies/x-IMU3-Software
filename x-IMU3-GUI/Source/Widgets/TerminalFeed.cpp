@@ -27,13 +27,13 @@ void TerminalFeed::paint(juce::Graphics& g)
 
 void TerminalFeed::mouseDown(const juce::MouseEvent& mouseEvent)
 {
-    if (mouseEvent.mods.isRightButtonDown() || mouseEvent.mods.isCtrlDown())
+    if (mouseEvent.mods.isPopupMenu())
     {
         juce::PopupMenu menu;
         menu.addItem("Copy To Clipboard", [this]
         {
             juce::String text;
-            for (auto& message : messages)
+            for (const auto& message : messages)
             {
                 text += message.message + "\n";
             }

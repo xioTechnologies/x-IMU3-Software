@@ -22,7 +22,6 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
     windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
     addAndMakeVisible(*windowContainer);
 
-    addChildComponent(notificationsPopup);
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
 
@@ -44,10 +43,6 @@ void DevicePanel::resized()
 
     header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
     footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
-
-    auto notificationBounds = juce::Rectangle<int>(400, 200);
-    notificationBounds.setPosition(bounds.getRight() - notificationBounds.getWidth(), bounds.getBottom() - notificationBounds.getHeight());
-    notificationsPopup.setBounds(notificationBounds);
 
     bounds.removeFromTop(UILayout::panelMargin);
     windowContainer->setBounds(bounds);
