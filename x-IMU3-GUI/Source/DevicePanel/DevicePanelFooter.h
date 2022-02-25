@@ -2,7 +2,6 @@
 
 #include "../Dialogs/NotificationAndErrorMessagesDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Notifications.h"
 #include "../Widgets/IconButton.h"
 #include "../Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
@@ -10,7 +9,7 @@
 class DevicePanelFooter : public juce::Component
 {
 public:
-    DevicePanelFooter(Notifications& notificationsPopup_, ximu3::Connection& connection_);
+    DevicePanelFooter(ximu3::Connection& connection_);
 
     ~DevicePanelFooter() override;
 
@@ -19,7 +18,6 @@ public:
     void resized() override;
 
 private:
-    Notifications& notificationsPopup;
     ximu3::Connection& connection;
 
     SimpleLabel statisticsLabel { "", UIFonts::smallFont };
@@ -40,7 +38,7 @@ private:
 
     std::vector<NotificationAndErrorMessagesDialog::Message> messages;
 
-    void messagesChanged(const bool showLatest);
+    void messagesChanged();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelFooter)
 };

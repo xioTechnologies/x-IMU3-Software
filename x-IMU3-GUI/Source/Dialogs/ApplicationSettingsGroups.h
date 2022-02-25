@@ -80,7 +80,6 @@ public:
 private:
     CustomToggleButton hideUnusedDeviceSettingsButton { "Hide Unused Device Settings" };
     CustomToggleButton showApplicationErrorsButton { "Show Application Errors" };
-    CustomToggleButton showNotificationsButton { "Show Notification and Error Messages" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MiscGroup)
 };

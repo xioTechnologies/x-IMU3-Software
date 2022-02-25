@@ -19,7 +19,6 @@ public:
     juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, 500 };
     juce::CachedValue<bool> hideUnusedDeviceSettings { tree, "hideUnusedDeviceSettings", nullptr, true };
     juce::CachedValue<bool> showApplicationErrors { tree, "showApplicationErrors", nullptr, true };
-    juce::CachedValue<bool> showNotificationAndErrorMessages { tree, "showNotificationAndErrorMessages", nullptr, true };
 
     static ApplicationSettings& getSingleton()
     {

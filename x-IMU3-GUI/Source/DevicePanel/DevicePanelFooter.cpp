@@ -3,8 +3,7 @@
 #include "DevicePanelFooter.h"
 #include "DevicePanelHeader.h"
 
-DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::Connection& connection_) : notificationsPopup(notificationsPopup_),
-                                                                                                           connection(connection_)
+DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connection(connection_)
 {
     addAndMakeVisible(statisticsLabel);
 
@@ -40,14 +39,14 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
     {
         DialogLauncher::launchDialog(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
         {
-            messagesChanged(false);
+            messagesChanged();
         }), [this]
                                      {
                                          for (auto& notificationMessage : messages)
                                          {
                                              notificationMessage.isUnread = false;
                                          }
-                                         messagesChanged(false);
+                                         messagesChanged();
                                      });
     };
 
@@ -62,7 +61,7 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
 
                                             messages.push_back({ false, message.timestamp, message.char_array });
 
-                                            messagesChanged(true);
+                                            messagesChanged();
                                         });
     };
     notificationCallbackID = connection.addNotificationCallback(notificationCallback);
@@ -78,7 +77,7 @@ DevicePanelFooter::DevicePanelFooter(Notifications& notificationsPopup_, ximu3::
 
                                             messages.push_back({ true, message.timestamp, message.char_array });
 
-                                            messagesChanged(true);
+                                            messagesChanged();
                                         });
     };
     errorCallbackID = connection.addErrorCallback(errorCallback);
@@ -120,7 +119,7 @@ void DevicePanelFooter::resized()
     latestMessageLabel.setBounds(bounds);
 }
 
-void DevicePanelFooter::messagesChanged(const bool showLatest)
+void DevicePanelFooter::messagesChanged()
 {
     const auto getNumberOfUnreadMessages = [&](const auto isError)
     {
@@ -143,7 +142,7 @@ void DevicePanelFooter::messagesChanged(const bool showLatest)
     numberOfErrorsLabel.setText(juce::String(getNumberOfUnreadMessages(true)));
     errorsButton.setToggleState(numberOfErrors > 0, juce::dontSendNotification);
 
-    if (showLatest)
+    if (messages.empty() == false && messages.back().isUnread)
     {
         latestMessageLabel.setText(messages.back().message);
         latestMessageLabel.setColour(juce::Label::textColourId, messages.back().isError ? UIColours::warning : juce::Colours::white);
@@ -153,7 +152,7 @@ void DevicePanelFooter::messagesChanged(const bool showLatest)
         latestMessageLabel.setText("");
     }
 
-    if (auto* dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogLauncher::getLaunchedDialog()))
+    if (auto* const dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogLauncher::getLaunchedDialog()))
     {
         dialog->messagesChanged();
     }

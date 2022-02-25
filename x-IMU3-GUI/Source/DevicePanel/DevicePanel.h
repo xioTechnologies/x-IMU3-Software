@@ -7,7 +7,6 @@
 #include "DevicePanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <list>
-#include "Notifications.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
@@ -54,8 +53,7 @@ private:
     const juce::Colour colourTag;
 
     DevicePanelHeader header { *this, devicePanelContainer };
-    Notifications notificationsPopup;
-    DevicePanelFooter footer { notificationsPopup, *connection };
+    DevicePanelFooter footer { *connection };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;
