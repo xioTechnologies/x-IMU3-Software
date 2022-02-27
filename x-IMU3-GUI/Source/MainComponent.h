@@ -32,14 +32,8 @@ public:
         bounds.removeFromTop(UILayout::panelMargin);
 
         devicePanelViewport.setBounds(bounds);
-
-        const auto height = (devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) ? devicePanelContainer.getHeight() : bounds.getHeight();
-        auto width = bounds.getWidth();
-        if ((devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) && (height > devicePanelViewport.getHeight()))
-        {
-            width -= devicePanelViewport.getScrollBarThickness();
-        }
-        devicePanelContainer.setSize(width, height);
+        devicePanelContainer.setSize(bounds.getWidth(), (devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) ? devicePanelContainer.getHeight() : bounds.getHeight());
+        devicePanelContainer.resized();
     }
 
 private:
