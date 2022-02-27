@@ -307,17 +307,17 @@
     {
         "name": "Data logger file name prefix",
         "declaration": "char name[32]",
-        "default": "{\"File Name Prefix\"}"
+        "default": "{\"\"}"
     },
     {
-        "name": "Data logger file name number",
-        "declaration": "uint32_t name",
-        "default": "{0}"
-    },
-    {
-        "name": "Data logger file name is time",
+        "name": "Data logger file name time enabled",
         "declaration": "bool name",
         "default": "{true}"
+    },
+    {
+        "name": "Data logger file name counter enabled",
+        "declaration": "bool name",
+        "default": "{false}"
     },
     {
         "name": "Data logger max file size",
