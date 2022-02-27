@@ -2,6 +2,7 @@ use crossbeam::channel::Sender;
 use std::io::{Read, Write};
 use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::decoder::*;
@@ -26,7 +27,7 @@ impl TcpConnection {
 
 impl GenericConnection for TcpConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let mut stream = TcpStream::connect(SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port))?;
+        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port), Duration::new(3, 0))?;
         stream.set_read_timeout(Some(std::time::Duration::from_millis(100))).ok();
 
         let decoder = self.decoder.clone();
