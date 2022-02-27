@@ -65,9 +65,11 @@
     </Group>
     <Group displayName="Data Logger">
         <Setting key="dataLoggerEnabled" displayName="Enabled" type="bool" readOnly="false"/>
-        <Setting key="dataLoggerFileNamePrefix" displayName="File Name Prefix" type="string" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerFileNameNumber" displayName="File Name Number" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerFileNameIsTime" displayName="File Name is Time" type="bool" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Group displayName="File Name" hideKey="dataLoggerEnabled" hideValues="0">
+            <Setting key="dataLoggerFileNamePrefix" displayName="Prefix" type="string" readOnly="false"/>
+            <Setting key="dataLoggerFileNameTimeEnabled" displayName="Time" type="bool" readOnly="false"/>
+            <Setting key="dataLoggerFileNameCounterEnabled" displayName="Counter" type="bool" readOnly="false"/>
+        </Group>
         <Setting key="dataLoggerMaxFileSize" displayName="Max File Size (MB)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
         <Setting key="dataLoggerMaxFilePeriod" displayName="Max File Period (s)" type="number" readOnly="false" hideKey="dataLoggerEnabled" hideValues="0"/>
     </Group>
