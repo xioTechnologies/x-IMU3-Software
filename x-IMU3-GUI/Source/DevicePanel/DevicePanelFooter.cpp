@@ -101,7 +101,7 @@ void DevicePanelFooter::resized()
 
     const auto iconWidth = bounds.getHeight();
     static constexpr int iconMargin = 2;
-    static const int maxTextWidth = UIFonts::smallFont.getStringWidth("999");
+    static const int maxTextWidth = UIFonts::smallFont.getStringWidth("000");
 
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;
@@ -121,26 +121,24 @@ void DevicePanelFooter::resized()
 
 void DevicePanelFooter::messagesChanged()
 {
-    const auto getNumberOfUnreadMessages = [&](const auto isError)
+    const auto getCountText = [&](const auto isError)
     {
         int count = 0;
         for (const auto& message : messages)
         {
-            if ((message.isError == isError) && message.isUnread && (count < 999))
+            if ((message.isError == isError) && message.isUnread && (++count >= 100))
             {
-                count++;
+                return juce::String("99+");
             }
         }
-        return count;
+        return juce::String(count);
     };
 
-    const auto numberOfNotifications = getNumberOfUnreadMessages(false);
-    numberOfNotificationsLabel.setText(juce::String(numberOfNotifications));
-    notificationsButton.setToggleState(numberOfNotifications > 0, juce::dontSendNotification);
+    numberOfNotificationsLabel.setText(getCountText(false));
+    notificationsButton.setToggleState(numberOfNotificationsLabel.getText() != "0", juce::dontSendNotification);
 
-    const auto numberOfErrors = getNumberOfUnreadMessages(true);
-    numberOfErrorsLabel.setText(juce::String(getNumberOfUnreadMessages(true)));
-    errorsButton.setToggleState(numberOfErrors > 0, juce::dontSendNotification);
+    numberOfErrorsLabel.setText(getCountText(true));
+    errorsButton.setToggleState(numberOfErrorsLabel.getText() != "0", juce::dontSendNotification);
 
     if (messages.empty() == false && messages.back().isUnread)
     {
