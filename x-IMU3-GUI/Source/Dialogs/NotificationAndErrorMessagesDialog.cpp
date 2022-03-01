@@ -36,9 +36,9 @@ void NotificationAndErrorMessagesDialog::resized()
 
     static constexpr int headerHeight = 30;
     bounds.removeFromTop(headerHeight);
-    typeLabel.setBounds(table.getHeader().getColumnPosition(0).withHeight(headerHeight));
-    timestampLabel.setBounds(table.getHeader().getColumnPosition(1).withHeight(headerHeight));
-    messageLabel.setBounds(table.getHeader().getColumnPosition(2).withHeight(headerHeight));
+    typeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::type - 1).withHeight(headerHeight));
+    timestampLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::timestamp - 1).withHeight(headerHeight));
+    messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::message - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
 }

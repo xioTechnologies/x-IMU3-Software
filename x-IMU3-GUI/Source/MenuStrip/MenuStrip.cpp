@@ -6,13 +6,13 @@
 #include "Dialogs/ApplicationErrorsDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
-#include "Dialogs/ErrorDialog.h"
 #include "Dialogs/FileConverterDialog.h"
 #include "Dialogs/FileConverterProgressDialog.h"
 #include "Dialogs/NewConnectionDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
 #include "Dialogs/SearchForConnectionsDialog.h"
 #include "Dialogs/SendCommandDialog.h"
+#include "Dialogs/SendingCommandDialog.h"
 #include "MenuStrip.h"
 #include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
@@ -72,7 +72,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                devicePanelsContainer.sendCommands({ CommandMessage(dialog->getCommand()) });
+                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelsContainer.getDevicePanels()));
             }
         });
     };
