@@ -481,7 +481,7 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
 juce::PopupMenu MenuStrip::getToolsMenu() const
 {
     juce::PopupMenu menu;
-    menu.addItem("File Converter", []
+    menu.addItem(".ximu3 File Converter", []
     {
         DialogLauncher::launchDialog(std::make_unique<FileConverterDialog>(), []
         {

@@ -1,7 +1,7 @@
 #include "FileConverterDialog.h"
 #include <filesystem>
 
-FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, "File Converter", "Convert")
+FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, ".ximu3 File Converter", "Convert")
 {
     addAndMakeVisible(sourceLabel);
     addAndMakeVisible(sourceValue);
