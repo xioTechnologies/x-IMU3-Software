@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../CommandMessage.h"
 #include "../DevicePanel/DevicePanel.h"
 #include "Dialog.h"
 #include "../Widgets/CustomToggleButton.h"
@@ -9,7 +10,7 @@ class SendingCommandDialog : public Dialog,
                              private juce::TableListBoxModel
 {
 public:
-    SendingCommandDialog(const std::string& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels);
+    SendingCommandDialog(const CommandMessage& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels);
 
     void resized() override;
 

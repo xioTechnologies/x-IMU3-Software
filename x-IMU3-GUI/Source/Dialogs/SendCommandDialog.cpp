@@ -38,7 +38,7 @@ void SendCommandDialog::resized()
     commandValue.setBounds(bounds);
 }
 
-std::string SendCommandDialog::getCommand()
+CommandMessage SendCommandDialog::getCommand()
 {
     if (commandValue.getText().isNotEmpty())
     {
@@ -60,5 +60,5 @@ std::string SendCommandDialog::getCommand()
         file.replaceWithText(recentCommands.toXmlString());
     }
 
-    return commandValue.getText().toStdString();
+    return CommandMessage(commandValue.getText().toStdString());
 }

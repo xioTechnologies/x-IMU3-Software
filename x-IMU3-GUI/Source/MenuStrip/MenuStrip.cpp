@@ -62,7 +62,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
     {
         DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
-            devicePanelsContainer.sendCommands({{ "shutdown", {}}});
+            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelsContainer.getDevicePanels()));
         });
     };
 
