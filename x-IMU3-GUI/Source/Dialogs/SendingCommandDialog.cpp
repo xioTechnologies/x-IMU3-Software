@@ -5,12 +5,7 @@ SendingCommandDialog::SendingCommandDialog(const std::string& command, const std
 {
     for (auto& panel : devicePanels)
     {
-        auto deviceNameAndSerialNumber = panel->getDeviceNameAndSerialNumber();
-        if (deviceNameAndSerialNumber.isNotEmpty())
-        {
-            deviceNameAndSerialNumber += "   ";
-        }
-        rows.push_back({ panel->getColourTag(), { deviceNameAndSerialNumber + panel->getConnection().getInfo()->toString() }});
+        rows.push_back({ panel->getColourTag(), panel->getDeviceNameAndSerialNumber(), panel->getConnection().getInfo()->toString() });
 
         panel->getConnection().sendCommandsAsync({ command }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout, [&, rowIndex = rows.size() - 1, self = SafePointer<juce::Component>(this)](const std::vector<std::string>& responses)
         {
@@ -48,14 +43,16 @@ SendingCommandDialog::SendingCommandDialog(const std::string& command, const std
         ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess = closeOnSuccessButton.getToggleState();
     };
 
+    addAndMakeVisible(deviceLabel);
     addAndMakeVisible(connectionLabel);
     addAndMakeVisible(progressLabel);
 
     addAndMakeVisible(table);
     const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
+    table.getHeader().addColumn("", (int) ColumnIDs::device, 1, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 1, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::progress, 100, 100, 100);
+    table.getHeader().addColumn("", (int) ColumnIDs::progress, 70, 70, 70);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
@@ -72,6 +69,7 @@ void SendingCommandDialog::resized()
 
     static constexpr int headerHeight = 30;
     bounds.removeFromTop(headerHeight);
+    deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
     connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
     progressLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::progress - 1).withHeight(headerHeight));
 
@@ -98,20 +96,38 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::colourTag:
             return nullptr;
 
+        case ColumnIDs::device:
+            return new SimpleLabel(rows[(size_t) rowNumber].device);
+
         case ColumnIDs::connection:
             return new SimpleLabel(rows[(size_t) rowNumber].connection);
 
         case ColumnIDs::progress:
+            struct CustomIcon : juce::Component
+            {
+                CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
+                {
+                    addAndMakeVisible(icon);
+                }
+
+                void resized() override
+                {
+                    icon.setBounds(getLocalBounds().reduced(0, 3));
+                }
+
+                Icon icon;
+            };
+
             switch (rows[(size_t) rowNumber].state)
             {
                 case Row::State::inProgress:
-                    return new SimpleLabel("In Progress", UIFonts::defaultFont, juce::Justification::centred);
+                    return new CustomIcon(BinaryData::progress_svg, "In Progress");
 
                 case Row::State::failed:
-                    return new SimpleLabel("Failed", UIFonts::defaultFont, juce::Justification::centred);
+                    return new CustomIcon(BinaryData::warning_orange_svg, "Failed");
 
                 case Row::State::complete:
-                    return new SimpleLabel("Complete", UIFonts::defaultFont, juce::Justification::centred);
+                    return new CustomIcon(BinaryData::tick_green_svg, "Complete");
 
                 default:
                     return nullptr;

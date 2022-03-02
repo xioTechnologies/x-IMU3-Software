@@ -471,7 +471,7 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
 
 juce::Path CustomLookAndFeel::getTickShape(float height)
 {
-    static const std::unique_ptr<juce::Drawable> icon { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::tick_svg)) };
+    static const std::unique_ptr<juce::Drawable> icon { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::tick_white_svg)) };
 
     juce::Path path(icon->getOutlineAsPath());
     path.scaleToFit(0, 0, height * 2.0f, height, true);

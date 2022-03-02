@@ -64,7 +64,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
         case ColumnIDs::type:
             struct CustomIcon : juce::Component
             {
-                CustomIcon(const juce::String& svg) : icon(svg, "")
+                CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
                 {
                     addAndMakeVisible(icon);
                 }
@@ -77,9 +77,12 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
                 Icon icon;
             };
 
-            return new CustomIcon(notificationMessage.isError ?
-                                  (notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg) :
-                                  (notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg));
+            if (notificationMessage.isError)
+            {
+                return new CustomIcon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, "Error");
+            }
+
+            return new CustomIcon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, "Notification");
 
         case ColumnIDs::timestamp:
         {

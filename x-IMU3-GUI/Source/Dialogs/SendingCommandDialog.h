@@ -17,8 +17,9 @@ private:
     enum class ColumnIDs
     {
         colourTag = 1,
-        connection = 2,
-        progress = 3,
+        device,
+        connection,
+        progress,
     };
 
     struct Row
@@ -27,18 +28,20 @@ private:
         {
             inProgress,
             failed,
-            complete
+            complete,
         };
 
-        juce::Colour colourTag;
-        juce::String connection;
+        const juce::Colour colourTag;
+        const juce::String device;
+        const juce::String connection;
         State state = State::inProgress;
     };
 
     std::vector<Row> rows;
 
-    CustomToggleButton closeOnSuccessButton { "Close On Success" };
+    CustomToggleButton closeOnSuccessButton { "Close on Success" };
 
+    SimpleLabel deviceLabel { "Device" };
     SimpleLabel connectionLabel { "Connection" };
     SimpleLabel progressLabel { "Progress", UIFonts::defaultFont, juce::Justification::centred };
     juce::TableListBox table { "", this };
