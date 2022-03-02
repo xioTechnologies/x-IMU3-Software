@@ -4,7 +4,7 @@
 #include "SearchForConnectionsDialog.h"
 
 SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
-        : Dialog(BinaryData::search_svg, "Search for Connections", "Connect", "Cancel", &filterButton, 50, true),
+        : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, 50, true),
           existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
@@ -117,6 +117,21 @@ void SearchForConnectionsDialog::update()
     }
 
     table.setRows(std::move(rows));
+
+    std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
+    for (const auto& row : table.getRows())
+    {
+        numberOfConnections[row.connectionType]++;
+    }
+
+    juce::String numberOfConnectionsText;
+    for (const auto& pair : numberOfConnections)
+    {
+        numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first)) + ", ";
+    }
+    numberOfConnectionsText = numberOfConnectionsText.dropLastCharacters(2);
+
+    getTopLevelComponent()->setName("Search for Connections (" + (numberOfConnectionsText.isEmpty() ? "0 Connections" : numberOfConnectionsText) + ")");
 }
 
 juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()

@@ -4,24 +4,12 @@
 
 DiscoveredDevicesTable::DiscoveredDevicesTable()
 {
-    addAndMakeVisible(numConnectionsFoundLabel);
-
-    addAndMakeVisible(table);
-    table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
-    table.getHeader().addColumn("", (int) ColumnIDs::nameAndSerialNumber, 240);
-    table.getHeader().addColumn("", (int) ColumnIDs::connectionInfo, 280);
-    table.getHeader().setStretchToFitActive(true);
-    table.setHeaderHeight(0);
-    table.setRowHeight(30);
-    table.getViewport()->setScrollBarsShown(true, false);
-    table.setWantsKeyboardFocus(false);
-
-    addAndMakeVisible(buttonSelectAll);
-    buttonSelectAll.onClick = [&]
+    addAndMakeVisible(selectAllButton);
+    selectAllButton.onClick = [&]
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
-            rows[index].selected = buttonSelectAll.getToggleState();
+            rows[index].selected = selectAllButton.getToggleState();
 
             if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
             {
@@ -32,8 +20,31 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
         selectionChanged();
     };
 
-    addAndMakeVisible(labelSelectAll);
-    labelSelectAll.toBehind(&buttonSelectAll);
+    addAndMakeVisible(deviceLabel);
+    addAndMakeVisible(connectionLabel);
+
+    addAndMakeVisible(table);
+    table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
+    table.getHeader().addColumn("", (int) ColumnIDs::device, 240);
+    table.getHeader().addColumn("", (int) ColumnIDs::connection, 280);
+    table.getHeader().setStretchToFitActive(true);
+    table.setHeaderHeight(0);
+    table.getViewport()->setScrollBarsShown(true, false);
+    table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
+    table.setWantsKeyboardFocus(false);
+}
+
+void DiscoveredDevicesTable::resized()
+{
+    auto bounds = getLocalBounds();
+
+    static constexpr int headerHeight = 30;
+    bounds.removeFromTop(headerHeight);
+    selectAllButton.setBounds(0, 0, getWidth(), 30);
+    deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
+    connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
+
+    table.setBounds(bounds);
 }
 
 void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
@@ -59,7 +70,7 @@ void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
         }
     }
 
-    if (buttonSelectAll.getToggleState())
+    if (selectAllButton.getToggleState())
     {
         for (auto& row : rows)
         {
@@ -70,61 +81,11 @@ void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
     selectionChanged();
 
     table.updateContent();
-
-    juce::String text = "Found: ";
-
-    if (rows.empty())
-    {
-        text += "0 Connections";
-    }
-    else
-    {
-        std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
-        for (auto& row : rows)
-        {
-            numberOfConnections[row.connectionType]++;
-        }
-
-        for (const auto& pair : numberOfConnections)
-        {
-            text += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first));
-            if (&pair != &*numberOfConnections.rbegin())
-            {
-                text += ", ";
-            }
-        }
-    }
-
-    numConnectionsFoundLabel.setText(text);
 }
 
 const std::vector<DiscoveredDevicesTable::Row>& DiscoveredDevicesTable::getRows() const
 {
     return rows;
-}
-
-void DiscoveredDevicesTable::paint(juce::Graphics& g)
-{
-    g.setColour(UIColours::menuStrip);
-    g.fillRect(numConnectionsFoundLabel.getBounds().withSizeKeepingCentre(numConnectionsFoundLabel.getWidth(), table.getRowHeight()));
-    g.setColour(UIColours::background);
-    g.fillRect(buttonSelectAll.getBounds().getUnion(labelSelectAll.getBounds()));
-}
-
-void DiscoveredDevicesTable::resized()
-{
-    auto bounds = getLocalBounds();
-
-    auto foundBounds = bounds.removeFromTop(UILayout::textComponentHeight);
-    foundBounds.removeFromLeft(6); // align with toggle checkbox, from CustomToggleButtonLookAndFeel
-    numConnectionsFoundLabel.setBounds(foundBounds);
-
-    auto selectAllBounds = bounds.removeFromTop(table.getRowHeight());
-    buttonSelectAll.setBounds(selectAllBounds);
-    selectAllBounds.removeFromLeft(table.getHeader().getColumnPosition(1).getX());
-    labelSelectAll.setBounds(selectAllBounds);
-
-    table.setBounds(bounds);
 }
 
 void DiscoveredDevicesTable::selectionChanged()
@@ -133,7 +94,7 @@ void DiscoveredDevicesTable::selectionChanged()
     {
         if (row.selected == false)
         {
-            buttonSelectAll.setToggleState(false, juce::dontSendNotification);
+            selectAllButton.setToggleState(false, juce::dontSendNotification);
             break;
         }
     }
@@ -147,11 +108,6 @@ void DiscoveredDevicesTable::selectionChanged()
 int DiscoveredDevicesTable::getNumRows()
 {
     return (int) rows.size();
-}
-
-void DiscoveredDevicesTable::paintRowBackground(juce::Graphics& g, int rowNumber, int, int, bool)
-{
-    g.fillAll(rowNumber % 2 == 0 ? UIColours::menuStrip : UIColours::background);
 }
 
 juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
@@ -175,7 +131,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             break;
         }
 
-        case ColumnIDs::nameAndSerialNumber:
+        case ColumnIDs::device:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
@@ -184,7 +140,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceNameAndSerialNumber);
             break;
 
-        case ColumnIDs::connectionInfo:
+        case ColumnIDs::connection:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
