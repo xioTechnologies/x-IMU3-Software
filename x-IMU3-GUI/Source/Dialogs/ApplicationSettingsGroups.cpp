@@ -139,7 +139,7 @@ MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 3)
 {
     addAndMakeVisible(hideUnusedDeviceSettingsButton);
     addAndMakeVisible(showApplicationErrorsButton);
-    addAndMakeVisible(closeSendingCommandsOnSuccessButton);
+    addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
 
     hideUnusedDeviceSettingsButton.onClick = [this]
     {
@@ -151,14 +151,14 @@ MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 3)
         ApplicationSettings::getSingleton().showApplicationErrors = showApplicationErrorsButton.getToggleState();
     };
 
-    closeSendingCommandsOnSuccessButton.onClick = [this]
+    closeSendingCommandDialogWhenCompleteButton.onClick = [this]
     {
-        ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess = closeSendingCommandsOnSuccessButton.getToggleState();
+        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
     };
 
     hideUnusedDeviceSettingsButton.setToggleState(ApplicationSettings::getSingleton().hideUnusedDeviceSettings, juce::dontSendNotification);
     showApplicationErrorsButton.setToggleState(ApplicationSettings::getSingleton().showApplicationErrors, juce::dontSendNotification);
-    closeSendingCommandsOnSuccessButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess, juce::dontSendNotification);
+    closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
 }
 
 void MiscGroup::resized()
@@ -166,5 +166,5 @@ void MiscGroup::resized()
     auto bounds = getContentBounds();
     hideUnusedDeviceSettingsButton.setBounds(bounds.removeFromTop(rowHeight));
     showApplicationErrorsButton.setBounds(bounds.removeFromTop(rowHeight));
-    closeSendingCommandsOnSuccessButton.setBounds(bounds.removeFromTop(rowHeight));
+    closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(rowHeight));
 }

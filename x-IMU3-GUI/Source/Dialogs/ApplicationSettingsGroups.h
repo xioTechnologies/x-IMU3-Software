@@ -80,7 +80,7 @@ public:
 private:
     CustomToggleButton hideUnusedDeviceSettingsButton { "Hide Unused Device Settings" };
     CustomToggleButton showApplicationErrorsButton { "Show Application Errors" };
-    CustomToggleButton closeSendingCommandsOnSuccessButton { "Close Sending Commands on Success" };
+    CustomToggleButton closeSendingCommandDialogWhenCompleteButton { "Close Sending Command Dialog When Complete" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MiscGroup)
 };

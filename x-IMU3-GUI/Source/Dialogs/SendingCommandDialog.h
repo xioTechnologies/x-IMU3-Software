@@ -39,7 +39,7 @@ private:
 
     std::vector<Row> rows;
 
-    CustomToggleButton closeOnSuccessButton { "Close on Success" };
+    CustomToggleButton closeWhenCompleteButton { "Close When Complete" };
 
     SimpleLabel deviceLabel { "Device" };
     SimpleLabel connectionLabel { "Connection" };

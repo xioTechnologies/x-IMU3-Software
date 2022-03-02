@@ -1,7 +1,7 @@
 #include "../ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const std::string& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels) : Dialog(BinaryData::json_svg, "Sending Command " + command, "Close", "", &closeOnSuccessButton, std::numeric_limits<int>::max(), true)
+SendingCommandDialog::SendingCommandDialog(const std::string& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels) : Dialog(BinaryData::json_svg, "Sending Command " + command, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
     for (auto& panel : devicePanels)
     {
@@ -19,7 +19,7 @@ SendingCommandDialog::SendingCommandDialog(const std::string& command, const std
                                                 rows[rowIndex].state = responses.empty() ? Row::State::failed : Row::State::complete;
                                                 table.updateContent();
 
-                                                if (ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess)
+                                                if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
                                                 {
                                                     for (const auto& row : rows)
                                                     {
@@ -35,12 +35,12 @@ SendingCommandDialog::SendingCommandDialog(const std::string& command, const std
         });
     }
 
-    addAndMakeVisible(closeOnSuccessButton);
-    closeOnSuccessButton.setClickingTogglesState(true);
-    closeOnSuccessButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess, juce::dontSendNotification);
-    closeOnSuccessButton.onClick = [&]
+    addAndMakeVisible(closeWhenCompleteButton);
+    closeWhenCompleteButton.setClickingTogglesState(true);
+    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    closeWhenCompleteButton.onClick = [&]
     {
-        ApplicationSettings::getSingleton().closeSendingCommandsOnSuccess = closeOnSuccessButton.getToggleState();
+        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
     };
 
     addAndMakeVisible(deviceLabel);
