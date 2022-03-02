@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Dialog.h"
 #include "../Widgets/SimpleLabel.h"
+#include "Dialog.h"
 
 class NotificationAndErrorMessagesDialog : public Dialog,
                                            private juce::TableListBoxModel

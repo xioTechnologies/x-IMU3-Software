@@ -1,6 +1,6 @@
 #include "../Helpers.h"
-#include "NotificationAndErrorMessagesDialog.h"
 #include "../Widgets/Icon.h"
+#include "NotificationAndErrorMessagesDialog.h"
 
 NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)
         : Dialog(BinaryData::speech_white_svg, "Notification and Error Messages", "Close", "", &clearAllButton, 80, true),

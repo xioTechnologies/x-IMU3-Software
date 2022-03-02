@@ -1,7 +1,7 @@
-#include "AxesRange.h"
 #include "../CustomLookAndFeel.h"
-#include "Graph.h"
 #include "../Helpers.h"
+#include "AxesRange.h"
+#include "Graph.h"
 
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
 {
