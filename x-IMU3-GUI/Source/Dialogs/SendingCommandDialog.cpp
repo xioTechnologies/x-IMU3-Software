@@ -1,7 +1,7 @@
 #include "../ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels) : Dialog(BinaryData::json_svg, "Sending Command " + command.json, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
+SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels) : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
     for (auto& panel : devicePanels)
     {
