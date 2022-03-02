@@ -65,6 +65,7 @@ void Dialog::resized()
 
     if (bottomLeftComponent)
     {
+        bounds.removeFromRight(margin);
         bottomLeftComponent->setBounds(bounds.removeFromLeft(bottomLeftComponentWidth));
     }
 }
