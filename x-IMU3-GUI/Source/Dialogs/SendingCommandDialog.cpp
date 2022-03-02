@@ -50,11 +50,12 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     addAndMakeVisible(table);
     const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::device, 1, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 1, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::connection, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::progress, 70, 70, 70);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
+    table.getViewport()->setScrollBarsShown(true, false);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
     table.updateContent();
 
