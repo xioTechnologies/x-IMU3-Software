@@ -10,7 +10,7 @@ class SendingCommandDialog : public Dialog,
                              private juce::TableListBoxModel
 {
 public:
-    SendingCommandDialog(const CommandMessage& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels);
+    SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels);
 
     void resized() override;
 

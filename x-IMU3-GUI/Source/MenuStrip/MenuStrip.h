@@ -14,7 +14,7 @@ class MenuStrip : public juce::Component,
                   private juce::Timer
 {
 public:
-    MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelsContainer_);
+    MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelContainer_);
 
     ~MenuStrip() override;
 
@@ -24,7 +24,7 @@ public:
 
 private:
     juce::ValueTree& windowLayout;
-    DevicePanelContainer& devicePanelsContainer;
+    DevicePanelContainer& devicePanelContainer;
 
     IconButton searchButton { IconButton::Style::menuStrip, BinaryData::search_svg, 1.0f, "Search for Connections", nullptr, "" };
     IconButton manualButton { IconButton::Style::menuStripDropdown, BinaryData::manual_svg, 1.0f, "Manual Connection", std::bind(&MenuStrip::getManualConnectMenu, this) };

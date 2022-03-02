@@ -1,13 +1,13 @@
 #include "../ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<std::unique_ptr<DevicePanel>>& devicePanels) : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
+SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels) : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
-    for (auto& panel : devicePanels)
+    for (auto* const devicePanel : devicePanels)
     {
-        rows.push_back({ panel->getColourTag(), panel->getDeviceNameAndSerialNumber(), panel->getConnection().getInfo()->toString() });
+        rows.push_back({ devicePanel->getColourTag(), devicePanel->getDeviceNameAndSerialNumber(), devicePanel->getConnection().getInfo()->toString() });
 
-        panel->getConnection().sendCommandsAsync({ command }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout, [&, rowIndex = rows.size() - 1, self = SafePointer<juce::Component>(this)](const std::vector<std::string>& responses)
+        devicePanel->getConnection().sendCommandsAsync({ command }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout, [&, rowIndex = rows.size() - 1, self = SafePointer<juce::Component>(this)](const std::vector<std::string>& responses)
         {
             juce::MessageManager::callAsync([&, rowIndex, self, responses = responses]
                                             {

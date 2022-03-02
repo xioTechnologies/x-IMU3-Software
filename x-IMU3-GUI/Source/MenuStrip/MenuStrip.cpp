@@ -18,8 +18,8 @@
 #include "Widgets/PopupMenuHeader.h"
 #include "Windows/WindowIDs.h"
 
-MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelsContainer_) : windowLayout(windowLayout_),
-                                                                                                     devicePanelsContainer(devicePanelsContainer_)
+MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelContainer_) : windowLayout(windowLayout_),
+                                                                                                    devicePanelContainer(devicePanelContainer_)
 {
     setWindowLayout({});
 
@@ -36,7 +36,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
     {
         std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
 
-        for (auto& devicePanel : devicePanelsContainer.getDevicePanels())
+        for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
         {
             existingConnections.push_back(devicePanel->getConnection().getInfo());
         }
@@ -47,7 +47,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
-                    devicePanelsContainer.connectToDevice(*connectionInfo);
+                    devicePanelContainer.connectToDevice(*connectionInfo);
                 }
             }
         });
@@ -62,7 +62,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
     {
         DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
-            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelsContainer.getDevicePanels()));
+            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelContainer.getDevicePanels()));
         });
     };
 
@@ -72,7 +72,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelsContainer.getDevicePanels()));
+                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
             }
         });
     };
@@ -96,7 +96,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 dataLoggerSettings = dialog->getSettings();
 
                 std::vector<ximu3::Connection*> connections;
-                for (auto& devicePanel : devicePanelsContainer.getDevicePanels())
+                for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
                 {
                     connections.push_back(&devicePanel->getConnection());
                 }
@@ -142,7 +142,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         DialogLauncher::launchDialog(std::make_unique<ApplicationSettingsDialog>());
     };
 
-    devicePanelsContainer.onDevicePanelsSizeChanged = [&](const int oldSize, const int newSize)
+    devicePanelContainer.onDevicePanelsSizeChanged = [&](const int oldSize, const int newSize)
     {
         devicePanelLayoutButton.setEnabled(newSize > 1);
 
@@ -154,16 +154,16 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
         if (newSize > 1 && oldSize <= 1)
         {
-            devicePanelsContainer.setLayout(DevicePanelContainer::Layout::accordion);
+            devicePanelContainer.setLayout(DevicePanelContainer::Layout::accordion);
             devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::accordion), {});
         }
         else if (newSize <= 1)
         {
-            devicePanelsContainer.setLayout(DevicePanelContainer::Layout::rows);
+            devicePanelContainer.setLayout(DevicePanelContainer::Layout::rows);
             devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::rows), {});
         }
     };
-    devicePanelsContainer.onDevicePanelsSizeChanged(0, 0);
+    devicePanelContainer.onDevicePanelsSizeChanged(0, 0);
 
     ApplicationErrorsDialog::numberOfUnreadErrors.addListener(this);
 }
@@ -244,7 +244,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         if (auto* dialog = dynamic_cast<NewConnectionDialog*>(DialogLauncher::getLaunchedDialog()))
         {
             auto connectionInfo = dialog->getConnectionInfo();
-            devicePanelsContainer.connectToDevice(*connectionInfo);
+            devicePanelContainer.connectToDevice(*connectionInfo);
             RecentConnections().update(*connectionInfo);
         }
     };
@@ -276,7 +276,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         const auto connectionInfoString = connectionInfo->toString();
         menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
         {
-            devicePanelsContainer.connectToDevice(*connectionInfo);
+            devicePanelContainer.connectToDevice(*connectionInfo);
         });
     }
 
@@ -291,31 +291,31 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
     {
         dataLoggerTime.setTime(juce::RelativeTime());
         dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-        devicePanelsContainer.removeAllPanels();
+        devicePanelContainer.removeAllPanels();
     });
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
-    for (auto& panel : devicePanelsContainer.getDevicePanels())
+    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
     {
-        auto deviceNameAndSerialNumber = panel->getDeviceNameAndSerialNumber();
+        auto deviceNameAndSerialNumber = devicePanel->getDeviceNameAndSerialNumber();
         if (deviceNameAndSerialNumber.isNotEmpty())
         {
             deviceNameAndSerialNumber += "   ";
         }
-        juce::PopupMenu::Item item(deviceNameAndSerialNumber + panel->getConnection().getInfo()->toString());
+        juce::PopupMenu::Item item(deviceNameAndSerialNumber + devicePanel->getConnection().getInfo()->toString());
 
-        item.action = [this, panel = panel.get()]
+        item.action = [this, devicePanel]
         {
             dataLoggerTime.setTime(juce::RelativeTime());
             dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-            devicePanelsContainer.removePanel(*panel);
+            devicePanelContainer.removePanel(*devicePanel);
         };
 
         auto colourTag = std::make_unique<juce::DrawableRectangle>();
         int _, height;
         getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
         colourTag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) DevicePanelHeader::colourTagWidth, (float) height));
-        colourTag->setFill({ panel->getColourTag() });
+        colourTag->setFill({ devicePanel->getColourTag() });
         item.image = std::move(colourTag);
 
         menu.addItem(item);
@@ -464,9 +464,9 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
 
     const auto addItem = [&](auto type, const auto& title)
     {
-        menu.addItem(title, true, devicePanelsContainer.getLayout() == type, [&, type]
+        menu.addItem(title, true, devicePanelContainer.getLayout() == type, [&, type]
         {
-            devicePanelsContainer.setLayout(type);
+            devicePanelContainer.setLayout(type);
             devicePanelLayoutButton.setIcon(layoutIcons.at(type), {});
         });
     };
