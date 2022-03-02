@@ -130,8 +130,12 @@ void SearchForConnectionsDialog::update()
         numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first)) + ", ";
     }
     numberOfConnectionsText = numberOfConnectionsText.dropLastCharacters(2);
+    if (numberOfConnectionsText.isNotEmpty())
+    {
+        numberOfConnectionsText = " (" + numberOfConnectionsText + ")";
+    }
 
-    getTopLevelComponent()->setName("Search for Connections (" + (numberOfConnectionsText.isEmpty() ? "0 Connections" : numberOfConnectionsText) + ")");
+    getTopLevelComponent()->setName("Search for Connections" + numberOfConnectionsText);
 }
 
 juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()

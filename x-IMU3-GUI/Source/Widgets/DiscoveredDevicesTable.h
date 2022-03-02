@@ -53,7 +53,7 @@ private:
 
     int getNumRows() override;
 
-    void paintRowBackground(juce::Graphics& g, int rowNumber, int, int, bool) override
+    void paintRowBackground(juce::Graphics&, int, int, int, bool) override
     {
     }
 

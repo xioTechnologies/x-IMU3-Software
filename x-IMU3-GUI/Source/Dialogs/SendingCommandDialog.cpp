@@ -45,14 +45,14 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(connectionLabel);
-    addAndMakeVisible(progressLabel);
+    addAndMakeVisible(completeLabel);
 
     addAndMakeVisible(table);
     const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::progress, 70, 70, 70);
+    table.getHeader().addColumn("", (int) ColumnIDs::complete, 70, 70, 70);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -72,7 +72,7 @@ void SendingCommandDialog::resized()
     bounds.removeFromTop(headerHeight);
     deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
     connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
-    progressLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::progress - 1).withHeight(headerHeight));
+    completeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::complete - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
 }
@@ -103,7 +103,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::connection:
             return new SimpleLabel(rows[(size_t) rowNumber].connection);
 
-        case ColumnIDs::progress:
+        case ColumnIDs::complete:
             struct CustomIcon : juce::Component
             {
                 CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
