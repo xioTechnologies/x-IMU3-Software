@@ -360,20 +360,22 @@ juce::Font CustomLookAndFeel::getComboBoxFont(juce::ComboBox&)
 }
 
 void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window, juce::Graphics& g,
-                                                   int, int h, int, int,
+                                                   int w, int h, int, int,
                                                    const juce::Image* icon, bool)
 {
     g.fillAll(UIColours::menuStripButton);
 
+    juce::Rectangle<int> bounds(w, h);
+
     if (icon != nullptr)
     {
-        g.drawImage(*icon, juce::Rectangle<float>((float) h, (float) h).withSizeKeepingCentre(22.0f, 22.0f), juce::RectanglePlacement::centred);
+        g.drawImage(*icon, bounds.removeFromLeft(h).withSizeKeepingCentre(22, 22).toFloat(), juce::RectanglePlacement::centred);
     }
 
     const auto font = UIFonts::defaultFont;
     g.setFont(font);
     g.setColour(juce::Colours::white);
-    g.drawText(window.getName(), (icon != nullptr) ? h : 0, 0, font.getStringWidth(window.getName()), h, juce::Justification::left, true);
+    g.drawText(window.getName(), bounds, juce::Justification::left, true);
 }
 
 juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String& tipText, juce::Point<int> screenPos, juce::Rectangle<int> parentArea)
