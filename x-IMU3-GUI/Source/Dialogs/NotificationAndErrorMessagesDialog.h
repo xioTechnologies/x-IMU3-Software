@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Dialog.h"
 #include "../Widgets/SimpleLabel.h"
+#include "Dialog.h"
 
 class NotificationAndErrorMessagesDialog : public Dialog,
                                            private juce::TableListBoxModel
@@ -25,8 +25,8 @@ private:
     enum class ColumnIDs
     {
         type = 1,
-        timestamp = 2,
-        message = 3
+        timestamp,
+        message,
     };
 
     std::vector<Message>& messages;

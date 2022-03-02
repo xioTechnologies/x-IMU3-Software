@@ -118,9 +118,14 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                           });
 }
 
-std::vector<std::unique_ptr<DevicePanel>>& DevicePanelContainer::getDevicePanels()
+std::vector<DevicePanel*> DevicePanelContainer::getDevicePanels() const
 {
-    return devicePanels;
+    std::vector<DevicePanel*> vector;
+    for (auto& devicePanel : devicePanels)
+    {
+        vector.push_back(devicePanel.get());
+    }
+    return vector;
 }
 
 void DevicePanelContainer::removeAllPanels()

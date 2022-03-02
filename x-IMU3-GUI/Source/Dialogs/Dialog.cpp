@@ -34,13 +34,13 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
 
         if (thisDeletedChecker.shouldBailOut() == false)
         {
-            findParentComponentOfClass<juce::DialogWindow>()->closeButtonPressed();
+            DialogLauncher::launchDialog(nullptr);
         }
     };
 
-    cancelButton.onClick = [this]
+    cancelButton.onClick = []
     {
-        findParentComponentOfClass<juce::DialogWindow>()->closeButtonPressed();
+        DialogLauncher::launchDialog(nullptr);
     };
 }
 
@@ -65,6 +65,7 @@ void Dialog::resized()
 
     if (bottomLeftComponent)
     {
+        bounds.removeFromRight(margin);
         bottomLeftComponent->setBounds(bounds.removeFromLeft(bottomLeftComponentWidth));
     }
 }
@@ -101,16 +102,20 @@ std::unique_ptr<DialogLauncher> DialogLauncher::launchedDialog = nullptr;
 void DialogLauncher::launchDialog(std::unique_ptr<Dialog> content, std::function<void()> okCallback)
 {
     launchedDialog.reset();
-    launchedDialog.reset(new DialogLauncher(std::move(content), std::move(okCallback)));
 
-    static const struct CleanupAtShutdown : juce::DeletedAtShutdown
+    if (content != nullptr)
     {
-        ~CleanupAtShutdown() override
+        launchedDialog.reset(new DialogLauncher(std::move(content), std::move(okCallback)));
+
+        static const struct CleanupAtShutdown : juce::DeletedAtShutdown
         {
-            launchedDialog.reset();
-        }
-    } * cleanupAtShutdown = new CleanupAtShutdown();
-    juce::ignoreUnused(cleanupAtShutdown);
+            ~CleanupAtShutdown() override
+            {
+                launchedDialog.reset();
+            }
+        } * cleanupAtShutdown = new CleanupAtShutdown();
+        juce::ignoreUnused(cleanupAtShutdown);
+    }
 }
 
 Dialog* DialogLauncher::getLaunchedDialog()

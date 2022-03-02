@@ -1,6 +1,6 @@
 #include "../Helpers.h"
-#include "NotificationAndErrorMessagesDialog.h"
 #include "../Widgets/Icon.h"
+#include "NotificationAndErrorMessagesDialog.h"
 
 NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)
         : Dialog(BinaryData::speech_white_svg, "Notification and Error Messages", "Close", "", &clearAllButton, 80, true),
@@ -23,6 +23,7 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     table.getHeader().addColumn("", (int) ColumnIDs::message, 1);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
+    table.getViewport()->setScrollBarsShown(true, false);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
 
     setSize(800, 480);
@@ -36,9 +37,9 @@ void NotificationAndErrorMessagesDialog::resized()
 
     static constexpr int headerHeight = 30;
     bounds.removeFromTop(headerHeight);
-    typeLabel.setBounds(table.getHeader().getColumnPosition(0).withHeight(headerHeight));
-    timestampLabel.setBounds(table.getHeader().getColumnPosition(1).withHeight(headerHeight));
-    messageLabel.setBounds(table.getHeader().getColumnPosition(2).withHeight(headerHeight));
+    typeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::type - 1).withHeight(headerHeight));
+    timestampLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::timestamp - 1).withHeight(headerHeight));
+    messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::message - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
 }
@@ -64,7 +65,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
         case ColumnIDs::type:
             struct CustomIcon : juce::Component
             {
-                CustomIcon(const juce::String& svg) : icon(svg, "")
+                CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
                 {
                     addAndMakeVisible(icon);
                 }
@@ -77,9 +78,12 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
                 Icon icon;
             };
 
-            return new CustomIcon(notificationMessage.isError ?
-                                  (notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg) :
-                                  (notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg));
+            if (notificationMessage.isError)
+            {
+                return new CustomIcon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, "Error");
+            }
+
+            return new CustomIcon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, "Notification");
 
         case ColumnIDs::timestamp:
         {

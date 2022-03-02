@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Dialogs/NotificationAndErrorMessagesDialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "../Widgets/IconButton.h"
 #include "../Widgets/SimpleLabel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
 class DevicePanelFooter : public juce::Component

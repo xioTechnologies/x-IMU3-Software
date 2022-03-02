@@ -35,7 +35,7 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
                                         switch (progress.status)
                                         {
                                             case ximu3::XIMU3_FileConverterStatusComplete:
-                                                findParentComponentOfClass<juce::DialogWindow>()->closeButtonPressed();
+                                                DialogLauncher::launchDialog(nullptr);
                                                 break;
                                             case ximu3::XIMU3_FileConverterStatusFailed:
                                                 DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("File conversion failed."));

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ApplicationSettings.h"
+#include "../CommandMessage.h"
 #include "../Widgets/CustomComboBox.h"
 #include "../Widgets/SimpleLabel.h"
 #include "Dialog.h"
@@ -12,7 +13,7 @@ public:
 
     void resized() override;
 
-    std::string getCommand();
+    CommandMessage getCommand();
 
 private:
     SimpleLabel label { "Command:" };

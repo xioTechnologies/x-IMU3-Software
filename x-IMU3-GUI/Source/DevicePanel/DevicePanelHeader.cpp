@@ -1,6 +1,7 @@
 #include "../Dialogs/ChangeDeviceNameDialog.h"
 #include "../Dialogs/LedColourDialog.h"
 #include "../Dialogs/SendCommandDialog.h"
+#include "../Dialogs/SendingCommandDialog.h"
 #include "DevicePanel.h"
 #include "DevicePanelContainer.h"
 #include "DevicePanelHeader.h"
@@ -159,7 +160,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 
     menu.addItem("Strobe LED", [this]
     {
-        devicePanel.sendCommands({{ "strobe", {}}});
+        DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
     });
 
     menu.addItem("LED Colour", [this]

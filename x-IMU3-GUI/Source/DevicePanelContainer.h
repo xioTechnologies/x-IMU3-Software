@@ -17,7 +17,7 @@ public:
 
     void connectToDevice(const ximu3::ConnectionInfo& connectionInfo);
 
-    std::vector<std::unique_ptr<DevicePanel>>& getDevicePanels();
+    std::vector<DevicePanel*> getDevicePanels() const;
 
     void removeAllPanels();
 
