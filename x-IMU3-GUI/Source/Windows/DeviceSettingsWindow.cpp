@@ -42,7 +42,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
 
     readAllButton.onClick();
 
-    writeAllButton.onClick = [this]
+    writeAllButton.onClick = writeAllFailedButton.onClick = [this]
     {
         readAllButton.setVisible(true);
         readAllFailedButton.setVisible(false);
