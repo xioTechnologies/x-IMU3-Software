@@ -44,7 +44,7 @@ protected:
 private:
     juce::ValueTree tree;
     SimpleLabel name;
-    Icon modifiedIcon { BinaryData::upload_svg, "Value Modified but Not Written to Device" };
+    Icon modifiedIcon { BinaryData::modify_svg, "Value Modified but Not Written to Device" };
     Icon readFailedIcon { BinaryData::warning_orange_svg, "Read from Device Failed" };
     Icon writeFailedIcon { BinaryData::warning_orange_svg, "Write to Device Failed" };
     juce::Rectangle<int> valueBounds;
