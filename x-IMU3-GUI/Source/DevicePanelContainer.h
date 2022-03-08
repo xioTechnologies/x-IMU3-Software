@@ -40,8 +40,6 @@ public:
 
     Layout getLayout();
 
-    void sendCommands(const std::vector<CommandMessage>& commandMessages);
-
     void updateHeightInAccordionMode();
 
     void toggleAccordionState(DevicePanel* const devicePanel);

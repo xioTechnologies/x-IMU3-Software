@@ -2,54 +2,84 @@
 #include "../Dialogs/ApplicationErrorsDialog.h"
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/AreYouSureDialog.h"
+#include "Dialogs/ErrorDialog.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_) : Window(windowLayout, type, devicePanel_)
 {
     addAndMakeVisible(settingsTree);
     addAndMakeVisible(readAllButton);
+    addChildComponent(readAllFailedButton);
     addAndMakeVisible(writeAllButton);
+    addChildComponent(writeAllFailedButton);
     addAndMakeVisible(saveToFileButton);
     addAndMakeVisible(loadFromFileButton);
     addAndMakeVisible(defaultsButton);
 
-    sendCommandsCallback = [this, self = SafePointer<juce::Component>(this)](const auto& responses, const auto& failedCommands)
+    readAllButton.onClick = readAllFailedButton.onClick = [this]
     {
-        juce::MessageManager::callAsync([&, self, responses, failedCommands]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        readAllButton.setVisible(true);
+        readAllFailedButton.setVisible(false);
+        writeAllButton.setVisible(true);
+        writeAllFailedButton.setVisible(false);
 
-                                            for (const auto& response : responses)
-                                            {
-                                                settingsTree.setValue(response);
-                                                settingsTree.setStatus(response.key, Setting::Status::normal);
-                                            }
+        devicePanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
+        {
+            for (const auto& response : responses)
+            {
+                settingsTree.setValue(response);
+                settingsTree.setStatus(response.key, Setting::Status::normal);
+            }
 
-                                            for (const auto& failedCommand : failedCommands)
-                                            {
-                                                settingsTree.setStatus(failedCommand.key, failedCommand.value.isVoid() ? Setting::Status::readFailed : Setting::Status::writeFailed);
-                                            }
-                                        });
-    };
+            for (const auto& failedCommand : failedCommands)
+            {
+                settingsTree.setStatus(failedCommand.key, Setting::Status::readFailed);
+            }
 
-    readAllButton.onClick = [this]
-    {
-        devicePanel.sendCommands(settingsTree.getReadCommands(), sendCommandsCallback);
+            readAllButton.setVisible(failedCommands.empty());
+            readAllFailedButton.setVisible(failedCommands.empty() == false);
+        });
     };
 
     readAllButton.onClick();
 
     writeAllButton.onClick = [this]
     {
-        devicePanel.sendCommands(settingsTree.getWriteCommands(), [this](const auto& responses, const auto& failedCommands)
-        {
-            sendCommandsCallback(responses, failedCommands);
+        readAllButton.setVisible(true);
+        readAllFailedButton.setVisible(false);
+        writeAllButton.setVisible(true);
+        writeAllFailedButton.setVisible(false);
 
-            devicePanel.sendCommands({{ "save", {}}}, [this](const auto&, const auto&)
+        devicePanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
+        {
+            for (const auto& response : responses)
             {
-                devicePanel.sendCommands({{ "apply", {}}}, nullptr);
+                settingsTree.setValue(response);
+                settingsTree.setStatus(response.key, Setting::Status::normal);
+            }
+
+            for (const auto& failedCommand : writeFailedCommands)
+            {
+                settingsTree.setStatus(failedCommand.key, Setting::Status::writeFailed);
+            }
+
+            writeAllButton.setVisible(writeFailedCommands.empty());
+            writeAllFailedButton.setVisible(writeFailedCommands.empty() == false);
+
+            devicePanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
+            {
+                if (saveFailedCommands.empty() == false)
+                {
+                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Save failed."));
+                    return;
+                }
+
+                devicePanel.sendCommands({{ "apply", {}}}, this, [](const auto&, const auto& applyFailedCommands)
+                {
+                    if (applyFailedCommands.empty() == false)
+                    {
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Apply failed."));
+                    }
+                });
             });
         });
     };
@@ -96,15 +126,34 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
 
     defaultsButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default settings?"), [this, readCommands = settingsTree.getReadCommands()]
+        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default settings?"), [this]
         {
-            devicePanel.sendCommands({{ "default", {}}}, [this, readCommands](auto, auto)
+            devicePanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
             {
-                devicePanel.sendCommands(readCommands, sendCommandsCallback);
-
-                devicePanel.sendCommands({{ "save", {}}}, [this](auto, auto)
+                if (defaultFailedCommands.empty() == false)
                 {
-                    devicePanel.sendCommands({{ "apply", {}}}, nullptr);
+                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Default failed."));
+                    return;
+                }
+
+                devicePanel.sendCommands({{ "save", {}}}, this, [this](const auto&, const auto& saveFailedCommands)
+                {
+                    if (saveFailedCommands.empty() == false)
+                    {
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Save failed."));
+                        return;
+                    }
+
+                    devicePanel.sendCommands({{ "apply", {}}}, this, [this](const auto&, const auto& applyFailedCommands)
+                    {
+                        if (applyFailedCommands.empty() == false)
+                        {
+                            DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Apply failed."));
+                            return;
+                        }
+
+                        readAllButton.onClick();
+                    });
                 });
             });
         });
@@ -136,4 +185,7 @@ void DeviceSettingsWindow::resized()
     {
         button->setBounds(buttonsBounds.removeFromLeft(buttonWidth).reduced(2.0f).toNearestInt());
     }
+
+    readAllFailedButton.setBounds(readAllButton.getBounds());
+    writeAllFailedButton.setBounds(writeAllButton.getBounds());
 }

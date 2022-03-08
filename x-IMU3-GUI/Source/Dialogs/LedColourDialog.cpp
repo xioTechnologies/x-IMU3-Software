@@ -43,6 +43,7 @@ LedColourDialog::LedColourDialog(DevicePanel& devicePanel_)
         hexValue.setText("", false);
         colourSelector.setCurrentColour(nullColour, juce::dontSendNotification);
 
+        // TODO: Indicate failed command to user
         devicePanel.sendCommands({{ "colour", {}}});
     };
 
@@ -98,5 +99,6 @@ void LedColourDialog::changeListenerCallback(juce::ChangeBroadcaster*)
     const auto colourText = colour.toDisplayString(false);
     setText(hexValue, colourText);
 
-    devicePanel.sendCommands({ CommandMessage("{\"colour\":" + colourText.quoted().toStdString() + "}") });
+    // TODO: Indicate failed command to user
+    devicePanel.sendCommands({ CommandMessage("colour", colourText) });
 }

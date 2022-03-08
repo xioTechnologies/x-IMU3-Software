@@ -226,14 +226,6 @@ DevicePanelContainer::Layout DevicePanelContainer::getLayout()
     return layout;
 }
 
-void DevicePanelContainer::sendCommands(const std::vector<CommandMessage>& commandMessages)
-{
-    for (auto& devicePanel : devicePanels)
-    {
-        devicePanel->sendCommands(commandMessages);
-    }
-}
-
 void DevicePanelContainer::updateHeightInAccordionMode()
 {
     if (layout != Layout::accordion)

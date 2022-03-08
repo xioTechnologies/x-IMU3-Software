@@ -116,12 +116,6 @@ void DevicePanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
 
 void DevicePanelHeader::updateDeviceNameAndSerialNumber(const std::vector<CommandMessage>& responses)
 {
-    juce::MessageManagerLock lock(this);
-    if (lock.lockWasGained() == false)
-    {
-        return;
-    }
-
     for (const auto& response : responses)
     {
         if (response.key == "deviceName")
@@ -153,7 +147,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
         {
             if (auto* dialog = dynamic_cast<ChangeDeviceNameDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                devicePanel.sendCommands({ CommandMessage("{\"deviceName\":" + dialog->getDeviceName().quoted().toStdString() + "}") });
+                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("deviceName", dialog->getDeviceName()), std::vector<DevicePanel*> { &devicePanel }));
             }
         });
     });
@@ -174,7 +168,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                devicePanel.sendCommands({ CommandMessage(dialog->getCommand()) });
+                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage(dialog->getCommand()), std::vector<DevicePanel*> { &devicePanel }));
             }
         });
     });

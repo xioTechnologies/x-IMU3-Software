@@ -14,7 +14,8 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     sendButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
     sendButton.onClick = [this]
     {
-        devicePanel.sendCommands({ CommandMessage("{\"accessory\":" + sendValue.getText().quoted().toStdString() + "}") });
+        // TODO: Indicate failed command to user
+        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) });
         terminalFeed.add("TX", sendValue.getText(), UIColours::grey);
 
         if (sendValue.getText().isEmpty())

@@ -7,31 +7,23 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     {
         rows.push_back({ devicePanel->getColourTag(), devicePanel->getDeviceNameAndSerialNumber(), devicePanel->getConnection().getInfo()->toString() });
 
-        devicePanel->getConnection().sendCommandsAsync({ command }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout, [&, rowIndex = rows.size() - 1, self = SafePointer<juce::Component>(this)](const std::vector<std::string>& responses)
+        devicePanel->sendCommands({ command }, this, [&, rowIndex = rows.size() - 1](const auto&, const auto& failedCommands)
         {
-            juce::MessageManager::callAsync([&, rowIndex, self, responses = responses]
-                                            {
-                                                if (self == nullptr)
-                                                {
-                                                    return;
-                                                }
+            rows[rowIndex].state = (failedCommands.empty() == false) ? Row::State::failed : Row::State::complete;
+            table.updateContent();
 
-                                                rows[rowIndex].state = responses.empty() ? Row::State::failed : Row::State::complete;
-                                                table.updateContent();
+            if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
+            {
+                for (const auto& row : rows)
+                {
+                    if (row.state != Row::State::complete)
+                    {
+                        return;
+                    }
+                }
 
-                                                if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
-                                                {
-                                                    for (const auto& row : rows)
-                                                    {
-                                                        if (row.state != Row::State::complete)
-                                                        {
-                                                            return;
-                                                        }
-                                                    }
-
-                                                    DialogLauncher::launchDialog(nullptr);
-                                                }
-                                            });
+                DialogLauncher::launchDialog(nullptr);
+            }
         });
     }
 
