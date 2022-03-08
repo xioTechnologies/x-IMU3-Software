@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="30"
+   height="19"
+   viewBox="0 0 30 19"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="upload_padding.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs14" />
+  <sodipodi:namedview
+     id="namedview12"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:zoom="39.631579"
+     inkscape:cx="15.000664"
+     inkscape:cy="9.4873838"
+     inkscape:window-width="1920"
+     inkscape:window-height="1148"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10">
+    <inkscape:grid
+       type="xygrid"
+       id="grid29"
+       originx="6.5079844"
+       originy="-5e-09" />
+  </sodipodi:namedview>
+  <title
+     id="title2">ic_upload_upd</title>
+  <g
+     id="UI-(8-screens)"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd"
+     transform="translate(6.5079844)">
+    <g
+       id="Icons_updates_01.03.21"
+       transform="translate(-251,-641)"
+       fill="#e4e4e4">
+      <g
+         id="ic_upload_upd"
+         transform="translate(251,641)">
+        <g
+           id="icon_new"
+           transform="matrix(1,0,0,-1,3,11)"
+           fill-rule="nonzero">
+          <path
+             d="m 3.9976832,6.4903714 2.913912,3.1503404 c 0.2396696,0.2591158 0.2399239,0.6589252 5.842e-4,0.9183462 L 6.5410452,10.96133 C 6.2876256,11.236012 5.859515,11.253248 5.5848333,10.99983 5.5716163,10.98764 5.5588903,10.97492 5.5466863,10.96171 L 0.92434086,5.9592374 c -0.239584,-0.2592867 -0.239584,-0.6591881 0,-0.9184748 L 5.5466863,0.03828913 C 5.8003161,-0.23619845 6.2284398,-0.25310702 6.5029274,5.2279815e-4 6.5161352,0.01272692 6.5288512,0.02545269 6.5410452,0.03866979 L 6.9121794,0.44094241 C 7.1515191,0.70036292 7.1512648,1.1001724 6.9115952,1.3592883 l -2.913912,3.1503403 v 0 H 10.509629 C 11.056596,4.5096286 11.5,4.953033 11.5,5.5 c 0,0.546967 -0.443404,0.9903714 -0.990371,0.9903714 z"
+             id="icons/default"
+             transform="matrix(0,-1,-1,0,11.5,11.5)" />
+        </g>
+        <path
+           d="M 14.989608,16.948722 V 14 c 0,-0.552285 0.447715,-1 1,-1 H 16 c 0.552285,0 1,0.447715 1,1 v 4 c 0,0.552285 -0.447715,1 -1,1 H 1 C 0.44771525,19 0,18.552285 0,18 v 0 -4 c 0,-0.552285 0.44771525,-1 1,-1 v 0 h 0.010391 c 0.5522847,0 1,0.447715 1,1 v 0 2.948722 z"
+           id="Combined-Shape" />
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>ic_upload_upd</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
