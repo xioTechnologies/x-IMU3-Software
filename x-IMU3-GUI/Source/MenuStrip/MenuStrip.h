@@ -34,7 +34,7 @@ private:
     IconButton devicePanelLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::rows_svg, 1.0f, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
     IconButton shutdownButton { IconButton::Style::menuStrip, BinaryData::shutdown_svg, 0.8f, "Shutdown All Devices" };
     IconButton sendCommandButton { IconButton::Style::menuStrip, BinaryData::json_svg, 0.8f, "Send Command to All Devices" };
-    IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start Data Logger", nullptr, BinaryData::stop_svg, 0.8f, "Stop Data Logger" };
+    IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start/Stop Data Logger", nullptr, BinaryData::stop_svg, 0.8f };
     Stopwatch dataLoggerTime;
     IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
     IconButton applicationErrorsButton { IconButton::Style::menuStrip, BinaryData::warning_white_svg, 1.0f, "Application Error Messages", nullptr, BinaryData::warning_orange_svg };

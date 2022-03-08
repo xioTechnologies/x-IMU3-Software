@@ -69,7 +69,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
             {
                 if (saveFailedCommands.empty() == false)
                 {
-                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Save failed."));
+                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to confirm save command."));
                     return;
                 }
 
@@ -77,7 +77,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                 {
                     if (applyFailedCommands.empty() == false)
                     {
-                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Apply failed."));
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to confirm apply command."));
                     }
                 });
             });
@@ -132,7 +132,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
             {
                 if (defaultFailedCommands.empty() == false)
                 {
-                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Default failed."));
+                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to confirm default command."));
                     return;
                 }
 
@@ -140,7 +140,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                 {
                     if (saveFailedCommands.empty() == false)
                     {
-                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Save failed."));
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to confirm save command."));
                         return;
                     }
 
@@ -148,7 +148,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                     {
                         if (applyFailedCommands.empty() == false)
                         {
-                            DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Apply failed."));
+                            DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to confirm apply command."));
                             return;
                         }
 
