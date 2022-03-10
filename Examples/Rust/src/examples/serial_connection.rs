@@ -13,7 +13,7 @@ pub fn run() {
         let devices = SerialDiscovery::scan_filter(2000, ConnectionType::Serial);
 
         if devices.is_empty() {
-            println!("No USB connections available");
+            println!("No serial connections available");
             return;
         }
 
