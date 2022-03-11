@@ -135,20 +135,14 @@ void CommandsGroup::resized()
     setBounds(timeoutLabel, timeoutValue);
 }
 
-MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 3)
+MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 2)
 {
     addAndMakeVisible(hideUnusedDeviceSettingsButton);
-    addAndMakeVisible(showApplicationErrorsButton);
     addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
 
     hideUnusedDeviceSettingsButton.onClick = [this]
     {
         ApplicationSettings::getSingleton().hideUnusedDeviceSettings = hideUnusedDeviceSettingsButton.getToggleState();
-    };
-
-    showApplicationErrorsButton.onClick = [this]
-    {
-        ApplicationSettings::getSingleton().showApplicationErrors = showApplicationErrorsButton.getToggleState();
     };
 
     closeSendingCommandDialogWhenCompleteButton.onClick = [this]
@@ -157,7 +151,6 @@ MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 3)
     };
 
     hideUnusedDeviceSettingsButton.setToggleState(ApplicationSettings::getSingleton().hideUnusedDeviceSettings, juce::dontSendNotification);
-    showApplicationErrorsButton.setToggleState(ApplicationSettings::getSingleton().showApplicationErrors, juce::dontSendNotification);
     closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
 }
 
@@ -165,6 +158,5 @@ void MiscGroup::resized()
 {
     auto bounds = getContentBounds();
     hideUnusedDeviceSettingsButton.setBounds(bounds.removeFromTop(rowHeight));
-    showApplicationErrorsButton.setBounds(bounds.removeFromTop(rowHeight));
     closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(rowHeight));
 }

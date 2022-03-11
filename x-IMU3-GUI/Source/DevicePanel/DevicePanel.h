@@ -41,7 +41,7 @@ public:
 
     void cleanupWindows();
 
-    juce::String getDeviceNameAndSerialNumber() const;
+    juce::String getDeviceDescriptor() const;
 
     DevicePanelContainer& getDevicePanelContainer();
 
@@ -57,9 +57,6 @@ private:
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;
-
-    std::function<void(ximu3::XIMU3_DecodeError)> decodeErrorCallback;
-    uint64_t decodeErrorCallbackID;
 
     void handleAsyncUpdate() override;
 

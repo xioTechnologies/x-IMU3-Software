@@ -1,7 +1,6 @@
 #include "../DevicePanelContainer.h"
 #include "ApplicationSettings.h"
 #include "DevicePanel.h"
-#include "Dialogs/ApplicationErrorsDialog.h"
 #include "Windows/DeviceSettingsWindow.h"
 #include "Windows/GraphWindow.h"
 #include "Windows/SerialAccessoryTerminalWindow.h"
@@ -24,17 +23,10 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
 
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
-
-    decodeErrorCallback = [&](auto decodeError)
-    {
-        ApplicationErrorsDialog::addError("Decode error on " + connection->getInfo()->toString() + ". " + std::string(ximu3::XIMU3_decode_error_to_string(decodeError)) + ".");
-    };
-    decodeErrorCallbackID = connection->addDecodeErrorCallback(decodeErrorCallback);
 }
 
 DevicePanel::~DevicePanel()
 {
-    connection->removeCallback(decodeErrorCallbackID);
     connection->close();
 }
 
@@ -71,7 +63,7 @@ void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, Safe
 
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses, failedCommands]
                                         {
-                                            header.updateDeviceNameAndSerialNumber(responses);
+                                            header.updateDeviceDescriptor(responses);
 
                                             if (callbackOwner != nullptr && callback != nullptr)
                                             {
@@ -116,9 +108,9 @@ void DevicePanel::cleanupWindows()
     triggerAsyncUpdate();
 }
 
-juce::String DevicePanel::getDeviceNameAndSerialNumber() const
+juce::String DevicePanel::getDeviceDescriptor() const
 {
-    return header.getDeviceNameAndSerialNumber();
+    return header.getDeviceDescriptor();
 }
 
 DevicePanelContainer& DevicePanel::getDevicePanelContainer()

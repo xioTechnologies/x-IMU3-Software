@@ -33,9 +33,9 @@ public:
 
     void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
-    void updateDeviceNameAndSerialNumber(const std::vector<CommandMessage>& responses);
+    void updateDeviceDescriptor(const std::vector<CommandMessage>& responses);
 
-    juce::String getDeviceNameAndSerialNumber() const;
+    juce::String getDeviceDescriptor() const;
 
 private:
     DevicePanel& devicePanel;
@@ -44,7 +44,7 @@ private:
     juce::String deviceName, serialNumber;
 
     IconButton menuButton { IconButton::Style::normal, BinaryData::menu_svg, 1.0f, "Device Actions", std::bind(&DevicePanelHeader::getMenu, this) };
-    SimpleLabel deviceNameAndSerialNumber;
+    SimpleLabel deviceDescriptor;
     SimpleLabel connectionInfo;
     Icon rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
     Icon batteryIcon { BinaryData::battery_unknown_svg, "Battery Level" };

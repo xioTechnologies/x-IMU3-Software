@@ -1,6 +1,7 @@
 #include "ApplicationSettings.h"
 #include "DevicePanel/DevicePanel.h"
 #include "DevicePanelContainer.h"
+#include "Dialogs/ErrorDialog.h"
 
 DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_)
         : windowLayout(windowLayout_),
@@ -86,14 +87,14 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
     connection->openAsync([&, connection](auto result)
                           {
-                              if (result != ximu3::XIMU3_ResultOk)
-                              {
-                                  ApplicationErrorsDialog::addError("Unable to open connection " + connection->getInfo()->toString() + ".");
-                                  return;
-                              }
-
-                              juce::MessageManager::callAsync([&, connection]
+                              juce::MessageManager::callAsync([&, connection, result]
                                                               {
+                                                                  if (result != ximu3::XIMU3_ResultOk)
+                                                                  {
+                                                                      DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Unable to open connection " + connection->getInfo()->toString() + "."));
+                                                                      return;
+                                                                  }
+
                                                                   onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() + 1);
 
                                                                   addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
