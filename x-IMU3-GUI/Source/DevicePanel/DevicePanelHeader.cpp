@@ -1,4 +1,3 @@
-#include "../Dialogs/ChangeDeviceNameDialog.h"
 #include "../Dialogs/LedColourDialog.h"
 #include "../Dialogs/SendCommandDialog.h"
 #include "../Dialogs/SendingCommandDialog.h"
@@ -140,17 +139,6 @@ juce::String DevicePanelHeader::getDeviceNameAndSerialNumber() const
 juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
-
-    menu.addItem("Change Device Name", [this]
-    {
-        DialogLauncher::launchDialog(std::make_unique<ChangeDeviceNameDialog>(deviceName), [this]
-        {
-            if (auto* dialog = dynamic_cast<ChangeDeviceNameDialog*>(DialogLauncher::getLaunchedDialog()))
-            {
-                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("deviceName", dialog->getDeviceName()), std::vector<DevicePanel*> { &devicePanel }));
-            }
-        });
-    });
 
     menu.addItem("Strobe LED", [this]
     {
