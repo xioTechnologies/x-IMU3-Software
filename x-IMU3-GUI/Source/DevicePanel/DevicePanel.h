@@ -41,7 +41,7 @@ public:
 
     void cleanupWindows();
 
-    juce::String getDeviceNameAndSerialNumber() const;
+    juce::String getDeviceDescriptor() const;
 
     DevicePanelContainer& getDevicePanelContainer();
 

@@ -284,12 +284,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
     {
-        auto deviceNameAndSerialNumber = devicePanel->getDeviceNameAndSerialNumber();
-        if (deviceNameAndSerialNumber.isNotEmpty())
-        {
-            deviceNameAndSerialNumber += "   ";
-        }
-        juce::PopupMenu::Item item(deviceNameAndSerialNumber + devicePanel->getConnection().getInfo()->toString());
+        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection().getInfo()->toString());
 
         item.action = [this, devicePanel]
         {

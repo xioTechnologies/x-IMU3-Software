@@ -63,7 +63,7 @@ void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, Safe
 
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses, failedCommands]
                                         {
-                                            header.updateDeviceNameAndSerialNumber(responses);
+                                            header.updateDeviceDescriptor(responses);
 
                                             if (callbackOwner != nullptr && callback != nullptr)
                                             {
@@ -108,9 +108,9 @@ void DevicePanel::cleanupWindows()
     triggerAsyncUpdate();
 }
 
-juce::String DevicePanel::getDeviceNameAndSerialNumber() const
+juce::String DevicePanel::getDeviceDescriptor() const
 {
-    return header.getDeviceNameAndSerialNumber();
+    return header.getDeviceDescriptor();
 }
 
 DevicePanelContainer& DevicePanel::getDevicePanelContainer()

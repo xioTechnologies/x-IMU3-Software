@@ -5,7 +5,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 {
     for (auto* const devicePanel : devicePanels)
     {
-        rows.push_back({ devicePanel->getColourTag(), devicePanel->getDeviceNameAndSerialNumber(), devicePanel->getConnection().getInfo()->toString() });
+        rows.push_back({ devicePanel->getColourTag(), devicePanel->getDeviceDescriptor(), devicePanel->getConnection().getInfo()->toString() });
 
         devicePanel->sendCommands({ command }, this, [&, rowIndex = rows.size() - 1](const auto&, const auto& failedCommands)
         {

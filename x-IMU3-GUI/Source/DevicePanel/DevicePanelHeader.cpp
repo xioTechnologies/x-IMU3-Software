@@ -14,12 +14,14 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
     addAndMakeVisible(menuButton);
     addAndMakeVisible(rssiIcon);
     addAndMakeVisible(batteryIcon);
-    addAndMakeVisible(deviceNameAndSerialNumber);
+    addAndMakeVisible(deviceDescriptor);
     addAndMakeVisible(connectionInfo);
     addAndMakeVisible(rssiText);
     addAndMakeVisible(batteryText);
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+
+    deviceDescriptor.setText(getDeviceDescriptor());
 
     batteryCallbackID = devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
     {
@@ -70,10 +72,10 @@ void DevicePanelHeader::resized()
     flexBox.items.add(juce::FlexItem(margin, bounds.getHeight()).withFlex(1.0f).withMinWidth(margin));
     flexBox.items.add(juce::FlexItem(batteryIcon).withMinWidth(iconWidth).withMaxWidth(iconWidth));
     flexBox.items.add(juce::FlexItem(batteryText).withWidth(textWidth).withFlex(1.0f).withMargin({ 0.0f, 0.0f, 0.0f, (float) UILayout::panelMargin }));
-    flexBox.performLayout(bounds.removeFromRight(juce::jlimit((float) iconWidth + margin + iconWidth, (float) (textWidth + UILayout::panelMargin + iconWidth + margin + textWidth + UILayout::panelMargin + iconWidth), bounds.getWidth() - deviceNameAndSerialNumber.getTextWidth() - margin - connectionInfo.getTextWidth() - margin)));
+    flexBox.performLayout(bounds.removeFromRight(juce::jlimit((float) iconWidth + margin + iconWidth, (float) (textWidth + UILayout::panelMargin + iconWidth + margin + textWidth + UILayout::panelMargin + iconWidth), bounds.getWidth() - deviceDescriptor.getTextWidth() - margin - connectionInfo.getTextWidth() - margin)));
 
     bounds.removeFromRight(margin);
-    deviceNameAndSerialNumber.setBounds(bounds.removeFromLeft(deviceNameAndSerialNumber.getTextWidth()).getSmallestIntegerContainer());
+    deviceDescriptor.setBounds(bounds.removeFromLeft(deviceDescriptor.getTextWidth()).getSmallestIntegerContainer());
     bounds.removeFromLeft(margin);
     connectionInfo.setBounds(bounds.removeFromLeft(connectionInfo.getTextWidth()).getSmallestIntegerContainer());
 }
@@ -113,7 +115,7 @@ void DevicePanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
     }
 }
 
-void DevicePanelHeader::updateDeviceNameAndSerialNumber(const std::vector<CommandMessage>& responses)
+void DevicePanelHeader::updateDeviceDescriptor(const std::vector<CommandMessage>& responses)
 {
     for (const auto& response : responses)
     {
@@ -127,13 +129,23 @@ void DevicePanelHeader::updateDeviceNameAndSerialNumber(const std::vector<Comman
         }
     }
 
-    deviceNameAndSerialNumber.setText(getDeviceNameAndSerialNumber());
+    deviceDescriptor.setText(getDeviceDescriptor());
     resized();
 }
 
-juce::String DevicePanelHeader::getDeviceNameAndSerialNumber() const
+juce::String DevicePanelHeader::getDeviceDescriptor() const
 {
-    return deviceName + (deviceName.isNotEmpty() && serialNumber.isNotEmpty() ? " - " : "") + serialNumber;
+    if (deviceName.isEmpty() && serialNumber.isEmpty())
+    {
+        return "Unknown Device";
+    }
+
+    if (deviceName.isNotEmpty() && serialNumber.isNotEmpty())
+    {
+        return deviceName + " - " + serialNumber;
+    }
+
+    return deviceName + serialNumber;
 }
 
 juce::PopupMenu DevicePanelHeader::getMenu() const
@@ -152,7 +164,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 
     menu.addItem("Send Command", [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to " + deviceNameAndSerialNumber.getText()), [this]
+        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to " + deviceDescriptor.getText()), [this]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
             {
@@ -176,7 +188,7 @@ void DevicePanelHeader::run()
 
     deviceName = response.device_name;
     serialNumber = response.serial_number;
-    deviceNameAndSerialNumber.setText(getDeviceNameAndSerialNumber());
+    deviceDescriptor.setText(getDeviceDescriptor());
     resized();
 }
 
