@@ -1,5 +1,4 @@
 #include "../DevicePanel/DevicePanel.h"
-#include "../Dialogs/ApplicationErrorsDialog.h"
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ErrorDialog.h"

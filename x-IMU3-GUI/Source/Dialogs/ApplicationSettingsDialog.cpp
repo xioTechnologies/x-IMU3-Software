@@ -1,5 +1,4 @@
 #include "../ApplicationSettings.h"
-#include "ApplicationErrorsDialog.h"
 #include "ApplicationSettingsDialog.h"
 #include "ApplicationSettingsGroups.h"
 

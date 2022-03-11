@@ -1,7 +1,6 @@
 #include "../DevicePanelContainer.h"
 #include "ApplicationSettings.h"
 #include "DevicePanel.h"
-#include "Dialogs/ApplicationErrorsDialog.h"
 #include "Windows/DeviceSettingsWindow.h"
 #include "Windows/GraphWindow.h"
 #include "Windows/SerialAccessoryTerminalWindow.h"
@@ -24,17 +23,10 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
 
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
-
-    decodeErrorCallback = [&](auto decodeError)
-    {
-        ApplicationErrorsDialog::addError("Decode error on " + connection->getInfo()->toString() + ". " + std::string(ximu3::XIMU3_decode_error_to_string(decodeError)) + ".");
-    };
-    decodeErrorCallbackID = connection->addDecodeErrorCallback(decodeErrorCallback);
 }
 
 DevicePanel::~DevicePanel()
 {
-    connection->removeCallback(decodeErrorCallbackID);
     connection->close();
 }
 

@@ -186,12 +186,6 @@ void DevicePanelHeader::run()
         return;
     }
 
-    if (strlen(response.interface) == 0)
-    {
-        ApplicationErrorsDialog::addError("Ping failed for connection " + devicePanel.getConnection().getInfo()->toString() + ".");
-        return;
-    }
-
     deviceName = response.device_name;
     serialNumber = response.serial_number;
     deviceNameAndSerialNumber.setText(getDeviceNameAndSerialNumber());

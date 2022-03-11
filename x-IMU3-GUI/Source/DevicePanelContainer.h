@@ -2,7 +2,6 @@
 
 #include "CommandMessage.h"
 #include "DevicePanel/DevicePanel.h"
-#include "Dialogs/ApplicationErrorsDialog.h"
 #include "DragOverlay.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "NetworkDiscoveryDispatcher.h"

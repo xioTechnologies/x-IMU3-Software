@@ -58,9 +58,6 @@ private:
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;
 
-    std::function<void(ximu3::XIMU3_DecodeError)> decodeErrorCallback;
-    uint64_t decodeErrorCallbackID;
-
     void handleAsyncUpdate() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanel)

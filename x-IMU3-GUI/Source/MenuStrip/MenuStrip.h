@@ -10,13 +10,10 @@
 class DevicePanelContainer;
 
 class MenuStrip : public juce::Component,
-                  private juce::Value::Listener,
                   private juce::Timer
 {
 public:
     MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelContainer_);
-
-    ~MenuStrip() override;
 
     void paint(juce::Graphics& g) override;
 
@@ -37,9 +34,8 @@ private:
     IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start/Stop Data Logger", nullptr, BinaryData::stop_svg, 0.8f };
     Stopwatch dataLoggerTime;
     IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
-    IconButton applicationErrorsButton { IconButton::Style::menuStrip, BinaryData::warning_white_svg, 1.0f, "Application Error Messages", nullptr, BinaryData::warning_orange_svg };
-    juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
     IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
+    juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
 
     SimpleLabel connectionLabel { "Connection", UIFonts::defaultFont, juce::Justification::centred };
     SimpleLabel layoutLabel { "Layout", UIFonts::defaultFont, juce::Justification::centred };
@@ -61,7 +57,7 @@ private:
             { commandsLabel,    { shutdownButton,            sendCommandButton }},
             { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime }},
             { toolsLabel,       { toolsButton }},
-            { applicationLabel, { applicationErrorsButton,   versionButton,      mainSettingsButton }}
+            { applicationLabel, { mainSettingsButton,        versionButton }}
     };
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
@@ -88,8 +84,6 @@ private:
     juce::PopupMenu getToolsMenu() const;
 
     void setWindowLayout(juce::ValueTree windowLayout_);
-
-    void valueChanged(juce::Value& value) override;
 
     void timerCallback() override;
 

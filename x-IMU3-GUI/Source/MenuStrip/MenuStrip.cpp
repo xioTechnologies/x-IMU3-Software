@@ -3,7 +3,6 @@
 #include "CustomLookAndFeel.h"
 #include "DevicePanelContainer.h"
 #include "Dialogs/AboutDialog.h"
-#include "Dialogs/ApplicationErrorsDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/FileConverterDialog.h"
@@ -127,19 +126,14 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         });
     };
 
-    applicationErrorsButton.onClick = []
+    mainSettingsButton.onClick = []
     {
-        DialogLauncher::launchDialog(std::make_unique<ApplicationErrorsDialog>());
+        DialogLauncher::launchDialog(std::make_unique<ApplicationSettingsDialog>());
     };
 
     versionButton.onClick = []
     {
         DialogLauncher::launchDialog(std::make_unique<AboutDialog>());
-    };
-
-    mainSettingsButton.onClick = []
-    {
-        DialogLauncher::launchDialog(std::make_unique<ApplicationSettingsDialog>());
     };
 
     devicePanelContainer.onDevicePanelsSizeChanged = [&](const int oldSize, const int newSize)
@@ -164,13 +158,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         }
     };
     devicePanelContainer.onDevicePanelsSizeChanged(0, 0);
-
-    ApplicationErrorsDialog::numberOfUnreadErrors.addListener(this);
-}
-
-MenuStrip::~MenuStrip()
-{
-    ApplicationErrorsDialog::numberOfUnreadErrors.removeListener(this);
 }
 
 void MenuStrip::paint(juce::Graphics& g)
@@ -517,11 +504,6 @@ void MenuStrip::setWindowLayout(juce::ValueTree windowLayout_)
     }
 
     windowLayout.copyPropertiesAndChildrenFrom(windowLayout_, nullptr);
-}
-
-void MenuStrip::valueChanged(juce::Value& value)
-{
-    applicationErrorsButton.setToggleState((int) (juce::var) value > 0, juce::dontSendNotification);
 }
 
 void MenuStrip::timerCallback()
