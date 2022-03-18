@@ -55,7 +55,7 @@ with open("DeviceSettings.xml", "w") as file:
                    "key=\"" + keys[index] + "\" " +
                    "displayName=\"" + display_names[index] + "\" " +
                    "type=\"" + json_types[index] + "\" " +
-                   "readOnly=\"" + read_onlys[index] + "\"" +
+                   ("readOnly=\"" + read_onlys[index] + "\"" if read_onlys[index] == "true" else "") +
                    "/>\n")
 
     file.write("</DeviceSettings>\n")
