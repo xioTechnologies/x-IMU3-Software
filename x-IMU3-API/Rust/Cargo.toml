@@ -13,12 +13,12 @@ crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 crossbeam = "0.8.1"
-libc = "0.2.111"
-regex = "1.5.4"
+libc = "0.2.120"
+regex = "1.5.5"
 scan_fmt = "0.2.6"
-serde = "1.0.131"
-serde_json = "1.0.72"
+serde = "1.0.136"
+serde_json = "1.0.79"
 serialport = "4.0.1"
 
 [build-dependencies]
-cbindgen = { git = "https://github.com/eqrion/cbindgen" } # TODO: Use version >v0.20.0 once available
+cbindgen = "0.21.0"
