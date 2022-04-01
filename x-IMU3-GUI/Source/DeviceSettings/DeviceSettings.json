@@ -26,7 +26,7 @@
     {
         "name": "Gyroscope misalignment",
         "declaration": "FusionMatrix name",
-        "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+        "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
         "calibration": true
     },
     {
@@ -44,7 +44,7 @@
     {
         "name": "Accelerometer misalignment",
         "declaration": "FusionMatrix name",
-        "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+        "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
         "calibration": true
     },
     {
@@ -62,7 +62,7 @@
     {
         "name": "Soft iron matrix",
         "declaration": "FusionMatrix name",
-        "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+        "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
         "calibration": true
     },
     {
@@ -74,7 +74,7 @@
     {
         "name": "High-g accelerometer misalignment",
         "declaration": "FusionMatrix name",
-        "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+        "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
         "calibration": true
     },
     {
@@ -348,6 +348,16 @@
         "name": "AHRS ignore magnetometer",
         "declaration": "bool name",
         "default": "{false}"
+    },
+    {
+        "name": "AHRS acceleration rejection enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "AHRS magnetic rejection enabled",
+        "declaration": "bool name",
+        "default": "{true}"
     },
     {
         "name": "Binary mode enabled",
