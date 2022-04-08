@@ -7,19 +7,15 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
 {
     addAndMakeVisible(settingsTree);
     addAndMakeVisible(readAllButton);
-    addChildComponent(readAllFailedButton);
     addAndMakeVisible(writeAllButton);
-    addChildComponent(writeAllFailedButton);
     addAndMakeVisible(saveToFileButton);
     addAndMakeVisible(loadFromFileButton);
     addAndMakeVisible(defaultsButton);
 
-    readAllButton.onClick = readAllFailedButton.onClick = [this]
+    readAllButton.onClick = [this]
     {
-        readAllButton.setVisible(true);
-        readAllFailedButton.setVisible(false);
-        writeAllButton.setVisible(true);
-        writeAllFailedButton.setVisible(false);
+        readAllButton.setToggleState(false, juce::dontSendNotification);
+        writeAllButton.setToggleState(false, juce::dontSendNotification);
 
         devicePanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
         {
@@ -34,19 +30,16 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                 settingsTree.setStatus(failedCommand.key, Setting::Status::readFailed);
             }
 
-            readAllButton.setVisible(failedCommands.empty());
-            readAllFailedButton.setVisible(failedCommands.empty() == false);
+            readAllButton.setToggleState(failedCommands.empty() == false, juce::dontSendNotification);
         });
     };
 
     readAllButton.onClick();
 
-    writeAllButton.onClick = writeAllFailedButton.onClick = [this]
+    writeAllButton.onClick = [this]
     {
-        readAllButton.setVisible(true);
-        readAllFailedButton.setVisible(false);
-        writeAllButton.setVisible(true);
-        writeAllFailedButton.setVisible(false);
+        readAllButton.setToggleState(false, juce::dontSendNotification);
+        writeAllButton.setToggleState(false, juce::dontSendNotification);
 
         devicePanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
         {
@@ -61,8 +54,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                 settingsTree.setStatus(failedCommand.key, Setting::Status::writeFailed);
             }
 
-            writeAllButton.setVisible(writeFailedCommands.empty());
-            writeAllFailedButton.setVisible(writeFailedCommands.empty() == false);
+            writeAllButton.setToggleState(writeFailedCommands.empty() == false, juce::dontSendNotification);
 
             devicePanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
             {
@@ -184,7 +176,4 @@ void DeviceSettingsWindow::resized()
     {
         button->setBounds(buttonsBounds.removeFromLeft(buttonWidth).reduced(2.0f).toNearestInt());
     }
-
-    readAllFailedButton.setBounds(readAllButton.getBounds());
-    writeAllFailedButton.setBounds(writeAllButton.getBounds());
 }
