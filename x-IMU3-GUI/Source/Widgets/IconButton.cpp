@@ -25,7 +25,6 @@ IconButton::IconButton(const Style style_,
     }
 
     setIcon(icon, iconOn);
-    setTooltip(tooltip);
     if (popupArrow != nullptr)
     {
         addAndMakeVisible(*popupArrow);
@@ -67,7 +66,11 @@ void IconButton::clicked()
     {
         getPopup().showAt(getScreenBounds());
     }
-    setTooltip(getToggleState() ? tooltipOn : tooltip);
+}
+
+juce::String IconButton::getTooltip()
+{
+    return getToggleState() ? tooltipOn : tooltip;
 }
 
 void IconButton::setIcon(const juce::String& icon, const juce::String& iconOn)
