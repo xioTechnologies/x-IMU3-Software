@@ -6,15 +6,10 @@ class Icon : public juce::Component,
              public juce::SettableTooltipClient
 {
 public:
-    Icon(const juce::String& icon_, const juce::String& tooltip, const juce::URL& url_ = {})
-            : icon(juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon_))),
-              url(url_)
+    Icon(const juce::String& icon_, const juce::String& tooltip)
+            : icon(juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon_)))
     {
         setTooltip(tooltip);
-        if (url.isEmpty() == false)
-        {
-            setMouseCursor(juce::MouseCursor::PointingHandCursor);
-        }
     }
 
     void setIcon(const juce::String& icon_)
@@ -28,14 +23,6 @@ public:
         if (icon != nullptr)
         {
             icon->drawWithin(g, getLocalBounds().toFloat(), juce::RectanglePlacement::centred, 1.0f);
-        }
-    }
-
-    void mouseUp(const juce::MouseEvent&) override
-    {
-        if (url.isEmpty() == false)
-        {
-            url.launchInDefaultBrowser();
         }
     }
 
