@@ -29,5 +29,5 @@ private:
     SimpleLabel expectedFirmwareVersionValue { "v0.4" };
     SimpleLabel sourceCodeValue { "GitHub", UIFonts::defaultFont, juce::Justification::centredLeft };
 
-    Icon logo { BinaryData::xio_logo_svg, logoUrl };
+    Icon logo { BinaryData::xio_logo_svg, 1.0f, logoUrl };
 };
