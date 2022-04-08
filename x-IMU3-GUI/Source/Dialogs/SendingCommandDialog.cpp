@@ -50,6 +50,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.getViewport()->setScrollBarsShown(true, false);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
     table.updateContent();
+    table.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(6));
 }
