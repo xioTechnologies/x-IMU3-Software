@@ -50,6 +50,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.getViewport()->setScrollBarsShown(true, false);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
     table.updateContent();
+    table.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(6));
 }
@@ -96,31 +97,16 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return new SimpleLabel(rows[(size_t) rowNumber].connection);
 
         case ColumnIDs::complete:
-            struct CustomIcon : juce::Component
-            {
-                CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
-                {
-                    addAndMakeVisible(icon);
-                }
-
-                void resized() override
-                {
-                    icon.setBounds(getLocalBounds().reduced(0, 3));
-                }
-
-                Icon icon;
-            };
-
             switch (rows[(size_t) rowNumber].state)
             {
                 case Row::State::inProgress:
-                    return new CustomIcon(BinaryData::progress_svg, "In Progress");
+                    return new Icon(BinaryData::progress_svg, 0.6f, "In Progress");
 
                 case Row::State::failed:
-                    return new CustomIcon(BinaryData::warning_orange_svg, "Failed");
+                    return new Icon(BinaryData::warning_orange_svg, 0.6f, "Failed");
 
                 case Row::State::complete:
-                    return new CustomIcon(BinaryData::tick_green_svg, "Complete");
+                    return new Icon(BinaryData::tick_green_svg, 0.6f, "Complete");
 
                 default:
                     return nullptr;

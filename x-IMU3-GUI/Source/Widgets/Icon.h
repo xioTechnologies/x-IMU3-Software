@@ -6,14 +6,19 @@ class Icon : public juce::Component,
              public juce::SettableTooltipClient
 {
 public:
-    Icon(const juce::String& icon_, const juce::String& tooltip, const juce::URL& url_ = {})
+    Icon(const juce::String& icon_, const float scale_, const juce::String& tooltip)
             : icon(juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon_))),
-              url(url_)
+              scale(scale_)
     {
         setTooltip(tooltip);
-        if (url.isEmpty() == false)
+    }
+
+    void paint(juce::Graphics& g) override
+    {
+        if (icon != nullptr)
         {
-            setMouseCursor(juce::MouseCursor::PointingHandCursor);
+            icon->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
+                             juce::RectanglePlacement::centred, 1.0f);
         }
     }
 
@@ -23,23 +28,7 @@ public:
         repaint();
     }
 
-    void paint(juce::Graphics& g) override
-    {
-        if (icon != nullptr)
-        {
-            icon->drawWithin(g, getLocalBounds().toFloat(), juce::RectanglePlacement::centred, 1.0f);
-        }
-    }
-
-    void mouseUp(const juce::MouseEvent&) override
-    {
-        if (url.isEmpty() == false)
-        {
-            url.launchInDefaultBrowser();
-        }
-    }
-
 private:
     std::unique_ptr<juce::Drawable> icon;
-    const juce::URL url;
+    const float scale;
 };

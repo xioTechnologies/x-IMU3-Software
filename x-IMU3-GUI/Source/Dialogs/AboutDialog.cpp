@@ -12,6 +12,15 @@ AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", 
     addAndMakeVisible(sourceCodeValue);
     addAndMakeVisible(logo);
 
+    sourceCodeValue.setColour(juce::Label::textColourId, UIColours::hyperlink);
+    sourceCodeValue.setInterceptsMouseClicks(true, false);
+    sourceCodeValue.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    sourceCodeValue.setTooltip(sourceCodeUrl);
+    sourceCodeValue.addMouseListener(this, true);
+
+    logo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    logo.addMouseListener(this, true);
+
     setSize(350, calculateHeight(6));
 }
 
@@ -39,4 +48,16 @@ void AboutDialog::resized()
     position(applicationVersionLabel, applicationVersionValue);
     position(expectedFirmwareVersionLabel, expectedFirmwareVersionValue);
     position(sourceCodeLabel, sourceCodeValue);
+}
+
+void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
+{
+    if (mouseEvent.eventComponent == &sourceCodeValue)
+    {
+        juce::URL(sourceCodeUrl).launchInDefaultBrowser();
+    }
+    else if (mouseEvent.eventComponent == &logo)
+    {
+        juce::URL(logoUrl).launchInDefaultBrowser();
+    }
 }

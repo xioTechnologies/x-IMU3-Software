@@ -74,12 +74,12 @@
         <Setting key="dataLoggerMaxFilePeriod" displayName="Max File Period (s)" type="number" hideKey="dataLoggerEnabled" hideValues="0"/>
     </Group>
     <Group displayName="Sensor Processing">
-        <Setting key="axesAlignment" displayName="Axes Alignment" type="FusionAxesAlignment" />
-        <Setting key="gyroscopeOffsetCorrectionEnabled" displayName="Gyroscope Offset Correction Enabled" type="bool" />
+        <Setting key="axesAlignment" displayName="Axes Alignment" type="FusionAxesAlignment"/>
+        <Setting key="gyroscopeOffsetCorrectionEnabled" displayName="Gyroscope Offset Correction Enabled" type="bool"/>
         <Group displayName="AHRS">
-            <Setting key="ahrsGain" displayName="Gain" type="number" />
-            <Setting key="ahrsIgnoreMagnetometer" displayName="Ignore Magnetometer" type="bool" />
-            <Setting key="ahrsAccelerationRejectionEnabled" displayName="Acceleration Rejection" type="bool" />
+            <Setting key="ahrsGain" displayName="Gain" type="number"/>
+            <Setting key="ahrsIgnoreMagnetometer" displayName="Ignore Magnetometer" type="bool"/>
+            <Setting key="ahrsAccelerationRejectionEnabled" displayName="Acceleration Rejection" type="bool"/>
             <Setting key="ahrsMagneticRejectionEnabled" displayName="Magnetic Rejection" type="bool" hideKey="ahrsIgnoreMagnetometer" hideValues="1"/>
         </Group>
     </Group>

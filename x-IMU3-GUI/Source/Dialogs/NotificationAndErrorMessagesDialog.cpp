@@ -25,6 +25,7 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
+    table.setWantsKeyboardFocus(false);
 
     setSize(800, 480);
 }
@@ -63,27 +64,12 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
     switch ((ColumnIDs) columnID)
     {
         case ColumnIDs::type:
-            struct CustomIcon : juce::Component
-            {
-                CustomIcon(const juce::String& svg, const juce::String& tooltip) : icon(svg, tooltip)
-                {
-                    addAndMakeVisible(icon);
-                }
-
-                void resized() override
-                {
-                    icon.setBounds(getLocalBounds().reduced(0, 3));
-                }
-
-                Icon icon;
-            };
-
             if (notificationMessage.isError)
             {
-                return new CustomIcon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, "Error");
+                return new Icon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, 0.6f, "Error");
             }
 
-            return new CustomIcon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, "Notification");
+            return new Icon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, 0.6f, "Notification");
 
         case ColumnIDs::timestamp:
         {

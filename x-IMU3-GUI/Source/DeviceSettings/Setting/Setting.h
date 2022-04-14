@@ -44,9 +44,9 @@ protected:
 private:
     juce::ValueTree tree;
     SimpleLabel name;
-    Icon modifiedIcon { BinaryData::modify_svg, "Modified but Not Written to Device" };
-    Icon readFailedIcon { BinaryData::warning_orange_svg, "Unable to Read from Device" };
-    Icon writeFailedIcon { BinaryData::warning_orange_svg, "Unable to Write to Device" };
+    Icon modifiedIcon { BinaryData::modify_svg, 1.0f, "Modified but Not Written to Device" };
+    Icon readFailedIcon { BinaryData::warning_orange_svg, 1.0f, "Unable to Read from Device" };
+    Icon writeFailedIcon { BinaryData::warning_orange_svg, 1.0f, "Unable to Write to Device" };
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
 

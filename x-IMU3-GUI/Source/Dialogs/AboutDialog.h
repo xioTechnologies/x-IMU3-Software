@@ -14,6 +14,8 @@ public:
 
     void resized() override;
 
+    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+
 private:
     const juce::String logoUrl { "https://x-io.co.uk" };
     const juce::String sourceCodeUrl { "https://github.com/xioTechnologies/x-IMU3-Software" };
@@ -25,7 +27,7 @@ private:
     SimpleLabel applicationNameValue { juce::JUCEApplication::getInstance()->getApplicationName() };
     SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion() };
     SimpleLabel expectedFirmwareVersionValue { "v0.4" };
-    SimpleLabel sourceCodeValue { "GitHub", UIFonts::defaultFont, juce::Justification::centredLeft, sourceCodeUrl };
+    SimpleLabel sourceCodeValue { "GitHub", UIFonts::defaultFont, juce::Justification::centredLeft };
 
-    Icon logo { BinaryData::xio_logo_svg, logoUrl, logoUrl };
+    Icon logo { BinaryData::xio_logo_svg, 1.0f, logoUrl };
 };
