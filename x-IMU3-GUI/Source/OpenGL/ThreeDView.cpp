@@ -36,7 +36,7 @@ void ThreeDView::render()
 
     auto worldRotation = rotation(90.0f, 0.0f, 0.0f) * rotation(settings.elevation, settings.azimuth, 0.0f);
     auto worldTransformation = worldRotation * translation(0.0f, 0.0f, settings.zoom);
-    auto deviceRotation = juce::Quaternion<GLfloat>(quaternionX, quaternionY, quaternionZ, quaternionW).getRotationMatrix();
+    auto deviceRotation = juce::Quaternion<GLfloat>(-1.0f * quaternionX, -1.0f * quaternionY, -1.0f * quaternionZ, quaternionW).getRotationMatrix(); // quaternion conjugate
 
     const auto lightAmbient = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
     const auto lightDiffuse = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
