@@ -107,7 +107,7 @@ def earth_acceleration_callback(message):
     # print(message.to_string())  # alternative to above
 
 
-def high_g_callback(message):
+def high_g_accelerometer_callback(message):
     print(timestamp_format(message.timestamp) +
           float_format(message.x_axis) + " g" +
           float_format(message.y_axis) + " g" +
@@ -136,7 +136,7 @@ def rssi_callback(message):
     # print(message.to_string())  # alternative to above
 
 
-def serial_callback(message):
+def serial_accessory_callback(message):
     print(timestamp_format(message.timestamp) + string_format(message.string))
     # print(message.to_string())  # alternative to above
 
@@ -165,11 +165,11 @@ def run(connection_info):
         connection.add_euler_angles_callback(euler_angles_callback)
         connection.add_linear_acceleration_callback(linear_acceleration_callback)
         connection.add_earth_acceleration_callback(earth_acceleration_callback)
-        connection.add_high_g_callback(high_g_callback)
+        connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
         connection.add_temperature_callback(temperature_callback)
         connection.add_battery_callback(battery_callback)
         connection.add_rssi_callback(rssi_callback)
-        connection.add_serial_callback(serial_callback)
+        connection.add_serial_accessory_callback(serial_accessory_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
 
