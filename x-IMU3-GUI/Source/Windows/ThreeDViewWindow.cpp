@@ -41,7 +41,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout, const ju
     {
         const auto quaternion = Helpers::ToQuaternion(message.roll, message.pitch, message.yaw);
 
-        threeDView.update(-1.0f * quaternion.vector.x, -1.0f * quaternion.vector.y, -1.0f * quaternion.vector.z, quaternion.scalar);
+        threeDView.update(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);
 
         roll = message.roll;
         pitch = message.pitch;

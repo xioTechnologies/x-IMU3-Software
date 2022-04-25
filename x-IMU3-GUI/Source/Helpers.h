@@ -13,40 +13,40 @@ namespace Helpers
         if (const auto tr = xx + yy + zz; tr > 0)
         {
             const auto s = std::sqrt(tr + 1.0f) * 2.0f; // s=4*w
-            return juce::Quaternion<float>(-1.0f * (zy - yz) / s,
-                                           -1.0f * (xz - zx) / s,
-                                           -1.0f * (yx - xy) / s,
+            return juce::Quaternion<float>((zy - yz) / s,
+                                           (xz - zx) / s,
+                                           (yx - xy) / s,
                                            0.25f * s);
         }
         else if ((xx > yy) & (xx > zz))
         {
             const auto s = std::sqrt(1.0f + xx - yy - zz) * 2.0f; // s=4*x
-            return juce::Quaternion<float>(-1.0f * 0.25f * s,
-                                           -1.0f * (xy + yx) / s,
-                                           -1.0f * (xz + zx) / s,
+            return juce::Quaternion<float>(0.25f * s,
+                                           (xy + yx) / s,
+                                           (xz + zx) / s,
                                            (zy - yz) / s);
         }
         else if (yy > zz)
         {
             const auto s = std::sqrt(1.0f + yy - xx - zz) * 2.0f; // s=4*y
-            return juce::Quaternion<float>(-1.0f * (xy + yx) / s,
-                                           -1.0f * 0.25f * s,
-                                           -1.0f * (yz + zy) / s,
+            return juce::Quaternion<float>((xy + yx) / s,
+                                           0.25f * s,
+                                           (yz + zy) / s,
                                            (xz - zx) / s);
         }
         else
         {
             const auto s = std::sqrt(1.0f + zz - xx - yy) * 2.0f; // s=4*z
-            return juce::Quaternion<float>(-1.0f * (xz + zx) / s,
-                                           -1.0f * (yz + zy) / s,
-                                           -1.0f * 0.25f * s,
+            return juce::Quaternion<float>((xz + zx) / s,
+                                           (yz + zy) / s,
+                                           0.25f * s,
                                            (yx - xy) / s);
         }
     }
 
     inline juce::Quaternion<float> ToQuaternion(const float roll, const float pitch, const float yaw)
     {
-        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
+        // Quaternions and Rotation Sequence by Jack B. Kuipers, ISBN 0-691-10298-8, Page 167
         const auto psi = juce::degreesToRadians(yaw);
         const auto theta = juce::degreesToRadians(pitch);
         const auto phi = juce::degreesToRadians(roll);
@@ -68,9 +68,10 @@ namespace Helpers
 
     inline juce::Vector3D<float> ToEulerAngles(const float x, const float y, const float z, const float w)
     {
-        const auto roll = juce::radiansToDegrees(std::atan2(2.0f * (y * z - w * x), 2.0f * (w * w - 0.5f + z * z)));
-        const auto pitch = juce::radiansToDegrees(-1.0f * std::asin(2.0f * (x * z + w * y)));
-        const auto yaw = juce::radiansToDegrees(std::atan2(2.0f * (x * y - w * z), 2.0f * (w * w - 0.5f + x * x)));
+        // Quaternions and Rotation Sequence by Jack B. Kuipers, ISBN 0-691-10298-8, Page 168
+        const auto roll = juce::radiansToDegrees(std::atan2(2.0f * (y * z + w * x), 2.0f * (w * w - 0.5f + z * z)));
+        const auto pitch = juce::radiansToDegrees(-1.0f * std::asin(2.0f * (x * z - w * y)));
+        const auto yaw = juce::radiansToDegrees(std::atan2(2.0f * (x * y + w * z), 2.0f * (w * w - 0.5f + x * x)));
 
         return juce::Vector3D<float> { roll, pitch, yaw };
     }
