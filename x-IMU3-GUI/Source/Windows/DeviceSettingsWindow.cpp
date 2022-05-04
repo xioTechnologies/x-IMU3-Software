@@ -17,6 +17,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
         readAllButton.setToggleState(false, juce::dontSendNotification);
         writeAllButton.setToggleState(false, juce::dontSendNotification);
 
+        for (auto* const component : components)
+        {
+            component->setEnabled(false);
+        }
+
         devicePanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
         {
             for (const auto& response : responses)
@@ -31,6 +36,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
             }
 
             readAllButton.setToggleState(failedCommands.empty() == false, juce::dontSendNotification);
+
+            for (auto* const component : components)
+            {
+                component->setEnabled(true);
+            }
         });
     };
 
@@ -40,6 +50,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
     {
         readAllButton.setToggleState(false, juce::dontSendNotification);
         writeAllButton.setToggleState(false, juce::dontSendNotification);
+
+        for (auto* const component : components)
+        {
+            component->setEnabled(false);
+        }
 
         devicePanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
         {
@@ -55,6 +70,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
             }
 
             writeAllButton.setToggleState(writeFailedCommands.empty() == false, juce::dontSendNotification);
+
+            for (auto* const component : components)
+            {
+                component->setEnabled(true);
+            }
 
             devicePanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
             {
@@ -119,10 +139,19 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
     {
         DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default settings?"), [this]
         {
+            for (auto* const component : components)
+            {
+                component->setEnabled(false);
+            }
+
             devicePanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
             {
                 if (defaultFailedCommands.empty() == false)
                 {
+                    for (auto* const component : components)
+                    {
+                        component->setEnabled(true);
+                    }
                     DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm default command."));
                     return;
                 }
@@ -131,6 +160,10 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                 {
                     if (saveFailedCommands.empty() == false)
                     {
+                        for (auto* const component : components)
+                        {
+                            component->setEnabled(true);
+                        }
                         DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm save command."));
                         return;
                     }
@@ -139,6 +172,10 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, 
                     {
                         if (applyFailedCommands.empty() == false)
                         {
+                            for (auto* const component : components)
+                            {
+                                component->setEnabled(true);
+                            }
                             DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm apply command."));
                             return;
                         }

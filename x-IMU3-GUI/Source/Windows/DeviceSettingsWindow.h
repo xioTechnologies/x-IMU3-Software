@@ -27,6 +27,8 @@ private:
     IconButton loadFromFileButton { IconButton::Style::normal, BinaryData::open_svg, 1.0f, "Load Settings from File" };
     IconButton defaultsButton { IconButton::Style::normal, BinaryData::default_svg, 1.0f, "Restore Default Settings" };
 
+    const std::vector<juce::Component*> components { &settingsTree, &readAllButton, &writeAllButton, &saveToFileButton, &loadFromFileButton, &defaultsButton };
+
     const juce::File directory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsWindow)

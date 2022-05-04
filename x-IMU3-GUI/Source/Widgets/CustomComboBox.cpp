@@ -20,7 +20,7 @@ public:
 
         if (label_.isBeingEdited() == false)
         {
-            g.setColour(label_.findColour(juce::Label::textColourId));
+            g.setColour(label_.findColour(juce::Label::textColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
             g.setFont(getLabelFont(label_));
             const auto textArea = getLabelBorderSize(label_).subtractedFrom(label_.getLocalBounds());
             g.drawText(label_.getText(), textArea, label_.getJustificationType(), false);
@@ -29,7 +29,7 @@ public:
         }
         else if (label_.isEnabled())
         {
-            g.setColour(label_.findColour(juce::Label::outlineColourId));
+            g.setColour(label_.findColour(juce::Label::outlineColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
         }
 
         g.drawRoundedRectangle(label_.getLocalBounds().toFloat(), cornerSize, lineThickness);
