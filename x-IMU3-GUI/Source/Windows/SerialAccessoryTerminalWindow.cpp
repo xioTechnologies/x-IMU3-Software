@@ -14,7 +14,14 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     sendButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
     sendButton.onClick = [this]
     {
-        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }); // TODO: Indicate failed command to user
+        sendValue.setEnabled(false);
+        sendButton.setEnabled(false);
+
+        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto&, const auto&)
+        {
+            sendValue.setEnabled(true);
+            sendButton.setEnabled(true);
+        }); // TODO: Indicate failed command to user
         terminalFeed.add("TX", sendValue.getText(), UIColours::grey);
 
         if (sendValue.getText().isEmpty())
