@@ -4,7 +4,7 @@ AreYouSureDialog::AreYouSureDialog(const juce::String& text) : Dialog(BinaryData
 {
     addAndMakeVisible(label);
 
-    setSize(dialogWidth, calculateHeight(1));
+    setSize(juce::jmax(dialogWidth, 2 * margin + (int) std::ceil(label.getTextWidth())), calculateHeight(1));
 }
 
 void AreYouSureDialog::resized()
