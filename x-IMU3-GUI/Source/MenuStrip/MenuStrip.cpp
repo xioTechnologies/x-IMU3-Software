@@ -5,6 +5,7 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
+#include "Dialogs/ErrorDialog.h"
 #include "Dialogs/FileConverterDialog.h"
 #include "Dialogs/FileConverterProgressDialog.h"
 #include "Dialogs/NewConnectionDialog.h"
@@ -118,12 +119,16 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                                                                              failed = true; // callback will be on same thread if data logger fails
                                                                          }
                                                                      });
-                    if (failed == false)
+
+                    if (failed)
                     {
-                        dataLoggerStartTime = juce::Time::getCurrentTime();
-                        startTimerHz(25);
-                        dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."));
+                        return;
                     }
+
+                    dataLoggerStartTime = juce::Time::getCurrentTime();
+                    startTimerHz(25);
+                    dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
                 };
 
                 const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name);
@@ -491,7 +496,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
                     DialogLauncher::launchDialog(std::make_unique<FileConverterProgressDialog>(source, destination));
                 };
 
-                const auto directory = juce::File (fileConverterDialog->getDestination()).getChildFile(juce::File(fileConverterDialog->getSource()).getFileNameWithoutExtension());
+                const auto directory = juce::File(fileConverterDialog->getDestination()).getChildFile(juce::File(fileConverterDialog->getSource()).getFileNameWithoutExtension());
                 if (directory.exists())
                 {
                     DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]

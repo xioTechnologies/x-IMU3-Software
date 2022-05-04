@@ -39,7 +39,7 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
                                                 startTimer(1000);
                                                 break;
                                             case ximu3::XIMU3_FileConverterStatusFailed:
-                                                DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("File conversion failed."));
+                                                DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("File converter failed."));
                                                 break;
                                             case ximu3::XIMU3_FileConverterStatusInProgress:
                                                 break;
