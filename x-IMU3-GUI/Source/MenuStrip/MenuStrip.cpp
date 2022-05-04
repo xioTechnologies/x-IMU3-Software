@@ -94,9 +94,11 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 dataLoggerSettings = dialog->getSettings();
 
-                std::vector<ximu3::Connection*> connections;
-                for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+                const auto startDataLogger = [&]
                 {
+                    std::vector<ximu3::Connection*> connections;
+                    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+                    {
                     connections.push_back(&devicePanel->getConnection());
                 }
 
@@ -119,8 +121,23 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 if (failed == false)
                 {
                     dataLoggerStartTime = juce::Time::getCurrentTime();
-                    startTimerHz(25);
-                    dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
+                        startTimerHz(25);
+                        dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
+                    }
+                };
+
+                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name);
+                if (directory.exists())
+                {
+                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(dataLoggerSettings.name + " already exists. Do you want to replace it?"), [directory, startDataLogger]
+                    {
+                        directory.deleteRecursively();
+                        startDataLogger();
+                    });
+                }
+                else
+                {
+                    startDataLogger();
                 }
             }
         });
