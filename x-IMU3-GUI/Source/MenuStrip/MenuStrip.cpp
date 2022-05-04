@@ -129,7 +129,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name);
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(dataLoggerSettings.name + " already exists. Do you want to replace it?"), [directory, startDataLogger]
+                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerSettings.name), [directory, startDataLogger]
                     {
                         directory.deleteRecursively();
                         startDataLogger();
@@ -436,7 +436,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
 
                 if (CustomLayouts().exists(layoutName))
                 {
-                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(layoutName + " already exists. Do you want to replace it?"), save);
+                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
                 }
                 else
                 {
@@ -494,7 +494,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
                 const auto directory = juce::File (fileConverterDialog->getDestination()).getChildFile(juce::File(fileConverterDialog->getSource()).getFileNameWithoutExtension());
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(directory.getFileName() + " already exists. Do you want to replace it?"), [directory, startFileConverter]
+                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]
                     {
                         directory.deleteRecursively();
                         startFileConverter();

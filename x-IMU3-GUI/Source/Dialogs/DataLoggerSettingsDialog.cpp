@@ -34,8 +34,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     directoryValue.onTextChange = nameValue.onTextChange = [&]
     {
-        const auto directoryExists = std::filesystem::exists(directoryValue.getText().toStdString());
-        setValid(directoryExists && nameValue.getText().isNotEmpty());
+        setValid(std::filesystem::exists(directoryValue.getText().toStdString()) && nameValue.getText().isNotEmpty());
     };
     directoryValue.onTextChange();
 
