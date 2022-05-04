@@ -99,28 +99,28 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     std::vector<ximu3::Connection*> connections;
                     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
                     {
-                    connections.push_back(&devicePanel->getConnection());
-                }
+                        connections.push_back(&devicePanel->getConnection());
+                    }
 
-                bool failed = false;
+                    bool failed = false;
 
-                dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
-                                                                 dataLoggerSettings.name.toStdString(),
-                                                                 connections,
-                                                                 [&](ximu3::XIMU3_Result result)
-                                                                 {
-                                                                     if (result == ximu3::XIMU3_ResultOk)
+                    dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
+                                                                     dataLoggerSettings.name.toStdString(),
+                                                                     connections,
+                                                                     [&](ximu3::XIMU3_Result result)
                                                                      {
-                                                                         juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
-                                                                     }
-                                                                     else
-                                                                     {
-                                                                         failed = true; // callback will be on same thread if data logger fails
-                                                                     }
-                                                                 });
-                if (failed == false)
-                {
-                    dataLoggerStartTime = juce::Time::getCurrentTime();
+                                                                         if (result == ximu3::XIMU3_ResultOk)
+                                                                         {
+                                                                             juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
+                                                                         }
+                                                                         else
+                                                                         {
+                                                                             failed = true; // callback will be on same thread if data logger fails
+                                                                         }
+                                                                     });
+                    if (failed == false)
+                    {
+                        dataLoggerStartTime = juce::Time::getCurrentTime();
                         startTimerHz(25);
                         dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
                     }
@@ -486,7 +486,24 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
         {
             if (const auto* const fileConverterDialog = dynamic_cast<FileConverterDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                DialogLauncher::launchDialog(std::make_unique<FileConverterProgressDialog>(fileConverterDialog->getDestination(), fileConverterDialog->getSource()));
+                const auto startFileConverter = [source = fileConverterDialog->getSource(), destination = fileConverterDialog->getDestination()]
+                {
+                    DialogLauncher::launchDialog(std::make_unique<FileConverterProgressDialog>(source, destination));
+                };
+
+                const auto directory = juce::File (fileConverterDialog->getDestination()).getChildFile(juce::File(fileConverterDialog->getSource()).getFileNameWithoutExtension());
+                if (directory.exists())
+                {
+                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(directory.getFileName() + " already exists. Do you want to replace it?"), [directory, startFileConverter]
+                    {
+                        directory.deleteRecursively();
+                        startFileConverter();
+                    });
+                }
+                else
+                {
+                    startFileConverter();
+                }
             }
         });
     });

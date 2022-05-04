@@ -3,7 +3,8 @@
 
 FileConverterProgressDialog::FileConverterProgressDialog(const juce::String& source, const juce::String& destination)
         : Dialog(BinaryData::tools_svg, "File Converter Progress", "Cancel", ""),
-          fileConverter(source.toStdString(), destination.toStdString(), std::bind(&FileConverterProgressDialog::progressCallback, this, std::placeholders::_1))
+          file(juce::File(destination).getChildFile(juce::File(source).getFileNameWithoutExtension())),
+          fileConverter(destination.toStdString(), source.toStdString(), std::bind(&FileConverterProgressDialog::progressCallback, this, std::placeholders::_1))
 {
     addAndMakeVisible(progressBar);
 
@@ -35,7 +36,7 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
                                         switch (progress.status)
                                         {
                                             case ximu3::XIMU3_FileConverterStatusComplete:
-                                                DialogLauncher::launchDialog(nullptr);
+                                                startTimer(1000);
                                                 break;
                                             case ximu3::XIMU3_FileConverterStatusFailed:
                                                 DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("File conversion failed."));
@@ -44,4 +45,11 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
                                                 break;
                                         }
                                     });
+}
+
+void FileConverterProgressDialog::timerCallback()
+{
+    stopTimer();
+    file.revealToUser();
+    DialogLauncher::launchDialog(nullptr);
 }
