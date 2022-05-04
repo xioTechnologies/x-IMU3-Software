@@ -419,7 +419,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
 
                 if (CustomLayouts().exists(layoutName))
                 {
-                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("This name already exists. Do you want to overwrite this layout?"), save);
+                    DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>(layoutName + " already exists. Do you want to replace it?"), save);
                 }
                 else
                 {
