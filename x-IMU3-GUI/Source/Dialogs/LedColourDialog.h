@@ -34,5 +34,10 @@ private:
 
     const juce::Colour nullColour = juce::Colour::fromRGB(0, 255, 255);
 
+    bool inProgress = false;
+    std::optional<juce::var> buffer;
+
+    void sendColourCommand(const juce::var& value);
+
     void changeListenerCallback(juce::ChangeBroadcaster*) override;
 };
