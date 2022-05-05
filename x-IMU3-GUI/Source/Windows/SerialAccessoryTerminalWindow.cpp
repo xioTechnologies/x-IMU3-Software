@@ -11,17 +11,19 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     loadRecentSends();
 
     addAndMakeVisible(sendButton);
-    sendButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
     sendButton.onClick = [this]
     {
         sendValue.setEnabled(false);
         sendButton.setEnabled(false);
+        sendButton.setIcon(BinaryData::send_svg, {});
 
-        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto&, const auto&)
+        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto&, const auto& failedCommands)
         {
             sendValue.setEnabled(true);
             sendButton.setEnabled(true);
-        }); // TODO: Indicate failed command to user
+            // TODO: Create send_warning_svg icon
+            sendButton.setIcon(failedCommands.empty() ? BinaryData::send_svg : BinaryData::upload_warning_svg, {});
+        });
         terminalFeed.add("TX", sendValue.getText(), UIColours::grey);
 
         if (sendValue.getText().isEmpty())
