@@ -21,8 +21,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         {
             sendValue.setEnabled(true);
             sendButton.setEnabled(true);
-            // TODO: Create send_warning_svg icon
-            sendButton.setIcon(failedCommands.empty() ? BinaryData::send_svg : BinaryData::upload_warning_svg, {});
+            sendButton.setIcon(failedCommands.empty() ? BinaryData::send_svg : BinaryData::send_warning_svg, {});
         });
         terminalFeed.add("TX", sendValue.getText(), UIColours::grey);
 
