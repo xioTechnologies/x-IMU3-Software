@@ -24,7 +24,7 @@ private:
 
     TerminalFeed terminalFeed { juce::Colours::black };
     CustomComboBox sendValue;
-    IconButton sendButton { IconButton::Style::normal, BinaryData::send_svg, 0.8f, "Send" };
+    IconButton sendButton { IconButton::Style::normal, BinaryData::send_svg, 0.8f, "Send", nullptr, BinaryData::send_warning_svg, 0.8f, "Send (Failed)" };
 
     juce::ValueTree recentSends;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Sends.xml");
