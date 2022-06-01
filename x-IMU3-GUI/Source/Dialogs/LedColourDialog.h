@@ -6,6 +6,7 @@
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <optional>
 
 class DevicePanel;
 
@@ -33,6 +34,11 @@ private:
     CustomTextEditor redValue, greenValue, blueValue, hexValue;
 
     const juce::Colour nullColour = juce::Colour::fromRGB(0, 255, 255);
+
+    bool inProgress = false;
+    std::optional<juce::var> buffer;
+
+    void sendColourCommand(const juce::var& value);
 
     void changeListenerCallback(juce::ChangeBroadcaster*) override;
 };
