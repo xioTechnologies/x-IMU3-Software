@@ -83,7 +83,11 @@ impl FileConverter {
 
         std::thread::spawn(move || {
             if let Err(_) = connection.open() {
-                closure(progress);
+                if let Ok(dropped) = dropped.lock() {
+                    if *dropped == false {
+                        closure(progress.clone());
+                    }
+                }
                 return;
             }
 
@@ -97,7 +101,11 @@ impl FileConverter {
                 }));
 
                 if receiver.try_recv().is_ok() {
-                    closure(progress);
+                    if let Ok(dropped) = dropped.lock() {
+                        if *dropped == false {
+                            closure(progress.clone());
+                        }
+                    }
                     return;
                 }
 
@@ -125,7 +133,11 @@ impl FileConverter {
             connection.close();
 
             progress.status = FileConverterStatus::Complete;
-            closure(progress);
+            if let Ok(dropped) = dropped.lock() {
+                if *dropped == false {
+                    closure(progress.clone());
+                }
+            }
         });
 
         file_converter
