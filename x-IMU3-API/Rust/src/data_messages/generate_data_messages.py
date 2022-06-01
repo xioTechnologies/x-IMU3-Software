@@ -298,7 +298,7 @@ with open(json_file_path) as file:
         template = "        { \"add_$NameSnakeCase$_callback\", $WhiteSpace$(PyCFunction) connection_add_$NameSnakeCase$_callback, $WhiteSpace$METH_VARARGS, \"\" },\n"
 
         template = template.replace("$NameSnakeCase$", helpers.snake_case(json_object["name"]))
-        template = template.replace("$WhiteSpace$", "".ljust(19 - len(json_object["name"])))
+        template = template.replace("$WhiteSpace$", "".ljust(20 - len(json_object["name"])))
 
         code += template
 
