@@ -4,7 +4,7 @@ AreYouSureDialog::AreYouSureDialog(const juce::String& text) : Dialog(BinaryData
 {
     addAndMakeVisible(label);
 
-    setSize(dialogWidth, calculateHeight(1));
+    setSize(juce::jmax(dialogWidth, 2 * margin + (int) std::ceil(label.getTextWidth())), calculateHeight(1));
 }
 
 void AreYouSureDialog::resized()
@@ -12,4 +12,8 @@ void AreYouSureDialog::resized()
     Dialog::resized();
 
     label.setBounds(getContentBounds());
+}
+
+DoYouWantToReplaceItDialog::DoYouWantToReplaceItDialog(const juce::String& name) : AreYouSureDialog(name.quoted() + " already exists. Do you want to replace it?")
+{
 }

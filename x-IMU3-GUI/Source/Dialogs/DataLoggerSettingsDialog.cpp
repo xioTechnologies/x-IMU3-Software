@@ -8,7 +8,6 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     addAndMakeVisible(directoryButton);
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
-    addChildComponent(warningIcon);
     addAndMakeVisible(secondsLabel);
     addAndMakeVisible(secondsValue);
     addAndMakeVisible(unlimitedToggle);
@@ -35,10 +34,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     directoryValue.onTextChange = nameValue.onTextChange = [&]
     {
-        const auto directoryExists = std::filesystem::exists(directoryValue.getText().toStdString());
-        const auto fileValid = juce::File(directoryValue.getText()).getChildFile(nameValue.getText()).exists() == false && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText();
-        setValid(directoryExists && fileValid);
-        warningIcon.setVisible(directoryExists && fileValid == false);
+        setValid(std::filesystem::exists(directoryValue.getText().toStdString()) && nameValue.getText().isNotEmpty());
     };
     directoryValue.onTextChange();
 
@@ -60,8 +56,6 @@ void DataLoggerSettingsDialog::resized()
     auto nameRow = bounds.removeFromTop(UILayout::textComponentHeight);
     nameLabel.setBounds(nameRow.removeFromLeft(columnWidth));
     nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth));
-    nameRow.removeFromLeft(margin);
-    warningIcon.setBounds(nameRow.removeFromLeft(20));
 
     bounds.removeFromTop(Dialog::margin);
 

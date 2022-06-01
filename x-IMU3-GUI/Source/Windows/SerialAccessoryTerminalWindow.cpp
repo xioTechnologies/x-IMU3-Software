@@ -15,13 +15,12 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     {
         sendValue.setEnabled(false);
         sendButton.setEnabled(false);
-        sendButton.setIcon(BinaryData::send_svg, {});
 
-        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto&, const auto& failedCommands)
+        devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto& responses, const auto&)
         {
             sendValue.setEnabled(true);
             sendButton.setEnabled(true);
-            sendButton.setIcon(failedCommands.empty() ? BinaryData::send_svg : BinaryData::send_warning_svg, {});
+            sendButton.setToggleState(responses.empty(), juce::dontSendNotification);
         });
         terminalFeed.add("TX", sendValue.getText(), UIColours::grey);
 

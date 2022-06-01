@@ -16,3 +16,11 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AreYouSureDialog)
 };
 
+class DoYouWantToReplaceItDialog : public AreYouSureDialog
+{
+public:
+    explicit DoYouWantToReplaceItDialog(const juce::String& name);
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DoYouWantToReplaceItDialog)
+};
