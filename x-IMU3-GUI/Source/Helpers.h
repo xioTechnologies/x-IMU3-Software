@@ -5,7 +5,7 @@
 
 namespace Helpers
 {
-    inline juce::Quaternion<float> ToQuaternion(const float xx, const float xy, const float xz,
+    inline juce::Quaternion<float> toQuaternion(const float xx, const float xy, const float xz,
                                                 const float yx, const float yy, const float yz,
                                                 const float zx, const float zy, const float zz)
     {
@@ -44,7 +44,7 @@ namespace Helpers
         }
     }
 
-    inline juce::Quaternion<float> ToQuaternion(const float roll, const float pitch, const float yaw)
+    inline juce::Quaternion<float> toQuaternion(const float roll, const float pitch, const float yaw)
     {
         // Quaternions and Rotation Sequence by Jack B. Kuipers, ISBN 0-691-10298-8, Page 167
         const auto psi = juce::degreesToRadians(yaw);
@@ -66,7 +66,7 @@ namespace Helpers
                                        cosHalfPsi * cosHalfTheta * cosHalfPhi + sinHalfPsi * sinHalfTheta * sinHalfPhi);
     }
 
-    inline juce::Vector3D<float> ToEulerAngles(const float x, const float y, const float z, const float w)
+    inline juce::Vector3D<float> toEulerAngles(const float x, const float y, const float z, const float w)
     {
         // Quaternions and Rotation Sequence by Jack B. Kuipers, ISBN 0-691-10298-8, Page 168
         const auto roll = juce::radiansToDegrees(std::atan2(2.0f * (y * z + w * x), 2.0f * (w * w - 0.5f + z * z)));

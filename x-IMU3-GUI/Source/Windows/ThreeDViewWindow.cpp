@@ -21,7 +21,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout, const ju
     {
         threeDView.update(message.x_element, message.y_element, message.z_element, message.w_element);
 
-        const auto eulerAngles = Helpers::ToEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
+        const auto eulerAngles = Helpers::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
 
         roll = eulerAngles.x;
         pitch = eulerAngles.y;
@@ -30,7 +30,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout, const ju
 
     rotationMatrixCallbackID = devicePanel.getConnection().addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
-        const auto quaternion = Helpers::ToQuaternion(message.xx_element, message.xy_element, message.xz_element,
+        const auto quaternion = Helpers::toQuaternion(message.xx_element, message.xy_element, message.xz_element,
                                                       message.yx_element, message.yy_element, message.yz_element,
                                                       message.zx_element, message.zy_element, message.zz_element);
 
@@ -39,7 +39,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout, const ju
 
     eulerAnglesCallbackID = devicePanel.getConnection().addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
-        const auto quaternion = Helpers::ToQuaternion(message.roll, message.pitch, message.yaw);
+        const auto quaternion = Helpers::toQuaternion(message.roll, message.pitch, message.yaw);
 
         threeDView.update(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);
 
