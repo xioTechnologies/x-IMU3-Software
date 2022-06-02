@@ -1,27 +1,25 @@
 #include "TerminalFeed.h"
+#include "../Helpers.h"
 
-TerminalFeed::TerminalFeed(const juce::Colour& backgroundColour_) : backgroundColour(backgroundColour_)
+TerminalFeed::TerminalFeed()
 {
     addAndMakeVisible(scrollbar);
     scrollbar.addListener(this);
+
+    Helpers::testEscapes();
 }
 
 void TerminalFeed::paint(juce::Graphics& g)
 {
-    g.fillAll(backgroundColour);
-    g.setFont(font);
+    g.fillAll(juce::Colours::black);
 
-    const auto textWidth = getWidth() - scrollbar.getWidth();
-    const auto firstLineOnScreen = juce::jmin(juce::roundToInt(scrollbar.getCurrentRangeStart()),
-                                              juce::jmax(0, (int) lines.size() - numberOfLinesOnScreen));
-    const auto lastLineOnScreen = juce::jmin(firstLineOnScreen + numberOfLinesOnScreen, (int) lines.size());
+    const auto firstLineOnScreen = juce::jmin(juce::roundToInt(scrollbar.getCurrentRangeStart()), juce::jmax(0, (int) wrappedMessages.size() - numberOfLinesOnScreen));
 
     int y = 0;
-    for (int index = firstLineOnScreen; index < lastLineOnScreen; index++)
+    for (int index = firstLineOnScreen; index < juce::jmin(firstLineOnScreen + numberOfLinesOnScreen, (int) wrappedMessages.size()); index++)
     {
-        g.setColour(lines[(size_t) index].colour);
-        g.drawText(lines[(size_t) index].message, 0, y, textWidth, lineHeight, juce::Justification::centredLeft, false);
-        y += lineHeight;
+        wrappedMessages[(size_t) index].draw(g, { 0.0f, (float) y, (float) getWidth(), (float) juce::roundToInt(font.getHeight()) });
+        y += juce::roundToInt(font.getHeight());
     }
 }
 
@@ -35,13 +33,15 @@ void TerminalFeed::mouseDown(const juce::MouseEvent& mouseEvent)
             juce::String text;
             for (const auto& message : messages)
             {
-                text += message.message + "\n";
+                text += message.getText() + "\n";
             }
             juce::SystemClipboard::copyTextToClipboard(text);
         });
         menu.addItem("Clear All", [this]
         {
-            clear();
+            messages.clear();
+            wrappedMessages.clear();
+            updateScrollbarRange();
         });
         menu.showAt({ mouseEvent.getMouseDownScreenX(), mouseEvent.getMouseDownScreenY() - 10, 10, 10 });
     }
@@ -57,102 +57,78 @@ void TerminalFeed::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce
 void TerminalFeed::resized()
 {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
-    numberOfLinesOnScreen = getHeight() / lineHeight;
-    numberOfCharactersPerLine = (int) (scrollbar.getX() / characterWidth);
-    numberOfCharactersPerWrappedLine = juce::jmax(1, numberOfCharactersPerLine - wrapIndentation.length());
+    numberOfLinesOnScreen = (int) std::ceil(getHeight() / font.getHeight());
+    numberOfCharactersPerLine = (int) std::floor(scrollbar.getX() / font.getStringWidthFloat("0"));
 
-    if (numberOfCharactersPerLine == 0)
+    wrappedMessages.clear();
+    for (const auto& message : messages)
     {
-        return;
-    }
-
-    lines.clear();
-    for (auto& message : messages)
-    {
-        for (auto& line : wrapped(message))
+        for (const auto& line : wrapped(message))
         {
-            lines.push_back(line);
+            wrappedMessages.push_back(line);
         }
     }
-    updateScrollbar();
+
+    updateScrollbarRange();
 }
 
-void TerminalFeed::add(const juce::String& label, const juce::String& text, const juce::Colour& colour)
+void TerminalFeed::add(const uint64_t timestamp, const juce::String& text)
 {
-    const Item item({ "[" + label.paddedLeft(' ', label.length() + (labelTemplate.length() - label.length()) / 2)
-                                 .paddedRight(' ', labelTemplate.length())
-                                 .substring(0, labelTemplate.length()) + "] " + text, colour });
-    messages.push_back(item);
-    if (numberOfCharactersPerLine == 0)
+    juce::AttributedString message;
+    message.append((timestamp == uint64_t(-1) ? "TX" : Helpers::formatTimestamp(timestamp)) + " ", juce::Colours::grey);
+    for (const auto& string : Helpers::addEscapeCharacters(text))
     {
-        return;
+        message.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
     }
+    messages.push_back(message);
 
-    for (auto& line : wrapped(item))
-    {
-        lines.push_back(line);
-    }
+    const auto wrappedMessage = wrapped(message);
+    wrappedMessages.insert(wrappedMessages.end(), wrappedMessage.begin(), wrappedMessage.end());
 
     if ((int) messages.size() > maxNumberOfMessages)
     {
-        const auto numberOfLinesToDrop = (int64_t) wrapped(messages[0]).size();
+        const auto numberOfLinesToDrop = (int) wrapped(messages[0]).size();
         messages.erase(messages.begin());
-        lines.erase(lines.begin(), lines.begin() + numberOfLinesToDrop);
+        wrappedMessages.erase(wrappedMessages.begin(), wrappedMessages.begin() + numberOfLinesToDrop);
     }
 
-    updateScrollbar();
+    updateScrollbarRange();
 }
 
-void TerminalFeed::add(const juce::Time& time, const juce::String& text, const juce::Colour& colour)
-{
-    add(time.formatted("%I:%M:%S"), text, colour);
-}
-
-void TerminalFeed::add(const uint64_t timestamp, const juce::String& text, const juce::Colour& colour)
-{
-    add(juce::String(timestamp / 1'000'000.0f, labelTemplate.length()), text, colour);
-}
-
-void TerminalFeed::applyColourToAll(const juce::Colour& colour)
-{
-    for (auto& message : messages)
-    {
-        message.colour = colour;
-    }
-    for (auto& line : lines)
-    {
-        line.colour = colour;
-    }
-}
-
-void TerminalFeed::clear()
-{
-    messages.clear();
-    lines.clear();
-    updateScrollbar();
-    if (onClear != nullptr)
-    {
-        onClear();
-    }
-}
-
-void TerminalFeed::updateScrollbar()
+void TerminalFeed::updateScrollbarRange()
 {
     const auto wasScrolledDown = juce::roundToInt(scrollbar.getCurrentRange().getEnd()) >= scrollbar.getMaximumRangeLimit();
-    scrollbar.setRangeLimits({ 0.0, (double) lines.size() }, juce::dontSendNotification);
+    scrollbar.setRangeLimits({ 0.0, (double) wrappedMessages.size() }, juce::dontSendNotification);
     scrollbar.setCurrentRange(wasScrolledDown ? (scrollbar.getMaximumRangeLimit() - (double) numberOfLinesOnScreen) : scrollbar.getCurrentRangeStart(), (double) numberOfLinesOnScreen, juce::dontSendNotification);
     repaint();
 }
 
-std::vector<TerminalFeed::Item> TerminalFeed::wrapped(const Item& item) const
+std::vector<juce::AttributedString> TerminalFeed::wrapped(const juce::AttributedString& message) const
 {
-    std::vector<Item> result;
-    result.push_back({ item.message.substring(0, numberOfCharactersPerLine), item.colour });
-    for (int index = numberOfCharactersPerLine; index < item.message.length(); index += numberOfCharactersPerWrappedLine)
+    std::vector<juce::AttributedString> wrappedMessage;
+
+    int attributeIndex = 0, characterStartIndex = 0, lineEndIndex = 0;
+    while (attributeIndex < message.getNumAttributes())
     {
-        result.push_back({ wrapIndentation + item.message.substring(index, index + numberOfCharactersPerWrappedLine), item.colour });
+        if (characterStartIndex == lineEndIndex)
+        {
+            wrappedMessage.push_back({});
+            lineEndIndex += numberOfCharactersPerLine;
+        }
+
+        const auto& attribute = message.getAttribute(attributeIndex);
+        const auto characterEndIndex = std::min(lineEndIndex, attribute.range.getEnd());
+
+        wrappedMessage.back().append(message.getText().substring(characterStartIndex, characterEndIndex), font, attribute.colour);
+
+        characterStartIndex = characterEndIndex;
+        if (characterStartIndex == attribute.range.getEnd())
+        {
+            attributeIndex++;
+        }
     }
-    return result;
+
+    return wrappedMessage;
 }
 
 void TerminalFeed::scrollBarMoved(juce::ScrollBar*, double)

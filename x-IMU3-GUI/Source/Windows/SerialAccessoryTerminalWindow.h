@@ -22,7 +22,7 @@ public:
 private:
     static constexpr int widgetMargin = 2;
 
-    TerminalFeed terminalFeed { juce::Colours::black };
+    TerminalFeed terminalFeed;
     CustomComboBox sendValue;
     IconButton sendButton { IconButton::Style::normal, BinaryData::send_svg, 0.8f, "Send", nullptr, BinaryData::send_warning_svg, 0.8f, "Send (Failed)" };
 
