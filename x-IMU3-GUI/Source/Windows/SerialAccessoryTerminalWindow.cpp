@@ -15,6 +15,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     {
         sendValue.setEnabled(false);
         sendButton.setEnabled(false);
+        sendButton.setToggleState(false, juce::dontSendNotification);
 
         devicePanel.sendCommands({ CommandMessage("accessory", sendValue.getText()) }, this, [&](const auto& responses, const auto&)
         {
