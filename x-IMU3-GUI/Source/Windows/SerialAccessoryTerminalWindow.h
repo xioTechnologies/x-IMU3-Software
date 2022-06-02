@@ -5,7 +5,7 @@
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"
-#include "Widgets/TerminalFeed.h"
+#include "Widgets/SerialAccessoryTerminal.h"
 #include "Window.h"
 
 class SerialAccessoryTerminalWindow : public Window
@@ -22,7 +22,7 @@ public:
 private:
     static constexpr int widgetMargin = 2;
 
-    TerminalFeed terminalFeed;
+    SerialAccessoryTerminal serialAccessoryTerminal;
     CustomComboBox sendValue;
     IconButton sendButton { IconButton::Style::normal, BinaryData::send_svg, 0.8f, "Send", nullptr, BinaryData::send_warning_svg, 0.8f, "Send (Failed)" };
 

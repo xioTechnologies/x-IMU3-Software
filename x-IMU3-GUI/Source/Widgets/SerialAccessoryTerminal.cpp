@@ -1,15 +1,13 @@
-#include "TerminalFeed.h"
 #include "../Helpers.h"
+#include "SerialAccessoryTerminal.h"
 
-TerminalFeed::TerminalFeed()
+SerialAccessoryTerminal::SerialAccessoryTerminal()
 {
     addAndMakeVisible(scrollbar);
     scrollbar.addListener(this);
-
-    Helpers::testEscapes();
 }
 
-void TerminalFeed::paint(juce::Graphics& g)
+void SerialAccessoryTerminal::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::black);
 
@@ -23,7 +21,7 @@ void TerminalFeed::paint(juce::Graphics& g)
     }
 }
 
-void TerminalFeed::mouseDown(const juce::MouseEvent& mouseEvent)
+void SerialAccessoryTerminal::mouseDown(const juce::MouseEvent& mouseEvent)
 {
     if (mouseEvent.mods.isPopupMenu())
     {
@@ -47,14 +45,14 @@ void TerminalFeed::mouseDown(const juce::MouseEvent& mouseEvent)
     }
 }
 
-void TerminalFeed::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel)
+void SerialAccessoryTerminal::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel)
 {
     auto wheelCopy = wheel;
     wheelCopy.deltaY *= 15.0f;
     scrollbar.mouseWheelMove(mouseEvent, wheelCopy);
 }
 
-void TerminalFeed::resized()
+void SerialAccessoryTerminal::resized()
 {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
     numberOfLinesOnScreen = (int) std::ceil(getHeight() / font.getHeight());
@@ -72,7 +70,7 @@ void TerminalFeed::resized()
     updateScrollbarRange();
 }
 
-void TerminalFeed::add(const uint64_t timestamp, const juce::String& text)
+void SerialAccessoryTerminal::add(const uint64_t timestamp, const juce::String& text)
 {
     juce::AttributedString message;
     message.append((timestamp == uint64_t(-1) ? "TX" : Helpers::formatTimestamp(timestamp)) + " ", juce::Colours::grey);
@@ -95,7 +93,7 @@ void TerminalFeed::add(const uint64_t timestamp, const juce::String& text)
     updateScrollbarRange();
 }
 
-void TerminalFeed::updateScrollbarRange()
+void SerialAccessoryTerminal::updateScrollbarRange()
 {
     const auto wasScrolledDown = juce::roundToInt(scrollbar.getCurrentRange().getEnd()) >= scrollbar.getMaximumRangeLimit();
     scrollbar.setRangeLimits({ 0.0, (double) wrappedMessages.size() }, juce::dontSendNotification);
@@ -103,7 +101,7 @@ void TerminalFeed::updateScrollbarRange()
     repaint();
 }
 
-std::vector<juce::AttributedString> TerminalFeed::wrapped(const juce::AttributedString& message) const
+std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce::AttributedString& message) const
 {
     std::vector<juce::AttributedString> wrappedMessage;
 
@@ -131,7 +129,7 @@ std::vector<juce::AttributedString> TerminalFeed::wrapped(const juce::Attributed
     return wrappedMessage;
 }
 
-void TerminalFeed::scrollBarMoved(juce::ScrollBar*, double)
+void SerialAccessoryTerminal::scrollBarMoved(juce::ScrollBar*, double)
 {
     repaint();
 }

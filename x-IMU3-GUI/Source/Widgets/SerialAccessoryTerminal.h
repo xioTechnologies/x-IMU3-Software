@@ -3,13 +3,13 @@
 #include "../CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class TerminalFeed : public juce::Component,
-                     private juce::ScrollBar::Listener
+class SerialAccessoryTerminal : public juce::Component,
+                                private juce::ScrollBar::Listener
 {
 public:
     static constexpr int maxNumberOfMessages = 1024;
 
-    TerminalFeed();
+    SerialAccessoryTerminal();
 
     void paint(juce::Graphics& g) override;
 
@@ -36,5 +36,5 @@ private:
 
     void scrollBarMoved(juce::ScrollBar*, double) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TerminalFeed)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialAccessoryTerminal)
 };

@@ -4,7 +4,7 @@
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_) : Window(windowLayout, type, devicePanel_)
 {
-    addAndMakeVisible(terminalFeed);
+    addAndMakeVisible(serialAccessoryTerminal);
 
     addAndMakeVisible(sendValue);
     sendValue.setEditableText(true);
@@ -18,7 +18,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         sendButton.setEnabled(false);
         sendButton.setToggleState(false, juce::dontSendNotification);
 
-        terminalFeed.add(uint64_t(-1), Helpers::removeEscapeCharacters(sendValue.getText()));
+        serialAccessoryTerminal.add(uint64_t(-1), Helpers::removeEscapeCharacters(sendValue.getText()));
 
         devicePanel.sendCommands({ CommandMessage("accessory", Helpers::removeEscapeCharacters(sendValue.getText())) }, this, [&](const auto& responses, const auto&)
         {
@@ -56,7 +56,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                                                 return;
                                             }
 
-                                            terminalFeed.add(message.timestamp, message.char_array);
+                                            serialAccessoryTerminal.add(message.timestamp, message.char_array);
                                         });
     });
 }
@@ -81,7 +81,7 @@ void SerialAccessoryTerminalWindow::resized()
     sendButton.setBounds(sendCommandBounds.removeFromRight(45).reduced(widgetMargin));
     sendValue.setBounds(sendCommandBounds.reduced(widgetMargin));
 
-    terminalFeed.setBounds(bounds);
+    serialAccessoryTerminal.setBounds(bounds);
 }
 
 void SerialAccessoryTerminalWindow::loadRecentSends()

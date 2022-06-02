@@ -38,9 +38,9 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
 
         # Use angle brackets for standard libraries
         standard_libraries = ["\"algorithm\"", "\"cassert\"", "\"chrono\"", "\"ctype.h\"", "\"cmath\"", "\"filesystem\"", "\"functional\"", "\"inttypes.h\"", "\"iostream\"",
-                              "\"iostream.h\"",  "\"limits\"", "\"list\"", "\"map\"", "\"memory\"", "\"mutex\"", "\"numeric\"", "\"Python.h\"", "\"stdarg.h\"", "\"stdbool.h\"",
-                              "\"stdint.h\"", "\"stdio.h\"", "\"stdlib.h\"", "\"string\"", "\"string.h\"", "\"thread\"", "\"time.h\"", "\"type_traits\"", "\"unordered_map\"",
-                              "\"variant\"", "\"vector\""]
+                              "\"iostream.h\"", "\"limits\"", "\"list\"", "\"map\"", "\"memory\"", "\"mutex\"", "\"numeric\"", "\"optional\"", "\"Python.h\"", "\"stdarg.h\"",
+                              "\"stdbool.h\"", "\"stdint.h\"", "\"stdio.h\"", "\"stdlib.h\"", "\"string\"", "\"string.h\"", "\"thread\"", "\"time.h\"", "\"type_traits\"",
+                              "\"unordered_map\"", "\"variant\"", "\"vector\""]
 
         standard_libraries.extend(["BinaryData.h", "juce_gui_basics/juce_gui_basics.h", "juce_gui_extra/juce_gui_extra.h", "juce_opengl/juce_opengl"])
 
