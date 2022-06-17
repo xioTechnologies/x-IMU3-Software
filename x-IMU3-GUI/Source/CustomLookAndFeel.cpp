@@ -7,8 +7,8 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::CaretComponent::caretColourId, UIColours::background);
     setColour(juce::ComboBox::backgroundColourId, UIColours::textEditor);
     setColour(juce::ComboBox::textColourId, UIColours::background);
-    setColour(juce::ComboBox::arrowColourId, UIColours::grey);
-    setColour(juce::GroupComponent::outlineColourId, UIColours::grey);
+    setColour(juce::ComboBox::arrowColourId, juce::Colours::grey);
+    setColour(juce::GroupComponent::outlineColourId, juce::Colours::grey);
     setColour(juce::GroupComponent::textColourId, juce::Colours::white);
     setColour(juce::Label::textColourId, juce::Colours::white);
     setColour(juce::Label::textWhenEditingColourId, UIColours::menuStrip);
@@ -18,7 +18,7 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::ListBox::backgroundColourId, {});
     setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
     setColour(juce::PopupMenu::backgroundColourId, UIColours::background);
-    setColour(juce::PopupMenu::headerTextColourId, UIColours::grey);
+    setColour(juce::PopupMenu::headerTextColourId, juce::Colours::grey);
     setColour(juce::PopupMenu::textColourId, juce::Colours::white);
     setColour(juce::ResizableWindow::backgroundColourId, UIColours::menuStrip);
     setColour(juce::ScrollBar::thumbColourId, UIColours::menuStrip);
@@ -36,7 +36,7 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::ToggleButton::tickDisabledColourId, juce::Colours::white);
     setColour(juce::ToggleButton::tickColourId, UIColours::menuStrip);
     setColour(juce::TooltipWindow::textColourId, juce::Colours::white);
-    setColour(juce::TooltipWindow::outlineColourId, UIColours::grey);
+    setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
     setColour(juce::TooltipWindow::backgroundColourId, UIColours::background);
 }
 
