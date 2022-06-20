@@ -76,7 +76,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
             auto* label = new SimpleLabel(Helpers::formatTimestamp(notificationMessage.timestamp));
             if (notificationMessage.isUnread == false)
             {
-                label->setColour(juce::Label::textColourId, UIColours::grey);
+                label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
             return label;
         }
@@ -86,7 +86,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
             auto* label = new SimpleLabel(notificationMessage.message);
             if (notificationMessage.isUnread == false)
             {
-                label->setColour(juce::Label::textColourId, UIColours::grey);
+                label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
             return label;
         }

@@ -73,7 +73,14 @@ void SerialAccessoryTerminal::resized()
 void SerialAccessoryTerminal::add(const uint64_t timestamp, const juce::String& text)
 {
     juce::AttributedString message;
-    message.append((timestamp == uint64_t(-1) ? "TX" : Helpers::formatTimestamp(timestamp)) + " ", juce::Colours::grey);
+    if (timestamp == uint64_t(-1))
+    {
+        message.append("TX ", juce::Colours::green);
+    }
+    else
+    {
+        message.append(Helpers::formatTimestamp(timestamp) + " ", juce::Colours::grey);
+    }
     for (const auto& string : Helpers::addEscapeCharacters(text))
     {
         message.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
