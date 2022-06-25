@@ -1,6 +1,6 @@
 use serde_json;
 use std::collections::HashMap;
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::{Seek, SeekFrom, Write};
 use std::ops::Drop;
 use std::path::Path;
@@ -68,7 +68,7 @@ impl DataLogger<'_> {
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_command_closure(Box::new(move |command| {
-                sender_clone.send((Path::new(&path_clone).join(COMMAND_FILE_NAME).to_str().unwrap().to_owned(), "[\n", "    ".to_owned() + command.json.as_str() + ",\n")).ok();
+                sender_clone.send((Path::new(&path_clone).join(COMMAND_FILE_NAME).to_str().unwrap().to_owned(), "[\n", "    ".to_owned() + command.json.as_str() + "\n]")).ok();
             })));
 
             let sender_clone = sender.clone();
@@ -91,6 +91,10 @@ impl DataLogger<'_> {
                     match receiver.recv() {
                         Ok((path, preamble, line)) => {
                             if let Some(mut file) = files.get(&path) {
+                                if path.contains(COMMAND_FILE_NAME) {
+                                    file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
+                                    file.write_all(",\n".as_bytes()).ok();
+                                }
                                 file.write_all(line.as_bytes()).ok();
                             } else {
                                 if let Ok(mut file) = File::create(&path) {
@@ -104,15 +108,6 @@ impl DataLogger<'_> {
                     }
                 }
             } // drop files
-
-            // Terminate command files
-            for path in &paths {
-                if let Ok(mut file) = OpenOptions::new().write(true).open(Path::new(&path).join(COMMAND_FILE_NAME).to_str().unwrap()) {
-                    file.set_len(file.metadata().unwrap().len() - 2).ok(); // remove trailing ",\n"
-                    file.seek(SeekFrom::End(0)).ok();
-                    file.write_all("\n]".as_bytes()).ok();
-                }
-            }
 
             // Rename connection directories
             for path in &paths {
