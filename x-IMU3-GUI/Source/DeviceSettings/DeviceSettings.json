@@ -8,13 +8,13 @@
     {
         "name": "System clock calibration",
         "declaration": "float name",
-        "default": "{0.0f}",
+        "default": "{1.0f}",
         "calibration": true
     },
     {
         "name": "RTC calibration",
         "declaration": "float name",
-        "default": "{0.0f}",
+        "default": "{1.0f}",
         "calibration": true
     },
     {
@@ -264,7 +264,7 @@
     {
         "name": "Synchronisation network latency",
         "declaration": "uint32_t name",
-        "default": "{0}"
+        "default": "{1500}"
     },
     {
         "name": "Bluetooth address",

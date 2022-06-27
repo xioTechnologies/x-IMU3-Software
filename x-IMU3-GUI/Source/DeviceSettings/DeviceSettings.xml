@@ -51,7 +51,7 @@
             </Group>
             <Group displayName="Synchronisation">
                 <Setting key="synchronisationEnabled" displayName="Enabled" type="bool"/>
-                <Setting key="synchronisationNetworkLatency" displayName="Network Latency (ms)" type="number" hideKey="synchronisationEnabled" hideValues="0"/>
+                <Setting key="synchronisationNetworkLatency" displayName="Network Latency (us)" type="number" hideKey="synchronisationEnabled" hideValues="0"/>
             </Group>
         </Group>
         <Group displayName="Bluetooth" hideKey="wirelessMode" hideValues="0 1 2">
