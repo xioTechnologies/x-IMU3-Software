@@ -77,7 +77,7 @@ static PyObject* serial_connection_info_new(PyTypeObject* subtype, PyObject* arg
     SerialConnectionInfo* const self = (SerialConnectionInfo*) subtype->tp_alloc(subtype, 0);
 
     const char* port_name;
-    uint32_t baud_rate;
+    unsigned long baud_rate;
     bool rts_cts_enabled;
 
     if (PyArg_ParseTuple(args, "skp", &port_name, &baud_rate, &rts_cts_enabled) == 0)
@@ -88,7 +88,7 @@ static PyObject* serial_connection_info_new(PyTypeObject* subtype, PyObject* arg
     }
 
     snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
-    self->connection_info.baud_rate = baud_rate;
+    self->connection_info.baud_rate = (uint32_t) baud_rate;
     self->connection_info.rts_cts_enabled = rts_cts_enabled;
 
     return (PyObject*) self;
@@ -139,7 +139,7 @@ static PyObject* tcp_connection_info_new(PyTypeObject* subtype, PyObject* args, 
     TcpConnectionInfo* const self = (TcpConnectionInfo*) subtype->tp_alloc(subtype, 0);
 
     const char* ip_address;
-    uint16_t port;
+    unsigned int port;
 
     if (PyArg_ParseTuple(args, "sI", &ip_address, &port) == 0)
     {
@@ -149,7 +149,7 @@ static PyObject* tcp_connection_info_new(PyTypeObject* subtype, PyObject* args, 
     }
 
     snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
-    self->connection_info.port = port;
+    self->connection_info.port = (uint16_t) port;
 
     return (PyObject*) self;
 }
@@ -199,8 +199,8 @@ static PyObject* udp_connection_info_new(PyTypeObject* subtype, PyObject* args, 
     UdpConnectionInfo* const self = (UdpConnectionInfo*) subtype->tp_alloc(subtype, 0);
 
     const char* ip_address;
-    uint16_t send_port;
-    uint16_t receive_port;
+    unsigned int send_port;
+    unsigned int receive_port;
 
     if (PyArg_ParseTuple(args, "sII", &ip_address, &send_port, &receive_port) == 0)
     {
@@ -210,8 +210,8 @@ static PyObject* udp_connection_info_new(PyTypeObject* subtype, PyObject* args, 
     }
 
     snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
-    self->connection_info.send_port = send_port;
-    self->connection_info.receive_port = receive_port;
+    self->connection_info.send_port = (uint16_t) send_port;
+    self->connection_info.receive_port = (uint16_t) receive_port;
 
     return (PyObject*) self;
 }

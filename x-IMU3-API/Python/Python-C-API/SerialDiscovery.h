@@ -47,7 +47,7 @@ static PyObject* serial_discovery_get_devices(SerialDiscovery* self, PyObject* a
 
 static PyObject* serial_discovery_scan(PyObject* null, PyObject* args)
 {
-    uint32_t milliseconds;
+    unsigned long milliseconds;
 
     if (PyArg_ParseTuple(args, "k", &milliseconds) == 0)
     {
@@ -55,12 +55,12 @@ static PyObject* serial_discovery_scan(PyObject* null, PyObject* args)
         return NULL;
     }
 
-    return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan(milliseconds));
+    return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan((uint32_t) milliseconds));
 }
 
 static PyObject* serial_discovery_scan_filter(PyObject* null, PyObject* args)
 {
-    uint32_t milliseconds;
+    unsigned long milliseconds;
     char* connection_type_string;
 
     if (PyArg_ParseTuple(args, "ks", &milliseconds, &connection_type_string) == 0)
@@ -76,15 +76,15 @@ static PyObject* serial_discovery_scan_filter(PyObject* null, PyObject* args)
 
     if (strcmp(connection_type_string, "usb") == 0)
     {
-        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter(milliseconds, XIMU3_ConnectionTypeUsb));
+        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter((uint32_t) milliseconds, XIMU3_ConnectionTypeUsb));
     }
     if (strcmp(connection_type_string, "serial") == 0)
     {
-        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter(milliseconds, XIMU3_ConnectionTypeSerial));
+        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter((uint32_t) milliseconds, XIMU3_ConnectionTypeSerial));
     }
     if (strcmp(connection_type_string, "bluetooth") == 0)
     {
-        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter(milliseconds, XIMU3_ConnectionTypeBluetooth));
+        return discovered_serial_devices_to_list_and_free(XIMU3_serial_discovery_scan_filter((uint32_t) milliseconds, XIMU3_ConnectionTypeBluetooth));
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);

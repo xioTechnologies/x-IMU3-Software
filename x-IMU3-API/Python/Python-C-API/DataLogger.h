@@ -72,7 +72,7 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
     const char* directory;
     const char* name;
     PyObject* connections_list;
-    uint32_t seconds;
+    unsigned long seconds;
 
     if (PyArg_ParseTuple(args, "ssO!k", &directory, &name, &PyList_Type, &connections_list, &seconds) == 0)
     {
@@ -102,7 +102,7 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
         connections_array[index] = ((Connection*) connection)->connection;
     }
 
-    return Py_BuildValue("s", XIMU3_result_to_string(XIMU3_data_logger_log(directory, name, connections_array, length, seconds)));
+    return Py_BuildValue("s", XIMU3_result_to_string(XIMU3_data_logger_log(directory, name, connections_array, length, (uint32_t) seconds)));
 }
 
 static PyMethodDef data_logger_methods[] = {
