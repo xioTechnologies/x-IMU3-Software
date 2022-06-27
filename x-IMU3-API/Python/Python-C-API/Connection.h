@@ -116,8 +116,8 @@ static PyObject* connection_ping(Connection* self, PyObject* args)
 static PyObject* connection_send_commands(Connection* self, PyObject* args)
 {
     PyObject* commands_list;
-    uint32_t retries;
-    uint32_t timeout;
+    unsigned long retries;
+    unsigned long timeout;
 
     if (PyArg_ParseTuple(args, "O!kk", &PyList_Type, &commands_list, &retries, &timeout) == 0)
     {
@@ -147,14 +147,14 @@ static PyObject* connection_send_commands(Connection* self, PyObject* args)
         commands_char_ptr_array[index] = (char*) PyUnicode_AsUTF8(command);
     }
 
-    return char_arrays_to_list_and_free(XIMU3_connection_send_commands(self->connection, commands_char_ptr_array, length, retries, timeout));
+    return char_arrays_to_list_and_free(XIMU3_connection_send_commands(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout));
 }
 
 static PyObject* connection_send_commands_async(Connection* self, PyObject* args)
 {
     PyObject* commands_list;
-    uint32_t retries;
-    uint32_t timeout;
+    unsigned long retries;
+    unsigned long timeout;
     PyObject* callable;
 
     if (PyArg_ParseTuple(args, "O!kkO:set_callback", &PyList_Type, &commands_list, &retries, &timeout, &callable) == 0)
@@ -193,7 +193,7 @@ static PyObject* connection_send_commands_async(Connection* self, PyObject* args
 
     Py_INCREF(callable); // this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_commands_async(self->connection, commands_char_ptr_array, length, retries, timeout, char_arrays_callback, callable);
+    XIMU3_connection_send_commands_async(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout, char_arrays_callback, callable);
 
     Py_IncRef(Py_None);
     return Py_None;
@@ -584,10 +584,10 @@ static PyObject* connection_add_error_callback(Connection* self, PyObject* args)
 
 static PyObject* connection_remove_callback(Connection* self, PyObject* args)
 {
-    uint64_t callback_id;
+    unsigned long long callback_id;
     if (PyArg_ParseTuple(args, "K", &callback_id))
     {
-        XIMU3_connection_remove_callback(self->connection, callback_id);
+        XIMU3_connection_remove_callback(self->connection, (uint64_t) callback_id);
 
         Py_INCREF(Py_None);
         return Py_None;

@@ -47,7 +47,7 @@ static PyObject* network_discovery_get_devices(NetworkDiscovery* self, PyObject*
 
 static PyObject* network_discovery_scan(PyObject* null, PyObject* args)
 {
-    uint32_t milliseconds;
+    unsigned long milliseconds;
 
     if (PyArg_ParseTuple(args, "k", &milliseconds) == 0)
     {
@@ -55,7 +55,7 @@ static PyObject* network_discovery_scan(PyObject* null, PyObject* args)
         return NULL;
     }
 
-    return discovered_network_devices_to_list_and_free(XIMU3_network_discovery_scan(milliseconds));
+    return discovered_network_devices_to_list_and_free(XIMU3_network_discovery_scan((uint32_t) milliseconds));
 }
 
 static PyMethodDef network_discovery_methods[] = {
