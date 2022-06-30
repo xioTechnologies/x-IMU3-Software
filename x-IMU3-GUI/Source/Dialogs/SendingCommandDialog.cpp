@@ -22,7 +22,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     }
                 }
 
-                DialogLauncher::launchDialog(nullptr);
+                startTimer(1000);
             }
         });
     }
@@ -116,4 +116,9 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         default:
             return nullptr;
     }
+}
+
+void SendingCommandDialog::timerCallback()
+{
+    DialogLauncher::launchDialog(nullptr);
 }
