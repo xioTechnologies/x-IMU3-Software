@@ -152,6 +152,11 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
 
+    menu.addItem("Disconnect", [this]
+    {
+        devicePanelContainer.removePanel(devicePanel);
+    });
+
     menu.addItem("Strobe LED", [this]
     {
         DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
