@@ -33,6 +33,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     closeWhenCompleteButton.onClick = [&]
     {
         ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
+        ApplicationSettings::getSingleton().save();
     };
 
     addAndMakeVisible(deviceLabel);
