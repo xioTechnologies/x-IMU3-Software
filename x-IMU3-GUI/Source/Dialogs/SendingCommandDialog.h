@@ -7,7 +7,8 @@
 #include "Dialog.h"
 
 class SendingCommandDialog : public Dialog,
-                             private juce::TableListBoxModel
+                             private juce::TableListBoxModel,
+                             private juce::Timer
 {
 public:
     SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels);
@@ -56,6 +57,8 @@ private:
     }
 
     juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
+
+    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendingCommandDialog)
 };

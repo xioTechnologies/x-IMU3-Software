@@ -24,11 +24,6 @@ ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::sett
     setSize(dialogWidth, calculateHeight(0) + height);
 }
 
-ApplicationSettingsDialog::~ApplicationSettingsDialog()
-{
-    ApplicationSettings::getSingleton().save();
-}
-
 void ApplicationSettingsDialog::resized()
 {
     Dialog::resized();

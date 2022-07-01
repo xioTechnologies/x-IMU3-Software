@@ -11,13 +11,10 @@ void SerialAccessoryTerminal::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::black);
 
-    const auto firstLineOnScreen = juce::jmin(juce::roundToInt(scrollbar.getCurrentRangeStart()), juce::jmax(0, (int) wrappedMessages.size() - numberOfLinesOnScreen));
-
-    int y = 0;
-    for (int index = firstLineOnScreen; index < juce::jmin(firstLineOnScreen + numberOfLinesOnScreen, (int) wrappedMessages.size()); index++)
+    for (auto lineIndex = (int) std::floor(scrollbar.getCurrentRangeStart()); lineIndex < (int) std::ceil(scrollbar.getCurrentRange().getEnd()); lineIndex++)
     {
-        wrappedMessages[(size_t) index].draw(g, { 0.0f, (float) y, (float) getWidth(), (float) juce::roundToInt(font.getHeight()) });
-        y += juce::roundToInt(font.getHeight());
+        const auto y = juce::jmap((float) lineIndex, (float) scrollbar.getCurrentRangeStart(), (float) scrollbar.getCurrentRangeStart() + (float) numberOfLinesOnScreen, 0.0f, (float) getHeight());
+        wrappedMessages[(size_t) lineIndex].draw(g, { 0.0f, (float) y, (float) getWidth(), (float) juce::roundToInt(font.getHeight()) });
     }
 }
 
@@ -55,8 +52,8 @@ void SerialAccessoryTerminal::mouseWheelMove(const juce::MouseEvent& mouseEvent,
 void SerialAccessoryTerminal::resized()
 {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
-    numberOfLinesOnScreen = (int) std::ceil(getHeight() / font.getHeight());
-    numberOfCharactersPerLine = (int) std::floor(scrollbar.getX() / font.getStringWidthFloat("0"));
+    numberOfLinesOnScreen = getHeight() / font.getHeight();
+    numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / font.getStringWidthFloat("0")));
 
     wrappedMessages.clear();
     for (const auto& message : messages)

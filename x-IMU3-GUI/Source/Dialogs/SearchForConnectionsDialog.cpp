@@ -146,7 +146,6 @@ juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
         menu.addItem(name, true, value, [this, &value]
         {
             value = !value;
-            ApplicationSettings::getSingleton().save();
             update();
         });
     };

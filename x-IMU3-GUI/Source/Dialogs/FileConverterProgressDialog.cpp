@@ -49,7 +49,6 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
 
 void FileConverterProgressDialog::timerCallback()
 {
-    stopTimer();
     file.revealToUser();
     DialogLauncher::launchDialog(nullptr);
 }

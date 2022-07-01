@@ -152,14 +152,9 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Strobe LED", [this]
+    menu.addItem("Disconnect", [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
-    });
-
-    menu.addItem("LED Colour", [this]
-    {
-        DialogLauncher::launchDialog(std::make_unique<LedColourDialog>(devicePanel));
+        devicePanelContainer.removePanel(devicePanel);
     });
 
     menu.addItem("Send Command", [this]
@@ -171,6 +166,16 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
                 DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage(dialog->getCommand()), std::vector<DevicePanel*> { &devicePanel }));
             }
         });
+    });
+
+    menu.addItem("Strobe LED", [this]
+    {
+        DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
+    });
+
+    menu.addItem("LED Colour", [this]
+    {
+        DialogLauncher::launchDialog(std::make_unique<LedColourDialog>(devicePanel));
     });
 
     return menu;

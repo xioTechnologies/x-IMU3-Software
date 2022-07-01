@@ -8,8 +8,6 @@ class ApplicationSettingsDialog : public Dialog
 public:
     ApplicationSettingsDialog();
 
-    ~ApplicationSettingsDialog() override;
-
     void resized() override;
 
 private:
