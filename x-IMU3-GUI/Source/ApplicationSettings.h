@@ -2,7 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class ApplicationSettings : private juce::DeletedAtShutdown
+class ApplicationSettings : private juce::DeletedAtShutdown, private juce::ValueTree::Listener
 {
     juce::ValueTree tree { "Settings" };
 
@@ -36,17 +36,6 @@ public:
         return tree;
     }
 
-    void save()
-    {
-        file.create();
-        file.replaceWithText(tree.toXmlString());
-    }
-
-    void load()
-    {
-        tree.copyPropertiesFrom(juce::ValueTree::fromXml(file.loadFileAsString()), nullptr);
-    }
-
     void restoreDefault()
     {
         file.deleteFile();
@@ -54,12 +43,25 @@ public:
     }
 
 private:
+    const juce::File file = getDirectory().getChildFile("Settings.xml");
+
     ApplicationSettings()
     {
         load();
     }
 
-    const juce::File file = getDirectory().getChildFile("Settings.xml");
+    void load()
+    {
+        tree.removeListener(this);
+        tree.copyPropertiesFrom(juce::ValueTree::fromXml(file.loadFileAsString()), nullptr);
+        tree.addListener(this);
+    }
+
+    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override
+    {
+        file.create();
+        file.replaceWithText(tree.toXmlString());
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ApplicationSettings)
 };
