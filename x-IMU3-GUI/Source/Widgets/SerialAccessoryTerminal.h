@@ -27,7 +27,7 @@ private:
     juce::ScrollBar scrollbar { true };
 
     std::vector<juce::AttributedString> messages, wrappedMessages;
-    int numberOfLinesOnScreen = 0;
+    float numberOfLinesOnScreen = 0.0f;
     int numberOfCharactersPerLine = 0;
 
     void updateScrollbarRange();
