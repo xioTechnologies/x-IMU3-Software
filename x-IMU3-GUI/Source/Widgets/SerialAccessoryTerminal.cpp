@@ -54,6 +54,11 @@ void SerialAccessoryTerminal::mouseWheelMove(const juce::MouseEvent& mouseEvent,
 
 void SerialAccessoryTerminal::resized()
 {
+    if (getBounds().isEmpty())
+    {
+        return;
+    }
+
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
     numberOfLinesOnScreen = (int) std::ceil(getHeight() / font.getHeight());
     numberOfCharactersPerLine = (int) std::floor(scrollbar.getX() / font.getStringWidthFloat("0"));
