@@ -1,7 +1,7 @@
 import os
 import re
 
-version = "0.5.0"
+version = "0.6.0"
 
 
 def replace(file_path, string):
@@ -18,7 +18,7 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
         file_path = os.path.join(root, file)
 
         if file == "Cargo.toml":
-            replace(file_path, "version = \".*\"")
+            replace(file_path, "version = \".*\"\n")
 
         if file == "setup.py":
             replace(file_path, "version=\".*\"")
