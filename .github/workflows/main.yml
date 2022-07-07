@@ -50,20 +50,12 @@ jobs:
         run: |
           rustup target add ${{ matrix.target[1] }}
           cargo build --release --target ${{ matrix.target[1] }}
-          cargo publish --no-verify --dry-run
 
       - uses: actions/upload-artifact@v3
         name: Upload to artifacts
         with:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
-
-      - if: startsWith(github.ref, 'refs/tags/v')
-        name: Publish crate
-        working-directory: x-IMU3-API/Rust/
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.RUST_TOKEN }}
-        run: cargo publish --no-verify
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Zip
@@ -82,6 +74,23 @@ jobs:
           asset_path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
           asset_name: ${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
           asset_content_type: application/octet-stream
+
+  rust-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dry run
+        working-directory: x-IMU3-API/Rust/
+        run: cargo publish --no-verify --dry-run
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish crate
+        working-directory: x-IMU3-API/Rust/
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.RUST_TOKEN }}
+        run: cargo publish --no-verify
 
   python:
     runs-on: ${{ matrix.target[0] }}
