@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../C/Ximu3.h"
+#include <cstring>
 #include <string>
 
 namespace ximu3

@@ -9,7 +9,7 @@ pub enum Result {
 #[no_mangle]
 pub extern "C" fn XIMU3_result_to_string(result: Result) -> *const c_char {
     match result {
-        Result::Ok => "Ok\0".as_ptr() as *const i8,
-        Result::Error => "Error\0".as_ptr() as *const i8,
+        Result::Ok => "Ok\0".as_ptr() as *const c_char,
+        Result::Error => "Error\0".as_ptr() as *const c_char,
     }
 }
