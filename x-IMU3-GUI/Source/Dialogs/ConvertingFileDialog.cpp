@@ -1,10 +1,10 @@
+#include "ConvertingFileDialog.h"
 #include "ErrorDialog.h"
-#include "FileConverterProgressDialog.h"
 
-FileConverterProgressDialog::FileConverterProgressDialog(const juce::String& source, const juce::String& destination)
-        : Dialog(BinaryData::tools_svg, "File Converter Progress", "Cancel", ""),
+ConvertingFileDialog::ConvertingFileDialog(const juce::String& source, const juce::String& destination)
+        : Dialog(BinaryData::tools_svg, "Converting File", "Cancel", ""),
           file(juce::File(destination).getChildFile(juce::File(source).getFileNameWithoutExtension())),
-          fileConverter(destination.toStdString(), source.toStdString(), std::bind(&FileConverterProgressDialog::progressCallback, this, std::placeholders::_1))
+          fileConverter(destination.toStdString(), source.toStdString(), std::bind(&ConvertingFileDialog::progressCallback, this, std::placeholders::_1))
 {
     addAndMakeVisible(progressBar);
 
@@ -14,14 +14,14 @@ FileConverterProgressDialog::FileConverterProgressDialog(const juce::String& sou
     setSize(dialogWidth, calculateHeight(1));
 }
 
-void FileConverterProgressDialog::resized()
+void ConvertingFileDialog::resized()
 {
     Dialog::resized();
 
     progressBar.setBounds(getContentBounds().removeFromTop(UILayout::textComponentHeight));
 }
 
-void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterProgress progress)
+void ConvertingFileDialog::progressCallback(ximu3::XIMU3_FileConverterProgress progress)
 {
     juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), progress]
                                     {
@@ -47,7 +47,7 @@ void FileConverterProgressDialog::progressCallback(ximu3::XIMU3_FileConverterPro
                                     });
 }
 
-void FileConverterProgressDialog::timerCallback()
+void ConvertingFileDialog::timerCallback()
 {
     file.revealToUser();
     DialogLauncher::launchDialog(nullptr);

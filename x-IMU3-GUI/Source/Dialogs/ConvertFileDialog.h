@@ -6,10 +6,10 @@
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
-class FileConverterDialog : public Dialog
+class ConvertFileDialog : public Dialog
 {
 public:
-    FileConverterDialog();
+    ConvertFileDialog();
 
     void resized() override;
 
@@ -25,5 +25,5 @@ private:
     CustomTextEditor destinationValue;
     IconButton destinationButton { IconButton::Style::menuStrip, BinaryData::open_svg, 0.8f, "Select Destination Directory" };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FileConverterDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConvertFileDialog)
 };

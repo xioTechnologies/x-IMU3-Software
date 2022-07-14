@@ -1,7 +1,7 @@
-#include "FileConverterDialog.h"
+#include "ConvertFileDialog.h"
 #include <filesystem>
 
-FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, ".ximu3 File Converter", "Convert")
+ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert File (.ximu3)", "Convert")
 {
     addAndMakeVisible(sourceLabel);
     addAndMakeVisible(sourceValue);
@@ -41,7 +41,7 @@ FileConverterDialog::FileConverterDialog() : Dialog(BinaryData::tools_svg, ".xim
     setSize(dialogWidth, calculateHeight(2));
 }
 
-void FileConverterDialog::resized()
+void ConvertFileDialog::resized()
 {
     Dialog::resized();
     auto bounds = getContentBounds();
@@ -59,12 +59,12 @@ void FileConverterDialog::resized()
     destinationValue.setBounds(destinationRow.withTrimmedRight(margin));
 }
 
-juce::String FileConverterDialog::getSource() const
+juce::String ConvertFileDialog::getSource() const
 {
     return sourceValue.getText();
 }
 
-juce::String FileConverterDialog::getDestination() const
+juce::String ConvertFileDialog::getDestination() const
 {
     return destinationValue.getText();
 }
