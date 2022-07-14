@@ -5,9 +5,9 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
+#include "Dialogs/ConvertFileDialog.h"
+#include "Dialogs/ConvertingFileDialog.h"
 #include "Dialogs/ErrorDialog.h"
-#include "Dialogs/FileConverterDialog.h"
-#include "Dialogs/FileConverterProgressDialog.h"
 #include "Dialogs/NewConnectionDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
 #include "Dialogs/SearchForConnectionsDialog.h"
@@ -485,18 +485,18 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
 juce::PopupMenu MenuStrip::getToolsMenu() const
 {
     juce::PopupMenu menu;
-    menu.addItem(".ximu3 File Converter", []
+    menu.addItem("Convert File (.ximu3)", []
     {
-        DialogLauncher::launchDialog(std::make_unique<FileConverterDialog>(), []
+        DialogLauncher::launchDialog(std::make_unique<ConvertFileDialog>(), []
         {
-            if (const auto* const fileConverterDialog = dynamic_cast<FileConverterDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (const auto* const convertFileDialog = dynamic_cast<ConvertFileDialog*>(DialogLauncher::getLaunchedDialog()))
             {
-                const auto startFileConverter = [source = fileConverterDialog->getSource(), destination = fileConverterDialog->getDestination()]
+                const auto startFileConverter = [source = convertFileDialog->getSource(), destination = convertFileDialog->getDestination()]
                 {
-                    DialogLauncher::launchDialog(std::make_unique<FileConverterProgressDialog>(source, destination));
+                    DialogLauncher::launchDialog(std::make_unique<ConvertingFileDialog>(source, destination));
                 };
 
-                const auto directory = juce::File(fileConverterDialog->getDestination()).getChildFile(juce::File(fileConverterDialog->getSource()).getFileNameWithoutExtension());
+                const auto directory = juce::File(convertFileDialog->getDestination()).getChildFile(juce::File(convertFileDialog->getSource()).getFileNameWithoutExtension());
                 if (directory.exists())
                 {
                     DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]

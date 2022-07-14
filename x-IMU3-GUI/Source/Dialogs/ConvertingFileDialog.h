@@ -5,10 +5,10 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class FileConverterProgressDialog : public Dialog, private juce::Timer
+class ConvertingFileDialog : public Dialog, private juce::Timer
 {
 public:
-    FileConverterProgressDialog(const juce::String& source, const juce::String& destination);
+    ConvertingFileDialog(const juce::String& source, const juce::String& destination);
 
     void resized() override;
 
@@ -24,5 +24,5 @@ private:
 
     void timerCallback() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FileConverterProgressDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConvertingFileDialog)
 };
