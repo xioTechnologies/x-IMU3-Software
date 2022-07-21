@@ -19,8 +19,8 @@ private:
     SimpleLabel label { "Command:" };
     CustomComboBox commandValue;
 
-    juce::ValueTree recentCommands;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Commands.xml");
+    juce::ValueTree commandHistory;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Command History.xml");
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendCommandDialog)
 };

@@ -8,14 +8,14 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
 
     commandValue.setEditableText(true);
 
-    recentCommands = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (recentCommands.isValid() == false)
+    commandHistory = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (commandHistory.isValid() == false)
     {
-        recentCommands = juce::ValueTree("RecentCommands");
+        commandHistory = juce::ValueTree("CommandHistory");
     }
-    for (const auto recentCommand : recentCommands)
+    for (const auto command : commandHistory)
     {
-        commandValue.addItem(recentCommand.getProperty("command"), commandValue.getNumItems() + 1);
+        commandValue.addItem(command.getProperty("command"), commandValue.getNumItems() + 1);
     }
 
     commandValue.setText(commandValue.getNumItems() > 0 ? commandValue.getItemText(0) : "{\"note\":\"Hello, World!\"}", juce::dontSendNotification);
@@ -42,22 +42,22 @@ CommandMessage SendCommandDialog::getCommand()
 {
     if (commandValue.getText().isNotEmpty())
     {
-        for (const auto recentCommand : recentCommands)
+        for (const auto command : commandHistory)
         {
-            if (recentCommand.getProperty("command") == commandValue.getText())
+            if (command.getProperty("command") == commandValue.getText())
             {
-                recentCommands.removeChild(recentCommand, nullptr);
+                commandHistory.removeChild(command, nullptr);
                 break;
             }
         }
 
-        while (recentCommands.getNumChildren() > 9)
+        while (commandHistory.getNumChildren() > 9)
         {
-            recentCommands.removeChild(recentCommands.getChild(recentCommands.getNumChildren() - 1), nullptr);
+            commandHistory.removeChild(commandHistory.getChild(commandHistory.getNumChildren() - 1), nullptr);
         }
 
-        recentCommands.addChild({ "Command", {{ "command", commandValue.getText() }}}, 0, nullptr);
-        file.replaceWithText(recentCommands.toXmlString());
+        commandHistory.addChild({ "Command", {{ "command", commandValue.getText() }}}, 0, nullptr);
+        file.replaceWithText(commandHistory.toXmlString());
     }
 
     return CommandMessage(commandValue.getText().toStdString());
