@@ -92,7 +92,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.RUST_TOKEN }}
         run: cargo publish --no-verify
 
-  csharp:
+  c-sharp:
     runs-on: windows-latest
     needs: [ create-release, rust ]
 
