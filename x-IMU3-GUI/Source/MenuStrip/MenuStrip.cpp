@@ -1,4 +1,5 @@
 #include "ApplicationSettings.h"
+#include "ConnectionHistory.h"
 #include "CustomLayouts.h"
 #include "CustomLookAndFeel.h"
 #include "DevicePanelContainer.h"
@@ -14,7 +15,6 @@
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "MenuStrip.h"
-#include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Windows/WindowIDs.h"
 
@@ -254,7 +254,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         {
             auto connectionInfo = dialog->getConnectionInfo();
             devicePanelContainer.connectToDevice(*connectionInfo);
-            RecentConnections().update(*connectionInfo);
+            ConnectionHistory().update(*connectionInfo);
         }
     };
     menu.addItem("New USB Connection", [connectCallback]
@@ -278,9 +278,9 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         DialogLauncher::launchDialog(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
     });
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT CONNECTIONS"), nullptr);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNECTION HISTORY"), nullptr);
 
-    for (auto& connectionInfo : RecentConnections().get())
+    for (auto& connectionInfo : ConnectionHistory().get())
     {
         const auto connectionInfoString = connectionInfo->toString();
         menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]

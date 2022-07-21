@@ -9,7 +9,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendValue);
     sendValue.setEditableText(true);
 
-    loadRecentSends();
+    loadSendHistory();
 
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
@@ -27,24 +27,24 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
             sendButton.setToggleState(responses.empty(), juce::dontSendNotification);
         });
 
-        for (const auto recentSend : recentSends)
+        for (const auto send : sendHistory)
         {
-            if (recentSend.getProperty("send") == sendValue.getText())
+            if (send.getProperty("send") == sendValue.getText())
             {
-                recentSends.removeChild(recentSend, nullptr);
+                sendHistory.removeChild(send, nullptr);
                 break;
             }
         }
 
-        while (recentSends.getNumChildren() > 9)
+        while (sendHistory.getNumChildren() > 9)
         {
-            recentSends.removeChild(recentSends.getChild(recentSends.getNumChildren() - 1), nullptr);
+            sendHistory.removeChild(sendHistory.getChild(sendHistory.getNumChildren() - 1), nullptr);
         }
 
-        recentSends.addChild({ "Send", {{ "send", sendValue.getText() }}}, 0, nullptr);
-        file.replaceWithText(recentSends.toXmlString());
+        sendHistory.addChild({ "Send", {{ "send", sendValue.getText() }}}, 0, nullptr);
+        file.replaceWithText(sendHistory.toXmlString());
 
-        loadRecentSends();
+        loadSendHistory();
     };
 
     callbackID = devicePanel.getConnection().addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -84,18 +84,18 @@ void SerialAccessoryTerminalWindow::resized()
     serialAccessoryTerminal.setBounds(bounds);
 }
 
-void SerialAccessoryTerminalWindow::loadRecentSends()
+void SerialAccessoryTerminalWindow::loadSendHistory()
 {
-    recentSends = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (recentSends.isValid() == false)
+    sendHistory = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (sendHistory.isValid() == false)
     {
-        recentSends = juce::ValueTree("RecentSends");
+        sendHistory = juce::ValueTree("SendHistory");
     }
 
     sendValue.clear(juce::dontSendNotification);
-    for (const auto recentSend : recentSends)
+    for (const auto send : sendHistory)
     {
-        sendValue.addItem(recentSend.getProperty("send"), sendValue.getNumItems() + 1);
+        sendValue.addItem(send.getProperty("send"), sendValue.getNumItems() + 1);
     }
 
     sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello, World!", juce::dontSendNotification);
