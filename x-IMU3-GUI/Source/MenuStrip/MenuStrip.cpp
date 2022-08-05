@@ -512,6 +512,13 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
             }
         });
     });
+    menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
+    {
+        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to set the date and time for all connections?"), [&]
+        {
+            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S")), devicePanelContainer.getDevicePanels()));
+        });
+    });
     return menu;
 }
 
