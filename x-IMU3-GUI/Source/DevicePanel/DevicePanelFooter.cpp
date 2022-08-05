@@ -101,7 +101,7 @@ void DevicePanelFooter::resized()
 
     const auto iconWidth = bounds.getHeight();
     static constexpr int iconMargin = 2;
-    static const int maxTextWidth = UIFonts::smallFont.getStringWidth("000");
+    static const int maxTextWidth = UIFonts::getSmallFont().getStringWidth("000");
 
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;

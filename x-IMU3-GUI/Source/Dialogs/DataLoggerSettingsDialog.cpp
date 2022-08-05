@@ -24,7 +24,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     unlimitedToggle.onClick = [this]
     {
         secondsValue.setEnabled(!unlimitedToggle.getToggleState());
-        secondsValue.applyFontToAllText(secondsValue.isEnabled() ? UIFonts::defaultFont : UIFonts::defaultFont.withHorizontalScale(0.0f));
+        secondsValue.applyFontToAllText(secondsValue.isEnabled() ? UIFonts::getDefaultFont() : UIFonts::getDefaultFont().withHorizontalScale(0.0f));
     };
 
     directoryValue.setText(settings.directory, false);

@@ -9,7 +9,7 @@ public:
     void drawToggleButton(juce::Graphics& g, juce::ToggleButton& button,
                           bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const auto font = UIFonts::defaultFont;
+        const auto font = UIFonts::getDefaultFont();
         const auto fontSize = font.getHeight();
         const auto tickWidth = fontSize * 1.1f;
 

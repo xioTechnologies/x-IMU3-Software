@@ -22,7 +22,7 @@ public:
     void add(const uint64_t timestamp, const juce::String& text);
 
 private:
-    const juce::Font& font = UIFonts::terminalFeedFont;
+    const juce::Font font = UIFonts::getTerminalFeedFont();
 
     juce::ScrollBar scrollbar { true };
 

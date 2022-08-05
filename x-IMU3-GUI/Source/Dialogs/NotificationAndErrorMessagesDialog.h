@@ -33,7 +33,7 @@ private:
 
     DialogButton clearAllButton { "Clear All" };
 
-    SimpleLabel typeLabel { "Type", UIFonts::defaultFont, juce::Justification::centred };
+    SimpleLabel typeLabel { "Type", UIFonts::getDefaultFont(), juce::Justification::centred };
     SimpleLabel timestampLabel { "Timestamp" };
     SimpleLabel messageLabel { "Message" };
     juce::TableListBox table { "", this };

@@ -3,7 +3,7 @@
 #include "Window.h"
 #include "WindowIDs.h"
 
-Window::Title::Title(Window& parentWindow_) : SimpleLabel(parentWindow_.getName(), UIFonts::smallFont, juce::Justification::centred), parentWindow(parentWindow_)
+Window::Title::Title(Window& parentWindow_) : SimpleLabel(parentWindow_.getName(), UIFonts::getSmallFont(), juce::Justification::centred), parentWindow(parentWindow_)
 {
     setInterceptsMouseClicks(true, true);
     setMouseCursor({ juce::MouseCursor::DraggingHandCursor });

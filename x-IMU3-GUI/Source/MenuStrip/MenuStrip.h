@@ -37,12 +37,12 @@ private:
     IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
     juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
 
-    SimpleLabel connectionLabel { "Connection", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel layoutLabel { "Layout", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel commandsLabel { "Commands", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel dataLoggerLabel { "Data Logger", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel toolsLabel { "Tools", UIFonts::defaultFont, juce::Justification::centred };
-    SimpleLabel applicationLabel { "Application", UIFonts::defaultFont, juce::Justification::centred };
+    SimpleLabel connectionLabel { "Connection", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel layoutLabel { "Layout", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel commandsLabel { "Commands", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel dataLoggerLabel { "Data Logger", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel toolsLabel { "Tools", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel applicationLabel { "Application", UIFonts::getDefaultFont(), juce::Justification::centred };
 
     struct ButtonGroup
     {

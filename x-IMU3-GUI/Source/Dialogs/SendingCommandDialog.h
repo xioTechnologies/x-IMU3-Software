@@ -45,7 +45,7 @@ private:
 
     SimpleLabel deviceLabel { "Device" };
     SimpleLabel connectionLabel { "Connection" };
-    SimpleLabel completeLabel { "Complete", UIFonts::defaultFont, juce::Justification::centred };
+    SimpleLabel completeLabel { "Complete", UIFonts::getDefaultFont(), juce::Justification::centred };
     juce::TableListBox table { "", this };
 
     int getNumRows() override;

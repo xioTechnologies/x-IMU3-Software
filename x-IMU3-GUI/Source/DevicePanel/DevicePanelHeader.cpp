@@ -9,7 +9,7 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
         : juce::Thread(""),
           devicePanel(devicePanel_),
           devicePanelContainer(devicePanelContainer_),
-          connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::defaultFont)
+          connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::getDefaultFont())
 {
     addAndMakeVisible(menuButton);
     addAndMakeVisible(rssiIcon);
