@@ -3,7 +3,7 @@
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ErrorDialog.h"
 
-DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_) : Window(windowLayout, type, devicePanel_)
+DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_) : Window(windowLayout_, type_, devicePanel_)
 {
     addAndMakeVisible(settingsTree);
     addAndMakeVisible(readAllButton);

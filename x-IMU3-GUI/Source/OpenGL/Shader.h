@@ -5,7 +5,7 @@
 class Shader : public juce::OpenGLShaderProgram
 {
 public:
-    Shader(juce::OpenGLContext& context, const juce::String& vertexShader, const juce::String& fragmentShader) : juce::OpenGLShaderProgram(context)
+    Shader(juce::OpenGLContext& context_, const juce::String& vertexShader, const juce::String& fragmentShader) : juce::OpenGLShaderProgram(context_)
     {
         if (addVertexShader(juce::OpenGLHelpers::translateVertexShaderToV3(vertexShader)) == false ||
             addFragmentShader(juce::OpenGLHelpers::translateFragmentShaderToV3(fragmentShader)) == false ||

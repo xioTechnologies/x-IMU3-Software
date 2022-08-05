@@ -6,7 +6,7 @@
 class GraphDataShader : public Shader
 {
 public:
-    explicit GraphDataShader(juce::OpenGLContext& context) : Shader(context, BinaryData::GraphData_vert, BinaryData::GraphData_frag)
+    explicit GraphDataShader(juce::OpenGLContext& context_) : Shader(context_, BinaryData::GraphData_vert, BinaryData::GraphData_frag)
     {
     }
 

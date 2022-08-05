@@ -5,7 +5,7 @@
 class TextShader : public Shader
 {
 public:
-    TextShader(juce::OpenGLContext& context) : Shader(context, BinaryData::Text_vert, BinaryData::Text_frag)
+    TextShader(juce::OpenGLContext& context_) : Shader(context_, BinaryData::Text_vert, BinaryData::Text_frag)
     {
     }
 

@@ -5,7 +5,7 @@
 class GridLinesShader : public Shader
 {
 public:
-    explicit GridLinesShader(juce::OpenGLContext& context) : Shader(context, BinaryData::GridLines_vert, BinaryData::GridLines_frag)
+    explicit GridLinesShader(juce::OpenGLContext& context_) : Shader(context_, BinaryData::GridLines_vert, BinaryData::GridLines_frag)
     {
     }
 

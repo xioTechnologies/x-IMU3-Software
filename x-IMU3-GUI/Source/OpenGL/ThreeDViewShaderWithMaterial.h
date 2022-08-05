@@ -3,7 +3,7 @@
 class ThreeDViewShaderWithMaterial : public Shader
 {
 public:
-    explicit ThreeDViewShaderWithMaterial(juce::OpenGLContext& context) : Shader(context, BinaryData::ThreeDViewWithMaterial_vert, BinaryData::ThreeDViewWithMaterial_frag)
+    explicit ThreeDViewShaderWithMaterial(juce::OpenGLContext& context_) : Shader(context_, BinaryData::ThreeDViewWithMaterial_vert, BinaryData::ThreeDViewWithMaterial_frag)
     {
     }
 

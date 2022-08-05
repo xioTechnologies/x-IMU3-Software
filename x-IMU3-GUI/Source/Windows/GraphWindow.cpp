@@ -3,7 +3,7 @@
 #include "Helpers.h"
 #include "WindowIDs.h"
 
-GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer) : Window(windowLayout, type, devicePanel_)
+GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer) : Window(windowLayout_, type_, devicePanel_)
 {
     static const juce::String degreeSymbol(juce::CharPointer_UTF8("\xc2\xba"));
 
@@ -35,7 +35,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
 #endif
     };
 
-    if (type == WindowIDs::Gyroscope)
+    if (type_ == WindowIDs::Gyroscope)
     {
         setLabels("Angular velocity (" + degreeSymbol + "/s)", {{ "X", UIColours::graphRed },
                                                                 { "Y", UIColours::graphGreen },
@@ -46,7 +46,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
         }) };
     }
-    if (type == WindowIDs::Accelerometer)
+    if (type_ == WindowIDs::Accelerometer)
     {
         setLabels("Acceleration (g)", {{ "X", UIColours::graphRed },
                                        { "Y", UIColours::graphGreen },
@@ -57,7 +57,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
         }) };
     }
-    if (type == WindowIDs::Magnetometer)
+    if (type_ == WindowIDs::Magnetometer)
     {
         setLabels("Intensity (a.u.)", {{ "X", UIColours::graphRed },
                                        { "Y", UIColours::graphGreen },
@@ -68,7 +68,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
         }) };
     }
-    if (type == WindowIDs::EulerAngles)
+    if (type_ == WindowIDs::EulerAngles)
     {
         setLabels("Angle (" + degreeSymbol + ")", {{ "Roll",  UIColours::graphRed },
                                                    { "Pitch", UIColours::graphGreen },
@@ -106,7 +106,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
         }));
     }
-    if (type == WindowIDs::LinearAcceleration)
+    if (type_ == WindowIDs::LinearAcceleration)
     {
         setLabels("Acceleration (g)", {{ "X", UIColours::graphRed },
                                        { "Y", UIColours::graphGreen },
@@ -117,7 +117,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
         }) };
     }
-    if (type == WindowIDs::EarthAcceleration)
+    if (type_ == WindowIDs::EarthAcceleration)
     {
         setLabels("Acceleration (g)", {{ "X", UIColours::graphRed },
                                        { "Y", UIColours::graphGreen },
@@ -128,7 +128,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
         }) };
     }
-    if (type == WindowIDs::HighGAccelerometer)
+    if (type_ == WindowIDs::HighGAccelerometer)
     {
         setLabels("Acceleration (g)", {{ "X", UIColours::graphRed },
                                        { "Y", UIColours::graphGreen },
@@ -139,7 +139,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
         }) };
     }
-    if (type == WindowIDs::Temperature)
+    if (type_ == WindowIDs::Temperature)
     {
         setLabels("Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }});
 
@@ -148,7 +148,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.temperature });
         }) };
     }
-    if (type == WindowIDs::BatteryPercentage)
+    if (type_ == WindowIDs::BatteryPercentage)
     {
         setLabels("Percentage (%)", {{{}, juce::Colours::yellow }});
 
@@ -157,7 +157,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.percentage });
         }) };
     }
-    if (type == WindowIDs::BatteryVoltage)
+    if (type_ == WindowIDs::BatteryVoltage)
     {
         setLabels("Voltage (V)", {{{}, juce::Colours::yellow }});
 
@@ -166,7 +166,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.voltage });
         }) };
     }
-    if (type == WindowIDs::RssiPercentage)
+    if (type_ == WindowIDs::RssiPercentage)
     {
         setLabels("Percentage (%)", {{{}, juce::Colours::yellow }});
 
@@ -175,7 +175,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.percentage });
         }) };
     }
-    if (type == WindowIDs::RssiPower)
+    if (type_ == WindowIDs::RssiPower)
     {
         setLabels("Power (dBm)", {{{}, juce::Colours::yellow }});
 
@@ -184,7 +184,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { message.power });
         }) };
     }
-    if (type == WindowIDs::ReceivedMessageRate)
+    if (type_ == WindowIDs::ReceivedMessageRate)
     {
         setLabels("Receive rate (messages/s)", {{{}, juce::Colours::yellow }});
 
@@ -193,7 +193,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout, const juce::Identi
             update(message.timestamp, { (float) message.message_rate });
         }) };
     }
-    if (type == WindowIDs::ReceivedDataRate)
+    if (type_ == WindowIDs::ReceivedDataRate)
     {
         setLabels("Receive rate (kB/s)", {{{}, juce::Colours::yellow }});
 
