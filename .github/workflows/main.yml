@@ -194,8 +194,8 @@ jobs:
       - if: matrix.target[0] == 'ubuntu-latest'
         name: Install ubuntu dependencies # https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md
         run: |
-          sudo apt update
-          sudo apt install libasound2-dev libjack-jackd2-dev \
+          sudo apt-get update
+          sudo apt-get install libasound2-dev libjack-jackd2-dev \
           ladspa-sdk \
           libcurl4-openssl-dev \
           libfreetype6-dev \
