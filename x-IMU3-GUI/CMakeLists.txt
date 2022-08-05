@@ -6,7 +6,7 @@ Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
         JUCE
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 6.1.6
+        GIT_TAG 7.0.1
         GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(JUCE)
@@ -21,7 +21,7 @@ Set(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz TRUE)
 FetchContent_Declare(
         freetype
         GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-        GIT_TAG VER-2-10-4
+        GIT_TAG VER-2-12-1
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
 )
