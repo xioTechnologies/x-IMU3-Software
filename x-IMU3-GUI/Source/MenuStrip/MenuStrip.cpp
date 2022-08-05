@@ -485,6 +485,13 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
 juce::PopupMenu MenuStrip::getToolsMenu() const
 {
     juce::PopupMenu menu;
+    menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
+    {
+        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
+        {
+            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), devicePanelContainer.getDevicePanels()));
+        });
+    });
     menu.addItem("Convert File (.ximu3)", []
     {
         DialogLauncher::launchDialog(std::make_unique<ConvertFileDialog>(), []
@@ -510,13 +517,6 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
                     startFileConverter();
                 }
             }
-        });
-    });
-    menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
-    {
-        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to set the date and time for all connections?"), [&]
-        {
-            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S")), devicePanelContainer.getDevicePanels()));
         });
     });
     return menu;
