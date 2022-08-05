@@ -28,16 +28,16 @@ private:
     ThreeDView threeDView;
     ThreeDView::Settings settings;
 
-    SimpleLabel rollLabel { "Roll:", UIFonts::defaultFont, juce::Justification::topLeft },
-            rollValue { "", UIFonts::defaultFont, juce::Justification::topLeft },
-            pitchLabel { "Pitch:", UIFonts::defaultFont, juce::Justification::topLeft },
-            pitchValue { "", UIFonts::defaultFont, juce::Justification::topLeft },
-            yawLabel { "Yaw:", UIFonts::defaultFont, juce::Justification::topLeft },
-            yawValue { "", UIFonts::defaultFont, juce::Justification::topLeft };
+    SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+            rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+            pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+            pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+            yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+            yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
 
     std::atomic<float> roll { 0.0f }, pitch { 0.0f }, yaw { 0.0f };
 
-    SimpleLabel loadingLabel { "", UIFonts::defaultFont, juce::Justification::bottomRight };
+    SimpleLabel loadingLabel { "", UIFonts::getDefaultFont(), juce::Justification::bottomRight };
 
     juce::Point<int> lastMousePosition;
 

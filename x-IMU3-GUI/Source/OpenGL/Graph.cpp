@@ -178,7 +178,7 @@ void Graph::render()
         auto topPadding = bounds.getBottom() - innerBounds.getBottom();
         auto y = innerBounds.getY() - bounds.getY() + innerBounds.getHeight() + topPadding / 2 - (int) renderer.getResources().getGraphLegendText().getFontSize() / 2;
         renderText(renderer.getResources().getGraphLegendText(), it->label, it->colour, (float) x, (float) y, juce::Justification::right);
-        x -= renderer.getResources().getGraphLegendText().getTotalWidth() + 15;
+        x -= (int) renderer.getResources().getGraphLegendText().getTotalWidth() + 15;
     }
 }
 

@@ -8,7 +8,7 @@ class SimpleLabel : public juce::Component,
 {
 public:
     SimpleLabel(const juce::String& text_ = {},
-                const juce::Font& font_ = UIFonts::defaultFont,
+                const juce::Font& font_ = UIFonts::getDefaultFont(),
                 juce::Justification justification_ = juce::Justification::centredLeft);
 
     void setText(const juce::String& text_);

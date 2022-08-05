@@ -3,7 +3,7 @@
 class ThreeDViewShader : public Shader
 {
 public:
-    explicit ThreeDViewShader(juce::OpenGLContext& context) : Shader(context, BinaryData::ThreeDView_vert, BinaryData::ThreeDView_frag)
+    explicit ThreeDViewShader(juce::OpenGLContext& context_) : Shader(context_, BinaryData::ThreeDView_vert, BinaryData::ThreeDView_frag)
     {
     }
 

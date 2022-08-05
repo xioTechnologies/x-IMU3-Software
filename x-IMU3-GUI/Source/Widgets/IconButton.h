@@ -28,6 +28,8 @@ public:
 
     void clicked() override;
 
+    using juce::Button::clicked;
+
     juce::String getTooltip() override;
 
     void setIcon(const juce::String& icon, const juce::String& iconOn);
