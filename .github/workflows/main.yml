@@ -51,6 +51,8 @@ jobs:
 
       - name: Build
         working-directory: x-IMU3-API/Rust/
+        env:
+          PKG_CONFIG_SYSROOT_DIR: /
         run: |
           rustup target add ${{ matrix.target[1] }}
           cargo build --release --target ${{ matrix.target[1] }}
