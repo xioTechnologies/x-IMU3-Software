@@ -38,7 +38,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     };
     directoryValue.onTextChange();
 
-    setSize(dialogWidth, calculateHeight(3));
+    setSize(600, calculateHeight(3));
 }
 
 void DataLoggerSettingsDialog::resized()

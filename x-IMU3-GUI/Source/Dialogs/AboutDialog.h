@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Firmware/Firmware.h"
 #include "../Widgets/Icon.h"
 #include "../Widgets/SimpleLabel.h"
 #include "Dialog.h"
@@ -26,7 +27,7 @@ private:
     SimpleLabel sourceCodeLabel { "Source Code:" };
     SimpleLabel applicationNameValue { juce::JUCEApplication::getInstance()->getApplicationName() };
     SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion() };
-    SimpleLabel expectedFirmwareVersionValue { "v0.5" };
+    SimpleLabel expectedFirmwareVersionValue { Firmware::version };
     SimpleLabel sourceCodeValue { "GitHub", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
 
     Icon logo { BinaryData::xio_logo_svg, 1.0f, logoUrl };

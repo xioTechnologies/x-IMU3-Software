@@ -6,7 +6,7 @@
 #include "DevicePanelHeader.h"
 
 DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_)
-        : juce::Thread(""),
+        : juce::Thread("Device Panel Header"),
           devicePanel(devicePanel_),
           devicePanelContainer(devicePanelContainer_),
           connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::getDefaultFont())

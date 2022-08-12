@@ -136,7 +136,7 @@ void DevicePanelContainer::removeAllPanels()
     resized();
 }
 
-void DevicePanelContainer::removePanel(DevicePanel& panel)
+void DevicePanelContainer::removePanel(const DevicePanel& panel)
 {
     onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() - 1);
     for (size_t index = 0; index < devicePanels.size(); index++)

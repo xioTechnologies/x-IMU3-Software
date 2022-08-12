@@ -14,6 +14,8 @@
 #include "Dialogs/SearchForConnectionsDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
+#include "Dialogs/UpdateFirmwareDialog.h"
+#include "Dialogs/UpdatingFirmwareDialog.h"
 #include "MenuStrip.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Windows/WindowIDs.h"
@@ -244,6 +246,21 @@ void MenuStrip::resized()
     flexBox.performLayout(getLocalBounds().toFloat());
 }
 
+void MenuStrip::disconnect(const DevicePanel* const devicePanel)
+{
+    dataLoggerTime.setTime(juce::RelativeTime());
+    dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
+
+    if (devicePanel != nullptr)
+    {
+        devicePanelContainer.removePanel(*devicePanel);
+    }
+    else
+    {
+        devicePanelContainer.removeAllPanels();
+    }
+}
+
 juce::PopupMenu MenuStrip::getManualConnectMenu()
 {
     juce::PopupMenu menu;
@@ -298,9 +315,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
 
     menu.addItem("Disconnect All", [this]
     {
-        dataLoggerTime.setTime(juce::RelativeTime());
-        dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-        devicePanelContainer.removeAllPanels();
+        disconnect(nullptr);
     });
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
@@ -310,9 +325,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
 
         item.action = [this, devicePanel]
         {
-            dataLoggerTime.setTime(juce::RelativeTime());
-            dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-            devicePanelContainer.removePanel(*devicePanel);
+            disconnect(devicePanel);
         };
 
         auto colourTag = std::make_unique<juce::DrawableRectangle>();
@@ -482,7 +495,7 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
     return menu;
 }
 
-juce::PopupMenu MenuStrip::getToolsMenu() const
+juce::PopupMenu MenuStrip::getToolsMenu()
 {
     juce::PopupMenu menu;
     menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
@@ -518,6 +531,31 @@ juce::PopupMenu MenuStrip::getToolsMenu() const
                 }
             }
         });
+    });
+    menu.addItem("Update Firmware", [&]
+    {
+        const auto launchUpdateFirmwareDialog = []
+        {
+            DialogLauncher::launchDialog(std::make_unique<UpdateFirmwareDialog>(), []
+            {
+                if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogLauncher::getLaunchedDialog()))
+                {
+                    DialogLauncher::launchDialog(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getFileName()));
+                }
+            });
+        };
+
+        if (devicePanelContainer.getDevicePanels().size() > 0)
+        {
+            DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&, launchUpdateFirmwareDialog]
+            {
+                disconnect(nullptr);
+                launchUpdateFirmwareDialog();
+            });
+            return;
+        }
+
+        launchUpdateFirmwareDialog();
     });
     return menu;
 }
