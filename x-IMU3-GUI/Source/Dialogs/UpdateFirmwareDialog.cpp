@@ -30,7 +30,7 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
     };
     setValid(false);
 
-    setSize(dialogWidth, calculateHeight(2));
+    setSize(600, calculateHeight(2));
 }
 
 void UpdateFirmwareDialog::resized()

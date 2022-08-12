@@ -38,7 +38,7 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
     };
     setValid(false);
 
-    setSize(dialogWidth, calculateHeight(2));
+    setSize(600, calculateHeight(2));
 }
 
 void ConvertFileDialog::resized()
