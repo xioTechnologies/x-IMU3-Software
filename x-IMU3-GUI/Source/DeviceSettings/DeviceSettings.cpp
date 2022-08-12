@@ -1,4 +1,5 @@
 #include "DeviceSettings.h"
+#include <regex>
 
 DeviceSettings::DeviceSettings()
 {
@@ -51,7 +52,12 @@ void DeviceSettings::setValue(const CommandMessage& response)
 {
     for (auto setting : settingsVector)
     {
-        if (setting.getProperty(DeviceSettingsIDs::key) != response.key)
+        static const auto normalise = [](const juce::String& key)
+        {
+            return std::regex_replace(key.toLowerCase().toStdString(), std::regex("[^0-9a-z]"), "");
+        };
+
+        if (normalise(setting[DeviceSettingsIDs::key]) != normalise(response.key))
         {
             continue;
         }
