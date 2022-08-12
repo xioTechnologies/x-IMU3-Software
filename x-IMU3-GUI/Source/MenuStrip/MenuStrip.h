@@ -36,7 +36,7 @@ private:
     Stopwatch dataLoggerTime;
     IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
     IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
-    juce::TextButton versionButton { Firmware::version, "About" };
+    juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
 
     SimpleLabel connectionLabel { "Connection", UIFonts::getDefaultFont(), juce::Justification::centred };
     SimpleLabel layoutLabel { "Layout", UIFonts::getDefaultFont(), juce::Justification::centred };
