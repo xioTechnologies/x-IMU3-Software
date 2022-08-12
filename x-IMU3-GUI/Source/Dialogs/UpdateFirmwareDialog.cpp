@@ -70,6 +70,8 @@ std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo()
         case ximu3::XIMU3_ConnectionTypeFile:
             return nullptr;
     }
+
+    return nullptr;
 }
 
 juce::String UpdateFirmwareDialog::getFileName() const

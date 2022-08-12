@@ -53,12 +53,12 @@ private:
     };
 
     std::vector<ButtonGroup> buttonGroups {
-            { connectionLabel,  { searchButton,              manualButton,       disconnectButton }},
-            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }},
-            { commandsLabel,    { shutdownButton,            sendCommandButton }},
-            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime }},
-            { toolsLabel,       { toolsButton }},
-            { applicationLabel, { mainSettingsButton,        versionButton }}
+            { connectionLabel,  { searchButton,              manualButton,       disconnectButton },        {}, {}},
+            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }, {}, {}},
+            { commandsLabel,    { shutdownButton,            sendCommandButton },                           {}, {}},
+            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime },                              {}, {}},
+            { toolsLabel,       { toolsButton },                                                            {}, {}},
+            { applicationLabel, { mainSettingsButton,        versionButton },                               {}, {}}
     };
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
