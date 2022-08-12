@@ -20,7 +20,7 @@ public:
 
     void removeAllPanels();
 
-    void removePanel(DevicePanel& panel);
+    void removePanel(const DevicePanel& panel);
 
     void movePanel(DevicePanel& move, DevicePanel& target);
 

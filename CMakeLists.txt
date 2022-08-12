@@ -11,6 +11,7 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS) # disable MSVC warnings for unsafe fu
 add_subdirectory("Examples/C")
 add_subdirectory("Examples/Cpp")
 add_subdirectory("x-IMU3-API/Python")
+add_subdirectory("x-IMU3-Bootloader")
 add_subdirectory("x-IMU3-GUI")
 
 find_library(XIMU3 NAMES ximu3 PATHS "${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/target/release" NO_DEFAULT_PATH)
@@ -27,4 +28,6 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(x-IMU3-GUI PRIVATE pthread dl m udev)
     target_link_libraries(C-Examples PRIVATE pthread dl m udev)
     target_link_libraries(Cpp-Examples PRIVATE pthread dl m udev)
-endif()
+endif ()
+
+target_link_libraries(x-IMU3-GUI PRIVATE x-IMU3-Bootloader)

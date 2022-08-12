@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Firmware/Firmware.h"
 #include "Dialogs/DataLoggerSettingsDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/IconButton.h"
@@ -35,7 +36,7 @@ private:
     Stopwatch dataLoggerTime;
     IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
     IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
-    juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
+    juce::TextButton versionButton { Firmware::version, "About" };
 
     SimpleLabel connectionLabel { "Connection", UIFonts::getDefaultFont(), juce::Justification::centred };
     SimpleLabel layoutLabel { "Layout", UIFonts::getDefaultFont(), juce::Justification::centred };
@@ -71,6 +72,8 @@ private:
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
 
+    void disconnect(const DevicePanel* const);
+
     juce::PopupMenu getManualConnectMenu();
 
     juce::PopupMenu getDisconnectMenu();
@@ -81,7 +84,7 @@ private:
 
     juce::PopupMenu getPanelLayoutMenu();
 
-    juce::PopupMenu getToolsMenu() const;
+    juce::PopupMenu getToolsMenu();
 
     void setWindowLayout(juce::ValueTree windowLayout_);
 

@@ -130,6 +130,7 @@ target_compile_definitions(x-IMU3-GUI
 
 FILE(GLOB_RECURSE FONT_FILES "Fonts/*.*")
 FILE(GLOB_RECURSE IMAGE_FILES "Images/*.*")
+FILE(GLOB FIRMWARE_FILE "Source/Firmware/*.hex")
 FILE(GLOB_RECURSE OPEN_GL_FILES "Source/OpenGL/Assets/*.*")
 
 juce_add_binary_data(x-IMU3-GUI-AppData SOURCES
@@ -137,6 +138,7 @@ juce_add_binary_data(x-IMU3-GUI-AppData SOURCES
         "Source/DeviceSettings/DeviceSettings.xml"
         ${FONT_FILES}
         ${IMAGE_FILES}
+        ${FIRMWARE_FILE}
         ${OPEN_GL_FILES})
 
 # `target_link_libraries` links libraries and JUCE modules to other libraries or executables. Here,
@@ -160,7 +162,8 @@ target_include_directories(x-IMU3-GUI
         PRIVATE
         "Source"
         "../x-IMU3-API/Cpp"
-        "${FREETYPE_INCLUDE_DIRS}")
+        "${FREETYPE_INCLUDE_DIRS}"
+        "../x-IMU3-Bootloader")
 
 add_dependencies(x-IMU3-GUI freetype)
 
