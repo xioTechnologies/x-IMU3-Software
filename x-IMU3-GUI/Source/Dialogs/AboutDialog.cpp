@@ -33,7 +33,7 @@ AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", 
 
     startThread();
 
-    setSize(375, calculateHeight(6));
+    setSize(400, calculateHeight(6));
 }
 
 AboutDialog::~AboutDialog()
