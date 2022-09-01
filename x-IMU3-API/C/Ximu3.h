@@ -78,8 +78,9 @@ typedef struct XIMU3_SerialDiscovery XIMU3_SerialDiscovery;
 
 typedef struct XIMU3_CharArrays
 {
-    const char (*array)[XIMU3_CHAR_ARRAY_SIZE];
+    char (*array)[XIMU3_CHAR_ARRAY_SIZE];
     uint32_t length;
+    uint32_t capacity;
 } XIMU3_CharArrays;
 
 typedef struct XIMU3_UsbConnectionInfo
@@ -318,8 +319,9 @@ typedef struct XIMU3_DiscoveredNetworkDevice
 
 typedef struct XIMU3_DiscoveredNetworkDevices
 {
-    const struct XIMU3_DiscoveredNetworkDevice *array;
+    struct XIMU3_DiscoveredNetworkDevice *array;
     uint32_t length;
+    uint32_t capacity;
 } XIMU3_DiscoveredNetworkDevices;
 
 typedef void (*XIMU3_CallbackDiscoveredNetworkDevices)(struct XIMU3_DiscoveredNetworkDevices data, void *context);
@@ -336,8 +338,9 @@ typedef struct XIMU3_DiscoveredSerialDevice
 
 typedef struct XIMU3_DiscoveredSerialDevices
 {
-    const struct XIMU3_DiscoveredSerialDevice *array;
+    struct XIMU3_DiscoveredSerialDevice *array;
     uint32_t length;
+    uint32_t capacity;
 } XIMU3_DiscoveredSerialDevices;
 
 typedef void (*XIMU3_CallbackDiscoveredSerialDevices)(struct XIMU3_DiscoveredSerialDevices data, void *context);

@@ -9,17 +9,19 @@ pub const EMPTY_CHAR_ARRAY: [c_char; CHAR_ARRAY_SIZE] = ['\0' as c_char; CHAR_AR
 
 #[repr(C)]
 pub struct CharArrays {
-    array: *const [c_char; CHAR_ARRAY_SIZE],
+    array: *mut [c_char; CHAR_ARRAY_SIZE],
     length: u32,
+    capacity: u32,
 }
 
 impl From<Vec<String>> for CharArrays {
     fn from(strings: Vec<String>) -> Self {
-        let vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = strings.iter().map(|string| string_to_char_array(string.clone())).collect();
+        let mut vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = strings.iter().map(|string| string_to_char_array(string.clone())).collect();
 
         let char_arrays = CharArrays {
+            array: vector.as_mut_ptr(),
             length: vector.len() as u32,
-            array: vector.as_ptr(),
+            capacity: vector.capacity() as u32,
         };
         mem::forget(vector);
         char_arrays
@@ -28,8 +30,8 @@ impl From<Vec<String>> for CharArrays {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
-    if char_arrays.length > 0 {
-        drop(char_arrays.array); // TODO: confirm that memory is actually released
+    unsafe {
+        Vec::from_raw_parts(char_arrays.array, char_arrays.length as usize, char_arrays.capacity as usize);
     }
 }
 
