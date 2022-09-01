@@ -63,17 +63,19 @@ impl From<DiscoveredNetworkDeviceC> for DiscoveredNetworkDevice {
 
 #[repr(C)]
 pub struct DiscoveredNetworkDevices {
-    array: *const DiscoveredNetworkDeviceC,
+    array: *mut DiscoveredNetworkDeviceC,
     length: u32,
+    capacity: u32,
 }
 
 impl From<Vec<DiscoveredNetworkDevice>> for DiscoveredNetworkDevices {
     fn from(devices: Vec<DiscoveredNetworkDevice>) -> Self {
-        let vector: Vec<DiscoveredNetworkDeviceC> = devices.iter().map(|device| device.into()).collect();
+        let mut vector: Vec<DiscoveredNetworkDeviceC> = devices.iter().map(|device| device.into()).collect();
 
         let devices = DiscoveredNetworkDevices {
+            array: vector.as_mut_ptr(),
             length: vector.len() as u32,
-            array: vector.as_ptr(),
+            capacity: vector.capacity() as u32,
         };
         mem::forget(vector);
         devices
@@ -82,8 +84,8 @@ impl From<Vec<DiscoveredNetworkDevice>> for DiscoveredNetworkDevices {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_discovered_network_devices_free(devices: DiscoveredNetworkDevices) {
-    if devices.length > 0 {
-        drop(devices.array); // TODO: confirm that memory is actually released
+    unsafe {
+        Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
     }
 }
 

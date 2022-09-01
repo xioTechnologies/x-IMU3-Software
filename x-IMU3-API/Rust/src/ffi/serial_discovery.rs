@@ -74,17 +74,19 @@ impl From<DiscoveredSerialDeviceC> for DiscoveredSerialDevice {
 
 #[repr(C)]
 pub struct DiscoveredSerialDevices {
-    array: *const DiscoveredSerialDeviceC,
+    array: *mut DiscoveredSerialDeviceC,
     length: u32,
+    capacity: u32,
 }
 
 impl From<Vec<DiscoveredSerialDevice>> for DiscoveredSerialDevices {
     fn from(devices: Vec<DiscoveredSerialDevice>) -> Self {
-        let vector: Vec<DiscoveredSerialDeviceC> = devices.iter().map(|device| device.into()).collect();
+        let mut vector: Vec<DiscoveredSerialDeviceC> = devices.iter().map(|device| device.into()).collect();
 
         let devices = DiscoveredSerialDevices {
+            array: vector.as_mut_ptr(),
             length: vector.len() as u32,
-            array: vector.as_ptr(),
+            capacity: vector.capacity() as u32,
         };
         mem::forget(vector);
         devices
@@ -93,8 +95,8 @@ impl From<Vec<DiscoveredSerialDevice>> for DiscoveredSerialDevices {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_discovered_serial_devices_free(devices: DiscoveredSerialDevices) {
-    if devices.length > 0 {
-        drop(devices.array); // TODO: confirm that memory is actually released
+    unsafe {
+        Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
     }
 }
 
