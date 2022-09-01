@@ -12,7 +12,7 @@ fn main() {
     println!("C. data_logger.rs");
     println!("D. file_converter.rs");
     println!("E. get_available_ports.rs");
-    println!("F. network_discovery.rs");
+    println!("F. network_announcement.rs");
     println!("G. open_and_ping.rs");
     println!("H. serial_connection.rs");
     println!("I. serial_discovery.rs");
@@ -26,7 +26,7 @@ fn main() {
         'C' => data_logger::run(),
         'D' => file_converter::run(),
         'E' => get_available_ports::run(),
-        'F' => network_discovery::run(),
+        'F' => network_announcement::run(),
         'G' => open_and_ping::run(),
         'H' => serial_connection::run(),
         'I' => serial_discovery::run(),

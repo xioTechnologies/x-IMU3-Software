@@ -6,7 +6,7 @@ pub mod commands;
 pub mod data_logger;
 pub mod file_converter;
 pub mod get_available_ports;
-pub mod network_discovery;
+pub mod network_announcement;
 pub mod open_and_ping;
 pub mod serial_connection;
 pub mod serial_discovery;

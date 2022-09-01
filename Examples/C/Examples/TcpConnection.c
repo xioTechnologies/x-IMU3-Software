@@ -8,15 +8,17 @@ void TcpConnection()
     if (YesOrNo("Search for connections?") == true)
     {
         printf("Searching for connections\n");
-        const XIMU3_DiscoveredNetworkDevices devices = XIMU3_network_discovery_scan(2000);
-        if (devices.length == 0)
+        XIMU3_NetworkAnnouncement* const network_announcement = XIMU3_network_announcement_new();
+        const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(network_announcement);
+        XIMU3_network_announcement_free(network_announcement);
+        if (messages.length == 0)
         {
             printf("No TCP connections available\n");
             return;
         }
-        printf("Found %s - %s\n", devices.array[0].device_name, devices.array[0].serial_number);
-        const XIMU3_TcpConnectionInfo connectionInfo = devices.array[0].tcp_connection_info;
-        XIMU3_discovered_network_devices_free(devices);
+        printf("Found %s - %s\n", messages.array[0].device_name, messages.array[0].serial_number);
+        const XIMU3_TcpConnectionInfo connectionInfo = messages.array[0].tcp_connection_info;
+        XIMU3_network_announcement_messages_free(messages);
         Run(XIMU3_connection_new_tcp(connectionInfo), XIMU3_tcp_connection_info_to_string(connectionInfo));
     }
     else
