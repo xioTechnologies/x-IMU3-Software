@@ -16,8 +16,8 @@ pub struct Statistics {
     pub error_rate: u32,
 }
 
-impl Statistics {
-    pub fn new() -> Statistics {
+impl Default for Statistics {
+    fn default() -> Statistics {
         Statistics {
             timestamp: 0,
             data_total: 0,
@@ -28,12 +28,27 @@ impl Statistics {
             error_rate: 0,
         }
     }
+}
 
+impl fmt::Display for Statistics {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(formatter, "{:>8} us {:>8} bytes {:>8} bytes/s {:>8} messages {:>8} messages/s {:>8} errors {:>8} errors/s",
+               self.timestamp,
+               self.data_total,
+               self.data_rate,
+               self.message_total,
+               self.message_rate,
+               self.error_total,
+               self.error_rate)
+    }
+}
+
+impl Statistics {
     pub fn start(decoder: Arc<Mutex<Decoder>>) {
-        decoder.lock().unwrap().statistics = Statistics::new();
+        decoder.lock().unwrap().statistics = Default::default();
 
         let initial_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros();
-        let mut previous_statistics = Statistics::new();
+        let mut previous_statistics: Statistics = Default::default();
 
         std::thread::spawn(move || loop {
             std::thread::sleep(std::time::Duration::from_secs(1));
@@ -71,15 +86,3 @@ impl Statistics {
     }
 }
 
-impl fmt::Display for Statistics {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8} bytes {:>8} bytes/s {:>8} messages {:>8} messages/s {:>8} errors {:>8} errors/s",
-               self.timestamp,
-               self.data_total,
-               self.data_rate,
-               self.message_total,
-               self.message_rate,
-               self.error_total,
-               self.error_rate)
-    }
-}
