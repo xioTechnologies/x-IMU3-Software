@@ -1,5 +1,5 @@
-#ifndef DISCOVERED_NETWORK_DEVICE_H
-#define DISCOVERED_NETWORK_DEVICE_H
+#ifndef NETWORK_ANNOUNCEMENT_MESSAGE_H
+#define NETWORK_ANNOUNCEMENT_MESSAGE_H
 
 #include "../../C/Ximu3.h"
 #include <Python.h>

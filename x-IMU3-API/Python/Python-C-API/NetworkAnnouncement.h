@@ -1,5 +1,5 @@
-#ifndef NETWORK_DISCOVERY_H
-#define NETWORK_DISCOVERY_H
+#ifndef NETWORK_ANNOUNCEMENT_H
+#define NETWORK_ANNOUNCEMENT_H
 
 #include "../../C/Ximu3.h"
 #include "Helpers.h"
