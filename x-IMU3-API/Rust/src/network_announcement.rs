@@ -76,7 +76,7 @@ impl NetworkAnnouncement {
 
                     if let Some(message) = message.clone() {
                         if let Ok(mut messages) = messages.lock() {
-                            if let Some(index) = messages.iter().position(|m| m == &message) { // TODO: single letter variable
+                            if let Some(index) = messages.iter().position(|element| element == &message) {
                                 messages[index] = message; // overwrite with new rssi, battery, power, expiry
                             } else {
                                 messages.push(message);
