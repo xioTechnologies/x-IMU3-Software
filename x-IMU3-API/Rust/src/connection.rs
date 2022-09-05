@@ -8,6 +8,7 @@ use crate::connections::*;
 use crate::data_messages::*;
 use crate::decode_error::*;
 use crate::decoder::*;
+use crate::dispatcher::*;
 use crate::ping_response::*;
 use crate::statistics::*;
 
@@ -29,16 +30,44 @@ impl Connection {
             ConnectionInfo::FileConnectionInfo(connection_info) => internal = Box::new(FileConnection::new(connection_info)),
         }
 
-        Connection {
+        let connection = Connection {
             internal: Arc::new(Mutex::new(internal)),
             dropped: Arc::new(Mutex::new(false)),
-        }
+        };
+
+
+        let decoder = connection.internal.lock().unwrap().get_decoder();
+        let initial_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros();
+        let mut previous_statistics: Statistics = Default::default();
+
+        std::thread::spawn(move || loop {
+            std::thread::sleep(std::time::Duration::from_secs(1));
+
+            if let Ok(mut decoder) = decoder.lock() {
+                decoder.statistics.timestamp = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros() - initial_time) as u64;
+
+                let delta_time = (decoder.statistics.timestamp - previous_statistics.timestamp) as f32 / 1E6;
+                let delta_data = decoder.statistics.data_total - previous_statistics.data_total;
+                let delta_message = decoder.statistics.message_total - previous_statistics.message_total;
+                let delta_error = decoder.statistics.error_total - previous_statistics.error_total;
+
+                decoder.statistics.data_rate = (delta_data as f32 / delta_time).round() as u32;
+                decoder.statistics.message_rate = (delta_message as f32 / delta_time).round() as u32;
+                decoder.statistics.error_rate = (delta_error as f32 / delta_time).round() as u32;
+
+                previous_statistics = decoder.statistics;
+
+                decoder.dispatcher.incoming_sender.send(DispatcherData::Statistics(decoder.statistics)).ok();
+
+                // TODO: How/when to exit this thread
+            }
+        });
+
+        connection
     }
 
     pub fn open(&mut self) -> std::io::Result<()> {
-        self.internal.lock().unwrap().open()?;
-        Statistics::start(self.internal.lock().unwrap().get_decoder());
-        Ok(())
+        self.internal.lock().unwrap().open()
     }
 
     pub fn open_async(&mut self, closure: Box<dyn FnOnce(std::io::Result<()>) + Send>) {
@@ -58,7 +87,6 @@ impl Connection {
                     return;
                 }
 
-                Statistics::start(internal.lock().unwrap().get_decoder());
                 closure(Ok(()));
             }
         });
@@ -66,7 +94,6 @@ impl Connection {
 
     pub fn close(&mut self) {
         self.internal.lock().unwrap().close();
-        Statistics::stop(self.internal.lock().unwrap().get_decoder());
     }
 
     pub fn ping(&mut self) -> Result<PingResponse, ()> {
