@@ -39,7 +39,7 @@ impl Statistics {
             std::thread::sleep(std::time::Duration::from_secs(1));
 
             if let Ok(mut decoder) = decoder.lock() {
-                if decoder.statistics.timestamp == std::u64::MAX {
+                if decoder.statistics.timestamp == u64::MAX {
                     break;
                 }
 
@@ -67,7 +67,7 @@ impl Statistics {
     }
 
     pub fn stop(decoder: Arc<Mutex<Decoder>>) {
-        decoder.lock().unwrap().statistics.timestamp = std::u64::MAX;
+        decoder.lock().unwrap().statistics.timestamp = u64::MAX;
     }
 }
 
