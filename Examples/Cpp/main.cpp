@@ -5,7 +5,7 @@
 #include "Examples/DataLogger.h"
 #include "Examples/FileConverter.h"
 #include "Examples/GetAvailablePorts.h"
-#include "Examples/NetworkDiscovery.h"
+#include "Examples/NetworkAnnouncement.h"
 #include "Examples/OpenAndPing.h"
 #include "Examples/SerialConnection.h"
 #include "Examples/SerialDiscovery.h"
@@ -24,7 +24,7 @@ int main(int argc, const char* argv[])
     std::cout << "C. DataLogger.h" << std::endl;
     std::cout << "D. FileConverter.h" << std::endl;
     std::cout << "E. GetAvailablePorts.h" << std::endl;
-    std::cout << "F. NetworkDiscovery.h" << std::endl;
+    std::cout << "F. NetworkAnnouncement.h" << std::endl;
     std::cout << "G. OpenAndPing.h" << std::endl;
     std::cout << "H. SerialConnection.h" << std::endl;
     std::cout << "I. SerialDiscovery.h" << std::endl;
@@ -49,7 +49,7 @@ int main(int argc, const char* argv[])
             GetAvailablePorts();
             break;
         case 'F':
-            NetworkDiscovery();
+            NetworkAnnouncement();
             break;
         case 'G':
             OpenAndPing();
