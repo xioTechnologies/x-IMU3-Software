@@ -71,7 +71,7 @@
     <Compile Include="Examples\DataLogger.cs" />
     <Compile Include="Examples\FileConverter.cs" />
     <Compile Include="Examples\GetAvailablePorts.cs" />
-    <Compile Include="Examples\NetworkDiscovery.cs" />
+    <Compile Include="Examples\NetworkAnnouncement.cs" />
     <Compile Include="Examples\OpenAndPing.cs" />
     <Compile Include="Examples\SerialConnection.cs" />
     <Compile Include="Examples\SerialDiscovery.cs" />

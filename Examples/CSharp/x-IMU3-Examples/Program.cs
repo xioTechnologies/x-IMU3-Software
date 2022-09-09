@@ -14,7 +14,7 @@ namespace Ximu3Examples
             Console.WriteLine("C. DataLogger");
             Console.WriteLine("D. FileConverter");
             Console.WriteLine("E. GetAvailablePorts");
-            Console.WriteLine("F. NetworkDiscovery");
+            Console.WriteLine("F. NetworkAnnouncement");
             Console.WriteLine("G. OpenAndPing");
             Console.WriteLine("H. SerialConnection");
             Console.WriteLine("I. SerialDiscovery");
@@ -39,7 +39,7 @@ namespace Ximu3Examples
                     new GetAvailablePorts();
                     break;
                 case 'F':
-                    new NetworkDiscovery();
+                    new NetworkAnnouncement();
                     break;
                 case 'G':
                     new OpenAndPing();

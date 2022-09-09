@@ -9,14 +9,14 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Search for connections?") == true)
             {
                 Console.WriteLine("Searching for connections");
-                Ximu3.DiscoveredNetworkDevice[] devices = Ximu3.NetworkDiscovery.Scan(2000);
-                if (devices.Length == 0)
+                Ximu3.NetworkAnnouncementMessage[] messages = new Ximu3.NetworkAnnouncement().GetMessagesAfterShortDelay();
+                if (messages.Length == 0)
                 {
                     Console.WriteLine("No TCP connections available");
                     return;
                 }
-                Console.WriteLine("Found " + devices[0].DeviceName + " - " + devices[0].SerialNumber);
-                Run(devices[0].TcpConnectionInfo);
+                Console.WriteLine("Found " + messages[0].DeviceName + " - " + messages[0].SerialNumber);
+                Run(messages[0].TcpConnectionInfo);
             }
             else
             {
