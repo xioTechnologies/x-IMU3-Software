@@ -155,9 +155,9 @@
     <ClCompile Include="FileConverter.h" />
     <ClCompile Include="FileConverterProgress.h" />
     <ClCompile Include="FileConverterStatus.h" />
+    <ClCompile Include="Helpers.h" />
     <ClCompile Include="NetworkAnnouncement.h" />
     <ClCompile Include="NetworkAnnouncementMessage.h" />
-    <ClCompile Include="Helpers.h" />
     <ClCompile Include="PingResponse.h" />
     <ClCompile Include="Result.h" />
     <ClCompile Include="SerialDiscovery.h" />
