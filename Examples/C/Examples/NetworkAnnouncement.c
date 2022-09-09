@@ -2,9 +2,9 @@
 #include "../Helpers.h"
 #include <stdio.h>
 
-static void Callback(const XIMU3_NetworkAnnouncementMessageC message, void* context);
+static void Callback(const XIMU3_NetworkAnnouncementMessage message, void* context);
 
-static void PrintMessage(const XIMU3_NetworkAnnouncementMessageC message);
+static void PrintMessage(const XIMU3_NetworkAnnouncementMessage message);
 
 void NetworkAnnouncement()
 {
@@ -22,19 +22,19 @@ void NetworkAnnouncement()
 
         for (uint32_t index = 0; index < messages.length; index++)
         {
-            const XIMU3_NetworkAnnouncementMessageC* const message = &messages.array[index];
+            const XIMU3_NetworkAnnouncementMessage* const message = &messages.array[index];
             PrintMessage(*message);
             XIMU3_network_announcement_messages_free(messages);
         }
     }
 }
 
-static void Callback(const XIMU3_NetworkAnnouncementMessageC message, void* context)
+static void Callback(const XIMU3_NetworkAnnouncementMessage message, void* context)
 {
     PrintMessage(message);
 }
 
-static void PrintMessage(const XIMU3_NetworkAnnouncementMessageC message)
+static void PrintMessage(const XIMU3_NetworkAnnouncementMessage message)
 {
     printf("%s - %s, RSSI: %u%%, Battery: %u%%, %s, %s, %s\n",
            message.device_name,

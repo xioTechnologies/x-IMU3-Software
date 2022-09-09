@@ -306,7 +306,7 @@ typedef struct XIMU3_FileConverterProgress
 
 typedef void (*XIMU3_CallbackFileConverterProgress)(struct XIMU3_FileConverterProgress data, void *context);
 
-typedef struct XIMU3_NetworkAnnouncementMessageC
+typedef struct XIMU3_NetworkAnnouncementMessage
 {
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
@@ -315,16 +315,16 @@ typedef struct XIMU3_NetworkAnnouncementMessageC
     enum XIMU3_ChargingStatus status;
     struct XIMU3_TcpConnectionInfo tcp_connection_info;
     struct XIMU3_UdpConnectionInfo udp_connection_info;
-} XIMU3_NetworkAnnouncementMessageC;
+} XIMU3_NetworkAnnouncementMessage;
 
 typedef struct XIMU3_NetworkAnnouncementMessages
 {
-    struct XIMU3_NetworkAnnouncementMessageC *array;
+    struct XIMU3_NetworkAnnouncementMessage *array;
     uint32_t length;
     uint32_t capacity;
 } XIMU3_NetworkAnnouncementMessages;
 
-typedef void (*XIMU3_CallbackNetworkAnnouncementMessageC)(struct XIMU3_NetworkAnnouncementMessageC data, void *context);
+typedef void (*XIMU3_CallbackNetworkAnnouncementMessageC)(struct XIMU3_NetworkAnnouncementMessage data, void *context);
 
 typedef struct XIMU3_DiscoveredSerialDevice
 {
@@ -491,7 +491,7 @@ struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *dest
 
 void XIMU3_network_announcement_messages_free(struct XIMU3_NetworkAnnouncementMessages messages);
 
-const char *XIMU3_network_announcement_message_to_string(struct XIMU3_NetworkAnnouncementMessageC message);
+const char *XIMU3_network_announcement_message_to_string(struct XIMU3_NetworkAnnouncementMessage message);
 
 struct XIMU3_NetworkAnnouncement *XIMU3_network_announcement_new(void);
 

@@ -7,7 +7,7 @@
 typedef struct
 {
     PyObject_HEAD
-    XIMU3_NetworkAnnouncementMessageC message;
+    XIMU3_NetworkAnnouncementMessage message;
 } NetworkAnnouncementMessage;
 
 static void network_announcement_message_free(NetworkAnnouncementMessage* self)
@@ -81,7 +81,7 @@ static PyTypeObject network_announcement_message_object = {
         .tp_methods = network_announcement_message_methods,
 };
 
-static PyObject* network_announcement_message_from(const XIMU3_NetworkAnnouncementMessageC* const message)
+static PyObject* network_announcement_message_from(const XIMU3_NetworkAnnouncementMessage* const message)
 {
     NetworkAnnouncementMessage* const self = (NetworkAnnouncementMessage*) network_announcement_message_object.tp_alloc(&network_announcement_message_object, 0);
     self->message = *message;
@@ -104,7 +104,7 @@ static PyObject* network_announcement_messages_to_list_and_free(const XIMU3_Netw
 typedef struct
 {
     PyObject* callable;
-    XIMU3_NetworkAnnouncementMessageC data;
+    XIMU3_NetworkAnnouncementMessage data;
 } NetworkAnnouncementMessageCallbackPendingCallArg;
 
 static int network_announcement_messages_pending_call_func(void* arg)
@@ -118,7 +118,7 @@ static int network_announcement_messages_pending_call_func(void* arg)
     return 0;
 }
 
-static void network_announcement_message_callback(XIMU3_NetworkAnnouncementMessageC data, void* context)
+static void network_announcement_message_callback(XIMU3_NetworkAnnouncementMessage data, void* context)
 {
     NetworkAnnouncementMessageCallbackPendingCallArg* const arg = malloc(sizeof(NetworkAnnouncementMessageCallbackPendingCallArg));
     arg->callable = (PyObject*) context;

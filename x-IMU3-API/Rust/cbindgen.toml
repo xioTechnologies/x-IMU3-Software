@@ -42,7 +42,7 @@ prefix = "XIMU3_"
 "UdpConnectionInfoC" = "UdpConnectionInfo"
 "BluetoothConnectionInfoC" = "BluetoothConnectionInfo"
 "FileConnectionInfoC" = "FileConnectionInfo"
-"DiscoveredNetworkDeviceC" = "DiscoveredNetworkDevice"
+"NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
 "DiscoveredSerialDeviceC" = "DiscoveredSerialDevice"
 "PingResponseC" = "PingResponse"
 
