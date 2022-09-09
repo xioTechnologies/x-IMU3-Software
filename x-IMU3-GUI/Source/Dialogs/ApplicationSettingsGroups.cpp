@@ -11,48 +11,19 @@ juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const
     return getLocalBounds().reduced(10, verticalMargin).withTrimmedTop(topExtraMargin);
 }
 
-StartupGroup::StartupGroup() : ApplicationSettingsGroup("Startup", 3)
+SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search for Connections", 2)
 {
-    addAndMakeVisible(searchForConnectionsToggle);
-    addAndMakeVisible(checkFirmwareVersionToggle);
-    addAndMakeVisible(checkDeviceTimeToggle);
-
-    searchForConnectionsToggle.onClick = [this]
-    {
-        ApplicationSettings::getSingleton().searchForConnectionsOnStartup = searchForConnectionsToggle.getToggleState();
-    };
-
-    checkFirmwareVersionToggle.onClick = [this]
-    {
-        ApplicationSettings::getSingleton().checkFirmwareVersionOnStartup = checkFirmwareVersionToggle.getToggleState();
-    };
-
-    checkDeviceTimeToggle.onClick = [this]
-    {
-        ApplicationSettings::getSingleton().checkDeviceTimeOnStartup = checkDeviceTimeToggle.getToggleState();
-    };
-
-    searchForConnectionsToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnectionsOnStartup, juce::dontSendNotification);
-    checkFirmwareVersionToggle.setToggleState(ApplicationSettings::getSingleton().checkFirmwareVersionOnStartup, juce::dontSendNotification);
-    checkDeviceTimeToggle.setToggleState(ApplicationSettings::getSingleton().checkDeviceTimeOnStartup, juce::dontSendNotification);
-}
-
-void StartupGroup::resized()
-{
-    auto bounds = getContentBounds();
-
-    searchForConnectionsToggle.setBounds(bounds.removeFromTop(rowHeight));
-    checkFirmwareVersionToggle.setBounds(bounds.removeFromTop(rowHeight));
-    checkDeviceTimeToggle.setBounds(bounds.removeFromTop(rowHeight));
-}
-
-SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search for Connections", 1)
-{
+    addAndMakeVisible(showOnStartupToggle);
     addAndMakeVisible(searchUsbToggle);
     addAndMakeVisible(searchSerialToggle);
     addAndMakeVisible(searchTcpToggle);
     addAndMakeVisible(searchUdpToggle);
     addAndMakeVisible(searchBluetoothToggle);
+
+    showOnStartupToggle.onClick = [this]
+    {
+        ApplicationSettings::getSingleton().showSearchForConnectionsOnStartup = showOnStartupToggle.getToggleState();
+    };
 
     searchUsbToggle.onClick = [this]
     {
@@ -79,6 +50,7 @@ SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGrou
         ApplicationSettings::getSingleton().searchBluetooth = searchBluetoothToggle.getToggleState();
     };
 
+    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().showSearchForConnectionsOnStartup, juce::dontSendNotification);
     searchUsbToggle.setToggleState(ApplicationSettings::getSingleton().searchUsb, juce::dontSendNotification);
     searchSerialToggle.setToggleState(ApplicationSettings::getSingleton().searchSerial, juce::dontSendNotification);
     searchTcpToggle.setToggleState(ApplicationSettings::getSingleton().searchTcp, juce::dontSendNotification);
@@ -89,6 +61,9 @@ SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGrou
 void SearchForConnectionsGroup::resized()
 {
     auto bounds = getContentBounds();
+
+    showOnStartupToggle.setBounds(bounds.removeFromTop(rowHeight));
+
     static constexpr int toggleWidth = 80;
     searchUsbToggle.setBounds(bounds.removeFromLeft(toggleWidth));
     searchSerialToggle.setBounds(bounds.removeFromLeft(toggleWidth));

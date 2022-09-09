@@ -7,9 +7,7 @@ class ApplicationSettings : private juce::DeletedAtShutdown, private juce::Value
     juce::ValueTree tree { "Settings" };
 
 public:
-    juce::CachedValue<bool> searchForConnectionsOnStartup { tree, "searchForConnectionsOnStartup", nullptr, true };
-    juce::CachedValue<bool> checkFirmwareVersionOnStartup { tree, "checkFirmwareVersionOnStartup", nullptr, true };
-    juce::CachedValue<bool> checkDeviceTimeOnStartup { tree, "checkDeviceTimeOnStartup", nullptr, true };
+    juce::CachedValue<bool> showSearchForConnectionsOnStartup { tree, "showSearchForConnectionsOnStartup", nullptr, true };
     juce::CachedValue<bool> searchUsb { tree, "searchUsb", nullptr, true };
     juce::CachedValue<bool> searchSerial { tree, "searchSerial", nullptr, true };
     juce::CachedValue<bool> searchTcp { tree, "searchTcp", nullptr, false };

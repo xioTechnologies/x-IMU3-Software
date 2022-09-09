@@ -21,21 +21,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ApplicationSettingsGroup)
 };
 
-class StartupGroup : public ApplicationSettingsGroup
-{
-public:
-    StartupGroup();
-
-    void resized() override;
-
-private:
-    CustomToggleButton searchForConnectionsToggle { "Search for Connections" };
-    CustomToggleButton checkFirmwareVersionToggle { "Check Firmware Version" };
-    CustomToggleButton checkDeviceTimeToggle { "Check Device Time" };
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StartupGroup)
-};
-
 class SearchForConnectionsGroup : public ApplicationSettingsGroup
 {
 public:
@@ -44,6 +29,7 @@ public:
     void resized() override;
 
 private:
+    CustomToggleButton showOnStartupToggle { "Show on Startup" };
     CustomToggleButton searchUsbToggle { "USB" };
     CustomToggleButton searchSerialToggle { "Serial" };
     CustomToggleButton searchTcpToggle { "TCP" };

@@ -55,7 +55,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         });
     };
 
-    if (ApplicationSettings::getSingleton().searchForConnectionsOnStartup)
+    if (ApplicationSettings::getSingleton().showSearchForConnectionsOnStartup)
     {
         searchButton.triggerClick();
     }
