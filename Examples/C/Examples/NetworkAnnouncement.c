@@ -14,7 +14,6 @@ void NetworkAnnouncement()
     {
         XIMU3_network_announcement_add_callback(networkAnnouncement, Callback, NULL);
         Wait(-1);
-        XIMU3_network_announcement_free(networkAnnouncement);
     }
     else
     {
@@ -24,9 +23,12 @@ void NetworkAnnouncement()
         {
             const XIMU3_NetworkAnnouncementMessage* const message = &messages.array[index];
             PrintMessage(*message);
-            XIMU3_network_announcement_messages_free(messages);
         }
+
+        XIMU3_network_announcement_messages_free(messages);
     }
+
+    XIMU3_network_announcement_free(networkAnnouncement);
 }
 
 static void Callback(const XIMU3_NetworkAnnouncementMessage message, void* context)

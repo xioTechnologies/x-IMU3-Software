@@ -23,6 +23,5 @@ if helpers.yes_or_no("Use async implementation?"):
     network_announcement.add_callback(callback)
     helpers.wait(-1)
 else:
-    messages = network_announcement.get_messages()
-    for message in messages:
+    for message in network_announcement.get_messages():
         print_message(message)
