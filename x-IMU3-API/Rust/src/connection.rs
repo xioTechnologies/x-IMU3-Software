@@ -13,8 +13,8 @@ use crate::ping_response::*;
 use crate::statistics::*;
 
 pub struct Connection {
-    internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
     dropped: Arc<Mutex<bool>>,
+    internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
 }
 
 impl Connection {
@@ -31,11 +31,11 @@ impl Connection {
         }
 
         let connection = Connection {
-            internal: Arc::new(Mutex::new(internal)),
             dropped: Arc::new(Mutex::new(false)),
+            internal: Arc::new(Mutex::new(internal)),
         };
 
-
+        let dropped = connection.dropped.clone();
         let decoder = connection.internal.lock().unwrap().get_decoder();
         let initial_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros();
         let mut previous_statistics: Statistics = Default::default();
@@ -58,8 +58,12 @@ impl Connection {
                 previous_statistics = decoder.statistics;
 
                 decoder.dispatcher.incoming_sender.send(DispatcherData::Statistics(decoder.statistics)).ok();
+            }
 
-                // TODO: How/when to exit this thread
+            if let Ok(dropped) = dropped.lock() {
+                if *dropped {
+                    return;
+                }
             }
         });
 
@@ -274,8 +278,8 @@ impl Connection {
 
 impl Drop for Connection {
     fn drop(&mut self) {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.remove_all_closures();
         *self.dropped.lock().unwrap() = true;
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.remove_all_closures();
         self.close(); // call after open_sync complete
     }
 }
