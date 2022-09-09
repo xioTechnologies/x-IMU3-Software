@@ -18,7 +18,7 @@ impl Decoder {
         Decoder {
             buffer: [0; BUFFER_SIZE],
             buffer_index: 0,
-            statistics: Statistics::new(),
+            statistics: Default::default(),
             dispatcher: Dispatcher::new(),
         }
     }
