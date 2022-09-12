@@ -57,13 +57,11 @@ impl Connection {
 
                 previous_statistics = decoder.statistics;
 
-                decoder.dispatcher.incoming_sender.send(DispatcherData::Statistics(decoder.statistics)).ok();
+                decoder.dispatcher.sender.send(DispatcherData::Statistics(decoder.statistics)).ok();
             }
 
-            if let Ok(dropped) = dropped.lock() {
-                if *dropped {
-                    return;
-                }
+            if *dropped.lock().unwrap() {
+                return;
             }
         });
 

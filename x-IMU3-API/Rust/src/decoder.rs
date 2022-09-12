@@ -32,7 +32,7 @@ impl Decoder {
             self.buffer_index += 1;
             if self.buffer_index >= self.buffer.len() {
                 self.statistics.error_total += 1;
-                self.dispatcher.incoming_sender.send(DispatcherData::DecodeError(DecodeError::BufferOverrun)).ok();
+                self.dispatcher.sender.send(DispatcherData::DecodeError(DecodeError::BufferOverrun)).ok();
                 self.buffer_index = 0;
                 continue;
             }
@@ -42,7 +42,7 @@ impl Decoder {
                     Ok(()) => self.statistics.message_total += 1,
                     Err(decode_error) => {
                         self.statistics.error_total += 1;
-                        self.dispatcher.incoming_sender.send(DispatcherData::DecodeError(decode_error)).ok();
+                        self.dispatcher.sender.send(DispatcherData::DecodeError(decode_error)).ok();
                     }
                 }
                 self.buffer_index = 0;
@@ -60,7 +60,7 @@ impl Decoder {
 
     fn process_command_message(&mut self) -> Result<(), DecodeError> {
         let command = CommandMessage::parse_bytes(&self.buffer[..self.buffer_index])?;
-        self.dispatcher.incoming_sender.send(DispatcherData::Command(command)).ok();
+        self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
         Ok(())
     }
 
@@ -71,7 +71,7 @@ impl Decoder {
             ($data_message:ident, $dispatcher_data:ident) => {{
                 match $data_message::parse(message) {
                     Ok(message) => {
-                        self.dispatcher.incoming_sender.send(DispatcherData::$dispatcher_data(message)).ok();
+                        self.dispatcher.sender.send(DispatcherData::$dispatcher_data(message)).ok();
                         return Ok(());
                     }
                     Err(error) => {
