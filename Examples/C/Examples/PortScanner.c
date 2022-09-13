@@ -2,39 +2,39 @@
 #include "../Helpers.h"
 #include <stdio.h>
 
-static void Callback(const XIMU3_DiscoveredSerialDevices devices, void* context);
+static void Callback(const XIMU3_Devices devices, void* context);
 
-static void PrintDevices(const XIMU3_DiscoveredSerialDevices devices);
+static void PrintDevices(const XIMU3_Devices devices);
 
-void SerialDiscovery()
+void PortScanner()
 {
     if (YesOrNo("Use async implementation?") == true)
     {
-        XIMU3_SerialDiscovery* const discovery = XIMU3_serial_discovery_new(Callback, NULL);
+        XIMU3_PortScanner* const portScanner = XIMU3_port_scanner_new(Callback, NULL);
         Wait(-1);
-        XIMU3_serial_discovery_free(discovery);
+        XIMU3_port_scanner_free(portScanner);
     }
     else
     {
-        const XIMU3_DiscoveredSerialDevices devices = XIMU3_serial_discovery_scan(2000);
-        printf("Discovered %u devices\n", devices.length);
+        const XIMU3_Devices devices = XIMU3_port_scanner_scan();
+        printf("Found %u devices\n", devices.length);
         PrintDevices(devices);
-        XIMU3_discovered_serial_devices_free(devices);
+        XIMU3_devices_free(devices);
     }
 }
 
-static void Callback(const XIMU3_DiscoveredSerialDevices devices, void* context)
+static void Callback(const XIMU3_Devices devices, void* context)
 {
     printf("Devices updated (%u devices available)\n", devices.length);
     PrintDevices(devices);
-    XIMU3_discovered_serial_devices_free(devices);
+    XIMU3_devices_free(devices);
 }
 
-static void PrintDevices(const XIMU3_DiscoveredSerialDevices devices)
+static void PrintDevices(const XIMU3_Devices devices)
 {
     for (uint32_t index = 0; index < devices.length; index++)
     {
-        const XIMU3_DiscoveredSerialDevice* const device = &devices.array[index];
+        const XIMU3_Device* const device = &devices.array[index];
         const char* connectionInfo;
         switch (device->connection_type)
         {
@@ -55,6 +55,6 @@ static void PrintDevices(const XIMU3_DiscoveredSerialDevices devices)
                device->device_name,
                device->serial_number,
                connectionInfo);
-        // printf("%s\n", XIMU3_discovered_serial_device_to_string(*device)); // alternative to above
+        // printf("%s\n", XIMU3_device_to_string(*device)); // alternative to above
     }
 }

@@ -1,7 +1,7 @@
-use ximu3::serial_discovery::*;
+use ximu3::port_scanner::*;
 
 pub fn run() {
-    let port_names = SerialDiscovery::get_available_ports();
+    let port_names = PortScanner::get_port_names();
 
     if port_names.is_empty() {
         println!("No ports available")

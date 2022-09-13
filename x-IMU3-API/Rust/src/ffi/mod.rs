@@ -12,6 +12,6 @@ mod decode_error;
 mod file_converter;
 mod network_announcement;
 mod ping_response;
+mod port_scanner;
 mod result;
-mod serial_discovery;
 mod statistics;

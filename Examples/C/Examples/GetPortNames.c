@@ -2,9 +2,9 @@
 #include "../Helpers.h"
 #include <stdio.h>
 
-void GetAvailablePorts()
+void GetPortNames()
 {
-    const XIMU3_CharArrays portNames = XIMU3_serial_discovery_get_available_ports();
+    const XIMU3_CharArrays portNames = XIMU3_port_scanner_get_port_names();
     if (portNames.length == 0)
     {
         printf("No ports available\n");
