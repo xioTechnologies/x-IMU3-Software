@@ -13,7 +13,7 @@ void FileConverter();
 
 void GetAvailablePorts();
 
-void NetworkDiscovery();
+void NetworkAnnouncement();
 
 void OpenAndPing();
 
@@ -35,7 +35,7 @@ int main(int argc, const char* argv[])
     printf("C. DataLogger.c\n");
     printf("D. FileConverter.c\n");
     printf("E. GetAvailablePorts.c\n");
-    printf("F. NetworkDiscovery.c\n");
+    printf("F. NetworkAnnouncement.c\n");
     printf("G. OpenAndPing.c\n");
     printf("H. SerialConnection.c\n");
     printf("I. SerialDiscovery.c\n");
@@ -60,7 +60,7 @@ int main(int argc, const char* argv[])
             GetAvailablePorts();
             break;
         case 'F':
-            NetworkDiscovery();
+            NetworkAnnouncement();
             break;
         case 'G':
             OpenAndPing();

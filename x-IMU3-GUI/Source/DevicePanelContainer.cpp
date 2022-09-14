@@ -7,9 +7,6 @@ DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRen
         : windowLayout(windowLayout_),
           glRenderer(glRenderer_)
 {
-    // Make sure dispatcher singleton exist
-    NetworkDiscoveryDispatcher::getSingleton();
-
     addChildComponent(&accordionResizeBar);
 }
 

@@ -7,12 +7,10 @@
 #include "SerialDiscovery.hpp"
 
 class SearchForConnectionsDialog : public Dialog,
-                                   private juce::ChangeListener
+                                   private juce::Timer
 {
 public:
     SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_);
-
-    ~SearchForConnectionsDialog() override;
 
     void resized() override;
 
@@ -21,34 +19,19 @@ public:
 private:
     const std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
 
-    NetworkDiscoveryDispatcher& networkDiscoveryDispatcher = NetworkDiscoveryDispatcher::getSingleton();
+    juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    std::vector<ximu3::XIMU3_DiscoveredSerialDevice> serialDevices;
-
-    ximu3::SerialDiscovery serialDiscovery {
-            [this](auto devices_)
-            {
-                auto self = SafePointer<juce::Component>(this);
-                juce::MessageManager::callAsync([this, self, devices_]
-                                                {
-                                                    if (self != nullptr)
-                                                    {
-                                                        serialDevices = devices_;
-                                                        update();
-                                                    }
-                                                });
-            }
-    };
+    ximu3::SerialDiscovery serialDiscovery { [](const auto&)
+                                             {
+                                             }};
 
     DiscoveredDevicesTable table;
 
     IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 
-    void update();
-
     juce::PopupMenu getFilterMenu();
 
-    void changeListenerCallback(juce::ChangeBroadcaster*) override;
+    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SearchForConnectionsDialog)
 };

@@ -3,6 +3,7 @@
 #include "../CommandMessage.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
+#include "Widgets/IconAndText.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
@@ -12,8 +13,7 @@ class DevicePanel;
 class DevicePanelContainer;
 
 class DevicePanelHeader : public juce::Component,
-                          private juce::Thread,
-                          private juce::Timer
+                          private juce::Thread
 {
 public:
     static constexpr int colourTagWidth = 4;
@@ -43,31 +43,29 @@ private:
 
     juce::String deviceName, serialNumber;
 
-    IconButton menuButton { IconButton::Style::normal, BinaryData::menu_svg, 1.0f, "Device Actions", std::bind(&DevicePanelHeader::getMenu, this) };
+    IconButton menuButton { IconButton::Style::normal, BinaryData::menu_svg, 1.0f, "Device Menu", std::bind(&DevicePanelHeader::getMenu, this) };
     SimpleLabel deviceDescriptor;
     SimpleLabel connectionInfo;
-    Icon rssiIcon { BinaryData::wifi_unknown_svg, 1.0f, "Wi-Fi RSSI" };
-    Icon batteryIcon { BinaryData::battery_unknown_svg, 1.0f, "Battery Level" };
-    SimpleLabel rssiText;
-    SimpleLabel batteryText;
+    IconAndText rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
+    IconAndText batteryIcon { BinaryData::battery_unknown_svg, "Battery Level" };
 
-    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
-    uint64_t batteryCallbackID;
+    juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
+    std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
+    uint64_t networkAnnouncementCallbackID;
 
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
     uint64_t rssiCallbackID;
 
-    std::atomic<int> batteryTimeout { std::numeric_limits<int>::max() };
-    std::atomic<int> batteryValue { 0 };
-    std::atomic<ximu3::XIMU3_ChargingStatus> chargingStatus { ximu3::XIMU3_ChargingStatus::XIMU3_ChargingStatusNotConnected };
-    std::atomic<int> rssiTimeout { std::numeric_limits<int>::max() };
-    std::atomic<int> rssiValue { 0 };
+    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
+    uint64_t batteryCallbackID;
+
+    void updateRssi(const uint32_t percentage);
+
+    void updateBattery(const uint32_t percentage, const ximu3::XIMU3_ChargingStatus status);
 
     juce::PopupMenu getMenu() const;
 
     void run() override;
-
-    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelHeader)
 };

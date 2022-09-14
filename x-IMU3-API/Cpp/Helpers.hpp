@@ -16,7 +16,7 @@ namespace ximu3
 
         friend class FileConverter;
 
-        friend class NetworkDiscovery;
+        friend class NetworkAnnouncement;
 
         friend class SerialDiscovery;
 

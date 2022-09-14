@@ -1,6 +1,6 @@
 use std::net::Ipv4Addr;
 use ximu3::connection_info::*;
-use ximu3::network_discovery::*;
+use ximu3::network_announcement::*;
 use crate::helpers;
 use super::connection;
 
@@ -10,18 +10,18 @@ pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
         println!("Searching for connections");
 
-        let devices = NetworkDiscovery::scan(2000);
+        let messages = NetworkAnnouncement::new().get_messages_after_short_delay();
 
-        if devices.is_empty() {
+        if messages.is_empty() {
             println!("No TCP connections available");
             return;
         }
 
-        let device = devices.first().unwrap();
+        let message = messages.first().unwrap();
 
-        println!("Found {} - {}", device.device_name, device.serial_number);
+        println!("Found {} - {}", message.device_name, message.serial_number);
 
-        connection_info = device.tcp_connection_info.clone();
+        connection_info = message.tcp_connection_info.clone();
     } else {
         connection_info = TcpConnectionInfo {
             ip_address: Ipv4Addr::new(192, 168, 1, 1),

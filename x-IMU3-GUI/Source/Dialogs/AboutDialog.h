@@ -6,7 +6,8 @@
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class AboutDialog : public Dialog, private juce::Thread
+class AboutDialog : public Dialog,
+                    private juce::Thread
 {
 public:
     AboutDialog();

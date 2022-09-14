@@ -54,6 +54,7 @@ private:
     juce::Viewport devicePanelViewport;
     MenuStrip menuStrip { windowLayout, devicePanelContainer };
     juce::TooltipWindow tooltipWindow { nullptr, 1200 };
+    juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

@@ -4,7 +4,8 @@
 #include "DeviceSettingsItem.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class DeviceSettings : public juce::TreeView, private juce::ValueTree::Listener
+class DeviceSettings : public juce::TreeView,
+                       private juce::ValueTree::Listener
 {
 public:
     DeviceSettings();

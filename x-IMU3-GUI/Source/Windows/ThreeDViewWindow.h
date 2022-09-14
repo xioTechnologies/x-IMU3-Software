@@ -9,7 +9,8 @@
 #include "Window.h"
 #include "Ximu3.hpp"
 
-class ThreeDViewWindow : public Window, private juce::Timer
+class ThreeDViewWindow : public Window,
+                         private juce::Timer
 {
 public:
     ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
