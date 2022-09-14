@@ -16,35 +16,38 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
     addAndMakeVisible(batteryIcon);
     addAndMakeVisible(deviceDescriptor);
     addAndMakeVisible(connectionInfo);
-    addAndMakeVisible(rssiText);
-    addAndMakeVisible(batteryText);
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
 
     deviceDescriptor.setText(getDeviceDescriptor());
 
-    batteryCallbackID = devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
+    networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&](auto message)
     {
-        batteryTimeout = 0;
-        batteryValue = (int) message.percentage;
-        chargingStatus = (ximu3::XIMU3_ChargingStatus) message.charging_status;
+        if (juce::String(message.serial_number) == serialNumber)
+        {
+            updateRssi(message.rssi);
+            updateBattery(message.battery, message.status);
+        }
     });
 
     rssiCallbackID = devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)
     {
-        rssiTimeout = 0;
-        rssiValue = (int) message.percentage;
+        updateRssi((uint32_t) message.percentage);
+    });
+
+    batteryCallbackID = devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
+    {
+        updateBattery((uint32_t) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
 
     startThread();
-
-    startTimerHz(10);
 }
 
 DevicePanelHeader::~DevicePanelHeader()
 {
-    devicePanel.getConnection().removeCallback(batteryCallbackID);
+    networkAnnouncement->removeCallback(networkAnnouncementCallbackID);
     devicePanel.getConnection().removeCallback(rssiCallbackID);
+    devicePanel.getConnection().removeCallback(batteryCallbackID);
 
     stopThread(5000); // allow some time for ping to complete
 }
@@ -58,26 +61,23 @@ void DevicePanelHeader::paint(juce::Graphics& g)
 
 void DevicePanelHeader::resized()
 {
-    auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20).toFloat();
+    auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20);
 
-    menuButton.setBounds(bounds.removeFromLeft(bounds.getHeight()).toNearestInt());
+    menuButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     bounds.removeFromLeft(margin);
 
-    static constexpr int iconWidth = 18;
-    static constexpr int textWidth = 45;
+    const auto deviceDescriptorWidth = (int) std::ceil(deviceDescriptor.getTextWidth());
+    const auto connectionInfoWidth = (int) std::ceil(connectionInfo.getTextWidth());
+    const auto iconWidth = juce::jlimit(IconAndText::minimumWidth, IconAndText::maximumWidth, (int) (bounds.getWidth() - deviceDescriptorWidth - connectionInfoWidth - 3 * margin) / 2);
 
-    juce::FlexBox flexBox;
-    flexBox.items.add(juce::FlexItem(rssiIcon).withMinWidth(iconWidth).withMaxWidth(iconWidth));
-    flexBox.items.add(juce::FlexItem(rssiText).withWidth(textWidth).withFlex(1.0f).withMargin({ 0.0f, 0.0f, 0.0f, (float) UILayout::panelMargin }));
-    flexBox.items.add(juce::FlexItem(margin, bounds.getHeight()).withFlex(1.0f).withMinWidth(margin));
-    flexBox.items.add(juce::FlexItem(batteryIcon).withMinWidth(iconWidth).withMaxWidth(iconWidth));
-    flexBox.items.add(juce::FlexItem(batteryText).withWidth(textWidth).withFlex(1.0f).withMargin({ 0.0f, 0.0f, 0.0f, (float) UILayout::panelMargin }));
-    flexBox.performLayout(bounds.removeFromRight(juce::jlimit((float) iconWidth + margin + iconWidth, (float) (textWidth + UILayout::panelMargin + iconWidth + margin + textWidth + UILayout::panelMargin + iconWidth), bounds.getWidth() - deviceDescriptor.getTextWidth() - margin - connectionInfo.getTextWidth() - margin)));
-
+    batteryIcon.setBounds(bounds.removeFromRight(iconWidth));
     bounds.removeFromRight(margin);
-    deviceDescriptor.setBounds(bounds.removeFromLeft(deviceDescriptor.getTextWidth()).getSmallestIntegerContainer());
+    rssiIcon.setBounds(bounds.removeFromRight(iconWidth));
+    bounds.removeFromRight(margin);
+
+    connectionInfo.setBounds(bounds.removeFromLeft(connectionInfoWidth));
     bounds.removeFromLeft(margin);
-    connectionInfo.setBounds(bounds.removeFromLeft(connectionInfo.getTextWidth()).getSmallestIntegerContainer());
+    deviceDescriptor.setBounds(bounds.removeFromLeft(deviceDescriptorWidth));
 }
 
 void DevicePanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -148,6 +148,26 @@ juce::String DevicePanelHeader::getDeviceDescriptor() const
     return deviceName + serialNumber;
 }
 
+void DevicePanelHeader::updateRssi(const uint32_t percentage)
+{
+    rssiIcon.update(percentage <= 25 ? BinaryData::wifi_25_svg :
+                    percentage <= 50 ? BinaryData::wifi_50_svg :
+                    percentage <= 75 ? BinaryData::wifi_75_svg :
+                    BinaryData::wifi_100_svg,
+                    juce::String(percentage) + "%");
+}
+
+void DevicePanelHeader::updateBattery(const uint32_t percentage, const ximu3::XIMU3_ChargingStatus status)
+{
+    batteryIcon.update(status == ximu3::XIMU3_ChargingStatusCharging ? BinaryData::battery_charging_svg :
+                       status == ximu3::XIMU3_ChargingStatusChargingComplete ? BinaryData::battery_charging_complete_svg :
+                       percentage <= 25 ? BinaryData::battery_25_svg :
+                       percentage <= 50 ? BinaryData::battery_50_svg :
+                       percentage <= 75 ? BinaryData::battery_75_svg :
+                       BinaryData::battery_100_svg,
+                       status != ximu3::XIMU3_ChargingStatusNotConnected ? "USB" : juce::String(percentage) + "%");
+}
+
 juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
@@ -195,67 +215,4 @@ void DevicePanelHeader::run()
     serialNumber = response.serial_number;
     deviceDescriptor.setText(getDeviceDescriptor());
     resized();
-}
-
-void DevicePanelHeader::timerCallback()
-{
-    for (const auto& device : NetworkDiscoveryDispatcher::getSingleton().getDevices())
-    {
-        if (juce::String(device.serial_number) == serialNumber)
-        {
-            batteryTimeout = 0;
-            batteryValue = device.battery;
-            chargingStatus = device.status;
-
-            rssiTimeout = 0;
-            rssiValue = device.rssi;
-
-            break;
-        }
-    }
-
-    static constexpr int timeout = 5000;
-
-    if (batteryTimeout < timeout)
-    {
-        batteryTimeout += getTimerInterval();
-
-        batteryIcon.setIcon(chargingStatus == ximu3::XIMU3_ChargingStatusCharging ? BinaryData::battery_charging_svg :
-                            chargingStatus == ximu3::XIMU3_ChargingStatusChargingComplete ? BinaryData::battery_charging_complete_svg :
-                            batteryValue <= 25 ? BinaryData::battery_25_svg :
-                            batteryValue <= 50 ? BinaryData::battery_50_svg :
-                            batteryValue <= 75 ? BinaryData::battery_75_svg :
-                            BinaryData::battery_100_svg);
-
-        if (chargingStatus != ximu3::XIMU3_ChargingStatusNotConnected)
-        {
-            batteryText.setText("USB");
-        }
-        else
-        {
-            batteryText.setText(juce::String(batteryValue.load()) + "%");
-        }
-    }
-    else
-    {
-        batteryIcon.setIcon(BinaryData::battery_unknown_svg);
-        batteryText.setText("");
-    }
-
-    if (rssiTimeout < timeout)
-    {
-        rssiTimeout += getTimerInterval();
-
-        rssiIcon.setIcon(rssiValue <= 25 ? BinaryData::wifi_25_svg :
-                         rssiValue <= 50 ? BinaryData::wifi_50_svg :
-                         rssiValue <= 75 ? BinaryData::wifi_75_svg :
-                         BinaryData::wifi_100_svg);
-
-        rssiText.setText(juce::String(rssiValue.load()) + "%");
-    }
-    else
-    {
-        rssiIcon.setIcon(BinaryData::wifi_unknown_svg);
-        rssiText.setText("");
-    }
 }

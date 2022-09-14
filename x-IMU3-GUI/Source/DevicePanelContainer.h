@@ -4,7 +4,6 @@
 #include "DevicePanel/DevicePanel.h"
 #include "DragOverlay.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "NetworkDiscoveryDispatcher.h"
 #include "OpenGL/GLRenderer.h"
 
 class DevicePanelContainer : public juce::Component
