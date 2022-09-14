@@ -78,7 +78,7 @@ void UpdatingFirmwareDialog::run()
     {
         updateProgress("Attempting Upload on " + port);
 
-        if (XIMU3_upload_firmware(fileName.toRawUTF8(), port.data()) == 0)
+        if (XIMU3_upload_firmware("PIC32MZ2048EFG124", fileName.toRawUTF8(), port.data()) == 0)
         {
             updateProgress("Update Complete", true);
             juce::Timer::callAfterDelay(1000, [&]
