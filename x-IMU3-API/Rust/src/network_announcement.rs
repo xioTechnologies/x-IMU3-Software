@@ -12,8 +12,8 @@ use crate::connection_info::*;
 pub struct NetworkAnnouncementMessage {
     pub device_name: String,
     pub serial_number: String,
-    pub rssi: i32,
-    pub battery: i32,
+    pub rssi: u32,
+    pub battery: u32,
     pub status: ChargingStatus,
     pub tcp_connection_info: TcpConnectionInfo,
     pub udp_connection_info: UdpConnectionInfo,
@@ -111,8 +111,8 @@ impl NetworkAnnouncement {
                 port: u16,
                 send: u16,
                 receive: u16,
-                rssi: i32,
-                battery: i32,
+                rssi: u32,
+                battery: u32,
                 status: i32,
             }
 

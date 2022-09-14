@@ -37,17 +37,17 @@ namespace Ximu3
             }
         }
 
-        property int32_t Rssi
+        property uint32_t Rssi
         {
-            int32_t get()
+            uint32_t get()
             {
                 return message->rssi;
             }
         }
 
-        property int32_t Battery
+        property uint32_t Battery
         {
-            int32_t get()
+            uint32_t get()
             {
                 return message->battery;
             }
