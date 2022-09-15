@@ -1,5 +1,5 @@
-#include "Ximu3.hpp"
 #include "PortComboBox.h"
+#include "Ximu3.hpp"
 
 PortComboBox::PortComboBox()
 {
