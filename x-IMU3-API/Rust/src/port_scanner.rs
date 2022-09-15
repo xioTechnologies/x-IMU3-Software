@@ -86,6 +86,35 @@ impl PortScanner {
         port_scanner
     }
 
+    fn ping_port(port_name: &str, devices: Arc<Mutex<Vec<Device>>>, sender: Sender<()>) {
+        let connection_info = SerialConnectionInfo {
+            port_name: port_name.to_string(),
+            baud_rate: 115200,
+            rts_cts_enabled: false,
+        };
+
+        let mut connection = Connection::new(ConnectionInfo::SerialConnectionInfo(connection_info.clone()));
+
+        if let Ok(()) = connection.open() {
+            if let Ok(ping_response) = connection.ping() {
+                let device = Device {
+                    device_name: ping_response.device_name,
+                    serial_number: ping_response.serial_number,
+                    connection_info: match ping_response.interface.as_str() {
+                        "USB" => ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo { port_name: connection_info.port_name }),
+                        "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info.clone()),
+                        "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(BluetoothConnectionInfo { port_name: connection_info.port_name }),
+                        _ => ConnectionInfo::SerialConnectionInfo(connection_info),
+                    },
+                };
+
+                devices.lock().unwrap().push(device);
+                sender.send(()).ok();
+            }
+            connection.close();
+        }
+    }
+
     pub fn get_devices(&mut self) -> Vec<Device> {
         (*self.devices.lock().unwrap()).clone()
     }
@@ -127,38 +156,13 @@ impl PortScanner {
 
     pub fn get_port_names() -> Vec<String> {
         if let Ok(serial_port_infos) = serialport::available_ports() {
-            return serial_port_infos.iter().map(|info| info.port_name.to_owned()).collect();
+            let mut port_names: Vec<String> = serial_port_infos.iter().map(|info| info.port_name.to_owned()).collect();
+
+            port_names.retain(|port_name| port_name.contains("/dev/cu") == false);
+
+            return port_names;
         }
         Vec::new()
-    }
-
-    fn ping_port(port_name: &str, devices: Arc<Mutex<Vec<Device>>>, sender: Sender<()>) {
-        let connection_info = SerialConnectionInfo {
-            port_name: port_name.to_string(),
-            baud_rate: 115200,
-            rts_cts_enabled: false,
-        };
-
-        let mut connection = Connection::new(ConnectionInfo::SerialConnectionInfo(connection_info.clone()));
-
-        if let Ok(()) = connection.open() {
-            if let Ok(ping_response) = connection.ping() {
-                let device = Device {
-                    device_name: ping_response.device_name,
-                    serial_number: ping_response.serial_number,
-                    connection_info: match ping_response.interface.as_str() {
-                        "USB" => ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo { port_name: connection_info.port_name }),
-                        "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info.clone()),
-                        "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(BluetoothConnectionInfo { port_name: connection_info.port_name }),
-                        _ => ConnectionInfo::SerialConnectionInfo(connection_info),
-                    },
-                };
-
-                devices.lock().unwrap().push(device);
-                sender.send(()).ok();
-            }
-            connection.close();
-        }
     }
 }
 
