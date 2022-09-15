@@ -1,6 +1,6 @@
 #include "AboutDialog.h"
 
-AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", ""), juce::Thread("About Dialog")
+AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", "")
 {
     addAndMakeVisible(logo);
     addAndMakeVisible(applicationNameLabel);
@@ -31,14 +31,37 @@ AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", 
     initialiseUrl(applicationVersionUpdateLabel, updateUrl);
     initialiseUrl(sourceCodeValue, sourceCodeUrl);
 
-    startThread();
+    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
+                         {
+                             const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
+
+                             juce::MessageManager::callAsync([&, self, parsed]
+                                                             {
+                                                                 if (self == nullptr)
+                                                                 {
+                                                                     return;
+                                                                 }
+
+                                                                 if (const auto* const object = parsed.getDynamicObject())
+                                                                 {
+                                                                     const auto tagName = object->getProperty("tag_name").toString();
+
+                                                                     if (applicationVersionValue.getText() == tagName)
+                                                                     {
+                                                                         applicationVersionLatestLabel.setVisible(true);
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         applicationVersionUpdateLabel.setVisible(true);
+                                                                         applicationVersionUpdateLabel.setText(" (" + tagName + " available)");
+                                                                     }
+
+                                                                     resized();
+                                                                 }
+                                                             });
+                         });
 
     setSize(400, calculateHeight(6));
-}
-
-AboutDialog::~AboutDialog()
-{
-    stopThread(5000);
 }
 
 void AboutDialog::resized()
@@ -91,34 +114,4 @@ void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
     {
         juce::URL(sourceCodeUrl).launchInDefaultBrowser();
     }
-}
-
-void AboutDialog::run()
-{
-    const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
-
-    juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), parsed]
-                                    {
-                                        if (self == nullptr)
-                                        {
-                                            return;
-                                        }
-
-                                        if (const auto* const object = parsed.getDynamicObject())
-                                        {
-                                            const auto tagName = object->getProperty("tag_name").toString();
-
-                                            if (applicationVersionValue.getText() == tagName)
-                                            {
-                                                applicationVersionLatestLabel.setVisible(true);
-                                            }
-                                            else
-                                            {
-                                                applicationVersionUpdateLabel.setVisible(true);
-                                                applicationVersionUpdateLabel.setText(" (" + tagName + " available)");
-                                            }
-
-                                            resized();
-                                        }
-                                    });
 }

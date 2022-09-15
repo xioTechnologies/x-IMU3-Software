@@ -6,14 +6,11 @@
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class AboutDialog : public Dialog,
-                    private juce::Thread
+class AboutDialog : public Dialog
 {
 public:
     AboutDialog();
-
-    ~AboutDialog() override;
-
+    
     void resized() override;
 
     void mouseDown(const juce::MouseEvent& mouseEvent) override;
@@ -35,6 +32,4 @@ private:
     SimpleLabel applicationVersionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredRight };
     SimpleLabel expectedFirmwareVersionValue { Firmware::version };
     SimpleLabel sourceCodeValue { "GitHub" };
-
-    void run() override;
 };

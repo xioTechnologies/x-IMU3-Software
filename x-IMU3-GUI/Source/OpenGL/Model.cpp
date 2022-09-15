@@ -1,65 +1,7 @@
 #include "GLResources.h"
 #include "Model.h"
 
-class Model::ObjectLoader : private juce::Thread
-{
-public:
-    ObjectLoader(const juce::String& objFileContent_, const juce::String& mtlFileContent_)
-            : juce::Thread("Object Loader"),
-              objFileContent(objFileContent_),
-              mtlFileContent(mtlFileContent_)
-    {
-        startThread();
-    }
-
-    ObjectLoader(const juce::File& objFile_)
-            : juce::Thread("Object Loader"),
-              objFile(objFile_)
-    {
-        startThread();
-    }
-
-    ~ObjectLoader() override
-    {
-        stopThread(5000); // allow some time for model loader to stop
-    }
-
-    std::unique_ptr<WavefrontObjFile> getLoadedObject()
-    {
-        if (isThreadRunning())
-        {
-            return nullptr;
-        }
-
-        return std::move(object);
-    }
-
-private:
-    const juce::String objFileContent {}, mtlFileContent {};
-    const juce::File objFile {};
-
-    std::unique_ptr<WavefrontObjFile> object = std::make_unique<WavefrontObjFile>();
-
-    void run() override
-    {
-        if (objFileContent.isNotEmpty())
-        {
-            object->load(objFileContent, mtlFileContent);
-        }
-        else
-        {
-            object->load(objFile);
-        }
-    }
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObjectLoader)
-};
-
 Model::Model(juce::OpenGLContext& context_) : context(context_)
-{
-}
-
-Model::~Model()
 {
 }
 
@@ -89,18 +31,11 @@ void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 
 void Model::render(const GLResources& resources, bool isTextured)
 {
-    if (std::unique_lock lock(objectLoaderLock); objectLoader != nullptr)
+    std::lock_guard _(objectLock);
+    if (object != nullptr && fillBuffersPending)
     {
-        if (object = objectLoader->getLoadedObject(); object != nullptr)
-        {
-            objectLoader.reset();
-            lock.unlock();
-            fillBuffers();
-        }
-        else
-        {
-            return;
-        }
+        fillBuffers();
+        fillBuffersPending = false;
     }
 
     //TODO - We need to figure out a way to switch between two lighting shaders
@@ -131,24 +66,53 @@ void Model::render(const GLResources& resources, bool isTextured)
 
 void Model::setModel(const juce::String& objFileContent, const juce::String& mtlFileContent)
 {
-    auto newObjectLoader = std::make_unique<ObjectLoader>(objFileContent, mtlFileContent);
+    loading = true;
+    juce::Thread::launch([&, self = juce::WeakReference(this), objFileContent, mtlFileContent]
+                         {
+                             auto newObject = std::make_shared<WavefrontObjFile>();
+                             newObject->load(objFileContent, mtlFileContent);
 
-    std::lock_guard _(objectLoaderLock);
-    std::swap(objectLoader, newObjectLoader);
+                             juce::MessageManager::callAsync([&, self, newObject]() mutable
+                                                             {
+                                                                 if (self == nullptr)
+                                                                 {
+                                                                     return;
+                                                                 }
+
+                                                                 std::lock_guard _(objectLock);
+                                                                 std::swap(object, newObject);
+                                                                 fillBuffersPending = true;
+                                                                 loading = false;
+                                                             });
+                         });
 }
 
 void Model::setModel(const juce::File& objFile)
 {
-    auto newObjectLoader = std::make_unique<ObjectLoader>(objFile);
+    loading = true;
+    juce::Thread::launch([&, self = juce::WeakReference(this), objFile]
+                         {
+                             auto newObject = std::make_shared<WavefrontObjFile>();
+                             newObject->load(objFile);
 
-    std::lock_guard _(objectLoaderLock);
-    std::swap(objectLoader, newObjectLoader);
+                             juce::MessageManager::callAsync([&, self, newObject]() mutable
+                                                             {
+                                                                 if (self == nullptr)
+                                                                 {
+                                                                     return;
+                                                                 }
+
+                                                                 std::lock_guard _(objectLock);
+                                                                 std::swap(object, newObject);
+                                                                 fillBuffersPending = true;
+                                                                 loading = false;
+                                                             });
+                         });
 }
 
 bool Model::isLoading() const
 {
-    std::lock_guard _(objectLoaderLock);
-    return objectLoader != nullptr;
+    return loading;
 }
 
 void Model::fillBuffers()

@@ -12,8 +12,7 @@ class DevicePanel;
 
 class DevicePanelContainer;
 
-class DevicePanelHeader : public juce::Component,
-                          private juce::Thread
+class DevicePanelHeader : public juce::Component
 {
 public:
     static constexpr int colourTagWidth = 4;
@@ -64,8 +63,6 @@ private:
     void updateBattery(const uint32_t percentage, const ximu3::XIMU3_ChargingStatus status);
 
     juce::PopupMenu getMenu() const;
-
-    void run() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelHeader)
 };

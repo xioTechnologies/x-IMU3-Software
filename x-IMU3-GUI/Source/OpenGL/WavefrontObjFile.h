@@ -299,11 +299,6 @@ private:
 
         for (auto lineNum = 0; lineNum < objLines.size(); ++lineNum)
         {
-            if (juce::Thread::currentThreadShouldExit())
-            {
-                return juce::Result::fail("");
-            }
-
             auto l = objLines[lineNum].getCharPointer().findEndOfWhitespace();
 
             if (matchToken(l, "v"))
@@ -364,11 +359,6 @@ private:
 
         if (auto* shape = parseFaceGroup(mesh, faceGroup, lastMaterial, lastName))
         {
-            if (juce::Thread::currentThreadShouldExit())
-            {
-                return juce::Result::fail("");
-            }
-
             shapes.add(shape);
         }
 
