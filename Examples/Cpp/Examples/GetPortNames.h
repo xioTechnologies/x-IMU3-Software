@@ -2,12 +2,12 @@
 #include "../Helpers.hpp"
 #include <iostream>
 
-class GetAvailablePorts
+class GetPortNames
 {
 public:
-    GetAvailablePorts()
+    GetPortNames()
     {
-        const auto portNames = ximu3::SerialDiscovery::getAvailablePorts();
+        const auto portNames = ximu3::PortScanner::getPortNames();
         if (portNames.size() == 0)
         {
             std::cout << "No ports available" << std::endl;

@@ -8,7 +8,7 @@ public:
         if (helpers::yesOrNo("Search for connections?") == true)
         {
             std::cout << "Searching for connections" << std::endl;
-            const auto devices = ximu3::SerialDiscovery::scanFilter(2000, ximu3::XIMU3_ConnectionTypeUsb);
+            const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
             if (devices.size() == 0)
             {
                 std::cout << "No USB connections available" << std::endl;

@@ -3,4 +3,4 @@
 #include "DataLogger.hpp"
 #include "FileConverter.hpp"
 #include "NetworkAnnouncement.hpp"
-#include "SerialDiscovery.hpp"
+#include "PortScanner.hpp"
