@@ -515,6 +515,8 @@ struct XIMU3_PortScanner *XIMU3_port_scanner_new(XIMU3_CallbackDevices callback,
 
 void XIMU3_port_scanner_free(struct XIMU3_PortScanner *port_scanner);
 
+struct XIMU3_Devices XIMU3_port_scanner_get_devices(struct XIMU3_PortScanner *port_scanner);
+
 struct XIMU3_Devices XIMU3_port_scanner_scan(void);
 
 struct XIMU3_Devices XIMU3_port_scanner_scan_filter(enum XIMU3_ConnectionType connection_type);

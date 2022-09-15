@@ -25,6 +25,11 @@ namespace ximu3
             XIMU3_port_scanner_free(portScanner);
         }
 
+        std::vector<XIMU3_Device> getDevices()
+        {
+            return toVectorAndFree(XIMU3_port_scanner_get_devices(portScanner));
+        }
+
         static std::vector<XIMU3_Device> scan()
         {
             return toVectorAndFree(XIMU3_port_scanner_scan());

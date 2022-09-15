@@ -76,7 +76,7 @@ void SearchForConnectionsDialog::timerCallback()
         rows.push_back(std::move(row));
     };
 
-    for (const auto& device : portScanner.scan())
+    for (const auto& device : portScanner.getDevices())
     {
         if (((device.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
             ((device.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && ApplicationSettings::getSingleton().searchSerial) ||

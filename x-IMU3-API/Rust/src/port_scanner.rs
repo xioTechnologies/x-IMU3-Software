@@ -86,6 +86,10 @@ impl PortScanner {
         port_scanner
     }
 
+    pub fn get_devices(&mut self) -> Vec<Device> {
+        (*self.devices.lock().unwrap()).clone()
+    }
+
     pub fn scan() -> Vec<Device> {
         let devices = Arc::new(Mutex::new(Vec::new()));
         let (sender, receiver) = crossbeam::channel::unbounded();
