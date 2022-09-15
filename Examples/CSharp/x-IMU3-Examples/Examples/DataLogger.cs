@@ -8,9 +8,9 @@ namespace Ximu3Examples
         public DataLogger()
         {
             // Open all USB connections
-            Ximu3.DiscoveredSerialDevice[] devices = Ximu3.SerialDiscovery.ScanFilter(2000, Ximu3.ConnectionType.Usb);
+            Ximu3.Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.ConnectionType.Usb);
             List<Ximu3.Connection> connections = new List<Ximu3.Connection>();
-            foreach (Ximu3.DiscoveredSerialDevice device in devices)
+            foreach (Ximu3.Device device in devices)
             {
                 Console.WriteLine(device.ToString());
                 Ximu3.Connection connection = new Ximu3.Connection(device.ConnectionInfo);

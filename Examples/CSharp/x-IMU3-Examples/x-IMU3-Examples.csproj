@@ -70,11 +70,11 @@
     <Compile Include="Examples\Connection.cs" />
     <Compile Include="Examples\DataLogger.cs" />
     <Compile Include="Examples\FileConverter.cs" />
-    <Compile Include="Examples\GetAvailablePorts.cs" />
+    <Compile Include="Examples\GetPortNames.cs" />
     <Compile Include="Examples\NetworkAnnouncement.cs" />
     <Compile Include="Examples\OpenAndPing.cs" />
+    <Compile Include="Examples\PortScanner.cs" />
     <Compile Include="Examples\SerialConnection.cs" />
-    <Compile Include="Examples\SerialDiscovery.cs" />
     <Compile Include="Examples\TcpConnection.cs" />
     <Compile Include="Examples\UdpConnection.cs" />
     <Compile Include="Examples\UsbConnection.cs" />

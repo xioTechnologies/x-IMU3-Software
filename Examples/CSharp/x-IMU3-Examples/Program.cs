@@ -13,11 +13,11 @@ namespace Ximu3Examples
             Console.WriteLine("B. Commands");
             Console.WriteLine("C. DataLogger");
             Console.WriteLine("D. FileConverter");
-            Console.WriteLine("E. GetAvailablePorts");
+            Console.WriteLine("E. GetPortNames");
             Console.WriteLine("F. NetworkAnnouncement");
             Console.WriteLine("G. OpenAndPing");
-            Console.WriteLine("H. SerialConnection");
-            Console.WriteLine("I. SerialDiscovery");
+            Console.WriteLine("H. PortScanner");
+            Console.WriteLine("I. SerialConnection");
             Console.WriteLine("J. TcpConnection");
             Console.WriteLine("K. UdpConnection");
             Console.WriteLine("L. UsbConnection");
@@ -36,7 +36,7 @@ namespace Ximu3Examples
                     new FileConverter();
                     break;
                 case 'E':
-                    new GetAvailablePorts();
+                    new GetPortNames();
                     break;
                 case 'F':
                     new NetworkAnnouncement();
@@ -45,10 +45,10 @@ namespace Ximu3Examples
                     new OpenAndPing();
                     break;
                 case 'H':
-                    new SerialConnection();
+                    new PortScanner();
                     break;
                 case 'I':
-                    new SerialDiscovery();
+                    new SerialConnection();
                     break;
                 case 'J':
                     new TcpConnection();

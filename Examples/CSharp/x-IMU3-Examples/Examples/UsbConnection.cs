@@ -9,7 +9,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Search for connections?") == true)
             {
                 Console.WriteLine("Searching for connections");
-                Ximu3.DiscoveredSerialDevice[] devices = Ximu3.SerialDiscovery.ScanFilter(2000, Ximu3.ConnectionType.Usb);
+                Ximu3.Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.ConnectionType.Usb);
                 if (devices.Length == 0)
                 {
                     Console.WriteLine("No USB connections available");
