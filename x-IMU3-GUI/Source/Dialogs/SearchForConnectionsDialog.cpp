@@ -9,11 +9,6 @@ SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_p
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);
 
-    table.onSelectionChanged = [this]
-    {
-        setValid(getConnectionInfos().empty() == false);
-    };
-
     filterButton.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(6));
@@ -62,47 +57,36 @@ juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
 
 void SearchForConnectionsDialog::timerCallback()
 {
-    std::vector<DiscoveredDevicesTable::Row> rows;
+    std::vector<ConnectionsTable::Row> rows;
+    std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
 
-    const auto addRow = [&](auto row)
+    const auto addConnection = [&](const auto& deviceName, const auto& serialNumber, const auto& connectionInfo, const auto& connectionType)
     {
         for (const auto& existingConnection : existingConnections)
         {
-            if (existingConnection->toString() == row.connectionInfo->toString())
+            if (existingConnection->toString() == connectionInfo->toString())
             {
                 return;
             }
         }
-        rows.push_back(std::move(row));
+
+        rows.push_back({ .deviceName = deviceName, .serialNumber = serialNumber, .connectionInfo = std::move(connectionInfo), .connectionType = connectionType });
+        numberOfConnections[connectionType]++;
     };
 
     for (const auto& device : portScanner.getDevices())
     {
-        if (((device.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
-            ((device.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && ApplicationSettings::getSingleton().searchSerial) ||
-            ((device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth) && ApplicationSettings::getSingleton().searchBluetooth))
+        if (device.connection_type == ximu3::XIMU3_ConnectionTypeUsb && ApplicationSettings::getSingleton().searchUsb)
         {
-            DiscoveredDevicesTable::Row row;
-            row.deviceNameAndSerialNumber = juce::String(device.device_name) + " - " + juce::String(device.serial_number);
-
-            switch (device.connection_type)
-            {
-                case ximu3::XIMU3_ConnectionTypeUsb:
-                    row.connectionInfo = std::make_unique<ximu3::UsbConnectionInfo>(device.usb_connection_info);
-                    break;
-                case ximu3::XIMU3_ConnectionTypeSerial:
-                    row.connectionInfo = std::make_unique<ximu3::SerialConnectionInfo>(device.serial_connection_info);
-                    break;
-                case ximu3::XIMU3_ConnectionTypeBluetooth:
-                    row.connectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info);
-                    break;
-                case ximu3::XIMU3_ConnectionTypeTcp:
-                case ximu3::XIMU3_ConnectionTypeUdp:
-                case ximu3::XIMU3_ConnectionTypeFile:
-                    break;
-            }
-            row.connectionType = device.connection_type;
-            addRow(std::move(row));
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::UsbConnectionInfo>(device.usb_connection_info), device.connection_type);
+        }
+        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeSerial && ApplicationSettings::getSingleton().searchSerial)
+        {
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::SerialConnectionInfo>(device.serial_connection_info), device.connection_type);
+        }
+        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth && ApplicationSettings::getSingleton().searchBluetooth)
+        {
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info), device.connection_type);
         }
     }
 
@@ -110,29 +94,15 @@ void SearchForConnectionsDialog::timerCallback()
     {
         if (ApplicationSettings::getSingleton().searchUdp)
         {
-            DiscoveredDevicesTable::Row row;
-            row.deviceNameAndSerialNumber = juce::String(message.device_name) + " - " + juce::String(message.serial_number);
-            row.connectionInfo = std::make_unique<ximu3::UdpConnectionInfo>(message.udp_connection_info);
-            row.connectionType = ximu3::XIMU3_ConnectionTypeUdp;
-            addRow(std::move(row));
+            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(message.udp_connection_info), ximu3::XIMU3_ConnectionTypeUdp);
         }
         if (ApplicationSettings::getSingleton().searchTcp)
         {
-            DiscoveredDevicesTable::Row row;
-            row.deviceNameAndSerialNumber = juce::String(message.device_name) + " - " + juce::String(message.serial_number);
-            row.connectionInfo = std::make_unique<ximu3::TcpConnectionInfo>(message.tcp_connection_info);
-            row.connectionType = ximu3::XIMU3_ConnectionTypeTcp;
-            addRow(std::move(row));
+            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(message.tcp_connection_info), ximu3::XIMU3_ConnectionTypeTcp);
         }
     }
 
-    table.setRows(std::move(rows));
-
-    std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
-    for (const auto& row : table.getRows())
-    {
-        numberOfConnections[row.connectionType]++;
-    }
+    table.setRows(rows);
 
     juce::String numberOfConnectionsText;
     for (const auto& pair : numberOfConnections)
@@ -146,4 +116,6 @@ void SearchForConnectionsDialog::timerCallback()
     }
 
     getTopLevelComponent()->setName("Search for Connections" + numberOfConnectionsText);
+
+    setValid(getConnectionInfos().empty() == false);
 }

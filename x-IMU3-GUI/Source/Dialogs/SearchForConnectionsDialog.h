@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Widgets/DiscoveredDevicesTable.h"
+#include "../Widgets/ConnectionsTable.h"
 #include "../Widgets/IconButton.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -25,7 +25,7 @@ private:
                                      {
                                      }};
 
-    DiscoveredDevicesTable table;
+    ConnectionsTable table;
 
     IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 

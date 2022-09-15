@@ -1,29 +1,23 @@
 #include "../CustomLookAndFeel.h"
-#include "DiscoveredDevicesTable.h"
-#include "Ximu3.hpp"
+#include "ConnectionsTable.h"
 
-DiscoveredDevicesTable::DiscoveredDevicesTable()
+ConnectionsTable::ConnectionsTable()
 {
     addAndMakeVisible(selectAllButton);
+    addAndMakeVisible(deviceLabel);
+    addAndMakeVisible(connectionLabel);
+    addAndMakeVisible(table);
+
     selectAllButton.onClick = [&]
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
+            auto* const toggle = static_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index));
+            toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
             rows[index].selected = selectAllButton.getToggleState();
-
-            if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
-            {
-                toggle->setToggleState(rows[index].selected, juce::dontSendNotification);
-            }
         }
-
-        selectionChanged();
     };
 
-    addAndMakeVisible(deviceLabel);
-    addAndMakeVisible(connectionLabel);
-
-    addAndMakeVisible(table);
     table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 240);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 280);
@@ -34,20 +28,18 @@ DiscoveredDevicesTable::DiscoveredDevicesTable()
     table.setWantsKeyboardFocus(false);
 }
 
-void DiscoveredDevicesTable::resized()
+void ConnectionsTable::resized()
 {
-    auto bounds = getLocalBounds();
-
     static constexpr int headerHeight = 30;
-    bounds.removeFromTop(headerHeight);
-    selectAllButton.setBounds(0, 0, getWidth(), 30);
+
+    auto bounds = getLocalBounds();
+    selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
     deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
     connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
-
     table.setBounds(bounds);
 }
 
-void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
+void ConnectionsTable::setRows(const std::vector<Row>& rows_)
 {
     static const auto contains = [](const auto& vector, const auto& value)
     {
@@ -70,47 +62,25 @@ void DiscoveredDevicesTable::setRows(std::vector<Row> rows_)
         }
     }
 
-    if (selectAllButton.getToggleState())
+    for (auto& row : rows)
     {
-        for (auto& row : rows)
-        {
-            row.selected = true;
-        }
+        row.selected |= selectAllButton.getToggleState();
     }
-
-    selectionChanged();
 
     table.updateContent();
 }
 
-const std::vector<DiscoveredDevicesTable::Row>& DiscoveredDevicesTable::getRows() const
+const std::vector<ConnectionsTable::Row>& ConnectionsTable::getRows() const
 {
     return rows;
 }
 
-void DiscoveredDevicesTable::selectionChanged()
-{
-    for (auto& row : rows)
-    {
-        if (row.selected == false)
-        {
-            selectAllButton.setToggleState(false, juce::dontSendNotification);
-            break;
-        }
-    }
-
-    if (onSelectionChanged)
-    {
-        onSelectionChanged();
-    }
-}
-
-int DiscoveredDevicesTable::getNumRows()
+int ConnectionsTable::getNumRows()
 {
     return (int) rows.size();
 }
 
-juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
+juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
     switch ((ColumnIDs) columnID)
     {
@@ -126,7 +96,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
             toggle->onClick = [this, rowNumber, toggle]
             {
                 rows[(size_t) rowNumber].selected = toggle->getToggleState();
-                selectionChanged();
+                selectAllButton.setToggleState(selectAllButton.getToggleState() && toggle->getToggleState(), juce::dontSendNotification);
             };
             break;
         }
@@ -137,7 +107,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceNameAndSerialNumber);
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " - " + rows[(size_t) rowNumber].serialNumber);
             break;
 
         case ColumnIDs::connection:
@@ -156,7 +126,7 @@ juce::Component* DiscoveredDevicesTable::refreshComponentForCell(int rowNumber, 
     return existingComponentToUpdate;
 }
 
-void DiscoveredDevicesTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
+void ConnectionsTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
 {
     if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, rowNumber)))
     {
