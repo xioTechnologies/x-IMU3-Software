@@ -74,7 +74,7 @@ void UpdatingFirmwareDialog::run()
     updateProgress("Waiting For Bootloader Mode");
     juce::Thread::sleep(5000);
 
-    for (const auto& port : ximu3::SerialDiscovery::getAvailablePorts())
+    for (const auto& port : ximu3::PortScanner::getPortNames())
     {
         updateProgress("Attempting Upload on " + port);
 

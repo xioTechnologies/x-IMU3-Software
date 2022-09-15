@@ -6,7 +6,7 @@
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
-#include "Widgets/SerialPortComboBox.h"
+#include "Widgets/PortComboBox.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
@@ -37,7 +37,7 @@ public:
 
 private:
     SimpleLabel portNameLabel { "Port Name:" };
-    SerialPortComboBox portNameValue;
+    PortComboBox portNameValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UsbConnectionDialog)
 };
@@ -57,7 +57,7 @@ private:
     SimpleLabel portNameLabel { "Port Name:" };
     SimpleLabel baudRateLabel { "Baud Rate:" };
 
-    SerialPortComboBox portNameValue;
+    PortComboBox portNameValue;
     CustomComboBox baudRateValue;
     CustomToggleButton rtsCtsEnabledToggle { "RTS/CTS Enabled" };
 
@@ -130,7 +130,7 @@ public:
 
 private:
     SimpleLabel portNameLabel { "Port Name:" };
-    SerialPortComboBox portNameValue;
+    PortComboBox portNameValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BluetoothConnectionDialog)
 };

@@ -2,7 +2,6 @@
 
 #include "../Widgets/CustomToggleButton.h"
 #include "../Widgets/SimpleLabel.h"
-#include "ConnectionInfo.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <variant>
 #include "Ximu3.hpp"

@@ -4,7 +4,7 @@
 #include "../Widgets/IconButton.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "SerialDiscovery.hpp"
+#include "Ximu3.hpp"
 
 class SearchForConnectionsDialog : public Dialog,
                                    private juce::Timer
@@ -21,9 +21,9 @@ private:
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    ximu3::SerialDiscovery serialDiscovery { [](const auto&)
-                                             {
-                                             }};
+    ximu3::PortScanner portScanner { [](const auto&)
+                                     {
+                                     }};
 
     DiscoveredDevicesTable table;
 

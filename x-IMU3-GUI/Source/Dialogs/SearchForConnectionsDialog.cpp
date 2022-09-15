@@ -76,32 +76,32 @@ void SearchForConnectionsDialog::timerCallback()
         rows.push_back(std::move(row));
     };
 
-    for (const auto& serialDevice : serialDiscovery.getDevices())
+    for (const auto& device : portScanner.scan())
     {
-        if (((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
-            ((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && ApplicationSettings::getSingleton().searchSerial) ||
-            ((serialDevice.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth) && ApplicationSettings::getSingleton().searchBluetooth))
+        if (((device.connection_type == ximu3::XIMU3_ConnectionTypeUsb) && ApplicationSettings::getSingleton().searchUsb) ||
+            ((device.connection_type == ximu3::XIMU3_ConnectionTypeSerial) && ApplicationSettings::getSingleton().searchSerial) ||
+            ((device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth) && ApplicationSettings::getSingleton().searchBluetooth))
         {
             DiscoveredDevicesTable::Row row;
-            row.deviceNameAndSerialNumber = juce::String(serialDevice.device_name) + " - " + juce::String(serialDevice.serial_number);
+            row.deviceNameAndSerialNumber = juce::String(device.device_name) + " - " + juce::String(device.serial_number);
 
-            switch (serialDevice.connection_type)
+            switch (device.connection_type)
             {
                 case ximu3::XIMU3_ConnectionTypeUsb:
-                    row.connectionInfo = std::make_unique<ximu3::UsbConnectionInfo>(serialDevice.usb_connection_info);
+                    row.connectionInfo = std::make_unique<ximu3::UsbConnectionInfo>(device.usb_connection_info);
                     break;
                 case ximu3::XIMU3_ConnectionTypeSerial:
-                    row.connectionInfo = std::make_unique<ximu3::SerialConnectionInfo>(serialDevice.serial_connection_info);
+                    row.connectionInfo = std::make_unique<ximu3::SerialConnectionInfo>(device.serial_connection_info);
                     break;
                 case ximu3::XIMU3_ConnectionTypeBluetooth:
-                    row.connectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>(serialDevice.bluetooth_connection_info);
+                    row.connectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info);
                     break;
                 case ximu3::XIMU3_ConnectionTypeTcp:
                 case ximu3::XIMU3_ConnectionTypeUdp:
                 case ximu3::XIMU3_ConnectionTypeFile:
                     break;
             }
-            row.connectionType = serialDevice.connection_type;
+            row.connectionType = device.connection_type;
             addRow(std::move(row));
         }
     }
