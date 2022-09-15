@@ -74,11 +74,11 @@ void UpdatingFirmwareDialog::run()
     updateProgress("Waiting For Bootloader Mode");
     juce::Thread::sleep(5000);
 
-    for (const auto& port : ximu3::PortScanner::getPortNames())
+    for (const auto& portName : ximu3::PortScanner::getPortNames())
     {
-        updateProgress("Attempting Upload on " + port);
+        updateProgress("Attempting Upload on " + portName);
 
-        if (XIMU3_upload_firmware("PIC32MZ2048EFG124", fileName.toRawUTF8(), port.data()) == 0)
+        if (XIMU3_upload_firmware("PIC32MZ2048EFG124", fileName.toRawUTF8(), portName.data()) == 0)
         {
             updateProgress("Update Complete", true);
             juce::Timer::callAfterDelay(1000, [&]
