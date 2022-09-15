@@ -12,8 +12,6 @@ class Model
 public:
     explicit Model(juce::OpenGLContext& context_);
 
-    ~Model();
-
     void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
 
     void render(const GLResources& resources, bool isTextured);
@@ -25,17 +23,17 @@ public:
     bool isLoading() const;
 
 private:
-    class ObjectLoader;
-
     juce::OpenGLContext& context;
 
-    std::unique_ptr<WavefrontObjFile> object;
-    std::vector<std::unique_ptr<Buffer>> buffers;
+    std::mutex objectLock;
+    std::shared_ptr<WavefrontObjFile> object;
+    bool fillBuffersPending = false;
+    std::atomic<bool> loading { false };
 
-    mutable std::mutex objectLoaderLock;
-    std::unique_ptr<ObjectLoader> objectLoader;
+    std::vector<std::unique_ptr<Buffer>> buffers;
 
     void fillBuffers();
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Model)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Model)
 };

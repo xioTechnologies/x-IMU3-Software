@@ -6,8 +6,7 @@
 #include "DevicePanelHeader.h"
 
 DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_)
-        : juce::Thread("Device Panel Header"),
-          devicePanel(devicePanel_),
+        : devicePanel(devicePanel_),
           devicePanelContainer(devicePanelContainer_),
           connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::getDefaultFont())
 {
@@ -40,7 +39,23 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
         updateBattery((uint32_t) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
 
-    startThread();
+    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
+                         {
+                             const auto response = devicePanel.getConnection().ping();
+                             
+                             juce::MessageManager::callAsync([&, self, response]
+                                                             {
+                                                                 if (self == nullptr)
+                                                                 {
+                                                                     return;
+                                                                 }
+
+                                                                 deviceName = response.device_name;
+                                                                 serialNumber = response.serial_number;
+                                                                 deviceDescriptor.setText(getDeviceDescriptor());
+                                                                 resized();
+                                                             });
+                         });
 }
 
 DevicePanelHeader::~DevicePanelHeader()
@@ -48,8 +63,6 @@ DevicePanelHeader::~DevicePanelHeader()
     networkAnnouncement->removeCallback(networkAnnouncementCallbackID);
     devicePanel.getConnection().removeCallback(rssiCallbackID);
     devicePanel.getConnection().removeCallback(batteryCallbackID);
-
-    stopThread(5000); // allow some time for ping to complete
 }
 
 void DevicePanelHeader::paint(juce::Graphics& g)
@@ -199,20 +212,4 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
     });
 
     return menu;
-}
-
-void DevicePanelHeader::run()
-{
-    const auto response = devicePanel.getConnection().ping();
-
-    juce::MessageManagerLock lock(this);
-    if (lock.lockWasGained() == false)
-    {
-        return;
-    }
-
-    deviceName = response.device_name;
-    serialNumber = response.serial_number;
-    deviceDescriptor.setText(getDeviceDescriptor());
-    resized();
 }
