@@ -1,19 +1,19 @@
-#include "PortComboBox.h"
+#include "PortNameComboBox.h"
 #include "Ximu3.hpp"
 
-PortComboBox::PortComboBox()
+PortNameComboBox::PortNameComboBox()
 {
     updatePorts();
     setSelectedItemIndex(0);
 }
 
-void PortComboBox::mouseDown(const juce::MouseEvent& e)
+void PortNameComboBox::mouseDown(const juce::MouseEvent& e)
 {
     updatePorts();
     juce::ComboBox::mouseDown(e);
 }
 
-const std::string& PortComboBox::getSelectedPortName() const
+const std::string& PortNameComboBox::getSelectedPortName() const
 {
     if (previousPortNames.size() > 0 && getSelectedId() > 0)
     {
@@ -25,7 +25,7 @@ const std::string& PortComboBox::getSelectedPortName() const
     return fallback;
 }
 
-void PortComboBox::updatePorts()
+void PortNameComboBox::updatePorts()
 {
     if (const auto portNames = ximu3::PortScanner::getPortNames(); previousPortNames != portNames)
     {
