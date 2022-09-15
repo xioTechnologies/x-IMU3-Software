@@ -64,6 +64,8 @@ impl PortScanner {
                         if *dropped.lock().unwrap() {
                             return;
                         }
+
+                        std::thread::sleep(std::time::Duration::from_millis(1000));
                     });
                 }
 
