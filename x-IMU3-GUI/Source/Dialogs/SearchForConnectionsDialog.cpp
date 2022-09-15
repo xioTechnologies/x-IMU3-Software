@@ -70,7 +70,7 @@ void SearchForConnectionsDialog::timerCallback()
             }
         }
 
-        rows.push_back({ .deviceName = deviceName, .serialNumber = serialNumber, .connectionInfo = std::move(connectionInfo), .connectionType = connectionType });
+        rows.push_back({ false, deviceName, serialNumber, std::move(connectionInfo), connectionType });
         numberOfConnections[connectionType]++;
     };
 
@@ -109,13 +109,7 @@ void SearchForConnectionsDialog::timerCallback()
     {
         numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first)) + ", ";
     }
-    numberOfConnectionsText = numberOfConnectionsText.dropLastCharacters(2);
-    if (numberOfConnectionsText.isNotEmpty())
-    {
-        numberOfConnectionsText = " (" + numberOfConnectionsText + ")";
-    }
-
-    getTopLevelComponent()->setName("Search for Connections" + numberOfConnectionsText);
+    getTopLevelComponent()->setName("Search for Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
     setValid(getConnectionInfos().empty() == false);
 }

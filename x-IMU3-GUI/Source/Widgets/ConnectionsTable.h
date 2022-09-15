@@ -11,7 +11,7 @@ class ConnectionsTable : public juce::Component,
 public:
     struct Row
     {
-        bool selected = false;
+        bool selected;
         juce::String deviceName;
         juce::String serialNumber;
         std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
