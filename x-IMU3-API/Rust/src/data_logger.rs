@@ -139,12 +139,13 @@ impl DataLogger<'_> {
     pub fn log(directory: &str, name: &str, connections: Vec<&mut Connection>, seconds: u32) -> Result<(), ()> {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
-        {
-            let _data_logger = DataLogger::new(directory, name, connections, Box::new(move |result| {
-                sender.send(result).ok();
-            }));
-            std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
-        } // drop _data_logger
+        let data_logger = DataLogger::new(directory, name, connections, Box::new(move |result| {
+            sender.send(result).ok();
+        }));
+
+        std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
+        
+        drop(data_logger);
 
         receiver.recv().unwrap()
     }
