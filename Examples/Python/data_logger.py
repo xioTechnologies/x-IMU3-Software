@@ -7,7 +7,7 @@ def callback(result):
 
 
 # Open all USB connections
-devices = ximu3.SerialDiscovery.scan_filter(2000, "USB")
+devices = ximu3.PortScanner.scan_filter("USB")
 connections = []
 
 for device in devices:

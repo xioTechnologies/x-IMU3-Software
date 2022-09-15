@@ -52,8 +52,8 @@
     <ClCompile Include="ConnectionInfo.h" />
     <ClCompile Include="ConnectionType.h" />
     <ClCompile Include="DataLogger.h" />
-    <ClCompile Include="DiscoveredSerialDevice.h" />
     <ClCompile Include="DecodeError.h" />
+    <ClCompile Include="Device.h" />
     <ClCompile Include="EventArgs.h" />
     <ClCompile Include="FileConverter.h" />
     <ClCompile Include="FileConverterProgress.h" />
@@ -62,8 +62,8 @@
     <ClCompile Include="NetworkAnnouncement.h" />
     <ClCompile Include="NetworkAnnouncementMessage.h" />
     <ClCompile Include="PingResponse.h" />
+    <ClCompile Include="PortScanner.h" />
     <ClCompile Include="Result.h" />
-    <ClCompile Include="SerialDiscovery.h" />
     <ClCompile Include="Statistics.h" />
   </ItemGroup>
   <ItemGroup>

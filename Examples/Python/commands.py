@@ -4,7 +4,7 @@ import ximu3
 # Find USB device
 print("Searching for connections")
 
-devices = ximu3.SerialDiscovery.scan_filter(2000, "USB")
+devices = ximu3.PortScanner.scan_filter("USB")
 
 if not devices:
     raise Exception("No USB connections available")

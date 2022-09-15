@@ -16,5 +16,5 @@ mod ffi;
 pub mod file_converter;
 pub mod network_announcement;
 pub mod ping_response;
-pub mod serial_discovery;
+pub mod port_scanner;
 pub mod statistics;

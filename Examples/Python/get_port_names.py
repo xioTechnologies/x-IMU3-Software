@@ -1,6 +1,6 @@
 import ximu3
 
-port_names = ximu3.SerialDiscovery.get_available_ports()
+port_names = ximu3.PortScanner.get_port_names()
 
 if not port_names:
     print("No ports available")

@@ -38,6 +38,6 @@ private:
                   XIMU3_charging_status_to_string(message.status) << ", " <<
                   XIMU3_tcp_connection_info_to_string(message.tcp_connection_info) << ", " <<
                   XIMU3_udp_connection_info_to_string(message.udp_connection_info) << std::endl;
-        // std::cout << XIMU3_discovered_network_device_to_string(*device) << std::endl; // alternative to above
+        // std::cout << XIMU3_network_announcement_message_to_string(message) << std::endl; // alternative to above
     }
 };

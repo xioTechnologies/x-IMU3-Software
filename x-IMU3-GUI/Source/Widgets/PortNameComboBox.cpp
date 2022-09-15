@@ -1,19 +1,19 @@
-#include "SerialDiscovery.hpp"
-#include "SerialPortComboBox.h"
+#include "PortNameComboBox.h"
+#include "Ximu3.hpp"
 
-SerialPortComboBox::SerialPortComboBox()
+PortNameComboBox::PortNameComboBox()
 {
-    updateSerialPorts();
+    updatePorts();
     setSelectedItemIndex(0);
 }
 
-void SerialPortComboBox::mouseDown(const juce::MouseEvent& e)
+void PortNameComboBox::mouseDown(const juce::MouseEvent& e)
 {
-    updateSerialPorts();
+    updatePorts();
     juce::ComboBox::mouseDown(e);
 }
 
-const std::string& SerialPortComboBox::getSelectedPortName() const
+const std::string& PortNameComboBox::getSelectedPortName() const
 {
     if (previousPortNames.size() > 0 && getSelectedId() > 0)
     {
@@ -25,9 +25,9 @@ const std::string& SerialPortComboBox::getSelectedPortName() const
     return fallback;
 }
 
-void SerialPortComboBox::updateSerialPorts()
+void PortNameComboBox::updatePorts()
 {
-    if (const auto portNames = ximu3::SerialDiscovery::getAvailablePorts(); previousPortNames != portNames)
+    if (const auto portNames = ximu3::PortScanner::getPortNames(); previousPortNames != portNames)
     {
         previousPortNames = portNames;
 

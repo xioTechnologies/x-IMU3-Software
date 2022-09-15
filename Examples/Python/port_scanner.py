@@ -16,9 +16,9 @@ def callback(devices):
 
 
 if helpers.yes_or_no("Use async implementation?"):
-    _ = ximu3.SerialDiscovery(callback)
+    _ = ximu3.PortScanner(callback)
     helpers.wait(-1)
 else:
-    devices = ximu3.SerialDiscovery.scan(2000)
-    print("Discovered " + str(len(devices)) + " devices")
+    devices = ximu3.PortScanner.scan()
+    print("Found " + str(len(devices)) + " devices")
     print_devices(devices)

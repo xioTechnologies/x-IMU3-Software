@@ -2,11 +2,11 @@ using System;
 
 namespace Ximu3Examples
 {
-    class GetAvailablePorts
+    class GetPortNames
     {
-        public GetAvailablePorts()
+        public GetPortNames()
         {
-            string[] portNames = Ximu3.SerialDiscovery.GetAvailablePorts();
+            string[] portNames = Ximu3.PortScanner.GetPortNames();
 
             if (portNames.Length == 0)
             {

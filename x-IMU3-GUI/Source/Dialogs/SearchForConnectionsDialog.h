@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Widgets/DiscoveredDevicesTable.h"
+#include "../Widgets/ConnectionsTable.h"
 #include "../Widgets/IconButton.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "SerialDiscovery.hpp"
+#include "Ximu3.hpp"
 
 class SearchForConnectionsDialog : public Dialog,
                                    private juce::Timer
@@ -21,11 +21,11 @@ private:
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    ximu3::SerialDiscovery serialDiscovery { [](const auto&)
-                                             {
-                                             }};
+    ximu3::PortScanner portScanner { [](const auto&)
+                                     {
+                                     }};
 
-    DiscoveredDevicesTable table;
+    ConnectionsTable table;
 
     IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 

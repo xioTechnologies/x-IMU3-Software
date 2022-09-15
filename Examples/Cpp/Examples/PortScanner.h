@@ -2,32 +2,32 @@
 #include "../Helpers.hpp"
 #include <iostream>
 
-class SerialDiscovery
+class PortScanner
 {
 public:
-    SerialDiscovery()
+    PortScanner()
     {
         if (helpers::yesOrNo("Use async implementation?") == true)
         {
-            ximu3::SerialDiscovery discovery(callback);
+            ximu3::PortScanner portScanner(callback);
             helpers::wait(-1);
         }
         else
         {
-            const auto devices = ximu3::SerialDiscovery::scan(2000);
-            std::cout << "Discovered " << devices.size() << " devices" << std::endl;
+            const auto devices = ximu3::PortScanner::scan();
+            std::cout << "Found " << devices.size() << " devices" << std::endl;
             printDevices(devices);
         }
     }
 
 private:
-    std::function<void(const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>&)> callback = [](const auto& devices)
+    std::function<void(const std::vector<ximu3::XIMU3_Device>&)> callback = [](const auto& devices)
     {
         std::cout << "Devices updated (" << devices.size() << " devices available)" << std::endl;
         printDevices(devices);
     };
 
-    static void printDevices(const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>& devices)
+    static void printDevices(const std::vector<ximu3::XIMU3_Device>& devices)
     {
         for (const auto& device : devices)
         {
@@ -48,7 +48,7 @@ private:
                     break;
             }
             std::cout << device.device_name << " - " << device.serial_number << ", " << connectionInfo << std::endl;
-            // std::cout << XIMU3_discovered_serial_device_to_string(*device) << std::endl; // alternative to above
+            // std::cout << XIMU3_device_to_string(*device) << std::endl; // alternative to above
         }
     }
 };

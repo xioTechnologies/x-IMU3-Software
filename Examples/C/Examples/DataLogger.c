@@ -11,7 +11,7 @@ static void PrintResult(const XIMU3_Result result);
 void DataLogger()
 {
     // Open all USB connections
-    const XIMU3_DiscoveredSerialDevices devices = XIMU3_serial_discovery_scan_filter(2000, XIMU3_ConnectionTypeUsb);
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
     XIMU3_Connection* connections[MAX_NUMBER_OF_CONNECTION];
     uint32_t numberOfConnections = 0;
     for (uint32_t index = 0; index < devices.length; index++)
@@ -20,7 +20,7 @@ void DataLogger()
         {
             break;
         }
-        printf("%s\n", XIMU3_discovered_serial_device_to_string(devices.array[index]));
+        printf("%s\n", XIMU3_device_to_string(devices.array[index]));
         XIMU3_Connection* const connection = XIMU3_connection_new_usb(devices.array[index].usb_connection_info);
         if (XIMU3_connection_open(connection) == XIMU3_ResultOk)
         {
@@ -32,7 +32,7 @@ void DataLogger()
             XIMU3_connection_free(connection);
         }
     }
-    XIMU3_discovered_serial_devices_free(devices);
+    XIMU3_devices_free(devices);
 
     // Log data
     const char* directory = "C:/";

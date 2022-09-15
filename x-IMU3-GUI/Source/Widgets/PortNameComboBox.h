@@ -3,10 +3,10 @@
 #include "CustomComboBox.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class SerialPortComboBox : public CustomComboBox
+class PortNameComboBox : public CustomComboBox
 {
 public:
-    SerialPortComboBox();
+    PortNameComboBox();
 
     void mouseDown(const juce::MouseEvent& e) override;
 
@@ -15,7 +15,7 @@ public:
 private:
     std::vector<std::string> previousPortNames;
 
-    void updateSerialPorts();
+    void updatePorts();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialPortComboBox)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PortNameComboBox)
 };

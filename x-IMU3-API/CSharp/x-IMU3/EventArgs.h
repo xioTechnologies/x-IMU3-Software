@@ -2,7 +2,7 @@
 
 #include "DataMessages/DataMessages.h"
 #include "DecodeError.h"
-#include "DiscoveredSerialDevice.h"
+#include "Device.h"
 #include "FileConverterProgress.h"
 #include "NetworkAnnouncementMessage.h"
 #include "Result.h"
@@ -246,13 +246,13 @@ namespace Ximu3
         }
     };
 
-    public ref class SerialDiscoveryEventArgs : public EventArgs
+    public ref class PortScannerEventArgs : public EventArgs
     {
     public:
-        array<DiscoveredSerialDevice^>^ devices;
+        array<Device^>^ devices;
 
     internal:
-        SerialDiscoveryEventArgs(array<DiscoveredSerialDevice^>^ devices) : devices(devices)
+        PortScannerEventArgs(array<Device^>^ devices) : devices(devices)
         {
         }
     };

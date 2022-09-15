@@ -1,6 +1,6 @@
 use ximu3::connection_info::*;
 use ximu3::connection_type::*;
-use ximu3::serial_discovery::*;
+use ximu3::port_scanner::*;
 use crate::helpers;
 use super::connection;
 
@@ -10,7 +10,7 @@ pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
         println!("Searching for connections");
 
-        let devices = SerialDiscovery::scan_filter(2000, ConnectionType::Serial);
+        let devices = PortScanner::scan_filter(ConnectionType::Serial);
 
         if devices.is_empty() {
             println!("No serial connections available");

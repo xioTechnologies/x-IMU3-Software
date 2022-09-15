@@ -115,15 +115,15 @@ impl FileConverter {
                     progress.bytes_processed = data_logger.connections[0].get_statistics().data_total;
                     progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
 
+                    if progress.bytes_processed == progress.file_size {
+                        break;
+                    }
+
                     if let Ok(dropped) = dropped.lock() {
                         if *dropped {
                             return;
                         }
                         closure(progress.clone());
-                    }
-
-                    if progress.bytes_processed == progress.file_size {
-                        break;
                     }
 
                     std::thread::sleep(std::time::Duration::from_millis(100));

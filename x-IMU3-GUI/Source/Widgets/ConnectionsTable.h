@@ -2,20 +2,19 @@
 
 #include "../Widgets/CustomToggleButton.h"
 #include "../Widgets/SimpleLabel.h"
-#include "ConnectionInfo.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <variant>
 #include "Ximu3.hpp"
 
-class DiscoveredDevicesTable : public juce::Component,
-                               private juce::TableListBoxModel
+class ConnectionsTable : public juce::Component,
+                         private juce::TableListBoxModel
 {
 public:
     struct Row
     {
-        bool selected = false;
-        juce::String deviceNameAndSerialNumber;
-        std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
+        bool selected;
+        juce::String deviceName;
+        juce::String serialNumber;
+        std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
         ximu3::XIMU3_ConnectionType connectionType;
 
         bool operator==(const Row& row) const
@@ -24,15 +23,13 @@ public:
         }
     };
 
-    DiscoveredDevicesTable();
+    ConnectionsTable();
 
     void resized() override;
 
-    void setRows(std::vector<Row> rows_);
+    void setRows(const std::vector<Row>& rows_);
 
     const std::vector<Row>& getRows() const;
-
-    std::function<void()> onSelectionChanged;
 
 private:
     enum class ColumnIDs
@@ -49,8 +46,6 @@ private:
     SimpleLabel connectionLabel { "Connection" };
     juce::TableListBox table { "", this };
 
-    void selectionChanged();
-
     int getNumRows() override;
 
     void paintRowBackground(juce::Graphics&, int, int, int, bool) override
@@ -65,5 +60,5 @@ private:
 
     void cellClicked(int rowNumber, int, const juce::MouseEvent&) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DiscoveredDevicesTable)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionsTable)
 };

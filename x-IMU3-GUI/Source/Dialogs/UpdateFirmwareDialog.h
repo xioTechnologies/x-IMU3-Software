@@ -1,11 +1,10 @@
 #pragma once
 
+#include "../Widgets/CustomComboBox.h"
 #include "../Widgets/CustomTextEditor.h"
 #include "../Widgets/IconButton.h"
-#include "../Widgets/SerialPortComboBox.h"
 #include "../Widgets/SimpleLabel.h"
 #include "Dialog.h"
-#include "SerialDiscovery.hpp"
 #include "Ximu3.hpp"
 
 class UpdateFirmwareDialog : public Dialog
@@ -20,9 +19,9 @@ public:
     juce::String getFileName() const;
 
 private:
-    std::vector<ximu3::XIMU3_DiscoveredSerialDevice> devices;
-    ximu3::SerialDiscovery serialDiscovery {
-            [this](const std::vector<ximu3::XIMU3_DiscoveredSerialDevice>& devices_)
+    std::vector<ximu3::XIMU3_Device> devices;
+    ximu3::PortScanner portScanner {
+            [this](const std::vector<ximu3::XIMU3_Device>& devices_)
             {
                 auto self = SafePointer<juce::Component>(this);
                 juce::MessageManager::callAsync([this, self, devices_]

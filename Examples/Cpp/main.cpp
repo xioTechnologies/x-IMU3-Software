@@ -4,11 +4,11 @@
 #include "Examples/Commands.h"
 #include "Examples/DataLogger.h"
 #include "Examples/FileConverter.h"
-#include "Examples/GetAvailablePorts.h"
+#include "Examples/GetPortNames.h"
 #include "Examples/NetworkAnnouncement.h"
 #include "Examples/OpenAndPing.h"
+#include "Examples/PortScanner.h"
 #include "Examples/SerialConnection.h"
-#include "Examples/SerialDiscovery.h"
 #include "Examples/TcpConnection.h"
 #include "Examples/UdpConnection.h"
 #include "Examples/UsbConnection.h"
@@ -23,11 +23,11 @@ int main(int argc, const char* argv[])
     std::cout << "B. Commands.h" << std::endl;
     std::cout << "C. DataLogger.h" << std::endl;
     std::cout << "D. FileConverter.h" << std::endl;
-    std::cout << "E. GetAvailablePorts.h" << std::endl;
+    std::cout << "E. GetPortNames.h" << std::endl;
     std::cout << "F. NetworkAnnouncement.h" << std::endl;
     std::cout << "G. OpenAndPing.h" << std::endl;
-    std::cout << "H. SerialConnection.h" << std::endl;
-    std::cout << "I. SerialDiscovery.h" << std::endl;
+    std::cout << "H. PortScanner.h" << std::endl;
+    std::cout << "I. SerialConnection.h" << std::endl;
     std::cout << "J. TcpConnection.h" << std::endl;
     std::cout << "K. UdpConnection.h" << std::endl;
     std::cout << "L. UsbConnection.h" << std::endl;
@@ -46,7 +46,7 @@ int main(int argc, const char* argv[])
             FileConverter();
             break;
         case 'E':
-            GetAvailablePorts();
+            GetPortNames();
             break;
         case 'F':
             NetworkAnnouncement();
@@ -55,10 +55,10 @@ int main(int argc, const char* argv[])
             OpenAndPing();
             break;
         case 'H':
-            SerialConnection();
+            PortScanner();
             break;
         case 'I':
-            SerialDiscovery();
+            SerialConnection();
             break;
         case 'J':
             TcpConnection();
