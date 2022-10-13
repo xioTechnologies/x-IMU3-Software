@@ -12,8 +12,10 @@ ConnectionsTable::ConnectionsTable()
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
-            auto* const toggle = static_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index));
-            toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
+            if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
+            {
+                toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
+            }
             rows[index].selected = selectAllButton.getToggleState();
         }
     };
