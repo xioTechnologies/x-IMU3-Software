@@ -106,7 +106,7 @@ impl NetworkAnnouncement {
             #[derive(Deserialize)]
             struct Object {
                 name: String,
-                serial: String,
+                sn: String,
                 ip: String,
                 port: u16,
                 send: u16,
@@ -129,7 +129,7 @@ impl NetworkAnnouncement {
                     };
                     let device = NetworkAnnouncementMessage {
                         device_name: object.name,
-                        serial_number: object.serial,
+                        serial_number: object.sn,
                         rssi: object.rssi,
                         battery: object.battery,
                         status: ChargingStatus::from(object.status),
