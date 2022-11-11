@@ -25,6 +25,11 @@
         <Option displayName="-Z-Y-X" value="22"/>
         <Option displayName="-Z+X-Y" value="23"/>
     </Enum>
+    <Enum enumName="FusionConvention">
+        <Option displayName="NWU" value="0"/>
+        <Option displayName="ENU" value="1"/>
+        <Option displayName="NED" value="2"/>
+    </Enum>
     <Enum enumName="RS9116WlanCommandRegion">
         <Option displayName="United States (US)" value="1"/>
         <Option displayName="Europe (EU)" value="2"/>
