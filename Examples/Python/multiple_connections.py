@@ -103,9 +103,9 @@ if not connections:
 
 for connection in connections:
     connection.send_command("strobe")  # example command with null value
+    connection.send_command("note", "Hello World!")  # example command with string value
     connection.send_command("udpDataMessagesEnabled", True)  # example command with true/false value
     connection.send_command("inertialMessageRateDivisor", 8)  # example command with number value
-    connection.send_command("deviceName", "x-IMU3")  # example command with string value
 
 for _ in range(500):
     time.sleep(0.01)  # IMPORTANT: callbacks will not be processed during sleep
