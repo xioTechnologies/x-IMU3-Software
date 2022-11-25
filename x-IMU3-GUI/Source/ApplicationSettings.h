@@ -16,7 +16,7 @@ public:
     juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, 2 };
     juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, 500 };
     juce::CachedValue<bool> hideUnusedDeviceSettings { tree, "hideUnusedDeviceSettings", nullptr, true };
-    juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, false };
+    juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
 
     static ApplicationSettings& getSingleton()
     {
