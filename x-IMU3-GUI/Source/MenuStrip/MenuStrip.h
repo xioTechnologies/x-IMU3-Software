@@ -53,13 +53,15 @@ private:
     };
 
     std::vector<ButtonGroup> buttonGroups {
-            { connectionLabel,  { searchButton,              manualButton,       disconnectButton },        {}, {}},
-            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }, {}, {}},
-            { commandsLabel,    { shutdownButton,            sendCommandButton },                           {}, {}},
-            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime },                              {}, {}},
-            { toolsLabel,       { toolsButton },                                                            {}, {}},
-            { applicationLabel, { mainSettingsButton,        versionButton },                               {}, {}}
+            { connectionLabel,  { searchButton,              manualButton,       disconnectButton }},
+            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }},
+            { commandsLabel,    { shutdownButton,            sendCommandButton }},
+            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime }},
+            { toolsLabel,       { toolsButton }},
+            { applicationLabel, { mainSettingsButton,        versionButton }}
     };
+
+    juce::FlexBox flexBox;
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
             { DevicePanelContainer::Layout::rows,      BinaryData::rows_svg },
