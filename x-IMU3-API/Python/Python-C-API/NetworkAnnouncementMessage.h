@@ -27,12 +27,12 @@ static PyObject* network_announcement_message_get_serial_number(NetworkAnnouncem
 
 static PyObject* network_announcement_message_get_rssi(NetworkAnnouncementMessage* self)
 {
-    return Py_BuildValue("k", self->message.rssi);
+    return Py_BuildValue("i", self->message.rssi);
 }
 
 static PyObject* network_announcement_message_get_battery(NetworkAnnouncementMessage* self)
 {
-    return Py_BuildValue("k", self->message.battery);
+    return Py_BuildValue("i", self->message.battery);
 }
 
 static PyObject* network_announcement_message_get_status(NetworkAnnouncementMessage* self)
