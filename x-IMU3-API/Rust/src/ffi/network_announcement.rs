@@ -11,8 +11,8 @@ use crate::network_announcement::*;
 pub struct NetworkAnnouncementMessageC {
     device_name: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],
-    rssi: u32,
-    battery: u32,
+    rssi: i32,
+    battery: i32,
     status: ChargingStatus,
     tcp_connection_info: TcpConnectionInfoC,
     udp_connection_info: UdpConnectionInfoC,

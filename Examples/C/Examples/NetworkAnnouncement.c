@@ -38,7 +38,7 @@ static void Callback(const XIMU3_NetworkAnnouncementMessage message, void* conte
 
 static void PrintMessage(const XIMU3_NetworkAnnouncementMessage message)
 {
-    printf("%s - %s, RSSI: %u%%, Battery: %u%%, %s, %s, %s\n",
+    printf("%s - %s, RSSI: %d%%, Battery: %d%%, %s, %s, %s\n",
            message.device_name,
            message.serial_number,
            message.rssi,

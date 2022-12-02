@@ -310,8 +310,8 @@ typedef struct XIMU3_NetworkAnnouncementMessage
 {
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
-    uint32_t rssi;
-    uint32_t battery;
+    int32_t rssi;
+    int32_t battery;
     enum XIMU3_ChargingStatus status;
     struct XIMU3_TcpConnectionInfo tcp_connection_info;
     struct XIMU3_UdpConnectionInfo udp_connection_info;

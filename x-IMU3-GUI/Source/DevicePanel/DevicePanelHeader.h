@@ -58,9 +58,9 @@ private:
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     uint64_t batteryCallbackID;
 
-    void updateRssi(const uint32_t percentage);
+    void updateRssi(const int percentage);
 
-    void updateBattery(const uint32_t percentage, const ximu3::XIMU3_ChargingStatus status);
+    void updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status);
 
     juce::PopupMenu getMenu() const;
 

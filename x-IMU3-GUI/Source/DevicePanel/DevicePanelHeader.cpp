@@ -31,18 +31,18 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
 
     rssiCallbackID = devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)
     {
-        updateRssi((uint32_t) message.percentage);
+        updateRssi((int) message.percentage);
     });
 
     batteryCallbackID = devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
     {
-        updateBattery((uint32_t) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
+        updateBattery((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
 
     juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
                          {
                              const auto response = devicePanel.getConnection().ping();
-                             
+
                              juce::MessageManager::callAsync([&, self, response]
                                                              {
                                                                  if (self == nullptr)
@@ -161,8 +161,13 @@ juce::String DevicePanelHeader::getDeviceDescriptor() const
     return deviceName + serialNumber;
 }
 
-void DevicePanelHeader::updateRssi(const uint32_t percentage)
+void DevicePanelHeader::updateRssi(const int percentage)
 {
+    if (percentage < 0)
+    {
+        return;
+    }
+
     rssiIcon.update(percentage <= 25 ? BinaryData::wifi_25_svg :
                     percentage <= 50 ? BinaryData::wifi_50_svg :
                     percentage <= 75 ? BinaryData::wifi_75_svg :
@@ -170,7 +175,7 @@ void DevicePanelHeader::updateRssi(const uint32_t percentage)
                     juce::String(percentage) + "%");
 }
 
-void DevicePanelHeader::updateBattery(const uint32_t percentage, const ximu3::XIMU3_ChargingStatus status)
+void DevicePanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status)
 {
     batteryIcon.update(status == ximu3::XIMU3_ChargingStatusCharging ? BinaryData::battery_charging_svg :
                        status == ximu3::XIMU3_ChargingStatusChargingComplete ? BinaryData::battery_charging_complete_svg :
