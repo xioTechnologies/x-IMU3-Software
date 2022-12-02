@@ -22,46 +22,49 @@ typedef struct
 
 static PyObject* connection_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    Connection* const self = (Connection*) subtype->tp_alloc(subtype, 0);
-
     PyObject* connection_info;
 
     if (PyArg_ParseTuple(args, "O", &connection_info))
     {
         if (PyObject_IsInstance(connection_info, (PyObject*) &usb_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_usb(((UsbConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
         if (PyObject_IsInstance(connection_info, (PyObject*) &serial_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_serial(((SerialConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
         if (PyObject_IsInstance(connection_info, (PyObject*) &tcp_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_tcp(((TcpConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
         if (PyObject_IsInstance(connection_info, (PyObject*) &udp_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_udp(((UdpConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
         if (PyObject_IsInstance(connection_info, (PyObject*) &bluetooth_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
         if (PyObject_IsInstance(connection_info, (PyObject*) &file_connection_info_object))
         {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
             self->connection = XIMU3_connection_new_file(((FileConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    Py_DECREF(self);
     return NULL;
 }
 
