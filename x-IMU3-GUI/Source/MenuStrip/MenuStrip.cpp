@@ -52,6 +52,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     devicePanelContainer.connectToDevice(*connectionInfo);
                 }
             }
+            return true;
         });
     };
 
@@ -65,6 +66,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
             DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelContainer.getDevicePanels()));
+            return true;
         });
     };
 
@@ -76,6 +78,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
             }
+            return true;
         });
     };
 
@@ -140,6 +143,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     {
                         directory.deleteRecursively();
                         startDataLogger();
+                        return true;
                     });
                 }
                 else
@@ -147,6 +151,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     startDataLogger();
                 }
             }
+            return true;
         });
     };
 
@@ -270,6 +275,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
             devicePanelContainer.connectToDevice(*connectionInfo);
             ConnectionHistory().update(*connectionInfo);
         }
+        return true;
     };
     menu.addItem("New USB Connection", [connectCallback]
     {
@@ -447,6 +453,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
                 const auto save = [this, layoutName]
                 {
                     CustomLayouts().save(layoutName, windowLayout);
+                    return true;
                 };
 
                 if (CustomLayouts().exists(layoutName))
@@ -458,6 +465,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
                     save();
                 }
             }
+            return true;
         });
     });
 
@@ -500,6 +508,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
         DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
         {
             DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), devicePanelContainer.getDevicePanels()));
+            return true;
         });
     });
     menu.addItem("Convert File (.ximu3)", []
@@ -520,6 +529,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
                     {
                         directory.deleteRecursively();
                         startFileConverter();
+                        return true;
                     });
                 }
                 else
@@ -527,6 +537,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
                     startFileConverter();
                 }
             }
+            return true;
         });
     });
     menu.addItem("Update Firmware", [&]
@@ -539,6 +550,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
                 {
                     DialogLauncher::launchDialog(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getFileName()));
                 }
+                return true;
             });
         };
 
@@ -548,6 +560,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             {
                 disconnect(nullptr);
                 launchUpdateFirmwareDialog();
+                return true;
             });
             return;
         }

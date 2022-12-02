@@ -11,9 +11,9 @@ public:
     void resized() override;
 
 private:
-    IconButton defaultButton { IconButton::Style::menuStrip, BinaryData::default_svg, 0.8f, "Restore Default Application Settings" };
-
     std::vector<std::unique_ptr<juce::Component>> groups;
+
+    IconButton defaultButton { IconButton::Style::menuStrip, BinaryData::default_svg, 0.8f, "Restore Default Application Settings" };
 
     void initialiseGroups();
 

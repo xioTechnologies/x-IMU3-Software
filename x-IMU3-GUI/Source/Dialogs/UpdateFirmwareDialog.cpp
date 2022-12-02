@@ -26,9 +26,9 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
 
     deviceValue.onChange = fileNameValue.onTextChange = [&]
     {
-        setValid(getConnectionInfo() != nullptr && std::filesystem::exists(fileNameValue.getText().toStdString()));
+        setOkButton(getConnectionInfo() != nullptr && std::filesystem::exists(fileNameValue.getText().toStdString()));
     };
-    setValid(false);
+    setOkButton(false);
 
     setSize(600, calculateHeight(2));
 }

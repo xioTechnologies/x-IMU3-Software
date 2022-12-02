@@ -29,7 +29,7 @@ public:
 
     const juce::String icon;
 
-    std::function<void()> okCallback;
+    std::function<bool()> okCallback;
 
 protected:
     static constexpr int margin = 15;
@@ -38,7 +38,9 @@ protected:
 
     int calculateHeight(const int numberOfRows) const;
 
-    void setValid(const bool valid);
+    void setOkButton(const bool valid, const juce::String& buttonText = "");
+
+    void setCancelButton(const bool valid, const juce::String& buttonText = "");
 
 private:
     DialogButton okButton { "OK" };
@@ -55,7 +57,7 @@ private:
 class DialogLauncher : public juce::DialogWindow
 {
 public:
-    static void launchDialog(std::unique_ptr<Dialog> content, std::function<void()> okCallback = nullptr);
+    static void launchDialog(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
 
     static Dialog* getLaunchedDialog();
 
@@ -66,7 +68,7 @@ public:
 private:
     static std::unique_ptr<DialogLauncher> launchedDialog;
 
-    DialogLauncher(std::unique_ptr<Dialog> content, std::function<void()> okCallback);
+    DialogLauncher(std::unique_ptr<Dialog> content, std::function<bool()> okCallback);
 
     void dismiss();
 

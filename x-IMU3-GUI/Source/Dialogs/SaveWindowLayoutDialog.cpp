@@ -7,7 +7,7 @@ SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, 
 
     nameValue.onTextChange = [this]
     {
-        setValid(nameValue.getText().isNotEmpty() && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText());
+        setOkButton(nameValue.getText().isNotEmpty() && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText());
     };
 
     nameValue.setText("Custom Layout", false);

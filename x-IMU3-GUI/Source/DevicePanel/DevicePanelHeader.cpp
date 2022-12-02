@@ -203,6 +203,7 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
             {
                 DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage(dialog->getCommand()), std::vector<DevicePanel*> { &devicePanel }));
             }
+            return true;
         });
     });
 

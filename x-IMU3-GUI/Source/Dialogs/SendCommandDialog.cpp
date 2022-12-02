@@ -22,7 +22,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
 
     commandValue.onChange = [&]
     {
-        setValid(commandValue.getText().isNotEmpty());
+        setOkButton(commandValue.getText().isNotEmpty());
     };
     commandValue.onChange();
 

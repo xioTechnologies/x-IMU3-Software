@@ -154,6 +154,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     });
                 });
             });
+            return true;
         });
     };
 }

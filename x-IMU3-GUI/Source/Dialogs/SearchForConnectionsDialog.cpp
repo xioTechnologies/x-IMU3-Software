@@ -111,5 +111,5 @@ void SearchForConnectionsDialog::timerCallback()
     }
     getTopLevelComponent()->setName("Search for Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
-    setValid(getConnectionInfos().empty() == false);
+    setOkButton(getConnectionInfos().empty() == false);
 }

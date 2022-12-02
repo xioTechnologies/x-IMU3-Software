@@ -34,9 +34,9 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
 
     sourceValue.onTextChange = destinationValue.onTextChange = [&]
     {
-        setValid(std::filesystem::exists(sourceValue.getText().toStdString()) && std::filesystem::exists(destinationValue.getText().toStdString()));
+        setOkButton(std::filesystem::exists(sourceValue.getText().toStdString()) && std::filesystem::exists(destinationValue.getText().toStdString()));
     };
-    setValid(false);
+    setOkButton(false);
 
     setSize(600, calculateHeight(2));
 }

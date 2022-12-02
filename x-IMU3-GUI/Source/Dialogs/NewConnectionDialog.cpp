@@ -93,7 +93,7 @@ std::unique_ptr<ximu3::ConnectionInfo> SerialConnectionDialog::getConnectionInfo
 
 void SerialConnectionDialog::validateDialog()
 {
-    setValid(baudRateValue.getText().isNotEmpty());
+    setOkButton(baudRateValue.getText().isNotEmpty());
 }
 
 TcpConnectionDialog::TcpConnectionDialog() : NewConnectionDialog("New TCP Connection")
@@ -149,7 +149,7 @@ std::unique_ptr<ximu3::ConnectionInfo> TcpConnectionDialog::getConnectionInfo() 
 
 void TcpConnectionDialog::validateDialog()
 {
-    setValid((ipAddressValue.isEmpty() || portValue.isEmpty()) == false);
+    setOkButton((ipAddressValue.isEmpty() || portValue.isEmpty()) == false);
 }
 
 UdpConnectionDialog::UdpConnectionDialog() : NewConnectionDialog("New UDP Connection")
@@ -239,7 +239,7 @@ std::unique_ptr<ximu3::ConnectionInfo> UdpConnectionDialog::getConnectionInfo() 
 
 void UdpConnectionDialog::validateDialog()
 {
-    setValid((ipAddressValue.isEmpty() || sendPortValue.isEmpty() || receivePortValue.isEmpty()) == false);
+    setOkButton((ipAddressValue.isEmpty() || sendPortValue.isEmpty() || receivePortValue.isEmpty()) == false);
 }
 
 BluetoothConnectionDialog::BluetoothConnectionDialog() : NewConnectionDialog("New Bluetooth Connection")
