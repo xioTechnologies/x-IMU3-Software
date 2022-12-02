@@ -58,12 +58,13 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     }
                 }
 
-                for (const auto& row_ : rows)
+                for (size_t index = 0; index < rows.size(); index++)
                 {
-                    if (row_.state == Row::State::failed)
+                    if (rows[index].state == Row::State::failed)
                     {
-                        setCancelButton(true);
                         setOkButton(true);
+                        setCancelButton(true);
+                        table.scrollToEnsureRowIsOnscreen((int) index);
                         return;
                     }
                 }
@@ -72,8 +73,8 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                 {
                     return true;
                 };
-                setCancelButton(false);
                 setOkButton(true, "Close");
+                setCancelButton(false);
 
                 if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
                 {
