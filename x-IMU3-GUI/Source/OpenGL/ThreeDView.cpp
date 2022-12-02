@@ -34,8 +34,8 @@ void ThreeDView::render()
     renderer.refreshScreen(juce::Colours::black, bounds);
     resources.threeDViewShader.projectionMatrix.setMatrix4(renderer.getProjectionMatrix(bounds).mat, 1, false);
 
-    auto worldRotation = rotation(90.0f, 0.0f, 0.0f) * rotation(settings.elevation, settings.azimuth, 0.0f);
-    auto worldTransformation = worldRotation * translation(0.0f, 0.0f, settings.zoom);
+    auto worldRotation = rotation(settings.elevation, settings.azimuth, 0.0f) * rotation(90.0f, 0.0f, 0.0f);
+    auto worldTransformation = translation(0.0f, 0.0f, settings.zoom) * worldRotation;
     auto deviceRotation = juce::Quaternion<GLfloat>(-1.0f * quaternionX, -1.0f * quaternionY, -1.0f * quaternionZ, quaternionW).getRotationMatrix(); // quaternion conjugate
 
     const auto lightAmbient = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
@@ -63,7 +63,7 @@ void ThreeDView::render()
 
     const auto calcMatrix = [&](juce::Matrix3D<float> matrixArg, juce::Vector3D<float> vector)
     {
-        auto matrix = juce::Matrix3D<float> { vector } * matrixArg;
+        auto matrix = matrixArg * juce::Matrix3D<float>::fromTranslation(vector);
         auto newMatrix = juce::Matrix3D<float> {};
         newMatrix.mat[12] = matrix.mat[12];
         newMatrix.mat[13] = matrix.mat[13];
@@ -74,7 +74,7 @@ void ThreeDView::render()
     if (settings.isModelEnabled)
     {
         resources.threeDViewShader.emissivity.set(0.8f);
-        resources.threeDViewShader.modelMatrix.setMatrix4((deviceRotation * worldTransformation).mat, 1, false);
+        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * deviceRotation).mat, 1, false);
 
         switch (settings.model.load())
         {
@@ -97,7 +97,7 @@ void ThreeDView::render()
         resources.threeDViewShader.emissivity.set(0.0f);
         resources.threeDViewShader.isTextured.set(true);
         resources.compassTexture.bind();
-        resources.threeDViewShader.modelMatrix.setMatrix4((scale(1.5f) * translation(0.0f, 0.0f, -0.5f) * worldTransformation).mat, 1, false);
+        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * translation(0.0f, 0.0f, -0.5f) * scale(1.5f)).mat, 1, false);
         resources.stage.setColor(1.0f, 1.0f, 1.0f, 0.75f);
         resources.stage.render(resources, true);
         resources.compassTexture.unbind();
@@ -118,11 +118,11 @@ void ThreeDView::render()
             resources.arrow.setColor(1.0f, 0.0f, 0.0f, alpha);
             resources.arrow.render(resources, false);
 
-            resources.threeDViewShader.modelMatrix.setMatrix4((juce::Quaternion<GLfloat>(0.7071f, 0.7071f, 0.0f, 0.0f).getRotationMatrix() * matrix).mat, 1, false);
+            resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.7071f, 0.7071f, 0.0f, 0.0f).getRotationMatrix()).mat, 1, false);
             resources.arrow.setColor(0.0f, 1.0f, 0.0f, alpha);
             resources.arrow.render(resources, false);
 
-            resources.threeDViewShader.modelMatrix.setMatrix4((juce::Quaternion<GLfloat>(0.0f, 0.7071f, 0.0f, 0.7071f).getRotationMatrix() * matrix).mat, 1, false);
+            resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.0f, 0.7071f, 0.0f, 0.7071f).getRotationMatrix()).mat, 1, false);
             resources.arrow.setColor(0.0f, 0.0f, 1.0f, alpha);
             resources.arrow.render(resources, false);
         };
@@ -130,8 +130,8 @@ void ThreeDView::render()
         const auto bottomLeftX = -0.45f;
         const auto bottomLeftY = -0.2f;
 
-        renderAxes(scale(0.1f) * deviceRotation * worldRotation * translation(0.0f, 0.0f, -1.0f));
-        renderAxes(scale(0.1f) * worldRotation * translation(bottomLeftX, bottomLeftY, -1.0f));
+        renderAxes(translation(0.0f, 0.0f, -1.0f) * worldRotation * deviceRotation * scale(0.1f));
+        renderAxes(translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * scale(0.1f));
 
         renderer.turnCullingOff(); // render text only after culling off
         renderer.getResources().textShader.use();
@@ -145,7 +145,7 @@ void ThreeDView::render()
             text.setScale({ pixelSize.x, pixelSize.y });
 
             juce::Vector3D<GLfloat> position(matrix.mat[12], matrix.mat[13], matrix.mat[14]);
-            auto clipCoordinate = juce::Matrix3D<GLfloat>(position) * renderer.getProjectionMatrix(bounds);
+            auto clipCoordinate = renderer.getProjectionMatrix(bounds) * juce::Matrix3D<GLfloat>::fromTranslation(position);
 
             auto x = clipCoordinate.mat[12] / clipCoordinate.mat[15];
             auto y = clipCoordinate.mat[13] / clipCoordinate.mat[15];
@@ -158,12 +158,12 @@ void ThreeDView::render()
             text.render(resources);
         };
 
-        auto matrixA = scale(0.11f) * deviceRotation * worldRotation * translation(0.0f, 0.0f, -1.0f);
+        auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * deviceRotation * scale(0.11f);
         renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
 
-        auto matrixB = scale(0.11f) * worldRotation * translation(bottomLeftX, bottomLeftY, -1.0f);
+        auto matrixB = translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * scale(0.11f);
         renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixB, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
@@ -212,7 +212,7 @@ juce::Matrix3D<GLfloat> ThreeDView::rotation(const float roll, const float pitch
 
 juce::Matrix3D<GLfloat> ThreeDView::translation(const float x, const float y, const float z)
 {
-    return juce::Matrix3D<GLfloat>(juce::Vector3D<GLfloat>(x, y, z));
+    return juce::Matrix3D<GLfloat>::fromTranslation(juce::Vector3D<GLfloat>(x, y, z));
 }
 
 juce::Matrix3D<GLfloat> ThreeDView::scale(const float value)

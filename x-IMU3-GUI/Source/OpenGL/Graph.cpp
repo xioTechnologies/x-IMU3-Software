@@ -136,10 +136,10 @@ void Graph::render()
             }
         }
 
-        juce::Matrix3D<float> translation { juce::Vector3D<float>(-1 + (x * pixelSize.x), -1 + (y * pixelSize.y), 0.0f) };
+        auto translation = juce::Matrix3D<float>::fromTranslation(juce::Vector3D<float>(-1 + (x * pixelSize.x), -1 + (y * pixelSize.y), 0.0f));
         auto rotation = juce::Matrix3D<float>::rotation({ 0.0f, 0.0f, rotated ? juce::degreesToRadians(90.0f) : 0.0f });
 
-        auto transformation = rotation * translation;
+        auto transformation = translation * rotation;
 
         resources.textShader.transformation.setMatrix4(transformation.mat, 1, false);
 
