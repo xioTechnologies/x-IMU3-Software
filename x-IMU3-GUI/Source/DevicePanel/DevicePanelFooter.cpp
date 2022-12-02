@@ -47,6 +47,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                              notificationMessage.isUnread = false;
                                          }
                                          messagesChanged();
+                                         return true;
                                      });
     };
 

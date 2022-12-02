@@ -11,7 +11,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
 {
     addAndMakeVisible(progressBar);
 
-    setValid(false);
+    setOkButton(false);
 
     setSize(dialogWidth, calculateHeight(1));
 

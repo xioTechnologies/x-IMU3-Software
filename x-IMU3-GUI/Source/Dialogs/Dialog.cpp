@@ -11,7 +11,6 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
     auto initButton = [this](auto& button, auto visible, const auto& buttonText, auto toggleState)
     {
         addChildComponent(&button);
-        button.setClickingTogglesState(true);
         button.setToggleState(toggleState, juce::dontSendNotification);
         button.setWantsKeyboardFocus(false);
         button.setVisible(visible);
@@ -27,9 +26,9 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
     {
         BailOutChecker thisDeletedChecker(this);
 
-        if (okCallback)
+        if (okCallback != nullptr && okCallback() == false)
         {
-            okCallback();
+            return;
         }
 
         if (thisDeletedChecker.shouldBailOut() == false)
@@ -92,14 +91,27 @@ int Dialog::calculateHeight(const int numberOfRows) const
     return margin + (numberOfRows + 1) * (UILayout::textComponentHeight + margin) + adjust;
 }
 
-void Dialog::setValid(const bool valid)
+void Dialog::setOkButton(const bool valid, const juce::String& buttonText)
 {
     okButton.setEnabled(valid);
+    if (buttonText.isNotEmpty())
+    {
+        okButton.setButtonText(buttonText);
+    }
+}
+
+void Dialog::setCancelButton(const bool valid, const juce::String& buttonText)
+{
+    cancelButton.setEnabled(valid);
+    if (buttonText.isNotEmpty())
+    {
+        cancelButton.setButtonText(buttonText);
+    }
 }
 
 std::unique_ptr<DialogLauncher> DialogLauncher::launchedDialog = nullptr;
 
-void DialogLauncher::launchDialog(std::unique_ptr<Dialog> content, std::function<void()> okCallback)
+void DialogLauncher::launchDialog(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
 {
     launchedDialog.reset();
 
@@ -134,10 +146,13 @@ bool DialogLauncher::escapeKeyPressed()
     return true;
 }
 
-DialogLauncher::DialogLauncher(std::unique_ptr<Dialog> content, std::function<void()> okCallback)
+DialogLauncher::DialogLauncher(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
         : juce::DialogWindow(content->getName(), UIColours::menuStrip, true, true)
 {
-    content->okCallback = std::move(okCallback);
+    if (okCallback != nullptr)
+    {
+        content->okCallback = std::move(okCallback);
+    }
 
     setContentOwned(content.get(), true);
     setTitleBarHeight(Dialog::titleBarHeight);

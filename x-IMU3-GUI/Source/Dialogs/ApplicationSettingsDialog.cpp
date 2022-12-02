@@ -5,6 +5,9 @@
 ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::settings_svg, "Application Settings", "Close", "", &defaultButton, 60)
 {
     addAndMakeVisible(defaultButton);
+
+    initialiseGroups();
+
     defaultButton.onClick = [&]
     {
         ApplicationSettings::getSingleton().restoreDefault();
@@ -13,8 +16,6 @@ ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::sett
         initialiseGroups();
         resized();
     };
-
-    initialiseGroups();
 
     int height = 0;
     for (auto& group : groups)

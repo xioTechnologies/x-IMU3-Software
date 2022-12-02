@@ -1,45 +1,15 @@
 #include "../ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels) : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Close", "", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
+SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels)
+        : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
-    for (auto* const devicePanel : devicePanels)
-    {
-        rows.push_back({ devicePanel->getColourTag(), devicePanel->getDeviceDescriptor(), devicePanel->getConnection().getInfo()->toString() });
-
-        devicePanel->sendCommands({ command }, this, [&, rowIndex = rows.size() - 1](const auto&, const auto& failedCommands)
-        {
-            rows[rowIndex].state = (failedCommands.empty() == false) ? Row::State::failed : Row::State::complete;
-            table.updateContent();
-
-            if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
-            {
-                for (const auto& row : rows)
-                {
-                    if (row.state != Row::State::complete)
-                    {
-                        return;
-                    }
-                }
-
-                startTimer(1000);
-            }
-        });
-    }
-
-    addAndMakeVisible(closeWhenCompleteButton);
-    closeWhenCompleteButton.setClickingTogglesState(true);
-    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
-    closeWhenCompleteButton.onClick = [&]
-    {
-        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
-    };
-
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(connectionLabel);
     addAndMakeVisible(completeLabel);
-
     addAndMakeVisible(table);
+    addAndMakeVisible(closeWhenCompleteButton);
+
     const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
@@ -51,6 +21,77 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
     table.updateContent();
     table.setWantsKeyboardFocus(false);
+
+    for (auto* const devicePanel : devicePanels)
+    {
+        rows.push_back({ *devicePanel });
+    }
+
+    closeWhenCompleteButton.setClickingTogglesState(true);
+    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    closeWhenCompleteButton.onClick = [&]
+    {
+        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
+    };
+
+    okCallback = [&, command]
+    {
+        for (auto& row : rows)
+        {
+            if (row.state == Row::State::complete)
+            {
+                continue;
+            }
+
+            row.state = Row::State::inProgress;
+
+            row.devicePanel.sendCommands({ command }, this, [&, row = &row](const auto&, const auto& failedCommands)
+            {
+                row->state = (failedCommands.empty() == false) ? Row::State::failed : Row::State::complete;
+                table.updateContent();
+
+                for (const auto& row_ : rows)
+                {
+                    if (row_.state == Row::State::inProgress)
+                    {
+                        return;
+                    }
+                }
+
+                for (size_t index = 0; index < rows.size(); index++)
+                {
+                    if (rows[index].state == Row::State::failed)
+                    {
+                        setOkButton(true);
+                        setCancelButton(true);
+                        table.scrollToEnsureRowIsOnscreen((int) index);
+                        return;
+                    }
+                }
+
+                okCallback = [&]
+                {
+                    return true;
+                };
+                setOkButton(true, "Close");
+                setCancelButton(false);
+
+                if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
+                {
+                    startTimer(1000);
+                }
+            });
+        }
+
+        setOkButton(false);
+        setCancelButton(false);
+
+        table.updateContent();
+
+        return false;
+    };
+
+    okCallback();
 
     setSize(600, calculateHeight(6));
 }
@@ -77,7 +118,7 @@ int SendingCommandDialog::getNumRows()
 
 void SendingCommandDialog::paintRowBackground(juce::Graphics& g, int rowNumber, int height, int, bool)
 {
-    g.setColour(rows[(size_t) rowNumber].colourTag);
+    g.setColour(rows[(size_t) rowNumber].devicePanel.getColourTag());
     g.fillRect(0, 0, DevicePanelHeader::colourTagWidth, height);
 }
 
@@ -91,10 +132,10 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return nullptr;
 
         case ColumnIDs::device:
-            return new SimpleLabel(rows[(size_t) rowNumber].device);
+            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getDeviceDescriptor());
 
         case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].connection);
+            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getConnection().getInfo()->toString());
 
         case ColumnIDs::complete:
             switch (rows[(size_t) rowNumber].state)

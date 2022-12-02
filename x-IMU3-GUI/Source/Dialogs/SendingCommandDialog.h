@@ -33,20 +33,17 @@ private:
             complete,
         };
 
-        const juce::Colour colourTag;
-        const juce::String device;
-        const juce::String connection;
+        DevicePanel& devicePanel;
         State state = State::inProgress;
     };
-
-    std::vector<Row> rows;
-
-    CustomToggleButton closeWhenCompleteButton { "Close When Complete" };
 
     SimpleLabel deviceLabel { "Device" };
     SimpleLabel connectionLabel { "Connection" };
     SimpleLabel completeLabel { "Complete", UIFonts::getDefaultFont(), juce::Justification::centred };
     juce::TableListBox table { "", this };
+    std::vector<Row> rows;
+
+    CustomToggleButton closeWhenCompleteButton { "Close When Complete" };
 
     int getNumRows() override;
 
