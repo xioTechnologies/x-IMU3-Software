@@ -14,7 +14,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?"))
             {
                 connection.OpenAsync(OpenEvent);
-                Helpers.Wait(3);
+                System.Threading.Thread.Sleep(3000);
             }
             else
             {

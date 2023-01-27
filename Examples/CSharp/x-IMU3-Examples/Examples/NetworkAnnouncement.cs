@@ -11,7 +11,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?") == true)
             {
                 networkAnnouncement.NetworkAnnouncementEvent += NetworkAnnouncementEvent;
-                Helpers.Wait(-1);
+                System.Threading.Thread.Sleep(60000);
             }
             else
             {

@@ -43,7 +43,7 @@ namespace Ximu3Examples
             connection.SendCommands(commands, 2, 500);
 
             // Close connection
-            Helpers.Wait(-1);
+            System.Threading.Thread.Sleep(60000);
             connection.Close();
         }
 

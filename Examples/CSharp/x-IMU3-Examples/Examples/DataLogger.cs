@@ -32,7 +32,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?") == true)
             {
                 Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(directory, name, connections.ToArray(), DataLoggerEvent);
-                Helpers.Wait(3);
+                System.Threading.Thread.Sleep(3000);
                 dataLogger.Dispose();
             }
             else

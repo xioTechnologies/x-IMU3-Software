@@ -39,7 +39,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?") == true)
             {
                 connection.SendCommandsAsync(commands, 2, 500, SendCommandsEvent);
-                Helpers.Wait(3);
+                System.Threading.Thread.Sleep(3000);
             }
             else
             {
