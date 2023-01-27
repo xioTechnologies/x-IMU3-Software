@@ -22,7 +22,7 @@ public:
     void messagesChanged();
 
 private:
-    enum class ColumnIDs
+    enum class ColumnID
     {
         type = 1,
         timestamp,

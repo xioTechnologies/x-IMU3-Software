@@ -10,7 +10,7 @@ class AboutDialog : public Dialog
 {
 public:
     AboutDialog();
-    
+
     void resized() override;
 
     void mouseDown(const juce::MouseEvent& mouseEvent) override;

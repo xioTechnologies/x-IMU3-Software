@@ -4,6 +4,7 @@
 #include "../CommandMessage.h"
 #include "../Widgets/CustomComboBox.h"
 #include "../Widgets/CustomTextEditor.h"
+#include "../Widgets/IconButton.h"
 #include "../Widgets/SimpleLabel.h"
 #include "Dialog.h"
 
@@ -17,17 +18,35 @@ public:
     CommandMessage getCommand();
 
 private:
-    SimpleLabel label { "Command:" };
-    SimpleLabel prefixLabel { "{\"", UIFonts::getDefaultFont(), juce::Justification::centred };
-    CustomTextEditor commandKey;
-    SimpleLabel infixLabel { "\":", UIFonts::getDefaultFont(), juce::Justification::centred };
-    CustomTextEditor commandValue;
-    SimpleLabel postfixLabel { "}", UIFonts::getDefaultFont(), juce::Justification::centred };
+    enum class Type
+    {
+        string,
+        number,
+        true_,
+        false_,
+        null,
+    };
 
-    IconButton historyButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SendCommandDialog::getHistoryMenu, this) };
+    SimpleLabel keyLabel { "Key:" };
+    SimpleLabel valueLabel { "Value:" };
+    SimpleLabel commandLabel { "Command:" };
+
+    CustomTextEditor keyValue;
+    CustomComboBox typeValue;
+    CustomTextEditor stringValue;
+    CustomTextEditor numberValue;
+    CustomTextEditor commandValue;
+
+    IconButton historyButton { IconButton::Style::menuStripDropdown, BinaryData::default_svg, 0.8f, "Command History", std::bind(&SendCommandDialog::getHistoryMenu, this) };
 
     juce::ValueTree commandHistory;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Command History.xml");
+
+    static juce::String toString(const Type type);
+
+    static juce::String createCommand(const juce::String& key, const Type type, const juce::String& string, const juce::String& number);
+
+    void selectCommand(const juce::ValueTree command);
 
     juce::PopupMenu getHistoryMenu();
 
