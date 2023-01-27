@@ -9,7 +9,7 @@ pub fn run() {
             print_devices(devices);
         }));
 
-        helpers::wait(-1);
+        std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
         let devices = PortScanner::scan();
 

@@ -10,7 +10,7 @@ pub fn run() {
             print_progress(progress);
         }));
 
-        helpers::wait(-1);
+        std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
         print_progress(FileConverter::convert(destination, source));
     }

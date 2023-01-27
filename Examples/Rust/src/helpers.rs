@@ -19,13 +19,3 @@ pub fn yes_or_no(question: &str) -> bool {
         }
     }
 }
-
-pub fn wait(seconds: i32) {
-    if seconds < 0 {
-        loop {
-            std::thread::sleep(std::time::Duration::from_secs(1));
-        }
-    } else {
-        std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
-    }
-}

@@ -9,7 +9,7 @@ pub fn run() {
             print_message(message);
         }));
 
-        helpers::wait(-1);
+        std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
         for message in network_announcement.get_messages() {
             print_message(message)

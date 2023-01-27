@@ -43,7 +43,7 @@ pub fn run() {
             print_responses(responses);
         }));
 
-        helpers::wait(3);
+        std::thread::sleep(std::time::Duration::from_secs(3));
     } else {
         print_responses(connection.send_commands(commands, 2, 500));
     }
