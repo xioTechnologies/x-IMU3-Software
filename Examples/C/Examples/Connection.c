@@ -80,7 +80,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     XIMU3_char_arrays_free(responses);
 
     // Close connection
-    Wait(-1);
+    Wait(60);
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }
