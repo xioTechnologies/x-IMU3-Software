@@ -1,8 +1,10 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
+#include <chrono>
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 class OpenAndPing
 {
@@ -17,7 +19,7 @@ public:
         if (helpers::yesOrNo("Use async implementation?") == true) // TODO: == true ? (applies to C# and others?)
         {
             connection->openAsync(callback);
-            helpers::wait(3);
+            std::this_thread::sleep_for(std::chrono::seconds(3));
         }
         else
         {

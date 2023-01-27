@@ -1,8 +1,10 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
+#include <chrono>
 #include <functional>
 #include <inttypes.h> // PRIu64
 #include <iostream>
+#include <thread>
 
 class FileConverter
 {
@@ -15,7 +17,7 @@ public:
         if (helpers::yesOrNo("Use async implementation?") == true)
         {
             ximu3::FileConverter fileConverter(destination, source, callback);
-            helpers::wait(-1);
+            std::this_thread::sleep_for(std::chrono::seconds(60));
         }
         else
         {
