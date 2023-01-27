@@ -1,30 +1,25 @@
 #include "ApplicationSettingsDialog.h"
 #include "SendCommandDialog.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryData::json_svg, title, "Send")
+SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &historyButton, 50)
 {
     addAndMakeVisible(label);
+    addAndMakeVisible(prefixLabel);
+    addAndMakeVisible(commandKey);
+    addAndMakeVisible(infixLabel);
     addAndMakeVisible(commandValue);
-
-    commandValue.setEditableText(true);
+    addAndMakeVisible(postfixLabel);
+    addAndMakeVisible(historyButton);
 
     commandHistory = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (commandHistory.isValid() == false)
+    if (! commandHistory.isValid())
     {
         commandHistory = juce::ValueTree("CommandHistory");
-    }
-    for (const auto command : commandHistory)
-    {
-        commandValue.addItem(command.getProperty("command"), commandValue.getNumItems() + 1);
+        commandHistory.appendChild({ "Command", {{ "key", "note" }, { "value", "\"Hello, World!\"" }}}, nullptr);
     }
 
-    commandValue.setText(commandValue.getNumItems() > 0 ? commandValue.getItemText(0) : "{\"note\":\"Hello, World!\"}", juce::dontSendNotification);
-
-    commandValue.onChange = [&]
-    {
-        setOkButton(commandValue.getText().isNotEmpty());
-    };
-    commandValue.onChange();
+    commandKey.setText(commandHistory.getChild(0)["key"], false);
+    commandValue.setText(commandHistory.getChild(0)["value"], false);
 
     setSize(dialogWidth, calculateHeight(1));
 }
@@ -33,9 +28,15 @@ void SendCommandDialog::resized()
 {
     Dialog::resized();
 
+    const auto prefixWidth = 30;
+
     auto bounds = getContentBounds();
     label.setBounds(bounds.removeFromLeft(columnWidth));
-    commandValue.setBounds(bounds);
+    prefixLabel.setBounds(bounds.removeFromLeft(prefixWidth));
+    commandKey.setBounds(bounds.removeFromLeft(125));
+    infixLabel.setBounds(bounds.removeFromLeft(prefixWidth));
+    commandValue.setBounds(bounds.removeFromLeft(125));
+    postfixLabel.setBounds(bounds.removeFromLeft(prefixWidth));
 }
 
 CommandMessage SendCommandDialog::getCommand()
@@ -44,7 +45,7 @@ CommandMessage SendCommandDialog::getCommand()
     {
         for (const auto command : commandHistory)
         {
-            if (command.getProperty("command") == commandValue.getText())
+            if (command["key"] == commandKey.getText() && command["value"] == commandValue.getText())
             {
                 commandHistory.removeChild(command, nullptr);
                 break;
@@ -56,9 +57,25 @@ CommandMessage SendCommandDialog::getCommand()
             commandHistory.removeChild(commandHistory.getChild(commandHistory.getNumChildren() - 1), nullptr);
         }
 
-        commandHistory.addChild({ "Command", {{ "command", commandValue.getText() }}}, 0, nullptr);
+        commandHistory.addChild({ "Command", {{ "key", commandKey.getText() }, { "value", commandValue.getText() }}}, 0, nullptr);
         file.replaceWithText(commandHistory.toXmlString());
     }
 
-    return CommandMessage(commandValue.getText().toStdString());
+    const auto json = "{" + commandKey.getText().quoted() + ":" + commandValue.getText() + "}";
+    return CommandMessage { json.toStdString() };
+}
+
+juce::PopupMenu SendCommandDialog::getHistoryMenu()
+{
+    juce::PopupMenu menu;
+    for (const auto child : commandHistory)
+    {
+        const auto json = "{" + child["key"].toString().quoted() + ":" + child["value"].toString() + "}";
+        menu.addItem(json, [&, child]
+        {
+            commandKey.setText(child["key"], false);
+            commandValue.setText(child["value"], false);
+        });
+    }
+    return menu;
 }
