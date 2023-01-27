@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 
@@ -182,6 +183,6 @@ def run(connection_info):
 
     connection.send_commands(['{"strobe":null}'], 2, 500)  # send command to strobe LED
 
-    helpers.wait(-1)
+    time.sleep(60)
 
     connection.close()

@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 # Find USB device
@@ -42,7 +43,7 @@ def callback(responses):
 # Send commands
 if helpers.yes_or_no("Use async implementation?"):
     connection.send_commands_async(commands, 2, 500, callback)
-    helpers.wait(3)
+    time.sleep(3)
 else:
     print_responses(connection.send_commands(commands, 2, 500))
 

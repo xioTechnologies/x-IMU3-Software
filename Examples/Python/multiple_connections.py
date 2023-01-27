@@ -104,8 +104,7 @@ for connection in connections:
     connection.send_command("udpDataMessagesEnabled", True)  # example command with true/false value
     connection.send_command("inertialMessageRateDivisor", 8)  # example command with number value
 
-for _ in range(500):
-    time.sleep(0.01)  # IMPORTANT: callbacks will not be processed during sleep
+time.sleep(60)
 
 for connection in connections:
     connection.close()

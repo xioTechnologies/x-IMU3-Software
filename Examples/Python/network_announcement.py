@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 
@@ -21,7 +22,7 @@ network_announcement = ximu3.NetworkAnnouncement()
 
 if helpers.yes_or_no("Use async implementation?"):
     network_announcement.add_callback(callback)
-    helpers.wait(-1)
+    time.sleep(60)
 else:
     for message in network_announcement.get_messages():
         print_message(message)
