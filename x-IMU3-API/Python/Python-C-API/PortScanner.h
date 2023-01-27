@@ -36,7 +36,9 @@ static PyObject* port_scanner_new(PyTypeObject* subtype, PyObject* args, PyObjec
 
 static void port_scanner_free(PortScanner* self)
 {
-    XIMU3_port_scanner_free(self->port_scanner);
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_port_scanner_free(self->port_scanner);
+    Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 

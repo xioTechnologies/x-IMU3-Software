@@ -87,29 +87,17 @@ static PyObject* devices_to_list_and_free(const XIMU3_Devices devices)
     return device_list;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_Devices data;
-} DevicesCallbackPendingCallArg;
-
-static int devices_pending_call_func(void* arg)
-{
-    PyObject* const object = devices_to_list_and_free(((DevicesCallbackPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((DevicesCallbackPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void devices_callback(XIMU3_Devices data, void* context)
 {
-    DevicesCallbackPendingCallArg* const arg = malloc(sizeof(DevicesCallbackPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&devices_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = devices_to_list_and_free(data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

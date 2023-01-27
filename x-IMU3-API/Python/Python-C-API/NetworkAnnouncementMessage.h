@@ -101,29 +101,17 @@ static PyObject* network_announcement_messages_to_list_and_free(const XIMU3_Netw
     return message_list;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_NetworkAnnouncementMessage data;
-} NetworkAnnouncementMessageCallbackPendingCallArg;
-
-static int network_announcement_messages_pending_call_func(void* arg)
-{
-    PyObject* const object = network_announcement_message_from(&((NetworkAnnouncementMessageCallbackPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((NetworkAnnouncementMessageCallbackPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void network_announcement_message_callback(XIMU3_NetworkAnnouncementMessage data, void* context)
 {
-    NetworkAnnouncementMessageCallbackPendingCallArg* const arg = malloc(sizeof(NetworkAnnouncementMessageCallbackPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&network_announcement_messages_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = network_announcement_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

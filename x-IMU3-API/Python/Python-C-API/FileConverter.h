@@ -39,7 +39,9 @@ static PyObject* file_converter_new(PyTypeObject* subtype, PyObject* args, PyObj
 
 static void file_converter_free(FileConverter* self)
 {
-    XIMU3_file_converter_free(self->file_converter);
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_file_converter_free(self->file_converter);
+    Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 

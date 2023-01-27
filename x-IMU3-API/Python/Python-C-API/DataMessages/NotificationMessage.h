@@ -65,29 +65,17 @@ static PyObject* notification_message_from(const XIMU3_NotificationMessage* cons
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_NotificationMessage data;
-} NotificationPendingCallArg;
-
-static int notification_message_pending_call_func(void* arg)
-{
-    PyObject* const object = notification_message_from(&((NotificationPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((NotificationPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void notification_message_callback(XIMU3_NotificationMessage data, void* context)
 {
-    NotificationPendingCallArg* const arg = malloc(sizeof(NotificationPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&notification_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = notification_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

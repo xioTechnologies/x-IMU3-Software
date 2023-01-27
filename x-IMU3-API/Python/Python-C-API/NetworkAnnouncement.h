@@ -21,7 +21,9 @@ static PyObject* network_announcement_new(PyTypeObject* subtype, PyObject* args,
 
 static void network_announcement_free(NetworkAnnouncement* self)
 {
-    XIMU3_network_announcement_free(self->network_announcement);
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_network_announcement_free(self->network_announcement);
+    Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
@@ -43,7 +45,11 @@ static PyObject* network_announcement_add_callback(NetworkAnnouncement* self, Py
 
     Py_INCREF(callable); // this will never be destroyed (memory leak)
 
-    return Py_BuildValue("K", XIMU3_network_announcement_add_callback(self->network_announcement, network_announcement_message_callback, callable));
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_network_announcement_add_callback(self->network_announcement, network_announcement_message_callback, callable);
+    Py_END_ALLOW_THREADS
+    return Py_BuildValue("K", id);
 }
 
 static PyObject* network_announcement_remove_callback(NetworkAnnouncement* self, PyObject* args)
@@ -51,7 +57,9 @@ static PyObject* network_announcement_remove_callback(NetworkAnnouncement* self,
     unsigned long long callback_id;
     if (PyArg_ParseTuple(args, "K", &callback_id))
     {
-        XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
+        Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+            XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
+        Py_END_ALLOW_THREADS
 
         Py_INCREF(Py_None);
         return Py_None;

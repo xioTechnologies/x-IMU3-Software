@@ -71,29 +71,17 @@ static PyObject* euler_angles_message_from(const XIMU3_EulerAnglesMessage* const
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_EulerAnglesMessage data;
-} EulerAnglesPendingCallArg;
-
-static int euler_angles_message_pending_call_func(void* arg)
-{
-    PyObject* const object = euler_angles_message_from(&((EulerAnglesPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((EulerAnglesPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void euler_angles_message_callback(XIMU3_EulerAnglesMessage data, void* context)
 {
-    EulerAnglesPendingCallArg* const arg = malloc(sizeof(EulerAnglesPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&euler_angles_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = euler_angles_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

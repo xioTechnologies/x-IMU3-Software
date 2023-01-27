@@ -59,29 +59,17 @@ static PyObject* temperature_message_from(const XIMU3_TemperatureMessage* const 
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_TemperatureMessage data;
-} TemperaturePendingCallArg;
-
-static int temperature_message_pending_call_func(void* arg)
-{
-    PyObject* const object = temperature_message_from(&((TemperaturePendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((TemperaturePendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void temperature_message_callback(XIMU3_TemperatureMessage data, void* context)
 {
-    TemperaturePendingCallArg* const arg = malloc(sizeof(TemperaturePendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&temperature_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = temperature_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

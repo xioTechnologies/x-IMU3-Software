@@ -286,7 +286,11 @@ static PyObject* connection_add_$NameSnakeCase$_callback(Connection* self, PyObj
 \n\
     Py_INCREF(callable); // this will never be destroyed (memory leak)\n\
 \n\
-    return Py_BuildValue(\"K\", XIMU3_connection_add_$NameSnakeCase$_callback(self->connection, $NameSnakeCase$_message_callback, callable));\n\
+    uint64_t id;\n\
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks\n\
+        id = XIMU3_connection_add_$NameSnakeCase$_callback(self->connection, $NameSnakeCase$_message_callback, callable);\n\
+    Py_END_ALLOW_THREADS\n\
+    return Py_BuildValue(\"K\", id);\n\
 }\n"
 
 insert(file_path, template, "0")

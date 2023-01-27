@@ -107,29 +107,17 @@ static PyObject* rotation_matrix_message_from(const XIMU3_RotationMatrixMessage*
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_RotationMatrixMessage data;
-} RotationMatrixPendingCallArg;
-
-static int rotation_matrix_message_pending_call_func(void* arg)
-{
-    PyObject* const object = rotation_matrix_message_from(&((RotationMatrixPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((RotationMatrixPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void rotation_matrix_message_callback(XIMU3_RotationMatrixMessage data, void* context)
 {
-    RotationMatrixPendingCallArg* const arg = malloc(sizeof(RotationMatrixPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&rotation_matrix_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = rotation_matrix_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif
