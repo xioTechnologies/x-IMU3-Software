@@ -18,9 +18,9 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     addAndMakeVisible(messageLabel);
 
     addAndMakeVisible(table);
-    table.getHeader().addColumn("", (int) ColumnIDs::type, 70, 70, 70);
-    table.getHeader().addColumn("", (int) ColumnIDs::timestamp, 100, 100, 100);
-    table.getHeader().addColumn("", (int) ColumnIDs::message, 1);
+    table.getHeader().addColumn("", (int) ColumnID::type, 70, 70, 70);
+    table.getHeader().addColumn("", (int) ColumnID::timestamp, 100, 100, 100);
+    table.getHeader().addColumn("", (int) ColumnID::message, 1);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -38,9 +38,9 @@ void NotificationAndErrorMessagesDialog::resized()
 
     static constexpr int headerHeight = 30;
     bounds.removeFromTop(headerHeight);
-    typeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::type - 1).withHeight(headerHeight));
-    timestampLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::timestamp - 1).withHeight(headerHeight));
-    messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::message - 1).withHeight(headerHeight));
+    typeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnID::type - 1).withHeight(headerHeight));
+    timestampLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnID::timestamp - 1).withHeight(headerHeight));
+    messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnID::message - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
 }
@@ -61,9 +61,9 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
 
     const auto& notificationMessage = messages[messages.size() - 1 - (size_t) rowNumber];
 
-    switch ((ColumnIDs) columnID)
+    switch ((ColumnID) columnID)
     {
-        case ColumnIDs::type:
+        case ColumnID::type:
             if (notificationMessage.isError)
             {
                 return new Icon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, 0.6f, "Error");
@@ -71,7 +71,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
 
             return new Icon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, 0.6f, "Notification");
 
-        case ColumnIDs::timestamp:
+        case ColumnID::timestamp:
         {
             auto* label = new SimpleLabel(Helpers::formatTimestamp(notificationMessage.timestamp));
             if (notificationMessage.isUnread == false)
@@ -81,7 +81,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
             return label;
         }
 
-        case ColumnIDs::message:
+        case ColumnID::message:
         {
             auto* label = new SimpleLabel(notificationMessage.message);
             if (notificationMessage.isUnread == false)
