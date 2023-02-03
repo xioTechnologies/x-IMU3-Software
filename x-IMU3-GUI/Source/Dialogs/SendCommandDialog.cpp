@@ -117,6 +117,8 @@ juce::String SendCommandDialog::toString(const Type type)
             return "false";
         case Type::null:
             return "null";
+        default:
+            return "";
     }
 }
 
