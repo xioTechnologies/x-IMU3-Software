@@ -12,32 +12,58 @@ use crate::connection_info::*;
 pub struct NetworkAnnouncementMessage {
     pub device_name: String,
     pub serial_number: String,
+    pub ip_address: Ipv4Addr,
+    pub tcp_port: u16,
+    pub udp_send: u16,
+    pub udp_receive: u16,
     pub rssi: i32,
     pub battery: i32,
-    pub status: ChargingStatus,
-    pub tcp_connection_info: TcpConnectionInfo,
-    pub udp_connection_info: UdpConnectionInfo,
+    pub charging_status: ChargingStatus,
     pub(crate) expiry: u128,
+}
+
+impl From<&NetworkAnnouncementMessage> for TcpConnectionInfo {
+    fn from(message: &NetworkAnnouncementMessage) -> Self {
+        TcpConnectionInfo {
+            ip_address: message.ip_address,
+            port: message.tcp_port,
+        }
+    }
+}
+
+impl From<&NetworkAnnouncementMessage> for UdpConnectionInfo {
+    fn from(message: &NetworkAnnouncementMessage) -> Self {
+        UdpConnectionInfo {
+            ip_address: message.ip_address,
+            send_port: message.udp_send,
+            receive_port: message.udp_receive,
+        }
+    }
 }
 
 impl fmt::Display for NetworkAnnouncementMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{} - {}, RSSI: {}%, Battery: {}%, {}, {}, {}",
+        write!(formatter, "{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
                self.device_name,
                self.serial_number,
+               self.ip_address,
+               self.tcp_port,
+               self.udp_send,
+               self.udp_receive,
                self.rssi,
                self.battery,
-               self.status,
-               self.tcp_connection_info,
-               self.udp_connection_info)
+               self.charging_status)
     }
 }
 
 impl PartialEq for NetworkAnnouncementMessage {
-    fn eq(&self, other: &Self) -> bool { // comparison must not include rssi, battery, power, expiry
-        self.device_name == other.device_name && self.serial_number == other.serial_number
-            && self.tcp_connection_info.to_string() == other.tcp_connection_info.to_string()
-            && self.udp_connection_info.to_string() == other.udp_connection_info.to_string()
+    fn eq(&self, other: &Self) -> bool { // comparison must not include rssi, battery, charging_status, expiry
+        self.device_name == other.device_name
+            && self.serial_number == other.serial_number
+            && self.ip_address == other.ip_address
+            && self.tcp_port == other.tcp_port
+            && self.udp_send == other.udp_send
+            && self.udp_receive == other.udp_receive
     }
 }
 
@@ -118,23 +144,16 @@ impl NetworkAnnouncement {
 
             if let Ok(object) = serde_json::from_str::<Object>(json) {
                 if let Ok(ip_address) = object.ip.parse::<Ipv4Addr>() {
-                    let tcp_connection_info = TcpConnectionInfo {
-                        ip_address,
-                        port: object.port,
-                    };
-                    let udp_connection_info = UdpConnectionInfo {
-                        ip_address,
-                        send_port: object.receive,
-                        receive_port: object.send,
-                    };
                     let device = NetworkAnnouncementMessage {
                         device_name: object.name,
                         serial_number: object.sn,
+                        ip_address,
+                        tcp_port: object.port,
+                        udp_send: object.receive,
+                        udp_receive: object.send,
                         rssi: object.rssi,
                         battery: object.battery,
-                        status: ChargingStatus::from(object.status),
-                        tcp_connection_info,
-                        udp_connection_info,
+                        charging_status: ChargingStatus::from(object.status),
                         expiry: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() + 2000, // expire after 2 seconds
                     };
                     return Some(device);

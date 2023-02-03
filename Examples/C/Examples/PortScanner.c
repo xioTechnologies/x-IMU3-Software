@@ -51,7 +51,7 @@ static void PrintDevices(const XIMU3_Devices devices)
                 connectionInfo = "";
                 break;
         }
-        printf("%s - %s, %s\n",
+        printf("%s, %s, %s\n",
                device->device_name,
                device->serial_number,
                connectionInfo);

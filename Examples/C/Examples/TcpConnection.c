@@ -17,7 +17,7 @@ void TcpConnection()
             return;
         }
         printf("Found %s - %s\n", messages.array[0].device_name, messages.array[0].serial_number);
-        const XIMU3_TcpConnectionInfo connectionInfo = messages.array[0].tcp_connection_info;
+        const XIMU3_TcpConnectionInfo connectionInfo = XIMU3_network_announcement_message_to_tcp_connection_info(messages.array[0]);
         XIMU3_network_announcement_messages_free(messages);
         Run(XIMU3_connection_new_tcp(connectionInfo), XIMU3_tcp_connection_info_to_string(connectionInfo));
     }

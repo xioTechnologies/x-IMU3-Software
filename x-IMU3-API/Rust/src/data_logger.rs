@@ -144,7 +144,7 @@ impl DataLogger<'_> {
         }));
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
-        
+
         drop(data_logger);
 
         receiver.recv().unwrap()

@@ -72,6 +72,11 @@ impl From<DeviceC> for Device {
     }
 }
 
+#[no_mangle]
+pub extern "C" fn XIMU3_device_to_string(device: DeviceC) -> *const c_char {
+    string_to_char_ptr!(Device::from(device).to_string())
+}
+
 #[repr(C)]
 pub struct Devices {
     array: *mut DeviceC,
@@ -98,11 +103,6 @@ pub extern "C" fn XIMU3_devices_free(devices: Devices) {
     unsafe {
         Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
     }
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_device_to_string(device: DeviceC) -> *const c_char {
-    string_to_char_ptr!(Device::from(device).to_string())
 }
 
 #[no_mangle]
