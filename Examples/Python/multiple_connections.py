@@ -53,9 +53,6 @@ class Connection:
     def __inertial_callback(self, message):
         print(self.__connection_info_string + " " + message.to_string())
 
-    def __inertial_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
-
     def __magnetometer_callback(self, message):
         print(self.__connection_info_string + " " + message.to_string())
 
