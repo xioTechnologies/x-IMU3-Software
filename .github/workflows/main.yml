@@ -43,7 +43,7 @@ jobs:
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - if: matrix.target[0] == 'ubuntu-latest'
         name: Install ubuntu dependency
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Dry run
         working-directory: x-IMU3-API/Rust/
@@ -106,7 +106,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download from artifacts
         uses: actions/download-artifact@v3
@@ -139,7 +139,7 @@ jobs:
         python-version: [ "cp38-", "cp39-", "cp310-", "cp311-" ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download from artifacts
         uses: actions/download-artifact@v3
@@ -191,7 +191,7 @@ jobs:
           - [ windows-latest, x86_64-pc-windows-msvc, "", ".exe" ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download from artifacts
         uses: actions/download-artifact@v3
