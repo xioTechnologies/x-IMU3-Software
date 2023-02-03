@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 # Create connection info
@@ -25,7 +26,7 @@ def callback(result):
 
 if helpers.yes_or_no("Use async implementation?"):
     connection.open_async(callback)
-    helpers.wait(3)
+    time.sleep(3)
 else:
     connection.open()
     print_ping_response(connection.ping())

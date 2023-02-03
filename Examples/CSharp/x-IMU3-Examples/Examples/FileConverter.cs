@@ -12,7 +12,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?") == true)
             {
                 Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, source, FileConverterEvent);
-                Helpers.Wait(-1);
+                System.Threading.Thread.Sleep(60000);
                 file_converter.Dispose();
             }
             else

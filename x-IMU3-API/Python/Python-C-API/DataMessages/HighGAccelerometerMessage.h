@@ -71,29 +71,17 @@ static PyObject* high_g_accelerometer_message_from(const XIMU3_HighGAcceleromete
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_HighGAccelerometerMessage data;
-} HighGAccelerometerPendingCallArg;
-
-static int high_g_accelerometer_message_pending_call_func(void* arg)
-{
-    PyObject* const object = high_g_accelerometer_message_from(&((HighGAccelerometerPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((HighGAccelerometerPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void high_g_accelerometer_message_callback(XIMU3_HighGAccelerometerMessage data, void* context)
 {
-    HighGAccelerometerPendingCallArg* const arg = malloc(sizeof(HighGAccelerometerPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&high_g_accelerometer_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = high_g_accelerometer_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

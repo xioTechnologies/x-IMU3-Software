@@ -65,29 +65,17 @@ static PyObject* rssi_message_from(const XIMU3_RssiMessage* const message)
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_RssiMessage data;
-} RssiPendingCallArg;
-
-static int rssi_message_pending_call_func(void* arg)
-{
-    PyObject* const object = rssi_message_from(&((RssiPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((RssiPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void rssi_message_callback(XIMU3_RssiMessage data, void* context)
 {
-    RssiPendingCallArg* const arg = malloc(sizeof(RssiPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&rssi_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = rssi_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

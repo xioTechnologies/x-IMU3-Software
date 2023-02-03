@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 
@@ -26,7 +27,7 @@ name = "Data Logger Example"
 
 if helpers.yes_or_no("Use async implementation?"):
     data_logger = ximu3.DataLogger(directory, name, connections, callback)
-    helpers.wait(3)
+    time.sleep(3)
     del data_logger
 else:
     print(ximu3.DataLogger.log(directory, name, connections, 3))

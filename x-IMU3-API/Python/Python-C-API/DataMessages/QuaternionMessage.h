@@ -77,29 +77,17 @@ static PyObject* quaternion_message_from(const XIMU3_QuaternionMessage* const me
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_QuaternionMessage data;
-} QuaternionPendingCallArg;
-
-static int quaternion_message_pending_call_func(void* arg)
-{
-    PyObject* const object = quaternion_message_from(&((QuaternionPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((QuaternionPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void quaternion_message_callback(XIMU3_QuaternionMessage data, void* context)
 {
-    QuaternionPendingCallArg* const arg = malloc(sizeof(QuaternionPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&quaternion_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = quaternion_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

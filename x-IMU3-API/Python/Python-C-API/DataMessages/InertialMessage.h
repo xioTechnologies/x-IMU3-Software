@@ -89,29 +89,17 @@ static PyObject* inertial_message_from(const XIMU3_InertialMessage* const messag
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_InertialMessage data;
-} InertialPendingCallArg;
-
-static int inertial_message_pending_call_func(void* arg)
-{
-    PyObject* const object = inertial_message_from(&((InertialPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((InertialPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void inertial_message_callback(XIMU3_InertialMessage data, void* context)
 {
-    InertialPendingCallArg* const arg = malloc(sizeof(InertialPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&inertial_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = inertial_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

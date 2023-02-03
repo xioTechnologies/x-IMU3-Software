@@ -54,29 +54,17 @@ static PyObject* $NameSnakeCase$_message_from(const XIMU3_$NamePascalCase$Messag
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_$NamePascalCase$Message data;
-} $NamePascalCase$PendingCallArg;
-
-static int $NameSnakeCase$_message_pending_call_func(void* arg)
-{
-    PyObject* const object = $NameSnakeCase$_message_from(&(($NamePascalCase$PendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject((($NamePascalCase$PendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void $NameSnakeCase$_message_callback(XIMU3_$NamePascalCase$Message data, void* context)
 {
-    $NamePascalCase$PendingCallArg* const arg = malloc(sizeof($NamePascalCase$PendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&$NameSnakeCase$_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = $NameSnakeCase$_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

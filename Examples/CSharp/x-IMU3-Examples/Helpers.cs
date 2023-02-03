@@ -27,20 +27,5 @@ namespace Ximu3Examples
                 }
             }
         }
-
-        public static void Wait(int seconds)
-        {
-            if (seconds < 0)
-            {
-                for (int counter = 0; counter < Int32.MaxValue; counter++)
-                {
-                    System.Threading.Thread.Sleep(1000);
-                }
-            }
-            else
-            {
-                System.Threading.Thread.Sleep(seconds * 1000);
-            }
-        }
     }
 }

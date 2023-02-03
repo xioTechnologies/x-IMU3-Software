@@ -1,6 +1,4 @@
-#include <chrono>
 #include <iostream>
-#include <thread>
 
 #pragma once
 
@@ -27,22 +25,6 @@ namespace helpers
                 default:
                     break;
             }
-        }
-    }
-
-    static void wait(const int seconds)
-    {
-        if (seconds < 0)
-        {
-            int counter = 0;
-            while (counter++ < std::numeric_limits<int>::max()) // 2^32 seconds = 136 years
-            {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-            }
-        }
-        else
-        {
-            std::this_thread::sleep_for(std::chrono::seconds(seconds));
         }
     }
 } // namespace helpers

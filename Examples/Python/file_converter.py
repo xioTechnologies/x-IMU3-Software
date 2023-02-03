@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 
@@ -19,6 +20,6 @@ source = "C:/file.ximu3"
 
 if helpers.yes_or_no("Use async implementation?"):
     _ = ximu3.FileConverter(destination, source, callback)
-    helpers.wait(-1)
+    time.sleep(60)
 else:
     print_progress(ximu3.FileConverter.convert(destination, source))

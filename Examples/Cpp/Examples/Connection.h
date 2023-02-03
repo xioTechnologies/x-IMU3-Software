@@ -2,9 +2,11 @@
 
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
+#include <chrono>
 #include <inttypes.h> // PRIu64
 #include <iostream>
 #include <stdio.h>
+#include <thread>
 
 #define TIMESTAMP_FORMAT "%8" PRIu64 " us"
 #define UINT32_FORMAT " %8" PRIu32
@@ -53,7 +55,7 @@ protected:
         connection.sendCommands(commands, 2, 500);
 
         // Close connection
-        helpers::wait(-1);
+        std::this_thread::sleep_for(std::chrono::seconds(60));
         connection.close();
     }
 

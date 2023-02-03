@@ -43,7 +43,7 @@ pub fn run(connection_info: ConnectionInfo) {
     connection.send_commands(vec!["{\"strobe\":null}"], 2, 500);
 
     // Close connection
-    helpers::wait(-1);
+    std::thread::sleep(std::time::Duration::from_secs(60));
     connection.close();
 }
 

@@ -30,7 +30,7 @@ pub fn run() {
             print_result(result);
         }));
 
-        helpers::wait(3);
+        std::thread::sleep(std::time::Duration::from_secs(3));
     } else {
         print_result(DataLogger::log(directory, name, connections.iter_mut().collect(), 3));
     }

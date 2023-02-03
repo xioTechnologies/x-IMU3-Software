@@ -65,29 +65,17 @@ static PyObject* error_message_from(const XIMU3_ErrorMessage* const message)
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_ErrorMessage data;
-} ErrorPendingCallArg;
-
-static int error_message_pending_call_func(void* arg)
-{
-    PyObject* const object = error_message_from(&((ErrorPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((ErrorPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void error_message_callback(XIMU3_ErrorMessage data, void* context)
 {
-    ErrorPendingCallArg* const arg = malloc(sizeof(ErrorPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&error_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = error_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

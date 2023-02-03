@@ -71,29 +71,17 @@ static PyObject* magnetometer_message_from(const XIMU3_MagnetometerMessage* cons
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_MagnetometerMessage data;
-} MagnetometerPendingCallArg;
-
-static int magnetometer_message_pending_call_func(void* arg)
-{
-    PyObject* const object = magnetometer_message_from(&((MagnetometerPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((MagnetometerPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void magnetometer_message_callback(XIMU3_MagnetometerMessage data, void* context)
 {
-    MagnetometerPendingCallArg* const arg = malloc(sizeof(MagnetometerPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&magnetometer_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = magnetometer_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

@@ -1,7 +1,9 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
+#include <chrono>
 #include <functional>
 #include <iostream>
+#include <thread>
 
 class DataLogger
 {
@@ -31,7 +33,7 @@ public:
         if (helpers::yesOrNo("Use async implementation?") == true)
         {
             auto dataLogger = ximu3::DataLogger(directory, name, toRawPointers(connections), callback);
-            helpers::wait(3);
+            std::this_thread::sleep_for(std::chrono::seconds(3));
         }
         else
         {

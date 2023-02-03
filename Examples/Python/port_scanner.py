@@ -1,4 +1,5 @@
 import helpers
+import time
 import ximu3
 
 
@@ -17,7 +18,7 @@ def callback(devices):
 
 if helpers.yes_or_no("Use async implementation?"):
     _ = ximu3.PortScanner(callback)
-    helpers.wait(-1)
+    time.sleep(60)
 else:
     devices = ximu3.PortScanner.scan()
     print("Found " + str(len(devices)) + " devices")

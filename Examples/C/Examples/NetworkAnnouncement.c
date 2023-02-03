@@ -13,7 +13,7 @@ void NetworkAnnouncement()
     if (YesOrNo("Use async implementation?") == true)
     {
         XIMU3_network_announcement_add_callback(networkAnnouncement, Callback, NULL);
-        Wait(-1);
+        Wait(60);
     }
     else
     {

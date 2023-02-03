@@ -88,29 +88,17 @@ static PyObject* statistics_from(const XIMU3_Statistics* const statistics)
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_Statistics data;
-} StatisticsPendingCallArg;
-
-static int statistics_pending_call_func(void* arg)
-{
-    PyObject* const object = statistics_from(&((StatisticsPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((StatisticsPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void statistics_callback(XIMU3_Statistics data, void* context)
 {
-    StatisticsPendingCallArg* const arg = malloc(sizeof(StatisticsPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&statistics_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = statistics_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

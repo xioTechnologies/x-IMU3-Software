@@ -36,10 +36,10 @@ static bool YesOrNo(const char* question)
     }
 }
 
-static void Wait(const int seconds)
+static void Wait(const time_t seconds)
 {
     const time_t timeout = time(NULL) + seconds;
-    while ((time(NULL) < timeout) || (seconds < 0))
+    while (time(NULL) < timeout)
     {
         fflush(stdout);
     }

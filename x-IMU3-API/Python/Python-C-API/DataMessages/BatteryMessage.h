@@ -71,29 +71,17 @@ static PyObject* battery_message_from(const XIMU3_BatteryMessage* const message)
     return (PyObject*) self;
 }
 
-typedef struct
-{
-    PyObject* callable;
-    XIMU3_BatteryMessage data;
-} BatteryPendingCallArg;
-
-static int battery_message_pending_call_func(void* arg)
-{
-    PyObject* const object = battery_message_from(&((BatteryPendingCallArg*) arg)->data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject(((BatteryPendingCallArg*) arg)->callable, tuple));
-    Py_DECREF(tuple);
-    Py_DECREF(object);
-    free(arg);
-    return 0;
-}
-
 static void battery_message_callback(XIMU3_BatteryMessage data, void* context)
 {
-    BatteryPendingCallArg* const arg = malloc(sizeof(BatteryPendingCallArg));
-    arg->callable = (PyObject*) context;
-    arg->data = data;
-    Py_AddPendingCall(&battery_message_pending_call_func, arg);
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = battery_message_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
 }
 
 #endif

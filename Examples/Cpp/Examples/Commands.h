@@ -1,7 +1,9 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
+#include <chrono>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 class Commands
 {
@@ -41,7 +43,7 @@ public:
         if (helpers::yesOrNo("Use async implementation?") == true)
         {
             connection.sendCommandsAsync(commands, 2, 500, callback);
-            helpers::wait(3);
+            std::this_thread::sleep_for(std::chrono::seconds(3));
         }
         else
         {
