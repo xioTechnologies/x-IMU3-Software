@@ -35,5 +35,6 @@ private:
     void fillBuffers();
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(Model)
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Model)
 };
