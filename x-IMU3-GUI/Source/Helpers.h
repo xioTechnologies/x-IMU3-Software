@@ -66,11 +66,24 @@ namespace Helpers
                                        cosHalfPsi * cosHalfTheta * cosHalfPhi + sinHalfPsi * sinHalfTheta * sinHalfPhi);
     }
 
+    inline float asin(const float value)
+    {
+        if (value <= -1.0f)
+        {
+            return -1.0f * juce::MathConstants<float>::halfPi;
+        }
+        if (value >= 1.0f)
+        {
+            return juce::MathConstants<float>::halfPi;
+        }
+        return std::asin(value);
+    }
+
     inline juce::Vector3D<float> toEulerAngles(const float x, const float y, const float z, const float w)
     {
         // Quaternions and Rotation Sequence by Jack B. Kuipers, ISBN 0-691-10298-8, Page 168
         const auto roll = juce::radiansToDegrees(std::atan2(2.0f * (y * z + w * x), 2.0f * (w * w - 0.5f + z * z)));
-        const auto pitch = juce::radiansToDegrees(-1.0f * std::asin(2.0f * (x * z - w * y)));
+        const auto pitch = juce::radiansToDegrees(-1.0f * asin(2.0f * (x * z - w * y)));
         const auto yaw = juce::radiansToDegrees(std::atan2(2.0f * (x * y + w * z), 2.0f * (w * w - 0.5f + x * x)));
 
         return juce::Vector3D<float> { roll, pitch, yaw };
