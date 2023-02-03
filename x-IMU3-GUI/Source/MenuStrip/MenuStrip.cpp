@@ -229,11 +229,11 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             }();
 
             buttonBox.items.add(juce::FlexItem(button)
-                                        .withWidth(buttonWidth)
+                                        .withWidth((float) buttonWidth)
                                         .withHeight(buttonHeight)
                                         .withMargin(buttonMargin));
 
-            flexBox.items.getReference(flexBox.items.size() - 1).width += juce::roundToInt(buttonWidth) + buttonMargin;
+            flexBox.items.getReference(flexBox.items.size() - 1).width += (buttonWidth + buttonMargin);
         }
     }
 }
