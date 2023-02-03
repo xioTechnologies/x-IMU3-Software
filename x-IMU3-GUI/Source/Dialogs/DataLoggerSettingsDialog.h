@@ -16,6 +16,7 @@ public:
     {
         juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
         juce::String name = "Logged Data";
+        bool appendDateAndTime = true;
         int seconds = 60;
         bool unlimited = true;
     };
@@ -32,6 +33,7 @@ private:
     IconButton directoryButton { IconButton::Style::menuStrip, BinaryData::open_svg, 0.8f, "Select Directory" };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
+    CustomToggleButton appendDateAndTimeToggle { "Append Date and Time" };
     SimpleLabel secondsLabel { "Seconds:" };
     CustomTextEditor secondsValue;
     CustomToggleButton unlimitedToggle { "Unlimited" };

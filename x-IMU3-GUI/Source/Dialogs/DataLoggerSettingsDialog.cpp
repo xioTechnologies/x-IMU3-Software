@@ -8,6 +8,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     addAndMakeVisible(directoryButton);
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
+    addAndMakeVisible(appendDateAndTimeToggle);
     addAndMakeVisible(secondsLabel);
     addAndMakeVisible(secondsValue);
     addAndMakeVisible(unlimitedToggle);
@@ -29,6 +30,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     directoryValue.setText(settings.directory, false);
     nameValue.setText(settings.name, false);
+    appendDateAndTimeToggle.setToggleState(settings.appendDateAndTime, juce::dontSendNotification);
     secondsValue.setText(juce::String(settings.seconds), false);
     unlimitedToggle.setToggleState(settings.unlimited, juce::sendNotificationSync);
 
@@ -56,6 +58,8 @@ void DataLoggerSettingsDialog::resized()
     auto nameRow = bounds.removeFromTop(UILayout::textComponentHeight);
     nameLabel.setBounds(nameRow.removeFromLeft(columnWidth));
     nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth));
+    nameRow.removeFromLeft(margin);
+    appendDateAndTimeToggle.setBounds(nameRow);
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -71,6 +75,7 @@ DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
     Settings settings;
     settings.directory = directoryValue.getText();
     settings.name = nameValue.getText();
+    settings.appendDateAndTime = appendDateAndTimeToggle.getToggleState();
     settings.seconds = secondsValue.getText().getIntValue();
     settings.unlimited = unlimitedToggle.getToggleState();
     return settings;

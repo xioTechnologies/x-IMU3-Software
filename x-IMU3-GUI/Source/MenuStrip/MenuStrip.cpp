@@ -100,7 +100,13 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 dataLoggerSettings = dialog->getSettings();
 
-                const auto startDataLogger = [&]
+                auto name = dataLoggerSettings.name;
+                if (dataLoggerSettings.appendDateAndTime)
+                {
+                    name += juce::Time::getCurrentTime().formatted(" %Y-%m-%d %H-%M-%S");
+                }
+
+                const auto startDataLogger = [&, name]
                 {
                     std::vector<ximu3::Connection*> connections;
                     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
@@ -111,13 +117,13 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     bool failed = false;
 
                     dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
-                                                                     dataLoggerSettings.name.toStdString(),
+                                                                     name.toStdString(),
                                                                      connections,
-                                                                     [&](ximu3::XIMU3_Result result)
+                                                                     [&, name](ximu3::XIMU3_Result result)
                                                                      {
                                                                          if (result == ximu3::XIMU3_ResultOk)
                                                                          {
-                                                                             juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name).revealToUser();
+                                                                             juce::File(dataLoggerSettings.directory).getChildFile(name).revealToUser();
                                                                          }
                                                                          else
                                                                          {
@@ -136,10 +142,10 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
                 };
 
-                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerSettings.name);
+                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(name);
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerSettings.name), [directory, startDataLogger]
+                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(name), [directory, startDataLogger]
                     {
                         directory.deleteRecursively();
                         startDataLogger();
