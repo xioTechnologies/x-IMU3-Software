@@ -37,6 +37,38 @@ namespace Ximu3
             }
         }
 
+        property String^ IpAddress
+        {
+            String^ get()
+            {
+                return gcnew String(message->ip_address);
+            }
+        }
+
+        property uint16_t TcpPort
+        {
+            uint16_t get()
+            {
+                return message->tcp_port;
+            }
+        }
+
+        property uint16_t UdpSend
+        {
+            uint16_t get()
+            {
+                return message->udp_send;
+            }
+        }
+
+        property uint16_t UdpReceive
+        {
+            uint16_t get()
+            {
+                return message->udp_receive;
+            }
+        }
+
         property int32_t Rssi
         {
             int32_t get()
@@ -53,28 +85,22 @@ namespace Ximu3
             }
         }
 
-        property ChargingStatus Status
+        property ChargingStatus ChargingStatus
         {
             ChargingStatus get()
             {
-                return (ChargingStatus)message->status;
+                return (ChargingStatus)message->charging_status;
             }
         }
 
-        property TcpConnectionInfo^ TcpConnectionInfo
+        TcpConnectionInfo^ ToTcpConnectionInfo()
         {
-            Ximu3::TcpConnectionInfo^ get()
-            {
-                return gcnew Ximu3::TcpConnectionInfo(&message->tcp_connection_info);
-            }
+            return gcnew TcpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message));
         }
 
-        property UdpConnectionInfo^ UdpConnectionInfo
+        UdpConnectionInfo^ ToUdpConnectionInfo()
         {
-            Ximu3::UdpConnectionInfo^ get()
-            {
-                return gcnew Ximu3::UdpConnectionInfo(&message->udp_connection_info);
-            }
+            return gcnew UdpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(message));
         }
 
         String^ ToString() override

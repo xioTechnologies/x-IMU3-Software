@@ -29,13 +29,15 @@ namespace Ximu3Examples
 
         private void PrintMessage(Ximu3.NetworkAnnouncementMessage message)
         {
-            Console.WriteLine(message.DeviceName + " - " +
-                message.SerialNumber + ", RSSI: " +
-                message.Rssi + "%, Battery: " +
+            Console.WriteLine(message.DeviceName + ", " +
+                message.SerialNumber + ", " +
+                message.IpAddress + ", " +
+                message.TcpPort + ", " +
+                message.UdpSend + ", " +
+                message.UdpReceive + ", " +
+                message.Rssi + "%, " +
                 message.Battery + "%, " +
-                message.Status + ", " +
-                message.TcpConnectionInfo + ", " +
-                message.UdpConnectionInfo);
+                message.ChargingStatus);
             // Console.WriteLine(message); // alternative to above
         }
     }

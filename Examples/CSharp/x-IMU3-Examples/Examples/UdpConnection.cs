@@ -16,7 +16,7 @@ namespace Ximu3Examples
                     return;
                 }
                 Console.WriteLine("Found " + messages[0].DeviceName + " - " + messages[0].SerialNumber);
-                Run(messages[0].UdpConnectionInfo);
+                Run(messages[0].ToUdpConnectionInfo());
             }
             else
             {

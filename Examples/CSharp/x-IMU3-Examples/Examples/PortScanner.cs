@@ -30,7 +30,7 @@ namespace Ximu3Examples
         {
             foreach (Ximu3.Device device in devices)
             {
-                Console.WriteLine(device.DeviceName + " - " + device.SerialNumber + ", " + device.ConnectionInfo);
+                Console.WriteLine(device.DeviceName + ", " + device.SerialNumber + ", " + device.ConnectionInfo);
                 // Console.WriteLine(device); // alternative to above
             }
         }
