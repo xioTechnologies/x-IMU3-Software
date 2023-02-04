@@ -15,7 +15,7 @@ public:
                 return;
             }
             std::cout << "Found " << messages[0].device_name << " - " << messages[0].serial_number << std::endl;
-            run(ximu3::TcpConnectionInfo(messages[0].tcp_connection_info));
+            run(ximu3::TcpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(messages[0])));
         }
         else
         {

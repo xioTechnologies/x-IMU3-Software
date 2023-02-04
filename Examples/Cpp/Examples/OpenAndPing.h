@@ -55,7 +55,7 @@ private:
             std::cout << "Ping failed" << std::endl;
             return;
         }
-        std::cout << pingResponse.interface << ", " << pingResponse.device_name << " - " << pingResponse.serial_number << std::endl;
+        std::cout << pingResponse.interface << ", " << pingResponse.device_name << ", " << pingResponse.serial_number << std::endl;
         // std::cout << ximu3::XIMU3_ping_response_to_string(pingResponse) << std::endl; // alternative to above
     }
 };
