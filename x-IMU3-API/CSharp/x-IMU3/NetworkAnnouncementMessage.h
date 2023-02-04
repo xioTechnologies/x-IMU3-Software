@@ -85,7 +85,7 @@ namespace Ximu3
             }
         }
 
-        property ChargingStatus ChargingStatus
+        property ChargingStatus Status
         {
             ChargingStatus get()
             {
@@ -95,12 +95,12 @@ namespace Ximu3
 
         TcpConnectionInfo^ ToTcpConnectionInfo()
         {
-            return gcnew TcpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message));
+            return gcnew TcpConnectionInfo(&ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(*message));
         }
 
         UdpConnectionInfo^ ToUdpConnectionInfo()
         {
-            return gcnew UdpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(message));
+            return gcnew UdpConnectionInfo(&ximu3::XIMU3_network_announcement_message_to_udp_connection_info(*message));
         }
 
         String^ ToString() override
