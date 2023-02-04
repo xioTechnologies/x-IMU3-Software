@@ -12,6 +12,6 @@ if helpers.yes_or_no("Search for connections?"):
 
     print("Found " + messages[0].device_name + " - " + messages[0].serial_number)
 
-    connection.run(messages[0].tcp_connection_info)
+    connection.run(messages[0].to_tcp_connection_info())
 else:
     connection.run(ximu3.TcpConnectionInfo("192.168.1.1", 7000))

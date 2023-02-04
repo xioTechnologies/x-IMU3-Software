@@ -5,7 +5,7 @@ import ximu3
 
 def print_devices(devices):
     for device in devices:
-        print(device.device_name + " - " +
+        print(device.device_name + ", " +
               device.serial_number + ", " +
               device.connection_info.to_string())
         # print(device.to_string())  # alternative to above

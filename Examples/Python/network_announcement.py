@@ -4,13 +4,15 @@ import ximu3
 
 
 def print_message(message):
-    print(message.device_name + " - " +
-          message.serial_number + ", RSSI: " +
-          str(message.rssi) + "%, Battery: " +
+    print(message.device_name + ", " +
+          message.serial_number + ", " +
+          str(message.ip_address) + ", " +
+          str(message.tcp_port) + ", " +
+          str(message.udp_send) + ", " +
+          str(message.udp_receive) + ", " +
+          str(message.rssi) + "%, " +
           str(message.battery) + "%, " +
-          message.status + ", " +
-          message.tcp_connection_info.to_string() + ", " +
-          message.udp_connection_info.to_string())
+          message.charging_status)
     # print(message.to_string())  # alternative to above
 
 
