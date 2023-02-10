@@ -37,7 +37,7 @@ namespace Ximu3Examples
                 message.UdpReceive + ", " +
                 message.Rssi + "%, " +
                 message.Battery + "%, " +
-                message.Status);
+                message.ChargingStatus);
             // Console.WriteLine(message); // alternative to above
         }
     }
