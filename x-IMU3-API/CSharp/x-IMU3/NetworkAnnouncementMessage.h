@@ -37,7 +37,7 @@ namespace Ximu3
 			}
 		}
 
-		property String^ IpAddress
+		property String^ IPAddress
 		{
 			String^ get()
 			{

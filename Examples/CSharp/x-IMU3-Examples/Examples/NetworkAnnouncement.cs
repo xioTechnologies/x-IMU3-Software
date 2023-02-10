@@ -31,7 +31,7 @@ namespace Ximu3Examples
         {
             Console.WriteLine(message.DeviceName + ", " +
                 message.SerialNumber + ", " +
-                message.IpAddress + ", " +
+                message.IPAddress + ", " +
                 message.TcpPort + ", " +
                 message.UdpSend + ", " +
                 message.UdpReceive + ", " +
