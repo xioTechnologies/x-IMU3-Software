@@ -9,15 +9,12 @@ AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", 
     addAndMakeVisible(sourceCodeLabel);
     addAndMakeVisible(applicationNameValue);
     addAndMakeVisible(applicationVersionValue);
-    addChildComponent(applicationVersionLatestLabel);
     addChildComponent(applicationVersionUpdateLabel);
     addAndMakeVisible(expectedFirmwareVersionValue);
     addAndMakeVisible(sourceCodeValue);
 
     logo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     logo.addMouseListener(this, true);
-
-    applicationVersionLatestLabel.setEnabled(false);
 
     const auto initialiseUrl = [&](auto& label, const juce::String& url)
     {
@@ -46,11 +43,7 @@ AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", 
                                                                  {
                                                                      const auto tagName = object->getProperty("tag_name").toString();
 
-                                                                     if (applicationVersionValue.getText() == tagName)
-                                                                     {
-                                                                         applicationVersionLatestLabel.setVisible(true);
-                                                                     }
-                                                                     else
+                                                                     if (applicationVersionValue.getText() != tagName)
                                                                      {
                                                                          applicationVersionUpdateLabel.setVisible(true);
                                                                          applicationVersionUpdateLabel.setText(" (" + tagName + " available)");
@@ -82,11 +75,7 @@ void AboutDialog::resized()
     rowBounds = bounds.removeFromTop(rowHeight);
     applicationVersionLabel.setBounds(rowBounds.removeFromLeft(200));
     applicationVersionValue.setBounds(rowBounds.removeFromLeft((int) std::ceil(applicationVersionValue.getTextWidth())));
-    if (applicationVersionLatestLabel.isVisible())
-    {
-        applicationVersionLatestLabel.setBounds(rowBounds.removeFromLeft((int) std::ceil(applicationVersionLatestLabel.getTextWidth())));
-    }
-    else if (applicationVersionUpdateLabel.isVisible())
+    if (applicationVersionUpdateLabel.isVisible())
     {
         applicationVersionUpdateLabel.setBounds(rowBounds.removeFromLeft((int) std::ceil(applicationVersionUpdateLabel.getTextWidth())));
     }
