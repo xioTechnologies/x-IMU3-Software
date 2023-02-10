@@ -13,7 +13,7 @@ public:
 private:
     std::vector<std::unique_ptr<juce::Component>> groups;
 
-    IconButton defaultButton { IconButton::Style::menuStrip, BinaryData::default_svg, 0.8f, "Restore Default Application Settings" };
+    IconButton defaultsButton { IconButton::Style::menuStrip, BinaryData::default_svg, 0.8f, "Restore Defaults" };
 
     void initialiseGroups();
 

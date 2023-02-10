@@ -14,6 +14,13 @@ public:
         custom,
     };
 
+    enum class AxesConvention
+    {
+        nwu,
+        enu,
+        ned,
+    };
+
     struct Settings
     {
         Settings& operator=(const Settings& other);
@@ -25,6 +32,7 @@ public:
         std::atomic<bool> isStageEnabled = true;
         std::atomic<bool> isAxesEnabled = true;
         std::atomic<Model> model { Model::housing };
+        std::atomic<AxesConvention> axesConvention { AxesConvention::nwu };
     };
 
     explicit ThreeDView(GLRenderer& renderer_);

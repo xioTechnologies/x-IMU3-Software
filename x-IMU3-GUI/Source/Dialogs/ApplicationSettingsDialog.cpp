@@ -2,13 +2,13 @@
 #include "ApplicationSettingsDialog.h"
 #include "ApplicationSettingsGroups.h"
 
-ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::settings_svg, "Application Settings", "Close", "", &defaultButton, 60)
+ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::settings_svg, "Application Settings", "Close", "", &defaultsButton, 60)
 {
-    addAndMakeVisible(defaultButton);
+    addAndMakeVisible(defaultsButton);
 
     initialiseGroups();
 
-    defaultButton.onClick = [&]
+    defaultsButton.onClick = [&]
     {
         ApplicationSettings::getSingleton().restoreDefault();
 
