@@ -15,7 +15,7 @@ pub struct Device {
 
 impl fmt::Display for Device {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{} - {}, {}",
+        write!(formatter, "{}, {}, {}",
                self.device_name,
                self.serial_number,
                self.connection_info.to_string())

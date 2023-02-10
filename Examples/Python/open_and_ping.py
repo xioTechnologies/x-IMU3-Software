@@ -11,7 +11,7 @@ connection = ximu3.Connection(connection_info)
 
 def print_ping_response(ping_response):
     print(ping_response.interface + ", " +
-          ping_response.device_name + " - " +
+          ping_response.device_name + ", " +
           ping_response.serial_number)
     # print(ping_response.to_string()) # alternative to above
 

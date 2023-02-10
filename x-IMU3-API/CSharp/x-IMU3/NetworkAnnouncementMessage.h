@@ -8,94 +8,120 @@ using namespace System;
 
 namespace Ximu3
 {
-    public ref class NetworkAnnouncementMessage
-    {
-    internal:
-        NetworkAnnouncementMessage(ximu3::XIMU3_NetworkAnnouncementMessage message) : message{ new ximu3::XIMU3_NetworkAnnouncementMessage{message} }
-        {
-        }
+	public ref class NetworkAnnouncementMessage
+	{
+	internal:
+		NetworkAnnouncementMessage(ximu3::XIMU3_NetworkAnnouncementMessage message) : message{ new ximu3::XIMU3_NetworkAnnouncementMessage{message} }
+		{
+		}
 
-    public:
-        ~NetworkAnnouncementMessage()
-        {
-            delete message;
-        }
+	public:
+		~NetworkAnnouncementMessage()
+		{
+			delete message;
+		}
 
-        property String^ DeviceName
-        {
-            String^ get()
-            {
-                return gcnew String(message->device_name);
-            }
-        }
+		property String^ DeviceName
+		{
+			String^ get()
+			{
+				return gcnew String(message->device_name);
+			}
+		}
 
-        property String^ SerialNumber
-        {
-            String^ get()
-            {
-                return gcnew String(message->serial_number);
-            }
-        }
+		property String^ SerialNumber
+		{
+			String^ get()
+			{
+				return gcnew String(message->serial_number);
+			}
+		}
 
-        property int32_t Rssi
-        {
-            int32_t get()
-            {
-                return message->rssi;
-            }
-        }
+		property String^ IPAddress
+		{
+			String^ get()
+			{
+				return gcnew String(message->ip_address);
+			}
+		}
 
-        property int32_t Battery
-        {
-            int32_t get()
-            {
-                return message->battery;
-            }
-        }
+		property uint16_t TcpPort
+		{
+			uint16_t get()
+			{
+				return message->tcp_port;
+			}
+		}
 
-        property ChargingStatus Status
-        {
-            ChargingStatus get()
-            {
-                return (ChargingStatus)message->status;
-            }
-        }
+		property uint16_t UdpSend
+		{
+			uint16_t get()
+			{
+				return message->udp_send;
+			}
+		}
 
-        property TcpConnectionInfo^ TcpConnectionInfo
-        {
-            Ximu3::TcpConnectionInfo^ get()
-            {
-                return gcnew Ximu3::TcpConnectionInfo(&message->tcp_connection_info);
-            }
-        }
+		property uint16_t UdpReceive
+		{
+			uint16_t get()
+			{
+				return message->udp_receive;
+			}
+		}
 
-        property UdpConnectionInfo^ UdpConnectionInfo
-        {
-            Ximu3::UdpConnectionInfo^ get()
-            {
-                return gcnew Ximu3::UdpConnectionInfo(&message->udp_connection_info);
-            }
-        }
+		property int32_t Rssi
+		{
+			int32_t get()
+			{
+				return message->rssi;
+			}
+		}
 
-        String^ ToString() override
-        {
-            return gcnew String(ximu3::XIMU3_network_announcement_message_to_string(*message));
-        }
+		property int32_t Battery
+		{
+			int32_t get()
+			{
+				return message->battery;
+			}
+		}
 
-    internal:
-        static array<NetworkAnnouncementMessage^>^ ToArrayAndFree(const ximu3::XIMU3_NetworkAnnouncementMessages messages) {
-            array<NetworkAnnouncementMessage^>^ messagesArray = gcnew array<NetworkAnnouncementMessage^>(messages.length);
+		property ChargingStatus ChargingStatus
+		{
+			Ximu3::ChargingStatus get()
+			{
+				return (Ximu3::ChargingStatus)message->charging_status;
+			}
+		}
 
-            for (uint32_t index = 0; index < messages.length; index++)
-            {
-                messagesArray[index] = gcnew NetworkAnnouncementMessage(messages.array[index]);
-            }
+		TcpConnectionInfo^ ToTcpConnectionInfo()
+		{
+			return gcnew TcpConnectionInfo(&ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(*message));
+		}
 
-            ximu3::XIMU3_network_announcement_messages_free(messages);
-            return messagesArray;
-        }
+		UdpConnectionInfo^ ToUdpConnectionInfo()
+		{
+			return gcnew UdpConnectionInfo(&ximu3::XIMU3_network_announcement_message_to_udp_connection_info(*message));
+		}
 
-    private:
-        ximu3::XIMU3_NetworkAnnouncementMessage* message;
-    };
+		String^ ToString() override
+		{
+			return gcnew String(ximu3::XIMU3_network_announcement_message_to_string(*message));
+		}
+
+	internal:
+		static array<NetworkAnnouncementMessage^>^ ToArrayAndFree(const ximu3::XIMU3_NetworkAnnouncementMessages messages) {
+			array<NetworkAnnouncementMessage^>^ messagesArray = gcnew array<NetworkAnnouncementMessage^>(messages.length);
+
+			for (uint32_t index = 0; index < messages.length; index++)
+			{
+				messagesArray[index] = gcnew NetworkAnnouncementMessage(messages.array[index]);
+			}
+
+			ximu3::XIMU3_network_announcement_messages_free(messages);
+			return messagesArray;
+		}
+
+	private:
+		ximu3::XIMU3_NetworkAnnouncementMessage* message;
+	};
 }

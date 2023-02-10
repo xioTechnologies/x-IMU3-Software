@@ -51,7 +51,7 @@ namespace Ximu3Examples
                 Console.WriteLine("Ping failed");
                 return;
             }
-            Console.WriteLine(pingResponse.Interface + ", " + pingResponse.DeviceName + " - " + pingResponse.SerialNumber);
+            Console.WriteLine(pingResponse.Interface + ", " + pingResponse.DeviceName + ", " + pingResponse.SerialNumber);
             // Console.WriteLine(pingResponse); // alternative to above
         }
     }

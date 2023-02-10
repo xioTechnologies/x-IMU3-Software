@@ -1,21 +1,25 @@
 use std::mem;
+use std::net::Ipv4Addr;
 use std::os::raw::{c_char, c_void};
 use crate::charging_status::*;
 use crate::ffi::callback::*;
 use crate::ffi::connection_info::*;
 use crate::ffi::helpers::*;
 use crate::network_announcement::*;
+use crate::connection_info::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct NetworkAnnouncementMessageC {
     device_name: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],
+    ip_address: [c_char; CHAR_ARRAY_SIZE],
+    tcp_port: u16,
+    udp_send: u16,
+    udp_receive: u16,
     rssi: i32,
     battery: i32,
-    status: ChargingStatus,
-    tcp_connection_info: TcpConnectionInfoC,
-    udp_connection_info: UdpConnectionInfoC,
+    charging_status: ChargingStatus,
 }
 
 impl Default for NetworkAnnouncementMessageC {
@@ -23,11 +27,13 @@ impl Default for NetworkAnnouncementMessageC {
         NetworkAnnouncementMessageC {
             device_name: EMPTY_CHAR_ARRAY,
             serial_number: EMPTY_CHAR_ARRAY,
+            ip_address: EMPTY_CHAR_ARRAY,
+            tcp_port: 0,
+            udp_send: 0,
+            udp_receive: 0,
             rssi: 0,
             battery: 0,
-            status: ChargingStatus::NotConnected,
-            tcp_connection_info: Default::default(),
-            udp_connection_info: Default::default(),
+            charging_status: ChargingStatus::NotConnected,
         }
     }
 }
@@ -37,11 +43,13 @@ impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
         NetworkAnnouncementMessageC {
             device_name: string_to_char_array(message.device_name.clone()),
             serial_number: string_to_char_array(message.serial_number.clone()),
+            ip_address: string_to_char_array(message.ip_address.to_string()),
+            tcp_port: message.tcp_port,
+            udp_send: message.udp_send,
+            udp_receive: message.udp_receive,
             rssi: message.rssi,
             battery: message.battery,
-            status: message.status,
-            tcp_connection_info: (&message.tcp_connection_info).into(),
-            udp_connection_info: (&message.udp_connection_info).into(),
+            charging_status: message.charging_status,
         }
     }
 }
@@ -51,14 +59,31 @@ impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
         NetworkAnnouncementMessage {
             device_name: char_array_to_string(&message.device_name),
             serial_number: char_array_to_string(&message.serial_number),
+            ip_address: char_array_to_string(&message.ip_address).parse().ok().unwrap_or_else(|| { Ipv4Addr::new(0, 0, 0, 0) }),
+            tcp_port: message.tcp_port,
+            udp_send: message.udp_send,
+            udp_receive: message.udp_receive,
             rssi: message.rssi,
             battery: message.battery,
-            status: message.status,
-            tcp_connection_info: message.tcp_connection_info.into(),
-            udp_connection_info: message.udp_connection_info.into(),
+            charging_status: message.charging_status,
             expiry: 0,
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_network_announcement_message_to_tcp_connection_info(message: NetworkAnnouncementMessageC) -> TcpConnectionInfoC {
+    (&Into::<TcpConnectionInfo>::into(&Into::<NetworkAnnouncementMessage>::into(message))).into()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_info(message: NetworkAnnouncementMessageC) -> UdpConnectionInfoC {
+    (&Into::<UdpConnectionInfo>::into(&Into::<NetworkAnnouncementMessage>::into(message))).into()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_network_announcement_message_to_string(message: NetworkAnnouncementMessageC) -> *const c_char {
+    string_to_char_ptr!(NetworkAnnouncementMessage::from(message).to_string())
 }
 
 #[repr(C)]
@@ -87,11 +112,6 @@ pub extern "C" fn XIMU3_network_announcement_messages_free(messages: NetworkAnno
     unsafe {
         Vec::from_raw_parts(messages.array, messages.length as usize, messages.capacity as usize);
     }
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_network_announcement_message_to_string(message: NetworkAnnouncementMessageC) -> *const c_char {
-    string_to_char_ptr!(NetworkAnnouncementMessage::from(message).to_string())
 }
 
 #[no_mangle]

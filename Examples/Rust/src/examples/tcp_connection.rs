@@ -21,7 +21,7 @@ pub fn run() {
 
         println!("Found {} - {}", message.device_name, message.serial_number);
 
-        connection_info = message.tcp_connection_info.clone();
+        connection_info = message.into();
     } else {
         connection_info = TcpConnectionInfo {
             ip_address: Ipv4Addr::new(192, 168, 1, 1),

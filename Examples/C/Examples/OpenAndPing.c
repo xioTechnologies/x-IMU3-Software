@@ -44,8 +44,8 @@ static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
         printf("Ping failed\n");
         return;
     }
-    printf("%s, %s - %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
-    // printf("%s\n", XIMU3_ping_response_to_string(ping_response)); // alternative to above
+    printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
+    // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
 }
 
 static void Callback(const XIMU3_Result result, void* context)

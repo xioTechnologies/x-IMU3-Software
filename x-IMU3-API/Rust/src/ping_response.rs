@@ -38,6 +38,6 @@ impl PingResponse {
 
 impl fmt::Display for PingResponse {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {} - {}", self.interface, self.device_name, self.serial_number)
+        write!(formatter, "{}, {}, {}", self.interface, self.device_name, self.serial_number)
     }
 }

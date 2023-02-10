@@ -49,7 +49,7 @@ private:
                     connectionInfo = "";
                     break;
             }
-            std::cout << device.device_name << " - " << device.serial_number << ", " << connectionInfo << std::endl;
+            std::cout << device.device_name << ", " << device.serial_number << ", " << connectionInfo << std::endl;
             // std::cout << XIMU3_device_to_string(*device) << std::endl; // alternative to above
         }
     }

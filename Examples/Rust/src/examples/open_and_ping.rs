@@ -18,7 +18,7 @@ pub fn run() {
 
     // Ping
     if let Ok(ping_response) = connection.ping() {
-        println!("{}, {} - {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
+        println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
         // println!("{}", ping_response); // alternative to above
     } else {
         println!("Ping failed");

@@ -310,11 +310,13 @@ typedef struct XIMU3_NetworkAnnouncementMessage
 {
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
+    char ip_address[XIMU3_CHAR_ARRAY_SIZE];
+    uint16_t tcp_port;
+    uint16_t udp_send;
+    uint16_t udp_receive;
     int32_t rssi;
     int32_t battery;
-    enum XIMU3_ChargingStatus status;
-    struct XIMU3_TcpConnectionInfo tcp_connection_info;
-    struct XIMU3_UdpConnectionInfo udp_connection_info;
+    enum XIMU3_ChargingStatus charging_status;
 } XIMU3_NetworkAnnouncementMessage;
 
 typedef struct XIMU3_NetworkAnnouncementMessages
@@ -489,9 +491,13 @@ void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
 struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *source);
 
-void XIMU3_network_announcement_messages_free(struct XIMU3_NetworkAnnouncementMessages messages);
+struct XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
+
+struct XIMU3_UdpConnectionInfo XIMU3_network_announcement_message_to_udp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
 
 const char *XIMU3_network_announcement_message_to_string(struct XIMU3_NetworkAnnouncementMessage message);
+
+void XIMU3_network_announcement_messages_free(struct XIMU3_NetworkAnnouncementMessages messages);
 
 struct XIMU3_NetworkAnnouncement *XIMU3_network_announcement_new(void);
 
@@ -507,9 +513,9 @@ struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages
 
 const char *XIMU3_ping_response_to_string(struct XIMU3_PingResponse ping_response);
 
-void XIMU3_devices_free(struct XIMU3_Devices devices);
-
 const char *XIMU3_device_to_string(struct XIMU3_Device device);
+
+void XIMU3_devices_free(struct XIMU3_Devices devices);
 
 struct XIMU3_PortScanner *XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, void *context);
 

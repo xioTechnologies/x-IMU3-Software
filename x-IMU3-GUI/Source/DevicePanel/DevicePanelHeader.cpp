@@ -25,7 +25,7 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
         if (juce::String(message.serial_number) == serialNumber)
         {
             updateRssi(message.rssi);
-            updateBattery(message.battery, message.status);
+            updateBattery(message.battery, message.charging_status);
         }
     });
 
