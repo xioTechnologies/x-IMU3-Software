@@ -28,7 +28,6 @@ private:
     SimpleLabel sourceCodeLabel { "Source Code:" };
     SimpleLabel applicationNameValue { juce::JUCEApplication::getInstance()->getApplicationName() };
     SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion() };
-    SimpleLabel applicationVersionLatestLabel { " (latest)", UIFonts::getDefaultFont(), juce::Justification::centredRight };
     SimpleLabel applicationVersionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredRight };
     SimpleLabel expectedFirmwareVersionValue { Firmware::version };
     SimpleLabel sourceCodeValue { "GitHub" };
