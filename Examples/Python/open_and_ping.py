@@ -17,19 +17,20 @@ def print_ping_response(ping_response):
 
 
 def callback(result):
-    if result != "Ok":
+    if result == ximu3.RESULT_OK:
+        print_ping_response(connection.ping())
+    else:
         print("Unable to open connection")
-        return
-
-    print_ping_response(connection.ping())
 
 
 if helpers.yes_or_no("Use async implementation?"):
     connection.open_async(callback)
     time.sleep(3)
 else:
-    connection.open()
-    print_ping_response(connection.ping())
+    if connection.open() == ximu3.RESULT_OK:
+        print_ping_response(connection.ping())
+    else:
+        print("Unable to open connection")
 
 # Close connection
 connection.close()

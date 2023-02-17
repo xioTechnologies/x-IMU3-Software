@@ -4,11 +4,11 @@ import ximu3
 
 
 def callback(result):
-    print(result)
+    print(ximu3.result_to_string(result))
 
 
 # Open all USB connections
-devices = ximu3.PortScanner.scan_filter("USB")
+devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
 connections = []
 
 for device in devices:
@@ -16,7 +16,7 @@ for device in devices:
 
     connection = ximu3.Connection(device.connection_info)
 
-    if connection.open() == "Ok":
+    if connection.open() == ximu3.RESULT_OK:
         connections.append(connection)
     else:
         raise Exception("Unable to open connection")
@@ -30,7 +30,7 @@ if helpers.yes_or_no("Use async implementation?"):
     time.sleep(3)
     del data_logger
 else:
-    print(ximu3.DataLogger.log(directory, name, connections, 3))
+    print(ximu3.result_to_string(ximu3.DataLogger.log(directory, name, connections, 3)))
 
 # Close all connections
 for connection in connections:
