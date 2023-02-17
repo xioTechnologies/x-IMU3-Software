@@ -1,4 +1,5 @@
 use crossbeam::channel::Sender;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use crate::command_message::*;
 use crate::data_messages::*;
@@ -30,7 +31,7 @@ pub enum DispatcherData {
 
 pub struct Dispatcher {
     pub sender: Sender<DispatcherData>,
-    closure_counter: u64,
+    closure_counter: AtomicU64,
     decode_error_closures: Arc<Mutex<Vec<(Box<dyn Fn(DecodeError) + Send>, u64)>>>,
     statistics_closures: Arc<Mutex<Vec<(Box<dyn Fn(Statistics) + Send>, u64)>>>,
     command_closures: Arc<Mutex<Vec<(Box<dyn Fn(CommandMessage) + Send>, u64)>>>,
@@ -59,7 +60,7 @@ impl Dispatcher {
 
         let dispatcher = Dispatcher {
             sender,
-            closure_counter: 0,
+            closure_counter: AtomicU64::new(0),
             decode_error_closures: Arc::new(Mutex::new(Vec::new())),
             statistics_closures: Arc::new(Mutex::new(Vec::new())),
             command_closures: Arc::new(Mutex::new(Vec::new())),
@@ -178,9 +179,7 @@ impl Dispatcher {
     }
 
     fn get_closure_id(&mut self) -> u64 {
-        let id = self.closure_counter;
-        self.closure_counter += 1;
-        id
+        self.closure_counter.fetch_add(1, Ordering::SeqCst)
     }
 
     pub fn add_decode_error_closure(&mut self, closure: Box<dyn Fn(DecodeError) + Send>) -> u64 {
@@ -318,7 +317,7 @@ impl Dispatcher {
     }
 
     pub fn remove_all_closures(&mut self) {
-        for closure_id in 0..self.closure_counter {
+        for closure_id in 0..self.closure_counter.load(Ordering::SeqCst) {
             self.remove_closure(closure_id);
         }
     }
