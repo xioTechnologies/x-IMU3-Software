@@ -23,7 +23,7 @@ class Connection:
         self.__connection.add_notification_callback(self.__notification_callback)
         self.__connection.add_error_callback(self.__error_callback)
 
-        if self.__connection.open() != "Ok":
+        if self.__connection.open() != ximu3.RESULT_OK:
             raise Exception("Unable to open connection " + connection_info.to_string())
 
         self.__connection.ping()  # send ping so that device starts sending to computer's IP address
@@ -93,7 +93,7 @@ class Connection:
         print(self.__connection_info_string + " " + message.to_string())
 
 
-connections = [Connection(m.udp_connection_info) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]
+connections = [Connection(m.to_udp_connection_info()) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]
 
 if not connections:
     raise Exception("No UDP connections available")

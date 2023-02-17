@@ -54,30 +54,26 @@ static PyObject* port_scanner_scan(PyObject* null, PyObject* args)
 
 static PyObject* port_scanner_scan_filter(PyObject* null, PyObject* args)
 {
-    char* connection_type_string;
+    int connection_type_int;
 
-    if (PyArg_ParseTuple(args, "s", &connection_type_string) == 0)
+    if (PyArg_ParseTuple(args, "i", &connection_type_int) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    for (unsigned int index = 0; index < strlen(connection_type_string); index++)
-    {
-        connection_type_string[index] = tolower(connection_type_string[index]);
-    }
+    const XIMU3_ConnectionType connection_type_enum = (XIMU3_ConnectionType) connection_type_int;
 
-    if (strcmp(connection_type_string, "usb") == 0)
+    switch (connection_type_enum)
     {
-        return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb));
-    }
-    if (strcmp(connection_type_string, "serial") == 0)
-    {
-        return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeSerial));
-    }
-    if (strcmp(connection_type_string, "bluetooth") == 0)
-    {
-        return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeBluetooth));
+        case XIMU3_ConnectionTypeUsb:
+        case XIMU3_ConnectionTypeSerial:
+        case XIMU3_ConnectionTypeBluetooth:
+            return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(connection_type_enum));
+        case XIMU3_ConnectionTypeTcp:
+        case XIMU3_ConnectionTypeUdp:
+        case XIMU3_ConnectionTypeFile:
+            break;
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);

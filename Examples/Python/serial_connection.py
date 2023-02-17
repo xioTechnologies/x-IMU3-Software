@@ -5,7 +5,7 @@ import ximu3
 if helpers.yes_or_no("Search for connections?"):
     print("Searching for connections")
 
-    devices = ximu3.PortScanner.scan_filter("Serial")
+    devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_SERIAL)
 
     if not devices:
         raise Exception("No serial connections available")

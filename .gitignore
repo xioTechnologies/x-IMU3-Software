@@ -19,6 +19,9 @@ cmake-build-release
 
 # Python
 **/__pycache__
+/build
+/dist
+/ximu3.egg-info
 
 # Visual Studio
 **/.vs

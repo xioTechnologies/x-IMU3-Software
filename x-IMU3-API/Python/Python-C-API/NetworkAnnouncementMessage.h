@@ -57,7 +57,7 @@ static PyObject* network_announcement_message_get_battery(NetworkAnnouncementMes
 
 static PyObject* network_announcement_message_get_charging_status(NetworkAnnouncementMessage* self)
 {
-    return Py_BuildValue("s", XIMU3_charging_status_to_string(self->message.charging_status));
+    return Py_BuildValue("I", self->message.charging_status);
 }
 
 static PyObject* network_announcement_message_to_tcp_connection_info(NetworkAnnouncementMessage* self)

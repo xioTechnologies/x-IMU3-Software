@@ -17,7 +17,7 @@ static void file_converter_progress_free(FileConverterProgress* self)
 
 static PyObject* file_converter_progress_get_status(FileConverterProgress* self)
 {
-    return Py_BuildValue("s", XIMU3_file_converter_status_to_string(self->progress.status));
+    return Py_BuildValue("i", self->progress.status);
 }
 
 static PyObject* file_converter_progress_get_percentage(FileConverterProgress* self)

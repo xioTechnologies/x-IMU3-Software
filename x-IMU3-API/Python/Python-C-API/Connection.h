@@ -5,11 +5,11 @@
 #include "CharArraysCallback.h"
 #include "ConnectionInfo.h"
 #include "DataMessages/DataMessages.h"
-#include "DecodeErrorCallback.h"
+#include "DecodeError.h"
 #include "Helpers.h"
 #include "PingResponse.h"
 #include <Python.h>
-#include "ResultCallback.h"
+#include "Result.h"
 #include "Statistics.h"
 
 #define CHAR_PTR_ARRAY_LENGTH 256
@@ -78,7 +78,7 @@ static void connection_free(Connection* self)
 
 static PyObject* connection_open(Connection* self, PyObject* args)
 {
-    return Py_BuildValue("s", XIMU3_result_to_string(XIMU3_connection_open(self->connection)));
+    return Py_BuildValue("i", XIMU3_connection_open(self->connection));
 }
 
 static PyObject* connection_open_async(Connection* self, PyObject* args)

@@ -4,7 +4,7 @@ import ximu3
 
 
 def print_progress(progress):
-    print(progress.status + ", " +
+    print(ximu3.file_converter_status_to_string(progress.status) + ", " +
           "{:.1f}".format(progress.percentage) + "%, " +
           str(progress.bytes_processed) + " of " +
           str(progress.file_size) + " bytes")
