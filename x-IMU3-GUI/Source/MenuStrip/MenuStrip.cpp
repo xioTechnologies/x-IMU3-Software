@@ -411,12 +411,11 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
     {
         setWindowLayout({});
     });
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SINGLE WINDOW"), nullptr);
 
-    const auto addWindowItem = [this](const auto& id, auto& popupMenu)
+    juce::PopupMenu singleWindowMenu;
+    const auto addSingleWindowItem = [&](const auto& id)
     {
-        popupMenu.addItem(getWindowTitle(id), [this, id = id]
+        singleWindowMenu.addItem(getWindowTitle(id), [this, id = id]
         {
             windowLayout.removeAllChildren(nullptr);
             juce::ValueTree row(WindowIDs::Row);
@@ -426,25 +425,26 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
             windowLayout.appendChild(row, nullptr);
         });
     };
-    addWindowItem(WindowIDs::DeviceSettings, menu);
-    addWindowItem(WindowIDs::ThreeDView, menu);
-    addWindowItem(WindowIDs::SerialAccessoryTerminal, menu);
-    juce::PopupMenu graphs;
-    addWindowItem(WindowIDs::Gyroscope, graphs);
-    addWindowItem(WindowIDs::Accelerometer, graphs);
-    addWindowItem(WindowIDs::Magnetometer, graphs);
-    addWindowItem(WindowIDs::EulerAngles, graphs);
-    addWindowItem(WindowIDs::LinearAcceleration, graphs);
-    addWindowItem(WindowIDs::EarthAcceleration, graphs);
-    addWindowItem(WindowIDs::HighGAccelerometer, graphs);
-    addWindowItem(WindowIDs::Temperature, graphs);
-    addWindowItem(WindowIDs::BatteryPercentage, graphs);
-    addWindowItem(WindowIDs::BatteryVoltage, graphs);
-    addWindowItem(WindowIDs::RssiPercentage, graphs);
-    addWindowItem(WindowIDs::RssiPower, graphs);
-    addWindowItem(WindowIDs::ReceivedMessageRate, graphs);
-    addWindowItem(WindowIDs::ReceivedDataRate, graphs);
-    menu.addSubMenu("Graph", graphs);
+    addSingleWindowItem(WindowIDs::DeviceSettings);
+    addSingleWindowItem(WindowIDs::ThreeDView);
+    addSingleWindowItem(WindowIDs::SerialAccessoryTerminal);
+    singleWindowMenu.addSeparator();
+    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("GRAPHS"), nullptr);
+    addSingleWindowItem(WindowIDs::Gyroscope);
+    addSingleWindowItem(WindowIDs::Accelerometer);
+    addSingleWindowItem(WindowIDs::Magnetometer);
+    addSingleWindowItem(WindowIDs::EulerAngles);
+    addSingleWindowItem(WindowIDs::LinearAcceleration);
+    addSingleWindowItem(WindowIDs::EarthAcceleration);
+    addSingleWindowItem(WindowIDs::HighGAccelerometer);
+    addSingleWindowItem(WindowIDs::Temperature);
+    addSingleWindowItem(WindowIDs::BatteryPercentage);
+    addSingleWindowItem(WindowIDs::BatteryVoltage);
+    addSingleWindowItem(WindowIDs::RssiPercentage);
+    addSingleWindowItem(WindowIDs::RssiPower);
+    addSingleWindowItem(WindowIDs::ReceivedMessageRate);
+    addSingleWindowItem(WindowIDs::ReceivedDataRate);
+    menu.addSubMenu("Single Window", singleWindowMenu);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CUSTOM LAYOUTS"), nullptr);
