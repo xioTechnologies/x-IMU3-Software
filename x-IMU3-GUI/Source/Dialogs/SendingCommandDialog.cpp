@@ -118,12 +118,22 @@ int SendingCommandDialog::getNumRows()
 
 void SendingCommandDialog::paintRowBackground(juce::Graphics& g, int rowNumber, int height, int, bool)
 {
+    if (rowNumber >= (int) rows.size())
+    {
+        return; // index may exceed size on Windows if display scaling >100%
+    }
+
     g.setColour(rows[(size_t) rowNumber].devicePanel.getColourTag());
     g.fillRect(0, 0, DevicePanelHeader::colourTagWidth, height);
 }
 
 juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
+    if (rowNumber >= (int) rows.size())
+    {
+        return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
+    }
+
     delete existingComponentToUpdate;
 
     switch ((ColumnIDs) columnID)

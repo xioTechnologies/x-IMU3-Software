@@ -57,6 +57,11 @@ int NotificationAndErrorMessagesDialog::getNumRows()
 
 juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
+    if (rowNumber >= (int) messages.size())
+    {
+        return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
+    }
+
     delete existingComponentToUpdate;
 
     const auto& notificationMessage = messages[messages.size() - 1 - (size_t) rowNumber];
