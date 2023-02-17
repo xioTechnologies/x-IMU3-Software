@@ -74,6 +74,8 @@ private:
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
 
+    int mostDevicePanelsConnected = 0;
+
     void disconnect(const DevicePanel* const);
 
     juce::PopupMenu getManualConnectMenu();

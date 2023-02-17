@@ -181,16 +181,20 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             component.get().setEnabled(newSize > 0);
         }
 
-        if (newSize > 1 && oldSize <= 1)
+        if (newSize > 1 && mostDevicePanelsConnected < 2)
         {
-            devicePanelContainer.setLayout(DevicePanelContainer::Layout::accordion);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::accordion), {});
+            devicePanelContainer.setLayout(DevicePanelContainer::Layout::grid);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::grid), {});
+
+            windowLayout.removeAllChildren(nullptr);
+            juce::ValueTree row(WindowIDs::Row);
+            juce::ValueTree window(WindowIDs::ThreeDView);
+            window.setProperty(WindowIDs::size, 0.5f, nullptr);
+            row.appendChild(window, nullptr);
+            windowLayout.appendChild(row, nullptr);
         }
-        else if (newSize <= 1)
-        {
-            devicePanelContainer.setLayout(DevicePanelContainer::Layout::rows);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::rows), {});
-        }
+
+        mostDevicePanelsConnected = std::max(mostDevicePanelsConnected, newSize);
     };
     devicePanelContainer.onDevicePanelsSizeChanged(0, 0);
 
@@ -407,7 +411,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Default", [this]
+    menu.addItem("Default", devicePanelContainer.getDevicePanels().size() == 1, false, [this]
     {
         setWindowLayout({});
     });
