@@ -84,6 +84,11 @@ int ConnectionsTable::getNumRows()
 
 juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
+    if (rowNumber >= (int) rows.size())
+    {
+        return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
+    }
+
     switch ((ColumnIDs) columnID)
     {
         case ColumnIDs::selected:
