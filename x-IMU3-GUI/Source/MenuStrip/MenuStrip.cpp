@@ -171,32 +171,37 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         DialogLauncher::launchDialog(std::make_unique<AboutDialog>());
     };
 
-    devicePanelContainer.onDevicePanelsSizeChanged = [&](const int oldSize, const int newSize)
+    devicePanelContainer.onDevicePanelsSizeChanged = [&]
     {
-        devicePanelLayoutButton.setEnabled(newSize > 1);
-
-        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton,
+        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton, devicePanelLayoutButton,
                                                                                       shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
         {
-            component.get().setEnabled(newSize > 0);
+            component.get().setEnabled(devicePanelContainer.getDevicePanels().size() > 0);
         }
 
-        if (newSize > 1 && mostDevicePanelsConnected < 2)
+        if (devicePanelContainer.getDevicePanels().size() <= 1)
         {
-            devicePanelContainer.setLayout(DevicePanelContainer::Layout::grid);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::grid), {});
-
-            windowLayout.removeAllChildren(nullptr);
-            juce::ValueTree row(WindowIDs::Row);
-            juce::ValueTree window(WindowIDs::ThreeDView);
-            window.setProperty(WindowIDs::size, 0.5f, nullptr);
-            row.appendChild(window, nullptr);
-            windowLayout.appendChild(row, nullptr);
+            devicePanelContainer.setLayout(DevicePanelContainer::Layout::single);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::single), {});
         }
+        else
+        {
+            if (preferredMultipleDevicePanelLayout.has_value() == false)
+            {
+                preferredMultipleDevicePanelLayout = DevicePanelContainer::Layout::grid;
 
-        mostDevicePanelsConnected = std::max(mostDevicePanelsConnected, newSize);
+                windowLayout.removeAllChildren(nullptr);
+                windowLayout.appendChild({ WindowIDs::Row, {},
+                                           {
+                                                   { WindowIDs::ThreeDView, {{ WindowIDs::size, 1 }}},
+                                           }}, nullptr);
+            }
+
+            devicePanelContainer.setLayout(*preferredMultipleDevicePanelLayout);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(*preferredMultipleDevicePanelLayout), {});
+        }
     };
-    devicePanelContainer.onDevicePanelsSizeChanged(0, 0);
+    devicePanelContainer.onDevicePanelsSizeChanged();
 
     static constexpr int buttonHeight = 24;
     static constexpr int buttonMargin = 3;
@@ -414,6 +419,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
     menu.addItem("Default", devicePanelContainer.getDevicePanels().size() == 1, false, [this]
     {
         setWindowLayout({});
+        preferredMultipleDevicePanelLayout = {};
     });
 
     juce::PopupMenu singleWindowMenu;
@@ -494,18 +500,24 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
 {
     juce::PopupMenu menu;
 
-    const auto addItem = [&](auto type, const auto& title)
+    const auto addItem = [&](const auto layout, const auto& title, const auto enabled)
     {
-        menu.addItem(title, true, devicePanelContainer.getLayout() == type, [&, type]
+        menu.addItem(title, enabled, devicePanelContainer.getLayout() == layout, [&, layout]
         {
-            devicePanelContainer.setLayout(type);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(type), {});
+            devicePanelContainer.setLayout(layout);
+            devicePanelLayoutButton.setIcon(layoutIcons.at(layout), {});
+
+            if (layout != DevicePanelContainer::Layout::single)
+            {
+                preferredMultipleDevicePanelLayout = layout;
+            }
         });
     };
-    addItem(DevicePanelContainer::Layout::rows, "Rows");
-    addItem(DevicePanelContainer::Layout::columns, "Columns");
-    addItem(DevicePanelContainer::Layout::grid, "Grid");
-    addItem(DevicePanelContainer::Layout::accordion, "Accordion");
+    addItem(DevicePanelContainer::Layout::single, "Single", devicePanelContainer.getDevicePanels().size() == 1);
+    addItem(DevicePanelContainer::Layout::rows, "Rows", devicePanelContainer.getDevicePanels().size() > 1);
+    addItem(DevicePanelContainer::Layout::columns, "Columns", devicePanelContainer.getDevicePanels().size() > 1);
+    addItem(DevicePanelContainer::Layout::grid, "Grid", devicePanelContainer.getDevicePanels().size() > 1);
+    addItem(DevicePanelContainer::Layout::accordion, "Accordion", devicePanelContainer.getDevicePanels().size() > 1);
 
     return menu;
 }

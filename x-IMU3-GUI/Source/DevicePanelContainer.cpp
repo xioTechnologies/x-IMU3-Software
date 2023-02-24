@@ -12,45 +12,43 @@ DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRen
 
 void DevicePanelContainer::resized()
 {
-    if (layout == Layout::accordion)
-    {
-        const auto width = findParentComponentOfClass<juce::Viewport>()->getViewWidth();
-
-        for (size_t index = 0; index < devicePanels.size(); index++)
-        {
-            auto& devicePanel = devicePanels[index];
-            const auto y = (index == 0) ? 0 : (devicePanels[index - 1]->getBottom() + UILayout::panelMargin);
-
-            if (expandedDevicePanel == devicePanel.get())
-            {
-                devicePanel->setBounds(0, y, width, expandedPanelHeight);
-                accordionResizeBar.setBounds(0, devicePanel->getBottom(), width, UILayout::panelMargin);
-            }
-            else
-            {
-                devicePanel->setBounds(0, y, width, DevicePanel::collapsedHeight);
-            }
-        }
-        return;
-    }
-
     int numberOfRows, numberOfColumns;
 
-    if (layout == Layout::rows)
+    switch (layout)
     {
-        numberOfRows = (int) devicePanels.size();
-        numberOfColumns = 1;
-    }
-    else if (layout == Layout::columns)
-    {
-        numberOfRows = 1;
-        numberOfColumns = (int) devicePanels.size();
-    }
-    else
-    {
-        const auto squareRoot = std::sqrt(devicePanels.size());
-        numberOfRows = juce::roundToInt(squareRoot);
-        numberOfColumns = (int) std::ceil(squareRoot);
+        case Layout::single:
+            numberOfRows = (int) devicePanels.size();
+            numberOfColumns = (int) devicePanels.size();
+            break;
+        case Layout::rows:
+            numberOfRows = (int) devicePanels.size();
+            numberOfColumns = 1;
+            break;
+        case Layout::columns:
+            numberOfRows = 1;
+            numberOfColumns = (int) devicePanels.size();
+            break;
+        case Layout::grid:
+            numberOfRows = juce::roundToInt(std::sqrt(devicePanels.size()));
+            numberOfColumns = (int) std::ceil(std::sqrt(devicePanels.size()));
+            break;
+        case Layout::accordion:
+            for (size_t index = 0; index < devicePanels.size(); index++)
+            {
+                auto& devicePanel = devicePanels[index];
+                const auto y = (index == 0) ? 0 : (devicePanels[index - 1]->getBottom() + UILayout::panelMargin);
+
+                if (expandedDevicePanel == devicePanel.get())
+                {
+                    devicePanel->setBounds(0, y, getWidth(), expandedPanelHeight);
+                    accordionResizeBar.setBounds(0, devicePanel->getBottom(), getWidth(), UILayout::panelMargin);
+                }
+                else
+                {
+                    devicePanel->setBounds(0, y, getWidth(), DevicePanel::collapsedHeight);
+                }
+            }
+            return;
     }
 
     auto panelsBounds = getLocalBounds().toFloat();
@@ -92,8 +90,6 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                                       return;
                                                                   }
 
-                                                                  onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() + 1);
-
                                                                   addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
                                                                   {
                                                                       static unsigned int counter;
@@ -106,12 +102,7 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                                       return UIColours::panelTags[counter];
                                                                   }())));
 
-                                                                  toggleAccordionState(nullptr);
-
-                                                                  if (layout != Layout::accordion)
-                                                                  {
-                                                                      resized();
-                                                                  }
+                                                                  devicePanelsSizeChanged();
                                                               });
                           });
 }
@@ -128,14 +119,12 @@ std::vector<DevicePanel*> DevicePanelContainer::getDevicePanels() const
 
 void DevicePanelContainer::removeAllPanels()
 {
-    onDevicePanelsSizeChanged((int) devicePanels.size(), 0);
     devicePanels.clear();
-    resized();
+    devicePanelsSizeChanged();
 }
 
 void DevicePanelContainer::removePanel(const DevicePanel& panel)
 {
-    onDevicePanelsSizeChanged((int) devicePanels.size(), (int) devicePanels.size() - 1);
     for (size_t index = 0; index < devicePanels.size(); index++)
     {
         if (devicePanels[index].get() == &panel)
@@ -144,7 +133,7 @@ void DevicePanelContainer::removePanel(const DevicePanel& panel)
             break;
         }
     }
-    resized();
+    devicePanelsSizeChanged();
 }
 
 void DevicePanelContainer::movePanel(DevicePanel& move, DevicePanel& target)
@@ -213,9 +202,9 @@ void DevicePanelContainer::setLayout(Layout layout_)
     layout = layout_;
 
     accordionResizeBar.setVisible(layout == Layout::accordion);
-    toggleAccordionState(nullptr);
+    setExpandedDevicePanel(expandedDevicePanel);
 
-    setBounds(getParentComponent()->getBounds());
+    setBounds(findParentComponentOfClass<juce::Viewport>()->getBounds());
     resized();
 }
 
@@ -245,18 +234,11 @@ void DevicePanelContainer::updateHeightInAccordionMode()
     setSize(getWidth(), height);
 }
 
-void DevicePanelContainer::toggleAccordionState(DevicePanel* const devicePanel)
+void DevicePanelContainer::setExpandedDevicePanel(DevicePanel* const devicePanel)
 {
-    if (layout == Layout::accordion && expandedDevicePanel != devicePanel)
-    {
-        expandedDevicePanel = devicePanel;
-    }
-    else
-    {
-        expandedDevicePanel = nullptr;
-    }
+    expandedDevicePanel = devicePanel;
 
-    if (expandedDevicePanel == nullptr)
+    if (expandedDevicePanel == nullptr || layout != Layout::accordion)
     {
         for (auto& panel : devicePanels)
         {
@@ -275,6 +257,11 @@ void DevicePanelContainer::toggleAccordionState(DevicePanel* const devicePanel)
     updateHeightInAccordionMode();
 }
 
+const DevicePanel* DevicePanelContainer::getExpandedDevicePanel() const
+{
+    return expandedDevicePanel;
+}
+
 DevicePanelContainer::AccordionResizeBar::AccordionResizeBar()
 {
     setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
@@ -286,4 +273,11 @@ void DevicePanelContainer::AccordionResizeBar::mouseDrag(const juce::MouseEvent&
     const auto newHeight = mouseEvent.getEventRelativeTo(devicePanelContainer->expandedDevicePanel).getPosition().getY() - getHeight() / 2;
     devicePanelContainer->expandedPanelHeight = juce::jmax(DevicePanel::collapsedHeight, newHeight);
     devicePanelContainer->updateHeightInAccordionMode();
+}
+
+void DevicePanelContainer::devicePanelsSizeChanged()
+{
+    setExpandedDevicePanel(expandedDevicePanel);
+    resized();
+    onDevicePanelsSizeChanged();
 }
