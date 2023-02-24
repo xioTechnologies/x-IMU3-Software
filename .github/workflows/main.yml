@@ -245,7 +245,7 @@ jobs:
       - name: Sign and notarize
         working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
         run: |
-          codesign -s 29X883CFTW "x-IMU3 GUI.app"
+          codesign --options runtime --timestamp --sign 29X883CFTW "x-IMU3 GUI.app"
           ln -s "/Applications"
           hdiutil create -volname "x-IMU3 GUI${{ matrix.target[3] }}" -srcfolder $(pwd) "x-IMU3 GUI${{ matrix.target[3] }}"
           xcrun notarytool submit "x-IMU3 GUI${{ matrix.target[3] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
