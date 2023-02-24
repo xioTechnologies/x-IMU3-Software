@@ -31,7 +31,11 @@ public:
 
     enum class Layout
     {
-        rows, columns, grid, accordion
+        single,
+        rows,
+        columns,
+        grid,
+        accordion,
     };
 
     void setLayout(Layout layout_);
@@ -40,9 +44,11 @@ public:
 
     void updateHeightInAccordionMode();
 
-    void toggleAccordionState(DevicePanel* const devicePanel);
+    void setExpandedDevicePanel(DevicePanel* const devicePanel);
 
-    std::function<void(const int oldSize, const int newSize)> onDevicePanelsSizeChanged;
+    const DevicePanel* getExpandedDevicePanel() const;
+
+    std::function<void()> onDevicePanelsSizeChanged;
 
 private:
     juce::ValueTree& windowLayout;
@@ -64,9 +70,11 @@ private:
 
     AccordionResizeBar accordionResizeBar;
 
-    Layout layout = Layout::rows;
-    DevicePanel* expandedDevicePanel = nullptr;
+    Layout layout = Layout::single;
+    SafePointer<DevicePanel> expandedDevicePanel;
     int expandedPanelHeight = 600;
+
+    void devicePanelsSizeChanged();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelContainer)
 };

@@ -122,9 +122,9 @@ void DevicePanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
         }
     }
 
-    if (mouseEvent.mouseWasClicked())
+    if (mouseEvent.mouseWasClicked() && devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion)
     {
-        devicePanelContainer.toggleAccordionState(&devicePanel);
+        devicePanelContainer.setExpandedDevicePanel((devicePanelContainer.getExpandedDevicePanel() == &devicePanel) ? nullptr : &devicePanel);
     }
 }
 

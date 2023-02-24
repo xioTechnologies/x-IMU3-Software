@@ -3,6 +3,7 @@
 #include "../Firmware/Firmware.h"
 #include "Dialogs/DataLoggerSettingsDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <optional>
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 #include "Widgets/Stopwatch.h"
@@ -29,7 +30,7 @@ private:
     IconButton disconnectButton { IconButton::Style::menuStripDropdown, BinaryData::disconnect_svg, 1.0f, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
     IconButton showHideWindowButton { IconButton::Style::menuStripDropdown, BinaryData::window_svg, 1.0f, "Show/Hide Windows", std::bind(&MenuStrip::getWindowMenu, this) };
     IconButton windowLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::layout_svg, 1.0f, "Window Layout", std::bind(&MenuStrip::getWindowLayoutMenu, this) };
-    IconButton devicePanelLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::rows_svg, 1.0f, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
+    IconButton devicePanelLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::single_svg, 1.0f, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
     IconButton shutdownButton { IconButton::Style::menuStrip, BinaryData::shutdown_svg, 0.8f, "Shutdown All Devices" };
     IconButton sendCommandButton { IconButton::Style::menuStrip, BinaryData::json_svg, 0.8f, "Send Command to All Devices" };
     IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start Data Logger", nullptr, BinaryData::stop_svg, 0.8f, "Stop Data Logger" };
@@ -64,6 +65,7 @@ private:
     juce::FlexBox flexBox;
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
+            { DevicePanelContainer::Layout::single,    BinaryData::single_svg },
             { DevicePanelContainer::Layout::rows,      BinaryData::rows_svg },
             { DevicePanelContainer::Layout::columns,   BinaryData::columns_svg },
             { DevicePanelContainer::Layout::grid,      BinaryData::grid_svg },
@@ -73,6 +75,8 @@ private:
     DataLoggerSettingsDialog::Settings dataLoggerSettings;
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
+
+    std::optional<DevicePanelContainer::Layout> preferredMultipleDevicePanelLayout;
 
     void disconnect(const DevicePanel* const);
 
