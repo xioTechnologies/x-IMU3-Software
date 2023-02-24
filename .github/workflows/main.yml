@@ -8,79 +8,79 @@ on:
     branches: [ main ]
 
 jobs:
-#  create-release:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      upload_url: ${{ steps.create-release.outputs.upload_url }}
-#
-#    steps:
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Create release
-#        id: create-release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: Release ${{ github.ref }}
-#          draft: false
-#          prerelease: false
-#
-#  rust:
-#    runs-on: ${{ matrix.target[0] }}
-#    needs: create-release
-#
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        target: # [ os, rust-target, library-file-name, library-file-extension ]
-#          - [ macos-latest, x86_64-apple-darwin, libximu3, a ]
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
+
+    steps:
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  rust:
+    runs-on: ${{ matrix.target[0] }}
+    needs: create-release
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target: # [ os, rust-target, library-file-name, library-file-extension ]
+          - [ macos-latest, x86_64-apple-darwin, libximu3, a ]
 #          - [ macos-latest, aarch64-apple-darwin, libximu3, a ]
 #          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a ]
 #          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a ]
 #          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a ]
 #          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a ]
 #          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - if: matrix.target[0] == 'ubuntu-latest'
-#        name: Install ubuntu dependency
-#        run: sudo apt-get install -y libudev-dev
-#
-#      - name: Build
-#        working-directory: x-IMU3-API/Rust/
-#        env:
-#          PKG_CONFIG_SYSROOT_DIR: /
-#        run: |
-#          rustup target add ${{ matrix.target[1] }}
-#          cargo build --release --target ${{ matrix.target[1] }}
-#
-#      - uses: actions/upload-artifact@v3
-#        name: Upload to artifacts
-#        with:
-#          name: rust-${{ matrix.target[1] }}
-#          path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
-#
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Zip
-#        uses: vimtor/action-zip@v1
-#        with:
-#          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
-#          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
-#
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Upload to release
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ needs.create-release.outputs.upload_url }}
-#          asset_path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
-#          asset_name: ${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
-#          asset_content_type: application/octet-stream
-#
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - if: matrix.target[0] == 'ubuntu-latest'
+        name: Install ubuntu dependency
+        run: sudo apt-get install -y libudev-dev
+
+      - name: Build
+        working-directory: x-IMU3-API/Rust/
+        env:
+          PKG_CONFIG_SYSROOT_DIR: /
+        run: |
+          rustup target add ${{ matrix.target[1] }}
+          cargo build --release --target ${{ matrix.target[1] }}
+
+      - uses: actions/upload-artifact@v3
+        name: Upload to artifacts
+        with:
+          name: rust-${{ matrix.target[1] }}
+          path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Zip
+        uses: vimtor/action-zip@v1
+        with:
+          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
+          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Upload to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
+          asset_name: ${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
+          asset_content_type: application/octet-stream
+
 #  rust-publish:
 #    runs-on: ubuntu-latest
 #
@@ -179,13 +179,13 @@ jobs:
 
   gui:
     runs-on: ${{ matrix.target[0] }}
-#    needs: [ create-release, rust ]
+    needs: [ create-release, rust ]
 
     strategy:
       fail-fast: false
       matrix:
         target: # [ os, rust-target, cmake-osx-architecture, gui-extension  ]
-          - [ macos-latest, x86_64-apple-darwin, x86_64, "-Intel.zip" ]
+          - [ macos-latest, x86_64-apple-darwin, x86_64, "-Intel.dmg" ]
 #          - [ macos-latest, aarch64-apple-darwin, arm64, "-Apple-Silicon.zip" ]
 #          - [ ubuntu-latest, x86_64-unknown-linux-gnu, "", "" ]
 #          - [ windows-latest, x86_64-pc-windows-msvc, "", ".exe" ]
@@ -215,44 +215,49 @@ jobs:
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
-#      - name: Download from artifacts
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: rust-${{ matrix.target[1] }}
-#          path: x-IMU3-API/Rust/target/release
-#
-#      - if: matrix.target[0] == 'ubuntu-latest'
-#        name: Install ubuntu dependencies # https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y libasound2-dev libjack-jackd2-dev \
-#          ladspa-sdk \
-#          libcurl4-openssl-dev \
-#          libfreetype6-dev \
-#          libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
-#          libwebkit2gtk-4.0-dev \
-#          libglu1-mesa-dev mesa-common-dev \
-#          libudev-dev \
-#
-#      - name: Build CMake targets
-#        run: |
-#          mkdir cmake-build-release
-#          cd cmake-build-release
-#          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.target[2] }}
-#          cmake --build . --config Release
-#
-#      - if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
-#        name: Zip (macOS) # zip macOS files to avoid duplicate file names
-#        working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
-#        run: zip -r "x-IMU3 GUI${{ matrix.target[3] }}" "x-IMU3 GUI.app"
-#
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Upload to release
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ needs.create-release.outputs.upload_url }}
-#          asset_path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI${{ matrix.target[3] }}
-#          asset_name: x-IMU3-GUI${{ matrix.target[3] }}
-#          asset_content_type: application/octet-stream
+      - name: Download from artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rust-${{ matrix.target[1] }}
+          path: x-IMU3-API/Rust/target/release
+
+      - if: matrix.target[0] == 'ubuntu-latest'
+        name: Install ubuntu dependencies # https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libjack-jackd2-dev \
+          ladspa-sdk \
+          libcurl4-openssl-dev \
+          libfreetype6-dev \
+          libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
+          libwebkit2gtk-4.0-dev \
+          libglu1-mesa-dev mesa-common-dev \
+          libudev-dev \
+
+      - name: Build CMake targets
+        run: |
+          mkdir cmake-build-release
+          cd cmake-build-release
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.target[2] }}
+          cmake --build . --config Release
+
+      #- if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
+      - name: Sign and notarize
+        working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
+        run: |
+          codesign -s 29X883CFTW "x-IMU3 GUI.app"
+          ln -s "/Applications"
+          hdiutil create -volname "x-IMU3 GUI${{ matrix.target[3] }}" -srcfolder $(pwd) "x-IMU3 GUI${{ matrix.target[3] }}"
+          xcrun notarytool submit "x-IMU3 GUI${{ matrix.target[3] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
+          xcrun stapler staple "x-IMU3 GUI${{ matrix.target[3] }}"
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Upload to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI${{ matrix.target[3] }}
+          asset_name: x-IMU3-GUI${{ matrix.target[3] }}
+          asset_content_type: application/octet-stream
