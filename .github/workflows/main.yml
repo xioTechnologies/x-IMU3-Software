@@ -36,11 +36,11 @@ jobs:
         target: # [ os, rust-target, library-file-name, library-file-extension ]
           - [ macos-latest, x86_64-apple-darwin, libximu3, a ]
           - [ macos-latest, aarch64-apple-darwin, libximu3, a ]
-#          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a ]
-#          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a ]
-#          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a ]
-#          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a ]
-#          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a ]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a ]
+          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a ]
+          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
 
     steps:
       - uses: actions/checkout@v3
@@ -81,101 +81,101 @@ jobs:
           asset_name: ${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
           asset_content_type: application/octet-stream
 
-#  rust-publish:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Dry run
-#        working-directory: x-IMU3-API/Rust/
-#        run: cargo publish --no-verify --dry-run
-#
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Publish crate
-#        working-directory: x-IMU3-API/Rust/
-#        env:
-#          CARGO_REGISTRY_TOKEN: ${{ secrets.RUST_TOKEN }}
-#        run: cargo publish --no-verify
-#
-#  c-sharp:
-#    runs-on: windows-latest
-#    needs: [ create-release, rust ]
-#
-#    strategy:
-#      fail-fast: false
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Download from artifacts
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: rust-x86_64-pc-windows-msvc
-#          path: x-IMU3-API/Rust/target/release
-#
-#      - name: Add msbuild to PATH
-#        uses: microsoft/setup-msbuild@v1.1
-#
-#      - name: Run examples
-#        working-directory: Examples/CSharp/x-IMU3-Examples/
-#        run: msbuild x-IMU3-Examples.sln -property:Configuration=Release
-#
-#  python:
-#    runs-on: ${{ matrix.target[0] }}
-#    needs: rust
-#
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        target: # [ os, rust-target, cibuildwheel-platform ]
-#          - [ macos-latest, x86_64-apple-darwin, macosx_x86_64 ]
-#          - [ macos-latest, aarch64-apple-darwin, macosx_arm64 ]
-#          - [ ubuntu-latest, i686-unknown-linux-gnu, manylinux_i686 ]
-#          - [ ubuntu-latest, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
-#          - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
-#          - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
-#
-#        python-version: [ "cp38-", "cp39-", "cp310-", "cp311-" ]
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Download from artifacts
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: rust-${{ matrix.target[1] }}
-#          path: x-IMU3-API/Rust/target/release
-#
-#      - name: Install Python dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          python -m pip install -U urllib3 requests
-#          python -m pip install twine
-#
-#      - if: matrix.target[0] == 'ubuntu-latest'
-#        name: Set up QEMU
-#        uses: docker/setup-qemu-action@v2
-#        with:
-#          platforms: all
-#
-#      - name: Build wheel
-#        uses: pypa/cibuildwheel@v2.11.4
-#        env:
-#          CIBW_ARCHS: all
-#          CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
-#          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
-#          CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
-#          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
-#          CIBW_BEFORE_BUILD: pip install numpy
-#          CIBW_BEFORE_BUILD_LINUX: pip install numpy && apt-get update && apt-get install -y libudev-dev
-#
-#      - if: startsWith(github.ref, 'refs/tags/v')
-#        name: Publish Python package
-#        env:
-#          TWINE_USERNAME: __token__
-#          TWINE_PASSWORD: ${{ secrets.PYTHON_TOKEN }}
-#        run: python -m twine upload --verbose --repository pypi wheelhouse/*
+  rust-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Dry run
+        working-directory: x-IMU3-API/Rust/
+        run: cargo publish --no-verify --dry-run
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish crate
+        working-directory: x-IMU3-API/Rust/
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.RUST_TOKEN }}
+        run: cargo publish --no-verify
+
+  c-sharp:
+    runs-on: windows-latest
+    needs: [ create-release, rust ]
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download from artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rust-x86_64-pc-windows-msvc
+          path: x-IMU3-API/Rust/target/release
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Run examples
+        working-directory: Examples/CSharp/x-IMU3-Examples/
+        run: msbuild x-IMU3-Examples.sln -property:Configuration=Release
+
+  python:
+    runs-on: ${{ matrix.target[0] }}
+    needs: rust
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target: # [ os, rust-target, cibuildwheel-platform ]
+          - [ macos-latest, x86_64-apple-darwin, macosx_x86_64 ]
+          - [ macos-latest, aarch64-apple-darwin, macosx_arm64 ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, manylinux_i686 ]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
+          - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
+
+        python-version: [ "cp38-", "cp39-", "cp310-", "cp311-" ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download from artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rust-${{ matrix.target[1] }}
+          path: x-IMU3-API/Rust/target/release
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U urllib3 requests
+          python -m pip install twine
+
+      - if: matrix.target[0] == 'ubuntu-latest'
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v2.11.4
+        env:
+          CIBW_ARCHS: all
+          CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
+          CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
+          CIBW_BEFORE_BUILD: pip install numpy
+          CIBW_BEFORE_BUILD_LINUX: pip install numpy && apt-get update && apt-get install -y libudev-dev
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish Python package
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYTHON_TOKEN }}
+        run: python -m twine upload --verbose --repository pypi wheelhouse/*
 
   gui:
     runs-on: ${{ matrix.target[0] }}
@@ -187,8 +187,8 @@ jobs:
         target: # [ os, rust-target, cmake-osx-architecture, gui-extension  ]
           - [ macos-latest, x86_64-apple-darwin, x86_64, "-Intel.dmg" ]
           - [ macos-latest, aarch64-apple-darwin, arm64, "-Apple-Silicon.dmg" ]
-#          - [ ubuntu-latest, x86_64-unknown-linux-gnu, "", "" ]
-#          - [ windows-latest, x86_64-pc-windows-msvc, "", ".exe" ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, "", "" ]
+          - [ windows-latest, x86_64-pc-windows-msvc, "", ".exe" ]
 
     steps:
       - uses: actions/checkout@v3
@@ -241,8 +241,8 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.target[2] }}
           cmake --build . --config Release
 
-      #- if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
-      - name: Sign and notarize
+      - if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
+        name: Sign and notarize
         working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
         run: |
           codesign --options runtime --timestamp --sign 29X883CFTW "x-IMU3 GUI.app"
@@ -250,12 +250,6 @@ jobs:
           hdiutil create -volname "x-IMU3 GUI${{ matrix.target[3] }}" -srcfolder $(pwd) "x-IMU3 GUI${{ matrix.target[3] }}"
           xcrun notarytool submit "x-IMU3 GUI${{ matrix.target[3] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
           xcrun stapler staple "x-IMU3 GUI${{ matrix.target[3] }}"
-
-      - uses: actions/upload-artifact@v3
-        name: Upload to artifacts
-        with:
-          name: x-IMU3-GUI${{ matrix.target[3] }}
-          path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI${{ matrix.target[3] }}
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
