@@ -340,6 +340,11 @@
         "default": "{true}"
     },
     {
+        "name": "AHRS axes convention",
+        "declaration": "FusionConvention name",
+        "default": "{FusionConventionNwu}"
+    },
+    {
         "name": "AHRS gain",
         "declaration": "float name",
         "default": "{0.5f}"

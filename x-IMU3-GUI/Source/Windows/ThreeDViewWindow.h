@@ -57,6 +57,8 @@ private:
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
     uint64_t earthAccelerationCallbackID;
 
+    void setEulerAnglesVisible(const bool visible);
+
     void timerCallback() override;
 
     static float wrapAngle(float angle);

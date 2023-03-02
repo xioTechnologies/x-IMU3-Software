@@ -119,7 +119,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     defaultsButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default settings?"), [this]
+        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
         {
             setInProgress(true);
 
@@ -128,7 +128,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                 if (defaultFailedCommands.empty() == false)
                 {
                     setInProgress(false);
-                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm default command."));
+                    DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm default command."));
                     return;
                 }
 
@@ -137,7 +137,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     if (saveFailedCommands.empty() == false)
                     {
                         setInProgress(false);
-                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm save command."));
+                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm save command."));
                         return;
                     }
 
@@ -146,7 +146,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                         if (applyFailedCommands.empty() == false)
                         {
                             setInProgress(false);
-                            DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default settings failed. Unable to confirm apply command."));
+                            DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm apply command."));
                             return;
                         }
 
