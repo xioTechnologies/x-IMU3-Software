@@ -29,6 +29,8 @@ private:
 
     static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 
+    juce::ValueTree findSetting(const juce::String& key) const;
+
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettings)
