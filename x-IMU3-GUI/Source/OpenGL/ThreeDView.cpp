@@ -11,6 +11,7 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     isStageEnabled = other.isStageEnabled.load();
     isAxesEnabled = other.isAxesEnabled.load();
     model = other.model.load();
+    axesConvention = other.axesConvention.load();
     return *this;
 }
 
@@ -34,9 +35,22 @@ void ThreeDView::render()
     renderer.refreshScreen(juce::Colours::black, bounds);
     resources.threeDViewShader.projectionMatrix.setMatrix4(renderer.getProjectionMatrix(bounds).mat, 1, false);
 
-    auto worldRotation = rotation(settings.elevation, settings.azimuth, 0.0f) * rotation(90.0f, 0.0f, 0.0f);
-    auto worldTransformation = translation(0.0f, 0.0f, settings.zoom) * worldRotation;
-    auto deviceRotation = juce::Quaternion<GLfloat>(-1.0f * quaternionX, -1.0f * quaternionY, -1.0f * quaternionZ, quaternionW).getRotationMatrix(); // quaternion conjugate
+    const auto worldRotation = rotation(settings.elevation, settings.azimuth, 0.0f) * rotation(90.0f, 0.0f, 0.0f);
+    const auto worldTransformation = translation(0.0f, 0.0f, settings.zoom) * worldRotation;
+    const auto deviceRotation = juce::Quaternion<GLfloat>(-1.0f * quaternionX, -1.0f * quaternionY, -1.0f * quaternionZ, quaternionW).getRotationMatrix(); // quaternion conjugate
+    auto axesConventionRotation = rotation(0.0f, 0.0f, 0.0f);
+
+    switch (settings.axesConvention.load())
+    {
+        case AxesConvention::nwu:
+            break;
+        case AxesConvention::enu:
+            axesConventionRotation = rotation(0.0f, 0.0f, 90.0f);
+            break;
+        case AxesConvention::ned:
+            axesConventionRotation = rotation(180.0f, 0.0f, 0.0f);
+            break;
+    }
 
     const auto lightAmbient = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
     const auto lightDiffuse = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
@@ -74,7 +88,7 @@ void ThreeDView::render()
     if (settings.isModelEnabled)
     {
         resources.threeDViewShader.emissivity.set(0.8f);
-        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * deviceRotation).mat, 1, false);
+        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * axesConventionRotation * deviceRotation).mat, 1, false);
 
         switch (settings.model.load())
         {
@@ -130,8 +144,8 @@ void ThreeDView::render()
         const auto bottomLeftX = -0.45f;
         const auto bottomLeftY = -0.2f;
 
-        renderAxes(translation(0.0f, 0.0f, -1.0f) * worldRotation * deviceRotation * scale(0.1f));
-        renderAxes(translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * scale(0.1f));
+        renderAxes(translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.1f));
+        renderAxes(translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * axesConventionRotation * scale(0.1f));
 
         renderer.turnCullingOff(); // render text only after culling off
         renderer.getResources().textShader.use();
@@ -157,13 +171,13 @@ void ThreeDView::render()
             resources.textShader.transformation.setMatrix4(ndcMatrix.mat, 1, false);
             text.render(resources);
         };
-
-        auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * deviceRotation * scale(0.11f);
+        
+        auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.11f);
         renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
 
-        auto matrixB = translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * scale(0.11f);
+        auto matrixB = translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * axesConventionRotation * scale(0.11f);
         renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixB, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
