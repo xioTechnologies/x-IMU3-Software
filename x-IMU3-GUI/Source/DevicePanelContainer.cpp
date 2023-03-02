@@ -33,6 +33,8 @@ void DevicePanelContainer::resized()
             numberOfColumns = (int) std::ceil(std::sqrt(devicePanels.size()));
             break;
         case Layout::accordion:
+            numberOfRows = numberOfColumns = 0; // avoid compiler warning
+
             for (size_t index = 0; index < devicePanels.size(); index++)
             {
                 auto& devicePanel = devicePanels[index];
