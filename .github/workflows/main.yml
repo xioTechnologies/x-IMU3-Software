@@ -185,13 +185,36 @@ jobs:
       fail-fast: false
       matrix:
         target: # [ os, rust-target, cmake-osx-architecture, gui-extension  ]
-          - [ macos-latest, x86_64-apple-darwin, x86_64, "-Intel.zip" ]
-          - [ macos-latest, aarch64-apple-darwin, arm64, "-Apple-Silicon.zip" ]
+          - [ macos-latest, x86_64-apple-darwin, x86_64, "-Intel.dmg" ]
+          - [ macos-latest, aarch64-apple-darwin, arm64, "-Apple-Silicon.dmg" ]
           - [ ubuntu-latest, x86_64-unknown-linux-gnu, "", "" ]
           - [ windows-latest, x86_64-pc-windows-msvc, "", ".exe" ]
 
     steps:
       - uses: actions/checkout@v3
+
+      - if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
+        name: Install Apple certificate # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ""
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          
+          # import certificate from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Download from artifacts
         uses: actions/download-artifact@v3
@@ -220,9 +243,14 @@ jobs:
           cmake --build . --config Release
 
       - if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
-        name: Zip (macOS) # zip macOS files to avoid duplicate file names
+        name: Sign and notarize
         working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
-        run: zip -r "x-IMU3 GUI${{ matrix.target[3] }}" "x-IMU3 GUI.app"
+        run: |
+          codesign --options runtime --timestamp --sign 29X883CFTW "x-IMU3 GUI.app"
+          ln -s "/Applications"
+          hdiutil create -volname "x-IMU3 GUI${{ matrix.target[3] }}" -srcfolder $(pwd) "x-IMU3 GUI${{ matrix.target[3] }}"
+          xcrun notarytool submit "x-IMU3 GUI${{ matrix.target[3] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
+          xcrun stapler staple "x-IMU3 GUI${{ matrix.target[3] }}"
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
