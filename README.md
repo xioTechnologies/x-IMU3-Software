@@ -18,8 +18,6 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 4. Configure Clion toolchain (Windows)
     - Settings > Build, Execution, Deployment > Toolchains > Add > Visual Studio, Architecture: x86_amd64
 
-The Run/Debug Configuration may indicate "Error: No Rust toolchain specified" after cloning the repo for the first time. If this happens then open Settings/Preferences from the File menu, navigate to Rust under Languages & Frameworks and click OK.
-
 ## Branch Protection
 
 The github repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
