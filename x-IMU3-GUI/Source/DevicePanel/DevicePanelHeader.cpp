@@ -190,11 +190,6 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Disconnect", [this]
-    {
-        devicePanelContainer.removePanel(devicePanel);
-    });
-
     menu.addItem("Send Command", [this]
     {
         DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to " + deviceDescriptor.getText()), [this]
@@ -215,6 +210,11 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
     menu.addItem("LED Colour", [this]
     {
         DialogLauncher::launchDialog(std::make_unique<LedColourDialog>(devicePanel));
+    });
+
+    menu.addItem("Disconnect", [this]
+    {
+        devicePanelContainer.removePanel(devicePanel);
     });
 
     return menu;
