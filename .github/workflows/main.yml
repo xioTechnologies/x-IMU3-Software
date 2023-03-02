@@ -193,7 +193,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Apple certificate
+      - if: startsWith(github.ref, 'refs/tags/v') && matrix.target[0] == 'macos-latest'
+        name: Install Apple certificate # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
