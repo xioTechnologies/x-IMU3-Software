@@ -38,13 +38,8 @@ with open("DeviceSettings.json") as file:
         json_types.append(json_type)
 
         try:
-            read_only = json_object["read only"]
+            read_onlys.append("true" if json_object["read only"] else "false")
         except:
-            read_only = False
-
-        if read_only:
-            read_onlys.append("true")
-        else:
             read_onlys.append("false")
 
 with open("DeviceSettings.xml", "w") as file:

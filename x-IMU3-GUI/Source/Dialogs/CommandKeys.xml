@@ -2,7 +2,21 @@
     <Command key="default"/>
     <Command key="apply"/>
     <Command key="save"/>
-
+    <Command key="time"/>
+    <Command key="ping"/>
+    <Command key="reset"/>
+    <Command key="shutdown"/>
+    <Command key="strobe"/>
+    <Command key="colour"/>
+    <Command key="color"/>
+    <Command key="heading"/>
+    <Command key="accessory"/>
+    <Command key="note"/>
+    <Command key="format"/>
+    <Command key="test"/>
+    <Command key="bootloader"/>
+    <Command key="factory"/>
+    <Command key="erase"/>
     <Separator header="DEVICE SETTINGS"/>
     <Command key="deviceName"/>
     <Command key="serialNumber"/>
