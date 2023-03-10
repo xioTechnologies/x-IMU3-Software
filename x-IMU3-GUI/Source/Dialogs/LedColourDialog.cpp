@@ -4,7 +4,7 @@
 #include <limits>
 
 LedColourDialog::LedColourDialog(DevicePanel& devicePanel_)
-        : Dialog(BinaryData::json_svg, "LED Colour", "Close", "", &defaultButton, 60),
+        : Dialog(BinaryData::json_svg, "LED Colour", "Close", "", &defaultButton, iconButtonWidth),
           devicePanel(devicePanel_)
 {
     addAndMakeVisible(redLabel);

@@ -2,7 +2,7 @@
 #include "ApplicationSettingsDialog.h"
 #include "ApplicationSettingsGroups.h"
 
-ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::settings_svg, "Application Settings", "Close", "", &defaultsButton, 60)
+ApplicationSettingsDialog::ApplicationSettingsDialog() : Dialog(BinaryData::settings_svg, "Application Settings", "Close", "", &defaultsButton, iconButtonWidth)
 {
     addAndMakeVisible(defaultsButton);
 

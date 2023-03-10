@@ -50,7 +50,7 @@ void DataLoggerSettingsDialog::resized()
 
     auto directoryRow = bounds.removeFromTop(UILayout::textComponentHeight);
     directoryLabel.setBounds(directoryRow.removeFromLeft(columnWidth));
-    directoryButton.setBounds(directoryRow.removeFromRight(50));
+    directoryButton.setBounds(directoryRow.removeFromRight(iconButtonWidth));
     directoryValue.setBounds(directoryRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);

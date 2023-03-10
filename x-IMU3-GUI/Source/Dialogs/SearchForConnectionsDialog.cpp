@@ -3,7 +3,7 @@
 #include "SearchForConnectionsDialog.h"
 
 SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
-        : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, 50, true),
+        : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
           existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
