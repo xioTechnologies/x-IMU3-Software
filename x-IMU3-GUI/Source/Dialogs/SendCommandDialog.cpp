@@ -1,5 +1,5 @@
-#include "SendCommandDialog.h"
 #include "../Widgets/PopupMenuHeader.h"
+#include "SendCommandDialog.h"
 
 SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &historyButton, iconButtonWidth)
 {
