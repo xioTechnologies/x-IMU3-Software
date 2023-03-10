@@ -10,7 +10,7 @@ Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentI
     addChildComponent(readFailedIcon);
     addChildComponent(writeFailedIcon);
 
-    name.setText(tree[DeviceSettingsIDs::displayName]);
+    name.setText(tree[DeviceSettingsIDs::name]);
 
     updateIcon();
 

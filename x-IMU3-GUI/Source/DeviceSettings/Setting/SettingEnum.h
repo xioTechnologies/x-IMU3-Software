@@ -12,7 +12,7 @@ public:
     {
         std::map<int, juce::String> choices;
         for (auto child : typeTree)
-            choices[child.getProperty(DeviceSettingsIDs::value)] = child[DeviceSettingsIDs::displayName];
+            choices[child.getProperty(DeviceSettingsIDs::value)] = child[DeviceSettingsIDs::name];
         return choices;
     }())
     {

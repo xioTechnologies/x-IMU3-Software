@@ -171,7 +171,7 @@ void ThreeDView::render()
             resources.textShader.transformation.setMatrix4(ndcMatrix.mat, 1, false);
             text.render(resources);
         };
-        
+
         auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.11f);
         renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
         renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));

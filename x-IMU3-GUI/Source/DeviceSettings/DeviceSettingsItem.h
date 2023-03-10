@@ -75,7 +75,7 @@ public:
             return std::make_unique<SettingToggle>(tree);
         }
 
-        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::enumName, type));
+        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::name, type));
     }
 
     void itemOpennessChanged(bool) override
