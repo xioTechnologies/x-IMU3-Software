@@ -1,16 +1,42 @@
+#include "../Widgets/PopupMenuHeader.h"
 #include "SendCommandDialog.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &historyButton, 60)
+SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &historyButton, iconButtonWidth)
 {
     addAndMakeVisible(keyLabel);
-    addAndMakeVisible(valueLabel);
-    addAndMakeVisible(commandLabel);
     addAndMakeVisible(keyValue);
+    addAndMakeVisible(commandKeys);
+    addAndMakeVisible(valueLabel);
     addAndMakeVisible(typeValue);
     addAndMakeVisible(stringValue);
     addAndMakeVisible(numberValue);
+    addAndMakeVisible(commandLabel);
     addAndMakeVisible(commandValue);
     addAndMakeVisible(historyButton);
+
+    commandKeys.onClick = [&]
+    {
+        juce::PopupMenu menu;
+
+        for (const auto child : keysTree)
+        {
+            if (child.hasType("Command"))
+            {
+                const auto key = child["key"];
+                menu.addItem(key, [&, key]
+                {
+                    keyValue.setText(key, juce::sendNotification);
+                });
+            }
+            else if (child.hasType("Separator"))
+            {
+                menu.addSeparator();
+                menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(child["header"]), nullptr);
+            }
+        }
+
+        menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&commandKeys));
+    };
 
     commandHistory = juce::ValueTree::fromXml(file.loadFileAsString());
     if (!commandHistory.isValid())
@@ -35,7 +61,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
 
     historyButton.setWantsKeyboardFocus(false);
 
-    setSize(dialogWidth, calculateHeight(3));
+    setSize(600, calculateHeight(3));
 }
 
 void SendCommandDialog::resized()
@@ -46,7 +72,8 @@ void SendCommandDialog::resized()
 
     auto keyRow = bounds.removeFromTop(UILayout::textComponentHeight);
     keyLabel.setBounds(keyRow.removeFromLeft(columnWidth));
-    keyValue.setBounds(keyRow);
+    commandKeys.setBounds(keyRow.removeFromRight(iconButtonWidth));
+    keyValue.setBounds(keyRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);
 

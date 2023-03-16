@@ -46,7 +46,7 @@ void UpdateFirmwareDialog::resized()
 
     auto sourceRow = bounds.removeFromTop(UILayout::textComponentHeight);
     fileNameLabel.setBounds(sourceRow.removeFromLeft(columnWidth));
-    fileNameButton.setBounds(sourceRow.removeFromRight(50));
+    fileNameButton.setBounds(sourceRow.removeFromRight(iconButtonWidth));
     fileNameValue.setBounds(sourceRow.withTrimmedRight(margin));
 }
 

@@ -48,14 +48,14 @@ void ConvertFileDialog::resized()
 
     auto sourceRow = bounds.removeFromTop(UILayout::textComponentHeight);
     sourceLabel.setBounds(sourceRow.removeFromLeft(columnWidth));
-    sourceButton.setBounds(sourceRow.removeFromRight(50));
+    sourceButton.setBounds(sourceRow.removeFromRight(iconButtonWidth));
     sourceValue.setBounds(sourceRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);
 
     auto destinationRow = bounds.removeFromTop(UILayout::textComponentHeight);
     destinationLabel.setBounds(destinationRow.removeFromLeft(columnWidth));
-    destinationButton.setBounds(destinationRow.removeFromRight(50));
+    destinationButton.setBounds(destinationRow.removeFromRight(iconButtonWidth));
     destinationValue.setBounds(destinationRow.withTrimmedRight(margin));
 }
 

@@ -35,6 +35,7 @@ protected:
     static constexpr int margin = 15;
     static constexpr int dialogWidth = 520;
     static constexpr int columnWidth = 115;
+    static constexpr int iconButtonWidth = 60;
 
     int calculateHeight(const int numberOfRows) const;
 

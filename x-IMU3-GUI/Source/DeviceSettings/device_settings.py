@@ -38,13 +38,8 @@ with open("DeviceSettings.json") as file:
         json_types.append(json_type)
 
         try:
-            read_only = json_object["read only"]
+            read_onlys.append("true" if json_object["read only"] else "false")
         except:
-            read_only = False
-
-        if read_only:
-            read_onlys.append("true")
-        else:
             read_onlys.append("false")
 
 with open("DeviceSettings.xml", "w") as file:
@@ -53,7 +48,7 @@ with open("DeviceSettings.xml", "w") as file:
     for index in range(len(keys)):
         file.write("    <Setting " +
                    "key=\"" + keys[index] + "\" " +
-                   "displayName=\"" + display_names[index] + "\" " +
+                   "name=\"" + display_names[index] + "\" " +
                    "type=\"" + json_types[index] + "\" " +
                    ("readOnly=\"" + read_onlys[index] + "\"" if read_onlys[index] == "true" else "") +
                    "/>\n")
@@ -68,9 +63,9 @@ with open("DeviceSettingsEnums.xml", "w") as file:
 
     for enum_type in enum_types:
         file.write("\
-    <Enum enumName=\"" + enum_type + "\">\n\
-        <Option displayName=\"Zero\" value=\"0\"/>\n\
-        <Option displayName=\"One\" value=\"1\"/>\n\
+    <Enum name=\"" + enum_type + "\">\n\
+        <Option name=\"Zero\" value=\"0\"/>\n\
+        <Option name=\"One\" value=\"1\"/>\n\
     </Enum>\n")
 
     file.write("</DeviceSettingsEnums>\n")

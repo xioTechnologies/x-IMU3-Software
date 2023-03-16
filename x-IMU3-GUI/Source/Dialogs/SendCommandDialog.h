@@ -28,16 +28,20 @@ private:
     };
 
     SimpleLabel keyLabel { "Key:" };
-    SimpleLabel valueLabel { "Value:" };
-    SimpleLabel commandLabel { "Command:" };
-
     CustomTextEditor keyValue;
+    IconButton commandKeys { IconButton::Style::menuStripDropdown, BinaryData::search_svg, 1.0f, "Command Keys" };
+
+    SimpleLabel valueLabel { "Value:" };
     CustomComboBox typeValue;
     CustomTextEditor stringValue;
     CustomTextEditor numberValue;
+
+    SimpleLabel commandLabel { "Command:" };
     CustomTextEditor commandValue;
 
     IconButton historyButton { IconButton::Style::menuStripDropdown, BinaryData::default_svg, 0.8f, "Command History", std::bind(&SendCommandDialog::getHistoryMenu, this) };
+
+    const juce::ValueTree keysTree = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
     juce::ValueTree commandHistory;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Command History.xml");
