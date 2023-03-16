@@ -27,7 +27,7 @@ public:
 
     void resized() override;
 
-    void setRows(const std::vector<Row>& rows_);
+    void setRows(std::vector<Row> rows_);
 
     const std::vector<Row>& getRows() const;
 
