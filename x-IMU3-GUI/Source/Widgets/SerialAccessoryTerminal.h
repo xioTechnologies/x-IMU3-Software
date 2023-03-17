@@ -30,7 +30,7 @@ private:
 
     std::vector<juce::AttributedString> messages, wrappedMessages;
     float numberOfLinesOnScreen = 0.0f;
-    int numberOfCharactersPerLine = 0;
+    int numberOfCharactersPerLine = 1;
 
     static std::vector<juce::String> addEscapeCharacters(const juce::String& input);
 
