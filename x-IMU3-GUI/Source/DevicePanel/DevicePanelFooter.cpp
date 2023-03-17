@@ -93,7 +93,7 @@ DevicePanelFooter::~DevicePanelFooter()
 
 void DevicePanelFooter::paint(juce::Graphics& g)
 {
-    g.fillAll(UIColours::footer);
+    g.fillAll(UIColours::backgroundDarkest);
 }
 
 void DevicePanelFooter::resized()

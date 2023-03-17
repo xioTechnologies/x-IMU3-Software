@@ -18,7 +18,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
-    table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
+    table.setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDark);
     table.updateContent();
     table.setWantsKeyboardFocus(false);
 
@@ -151,13 +151,13 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             switch (rows[(size_t) rowNumber].state)
             {
                 case Row::State::inProgress:
-                    return new Icon(BinaryData::progress_svg, 0.6f, "In Progress");
+                    return new Icon(BinaryData::progress_svg, "In Progress", 0.6f);
 
                 case Row::State::failed:
-                    return new Icon(BinaryData::warning_orange_svg, 0.6f, "Failed");
+                    return new Icon(BinaryData::warning_orange_svg, "Failed", 0.6f);
 
                 case Row::State::complete:
-                    return new Icon(BinaryData::tick_green_svg, 0.6f, "Complete");
+                    return new Icon(BinaryData::tick_green_svg, "Complete", 0.6f);
 
                 default:
                     return nullptr;

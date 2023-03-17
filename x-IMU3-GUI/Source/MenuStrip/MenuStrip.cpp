@@ -170,6 +170,8 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
     {
         DialogLauncher::launchDialog(std::make_unique<AboutDialog>());
     };
+    versionButton.setColour(juce::TextButton::buttonColourId, {});
+    versionButton.setColour(juce::TextButton::buttonOnColourId, {});
 
     devicePanelContainer.onDevicePanelsSizeChanged = [&]
     {
@@ -203,8 +205,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
     };
     devicePanelContainer.onDevicePanelsSizeChanged();
 
-    static constexpr int buttonHeight = 24;
-    static constexpr int buttonMargin = 3;
+    static constexpr int buttonHeight = 22;
 
     flexBox.flexDirection = juce::FlexBox::Direction::row;
     flexBox.alignContent = juce::FlexBox::AlignContent::stretch;
@@ -220,13 +221,13 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
         groupBox.items.add(juce::FlexItem(buttonBox)
                                    .withHeight(buttonHeight)
-                                   .withFlex(0.5));
+                                   .withFlex(0.0f));
         groupBox.items.add(juce::FlexItem(buttonGroup.label)
-                                   .withFlex(10));
+                                   .withFlex(0.5f));
 
         flexBox.items.add(juce::FlexItem(groupBox)
-                                  .withMargin(10)
-                                  .withFlex(1, 0));
+                                  .withMargin(8)
+                                  .withFlex(1.0f, 0));
 
         for (auto& button : buttonGroup.buttons)
         {
@@ -240,22 +241,21 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 {
                     return versionButton.getBestWidthForHeight(buttonHeight);
                 }
-                return 45;
+                return 35;
             }();
 
             buttonBox.items.add(juce::FlexItem(button)
                                         .withWidth((float) buttonWidth)
-                                        .withHeight(buttonHeight)
-                                        .withMargin(buttonMargin));
+                                        .withHeight(buttonHeight));
 
-            flexBox.items.getReference(flexBox.items.size() - 1).width += (buttonWidth + buttonMargin);
+            flexBox.items.getReference(flexBox.items.size() - 1).width += buttonWidth;
         }
     }
 }
 
 void MenuStrip::paint(juce::Graphics& g)
 {
-    g.fillAll(UIColours::menuStrip);
+    g.fillAll(UIColours::backgroundLightest);
 }
 
 void MenuStrip::resized()

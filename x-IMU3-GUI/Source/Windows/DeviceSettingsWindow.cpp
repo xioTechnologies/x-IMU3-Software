@@ -165,7 +165,11 @@ DeviceSettingsWindow::~DeviceSettingsWindow()
 
 void DeviceSettingsWindow::paint(juce::Graphics& g)
 {
-    g.fillAll(UIColours::background);
+    g.fillAll(UIColours::backgroundLight);
+
+    g.setColour(UIColours::backgroundDark);
+    g.fillRect(buttonBounds);
+
     Window::paint(g);
 }
 
@@ -174,13 +178,14 @@ void DeviceSettingsWindow::resized()
     Window::resized();
 
     auto bounds = getContentBounds();
-    auto buttonsBounds = bounds.removeFromBottom(25).toFloat();
-    const auto buttonWidth = buttonsBounds.getWidth() / buttons.size();
+    buttonBounds = bounds.removeFromBottom(25).toFloat();
+    const auto buttonWidth = buttonBounds.getWidth() / buttons.size();
 
     settingsTree.setBounds(bounds);
+    juce::ScopedValueSetter _(buttonBounds, buttonBounds);
     for (auto* const button : buttons)
     {
-        button->setBounds(buttonsBounds.removeFromLeft(buttonWidth).reduced(2.0f).toNearestInt());
+        button->setBounds(buttonBounds.removeFromLeft(buttonWidth).reduced(2.0f).toNearestInt());
     }
 }
 

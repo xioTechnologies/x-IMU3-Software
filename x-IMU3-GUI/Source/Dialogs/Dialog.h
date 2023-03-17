@@ -2,9 +2,6 @@
 
 #include "../CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Widgets/DialogButton.h"
-
-class IconButton;
 
 class Dialog : public juce::Component
 {
@@ -35,7 +32,7 @@ protected:
     static constexpr int margin = 15;
     static constexpr int dialogWidth = 520;
     static constexpr int columnWidth = 115;
-    static constexpr int iconButtonWidth = 60;
+    static constexpr int iconButtonWidth = 40;
 
     int calculateHeight(const int numberOfRows) const;
 
@@ -44,8 +41,8 @@ protected:
     void setCancelButton(const bool valid, const juce::String& buttonText = "");
 
 private:
-    DialogButton okButton { "OK" };
-    DialogButton cancelButton { "Cancel" };
+    juce::TextButton okButton { "OK" };
+    juce::TextButton cancelButton { "Cancel" };
 
     juce::Component* const bottomLeftComponent;
     const int bottomLeftComponentWidth;

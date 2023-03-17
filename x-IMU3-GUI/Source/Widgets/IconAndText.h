@@ -7,7 +7,7 @@ public:
     static constexpr int minimumWidth = 18;
     static constexpr int maximumWidth = 60;
 
-    IconAndText(const juce::String& unknownIcon_, const juce::String& tooltip) : unknownIcon(unknownIcon_), icon(unknownIcon, 1.0f, tooltip)
+    IconAndText(const juce::String& unknownIcon_, const juce::String& tooltip) : unknownIcon(unknownIcon_), icon(unknownIcon, tooltip)
     {
         addAndMakeVisible(icon);
         addAndMakeVisible(text);

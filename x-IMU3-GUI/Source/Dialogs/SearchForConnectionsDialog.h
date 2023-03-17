@@ -27,7 +27,7 @@ private:
 
     ConnectionsTable table;
 
-    IconButton filterButton { IconButton::Style::menuStripDropdown, BinaryData::filter_svg, 0.8f, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
+    IconButton filterButton { BinaryData::filter_svg, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
 
     juce::PopupMenu getFilterMenu();
 

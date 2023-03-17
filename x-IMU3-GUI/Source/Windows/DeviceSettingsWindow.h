@@ -21,13 +21,15 @@ public:
 private:
     DeviceSettings settingsTree;
 
-    IconButton readAllButton { IconButton::Style::normal, BinaryData::download_svg, 1.0f, "Read Settings from Device", nullptr, BinaryData::download_warning_svg, 1.0f, "Read Settings from Device (Failed)" };
-    IconButton writeAllButton { IconButton::Style::normal, BinaryData::upload_svg, 1.0f, "Write Settings to Device", nullptr, BinaryData::upload_warning_svg, 1.0f, "Write Settings to Device (Failed)" };
-    IconButton saveToFileButton { IconButton::Style::normal, BinaryData::save_svg, 1.0f, "Save Settings to File" };
-    IconButton loadFromFileButton { IconButton::Style::normal, BinaryData::open_svg, 1.0f, "Load Settings from File" };
-    IconButton defaultsButton { IconButton::Style::normal, BinaryData::default_svg, 1.0f, "Restore Defaults" };
+    IconButton readAllButton { BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)" };
+    IconButton writeAllButton { BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)" };
+    IconButton saveToFileButton { BinaryData::save_svg, "Save Settings to File" };
+    IconButton loadFromFileButton { BinaryData::open_svg, "Load Settings from File" };
+    IconButton defaultsButton { BinaryData::default_svg, "Restore Defaults" };
 
     const std::vector<juce::Component*> buttons { &readAllButton, &writeAllButton, &saveToFileButton, &loadFromFileButton, &defaultsButton };
+
+    juce::Rectangle<float> buttonBounds;
 
     const juce::File directory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 

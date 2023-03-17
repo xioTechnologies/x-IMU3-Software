@@ -42,7 +42,7 @@ private:
 
     juce::String deviceName, serialNumber;
 
-    IconButton menuButton { IconButton::Style::normal, BinaryData::menu_svg, 1.0f, "Device Menu", std::bind(&DevicePanelHeader::getMenu, this) };
+    IconButton menuButton { BinaryData::menu_svg, "Device Menu", std::bind(&DevicePanelHeader::getMenu, this), false };
     SimpleLabel deviceDescriptor;
     SimpleLabel connectionInfo;
     IconAndText rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };

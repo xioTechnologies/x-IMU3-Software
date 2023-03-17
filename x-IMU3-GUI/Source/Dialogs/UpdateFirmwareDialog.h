@@ -76,7 +76,7 @@ private:
 
     SimpleLabel fileNameLabel { "File Name:" };
     CustomTextEditor fileNameValue;
-    IconButton fileNameButton { IconButton::Style::menuStrip, BinaryData::open_svg, 0.8f, "Select Firmware File" };
+    IconButton fileNameButton { BinaryData::open_svg, "Select Firmware File" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdateFirmwareDialog)
 };

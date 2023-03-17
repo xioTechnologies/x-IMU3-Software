@@ -104,7 +104,7 @@ void GLRenderer::newOpenGLContextCreated()
 void GLRenderer::renderOpenGL()
 {
     //Only clear the screen once before multiple target render calls
-    juce::OpenGLHelpers::clear(UIColours::background);
+    juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
     std::lock_guard<std::mutex> _(componentsLock);
     for (auto& component : components)

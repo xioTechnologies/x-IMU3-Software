@@ -28,7 +28,7 @@ public:
     {
         auto bounds = getLocalBounds();
 
-        menuStrip.setBounds(bounds.removeFromTop(72));
+        menuStrip.setBounds(bounds.removeFromTop(58));
         bounds.removeFromTop(UILayout::panelMargin);
 
         devicePanelViewport.setBounds(bounds);

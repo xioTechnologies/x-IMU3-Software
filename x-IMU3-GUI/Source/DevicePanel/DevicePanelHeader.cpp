@@ -67,7 +67,7 @@ DevicePanelHeader::~DevicePanelHeader()
 
 void DevicePanelHeader::paint(juce::Graphics& g)
 {
-    g.fillAll(UIColours::menuStrip);
+    g.fillAll(UIColours::backgroundLightest);
     g.setColour(devicePanel.getColourTag());
     g.fillRect(getLocalBounds().removeFromLeft(colourTagWidth));
 }

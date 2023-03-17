@@ -29,40 +29,42 @@ CustomLookAndFeel::CustomLookAndFeel()
 {
     setDefaultSansSerifTypeface(UIFonts::Typefaces::getMontserratMedium()); // progress bar only
 
-    setColour(juce::CaretComponent::caretColourId, UIColours::background);
+    setColour(juce::CaretComponent::caretColourId, UIColours::backgroundDark);
     setColour(juce::ComboBox::backgroundColourId, UIColours::textEditor);
-    setColour(juce::ComboBox::textColourId, UIColours::background);
+    setColour(juce::ComboBox::textColourId, UIColours::backgroundDark);
     setColour(juce::ComboBox::arrowColourId, juce::Colours::grey);
     setColour(juce::GroupComponent::outlineColourId, juce::Colours::grey);
     setColour(juce::GroupComponent::textColourId, juce::Colours::white);
     setColour(juce::Label::textColourId, juce::Colours::white);
-    setColour(juce::Label::textWhenEditingColourId, UIColours::menuStrip);
+    setColour(juce::Label::textWhenEditingColourId, UIColours::backgroundLightest);
     setColour(juce::Label::backgroundWhenEditingColourId, juce::Colours::transparentBlack);
     setColour(juce::Label::outlineWhenEditingColourId, juce::Colours::transparentBlack);
     setColour(juce::Label::outlineColourId, juce::Colours::transparentBlack);
     setColour(juce::ListBox::backgroundColourId, {});
     setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
-    setColour(juce::PopupMenu::backgroundColourId, UIColours::background);
+    setColour(juce::PopupMenu::backgroundColourId, UIColours::backgroundDark);
     setColour(juce::PopupMenu::headerTextColourId, juce::Colours::grey);
     setColour(juce::PopupMenu::textColourId, juce::Colours::white);
-    setColour(juce::ResizableWindow::backgroundColourId, UIColours::menuStrip);
-    setColour(juce::ScrollBar::thumbColourId, UIColours::menuStrip);
-    setColour(juce::ScrollBar::backgroundColourId, UIColours::footer);
+    setColour(juce::ProgressBar::backgroundColourId, UIColours::backgroundDark);
+    setColour(juce::ProgressBar::foregroundColourId, UIColours::backgroundDarkest);
+    setColour(juce::ResizableWindow::backgroundColourId, UIColours::backgroundLightest);
+    setColour(juce::ScrollBar::thumbColourId, UIColours::backgroundLightest);
+    setColour(juce::ScrollBar::backgroundColourId, UIColours::backgroundDark);
+    setColour(juce::TextButton::buttonColourId, UIColours::backgroundLightest);
     setColour(juce::TextButton::buttonOnColourId, UIColours::textEditor);
-    setColour(juce::TextButton::textColourOnId, UIColours::background);
-    setColour(juce::TextButton::buttonColourId, UIColours::menuStripButton);
+    setColour(juce::TextButton::textColourOnId, UIColours::backgroundDark);
     setColour(juce::TextButton::textColourOffId, juce::Colours::white);
     setColour(juce::TextEditor::backgroundColourId, UIColours::textEditor);
-    setColour(juce::TextEditor::textColourId, UIColours::background);
+    setColour(juce::TextEditor::textColourId, UIColours::backgroundDark);
     setColour(juce::TextEditor::highlightedTextColourId, UIColours::textEditor);
     setColour(juce::TextEditor::highlightColourId, UIColours::highlight);
     setColour(juce::TextEditor::outlineColourId, juce::Colours::transparentBlack);
     setColour(juce::TextEditor::focusedOutlineColourId, juce::Colours::transparentBlack);
     setColour(juce::ToggleButton::tickDisabledColourId, juce::Colours::white);
-    setColour(juce::ToggleButton::tickColourId, UIColours::menuStrip);
+    setColour(juce::ToggleButton::tickColourId, UIColours::backgroundLightest);
     setColour(juce::TooltipWindow::textColourId, juce::Colours::white);
     setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
-    setColour(juce::TooltipWindow::backgroundColourId, UIColours::background);
+    setColour(juce::TooltipWindow::backgroundColourId, UIColours::backgroundDark);
 }
 
 void CustomLookAndFeel::drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height,
@@ -219,7 +221,7 @@ int CustomLookAndFeel::getTreeViewIndentSize(juce::TreeView&)
 void CustomLookAndFeel::drawPopupMenuBackground(juce::Graphics& g, int width, int height)
 {
     g.fillAll(findColour(juce::PopupMenu::backgroundColourId));
-    g.setColour(UIColours::menuStrip);
+    g.setColour(UIColours::backgroundLightest);
     g.drawRect(0, 0, width, height);
 }
 
@@ -240,7 +242,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
         r.removeFromTop(juce::roundToInt((r.getHeight() * 0.4f) - 0.5f));
 
         // Adjustment: Change colour
-        g.setColour(UIColours::menuStrip);
+        g.setColour(UIColours::backgroundLightest);
         g.fillRect(r.removeFromTop(1));
     }
     else
@@ -388,7 +390,7 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window,
                                                    int w, int h, int, int,
                                                    const juce::Image* icon, bool)
 {
-    g.fillAll(UIColours::menuStripButton);
+    g.fillAll(UIColours::backgroundLightest);
 
     juce::Rectangle<int> bounds(w, h);
 

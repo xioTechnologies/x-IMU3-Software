@@ -1,63 +1,64 @@
 #include "../CustomLookAndFeel.h"
 #include "IconButton.h"
 
-IconButton::IconButton(const Style style_,
-                       const juce::String& icon, const float scale_, const juce::String& tooltip_,
+IconButton::IconButton(const juce::String& icon, const juce::String& tooltip_,
                        std::function<juce::PopupMenu()> getPopup_,
-                       const juce::String& iconOn, const float scaleOn_, const juce::String& tooltipOn_)
+                       const bool showPopupArrow,
+                       const juce::String& iconOn, const juce::String& tooltipOn_)
         : juce::DrawableButton("", ImageOnButtonBackground),
-          style(style_),
-          scale(scale_), scaleOn(scaleOn_),
           tooltip(tooltip_), tooltipOn(tooltipOn_.isNotEmpty() ? tooltipOn_ : tooltip_),
-          getPopup(std::move(getPopup_))
+          getPopup(std::move(getPopup_)),
+          popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) : nullptr)
 {
-    switch (style)
-    {
-        case Style::normal:
-            setColour(juce::TextButton::buttonColourId, {});
-            setColour(juce::TextButton::buttonOnColourId, {});
-            break;
-        case Style::menuStrip:
-        case Style::menuStripDropdown:
-            setColour(juce::TextButton::buttonColourId, UIColours::menuStripButton);
-            setColour(juce::TextButton::buttonOnColourId, UIColours::menuStripButton);
-            break;
-    }
+    setColour(juce::TextButton::buttonColourId, {});
+    setColour(juce::TextButton::buttonOnColourId, {});
 
     setIcon(icon, iconOn);
+    setTriggeredOnMouseDown(true);
+}
+
+void IconButton::paint(juce::Graphics& g)
+{
+    juce::DrawableButton::paint(g);
+
     if (popupArrow != nullptr)
     {
-        addAndMakeVisible(*popupArrow);
+        popupArrow->drawWithin(g, popupArrowBounds, juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.4f);
     }
-    setTriggeredOnMouseDown(true);
 }
 
 juce::Rectangle<float> IconButton::getImageBounds() const
 {
-    return getLocalBounds().toFloat().withSizeKeepingCentre((getWidth() - 6) * (getToggleState() ? scaleOn : scale),
-                                                            (getHeight() - 6) * (getToggleState() ? scaleOn : scale))
-                           .translated(popupArrow != nullptr ? -7.5f : 0.0f, 0.0f);
-}
-
-void IconButton::buttonStateChanged()
-{
-    juce::DrawableButton::buttonStateChanged();
-    updatePopupArrowAlpha();
+    return imageBounds;
 }
 
 void IconButton::resized()
 {
-    juce::DrawableButton::resized();
-    if (popupArrow)
-    {
-        popupArrow->setTransformToFit({ getWidth() - 15.0f, 6.5, 9, 11 }, juce::RectanglePlacement::xRight);
-    }
-}
+    static constexpr auto margin = 3.0f;
 
-void IconButton::enablementChanged()
-{
-    juce::DrawableButton::enablementChanged();
-    updatePopupArrowAlpha();
+    auto bounds = getLocalBounds().toFloat();
+    bounds = bounds.reduced(margin);
+
+    const auto iconSize = bounds.getHeight();
+
+    if (popupArrow == nullptr)
+    {
+        imageBounds = bounds;
+    }
+    else
+    {
+        const auto arrowSize = 8.0f;
+        const auto arrowMargin = margin;
+        const auto iconAndArrowWidth = iconSize + arrowMargin + arrowSize;
+        bounds = bounds.withSizeKeepingCentre(iconAndArrowWidth, bounds.getHeight());
+
+        imageBounds = bounds.removeFromLeft(bounds.getHeight());
+        bounds.removeFromLeft(arrowMargin);
+
+        popupArrowBounds = bounds.withSizeKeepingCentre(arrowSize, arrowSize);
+    }
+
+    juce::DrawableButton::resized();
 }
 
 void IconButton::clicked()
@@ -78,12 +79,4 @@ void IconButton::setIcon(const juce::String& icon, const juce::String& iconOn)
     const auto normal = juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon));
     const auto normalOn = iconOn.isNotEmpty() ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(iconOn)) : normal->createCopy();
     setImages(normal.get(), nullptr, nullptr, nullptr, normalOn.get());
-}
-
-void IconButton::updatePopupArrowAlpha()
-{
-    if (popupArrow != nullptr)
-    {
-        popupArrow->setAlpha((isEnabled() && getState() != buttonDown) ? 1.0f : 0.5f);
-    }
 }

@@ -7,7 +7,7 @@ public:
     LookAndFeel()
     {
         setColour(juce::PopupMenu::backgroundColourId, UIColours::textEditor);
-        setColour(juce::PopupMenu::textColourId, UIColours::background);
+        setColour(juce::PopupMenu::textColourId, UIColours::backgroundDark);
     }
 
     void drawLabel(juce::Graphics& g, juce::Label& label_) override
