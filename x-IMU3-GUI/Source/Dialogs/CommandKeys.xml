@@ -15,8 +15,6 @@
     <Command key="format"/>
     <Command key="test"/>
     <Command key="bootloader"/>
-    <Command key="factory"/>
-    <Command key="erase"/>
     <Separator header="DEVICE SETTINGS"/>
     <Command key="deviceName"/>
     <Command key="serialNumber"/>
