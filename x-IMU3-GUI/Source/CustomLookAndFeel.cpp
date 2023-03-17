@@ -87,11 +87,6 @@ void CustomLookAndFeel::drawScrollbar(juce::Graphics& g, juce::ScrollBar& scroll
     g.fillRoundedRectangle(thumbBounds.reduced(2).toFloat(), 1.0f);
 }
 
-int CustomLookAndFeel::getMinimumScrollbarThumbSize(juce::ScrollBar& scrollbar)
-{
-    return juce::jmin(scrollbar.getWidth(), scrollbar.getHeight()) * 4;
-}
-
 int CustomLookAndFeel::getDefaultScrollbarWidth()
 {
     return 10;

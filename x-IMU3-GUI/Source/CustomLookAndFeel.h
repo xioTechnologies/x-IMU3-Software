@@ -68,8 +68,6 @@ public:
     void drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height,
                        bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool, bool) override;
 
-    int getMinimumScrollbarThumbSize(juce::ScrollBar& scrollbar) override;
-
     int getDefaultScrollbarWidth() override;
 
     void drawButtonBackground(juce::Graphics& g,
