@@ -23,7 +23,7 @@ public:
 private:
     DevicePanel& devicePanel;
 
-    IconButton defaultButton { IconButton::Style::menuStrip, BinaryData::default_svg, 0.8f, "Restore Normal LED Behaviour" };
+    IconButton defaultButton { BinaryData::default_svg, "Restore Normal LED Behaviour" };
     juce::ColourSelector colourSelector { juce::ColourSelector::showColourspace, 0, 0 };
 
     SimpleLabel redLabel { "Red:" };

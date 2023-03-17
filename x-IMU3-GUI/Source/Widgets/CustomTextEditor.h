@@ -8,8 +8,6 @@ class CustomTextEditor : public juce::TextEditor
 public:
     CustomTextEditor()
     {
-        setColour(juce::TextEditor::backgroundColourId, UIColours::textEditor);
-        setColour(juce::TextEditor::textColourId, UIColours::background);
         setFont(UIFonts::getDefaultFont());
         setSelectAllWhenFocused(true);
         setEscapeAndReturnKeysConsumed(false);

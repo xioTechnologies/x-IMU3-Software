@@ -1,5 +1,4 @@
 #include "Dialog.h"
-#include "Widgets/IconButton.h"
 
 Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const juce::String& okButtonText, const juce::String& cancelButtonText, juce::Component* const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_)
         : juce::Component(dialogTitle),
@@ -147,7 +146,7 @@ bool DialogLauncher::escapeKeyPressed()
 }
 
 DialogLauncher::DialogLauncher(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
-        : juce::DialogWindow(content->getName(), UIColours::menuStrip, true, true)
+        : juce::DialogWindow(content->getName(), UIColours::backgroundLight, true, true)
 {
     if (okCallback != nullptr)
     {

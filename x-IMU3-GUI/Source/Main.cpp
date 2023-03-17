@@ -77,7 +77,7 @@ public:
     {
     public:
         explicit MainWindow(juce::String name) : juce::DocumentWindow(name,
-                                                                      UIColours::background,
+                                                                      UIColours::backgroundDark,
                                                                       juce::DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar(true);

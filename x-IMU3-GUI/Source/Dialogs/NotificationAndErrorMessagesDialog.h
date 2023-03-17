@@ -31,7 +31,7 @@ private:
 
     std::vector<Message>& messages;
 
-    DialogButton clearAllButton { "Clear All" };
+    juce::TextButton clearAllButton { "Clear All" };
 
     SimpleLabel typeLabel { "Type", UIFonts::getDefaultFont(), juce::Justification::centred };
     SimpleLabel timestampLabel { "Timestamp" };

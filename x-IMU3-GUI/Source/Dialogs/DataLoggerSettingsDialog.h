@@ -30,7 +30,7 @@ public:
 private:
     SimpleLabel directoryLabel { "Directory:" };
     CustomTextEditor directoryValue;
-    IconButton directoryButton { IconButton::Style::menuStrip, BinaryData::open_svg, 0.8f, "Select Directory" };
+    IconButton directoryButton { BinaryData::open_svg, "Select Directory" };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
     CustomToggleButton appendDateAndTimeToggle { "Append Date and Time" };

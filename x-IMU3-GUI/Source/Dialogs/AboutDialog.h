@@ -20,7 +20,7 @@ private:
     const juce::String updateUrl { "https://x-io.co.uk/x-imu3/#downloads" };
     const juce::String sourceCodeUrl { "https://github.com/xioTechnologies/x-IMU3-Software" };
 
-    Icon logo { BinaryData::xio_logo_svg, 1.0f, logoUrl };
+    Icon logo { BinaryData::xio_logo_svg, logoUrl };
 
     SimpleLabel applicationNameLabel { "Application Name:" };
     SimpleLabel applicationVersionLabel { "Application Version:" };

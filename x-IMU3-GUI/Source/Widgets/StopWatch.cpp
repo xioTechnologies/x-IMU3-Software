@@ -28,7 +28,7 @@ Stopwatch::Stopwatch()
     setLookAndFeel(lookAndFeel.get());
 
     setInterceptsMouseClicks(false, false);
-    setColour(juce::TextButton::buttonColourId, UIColours::background);
+    setColour(juce::TextButton::buttonColourId, UIColours::backgroundDark);
     setTime(juce::RelativeTime());
 }
 

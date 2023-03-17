@@ -8,9 +8,6 @@ ConvertingFileDialog::ConvertingFileDialog(const juce::String& source, const juc
 {
     addAndMakeVisible(progressBar);
 
-    progressBar.setColour(juce::ProgressBar::backgroundColourId, UIColours::menuStripButton);
-    progressBar.setColour(juce::ProgressBar::foregroundColourId, UIColours::background);
-
     setSize(dialogWidth, calculateHeight(1));
 }
 

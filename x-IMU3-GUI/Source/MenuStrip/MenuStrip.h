@@ -25,18 +25,18 @@ private:
     juce::ValueTree& windowLayout;
     DevicePanelContainer& devicePanelContainer;
 
-    IconButton searchButton { IconButton::Style::menuStrip, BinaryData::search_svg, 1.0f, "Search for Connections", nullptr, "" };
-    IconButton manualButton { IconButton::Style::menuStripDropdown, BinaryData::manual_svg, 1.0f, "Manual Connection", std::bind(&MenuStrip::getManualConnectMenu, this) };
-    IconButton disconnectButton { IconButton::Style::menuStripDropdown, BinaryData::disconnect_svg, 1.0f, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
-    IconButton showHideWindowButton { IconButton::Style::menuStripDropdown, BinaryData::window_svg, 1.0f, "Show/Hide Windows", std::bind(&MenuStrip::getWindowMenu, this) };
-    IconButton windowLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::layout_svg, 1.0f, "Window Layout", std::bind(&MenuStrip::getWindowLayoutMenu, this) };
-    IconButton devicePanelLayoutButton { IconButton::Style::menuStripDropdown, BinaryData::single_svg, 1.0f, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
-    IconButton shutdownButton { IconButton::Style::menuStrip, BinaryData::shutdown_svg, 0.8f, "Shutdown All Devices" };
-    IconButton sendCommandButton { IconButton::Style::menuStrip, BinaryData::json_svg, 0.8f, "Send Command to All Devices" };
-    IconButton dataLoggerStartStopButton { IconButton::Style::menuStrip, BinaryData::record_svg, 0.8f, "Start Data Logger", nullptr, BinaryData::stop_svg, 0.8f, "Stop Data Logger" };
+    IconButton searchButton { BinaryData::search_svg, "Search for Connections", nullptr, false, "" };
+    IconButton manualButton { BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectMenu, this) };
+    IconButton disconnectButton { BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
+    IconButton showHideWindowButton { BinaryData::window_svg, "Show/Hide Windows", std::bind(&MenuStrip::getWindowMenu, this) };
+    IconButton windowLayoutButton { BinaryData::layout_svg, "Window Layout", std::bind(&MenuStrip::getWindowLayoutMenu, this) };
+    IconButton devicePanelLayoutButton { BinaryData::single_svg, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
+    IconButton shutdownButton { BinaryData::shutdown_svg, "Shutdown All Devices" };
+    IconButton sendCommandButton { BinaryData::json_svg, "Send Command to All Devices" };
+    IconButton dataLoggerStartStopButton { BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger" };
     Stopwatch dataLoggerTime;
-    IconButton toolsButton { IconButton::Style::menuStripDropdown, BinaryData::tools_svg, 1.0f, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
-    IconButton mainSettingsButton { IconButton::Style::menuStrip, BinaryData::settings_svg, 1.0f, "Application Settings" };
+    IconButton toolsButton { BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
+    IconButton mainSettingsButton { BinaryData::settings_svg, "Application Settings" };
     juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
 
     SimpleLabel connectionLabel { "Connection", UIFonts::getDefaultFont(), juce::Justification::centred };

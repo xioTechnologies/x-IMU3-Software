@@ -6,7 +6,7 @@ class Icon : public juce::Component,
              public juce::SettableTooltipClient
 {
 public:
-    Icon(const juce::String& icon_, const float scale_, const juce::String& tooltip)
+    Icon(const juce::String& icon_, const juce::String& tooltip, const float scale_ = 1.0f)
             : icon(juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon_))),
               scale(scale_)
     {

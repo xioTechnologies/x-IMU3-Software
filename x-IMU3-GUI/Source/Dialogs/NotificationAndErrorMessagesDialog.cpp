@@ -24,7 +24,7 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
-    table.setColour(juce::TableListBox::backgroundColourId, UIColours::background);
+    table.setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDark);
     table.setWantsKeyboardFocus(false);
 
     setSize(800, 480);
@@ -71,10 +71,10 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
         case ColumnID::type:
             if (notificationMessage.isError)
             {
-                return new Icon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, 0.6f, "Error");
+                return new Icon(notificationMessage.isUnread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg, "Error", 0.6f);
             }
 
-            return new Icon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, 0.6f, "Notification");
+            return new Icon(notificationMessage.isUnread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg, "Notification", 0.6f);
 
         case ColumnID::timestamp:
         {

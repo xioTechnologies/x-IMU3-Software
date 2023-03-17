@@ -32,7 +32,7 @@ void Graph::render()
 {
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
 
-    renderer.refreshScreen(UIColours::background, bounds);
+    renderer.refreshScreen(UIColours::backgroundLight, bounds);
 
     AxesRange axesRange;
     axesRange.xMin = settings.horizontal.min;

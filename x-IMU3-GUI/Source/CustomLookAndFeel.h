@@ -5,10 +5,10 @@
 
 namespace UIColours
 {
-    static const juce::Colour footer = juce::Colour::fromRGB(29, 29, 29);
-    static const juce::Colour background = juce::Colour::fromRGB(40, 40, 40);
-    static const juce::Colour menuStrip = juce::Colour::fromRGB(60, 63, 65);
-    static const juce::Colour menuStripButton = juce::Colour::fromRGB(80, 83, 84);
+    static const juce::Colour backgroundDarkest = juce::Colour::fromRGB(30, 30, 30);
+    static const juce::Colour backgroundDark = juce::Colour::fromRGB(37, 37, 38);
+    static const juce::Colour backgroundLight = juce::Colour::fromRGB(45, 45, 48);
+    static const juce::Colour backgroundLightest = juce::Colour::fromRGB(62, 62, 66);
     static const juce::Colour textEditor = juce::Colour::fromRGB(228, 228, 228);
     static const juce::Colour highlight = juce::Colour::fromRGB(0, 145, 255);
     static const juce::Colour hyperlink = juce::Colour::fromRGB(29, 228, 230);
@@ -19,16 +19,16 @@ namespace UIColours
 
     static const std::vector<juce::Colour> panelTags =
             {
-                    juce::Colour::fromString("FF000000"),
-                    juce::Colour::fromString("FF964B00"),
-                    juce::Colour::fromString("FFFF0000"),
-                    juce::Colour::fromString("FFFFA500"),
-                    juce::Colour::fromString("FFFFFF00"),
-                    juce::Colour::fromString("FF9ACD32"),
-                    juce::Colour::fromString("FF6495ED"),
-                    juce::Colour::fromString("FF9400D3"),
-                    juce::Colour::fromString("FFA0A0A0"),
-                    juce::Colour::fromString("FFFFFFFF"),
+                    juce::Colour(0xFF000000),
+                    juce::Colour(0xFF964B00),
+                    juce::Colour(0xFFFF0000),
+                    juce::Colour(0xFFFFA500),
+                    juce::Colour(0xFFFFFF00),
+                    juce::Colour(0xFF9ACD32),
+                    juce::Colour(0xFF6495ED),
+                    juce::Colour(0xFF9400D3),
+                    juce::Colour(0xFFA0A0A0),
+                    juce::Colour(0xFFFFFFFF),
             };
 }
 

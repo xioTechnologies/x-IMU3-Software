@@ -68,18 +68,19 @@ SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
 
 void SerialAccessoryTerminalWindow::paint(juce::Graphics& g)
 {
-    g.fillAll(UIColours::background);
+    g.fillAll(UIColours::backgroundDark);
     Window::paint(g);
 }
 
 void SerialAccessoryTerminalWindow::resized()
 {
     Window::resized();
+
     auto bounds = getContentBounds();
 
-    auto sendCommandBounds = bounds.removeFromBottom(UILayout::textComponentHeight + 2 * widgetMargin);
-    sendButton.setBounds(sendCommandBounds.removeFromRight(45).reduced(widgetMargin));
-    sendValue.setBounds(sendCommandBounds.reduced(widgetMargin));
+    auto sendCommandBounds = bounds.removeFromBottom(UILayout::textComponentHeight);
+    sendButton.setBounds(sendCommandBounds.removeFromRight(40));
+    sendValue.setBounds(sendCommandBounds);
 
     serialAccessoryTerminal.setBounds(bounds);
 }
