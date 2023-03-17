@@ -5,8 +5,15 @@
 
 Window::Title::Title(Window& parentWindow_) : SimpleLabel(parentWindow_.getName(), UIFonts::getSmallFont(), juce::Justification::centred), parentWindow(parentWindow_)
 {
+    addAndMakeVisible(menuButton);
     setInterceptsMouseClicks(true, true);
     setMouseCursor({ juce::MouseCursor::DraggingHandCursor });
+}
+
+void Window::Title::resized()
+{
+    auto bounds = getLocalBounds().reduced(2);
+    menuButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
 }
 
 void Window::Title::mouseDown(const juce::MouseEvent& mouseEvent)

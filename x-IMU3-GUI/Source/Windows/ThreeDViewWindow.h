@@ -59,6 +59,8 @@ private:
 
     void setEulerAnglesVisible(const bool visible);
 
+    juce::PopupMenu getMenu() override;
+
     void timerCallback() override;
 
     static float wrapAngle(float angle);

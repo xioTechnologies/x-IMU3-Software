@@ -207,3 +207,31 @@ void DeviceSettingsWindow::setInProgress(const bool inProgress)
         button->setEnabled(inProgress == false);
     }
 }
+
+juce::PopupMenu DeviceSettingsWindow::getMenu()
+{
+    juce::PopupMenu menu;
+
+    menu.addItem(readAllButton.getTooltip(), [&]
+    {
+        readAllButton.onClick();
+    });
+    menu.addItem(writeAllButton.getTooltip(), [&]
+    {
+        writeAllButton.onClick();
+    });
+    menu.addItem(saveToFileButton.getTooltip(), [&]
+    {
+        saveToFileButton.onClick();
+    });
+    menu.addItem(loadFromFileButton.getTooltip(), [&]
+    {
+        loadFromFileButton.onClick();
+    });
+    menu.addItem(defaultsButton.getTooltip(), [&]
+    {
+        defaultsButton.onClick();
+    });
+
+    return menu;
+}

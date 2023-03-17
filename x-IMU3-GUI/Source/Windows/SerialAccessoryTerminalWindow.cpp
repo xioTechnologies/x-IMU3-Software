@@ -101,3 +101,9 @@ void SerialAccessoryTerminalWindow::loadSendHistory()
 
     sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello, World!", juce::dontSendNotification);
 }
+
+juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
+{
+    juce::PopupMenu menu; // TODO
+    return menu;
+}

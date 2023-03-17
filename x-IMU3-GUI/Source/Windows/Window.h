@@ -2,6 +2,7 @@
 
 #include "DragOverlay.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "../Widgets/IconButton.h"
 
 class DevicePanel;
 
@@ -23,11 +24,15 @@ public:
 protected:
     DevicePanel& devicePanel;
 
+    virtual juce::PopupMenu getMenu() = 0;
+
 private:
     class Title : public SimpleLabel
     {
     public:
         explicit Title(Window& parentWindow_);
+
+        void resized() override;
 
         void mouseDown(const juce::MouseEvent& mouseEvent) override;
 
@@ -37,6 +42,8 @@ private:
 
     private:
         Window& parentWindow;
+
+        IconButton menuButton { BinaryData::menu_svg, "Device Menu", std::bind(&Window::getMenu, &parentWindow), false };
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Title)
     };
