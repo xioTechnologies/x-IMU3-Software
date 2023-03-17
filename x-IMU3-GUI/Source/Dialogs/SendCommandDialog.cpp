@@ -53,6 +53,8 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
         commandValue.setText(createCommand(keyValue.getText(), type, stringValue.getText(), numberValue.getText()), false);
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
+
+        setOkButton(juce::JSON::parse(commandValue.getText()).isVoid() == false);
     };
 
     selectCommand(commandHistory.getChild(0));
