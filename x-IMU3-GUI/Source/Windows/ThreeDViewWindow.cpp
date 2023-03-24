@@ -95,11 +95,6 @@ void ThreeDViewWindow::resized()
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 {
-    if (mouseEvent.mods.isPopupMenu())
-    {
-        getMenu().showMenuAsync({});
-    }
-
     lastMousePosition = mouseEvent.getPosition();
 }
 

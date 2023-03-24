@@ -105,5 +105,14 @@ void SerialAccessoryTerminalWindow::loadSendHistory()
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
-    return serialAccessoryTerminal.getPopupMenu();
+    juce::PopupMenu menu;
+    menu.addItem("Copy To Clipboard", [&]
+    {
+        serialAccessoryTerminal.copyToClipboard();
+    });
+    menu.addItem("Clear All", [&]
+    {
+        serialAccessoryTerminal.clearAll();
+    });
+    return menu;
 }

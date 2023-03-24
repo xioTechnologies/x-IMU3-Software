@@ -13,15 +13,15 @@ public:
 
     void paint(juce::Graphics& g) override;
 
-    void mouseDown(const juce::MouseEvent& mouseEvent) override;
-
     void mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel) override;
 
     void resized() override;
 
     void add(const uint64_t timestamp, const juce::String& text);
 
-    juce::PopupMenu getPopupMenu();
+    void copyToClipboard() const;
+
+    void clearAll();
 
 private:
     const juce::Font font = UIFonts::getTerminalFeedFont();
