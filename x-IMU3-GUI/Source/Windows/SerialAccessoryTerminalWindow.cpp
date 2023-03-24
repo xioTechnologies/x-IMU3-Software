@@ -104,6 +104,5 @@ void SerialAccessoryTerminalWindow::loadSendHistory()
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
-    juce::PopupMenu menu; // TODO
-    return menu;
+    return serialAccessoryTerminal.getPopupMenu();
 }
