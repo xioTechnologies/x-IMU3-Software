@@ -43,7 +43,7 @@ private:
     private:
         Window& parentWindow;
 
-        IconButton menuButton { BinaryData::menu_svg, "Device Menu", std::bind(&Window::getMenu, &parentWindow), false };
+        IconButton menuButton { BinaryData::menu_svg, "Window Menu", std::bind(&Window::getMenu, &parentWindow), false };
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Title)
     };
