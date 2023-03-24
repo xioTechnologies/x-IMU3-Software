@@ -14,30 +14,6 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
     addAndMakeVisible(commandValue);
     addAndMakeVisible(historyButton);
 
-    commandKeys.onClick = [&]
-    {
-        juce::PopupMenu menu;
-
-        for (const auto child : keysTree)
-        {
-            if (child.hasType("Command"))
-            {
-                const auto key = child["key"];
-                menu.addItem(key, [&, key]
-                {
-                    keyValue.setText(key, juce::sendNotification);
-                });
-            }
-            else if (child.hasType("Separator"))
-            {
-                menu.addSeparator();
-                menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(child["header"]), nullptr);
-            }
-        }
-
-        menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&commandKeys));
-    };
-
     commandHistory = juce::ValueTree::fromXml(file.loadFileAsString());
     if (!commandHistory.isValid())
     {
@@ -177,6 +153,28 @@ void SendCommandDialog::selectCommand(const juce::ValueTree command)
     stringValue.setText(static_cast<Type>((int) command["type"]) == Type::string ? command["value"] : "", false);
     numberValue.setText(static_cast<Type>((int) command["type"]) == Type::number ? command["value"] : "", false);
     keyValue.onTextChange();
+}
+
+juce::PopupMenu SendCommandDialog::getCommandKeysMenu()
+{
+    juce::PopupMenu menu;
+    for (const auto child : keysTree)
+    {
+        if (child.hasType("Command"))
+        {
+            const auto key = child["key"];
+            menu.addItem(key, [&, key]
+            {
+                keyValue.setText(key, juce::sendNotification);
+            });
+        }
+        else if (child.hasType("Separator"))
+        {
+            menu.addSeparator();
+            menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(child["header"]), nullptr);
+        }
+    }
+    return menu;
 }
 
 juce::PopupMenu SendCommandDialog::getHistoryMenu()

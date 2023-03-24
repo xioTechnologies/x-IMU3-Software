@@ -29,7 +29,7 @@ private:
 
     SimpleLabel keyLabel { "Key:" };
     CustomTextEditor keyValue;
-    IconButton commandKeys { BinaryData::search_svg, "Command Keys" };
+    IconButton commandKeys { BinaryData::search_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
 
     SimpleLabel valueLabel { "Value:" };
     CustomComboBox typeValue;
@@ -51,6 +51,8 @@ private:
     static juce::String createCommand(const juce::String& key, const Type type, const juce::String& string, const juce::String& number);
 
     void selectCommand(const juce::ValueTree command);
+
+    juce::PopupMenu getCommandKeysMenu();
 
     juce::PopupMenu getHistoryMenu();
 
