@@ -21,6 +21,8 @@ public:
 
     void add(const uint64_t timestamp, const juce::String& text);
 
+    juce::PopupMenu getPopupMenu();
+
 private:
     const juce::Font font = UIFonts::getTerminalFeedFont();
 

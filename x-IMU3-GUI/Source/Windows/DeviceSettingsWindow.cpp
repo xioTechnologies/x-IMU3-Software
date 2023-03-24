@@ -3,7 +3,8 @@
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ErrorDialog.h"
 
-DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_) : Window(windowLayout_, type_, devicePanel_)
+DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
+        : Window(devicePanel_, windowLayout_, type_, "Device Settings Menu", std::bind(&DeviceSettingsWindow::getMenu, this))
 {
     addAndMakeVisible(settingsTree);
     addAndMakeVisible(readAllButton);
@@ -206,4 +207,32 @@ void DeviceSettingsWindow::setInProgress(const bool inProgress)
     {
         button->setEnabled(inProgress == false);
     }
+}
+
+juce::PopupMenu DeviceSettingsWindow::getMenu()
+{
+    juce::PopupMenu menu;
+
+    menu.addItem(readAllButton.getTooltip(), [&]
+    {
+        readAllButton.onClick();
+    });
+    menu.addItem(writeAllButton.getTooltip(), [&]
+    {
+        writeAllButton.onClick();
+    });
+    menu.addItem(saveToFileButton.getTooltip(), [&]
+    {
+        saveToFileButton.onClick();
+    });
+    menu.addItem(loadFromFileButton.getTooltip(), [&]
+    {
+        loadFromFileButton.onClick();
+    });
+    menu.addItem(defaultsButton.getTooltip(), [&]
+    {
+        defaultsButton.onClick();
+    });
+
+    return menu;
 }

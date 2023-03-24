@@ -20,8 +20,6 @@ public:
     void resized() override;
 
 private:
-    static constexpr int widgetMargin = 2;
-
     SerialAccessoryTerminal serialAccessoryTerminal;
     CustomComboBox sendValue;
     IconButton sendButton { BinaryData::send_svg, "Send", nullptr, false, BinaryData::send_warning_svg, "Send (Failed)" };
@@ -33,6 +31,8 @@ private:
     uint64_t callbackID;
 
     void loadSendHistory();
+
+    juce::PopupMenu getMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialAccessoryTerminalWindow)
 };

@@ -35,5 +35,7 @@ private:
 
     void setInProgress(const bool inProgress);
 
+    juce::PopupMenu getMenu();
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsWindow)
 };

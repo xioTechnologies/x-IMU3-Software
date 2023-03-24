@@ -57,3 +57,21 @@ inline juce::String getWindowTitle(const juce::Identifier& windowType)
 
     return map[windowType];
 }
+
+inline juce::ValueTree findWindow(const juce::ValueTree root, const juce::Identifier& type)
+{
+    for (auto child : root)
+    {
+        if (child.hasType(type))
+        {
+            return child;
+        }
+
+        auto childOfChild = findWindow(child, type);
+        if (childOfChild.isValid())
+        {
+            return childOfChild;
+        }
+    }
+    return {};
+}

@@ -365,12 +365,12 @@ juce::PopupMenu MenuStrip::getWindowMenu() const
 
     const auto addWindowItem = [&](const auto& id)
     {
-        const auto toggled = Window::findWindow(windowLayout, id).isValid();
+        const auto toggled = findWindow(windowLayout, id).isValid();
         menu.addItem(getWindowTitle(id), true, toggled, [this, id = id, toggled]
         {
             if (toggled)
             {
-                for (auto child = Window::findWindow(windowLayout, id); child.isValid() && child.getNumChildren() == 0;)
+                for (auto child = findWindow(windowLayout, id); child.isValid() && child.getNumChildren() == 0;)
                 {
                     auto parent = child.getParent();
                     parent.removeChild(child, nullptr);

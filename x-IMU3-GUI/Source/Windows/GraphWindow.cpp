@@ -3,7 +3,8 @@
 #include "Helpers.h"
 #include "WindowIDs.h"
 
-GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer) : Window(windowLayout_, type_, devicePanel_)
+GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : Window(devicePanel_, windowLayout_, type_, getWindowTitle(type_) + " Graph Menu", std::bind(&GraphWindow::getMenu, this))
 {
     static const juce::String degreeSymbol(juce::CharPointer_UTF8("\xc2\xba"));
 
@@ -264,43 +265,7 @@ void GraphWindow::mouseDown(const juce::MouseEvent& mouseEvent)
         // Scroll wheel + ctrl = zoom horizontal
         // Mouse drag = scroll horizontal / vertical
 
-        juce::PopupMenu menu;
-
-        menu.addItem("Restore Defaults", true, false, [&]
-        {
-            settings = {};
-            isPaused = false;
-#ifdef USE_GRAPH
-            graph->setSettings(settings);
-#endif
-        });
-
-        menu.addItem("Clear", true, false, [&]
-        {
-#ifdef USE_GRAPH
-            graph->clear();
-#endif
-        });
-        menu.addItem("Pause", true, isPaused, [&]
-        {
-            isPaused = !isPaused;
-        });
-        menu.addItem("Horizontal Autoscale", true, settings.horizontal.autoscale, [&]
-        {
-            settings.horizontal.autoscale = !settings.horizontal.autoscale;
-#ifdef USE_GRAPH
-            graph->setSettings(settings);
-#endif
-        });
-        menu.addItem("Vertical Autoscale", true, settings.vertical.autoscale, [&]
-        {
-            settings.vertical.autoscale = !settings.vertical.autoscale;
-#ifdef USE_GRAPH
-            graph->setSettings(settings);
-#endif
-        });
-
-        menu.showMenuAsync({});
+        getMenu().showMenuAsync({});
     }
 
 #ifdef USE_GRAPH
@@ -361,4 +326,45 @@ void GraphWindow::update(const uint64_t timestamp_, const std::vector<float>& ar
         *arguments[index] = arguments_[index];
     }
 #endif
+}
+
+juce::PopupMenu GraphWindow::getMenu()
+{
+    juce::PopupMenu menu;
+
+    menu.addItem("Restore Defaults", true, false, [&]
+    {
+        settings = {};
+        isPaused = false;
+#ifdef USE_GRAPH
+        graph->setSettings(settings);
+#endif
+    });
+
+    menu.addItem("Clear", true, false, [&]
+    {
+#ifdef USE_GRAPH
+        graph->clear();
+#endif
+    });
+    menu.addItem("Pause", true, isPaused, [&]
+    {
+        isPaused = !isPaused;
+    });
+    menu.addItem("Horizontal Autoscale", true, settings.horizontal.autoscale, [&]
+    {
+        settings.horizontal.autoscale = !settings.horizontal.autoscale;
+#ifdef USE_GRAPH
+        graph->setSettings(settings);
+#endif
+    });
+    menu.addItem("Vertical Autoscale", true, settings.vertical.autoscale, [&]
+    {
+        settings.vertical.autoscale = !settings.vertical.autoscale;
+#ifdef USE_GRAPH
+        graph->setSettings(settings);
+#endif
+    });
+
+    return menu;
 }
