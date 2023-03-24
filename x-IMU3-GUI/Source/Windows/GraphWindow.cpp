@@ -259,15 +259,6 @@ void GraphWindow::resized()
 
 void GraphWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 {
-    if (mouseEvent.mods.isPopupMenu())
-    {
-        // Scroll wheel = zoom vertical
-        // Scroll wheel + ctrl = zoom horizontal
-        // Mouse drag = scroll horizontal / vertical
-
-        getMenu().showMenuAsync({});
-    }
-
 #ifdef USE_GRAPH
     lastMousePosition = mouseEvent.getPosition();
 #endif

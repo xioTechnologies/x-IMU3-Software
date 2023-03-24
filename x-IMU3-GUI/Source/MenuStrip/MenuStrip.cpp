@@ -175,7 +175,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     devicePanelContainer.onDevicePanelsSizeChanged = [&]
     {
-        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, showHideWindowButton, windowLayoutButton, devicePanelLayoutButton,
+        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, windowsButton, windowLayoutButton, devicePanelLayoutButton,
                                                                                       shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
         {
             component.get().setEnabled(devicePanelContainer.getDevicePanels().size() > 0);

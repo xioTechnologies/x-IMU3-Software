@@ -18,14 +18,6 @@ void SerialAccessoryTerminal::paint(juce::Graphics& g)
     }
 }
 
-void SerialAccessoryTerminal::mouseDown(const juce::MouseEvent& mouseEvent)
-{
-    if (mouseEvent.mods.isPopupMenu())
-    {
-        getPopupMenu().showAt({ mouseEvent.getMouseDownScreenX(), mouseEvent.getMouseDownScreenY() - 10, 10, 10 });
-    }
-}
-
 void SerialAccessoryTerminal::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel)
 {
     auto wheelCopy = wheel;
@@ -81,25 +73,21 @@ void SerialAccessoryTerminal::add(const uint64_t timestamp, const juce::String& 
     updateScrollbarRange();
 }
 
-juce::PopupMenu SerialAccessoryTerminal::getPopupMenu()
+void SerialAccessoryTerminal::copyToClipboard() const
 {
-    juce::PopupMenu menu;
-    menu.addItem("Copy To Clipboard", [this]
+    juce::String text;
+    for (const auto& message : messages)
     {
-        juce::String text;
-        for (const auto& message : messages)
-        {
-            text += message.getText() + "\n";
-        }
-        juce::SystemClipboard::copyTextToClipboard(text);
-    });
-    menu.addItem("Clear All", [this]
-    {
-        messages.clear();
-        wrappedMessages.clear();
-        updateScrollbarRange();
-    });
-    return menu;
+        text += message.getText() + "\n";
+    }
+    juce::SystemClipboard::copyTextToClipboard(text);
+}
+
+void SerialAccessoryTerminal::clearAll()
+{
+    messages.clear();
+    wrappedMessages.clear();
+    updateScrollbarRange();
 }
 
 void SerialAccessoryTerminal::updateScrollbarRange()

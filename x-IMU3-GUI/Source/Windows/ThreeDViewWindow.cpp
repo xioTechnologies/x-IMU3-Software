@@ -95,11 +95,6 @@ void ThreeDViewWindow::resized()
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 {
-    if (mouseEvent.mods.isPopupMenu())
-    {
-        getMenu().showMenuAsync({});
-    }
-
     lastMousePosition = mouseEvent.getPosition();
 }
 
@@ -147,7 +142,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SHOW/HIDE"), nullptr);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
     menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
         setEulerAnglesVisible(!rollLabel.isVisible());
