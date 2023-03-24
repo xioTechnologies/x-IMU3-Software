@@ -32,7 +32,7 @@ private:
 
     void loadSendHistory();
 
-    juce::PopupMenu getMenu() override;
+    juce::PopupMenu getMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialAccessoryTerminalWindow)
 };

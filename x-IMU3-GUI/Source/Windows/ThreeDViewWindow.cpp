@@ -3,7 +3,7 @@
 #include "ThreeDViewWindow.h"
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : Window(windowLayout_, type_, devicePanel_),
+        : Window(devicePanel_, windowLayout_, type_, "3D View Menu", std::bind(&ThreeDViewWindow::getMenu, this)),
           threeDView(glRenderer)
 {
     addAndMakeVisible(threeDView);

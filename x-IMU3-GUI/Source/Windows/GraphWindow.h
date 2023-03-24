@@ -71,7 +71,7 @@ private:
 
     void update(const uint64_t timestamp_, const std::vector<float>& arguments_);
 
-    juce::PopupMenu getMenu() override;
+    juce::PopupMenu getMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWindow)
 };

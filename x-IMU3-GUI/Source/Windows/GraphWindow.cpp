@@ -3,7 +3,8 @@
 #include "Helpers.h"
 #include "WindowIDs.h"
 
-GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer) : Window(windowLayout_, type_, devicePanel_)
+GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : Window(devicePanel_, windowLayout_, type_, getWindowTitle(type_) + " Graph Menu", std::bind(&GraphWindow::getMenu, this))
 {
     static const juce::String degreeSymbol(juce::CharPointer_UTF8("\xc2\xba"));
 

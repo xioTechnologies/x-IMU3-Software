@@ -59,7 +59,7 @@ private:
 
     void setEulerAnglesVisible(const bool visible);
 
-    juce::PopupMenu getMenu() override;
+    juce::PopupMenu getMenu();
 
     void timerCallback() override;
 
