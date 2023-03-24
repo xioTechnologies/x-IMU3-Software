@@ -3,29 +3,38 @@
 #include "Window.h"
 #include "WindowIDs.h"
 
-Window::Title::Title(Window& parentWindow_) : SimpleLabel(parentWindow_.getName(), UIFonts::getSmallFont(), juce::Justification::centred), parentWindow(parentWindow_)
+Window::Header::Header(Window& window_) : window(window_)
 {
     addAndMakeVisible(menuButton);
+    addAndMakeVisible(title);
+
     setInterceptsMouseClicks(true, true);
     setMouseCursor({ juce::MouseCursor::DraggingHandCursor });
 }
 
-void Window::Title::resized()
+void Window::Header::paint(juce::Graphics& g)
+{
+    g.setColour(findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillRect(getLocalBounds());
+}
+
+void Window::Header::resized()
 {
     auto bounds = getLocalBounds().reduced(2);
     menuButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
+    title.setBounds(bounds);
 }
 
-void Window::Title::mouseDown(const juce::MouseEvent& mouseEvent)
+void Window::Header::mouseDown(const juce::MouseEvent& mouseEvent)
 {
     mouseDrag(mouseEvent);
 }
 
-void Window::Title::mouseDrag(const juce::MouseEvent& mouseEvent)
+void Window::Header::mouseDrag(const juce::MouseEvent& mouseEvent)
 {
-    if (auto* const component = parentWindow.devicePanel.getComponentAt(mouseEvent.getScreenPosition() - parentWindow.devicePanel.getScreenPosition()))
+    if (auto* const component = window.devicePanel.getComponentAt(mouseEvent.getScreenPosition() - window.devicePanel.getScreenPosition()))
     {
-        if (auto* const window = [&]
+        if (auto* const targetWindow = [&]
         {
             if (auto* const casted = dynamic_cast<Window*>(component))
             {
@@ -35,18 +44,18 @@ void Window::Title::mouseDrag(const juce::MouseEvent& mouseEvent)
             return component->findParentComponentOfClass<Window>();
         }())
         {
-            parentWindow.devicePanel.getDevicePanelContainer().showDragOverlayAtComponent(*window, [&]
+            window.devicePanel.getDevicePanelContainer().showDragOverlayAtComponent(*targetWindow, [&]
             {
-                if (window == &parentWindow)
+                if (targetWindow == &window)
                 {
                     return DragOverlay::Side::all;
                 }
 
-                const auto positionRelative = mouseEvent.getScreenPosition() - window->getScreenPosition();
-                const auto proportionToTop = positionRelative.y / (float) window->getHeight();
-                const auto proportionToRight = 1.0f - positionRelative.x / (float) window->getWidth();
-                const auto proportionToBottom = 1.0f - positionRelative.y / (float) window->getHeight();
-                const auto proportionToLeft = positionRelative.x / (float) window->getWidth();
+                const auto positionRelative = mouseEvent.getScreenPosition() - targetWindow->getScreenPosition();
+                const auto proportionToTop = positionRelative.y / (float) targetWindow->getHeight();
+                const auto proportionToRight = 1.0f - positionRelative.x / (float) targetWindow->getWidth();
+                const auto proportionToBottom = 1.0f - positionRelative.y / (float) targetWindow->getHeight();
+                const auto proportionToLeft = positionRelative.x / (float) targetWindow->getWidth();
 
                 auto min = juce::jmin(proportionToTop, proportionToRight, proportionToBottom, proportionToLeft);
                 if (proportionToTop == min)
@@ -66,26 +75,26 @@ void Window::Title::mouseDrag(const juce::MouseEvent& mouseEvent)
         }
         else
         {
-            parentWindow.devicePanel.getDevicePanelContainer().hideDragOverlay();
+            window.devicePanel.getDevicePanelContainer().hideDragOverlay();
         }
     }
 }
 
-void Window::Title::mouseUp(const juce::MouseEvent& mouseEvent)
+void Window::Header::mouseUp(const juce::MouseEvent& mouseEvent)
 {
     mouseDrag(mouseEvent);
 
-    auto* const overlay = parentWindow.devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay();
-    const auto* const window = overlay ? dynamic_cast<Window*>(overlay->getTarget()) : nullptr;
-    if (window != nullptr && window != &parentWindow)
+    auto* const overlay = window.devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay();
+    const auto* const targetWindow = overlay ? dynamic_cast<Window*>(overlay->getTarget()) : nullptr;
+    if (targetWindow != nullptr && targetWindow != &window)
     {
-        auto movingTree = findWindow(parentWindow.windowLayout, parentWindow.type);
+        auto movingTree = findWindow(window.windowLayout, window.type);
         removeFromParent(movingTree);
 
-        const auto targetTree = findWindow(parentWindow.windowLayout, window->type);
+        const auto targetTree = findWindow(window.windowLayout, targetWindow->type);
         movingTree.setProperty(WindowIDs::size, targetTree.getProperty(WindowIDs::size, 1.0f), nullptr);
 
-        const auto side = parentWindow.devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay()->getSide();
+        const auto side = window.devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay()->getSide();
         const auto add = (side == DragOverlay::Side::bottom || side == DragOverlay::Side::right) ? 1 : 0;
 
         auto parent = targetTree.getParent();
@@ -106,7 +115,7 @@ void Window::Title::mouseUp(const juce::MouseEvent& mouseEvent)
         }
     }
 
-    parentWindow.devicePanel.getDevicePanelContainer().hideDragOverlay();
+    window.devicePanel.getDevicePanelContainer().hideDragOverlay();
 }
 
 Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
@@ -115,23 +124,16 @@ Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& typ
           windowLayout(windowLayout_),
           type(type_)
 {
-    addAndMakeVisible(title);
+    addAndMakeVisible(header);
 }
-
-void Window::paint(juce::Graphics& g)
-{
-    g.setColour(findColour(juce::ResizableWindow::backgroundColourId));
-    g.fillRect(title.getBounds());
-}
-
 void Window::resized()
 {
-    title.setBounds(getLocalBounds().removeFromTop(22));
+    header.setBounds(getLocalBounds().removeFromTop(22));
 }
 
 juce::Rectangle<int> Window::getContentBounds() const
 {
-    return getLocalBounds().withTrimmedTop(title.getHeight());
+    return getLocalBounds().withTrimmedTop(header.getHeight());
 }
 
 const juce::Identifier& Window::getType() const

@@ -11,8 +11,6 @@ class Window : public juce::Component
 public:
     Window(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_);
 
-    void paint(juce::Graphics& g) override;
-
     void resized() override;
 
     juce::Rectangle<int> getContentBounds() const;
@@ -27,10 +25,12 @@ protected:
     virtual juce::PopupMenu getMenu() = 0;
 
 private:
-    class Title : public SimpleLabel
+    class Header : public juce::Component
     {
     public:
-        explicit Title(Window& parentWindow_);
+        explicit Header(Window& window_);
+
+        void paint(juce::Graphics& g) override;
 
         void resized() override;
 
@@ -41,17 +41,18 @@ private:
         void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
     private:
-        Window& parentWindow;
+        Window& window;
 
-        IconButton menuButton { BinaryData::menu_svg, "Window Menu", std::bind(&Window::getMenu, &parentWindow), false };
+        IconButton menuButton { BinaryData::menu_svg, "Window Menu", std::bind(&Window::getMenu, &window), false };
+        SimpleLabel title { window.getName(), UIFonts::getSmallFont(), juce::Justification::centred };
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Title)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Header)
     };
 
     const juce::ValueTree& windowLayout;
     const juce::Identifier type;
 
-    Title title { *this };
+    Header header { *this };
 
     static void removeFromParent(juce::ValueTree tree);
 
