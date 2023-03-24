@@ -2,7 +2,10 @@
 #include "ApplicationSettings.h"
 #include "DevicePanel.h"
 #include "Windows/DeviceSettingsWindow.h"
-#include "Windows/GraphWindow.h"
+#include "Windows/Graphs/EulerAnglesGraphWindow.h"
+#include "Windows/Graphs/GraphWindow.h"
+#include "Windows/Graphs/GyroscopeGraphWindow.h"
+#include "Windows/Graphs/ReceivedMessageRateGraphWindow.h"
 #include "Windows/SerialAccessoryTerminalWindow.h"
 #include "Windows/ThreeDViewWindow.h"
 #include "Windows/WindowIDs.h"
@@ -98,6 +101,19 @@ std::shared_ptr<Window> DevicePanel::getOrCreateWindow(const juce::ValueTree& wi
     if (type == WindowIDs::ThreeDView)
     {
         return window = std::make_shared<ThreeDViewWindow>(windowLayout, windowTree.getType(), *this, glRenderer);
+    }
+
+    if (type == WindowIDs::EulerAngles)
+    {
+        return window = std::make_shared<EulerAnglesGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);
+    }
+    if (type == WindowIDs::Gyroscope)
+    {
+        return window = std::make_shared<GyroscopeGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);
+    }
+    if (type == WindowIDs::ReceivedMessageRate)
+    {
+        return window = std::make_shared<ReceivedMessageRateGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);
     }
 
     return window = std::make_shared<GraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);

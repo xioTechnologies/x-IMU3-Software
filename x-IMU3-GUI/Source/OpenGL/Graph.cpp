@@ -3,6 +3,11 @@
 #include "AxesRange.h"
 #include "Graph.h"
 
+Graph::Settings::Settings(const Settings& other)
+{
+    *this = other;
+}
+
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
 {
     horizontal.autoscale = other.horizontal.autoscale.load();
@@ -14,11 +19,12 @@ Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
     return *this;
 }
 
-Graph::Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_)
+Graph::Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_, const Settings& settings_)
         : OpenGLComponent(renderer_.getContext()),
           renderer(renderer_),
           yAxis(yAxis_),
-          legend(legend_)
+          legend(legend_),
+          settings(settings_)
 {
     renderer.addComponent(*this);
 }
@@ -185,11 +191,6 @@ void Graph::render()
 void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
 {
     graphDataBuffer.write(timestamp, values);
-}
-
-void Graph::setSettings(const Settings& settings_)
-{
-    settings = settings_;
 }
 
 void Graph::clear()

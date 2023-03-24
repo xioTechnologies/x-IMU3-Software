@@ -12,6 +12,10 @@ class Graph : public OpenGLComponent
 public:
     struct Settings
     {
+        Settings() = default;
+
+        Settings(const Settings& other);
+
         Settings& operator=(const Settings& other);
 
         struct Axis
@@ -31,15 +35,13 @@ public:
         juce::Colour colour;
     };
 
-    Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_);
+    Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_, const Settings& settings_);
 
     ~Graph() override;
 
     void render() override;
 
     void update(const uint64_t timestamp, const std::vector<float>& values);
-
-    void setSettings(const Settings& settings_);
 
     void clear();
 
@@ -52,9 +54,8 @@ private:
 
     GLRenderer& renderer;
     const juce::String yAxis;
-
-    Settings settings;
     std::vector<LegendItem> legend;
+    const Settings& settings;
 
     GridLines gridLines;
     GraphDataBuffer graphDataBuffer { legend.size() };

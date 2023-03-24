@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../DevicePanel/DevicePanel.h"
-#include "../OpenGL/GLRenderer.h"
-#include "../OpenGL/Graph.h"
+#include "../../DevicePanel/DevicePanel.h"
+#include "../../OpenGL/GLRenderer.h"
+#include "../../OpenGL/Graph.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Window.h"
+#include "../Window.h"
 #include "Ximu3.hpp"
 
 #define USE_GRAPH
@@ -16,6 +16,8 @@ class GraphWindow : public Window
 {
 public:
     GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+
+    GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer, const juce::String& yAxis, const std::vector<Graph::LegendItem>& legend, Graph::Settings& settings_);
 
     ~GraphWindow() override;
 
@@ -35,6 +37,11 @@ public:
 
 #endif
 
+protected:
+    void update(const uint64_t timestamp_, const std::vector<float>& arguments_);
+
+    static const juce::String degreeSymbol;
+
 private:
 #ifdef USE_GRAPH
     std::unique_ptr<Graph> graph;
@@ -50,7 +57,7 @@ private:
     void timerCallback() override;
 
 #endif
-    Graph::Settings settings;
+    Graph::Settings& settings;
     std::atomic<bool> isPaused = false;
 
     std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;
@@ -68,8 +75,6 @@ private:
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback; // TODO: Add graph window
 
     std::vector<uint64_t> callbackIDs;
-
-    void update(const uint64_t timestamp_, const std::vector<float>& arguments_);
 
     juce::PopupMenu getMenu();
 
