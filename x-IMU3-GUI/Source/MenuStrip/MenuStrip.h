@@ -28,7 +28,7 @@ private:
     IconButton searchButton { BinaryData::search_svg, "Search for Connections", nullptr, false, "" };
     IconButton manualButton { BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectMenu, this) };
     IconButton disconnectButton { BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
-    IconButton showHideWindowButton { BinaryData::window_svg, "Show/Hide Windows", std::bind(&MenuStrip::getWindowMenu, this) };
+    IconButton windowsButton { BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this) };
     IconButton windowLayoutButton { BinaryData::layout_svg, "Window Layout", std::bind(&MenuStrip::getWindowLayoutMenu, this) };
     IconButton devicePanelLayoutButton { BinaryData::single_svg, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
     IconButton shutdownButton { BinaryData::shutdown_svg, "Shutdown All Devices" };
@@ -55,7 +55,7 @@ private:
 
     std::vector<ButtonGroup> buttonGroups {
             { connectionLabel,  { searchButton,              manualButton,       disconnectButton },        {}, {}},
-            { layoutLabel,      { showHideWindowButton,      windowLayoutButton, devicePanelLayoutButton }, {}, {}},
+            { layoutLabel,      { windowsButton,             windowLayoutButton, devicePanelLayoutButton }, {}, {}},
             { commandsLabel,    { shutdownButton,            sendCommandButton },                           {}, {}},
             { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime },                              {}, {}},
             { toolsLabel,       { toolsButton },                                                            {}, {}},

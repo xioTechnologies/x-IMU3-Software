@@ -142,7 +142,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SHOW/HIDE"), nullptr);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
     menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
         setEulerAnglesVisible(!rollLabel.isVisible());
