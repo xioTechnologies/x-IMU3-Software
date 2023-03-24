@@ -126,6 +126,7 @@ Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& typ
 {
     addAndMakeVisible(header);
 }
+
 void Window::resized()
 {
     header.setBounds(getLocalBounds().removeFromTop(22));
