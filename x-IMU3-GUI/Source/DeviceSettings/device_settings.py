@@ -6,6 +6,7 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
+
 keys = []
 display_names = []
 json_types = []
@@ -13,34 +14,36 @@ read_onlys = []
 enum_types = []
 
 with open("DeviceSettings.json") as file:
-    for json_object in json.load(file):
-        keys.append(helpers.camel_case(json_object["name"]))
+    settings = json.load(file)
 
-        display_names.append(helpers.title_case(json_object["name"]))
+for setting in settings:
+    keys.append(helpers.camel_case(setting["name"]))
 
-        json_type = ""
+    display_names.append(helpers.title_case(setting["name"]))
 
-        for declaration in {"char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"}:
-            if declaration in json_object["declaration"]:
-                json_type = "string"
+    json_type = ""
 
-        for declaration in {"float", "uint32_t", "int32_t", "uint16_t"}:
-            if declaration in json_object["declaration"]:
-                json_type = "number"
+    for declaration in {"char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"}:
+        if declaration in setting["declaration"]:
+            json_type = "string"
 
-        if "bool" in json_object["declaration"]:
-            json_type = "bool"
+    for declaration in {"float", "uint32_t", "int32_t", "uint16_t"}:
+        if declaration in setting["declaration"]:
+            json_type = "number"
 
-        if json_type == "":
-            json_type = json_object["declaration"].split()[0]
-            enum_types.append(json_type)
+    if "bool" in setting["declaration"]:
+        json_type = "bool"
 
-        json_types.append(json_type)
+    if json_type == "":
+        json_type = setting["declaration"].split()[0]
+        enum_types.append(json_type)
 
-        try:
-            read_onlys.append("true" if json_object["read only"] else "false")
-        except:
-            read_onlys.append("false")
+    json_types.append(json_type)
+
+    try:
+        read_onlys.append("true" if setting["read only"] else "false")
+    except:
+        read_onlys.append("false")
 
 with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")

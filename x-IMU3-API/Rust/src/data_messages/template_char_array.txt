@@ -7,28 +7,28 @@ use crate::decode_error::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct $NamePascalCase$Message {
+pub struct $name_pascal_case$Message {
     pub timestamp: u64,
     pub char_array: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE],
     pub number_of_bytes: size_t,
 }
 
-impl $NamePascalCase$Message {
+impl $name_pascal_case$Message {
     pub fn char_array_as_string(self) -> String {
         char_array_to_string(&self.char_array, self.number_of_bytes)
     }
 }
 
-impl DataMessage for $NamePascalCase$Message {
+impl DataMessage for $name_pascal_case$Message {
     fn get_ascii_id() -> u8 {
-        '$AsciiID$' as u8
+        '$ascii_id$' as u8
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{[^\n]}\r\n",  char, u64, String) {
             Ok((_, timestamp, string)) => {
                 let (char_array, number_of_bytes) = string_to_char_array(string);
-                Ok($NamePascalCase$Message { timestamp, char_array, number_of_bytes })
+                Ok($name_pascal_case$Message { timestamp, char_array, number_of_bytes })
             }
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
@@ -52,11 +52,11 @@ impl DataMessage for $NamePascalCase$Message {
 
         let (char_array, number_of_bytes) = slice_to_char_array(&message[size_of::<BinaryMessage>()..(message.len() - 1)]);
 
-        Ok($NamePascalCase$Message { timestamp: binary_message.timestamp, char_array, number_of_bytes })
+        Ok($name_pascal_case$Message { timestamp: binary_message.timestamp, char_array, number_of_bytes })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "$NamePascalCase$.csv"
+        "$name_pascal_case$.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
@@ -68,7 +68,7 @@ impl DataMessage for $NamePascalCase$Message {
     }
 }
 
-impl fmt::Display for $NamePascalCase$Message {
+impl fmt::Display for $name_pascal_case$Message {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "{:>8} us \"{}\"", self.timestamp, char_array_to_string(&self.char_array, self.number_of_bytes))
     }
