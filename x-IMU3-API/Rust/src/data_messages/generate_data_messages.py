@@ -1,9 +1,10 @@
-import helpers
 import json
 import os
 import sys
 
 sys.path.append(os.path.join("..", "..", "..", ".."))  # location of helpers.py
+
+import helpers
 
 
 with open("generate_data_messages.json") as file:
