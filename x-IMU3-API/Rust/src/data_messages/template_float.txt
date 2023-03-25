@@ -5,19 +5,19 @@ use crate::decode_error::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct $NamePascalCase$Message {
+pub struct $name_pascal_case$Message {
     pub timestamp: u64,
-    $ArgumentsStruct$
+    $arguments_struct$
 }
 
-impl DataMessage for $NamePascalCase$Message {
+impl DataMessage for $name_pascal_case$Message {
     fn get_ascii_id() -> u8 {
-        '$AsciiID$' as u8
+        '$ascii_id$' as u8
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},$ArgumentsScanFormat$\r\n",  char, u64, $ArgumentsTypes$) {
-            Ok((_, timestamp, $ArgumentsList$)) => Ok($NamePascalCase$Message { timestamp, $ArgumentsList$ }),
+        match scan_fmt!( message, "{},{d},$arguments_scan_format$\r\n",  char, u64, $arguments_types$) {
+            Ok((_, timestamp, $arguments_list$)) => Ok($name_pascal_case$Message { timestamp, $arguments_list$ }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -27,7 +27,7 @@ impl DataMessage for $NamePascalCase$Message {
         struct BinaryMessage {
             id: u8,
             timestamp: u64,
-            $ArgumentsPackedStruct$
+            $arguments_packed_struct$
             termination: u8,
         }
 
@@ -40,24 +40,24 @@ impl DataMessage for $NamePascalCase$Message {
             binary_message
         };
 
-        Ok($NamePascalCase$Message { timestamp: binary_message.timestamp, $ArgumentsAssignStruct$ })
+        Ok($name_pascal_case$Message { timestamp: binary_message.timestamp, $arguments_assign_struct$ })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
-        "$NamePascalCase$.csv"
+        "$name_pascal_case$.csv"
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),$CsvHeadings$\n"
+        "Timestamp (us),$csv_headings$\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},$ArgumentsCsvFormat$\n", self.timestamp, $ArgumentsSelfList$)
+        format!("{},$arguments_csv_format$\n", self.timestamp, $arguments_self_list$)
     }
 }
 
-impl fmt::Display for $NamePascalCase$Message {
+impl fmt::Display for $name_pascal_case$Message {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us$ArgumentsStringFormat$", self.timestamp, $ArgumentsSelfList$)
+        write!(formatter, "{:>8} us$arguments_string_format$", self.timestamp, $arguments_self_list$)
     }
 }

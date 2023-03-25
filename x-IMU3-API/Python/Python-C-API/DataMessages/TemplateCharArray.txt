@@ -7,67 +7,67 @@
 typedef struct
 {
     PyObject_HEAD
-    XIMU3_$NamePascalCase$Message message;
-} $NamePascalCase$Message;
+    XIMU3_$name_pascal_case$Message message;
+} $name_pascal_case$Message;
 
-static void $NameSnakeCase$_message_free($NamePascalCase$Message* self)
+static void $name_snake_case$_message_free($name_pascal_case$Message* self)
 {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* $NameSnakeCase$_message_get_timestamp($NamePascalCase$Message* self, PyObject* args)
+PyObject* $name_snake_case$_message_get_timestamp($name_pascal_case$Message* self, PyObject* args)
 {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-PyObject* $NameSnakeCase$_message_get_string($NamePascalCase$Message* self, PyObject* args)
+PyObject* $name_snake_case$_message_get_string($name_pascal_case$Message* self, PyObject* args)
 {
     return Py_BuildValue("s", self->message.char_array);
 }
 
-PyObject* $NameSnakeCase$_message_get_bytes($NamePascalCase$Message* self, PyObject* args)
+PyObject* $name_snake_case$_message_get_bytes($name_pascal_case$Message* self, PyObject* args)
 {
     return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
 }
 
-static PyObject* $NameSnakeCase$_message_to_string($NamePascalCase$Message* self, PyObject* args)
+static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)
 {
-    return Py_BuildValue("s", XIMU3_$NameSnakeCase$_message_to_string(self->message));
+    return Py_BuildValue("s", XIMU3_$name_snake_case$_message_to_string(self->message));
 }
 
-static PyGetSetDef $NameSnakeCase$_message_get_set[] = {
-        { "timestamp", (getter) $NameSnakeCase$_message_get_timestamp, NULL, "", NULL },
-        { "string",    (getter) $NameSnakeCase$_message_get_string,    NULL, "", NULL },
-        { "bytes",     (getter) $NameSnakeCase$_message_get_bytes,     NULL, "", NULL },
+static PyGetSetDef $name_snake_case$_message_get_set[] = {
+        { "timestamp", (getter) $name_snake_case$_message_get_timestamp, NULL, "", NULL },
+        { "string",    (getter) $name_snake_case$_message_get_string,    NULL, "", NULL },
+        { "bytes",     (getter) $name_snake_case$_message_get_bytes,     NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 
-static PyMethodDef $NameSnakeCase$_message_methods[] = {
-        { "to_string", (PyCFunction) $NameSnakeCase$_message_to_string, METH_NOARGS, "" },
+static PyMethodDef $name_snake_case$_message_methods[] = {
+        { "to_string", (PyCFunction) $name_snake_case$_message_to_string, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 
-static PyTypeObject $NameSnakeCase$_message_object = {
+static PyTypeObject $name_snake_case$_message_object = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.$NamePascalCase$Message",
-        .tp_basicsize = sizeof($NamePascalCase$Message),
-        .tp_dealloc = (destructor) $NameSnakeCase$_message_free,
-        .tp_getset = $NameSnakeCase$_message_get_set,
-        .tp_methods = $NameSnakeCase$_message_methods,
+        .tp_name = "ximu3.$name_pascal_case$Message",
+        .tp_basicsize = sizeof($name_pascal_case$Message),
+        .tp_dealloc = (destructor) $name_snake_case$_message_free,
+        .tp_getset = $name_snake_case$_message_get_set,
+        .tp_methods = $name_snake_case$_message_methods,
 };
 
-static PyObject* $NameSnakeCase$_message_from(const XIMU3_$NamePascalCase$Message* const message)
+static PyObject* $name_snake_case$_message_from(const XIMU3_$name_pascal_case$Message* const message)
 {
-    $NamePascalCase$Message* const self = ($NamePascalCase$Message*) $NameSnakeCase$_message_object.tp_alloc(&$NameSnakeCase$_message_object, 0);
+    $name_pascal_case$Message* const self = ($name_pascal_case$Message*) $name_snake_case$_message_object.tp_alloc(&$name_snake_case$_message_object, 0);
     self->message = *message;
     return (PyObject*) self;
 }
 
-static void $NameSnakeCase$_message_callback(XIMU3_$NamePascalCase$Message data, void* context)
+static void $name_snake_case$_message_callback(XIMU3_$name_pascal_case$Message data, void* context)
 {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = $NameSnakeCase$_message_from(&data);
+    PyObject* const object = $name_snake_case$_message_from(&data);
     PyObject* const tuple = Py_BuildValue("(O)", object);
     Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
     Py_DECREF(tuple);

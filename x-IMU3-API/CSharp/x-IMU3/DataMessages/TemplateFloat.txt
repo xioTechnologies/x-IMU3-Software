@@ -6,15 +6,15 @@ using namespace System;
 
 namespace Ximu3
 {
-    public ref class $NamePascalCase$Message
+    public ref class $name_pascal_case$Message
     {
     internal:
-        $NamePascalCase$Message(ximu3::XIMU3_$NamePascalCase$Message message) : message{ new ximu3::XIMU3_$NamePascalCase$Message{message} }
+        $name_pascal_case$Message(ximu3::XIMU3_$name_pascal_case$Message message) : message{ new ximu3::XIMU3_$name_pascal_case$Message{message} }
         {
         }
 
     public:
-        ~$NamePascalCase$Message()
+        ~$name_pascal_case$Message()
         {
             delete message;
         }
@@ -31,10 +31,10 @@ $GetMethods$
 
         String^ ToString() override
         {
-            return gcnew String(ximu3::XIMU3_$NameSnakeCase$_message_to_string(*message));
+            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));
         }
 
     private:
-        ximu3::XIMU3_$NamePascalCase$Message* message;
+        ximu3::XIMU3_$name_pascal_case$Message* message;
     };
 }
