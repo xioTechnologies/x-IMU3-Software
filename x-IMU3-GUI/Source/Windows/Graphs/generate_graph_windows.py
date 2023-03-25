@@ -108,10 +108,10 @@ windows = [
 
 # Generate *GraphWindow.h and *GraphWindow.cpp
 for window in windows:
-    with open("template_graph_window_h.txt") as file:
+    with open("template_h.txt") as file:
         template_h = file.read()
 
-    with open("template_graph_window_cpp.txt") as file:
+    with open("template_cpp.txt") as file:
         template_cpp = file.read()
 
     template_h = template_h.replace("$name$", window.name)
@@ -145,4 +145,4 @@ code = ""
 for window in windows:
     code += window.return_window
 
-helpers.insert(file_path, code, "1")
+helpers.insert(file_path, code, 1)
