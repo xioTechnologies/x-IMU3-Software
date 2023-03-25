@@ -3,8 +3,8 @@
 #include "../../DevicePanel/DevicePanel.h"
 #include "../../OpenGL/GLRenderer.h"
 #include "../../OpenGL/Graph.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "../Window.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
 #define USE_GRAPH
