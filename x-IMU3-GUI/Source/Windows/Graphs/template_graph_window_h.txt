@@ -1,0 +1,15 @@
+#include "GraphWindow.h"
+
+class $name$GraphWindow : public GraphWindow
+{
+public:
+    $name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+
+    ~$name$GraphWindow() override;
+
+private:
+    static Graph::Settings settings;
+
+    std::vector<uint64_t> callbackIDs;
+$callback_declarations$
+};
