@@ -105,7 +105,10 @@ messages = [
 
 # Generate *_message.rs
 for message in messages:
-    if message.argument_names != []:
+    if not message.argument_names:
+        with open("template_char_array.txt") as file:
+            template = file.read()
+    else:
         with open("template_float.txt") as file:
             template = file.read()
 
@@ -158,9 +161,6 @@ for message in messages:
         template = template.replace("$arguments_ascii_format$", arguments_ascii_format)
         template = template.replace("$arguments_self_list$", arguments_self_list)
         template = template.replace("$arguments_string_format$", arguments_string_format)
-    else:
-        with open("template_char_array.txt") as file:
-            template = file.read()
 
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
@@ -292,7 +292,10 @@ for message in messages:
     for name in message.argument_names:
         width = max(width, len(name))
 
-    if message.argument_names != []:
+    if not message.argument_names:
+        with open(directory + "TemplateCharArray.txt") as file:
+            template = file.read()
+    else:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
@@ -319,9 +322,6 @@ static PyObject* $name_snake_case$_message_get_$Argument$($name_pascal_case$Mess
         template = template.replace("$GetFunctions$", get_functions)
         template = template.replace("$GetSetMembers$", get_set_members)
         template = template.replace("$WhiteSpace$", "".ljust(width - len("timestamp")))
-    else:
-        with open(directory + "TemplateCharArray.txt") as file:
-            template = file.read()
 
     template = template.replace("$NameMacroCase$", helpers.macro_case(message.name))
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
@@ -390,7 +390,10 @@ helpers.insert(file_path, code, 1)
 directory = "../../../CSharp/x-IMU3/DataMessages/"
 
 for message in messages:
-    if message.argument_names != []:
+    if not message.argument_names:
+        with open(directory + "TemplateCharArray.txt") as file:
+            template = file.read()
+    else:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
@@ -410,9 +413,6 @@ for message in messages:
         get_methods = get_methods[:-2]  # remove trailing new line
 
         template = template.replace("$GetMethods$", get_methods)
-    else:
-        with open(directory + "TemplateCharArray.txt") as file:
-            template = file.read()
 
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))

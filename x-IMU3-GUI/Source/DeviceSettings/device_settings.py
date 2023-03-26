@@ -7,20 +7,13 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 import helpers
 
 
-keys = []
-display_names = []
-json_types = []
-read_onlys = []
-enum_types = []
-
 with open("DeviceSettings.json") as file:
     settings = json.load(file)
 
+json_types = []
+enum_types = []
+
 for setting in settings:
-    keys.append(helpers.camel_case(setting["name"]))
-
-    display_names.append(helpers.title_case(setting["name"]))
-
     json_type = ""
 
     for declaration in {"char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"}:
@@ -40,29 +33,24 @@ for setting in settings:
 
     json_types.append(json_type)
 
-    try:
-        read_onlys.append("true" if setting["read only"] else "false")
-    except:
-        read_onlys.append("false")
 
 with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")
 
-    for index in range(len(keys)):
+    for setting, json_type in zip(settings, json_types):
         file.write("    <Setting " +
-                   "key=\"" + keys[index] + "\" " +
-                   "name=\"" + display_names[index] + "\" " +
-                   "type=\"" + json_types[index] + "\" " +
-                   ("readOnly=\"" + read_onlys[index] + "\"" if read_onlys[index] == "true" else "") +
-                   "/>\n")
+                   "key=\"" + helpers.camel_case(setting["name"]) + "\" " +
+                   "name=\"" + helpers.title_case(setting["name"]) + "\" " +
+                   "type=\"" + json_type + "\" " +
+                   ("readOnly=\"" + "true" + "\"" if setting.get("read only") else "") + "/>\n")
 
     file.write("</DeviceSettings>\n")
 
+enum_types = list(set(enum_types))  # remove duplicates
+enum_types.sort()  # sort alphabetically
+
 with open("DeviceSettingsEnums.xml", "w") as file:
     file.write("<DeviceSettingsEnums>\n")
-
-    enum_types = list(set(enum_types))
-    enum_types.sort()
 
     for enum_type in enum_types:
         file.write("\
