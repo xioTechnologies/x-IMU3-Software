@@ -14,7 +14,6 @@ class Window:
     y_axis: str
     legend: str
     callback_implementations: str
-    return_window: str
 
 
 windows = [
@@ -30,13 +29,7 @@ windows = [
     {\n\
         update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
     }));",
-        return_window="\
-    if (type == WindowIDs::Gyroscope)\n\
-    {\n\
-        return window = std::make_shared<GyroscopeGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);\n\
-    }\n",
     ),
-
     Window(
         name="EulerAngles",
         callback_declarations="\
@@ -81,13 +74,7 @@ windows = [
         const auto eulerAngles = Helpers::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));",
-        return_window="\
-    if (type == WindowIDs::EulerAngles)\n\
-    {\n\
-        return window = std::make_shared<EulerAnglesGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);\n\
-    }\n",
     ),
-
     Window(
         name="ReceivedMessageRate",
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
@@ -98,11 +85,6 @@ windows = [
     {\n\
         update(message.timestamp, { (float) message.message_rate });\n\
     }));",
-        return_window="\
-    if (type == WindowIDs::ReceivedMessageRate)\n\
-    {\n\
-        return window = std::make_shared<ReceivedMessageRateGraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);\n\
-    }\n",
     ),
 ]
 
@@ -142,7 +124,13 @@ helpers.insert(file_path, code, "0")
 
 code = ""
 
+template = "\
+    if (type == WindowIDs::$name$)\n\
+    {\n\
+        return window = std::make_shared<$name$GraphWindow>(windowLayout, windowTree.getType(), *this, glRenderer);\n\
+    }\n"
+
 for window in windows:
-    code += window.return_window
+    code += template.replace("$name$", window.name)
 
 helpers.insert(file_path, code, 1)
