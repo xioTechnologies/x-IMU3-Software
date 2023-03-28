@@ -88,9 +88,9 @@ void DevicePanelHeader::resized()
     rssiIcon.setBounds(bounds.removeFromRight(iconWidth));
     bounds.removeFromRight(margin);
 
-    connectionInfo.setBounds(bounds.removeFromLeft(connectionInfoWidth));
-    bounds.removeFromLeft(margin);
     deviceDescriptor.setBounds(bounds.removeFromLeft(deviceDescriptorWidth));
+    bounds.removeFromLeft(margin);
+    connectionInfo.setBounds(bounds.removeFromLeft(connectionInfoWidth));
 }
 
 void DevicePanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
