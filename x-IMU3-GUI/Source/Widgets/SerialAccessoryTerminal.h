@@ -32,6 +32,8 @@ private:
     float numberOfLinesOnScreen = 0.0f;
     int numberOfCharactersPerLine = 0;
 
+    static std::vector<juce::String> addEscapeCharacters(const juce::String& input);
+
     void updateScrollbarRange();
 
     std::vector<juce::AttributedString> wrapped(const juce::AttributedString& item) const;

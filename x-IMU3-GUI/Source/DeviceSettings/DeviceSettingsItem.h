@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../ApplicationSettings.h"
+#include "../Convert.h"
 #include "../CustomLookAndFeel.h"
-#include "../Helpers.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting/SettingEnum.h"
 #include "Setting/SettingText.h"

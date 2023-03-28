@@ -1,4 +1,4 @@
-#include "../Helpers.h"
+#include "../Convert.h"
 #include "DevicePanel/DevicePanel.h"
 #include "SerialAccessoryTerminalWindow.h"
 
@@ -19,9 +19,9 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         sendButton.setEnabled(false);
         sendButton.setToggleState(false, juce::dontSendNotification);
 
-        serialAccessoryTerminal.add(uint64_t(-1), Helpers::removeEscapeCharacters(sendValue.getText()));
+        serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
 
-        devicePanel.sendCommands({ CommandMessage("accessory", Helpers::removeEscapeCharacters(sendValue.getText())) }, this, [&](const auto& responses, const auto&)
+        devicePanel.sendCommands({ CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())) }, this, [&](const auto& responses, const auto&)
         {
             sendValue.setEnabled(true);
             sendButton.setEnabled(true);
@@ -84,6 +84,64 @@ void SerialAccessoryTerminalWindow::resized()
     sendValue.setBounds(sendCommandBounds);
 
     serialAccessoryTerminal.setBounds(bounds);
+}
+
+juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::String& input)
+{
+    juce::String output;
+
+    for (int index = 0; index < input.length(); index++)
+    {
+        if (input[index] != '\\')
+        {
+            output += input[index];
+            continue;
+        }
+
+        if (++index >= input.length())
+        {
+            return output; // invalid escape sequence
+        }
+
+        switch (input[index])
+        {
+            case '\\':
+                output += '\\';
+                break;
+
+            case 'n':
+                output += '\n';
+                break;
+
+            case 'r':
+                output += '\r';
+                break;
+
+            case 'x':
+            {
+                if (index >= input.length() - 2)
+                {
+                    return output; // invalid escape sequence
+                }
+
+                const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
+                const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
+
+                if (upperNibble == -1 || lowerNibble == -1)
+                {
+                    break; // invalid escape sequence
+                }
+
+                output += (char) ((upperNibble << 4) + lowerNibble);
+                break;
+            }
+
+            default:
+                break; // invalid escape sequence
+        }
+    }
+
+    return output;
 }
 
 void SerialAccessoryTerminalWindow::loadSendHistory()

@@ -30,6 +30,8 @@ private:
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackID;
 
+    static juce::String removeEscapeCharacters(const juce::String& input);
+
     void loadSendHistory();
 
     juce::PopupMenu getMenu();

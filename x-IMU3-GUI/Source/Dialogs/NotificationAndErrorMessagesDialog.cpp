@@ -1,4 +1,4 @@
-#include "../Helpers.h"
+#include "../Convert.h"
 #include "../Widgets/Icon.h"
 #include "NotificationAndErrorMessagesDialog.h"
 
@@ -78,7 +78,7 @@ juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int
 
         case ColumnID::timestamp:
         {
-            auto* label = new SimpleLabel(Helpers::formatTimestamp(notificationMessage.timestamp));
+            auto* label = new SimpleLabel(juce::String(1E-6f * (float) notificationMessage.timestamp, 3));
             if (notificationMessage.isUnread == false)
             {
                 label->setColour(juce::Label::textColourId, juce::Colours::grey);
