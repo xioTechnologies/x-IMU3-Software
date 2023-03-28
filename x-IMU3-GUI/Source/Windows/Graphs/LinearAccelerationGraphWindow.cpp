@@ -7,8 +7,8 @@ Graph::Settings LinearAccelerationGraphWindow::settings = Graph::Settings(false)
 
 LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Acceleration (g)", {{ "X", UIColours::graphRed },
-                                                                                                                  { "Y", UIColours::graphGreen },
-                                                                                                                  { "Z", UIColours::graphBlue }}, settings)
+                                                                                         { "Y", UIColours::graphGreen },
+                                                                                         { "Z", UIColours::graphBlue }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {

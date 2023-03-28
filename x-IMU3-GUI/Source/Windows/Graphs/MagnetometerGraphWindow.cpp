@@ -7,8 +7,8 @@ Graph::Settings MagnetometerGraphWindow::settings = Graph::Settings(false);
 
 MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Intensity (a.u.)", {{ "X", UIColours::graphRed },
-                                                                                                                  { "Y", UIColours::graphGreen },
-                                                                                                                  { "Z", UIColours::graphBlue }}, settings)
+                                                                                         { "Y", UIColours::graphGreen },
+                                                                                         { "Z", UIColours::graphBlue }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addMagnetometerCallback(magnetometerCallback = [&](auto message)
     {
