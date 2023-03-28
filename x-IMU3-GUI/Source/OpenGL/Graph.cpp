@@ -1,7 +1,18 @@
+#include "../Convert.h"
 #include "../CustomLookAndFeel.h"
-#include "../Helpers.h"
 #include "AxesRange.h"
 #include "Graph.h"
+
+Graph::Settings::Settings(const bool horizontalAutoscale, const float horizontalMin, const float horizontalMax,
+                          const bool verticalAutoscale, const float verticalMin, const float verticalMax)
+{
+    horizontal.autoscale = horizontalAutoscale;
+    horizontal.min = horizontalMin;
+    horizontal.max = horizontalMax;
+    vertical.autoscale = verticalAutoscale;
+    vertical.min = verticalMin;
+    vertical.max = verticalMax;
+}
 
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
 {
@@ -14,11 +25,12 @@ Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
     return *this;
 }
 
-Graph::Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_)
+Graph::Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_, const Settings& settings_)
         : OpenGLComponent(renderer_.getContext()),
           renderer(renderer_),
           yAxis(yAxis_),
-          legend(legend_)
+          legend(legend_),
+          settings(settings_)
 {
     renderer.addComponent(*this);
 }
@@ -147,7 +159,7 @@ void Graph::render()
     };
 
     // Render x axis label
-    const auto timestamp = "Timestamp (" + Helpers::formatTimestamp(graphDataBuffer.getMostRecentTimestamp()) + ")";
+    const auto timestamp = "Timestamp (" + juce::String(1E-6f * (float) graphDataBuffer.getMostRecentTimestamp(), 3) + ")";
     renderer.getResources().getGraphAxisLabelText().setText(timestamp.replaceCharacters("123456789", "000000000"));
     const auto secondsTextWidth = renderer.getResources().getGraphAxisLabelText().getTotalWidth();
     renderText(renderer.getResources().getGraphAxisLabelText(), timestamp, juce::Colours::white, (float) (bounds.getWidth() / 2) - secondsTextWidth / 2, (xAxisLabelHeight / 2.0f) * (float) context.getRenderingScale(), juce::Justification::centredLeft, false);
@@ -185,11 +197,6 @@ void Graph::render()
 void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
 {
     graphDataBuffer.write(timestamp, values);
-}
-
-void Graph::setSettings(const Settings& settings_)
-{
-    settings = settings_;
 }
 
 void Graph::clear()

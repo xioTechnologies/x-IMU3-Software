@@ -1,4 +1,4 @@
-#include "../Helpers.h"
+#include "../Convert.h"
 #include "SerialAccessoryTerminal.h"
 
 SerialAccessoryTerminal::SerialAccessoryTerminal()
@@ -52,9 +52,9 @@ void SerialAccessoryTerminal::add(const uint64_t timestamp, const juce::String& 
     }
     else
     {
-        message.append(Helpers::formatTimestamp(timestamp) + " ", juce::Colours::grey);
+        message.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
     }
-    for (const auto& string : Helpers::addEscapeCharacters(text))
+    for (const auto& string : addEscapeCharacters(text))
     {
         message.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
     }
@@ -88,6 +88,51 @@ void SerialAccessoryTerminal::clearAll()
     messages.clear();
     wrappedMessages.clear();
     updateScrollbarRange();
+}
+
+std::vector<juce::String> SerialAccessoryTerminal::addEscapeCharacters(const juce::String& input)
+{
+    std::vector<juce::String> output(1);
+
+    for (const auto character : input)
+    {
+        if (juce::CharacterFunctions::isPrintable(character))
+        {
+            if (output.back()[0] == '\\')
+            {
+                output.push_back({});
+            }
+
+            output.back() += character;
+            continue;
+        }
+
+        if (output.back().isNotEmpty())
+        {
+            output.push_back({});
+        }
+
+        switch (character)
+        {
+            case '\\':
+                output.back() += "\\\\";
+                break;
+
+            case '\n':
+                output.back() += "\\n";
+                break;
+
+            case '\r':
+                output.back() += "\\r";
+                break;
+
+            default:
+                output.back() += "\\x" + juce::String::toHexString(character).paddedLeft('0', 2);
+                break;
+        }
+    }
+
+    return output;
 }
 
 void SerialAccessoryTerminal::updateScrollbarRange()

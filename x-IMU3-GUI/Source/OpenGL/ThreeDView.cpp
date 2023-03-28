@@ -1,5 +1,5 @@
 #include "../CustomLookAndFeel.h"
-#include "Helpers.h"
+#include "Convert.h"
 #include "ThreeDView.h"
 
 ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings& other)
@@ -221,7 +221,7 @@ bool ThreeDView::isLoading() const
 
 juce::Matrix3D<GLfloat> ThreeDView::rotation(const float roll, const float pitch, const float yaw)
 {
-    return Helpers::toQuaternion(roll, pitch, yaw).getRotationMatrix();
+    return Convert::toQuaternion(roll, pitch, yaw).getRotationMatrix();
 }
 
 juce::Matrix3D<GLfloat> ThreeDView::translation(const float x, const float y, const float z)

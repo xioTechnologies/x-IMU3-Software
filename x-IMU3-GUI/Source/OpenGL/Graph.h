@@ -12,6 +12,9 @@ class Graph : public OpenGLComponent
 public:
     struct Settings
     {
+        Settings(const bool horizontalAutoscale = false, const float horizontalMin = -5.0f, const float horizontalMax = 0.0f,
+                 const bool verticalAutoscale = true, const float verticalMin = -1.0f, const float verticalMax = 1.0f);
+
         Settings& operator=(const Settings& other);
 
         struct Axis
@@ -21,8 +24,8 @@ public:
             std::atomic<float> max;
         };
 
-        Axis horizontal { false, -5.0f, 0.0f };
-        Axis vertical { true, -1.0f, 1.0f };
+        Axis horizontal;
+        Axis vertical;
     };
 
     struct LegendItem
@@ -31,15 +34,13 @@ public:
         juce::Colour colour;
     };
 
-    Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_);
+    Graph(GLRenderer& renderer_, const juce::String& yAxis_, const std::vector<LegendItem>& legend_, const Settings& settings_);
 
     ~Graph() override;
 
     void render() override;
 
     void update(const uint64_t timestamp, const std::vector<float>& values);
-
-    void setSettings(const Settings& settings_);
 
     void clear();
 
@@ -52,9 +53,8 @@ private:
 
     GLRenderer& renderer;
     const juce::String yAxis;
-
-    Settings settings;
     std::vector<LegendItem> legend;
+    const Settings& settings;
 
     GridLines gridLines;
     GraphDataBuffer graphDataBuffer { legend.size() };

@@ -1,8 +1,8 @@
-#include "WindowHeader.h"
 #include "DevicePanel/DevicePanel.h"
 #include "DevicePanelContainer.h"
-#include "WindowIDs.h"
 #include "DragOverlay.h"
+#include "WindowHeader.h"
+#include "WindowIDs.h"
 
 WindowHeader::WindowHeader(DevicePanel& devicePanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
         : devicePanel(devicePanel_),
