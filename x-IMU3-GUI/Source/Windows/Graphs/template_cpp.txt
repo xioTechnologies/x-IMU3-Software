@@ -3,7 +3,7 @@
 Graph::Settings $name$GraphWindow::settings;
 
 $name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, $y_axis$, $legend$, settings)
+        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "$y_axis$", $legend$, settings)
 {
 $callback_implementations$
 }

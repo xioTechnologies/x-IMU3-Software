@@ -20,7 +20,7 @@ windows = [
     Window(
         name="Gyroscope",
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
-        y_axis="\"Angular velocity (\" + degreeSymbol + \"/s)\"",
+        y_axis="Angular velocity (\" + degreeSymbol + \"/s)",
         legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
                                                                                                                   { \"Z\", UIColours::graphBlue }}",
@@ -30,6 +30,30 @@ windows = [
         update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
     }));",
     ),
+    Window("Accelerometer",
+           callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
+           y_axis="Acceleration (g)",
+           legend="{{ \"X\", UIColours::graphRed },\n\
+                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });\n\
+    }));",
+           ),
+    Window("Magnetometer",
+           callback_declarations="    std::function<void(ximu3::XIMU3_MagnetometerMessage)> magnetometerCallback;",
+           y_axis="Intensity (a.u.)",
+           legend="{{ \"X\", UIColours::graphRed },\n\
+                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+    }));",
+           ),
     Window(
         name="EulerAngles",
         callback_declarations="\
@@ -38,7 +62,7 @@ windows = [
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;\n\
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;\n\
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
-        y_axis="\"Angle (\" + degreeSymbol + \")\"",
+        y_axis="Angle (\" + degreeSymbol + \")",
         legend="{{ \"Roll\",  UIColours::graphRed },\n\
                                                                                                      { \"Pitch\", UIColours::graphGreen },\n\
                                                                                                      { \"Yaw\",   UIColours::graphBlue }}",
@@ -75,10 +99,96 @@ windows = [
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));",
     ),
+    Window("LinearAcceleration",
+           callback_declarations="    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;",
+           y_axis="Acceleration (g)",
+           legend="{{ \"X\", UIColours::graphRed },\n\
+                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+    }));",
+           ),
+    Window("EarthAcceleration",
+           callback_declarations="    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
+           y_axis="Acceleration (g)",
+           legend="{{ \"X\", UIColours::graphRed },\n\
+                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+    }));",
+           ),
+    Window("HighGAccelerometer",
+           callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
+           y_axis="Acceleration (g)",
+           legend="{{ \"X\", UIColours::graphRed },\n\
+                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+    }));",
+           ),
+    Window("Temperature",
+           callback_declarations="    std::function<void(ximu3::XIMU3_TemperatureMessage)> temperatureCallback;",
+           y_axis="Temperature (\" + degreeSymbol + \"C)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addTemperatureCallback(temperatureCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.temperature });\n\
+    }));",
+           ),
+    Window("BatteryPercentage",
+           callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
+           y_axis="Percentage (%)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.percentage });\n\
+    }));",
+           ),
+    Window("BatteryVoltage",
+           callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
+           y_axis="Voltage (V)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.voltage });\n\
+    }));",
+           ),
+    Window("RssiPercentage",
+           callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
+           y_axis="Percentage (%)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.percentage });\n\
+    }));",
+           ),
+    Window("RssiPower",
+           callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
+           y_axis="Power (dBm)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { message.power });\n\
+    }));",
+           ),
     Window(
         name="ReceivedMessageRate",
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
-        y_axis="\"Receive rate (messages/s)\"",
+        y_axis="Receive rate (messages/s)",
         legend="{{{}, juce::Colours::yellow }}",
         callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addStatisticsCallback(statisticsCallback = [&](auto message)\n\
@@ -86,6 +196,16 @@ windows = [
         update(message.timestamp, { (float) message.message_rate });\n\
     }));",
     ),
+    Window("ReceivedDataRate",
+           callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
+           y_axis="Receive rate (kB/s)",
+           legend="{{{}, juce::Colours::yellow }}",
+           callback_implementations="\
+    callbackIDs.push_back(devicePanel.getConnection().addStatisticsCallback(statisticsCallback = [&](auto message)\n\
+    {\n\
+        update(message.timestamp, { (float) message.data_rate / 1000.0f });\n\
+    }));",
+           ),
 ]
 
 # Generate *GraphWindow.h and *GraphWindow.cpp
