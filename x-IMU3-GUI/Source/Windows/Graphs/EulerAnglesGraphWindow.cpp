@@ -3,7 +3,7 @@
 #include "../../Helpers.h"
 #include "EulerAnglesGraphWindow.h"
 
-Graph::Settings EulerAnglesGraphWindow::settings;
+Graph::Settings EulerAnglesGraphWindow::settings = Graph::Settings(false);
 
 EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Angle (" + degreeSymbol + ")", {{ "Roll",  UIColours::graphRed },

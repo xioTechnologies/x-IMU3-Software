@@ -3,9 +3,15 @@
 #include "AxesRange.h"
 #include "Graph.h"
 
-Graph::Settings::Settings(const Settings& other)
+Graph::Settings::Settings(const bool horizontalAutoscale, const float horizontalMin, const float horizontalMax,
+                          const bool verticalAutoscale, const float verticalMin, const float verticalMax)
 {
-    *this = other;
+    horizontal.autoscale = horizontalAutoscale;
+    horizontal.min = horizontalMin;
+    horizontal.max = horizontalMax;
+    vertical.autoscale = verticalAutoscale;
+    vertical.min = verticalMin;
+    vertical.max = verticalMax;
 }
 
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)

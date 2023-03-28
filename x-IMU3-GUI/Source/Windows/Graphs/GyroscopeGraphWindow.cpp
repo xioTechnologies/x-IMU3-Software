@@ -2,7 +2,7 @@
 
 #include "GyroscopeGraphWindow.h"
 
-Graph::Settings GyroscopeGraphWindow::settings;
+Graph::Settings GyroscopeGraphWindow::settings = Graph::Settings(false);
 
 GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Angular velocity (" + degreeSymbol + "/s)", {{ "X", UIColours::graphRed },

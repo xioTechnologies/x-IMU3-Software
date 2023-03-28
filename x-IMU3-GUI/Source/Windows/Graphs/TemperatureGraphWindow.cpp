@@ -2,7 +2,7 @@
 
 #include "TemperatureGraphWindow.h"
 
-Graph::Settings TemperatureGraphWindow::settings;
+Graph::Settings TemperatureGraphWindow::settings = Graph::Settings(true);
 
 TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }}, settings)

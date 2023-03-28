@@ -2,7 +2,7 @@
 
 #include "BatteryPercentageGraphWindow.h"
 
-Graph::Settings BatteryPercentageGraphWindow::settings;
+Graph::Settings BatteryPercentageGraphWindow::settings = Graph::Settings(true);
 
 BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Percentage (%)", {{{}, juce::Colours::yellow }}, settings)

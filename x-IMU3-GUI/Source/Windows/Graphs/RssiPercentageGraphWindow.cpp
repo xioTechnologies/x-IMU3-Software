@@ -2,7 +2,7 @@
 
 #include "RssiPercentageGraphWindow.h"
 
-Graph::Settings RssiPercentageGraphWindow::settings;
+Graph::Settings RssiPercentageGraphWindow::settings = Graph::Settings(false);
 
 RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Percentage (%)", {{{}, juce::Colours::yellow }}, settings)

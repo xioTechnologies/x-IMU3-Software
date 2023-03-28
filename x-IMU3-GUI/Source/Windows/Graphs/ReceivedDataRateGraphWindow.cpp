@@ -2,7 +2,7 @@
 
 #include "ReceivedDataRateGraphWindow.h"
 
-Graph::Settings ReceivedDataRateGraphWindow::settings;
+Graph::Settings ReceivedDataRateGraphWindow::settings = Graph::Settings(true);
 
 ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Receive rate (kB/s)", {{{}, juce::Colours::yellow }}, settings)

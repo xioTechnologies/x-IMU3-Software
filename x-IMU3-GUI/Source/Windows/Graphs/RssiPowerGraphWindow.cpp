@@ -2,7 +2,7 @@
 
 #include "RssiPowerGraphWindow.h"
 
-Graph::Settings RssiPowerGraphWindow::settings;
+Graph::Settings RssiPowerGraphWindow::settings = Graph::Settings(true);
 
 RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Power (dBm)", {{{}, juce::Colours::yellow }}, settings)

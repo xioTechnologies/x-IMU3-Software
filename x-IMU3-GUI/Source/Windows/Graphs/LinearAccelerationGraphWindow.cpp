@@ -2,7 +2,7 @@
 
 #include "LinearAccelerationGraphWindow.h"
 
-Graph::Settings LinearAccelerationGraphWindow::settings;
+Graph::Settings LinearAccelerationGraphWindow::settings = Graph::Settings(false);
 
 LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Acceleration (g)", {{ "X", UIColours::graphRed },

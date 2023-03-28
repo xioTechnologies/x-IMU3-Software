@@ -2,7 +2,7 @@
 
 #include "AccelerometerGraphWindow.h"
 
-Graph::Settings AccelerometerGraphWindow::settings;
+Graph::Settings AccelerometerGraphWindow::settings = Graph::Settings(false);
 
 AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Acceleration (g)", {{ "X", UIColours::graphRed },

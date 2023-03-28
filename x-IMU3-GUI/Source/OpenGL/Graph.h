@@ -12,9 +12,8 @@ class Graph : public OpenGLComponent
 public:
     struct Settings
     {
-        Settings() = default;
-
-        Settings(const Settings& other);
+        Settings(const bool horizontalAutoscale = false, const float horizontalMin = -5.0f, const float horizontalMax = 0.0f,
+                 const bool verticalAutoscale = true, const float verticalMin = -1.0f, const float verticalMax = 1.0f);
 
         Settings& operator=(const Settings& other);
 
@@ -25,8 +24,8 @@ public:
             std::atomic<float> max;
         };
 
-        Axis horizontal { false, -5.0f, 0.0f };
-        Axis vertical { true, -1.0f, 1.0f };
+        Axis horizontal;
+        Axis vertical;
     };
 
     struct LegendItem

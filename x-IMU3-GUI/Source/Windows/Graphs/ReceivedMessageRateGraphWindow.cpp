@@ -2,12 +2,7 @@
 
 #include "ReceivedMessageRateGraphWindow.h"
 
-Graph::Settings ReceivedMessageRateGraphWindow::settings = []
-{
-    Graph::Settings settings_;
-    settings_.horizontal.autoscale = true;
-    return settings_;
-}();
+Graph::Settings ReceivedMessageRateGraphWindow::settings = Graph::Settings(true);
 
 ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Receive rate (messages/s)", {{{}, juce::Colours::yellow }}, settings)

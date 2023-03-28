@@ -2,7 +2,7 @@
 
 #include "MagnetometerGraphWindow.h"
 
-Graph::Settings MagnetometerGraphWindow::settings;
+Graph::Settings MagnetometerGraphWindow::settings = Graph::Settings(false);
 
 MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Intensity (a.u.)", {{ "X", UIColours::graphRed },

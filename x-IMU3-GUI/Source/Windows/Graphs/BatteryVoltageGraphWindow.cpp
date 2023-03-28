@@ -2,7 +2,7 @@
 
 #include "BatteryVoltageGraphWindow.h"
 
-Graph::Settings BatteryVoltageGraphWindow::settings;
+Graph::Settings BatteryVoltageGraphWindow::settings = Graph::Settings(true);
 
 BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Voltage (V)", {{{}, juce::Colours::yellow }}, settings)

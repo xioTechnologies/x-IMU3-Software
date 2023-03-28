@@ -11,6 +11,7 @@ import helpers
 class Window:
     name: str
     callback_declarations: str
+    horizontal_autoscale: str
     y_axis: str
     legend: str
     callback_implementations: str
@@ -20,6 +21,7 @@ windows = [
     Window(
         name="Gyroscope",
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
+        horizontal_autoscale="false",
         y_axis="Angular velocity (\" + degreeSymbol + \"/s)",
         legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -32,6 +34,7 @@ windows = [
     ),
     Window("Accelerometer",
            callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
+           horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -44,6 +47,7 @@ windows = [
            ),
     Window("Magnetometer",
            callback_declarations="    std::function<void(ximu3::XIMU3_MagnetometerMessage)> magnetometerCallback;",
+           horizontal_autoscale="false",
            y_axis="Intensity (a.u.)",
            legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -62,6 +66,7 @@ windows = [
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;\n\
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;\n\
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
+        horizontal_autoscale="false",
         y_axis="Angle (\" + degreeSymbol + \")",
         legend="{{ \"Roll\",  UIColours::graphRed },\n\
                                                                                                      { \"Pitch\", UIColours::graphGreen },\n\
@@ -101,6 +106,7 @@ windows = [
     ),
     Window("LinearAcceleration",
            callback_declarations="    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;",
+           horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -113,6 +119,7 @@ windows = [
            ),
     Window("EarthAcceleration",
            callback_declarations="    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
+           horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -125,6 +132,7 @@ windows = [
            ),
     Window("HighGAccelerometer",
            callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
+           horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
@@ -137,6 +145,7 @@ windows = [
            ),
     Window("Temperature",
            callback_declarations="    std::function<void(ximu3::XIMU3_TemperatureMessage)> temperatureCallback;",
+           horizontal_autoscale="true",
            y_axis="Temperature (\" + degreeSymbol + \"C)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -147,6 +156,7 @@ windows = [
            ),
     Window("BatteryPercentage",
            callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
+           horizontal_autoscale="true",
            y_axis="Percentage (%)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -157,6 +167,7 @@ windows = [
            ),
     Window("BatteryVoltage",
            callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
+           horizontal_autoscale="true",
            y_axis="Voltage (V)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -167,6 +178,7 @@ windows = [
            ),
     Window("RssiPercentage",
            callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
+           horizontal_autoscale="false",
            y_axis="Percentage (%)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -177,6 +189,7 @@ windows = [
            ),
     Window("RssiPower",
            callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
+           horizontal_autoscale="true",
            y_axis="Power (dBm)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -188,6 +201,7 @@ windows = [
     Window(
         name="ReceivedMessageRate",
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
+        horizontal_autoscale="true",
         y_axis="Receive rate (messages/s)",
         legend="{{{}, juce::Colours::yellow }}",
         callback_implementations="\
@@ -198,6 +212,7 @@ windows = [
     ),
     Window("ReceivedDataRate",
            callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
+           horizontal_autoscale="true",
            y_axis="Receive rate (kB/s)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
@@ -220,6 +235,7 @@ for window in windows:
     template_h = template_h.replace("$callback_declarations$", window.callback_declarations)
 
     template_cpp = template_cpp.replace("$name$", window.name)
+    template_cpp = template_cpp.replace("$horizontal_autoscale$", window.horizontal_autoscale)
     template_cpp = template_cpp.replace("$y_axis$", window.y_axis)
     template_cpp = template_cpp.replace("$legend$", window.legend)
     template_cpp = template_cpp.replace("$callback_implementations$", window.callback_implementations)
