@@ -1,5 +1,5 @@
-#include "../Convert.h"
 #include "../Widgets/Icon.h"
+#include <BinaryData.h>
 #include "NotificationAndErrorMessagesDialog.h"
 
 NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)

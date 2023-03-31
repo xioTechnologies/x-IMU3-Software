@@ -1,3 +1,4 @@
+#include <BinaryData.h>
 #include "SaveWindowLayoutDialog.h"
 
 SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, "Save Window Layout")

@@ -4,6 +4,7 @@
 #include "../../Widgets/Icon.h"
 #include "../../Widgets/SimpleLabel.h"
 #include "../DeviceSettingsIDs.h"
+#include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class DeviceSettingsItem;

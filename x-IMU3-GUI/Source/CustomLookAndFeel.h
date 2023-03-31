@@ -1,6 +1,5 @@
 #pragma once
 
-#include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace UIColours
