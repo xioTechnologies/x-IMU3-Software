@@ -5,7 +5,7 @@ Model::Model(juce::OpenGLContext& context_) : context(context_)
 {
 }
 
-void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void Model::setColour(const juce::Colour& colour_)
 {
     if (object == nullptr)
     {
@@ -22,7 +22,7 @@ void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 
         for (auto& colour : mesh.colours)
         {
-            colour = { r, g, b, a };
+            colour = { colour_.getFloatRed(), colour_.getFloatGreen(), colour_.getFloatBlue(), colour_.getFloatAlpha() };
         }
 
         buffers[i]->fillVbo(Buffer::colourBuffer, &mesh.colours.getReference(0).r, GLsizeiptr((size_t) mesh.colours.size() * sizeof(MeshColour)));

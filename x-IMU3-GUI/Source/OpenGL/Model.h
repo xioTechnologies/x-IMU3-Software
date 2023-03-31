@@ -12,7 +12,7 @@ class Model
 public:
     explicit Model(juce::OpenGLContext& context_);
 
-    void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+    void setColour(const juce::Colour& colour);
 
     void render(const GLResources& resources, bool isTextured);
 

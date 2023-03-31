@@ -112,7 +112,7 @@ void ThreeDView::render()
         resources.threeDViewShader.isTextured.set(true);
         resources.compassTexture.bind();
         resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * translation(0.0f, 0.0f, -0.5f) * scale(1.5f)).mat, 1, false);
-        resources.stage.setColor(1.0f, 1.0f, 1.0f, 0.75f);
+        resources.stage.setColour(juce::Colours::white.withAlpha(0.75f));
         resources.stage.render(resources, true);
         resources.compassTexture.unbind();
         resources.threeDViewShader.isTextured.set(false);
@@ -129,15 +129,15 @@ void ThreeDView::render()
             const auto alpha = 0.5f;
 
             resources.threeDViewShader.modelMatrix.setMatrix4(matrix.mat, 1, false);
-            resources.arrow.setColor(1.0f, 0.0f, 0.0f, alpha);
+            resources.arrow.setColour(UIColours::graphRed.withAlpha(alpha));
             resources.arrow.render(resources, false);
 
             resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.7071f, 0.7071f, 0.0f, 0.0f).getRotationMatrix()).mat, 1, false);
-            resources.arrow.setColor(0.0f, 1.0f, 0.0f, alpha);
+            resources.arrow.setColour(UIColours::graphGreen.withAlpha(alpha));
             resources.arrow.render(resources, false);
 
             resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.0f, 0.7071f, 0.0f, 0.7071f).getRotationMatrix()).mat, 1, false);
-            resources.arrow.setColor(0.0f, 0.0f, 1.0f, alpha);
+            resources.arrow.setColour(UIColours::graphBlue.withAlpha(alpha));
             resources.arrow.render(resources, false);
         };
 
@@ -173,14 +173,14 @@ void ThreeDView::render()
         };
 
         auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.11f);
-        renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
+        renderText(resources.get3DViewAxisText(), "X", UIColours::graphRed, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
+        renderText(resources.get3DViewAxisText(), "Y", UIColours::graphGreen, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
+        renderText(resources.get3DViewAxisText(), "Z", UIColours::graphBlue, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
 
         auto matrixB = translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * axesConventionRotation * scale(0.11f);
-        renderText(resources.get3DViewAxisText(), "X", juce::Colours::darkred, calcMatrix(matrixB, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Y", juce::Colours::green, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Z", juce::Colours::blue, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
+        renderText(resources.get3DViewAxisText(), "X", UIColours::graphRed, calcMatrix(matrixB, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
+        renderText(resources.get3DViewAxisText(), "Y", UIColours::graphGreen, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
+        renderText(resources.get3DViewAxisText(), "Z", UIColours::graphBlue, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
     }
 }
 
