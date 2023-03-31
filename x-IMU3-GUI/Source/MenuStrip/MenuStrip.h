@@ -49,20 +49,17 @@ private:
     struct ButtonGroup
     {
         SimpleLabel& label;
-        const std::vector<std::reference_wrapper<juce::Component>> buttons;
-        juce::FlexBox groupBox, buttonBox;
+        const std::vector<juce::Button*> buttons;
     };
 
-    std::vector<ButtonGroup> buttonGroups {
-            { connectionLabel,  { searchButton,              manualButton,       disconnectButton },        {}, {}},
-            { layoutLabel,      { windowsButton,             windowLayoutButton, devicePanelLayoutButton }, {}, {}},
-            { commandsLabel,    { shutdownButton,            sendCommandButton },                           {}, {}},
-            { dataLoggerLabel,  { dataLoggerStartStopButton, dataLoggerTime },                              {}, {}},
-            { toolsLabel,       { toolsButton },                                                            {}, {}},
-            { applicationLabel, { mainSettingsButton,        versionButton },                               {}, {}}
+    const std::vector<ButtonGroup> buttonGroups {
+            { connectionLabel,  { &searchButton,              &manualButton,       &disconnectButton }},
+            { layoutLabel,      { &windowsButton,             &windowLayoutButton, &devicePanelLayoutButton }},
+            { commandsLabel,    { &shutdownButton,            &sendCommandButton }},
+            { dataLoggerLabel,  { &dataLoggerStartStopButton, &dataLoggerTime }},
+            { toolsLabel,       { &toolsButton }},
+            { applicationLabel, { &mainSettingsButton,        &versionButton }}
     };
-
-    juce::FlexBox flexBox;
 
     const std::map<DevicePanelContainer::Layout, juce::String> layoutIcons {
             { DevicePanelContainer::Layout::single,    BinaryData::single_svg },
