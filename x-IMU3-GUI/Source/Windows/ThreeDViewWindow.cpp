@@ -210,9 +210,14 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
 void ThreeDViewWindow::timerCallback()
 {
-    rollValue.setText(juce::String(roll.load(), 1) + "°");
-    pitchValue.setText(juce::String(pitch.load(), 1) + "°");
-    yawValue.setText(juce::String(yaw.load(), 1) + "°");
+    static const auto formatAngle = [](const float angle)
+    {
+        const auto text = juce::String(angle, 1);
+        return ((text == "-0.0") ? "0.0" : text) + "°";
+    };
+    rollValue.setText(formatAngle(roll));
+    pitchValue.setText(formatAngle(pitch));
+    yawValue.setText(formatAngle(yaw));
     loadingLabel.setText(threeDView.isLoading() ? "Loading..." : "");
 }
 
