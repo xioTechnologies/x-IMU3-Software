@@ -12,7 +12,7 @@ DevicePanelContainer::DevicePanelContainer(juce::ValueTree& windowLayout_, GLRen
 
 void DevicePanelContainer::resized()
 {
-    int numberOfRows, numberOfColumns;
+    int numberOfRows = 0, numberOfColumns = 0; // initialisation to avoid compiler warning
 
     switch (layout)
     {
