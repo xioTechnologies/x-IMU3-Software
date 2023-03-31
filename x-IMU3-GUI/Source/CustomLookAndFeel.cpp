@@ -143,31 +143,6 @@ juce::Font CustomLookAndFeel::getTextButtonFont(juce::TextButton&, int)
     return UIFonts::getDefaultFont();
 }
 
-void CustomLookAndFeel::drawButtonText(juce::Graphics& g, juce::TextButton& button, bool, bool)
-{
-    juce::Font font(getTextButtonFont(button, button.getHeight()));
-    g.setFont(font);
-    g.setColour(button.findColour(button.getToggleState() ? juce::TextButton::textColourOnId
-                                                          : juce::TextButton::textColourOffId)
-                      .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
-
-    const int yIndent = juce::jmin(4, button.proportionOfHeight(0.3f));
-    const int cornerSize = juce::jmin(button.getHeight(), button.getWidth()) / 2;
-
-    const int fontHeight = juce::roundToInt(font.getHeight() * 0.6f);
-    const int leftIndent = juce::jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
-    const int rightIndent = juce::jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
-    const int textWidth = button.getWidth() - leftIndent - rightIndent;
-
-    if (textWidth > 0)
-    {
-        // Adjustment: fix stretching glitch
-        g.drawText(button.getButtonText(),
-                   leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
-                   juce::Justification::centred, true);
-    }
-}
-
 void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& textEditor)
 {
     auto backgroundColour = textEditor.findColour(juce::TextEditor::backgroundColourId);

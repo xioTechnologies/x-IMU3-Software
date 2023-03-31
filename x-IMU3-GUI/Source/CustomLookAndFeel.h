@@ -78,8 +78,6 @@ public:
 
     juce::Font getTextButtonFont(juce::TextButton&, int) override;
 
-    void drawButtonText(juce::Graphics& g, juce::TextButton& button, bool, bool) override;
-
     void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& textEditor) override;
 
     void drawTreeviewPlusMinusBox(juce::Graphics& g, const juce::Rectangle<float>& area, juce::Colour, bool isOpen, bool isMouseOver) override;
