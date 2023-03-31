@@ -25,10 +25,10 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 {
     setWindowLayout({});
 
-    for (auto& buttonGroup : buttonGroups)
+    for (const auto& buttonGroup : buttonGroups)
     {
         addAndMakeVisible(buttonGroup.label);
-        for (auto& button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup.buttons)
         {
             addAndMakeVisible(button);
         }
@@ -219,9 +219,9 @@ void MenuStrip::resized()
 
     // Calculate groupMargin
     float groupMargin = getWidth();
-    for (auto& buttonGroup : buttonGroups)
+    for (const auto& buttonGroup : buttonGroups)
     {
-        for (auto& button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup.buttons)
         {
             const auto buttonWidth = [&]
             {
@@ -246,7 +246,7 @@ void MenuStrip::resized()
     auto x = groupMargin / 2;
     for (const auto& buttonGroup : buttonGroups)
     {
-        for (auto& button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup.buttons)
         {
             button->setBounds((int) x, buttonY, button->getWidth(), buttonHeight);
             x += button->getWidth();
