@@ -331,7 +331,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Disconnect All", [this]
+    menu.addItem("Disconnect All (" + juce::String(devicePanelContainer.getDevicePanels().size()) + ")", [this]
     {
         disconnect(nullptr);
     });
