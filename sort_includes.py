@@ -4,6 +4,9 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
     for file in files:
         file_name, file_extension = os.path.splitext(file)
 
+        if "cmake-build-" in root:
+            continue
+
         if file_extension != ".h" and file_extension != ".hpp" and file_extension != ".c" and file_extension != ".cpp":
             continue
 
