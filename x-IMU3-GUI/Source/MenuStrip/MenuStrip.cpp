@@ -218,7 +218,7 @@ void MenuStrip::resized()
     static constexpr int labelCentreY = 40;
 
     // Calculate groupMargin
-    float groupMargin = getWidth();
+    auto groupMargin = (float) getWidth();
     for (const auto& buttonGroup : buttonGroups)
     {
         for (auto* const button : buttonGroup.buttons)
