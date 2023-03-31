@@ -26,7 +26,6 @@ ConnectionsTable::ConnectionsTable()
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
-    table.setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDarkest);
     table.setWantsKeyboardFocus(false);
 }
 

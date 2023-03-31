@@ -1,3 +1,4 @@
+#include <BinaryData.h>
 #include "ConvertingFileDialog.h"
 #include "ErrorDialog.h"
 

@@ -1,5 +1,5 @@
-#include "../Convert.h"
 #include "../Widgets/Icon.h"
+#include <BinaryData.h>
 #include "NotificationAndErrorMessagesDialog.h"
 
 NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)
@@ -24,7 +24,6 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
-    table.setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDark);
     table.setWantsKeyboardFocus(false);
 
     setSize(800, 480);

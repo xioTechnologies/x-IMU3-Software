@@ -1,3 +1,4 @@
+#include <BinaryData.h>
 #include "ErrorDialog.h"
 
 ErrorDialog::ErrorDialog(const juce::String& error) : Dialog(BinaryData::warning_white_svg, "Error", "OK", "")

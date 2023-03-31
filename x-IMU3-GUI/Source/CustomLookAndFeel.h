@@ -1,6 +1,5 @@
 #pragma once
 
-#include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace UIColours
@@ -68,8 +67,6 @@ public:
     void drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height,
                        bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool, bool) override;
 
-    int getMinimumScrollbarThumbSize(juce::ScrollBar& scrollbar) override;
-
     int getDefaultScrollbarWidth() override;
 
     void drawButtonBackground(juce::Graphics& g,
@@ -79,8 +76,6 @@ public:
                               bool shouldDrawButtonAsDown) override;
 
     juce::Font getTextButtonFont(juce::TextButton&, int) override;
-
-    void drawButtonText(juce::Graphics& g, juce::TextButton& button, bool, bool) override;
 
     void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& textEditor) override;
 

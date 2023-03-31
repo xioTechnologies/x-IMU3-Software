@@ -25,12 +25,12 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 {
     setWindowLayout({});
 
-    for (auto& buttonGroup : buttonGroups)
+    for (const auto& buttonGroup : buttonGroups)
     {
         addAndMakeVisible(buttonGroup.label);
-        for (auto& button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup.buttons)
         {
-            addAndMakeVisible(button.get());
+            addAndMakeVisible(button);
         }
     }
 
@@ -204,53 +204,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         }
     };
     devicePanelContainer.onDevicePanelsSizeChanged();
-
-    static constexpr int buttonHeight = 22;
-
-    flexBox.flexDirection = juce::FlexBox::Direction::row;
-    flexBox.alignContent = juce::FlexBox::AlignContent::stretch;
-    flexBox.alignItems = juce::FlexBox::AlignItems::stretch;
-
-    for (auto& buttonGroup : buttonGroups)
-    {
-        auto& groupBox = buttonGroup.groupBox;
-        auto& buttonBox = buttonGroup.buttonBox;
-
-        groupBox.flexDirection = juce::FlexBox::Direction::column;
-        buttonBox.justifyContent = juce::FlexBox::JustifyContent::center;
-
-        groupBox.items.add(juce::FlexItem(buttonBox)
-                                   .withHeight(buttonHeight)
-                                   .withFlex(0.0f));
-        groupBox.items.add(juce::FlexItem(buttonGroup.label)
-                                   .withFlex(0.5f));
-
-        flexBox.items.add(juce::FlexItem(groupBox)
-                                  .withMargin(8)
-                                  .withFlex(1.0f, 0));
-
-        for (auto& button : buttonGroup.buttons)
-        {
-            const auto buttonWidth = [&]
-            {
-                if (&button.get() == &dataLoggerTime)
-                {
-                    return 112;
-                }
-                if (&button.get() == &versionButton)
-                {
-                    return versionButton.getBestWidthForHeight(buttonHeight);
-                }
-                return 35;
-            }();
-
-            buttonBox.items.add(juce::FlexItem(button)
-                                        .withWidth((float) buttonWidth)
-                                        .withHeight(buttonHeight));
-
-            flexBox.items.getReference(flexBox.items.size() - 1).width += buttonWidth;
-        }
-    }
 }
 
 void MenuStrip::paint(juce::Graphics& g)
@@ -260,7 +213,51 @@ void MenuStrip::paint(juce::Graphics& g)
 
 void MenuStrip::resized()
 {
-    flexBox.performLayout(getLocalBounds().toFloat());
+    static constexpr int buttonY = 8;
+    static constexpr int buttonHeight = 22;
+    static constexpr int labelCentreY = 40;
+
+    // Calculate groupMargin
+    auto groupMargin = (float) getWidth();
+    for (const auto& buttonGroup : buttonGroups)
+    {
+        for (auto* const button : buttonGroup.buttons)
+        {
+            const auto buttonWidth = [&]
+            {
+                if (button == &dataLoggerTime)
+                {
+                    return 112;
+                }
+                if (button == &versionButton)
+                {
+                    return versionButton.getBestWidthForHeight(buttonHeight);
+                }
+                return 35;
+            }();
+
+            button->setSize(buttonWidth, 0);
+            groupMargin -= buttonWidth;
+        }
+    }
+    groupMargin /= buttonGroups.size();
+
+    // Set bounds
+    auto x = groupMargin / 2;
+    for (const auto& buttonGroup : buttonGroups)
+    {
+        for (auto* const button : buttonGroup.buttons)
+        {
+            button->setBounds((int) x, buttonY, button->getWidth(), buttonHeight);
+            x += button->getWidth();
+        }
+        x += groupMargin;
+
+        const auto labelCentreX = (buttonGroup.buttons.front()->getX() + buttonGroup.buttons.back()->getRight()) / 2;
+        const auto labelWidth = (int) std::ceil(buttonGroup.label.getTextWidth());
+        const auto labelHeight = (int) std::ceil(UIFonts::getDefaultFont().getHeight());
+        buttonGroup.label.setBounds(juce::Rectangle<int>(labelWidth, labelHeight).withCentre({ labelCentreX, labelCentreY }));
+    }
 }
 
 void MenuStrip::disconnect(const DevicePanel* const devicePanel)

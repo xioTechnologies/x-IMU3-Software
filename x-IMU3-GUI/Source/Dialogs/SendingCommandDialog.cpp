@@ -18,7 +18,6 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
-    table.setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDark);
     table.updateContent();
     table.setWantsKeyboardFocus(false);
 
