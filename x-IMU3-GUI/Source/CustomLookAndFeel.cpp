@@ -1,4 +1,5 @@
 #include "CustomLookAndFeel.h"
+#include <juce_gui_extra/juce_gui_extra.h>
 
 juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
 {
@@ -30,39 +31,33 @@ CustomLookAndFeel::CustomLookAndFeel()
     setDefaultSansSerifTypeface(UIFonts::Typefaces::getMontserratMedium()); // progress bar only
 
     setColour(juce::CaretComponent::caretColourId, UIColours::backgroundDark);
+    setColour(juce::ColourSelector::backgroundColourId, {});
     setColour(juce::ComboBox::backgroundColourId, UIColours::textEditor);
     setColour(juce::ComboBox::textColourId, UIColours::backgroundDark);
     setColour(juce::ComboBox::arrowColourId, juce::Colours::grey);
     setColour(juce::GroupComponent::outlineColourId, juce::Colours::grey);
-    setColour(juce::GroupComponent::textColourId, juce::Colours::white);
-    setColour(juce::Label::textColourId, juce::Colours::white);
     setColour(juce::Label::textWhenEditingColourId, UIColours::backgroundLightest);
-    setColour(juce::Label::backgroundWhenEditingColourId, juce::Colours::transparentBlack);
-    setColour(juce::Label::outlineWhenEditingColourId, juce::Colours::transparentBlack);
-    setColour(juce::Label::outlineColourId, juce::Colours::transparentBlack);
     setColour(juce::ListBox::backgroundColourId, {});
     setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
     setColour(juce::PopupMenu::backgroundColourId, UIColours::backgroundDark);
     setColour(juce::PopupMenu::headerTextColourId, juce::Colours::grey);
-    setColour(juce::PopupMenu::textColourId, juce::Colours::white);
     setColour(juce::ProgressBar::backgroundColourId, UIColours::backgroundDark);
     setColour(juce::ProgressBar::foregroundColourId, UIColours::backgroundDarkest);
     setColour(juce::ResizableWindow::backgroundColourId, UIColours::backgroundLightest);
     setColour(juce::ScrollBar::thumbColourId, UIColours::backgroundLightest);
     setColour(juce::ScrollBar::backgroundColourId, UIColours::backgroundDark);
+    setColour(juce::TableListBox::backgroundColourId, UIColours::backgroundDark);
     setColour(juce::TextButton::buttonColourId, UIColours::backgroundLightest);
     setColour(juce::TextButton::buttonOnColourId, UIColours::textEditor);
     setColour(juce::TextButton::textColourOnId, UIColours::backgroundDark);
-    setColour(juce::TextButton::textColourOffId, juce::Colours::white);
     setColour(juce::TextEditor::backgroundColourId, UIColours::textEditor);
     setColour(juce::TextEditor::textColourId, UIColours::backgroundDark);
     setColour(juce::TextEditor::highlightedTextColourId, UIColours::textEditor);
     setColour(juce::TextEditor::highlightColourId, UIColours::highlight);
-    setColour(juce::TextEditor::outlineColourId, juce::Colours::transparentBlack);
-    setColour(juce::TextEditor::focusedOutlineColourId, juce::Colours::transparentBlack);
+    setColour(juce::TextEditor::outlineColourId, {});
+    setColour(juce::TextEditor::focusedOutlineColourId, {});
     setColour(juce::ToggleButton::tickDisabledColourId, juce::Colours::white);
     setColour(juce::ToggleButton::tickColourId, UIColours::backgroundLightest);
-    setColour(juce::TooltipWindow::textColourId, juce::Colours::white);
     setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
     setColour(juce::TooltipWindow::backgroundColourId, UIColours::backgroundDark);
 }

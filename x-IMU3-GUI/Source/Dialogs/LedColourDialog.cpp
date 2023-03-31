@@ -47,7 +47,6 @@ LedColourDialog::LedColourDialog(DevicePanel& devicePanel_)
     };
 
     colourSelector.setCurrentColour(nullColour, juce::dontSendNotification);
-    colourSelector.setColour(juce::ColourSelector::backgroundColourId, {});
     colourSelector.addChangeListener(this);
     colourSelector.setWantsKeyboardFocus(true);
 
