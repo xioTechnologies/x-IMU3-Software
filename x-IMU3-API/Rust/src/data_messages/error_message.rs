@@ -29,7 +29,7 @@ impl DataMessage for ErrorMessage {
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{[^\n]}\r\n",  char, u64, String) {
             Ok((_, timestamp, string)) => {
-                let (char_array, number_of_bytes) = string_to_char_array(string);
+                let (char_array, number_of_bytes) = str_to_char_array(string);
                 Ok(ErrorMessage { timestamp, char_array, number_of_bytes })
             }
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),

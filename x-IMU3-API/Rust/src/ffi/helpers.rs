@@ -16,7 +16,7 @@ pub struct CharArrays {
 
 impl From<Vec<String>> for CharArrays {
     fn from(strings: Vec<String>) -> Self {
-        let mut vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = strings.iter().map(|string| string_to_char_array(string.clone())).collect();
+        let mut vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = strings.iter().map(|string| str_to_char_array(string)).collect();
 
         let char_arrays = CharArrays {
             array: vector.as_mut_ptr(),
@@ -35,19 +35,20 @@ pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
     }
 }
 
-macro_rules! string_to_char_ptr { // each invocation of this macro uses a different static variable
+macro_rules! str_to_char_ptr { // each invocation of this macro uses a different static variable
     ($string:expr) => {{
         static mut CHAR_ARRAY: [c_char; CHAR_ARRAY_SIZE] = EMPTY_CHAR_ARRAY;
         unsafe {
-            CHAR_ARRAY = string_to_char_array($string);
+            CHAR_ARRAY = str_to_char_array($string);
             CHAR_ARRAY.as_ptr()
         }
     }}
 }
 
-pub fn string_to_char_array(mut string: String) -> [c_char; CHAR_ARRAY_SIZE] {
+pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
     let mut char_array = EMPTY_CHAR_ARRAY;
 
+    let mut string = string.to_string();
     string.truncate(char_array.len() - 1); // last character must remain null
     string.as_str().chars().enumerate().for_each(|(index, char)| char_array[index] = char as c_char);
     char_array

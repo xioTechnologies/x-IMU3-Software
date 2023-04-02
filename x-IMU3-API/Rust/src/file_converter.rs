@@ -77,7 +77,7 @@ impl FileConverter {
 
         let directory = destination.to_owned();
         let name = name.unwrap().to_str().unwrap().to_owned();
-        let mut connection = Connection::new(ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: source.to_owned() }));
+        let mut connection = Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: source.to_owned() }));
 
         let dropped = file_converter.dropped.clone();
 

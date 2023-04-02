@@ -12,7 +12,7 @@ pub fn run() {
     for device in PortScanner::scan_filter(ConnectionType::Usb) {
         println!("{}", device);
 
-        let mut connection = Connection::new(device.connection_info);
+        let mut connection = Connection::new(&device.connection_info);
 
         if connection.open().is_ok() {
             connections.push(connection);

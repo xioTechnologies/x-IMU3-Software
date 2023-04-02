@@ -20,7 +20,7 @@ pub fn run() {
     println!("Found {} - {}", device.device_name, device.serial_number);
 
     // Open connection
-    let mut connection = Connection::new(device.connection_info.clone());
+    let mut connection = Connection::new(&device.connection_info);
 
     if connection.open().is_err() {
         println!("Unable to open connection");

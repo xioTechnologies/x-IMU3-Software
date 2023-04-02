@@ -93,7 +93,7 @@ impl PortScanner {
             rts_cts_enabled: false,
         };
 
-        let mut connection = Connection::new(ConnectionInfo::SerialConnectionInfo(connection_info.clone()));
+        let mut connection = Connection::new(&ConnectionInfo::SerialConnectionInfo(connection_info.clone()));
 
         if let Ok(()) = connection.open() {
             if let Ok(ping_response) = connection.ping() {
@@ -102,7 +102,7 @@ impl PortScanner {
                     serial_number: ping_response.serial_number,
                     connection_info: match ping_response.interface.as_str() {
                         "USB" => ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo { port_name: connection_info.port_name }),
-                        "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info.clone()),
+                        "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info),
                         "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(BluetoothConnectionInfo { port_name: connection_info.port_name }),
                         _ => ConnectionInfo::SerialConnectionInfo(connection_info),
                     },

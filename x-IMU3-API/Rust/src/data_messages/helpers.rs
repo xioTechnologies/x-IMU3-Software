@@ -6,7 +6,7 @@ pub const DATA_MESSAGE_CHAR_ARRAY_SIZE: usize = 256;
 
 pub const DATA_MESSAGE_EMPTY_CHAR_ARRAY: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE] = ['\0' as c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE];
 
-pub fn string_to_char_array(mut string: String) -> ([c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE], usize) {
+pub fn str_to_char_array(mut string: String) -> ([c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE], usize) {
     let mut char_array = DATA_MESSAGE_EMPTY_CHAR_ARRAY;
 
     string.truncate(char_array.len() - 1); // last character must remain null

@@ -22,9 +22,9 @@ impl Default for PingResponseC {
 impl From<PingResponse> for PingResponseC {
     fn from(ping_response: PingResponse) -> Self {
         PingResponseC {
-            interface: string_to_char_array(ping_response.interface.clone()),
-            device_name: string_to_char_array(ping_response.device_name.clone()),
-            serial_number: string_to_char_array(ping_response.serial_number.clone()),
+            interface: str_to_char_array(&ping_response.interface),
+            device_name: str_to_char_array(&ping_response.device_name),
+            serial_number: str_to_char_array(&ping_response.serial_number),
         }
     }
 }
@@ -41,5 +41,5 @@ impl From<PingResponseC> for PingResponse {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_ping_response_to_string(ping_response: PingResponseC) -> *const c_char {
-    string_to_char_ptr!(PingResponse::from(ping_response).to_string())
+    str_to_char_ptr!(&PingResponse::from(ping_response).to_string())
 }

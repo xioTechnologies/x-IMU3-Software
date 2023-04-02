@@ -35,8 +35,8 @@ impl From<&Device> for DeviceC {
     fn from(device: &Device) -> Self {
         let mut device_c: DeviceC = Default::default();
 
-        device_c.device_name = string_to_char_array(device.device_name.clone());
-        device_c.serial_number = string_to_char_array(device.serial_number.clone());
+        device_c.device_name = str_to_char_array(&device.device_name);
+        device_c.serial_number = str_to_char_array(&device.serial_number);
 
         match &device.connection_info {
             ConnectionInfo::UsbConnectionInfo(connection_info) => {
@@ -74,7 +74,7 @@ impl From<DeviceC> for Device {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_device_to_string(device: DeviceC) -> *const c_char {
-    string_to_char_ptr!(Device::from(device).to_string())
+    str_to_char_ptr!(&Device::from(device).to_string())
 }
 
 #[repr(C)]

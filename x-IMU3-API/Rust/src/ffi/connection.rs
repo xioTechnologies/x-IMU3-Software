@@ -13,32 +13,32 @@ use crate::statistics::*;
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_usb(connection_info: UsbConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::UsbConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::UsbConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_serial(connection_info: SerialConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::SerialConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::SerialConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_tcp(connection_info: TcpConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::TcpConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::TcpConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_udp(connection_info: UdpConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::UdpConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::UdpConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_bluetooth(connection_info: BluetoothConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::BluetoothConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::BluetoothConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_file(connection_info: FileConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(ConnectionInfo::FileConnectionInfo(connection_info.into()))))
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::FileConnectionInfo(connection_info.into()))))
 }
 
 #[no_mangle]
