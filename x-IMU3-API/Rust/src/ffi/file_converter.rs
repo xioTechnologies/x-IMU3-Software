@@ -5,12 +5,12 @@ use crate::ffi::helpers::*;
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_converter_status_to_string(status: FileConverterStatus) -> *const c_char {
-    string_to_char_ptr!(status.to_string())
+    str_to_char_ptr!(&status.to_string())
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_converter_progress_to_string(progress: FileConverterProgress) -> *const c_char {
-    string_to_char_ptr!(progress.to_string())
+    str_to_char_ptr!(&progress.to_string())
 }
 
 #[no_mangle]

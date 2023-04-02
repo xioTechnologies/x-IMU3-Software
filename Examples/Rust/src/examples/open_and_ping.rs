@@ -9,7 +9,7 @@ pub fn run() {
     });
 
     // Open connection
-    let mut connection = Connection::new(connection_info);
+    let mut connection = Connection::new(&connection_info);
 
     if connection.open().is_err() {
         println!("Unable to open connection");

@@ -14,9 +14,9 @@ pub struct FileConnection {
 }
 
 impl FileConnection {
-    pub fn new(connection_info: FileConnectionInfo) -> FileConnection {
+    pub fn new(connection_info: &FileConnectionInfo) -> FileConnection {
         FileConnection {
-            connection_info,
+            connection_info: connection_info.clone(),
             decoder: Arc::new(Mutex::new(Decoder::new())),
             close_sender: None,
             write_sender: None,

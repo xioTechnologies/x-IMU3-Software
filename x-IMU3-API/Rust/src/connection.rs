@@ -18,7 +18,7 @@ pub struct Connection {
 }
 
 impl Connection {
-    pub fn new(connection_info: ConnectionInfo) -> Connection {
+    pub fn new(connection_info: &ConnectionInfo) -> Connection {
         let internal: Box<dyn GenericConnection + Send>;
 
         match connection_info {
@@ -122,7 +122,7 @@ impl Connection {
         let commands: Vec<String> = commands.iter().map(|&string| string.to_owned()).collect();
 
         std::thread::spawn(move || {
-            let responses = Self::send_commands_internal(decoder.clone(), write_sender, commands.iter().map(|string| string.as_ref()).collect(), retries, timeout);
+            let responses = Self::send_commands_internal(decoder, write_sender, commands.iter().map(|string| string.as_ref()).collect(), retries, timeout);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -141,7 +141,7 @@ impl Connection {
 
         let mut transactions: Vec<Transaction> = commands.iter().map(|&command| {
             if let Ok(command) = CommandMessage::parse_json(command) {
-                Transaction { command: Some(command.clone()), response: "".to_owned() }
+                Transaction { command: Some(command), response: "".to_owned() }
             } else {
                 Transaction { command: None, response: "".to_owned() }
             }
@@ -156,7 +156,7 @@ impl Connection {
         for _ in 0..(1 + retries) {
             for transaction in transactions.iter().filter(|&transaction| transaction.command.is_some()) {
                 if let Some(write_sender) = write_sender.clone() {
-                    write_sender.send(transaction.command.as_ref().unwrap().clone().terminated_json).ok();
+                    write_sender.send(transaction.command.as_ref().unwrap().terminated_json.clone()).ok();
                 }
             }
 

@@ -4,5 +4,5 @@ use crate::statistics::*;
 
 #[no_mangle]
 pub extern "C" fn XIMU3_statistics_to_string(statistics: Statistics) -> *const c_char {
-    string_to_char_ptr!(statistics.to_string())
+    str_to_char_ptr!(&statistics.to_string())
 }

@@ -20,7 +20,7 @@ impl Default for UsbConnectionInfoC {
 impl From<&UsbConnectionInfo> for UsbConnectionInfoC {
     fn from(connection_info: &UsbConnectionInfo) -> Self {
         UsbConnectionInfoC {
-            port_name: string_to_char_array(connection_info.port_name.clone()),
+            port_name: str_to_char_array(&connection_info.port_name),
         }
     }
 }
@@ -35,7 +35,7 @@ impl From<UsbConnectionInfoC> for UsbConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_usb_connection_info_to_string(connection_info: UsbConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(UsbConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&UsbConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -59,7 +59,7 @@ impl Default for SerialConnectionInfoC {
 impl From<&SerialConnectionInfo> for SerialConnectionInfoC {
     fn from(connection_info: &SerialConnectionInfo) -> Self {
         SerialConnectionInfoC {
-            port_name: string_to_char_array(connection_info.port_name.clone()),
+            port_name: str_to_char_array(&connection_info.port_name),
             baud_rate: connection_info.baud_rate,
             rts_cts_enabled: connection_info.rts_cts_enabled,
         }
@@ -78,7 +78,7 @@ impl From<SerialConnectionInfoC> for SerialConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_serial_connection_info_to_string(connection_info: SerialConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(SerialConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&SerialConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -101,7 +101,7 @@ impl Default for TcpConnectionInfoC {
 impl From<&TcpConnectionInfo> for TcpConnectionInfoC {
     fn from(connection_info: &TcpConnectionInfo) -> Self {
         TcpConnectionInfoC {
-            ip_address: string_to_char_array(connection_info.ip_address.to_string()),
+            ip_address: str_to_char_array(&connection_info.ip_address.to_string()),
             port: connection_info.port,
         }
     }
@@ -118,7 +118,7 @@ impl From<TcpConnectionInfoC> for TcpConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_tcp_connection_info_to_string(connection_info: TcpConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(TcpConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&TcpConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -142,7 +142,7 @@ impl Default for UdpConnectionInfoC {
 impl From<&UdpConnectionInfo> for UdpConnectionInfoC {
     fn from(connection_info: &UdpConnectionInfo) -> Self {
         UdpConnectionInfoC {
-            ip_address: string_to_char_array(connection_info.ip_address.to_string()),
+            ip_address: str_to_char_array(&connection_info.ip_address.to_string()),
             send_port: connection_info.send_port,
             receive_port: connection_info.receive_port,
         }
@@ -161,7 +161,7 @@ impl From<UdpConnectionInfoC> for UdpConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_udp_connection_info_to_string(connection_info: UdpConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(UdpConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&UdpConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -181,7 +181,7 @@ impl Default for BluetoothConnectionInfoC {
 impl From<&BluetoothConnectionInfo> for BluetoothConnectionInfoC {
     fn from(connection_info: &BluetoothConnectionInfo) -> Self {
         BluetoothConnectionInfoC {
-            port_name: string_to_char_array(connection_info.port_name.clone()),
+            port_name: str_to_char_array(&connection_info.port_name),
         }
     }
 }
@@ -196,7 +196,7 @@ impl From<BluetoothConnectionInfoC> for BluetoothConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_bluetooth_connection_info_to_string(connection_info: BluetoothConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(BluetoothConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&BluetoothConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -215,7 +215,7 @@ impl Default for FileConnectionInfoC {
 impl From<&FileConnectionInfo> for FileConnectionInfoC {
     fn from(connection_info: &FileConnectionInfo) -> Self {
         FileConnectionInfoC {
-            file_path: string_to_char_array(connection_info.file_path.clone()),
+            file_path: str_to_char_array(&connection_info.file_path),
         }
     }
 }
@@ -230,5 +230,5 @@ impl From<FileConnectionInfoC> for FileConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_connection_info_to_string(connection_info: FileConnectionInfoC) -> *const c_char {
-    string_to_char_ptr!(FileConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr!(&FileConnectionInfo::from(connection_info).to_string())
 }

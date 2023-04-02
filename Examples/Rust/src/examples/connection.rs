@@ -8,7 +8,7 @@ use crate::helpers;
 pub fn run(connection_info: ConnectionInfo) {
 
     // Create connection
-    let mut connection = Connection::new(connection_info);
+    let mut connection = Connection::new(&connection_info);
 
     connection.add_decode_error_closure(Box::new(decode_error_closure));
     connection.add_statistics_closure(Box::new(statistics_closure));

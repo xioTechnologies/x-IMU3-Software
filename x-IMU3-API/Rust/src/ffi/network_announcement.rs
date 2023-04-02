@@ -41,9 +41,9 @@ impl Default for NetworkAnnouncementMessageC {
 impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         NetworkAnnouncementMessageC {
-            device_name: string_to_char_array(message.device_name.clone()),
-            serial_number: string_to_char_array(message.serial_number.clone()),
-            ip_address: string_to_char_array(message.ip_address.to_string()),
+            device_name: str_to_char_array(&message.device_name),
+            serial_number: str_to_char_array(&message.serial_number),
+            ip_address: str_to_char_array(&message.ip_address.to_string()),
             tcp_port: message.tcp_port,
             udp_send: message.udp_send,
             udp_receive: message.udp_receive,
@@ -83,7 +83,7 @@ pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_info(mess
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_message_to_string(message: NetworkAnnouncementMessageC) -> *const c_char {
-    string_to_char_ptr!(NetworkAnnouncementMessage::from(message).to_string())
+    str_to_char_ptr!(&NetworkAnnouncementMessage::from(message).to_string())
 }
 
 #[repr(C)]
