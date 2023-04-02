@@ -165,7 +165,7 @@ impl Connection {
             while SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() < end_time {
                 if let Ok(response) = response_receiver.try_recv() {
                     for index in 0..transactions.len() {
-                        if transactions[index].command.is_some() && response.normalised_key == transactions[index].command.as_ref().unwrap().normalised_key {
+                        if transactions[index].command.is_some() && response.key == transactions[index].command.as_ref().unwrap().key {
                             transactions[index] = Transaction { command: None, response: response.json.clone() };
                         }
                     }
