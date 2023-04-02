@@ -1,4 +1,3 @@
-use regex::Regex;
 use serde_json;
 use crate::decode_error::*;
 
@@ -6,7 +5,7 @@ use crate::decode_error::*;
 pub struct CommandMessage {
     pub json: String,
     pub terminated_json: String,
-    pub normalised_key: String,
+    pub key: String,
 }
 
 impl CommandMessage {
@@ -29,12 +28,9 @@ impl CommandMessage {
 
                         let json = serde_json::to_string(object).unwrap();
                         let terminated_json = format!("{}\r\n", json);
+                        let key = object.keys().nth(0).unwrap().to_owned();
 
-                        let re = Regex::new("[^0-9a-zA-Z]").unwrap();
-                        let key = object.keys().nth(0).unwrap();
-                        let normalised_key = re.replace_all(key, "").to_lowercase().to_owned();
-
-                        Ok(CommandMessage { json, terminated_json, normalised_key })
+                        Ok(CommandMessage { json, terminated_json, key })
                     }
                 }
             }
