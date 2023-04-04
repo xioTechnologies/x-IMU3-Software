@@ -6,7 +6,15 @@ class Connection:
     def __init__(self, connection_info):
         self.__connection = ximu3.Connection(connection_info)
 
-        self.__connection_info_string = connection_info.to_string()
+        if self.__connection.open() != ximu3.RESULT_OK:
+            raise Exception("Unable to open connection " + connection_info.to_string())
+
+        ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
+
+        if not ping_response.interface:
+            raise Exception("Ping failed for " + connection_info.to_string())
+
+        self.__prefix = ping_response.device_name + " - " + ping_response.serial_number
 
         self.__connection.add_inertial_callback(self.__inertial_callback)
         self.__connection.add_magnetometer_callback(self.__magnetometer_callback)
@@ -22,11 +30,6 @@ class Connection:
         self.__connection.add_serial_accessory_callback(self.__serial_accessory_callback)
         self.__connection.add_notification_callback(self.__notification_callback)
         self.__connection.add_error_callback(self.__error_callback)
-
-        if self.__connection.open() != ximu3.RESULT_OK:
-            raise Exception("Unable to open connection " + connection_info.to_string())
-
-        self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
     def close(self):
         self.__connection.close()
@@ -46,51 +49,51 @@ class Connection:
         responses = self.__connection.send_commands([command], 2, 500)
 
         if not responses:
-            raise Exception("Unable to confirm command " + command + " for " + self.__connection_info_string)
+            raise Exception("Unable to confirm command " + command + " for " + self.__connection.get_info().to_string())
         else:
-            print(self.__connection_info_string + " " + responses[0])
+            print(self.__prefix + " " + responses[0])
 
     def __inertial_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __magnetometer_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __quaternion_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __rotation_matrix_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __euler_angles_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __linear_acceleration_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __earth_acceleration_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __high_g_accelerometer_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __temperature_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __battery_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __rssi_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __serial_accessory_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __notification_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
     def __error_callback(self, message):
-        print(self.__connection_info_string + " " + message.to_string())
+        print(self.__prefix + " " + message.to_string())
 
 
 connections = [Connection(m.to_udp_connection_info()) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]
