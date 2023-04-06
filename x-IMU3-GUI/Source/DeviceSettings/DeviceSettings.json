@@ -149,11 +149,6 @@
         "default": "{100}"
     },
     {
-        "name": "Serial accessory transmit enabled",
-        "declaration": "bool name",
-        "default": "{false}"
-    },
-    {
         "name": "Wireless mode",
         "declaration": "WirelessMode name",
         "default": "{WirelessModeWlanAP}"
