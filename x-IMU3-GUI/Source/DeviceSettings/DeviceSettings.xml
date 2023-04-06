@@ -10,13 +10,10 @@
         <Setting key="serialMode" name="Mode" type="SerialMode"/>
         <Setting key="serialBaudRate" name="Baud Rate" type="number" hideKey="serialMode" hideValues="0"/>
         <Setting key="serialRtsCtsEnabled" name="RTS/CTS" type="bool" hideKey="serialMode" hideValues="0"/>
-        <Group name="Serial Accessory" hideKey="serialMode" hideValues="0 1">
-            <Group name="Send Conditions">
-                <Setting key="serialAccessoryNumberOfBytes" name="Number of Bytes" type="number"/>
-                <Setting key="serialAccessoryTerminationByte" name="Termination Byte" type="number"/>
-                <Setting key="serialAccessoryTimeout" name="Timeout (ms)" type="number"/>
-            </Group>
-            <Setting key="serialAccessoryTransmitEnabled" name="Transmit" type="bool"/>
+        <Group name="Accessory Send Conditions" hideKey="serialMode" hideValues="0 1">
+            <Setting key="serialAccessoryNumberOfBytes" name="Number of Bytes" type="number"/>
+            <Setting key="serialAccessoryTerminationByte" name="Termination Byte" type="number"/>
+            <Setting key="serialAccessoryTimeout" name="Timeout (ms)" type="number"/>
         </Group>
     </Group>
     <Group name="Wireless">
