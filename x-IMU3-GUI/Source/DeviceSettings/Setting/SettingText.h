@@ -46,7 +46,7 @@ protected:
 
     void valueChanged() override
     {
-        if (std::abs((int) getValue()) >= 1000) // do not use scientific notation
+        if (getValue().isDouble() && (std::abs((int) getValue()) >= 1000)) // do not use scientific notation
         {
             value.setText(juce::String((int) getValue()), juce::dontSendNotification);
         }
