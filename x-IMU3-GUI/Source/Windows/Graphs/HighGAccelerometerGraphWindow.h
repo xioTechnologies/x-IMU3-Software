@@ -6,7 +6,7 @@
 class HighGAccelerometerGraphWindow : public GraphWindow
 {
 public:
-    HighGAccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    HighGAccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~HighGAccelerometerGraphWindow() override;
 

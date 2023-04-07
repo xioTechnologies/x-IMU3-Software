@@ -6,7 +6,7 @@
 class MagnetometerGraphWindow : public GraphWindow
 {
 public:
-    MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~MagnetometerGraphWindow() override;
 

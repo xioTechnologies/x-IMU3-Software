@@ -6,7 +6,7 @@
 class RssiPowerGraphWindow : public GraphWindow
 {
 public:
-    RssiPowerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    RssiPowerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~RssiPowerGraphWindow() override;
 

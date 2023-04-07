@@ -5,8 +5,8 @@
 
 Graph::Settings RssiPercentageGraphWindow::settings = Graph::Settings(false);
 
-RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Percentage (%)", {{{}, juce::Colours::yellow }}, settings)
+RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Percentage (%)", {{{}, juce::Colours::yellow }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)
     {

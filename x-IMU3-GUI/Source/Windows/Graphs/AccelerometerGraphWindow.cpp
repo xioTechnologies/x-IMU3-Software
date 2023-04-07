@@ -5,10 +5,10 @@
 
 Graph::Settings AccelerometerGraphWindow::settings = Graph::Settings(false);
 
-AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Acceleration (g)", {{ "X", UIColours::graphRed },
-                                                                                         { "Y", UIColours::graphGreen },
-                                                                                         { "Z", UIColours::graphBlue }}, settings)
+AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Acceleration (g)", {{ "X", UIColours::graphRed },
+                                                                                          { "Y", UIColours::graphGreen },
+                                                                                          { "Z", UIColours::graphBlue }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)
     {

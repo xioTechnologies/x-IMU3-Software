@@ -6,7 +6,7 @@
 class ReceivedMessageRateGraphWindow : public GraphWindow
 {
 public:
-    ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~ReceivedMessageRateGraphWindow() override;
 

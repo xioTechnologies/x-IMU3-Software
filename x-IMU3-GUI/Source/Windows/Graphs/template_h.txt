@@ -4,7 +4,7 @@
 class $name$GraphWindow : public GraphWindow
 {
 public:
-    $name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    $name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~$name$GraphWindow() override;
 

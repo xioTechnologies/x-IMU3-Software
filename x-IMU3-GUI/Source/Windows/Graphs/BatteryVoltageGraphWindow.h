@@ -6,7 +6,7 @@
 class BatteryVoltageGraphWindow : public GraphWindow
 {
 public:
-    BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~BatteryVoltageGraphWindow() override;
 
