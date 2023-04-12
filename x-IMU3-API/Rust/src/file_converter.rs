@@ -91,44 +91,44 @@ impl FileConverter {
                 return;
             }
 
-            {
-                let (sender, receiver) = crossbeam::channel::unbounded();
+            let (sender, receiver) = crossbeam::channel::unbounded();
 
-                let mut data_logger = DataLogger::new(&directory, &name, vec!(&mut connection), Box::new(move |result| {
-                    if result.is_err() {
-                        sender.send(result).ok();
-                    }
-                }));
-
-                if receiver.try_recv().is_ok() {
-                    if let Ok(dropped) = dropped.lock() {
-                        if *dropped == false {
-                            closure(progress.clone());
-                        }
-                    }
-                    return;
+            let mut data_logger = DataLogger::new(&directory, &name, vec!(&mut connection), Box::new(move |result| {
+                if result.is_err() {
+                    sender.send(result).ok();
                 }
+            }));
 
-                progress.status = FileConverterStatus::InProgress;
-
-                loop {
-                    progress.bytes_processed = data_logger.connections[0].get_statistics().data_total;
-                    progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
-
-                    if progress.bytes_processed == progress.file_size {
-                        break;
-                    }
-
-                    if let Ok(dropped) = dropped.lock() {
-                        if *dropped {
-                            return;
-                        }
+            if receiver.try_recv().is_ok() {
+                if let Ok(dropped) = dropped.lock() {
+                    if *dropped == false {
                         closure(progress.clone());
                     }
-
-                    std::thread::sleep(std::time::Duration::from_millis(100));
                 }
-            } // drop data_logger
+                return;
+            }
+
+            progress.status = FileConverterStatus::InProgress;
+
+            loop {
+                progress.bytes_processed = data_logger.connections[0].get_statistics().data_total;
+                progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
+
+                if progress.bytes_processed == progress.file_size {
+                    break;
+                }
+
+                if let Ok(dropped) = dropped.lock() {
+                    if *dropped {
+                        return;
+                    }
+                    closure(progress.clone());
+                }
+
+                std::thread::sleep(std::time::Duration::from_millis(100));
+            }
+
+            drop(data_logger);
 
             connection.close();
 
