@@ -84,30 +84,30 @@ impl DataLogger<'_> {
         let in_progress = data_logger.in_progress.clone();
 
         std::thread::spawn(move || {
-            {
-                let mut files: HashMap<String, File> = HashMap::new();
+            let mut files: HashMap<String, File> = HashMap::new();
 
-                loop {
-                    match receiver.recv() {
-                        Ok((path, preamble, line)) => {
-                            if let Some(mut file) = files.get(&path) {
-                                if path.contains(COMMAND_FILE_NAME) {
-                                    file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
-                                    file.write_all(",\n".as_bytes()).ok();
-                                }
+            loop {
+                match receiver.recv() {
+                    Ok((path, preamble, line)) => {
+                        if let Some(mut file) = files.get(&path) {
+                            if path.contains(COMMAND_FILE_NAME) {
+                                file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
+                                file.write_all(",\n".as_bytes()).ok();
+                            }
+                            file.write_all(line.as_bytes()).ok();
+                        } else {
+                            if let Ok(mut file) = File::create(&path) {
+                                file.write_all(preamble.as_bytes()).ok();
                                 file.write_all(line.as_bytes()).ok();
-                            } else {
-                                if let Ok(mut file) = File::create(&path) {
-                                    file.write_all(preamble.as_bytes()).ok();
-                                    file.write_all(line.as_bytes()).ok();
-                                    files.insert(path, file);
-                                }
+                                files.insert(path, file);
                             }
                         }
-                        Err(_) => break,
                     }
+                    Err(_) => break,
                 }
-            } // drop files
+            }
+
+            drop(files);
 
             // Rename connection directories
             for path in &paths {
