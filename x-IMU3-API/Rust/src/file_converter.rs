@@ -82,15 +82,6 @@ impl FileConverter {
         let dropped = file_converter.dropped.clone();
 
         std::thread::spawn(move || {
-            if let Err(_) = connection.open() {
-                if let Ok(dropped) = dropped.lock() {
-                    if *dropped == false {
-                        closure(progress.clone());
-                    }
-                }
-                return;
-            }
-
             let (sender, receiver) = crossbeam::channel::unbounded();
 
             let data_logger = DataLogger::new(&directory, &name, vec!(&connection), Box::new(move |result| {
@@ -100,6 +91,15 @@ impl FileConverter {
             }));
 
             if receiver.try_recv().is_ok() {
+                if let Ok(dropped) = dropped.lock() {
+                    if *dropped == false {
+                        closure(progress.clone());
+                    }
+                }
+                return;
+            }
+
+            if let Err(_) = connection.open() {
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped == false {
                         closure(progress.clone());
