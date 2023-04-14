@@ -12,6 +12,7 @@ pub struct DataLogger<'a> {
     pub(crate) connections: Vec<&'a mut Connection>,
     closure_ids: Vec<Vec<u64>>,
     in_progress: Arc<Mutex<bool>>,
+    pub(crate) end_of_file: Arc<Mutex<bool>>,
 }
 
 impl DataLogger<'_> {
@@ -22,6 +23,7 @@ impl DataLogger<'_> {
             connections,
             closure_ids: Vec::new(),
             in_progress: Arc::new(Mutex::new(false)),
+            end_of_file: Arc::new(Mutex::new(false)),
         };
 
         // Create root directory
@@ -77,11 +79,18 @@ impl DataLogger<'_> {
             data_logger.closure_ids[index].push(connection.add_data_closure(Box::new(move |message| {
                 sender_clone.send((Path::new(&path_clone).join(message.get_csv_file_name()).to_str().unwrap().to_owned(), message.get_csv_headings(), message.to_csv_row())).ok();
             })));
+
+            let sender_clone = sender.clone();
+
+            data_logger.closure_ids[index].push(connection.add_end_of_file_closure(Box::new(move || {
+                sender_clone.send(("".to_string(), "", "".to_string())).ok();
+            })));
         }
 
         // Spawn thread
         *data_logger.in_progress.lock().unwrap() = true;
         let in_progress = data_logger.in_progress.clone();
+        let end_of_file = data_logger.end_of_file.clone();
 
         std::thread::spawn(move || {
             let mut files: HashMap<String, File> = HashMap::new();
@@ -89,6 +98,9 @@ impl DataLogger<'_> {
             loop {
                 match receiver.recv() {
                     Ok((path, preamble, line)) => {
+                        if path.is_empty() {
+                            *end_of_file.lock().unwrap() = true;
+                        }
                         if let Some(mut file) = files.get(&path) {
                             if path.contains(COMMAND_FILE_NAME) {
                                 file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
