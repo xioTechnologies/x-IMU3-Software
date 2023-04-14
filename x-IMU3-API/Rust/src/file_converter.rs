@@ -114,7 +114,7 @@ impl FileConverter {
                 progress.bytes_processed = data_logger.connections[0].get_statistics().data_total;
                 progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
 
-                if progress.bytes_processed == progress.file_size {
+                if *data_logger.end_of_file.lock().unwrap() {
                     break;
                 }
 

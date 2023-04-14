@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex};
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::decoder::*;
+use crate::dispatcher::*;
 
 pub struct FileConnection {
     connection_info: FileConnectionInfo,
@@ -44,6 +45,10 @@ impl GenericConnection for FileConnection {
             while let Err(_) = close_receiver.try_recv() {
                 if read_enabled {
                     if let Ok(number_of_bytes) = file.read(&mut buffer) {
+                        if number_of_bytes == 0 {
+                            decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::EndOfFile()).ok();
+                            break;
+                        }
                         decoder.lock().unwrap().process_received_data(&buffer.as_mut_slice()[..number_of_bytes]);
                     }
                 }
