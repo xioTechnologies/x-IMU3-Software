@@ -77,7 +77,7 @@ impl FileConverter {
 
         let directory = destination.to_owned();
         let name = name.unwrap().to_str().unwrap().to_owned();
-        let mut connection = Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: source.to_owned() }));
+        let connection = Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: source.to_owned() }));
 
         let dropped = file_converter.dropped.clone();
 
@@ -93,7 +93,7 @@ impl FileConverter {
 
             let (sender, receiver) = crossbeam::channel::unbounded();
 
-            let mut data_logger = DataLogger::new(&directory, &name, vec!(&mut connection), Box::new(move |result| {
+            let data_logger = DataLogger::new(&directory, &name, vec!(&connection), Box::new(move |result| {
                 if result.is_err() {
                     sender.send(result).ok();
                 }
@@ -111,7 +111,7 @@ impl FileConverter {
             progress.status = FileConverterStatus::InProgress;
 
             loop {
-                progress.bytes_processed = data_logger.connections[0].get_statistics().data_total;
+                progress.bytes_processed = connection.get_statistics().data_total;
                 progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
 
                 if *data_logger.end_of_file.lock().unwrap() {

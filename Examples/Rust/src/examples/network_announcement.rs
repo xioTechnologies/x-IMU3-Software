@@ -2,7 +2,7 @@ use ximu3::network_announcement::*;
 use crate::helpers;
 
 pub fn run() {
-    let mut network_announcement = NetworkAnnouncement::new();
+    let network_announcement = NetworkAnnouncement::new();
 
     if helpers::yes_or_no("Use async implementation?") {
         network_announcement.add_closure(Box::new(|message| {

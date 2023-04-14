@@ -118,7 +118,7 @@ pub extern "C" fn XIMU3_port_scanner_free(port_scanner: *mut PortScanner) {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_get_devices(port_scanner: *mut PortScanner) -> Devices {
-    let port_scanner: &mut PortScanner = unsafe { &mut *port_scanner };
+    let port_scanner: &PortScanner = unsafe { &*port_scanner };
     port_scanner.get_devices().into()
 }
 

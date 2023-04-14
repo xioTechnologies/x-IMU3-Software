@@ -26,19 +26,19 @@ impl GenericConnection for BluetoothConnection {
         self.serial_connection.open()
     }
 
-    fn close(&mut self) {
+    fn close(&self) {
         self.serial_connection.close();
     }
 
-    fn get_info(&mut self) -> ConnectionInfo {
+    fn get_info(&self) -> ConnectionInfo {
         ConnectionInfo::BluetoothConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&mut self) -> Arc<Mutex<Decoder>> {
+    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
         self.serial_connection.get_decoder()
     }
 
-    fn get_write_sender(&mut self) -> Option<Sender<String>> {
+    fn get_write_sender(&self) -> Option<Sender<String>> {
         self.serial_connection.get_write_sender()
     }
 }

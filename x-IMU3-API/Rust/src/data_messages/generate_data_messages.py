@@ -200,7 +200,7 @@ insert(file_path, template, 1)
 # Insert code into x-IMU3-API/Rust/src/connection.rs
 template = "\
 \n\
-    pub fn add_$name_snake_case$_closure(&mut self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
+    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)\n\
     }\n"
 
@@ -211,7 +211,7 @@ template = "\
 \n\
 #[no_mangle]\n\
 pub extern \"C\" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {\n\
-    let connection: &mut Connection = unsafe { &mut *connection };\n\
+    let connection: &Connection = unsafe { &*connection };\n\
     let void_ptr = VoidPtr(context);\n\
     connection.add_$name_snake_case$_closure(Box::new(move |message: $name_pascal_case$Message| callback(message, void_ptr.0)))\n\
 }\n"
@@ -252,7 +252,7 @@ insert(file_path, template, 4)
 
 template = "\
 \n\
-    pub fn add_$name_snake_case$_closure(&mut self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
+    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
         let id = self.get_closure_id();\n\
         self.$name_snake_case$_closures.lock().unwrap().push((closure, id));\n\
         id\n\

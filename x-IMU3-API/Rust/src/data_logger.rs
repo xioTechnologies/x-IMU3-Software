@@ -9,14 +9,14 @@ use crate::connection::*;
 use crate::ping_response::*;
 
 pub struct DataLogger<'a> {
-    pub(crate) connections: Vec<&'a mut Connection>,
+    connections: Vec<&'a Connection>,
     closure_ids: Vec<Vec<u64>>,
     in_progress: Arc<Mutex<bool>>,
     pub(crate) end_of_file: Arc<Mutex<bool>>,
 }
 
 impl DataLogger<'_> {
-    pub fn new<'a>(directory: &str, name: &str, connections: Vec<&'a mut Connection>, closure: Box<dyn FnOnce(Result<(), ()>) + Send>) -> DataLogger<'a> {
+    pub fn new<'a>(directory: &str, name: &str, connections: Vec<&'a Connection>, closure: Box<dyn FnOnce(Result<(), ()>) + Send>) -> DataLogger<'a> {
 
         // Initialise structure
         let mut data_logger = DataLogger {
@@ -148,7 +148,7 @@ impl DataLogger<'_> {
         data_logger
     }
 
-    pub fn log(directory: &str, name: &str, connections: Vec<&mut Connection>, seconds: u32) -> Result<(), ()> {
+    pub fn log(directory: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> Result<(), ()> {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
         let data_logger = DataLogger::new(directory, name, connections, Box::new(move |result| {

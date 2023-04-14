@@ -58,7 +58,7 @@ impl Decoder {
         }
     }
 
-    fn process_command_message(&mut self) -> Result<(), DecodeError> {
+    fn process_command_message(&self) -> Result<(), DecodeError> {
         let command = CommandMessage::parse_bytes(&self.buffer[..self.buffer_index])?;
         self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
         Ok(())

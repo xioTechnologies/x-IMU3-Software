@@ -5,8 +5,8 @@ use crate::decoder::*;
 
 pub trait GenericConnection {
     fn open(&mut self) -> std::io::Result<()>;
-    fn close(&mut self);
-    fn get_info(&mut self) -> ConnectionInfo;
-    fn get_decoder(&mut self) -> Arc<Mutex<Decoder>>;
-    fn get_write_sender(&mut self) -> Option<Sender<String>>;
+    fn close(&self);
+    fn get_info(&self) -> ConnectionInfo;
+    fn get_decoder(&self) -> Arc<Mutex<Decoder>>;
+    fn get_write_sender(&self) -> Option<Sender<String>>;
 }
