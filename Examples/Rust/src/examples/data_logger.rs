@@ -36,7 +36,7 @@ pub fn run() {
     }
 
     // Close all connections
-    for connection in connections.iter_mut() {
+    for connection in connections.iter() {
         connection.close();
     }
 }
