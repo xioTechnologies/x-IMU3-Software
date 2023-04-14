@@ -56,7 +56,7 @@ impl DataLogger<'_> {
         let (sender, receiver) = crossbeam::channel::unbounded();
         const COMMAND_FILE_NAME: &str = "Command.json";
 
-        for (index, connection) in data_logger.connections.iter_mut().enumerate() {
+        for (index, connection) in data_logger.connections.iter().enumerate() {
             data_logger.closure_ids.push(Vec::new());
 
             let sender_clone = sender.clone();
@@ -141,7 +141,7 @@ impl DataLogger<'_> {
         });
 
         // Send commands
-        for connection in data_logger.connections.iter_mut() {
+        for connection in data_logger.connections.iter() {
             connection.send_commands_async(vec!["{\"ping\":null}", "{\"time\":null}"], 4, 200, Box::new(|_| {}));
         }
 
@@ -166,7 +166,7 @@ impl DataLogger<'_> {
 impl Drop for DataLogger<'_> {
     fn drop(&mut self) {
         if self.closure_ids.len() > 0 {
-            for (index, connection) in self.connections.iter_mut().enumerate() {
+            for (index, connection) in self.connections.iter().enumerate() {
                 for closure_id in self.closure_ids[index].iter() {
                     connection.remove_closure(*closure_id);
                 }

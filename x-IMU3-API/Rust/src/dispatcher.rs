@@ -322,7 +322,7 @@ impl Dispatcher {
         self.end_of_file_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
     }
 
-    pub fn add_end_of_file_closure(&mut self, closure: Box<dyn Fn() + Send>) -> u64 {
+    pub fn add_end_of_file_closure(&self, closure: Box<dyn Fn() + Send>) -> u64 {
         let id = self.get_closure_id();
         self.end_of_file_closures.lock().unwrap().push((closure, id));
         id
