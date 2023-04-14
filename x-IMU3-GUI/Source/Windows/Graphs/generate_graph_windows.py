@@ -24,8 +24,8 @@ windows = [
         horizontal_autoscale="false",
         y_axis="Angular velocity (\" + degreeSymbol + \"/s)",
         legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                                                  { \"Y\", UIColours::graphGreen },\n\
-                                                                                                                  { \"Z\", UIColours::graphBlue }}",
+                                                                                                                   { \"Y\", UIColours::graphGreen },\n\
+                                                                                                                   { \"Z\", UIColours::graphBlue }}",
         callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
@@ -37,8 +37,8 @@ windows = [
            horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                         { \"Y\", UIColours::graphGreen },\n\
-                                                                                         { \"Z\", UIColours::graphBlue }}",
+                                                                                          { \"Y\", UIColours::graphGreen },\n\
+                                                                                          { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
@@ -50,8 +50,8 @@ windows = [
            horizontal_autoscale="false",
            y_axis="Intensity (a.u.)",
            legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                         { \"Y\", UIColours::graphGreen },\n\
-                                                                                         { \"Z\", UIColours::graphBlue }}",
+                                                                                          { \"Y\", UIColours::graphGreen },\n\
+                                                                                          { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
     {\n\
@@ -69,8 +69,8 @@ windows = [
         horizontal_autoscale="false",
         y_axis="Angle (\" + degreeSymbol + \")",
         legend="{{ \"Roll\",  UIColours::graphRed },\n\
-                                                                                                     { \"Pitch\", UIColours::graphGreen },\n\
-                                                                                                     { \"Yaw\",   UIColours::graphBlue }}",
+                                                                                                      { \"Pitch\", UIColours::graphGreen },\n\
+                                                                                                      { \"Yaw\",   UIColours::graphBlue }}",
         callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
@@ -109,8 +109,8 @@ windows = [
            horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                         { \"Y\", UIColours::graphGreen },\n\
-                                                                                         { \"Z\", UIColours::graphBlue }}",
+                                                                                          { \"Y\", UIColours::graphGreen },\n\
+                                                                                          { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
@@ -122,8 +122,8 @@ windows = [
            horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                         { \"Y\", UIColours::graphGreen },\n\
-                                                                                         { \"Z\", UIColours::graphBlue }}",
+                                                                                          { \"Y\", UIColours::graphGreen },\n\
+                                                                                          { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
@@ -135,8 +135,8 @@ windows = [
            horizontal_autoscale="false",
            y_axis="Acceleration (g)",
            legend="{{ \"X\", UIColours::graphRed },\n\
-                                                                                         { \"Y\", UIColours::graphGreen },\n\
-                                                                                         { \"Z\", UIColours::graphBlue }}",
+                                                                                          { \"Y\", UIColours::graphGreen },\n\
+                                                                                          { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection().addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
     {\n\

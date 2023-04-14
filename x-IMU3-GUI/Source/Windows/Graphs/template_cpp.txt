@@ -3,8 +3,8 @@
 
 Graph::Settings $name$GraphWindow::settings = Graph::Settings($horizontal_autoscale$);
 
-$name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "$y_axis$", $legend$, settings)
+$name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "$y_axis$", $legend$, settings)
 {
 $callback_implementations$
 }

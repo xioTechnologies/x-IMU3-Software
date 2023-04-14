@@ -6,7 +6,7 @@
 class AccelerometerGraphWindow : public GraphWindow
 {
 public:
-    AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~AccelerometerGraphWindow() override;
 

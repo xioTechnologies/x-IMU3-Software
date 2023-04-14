@@ -6,7 +6,7 @@
 class BatteryPercentageGraphWindow : public GraphWindow
 {
 public:
-    BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~BatteryPercentageGraphWindow() override;
 

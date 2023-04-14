@@ -6,7 +6,7 @@
 class LinearAccelerationGraphWindow : public GraphWindow
 {
 public:
-    LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
     ~LinearAccelerationGraphWindow() override;
 

@@ -5,8 +5,8 @@
 
 Graph::Settings TemperatureGraphWindow::settings = Graph::Settings(true);
 
-TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }}, settings)
+TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addTemperatureCallback(temperatureCallback = [&](auto message)
     {

@@ -5,10 +5,10 @@
 
 Graph::Settings EulerAnglesGraphWindow::settings = Graph::Settings(false);
 
-EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type, devicePanel_, glRenderer, "Angle (" + degreeSymbol + ")", {{ "Roll",  UIColours::graphRed },
-                                                                                                     { "Pitch", UIColours::graphGreen },
-                                                                                                     { "Yaw",   UIColours::graphBlue }}, settings)
+EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Angle (" + degreeSymbol + ")", {{ "Roll",  UIColours::graphRed },
+                                                                                                      { "Pitch", UIColours::graphGreen },
+                                                                                                      { "Yaw",   UIColours::graphBlue }}, settings)
 {
     callbackIDs.push_back(devicePanel.getConnection().addQuaternionCallback(quaternionCallback = [&](auto message)
     {
