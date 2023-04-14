@@ -7,7 +7,7 @@ DefaultDirName={autopf64}\x-IMU3 GUI
 DefaultGroupName=x-IMU3 GUI
 DisableProgramGroupPage=yes
 OutputDir=cmake-build-release\x-IMU3-GUI\x-IMU3-GUI_artefacts\Release\
-OutputBaseFilename=x-IMU3 GUI-Setup
+OutputBaseFilename=x-IMU3-GUI-Setup
 UninstallDisplayIcon={app}\x-IMU3 GUI.exe
 WizardStyle=modern
 
