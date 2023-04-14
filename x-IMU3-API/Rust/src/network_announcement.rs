@@ -4,6 +4,7 @@ use std::fmt;
 use std::net::{Ipv4Addr, UdpSocket};
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 use crate::charging_status::*;
 use crate::connection_info::*;
@@ -69,7 +70,7 @@ impl PartialEq for NetworkAnnouncementMessage {
 
 pub struct NetworkAnnouncement {
     dropped: Arc<Mutex<bool>>,
-    closure_counter: u64,
+    closure_counter: AtomicU64,
     closures: Arc<Mutex<Vec<(Box<dyn Fn(NetworkAnnouncementMessage) + Send>, u64)>>>,
     messages: Arc<Mutex<Vec<NetworkAnnouncementMessage>>>,
 }
@@ -78,7 +79,7 @@ impl NetworkAnnouncement {
     pub fn new() -> NetworkAnnouncement {
         let network_announcement = NetworkAnnouncement {
             dropped: Arc::new(Mutex::new(false)),
-            closure_counter: 0,
+            closure_counter: AtomicU64::new(0),
             closures: Arc::new(Mutex::new(Vec::new())),
             messages: Arc::new(Mutex::new(Vec::new())),
         };
@@ -163,22 +164,21 @@ impl NetworkAnnouncement {
         None
     }
 
-    pub fn add_closure(&mut self, closure: Box<dyn Fn(NetworkAnnouncementMessage) + Send>) -> u64 {
-        let id = self.closure_counter;
-        self.closure_counter += 1;
+    pub fn add_closure(&self, closure: Box<dyn Fn(NetworkAnnouncementMessage) + Send>) -> u64 {
+        let id = self.closure_counter.fetch_add(1, Ordering::SeqCst);
         self.closures.lock().unwrap().push((closure, id));
         id
     }
 
-    pub fn remove_closure(&mut self, closure_id: u64) {
+    pub fn remove_closure(&self, closure_id: u64) {
         self.closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
     }
 
-    pub fn get_messages(&mut self) -> Vec<NetworkAnnouncementMessage> {
+    pub fn get_messages(&self) -> Vec<NetworkAnnouncementMessage> {
         (*self.messages.lock().unwrap()).clone()
     }
 
-    pub fn get_messages_after_short_delay(&mut self) -> Vec<NetworkAnnouncementMessage> {
+    pub fn get_messages_after_short_delay(&self) -> Vec<NetworkAnnouncementMessage> {
         std::thread::sleep(std::time::Duration::from_secs(2));
         self.get_messages()
     }

@@ -56,21 +56,21 @@ impl GenericConnection for SerialConnection {
         Ok(())
     }
 
-    fn close(&mut self) {
+    fn close(&self) {
         if let Some(close_sender) = &self.close_sender {
             close_sender.send(()).ok();
         }
     }
 
-    fn get_info(&mut self) -> ConnectionInfo {
+    fn get_info(&self) -> ConnectionInfo {
         ConnectionInfo::SerialConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&mut self) -> Arc<Mutex<Decoder>> {
+    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
         self.decoder.clone()
     }
 
-    fn get_write_sender(&mut self) -> Option<Sender<String>> {
+    fn get_write_sender(&self) -> Option<Sender<String>> {
         self.write_sender.clone()
     }
 }

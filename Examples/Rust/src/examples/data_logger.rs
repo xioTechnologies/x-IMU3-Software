@@ -12,7 +12,7 @@ pub fn run() {
     for device in PortScanner::scan_filter(ConnectionType::Usb) {
         println!("{}", device);
 
-        let mut connection = Connection::new(&device.connection_info);
+        let connection = Connection::new(&device.connection_info);
 
         if connection.open().is_ok() {
             connections.push(connection);
@@ -26,13 +26,13 @@ pub fn run() {
     let name = "Data Logger Example";
 
     if helpers::yes_or_no("Use async implementation?") {
-        let _data_logger = DataLogger::new(directory, name, connections.iter_mut().collect(), Box::new(|result| {
+        let _data_logger = DataLogger::new(directory, name, connections.iter().collect(), Box::new(|result| {
             print_result(result);
         }));
 
         std::thread::sleep(std::time::Duration::from_secs(3));
     } else {
-        print_result(DataLogger::log(directory, name, connections.iter_mut().collect(), 3));
+        print_result(DataLogger::log(directory, name, connections.iter().collect(), 3));
     }
 
     // Close all connections

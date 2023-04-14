@@ -31,11 +31,11 @@ pub extern "C" fn XIMU3_data_logger_log(directory: *const c_char, name: *const c
     }
 }
 
-pub fn connection_array_to_vec(connections: *const *mut Connection, length: u32) -> Vec<&'static mut Connection> {
+pub fn connection_array_to_vec(connections: *const *mut Connection, length: u32) -> Vec<&'static Connection> {
     let mut vec_connections = Vec::new();
 
     for index in 0..length {
-        let connection = unsafe { &mut **connections.offset(index as isize) };
+        let connection = unsafe { &**connections.offset(index as isize) };
         vec_connections.push(connection);
     }
     vec_connections
