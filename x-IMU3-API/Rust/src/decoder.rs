@@ -23,10 +23,10 @@ impl Decoder {
         }
     }
 
-    pub fn process_received_data(&mut self, data: &[u8]) {
-        self.statistics.data_total += data.len() as u64;
+    pub fn process_bytes(&mut self, bytes: &[u8]) {
+        self.statistics.data_total += bytes.len() as u64;
 
-        for byte in data {
+        for byte in bytes {
             self.buffer[self.buffer_index] = *byte;
 
             self.buffer_index += 1;

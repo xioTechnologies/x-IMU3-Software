@@ -42,7 +42,7 @@ impl GenericConnection for FileConnection {
                         decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::EndOfFile()).ok();
                         break;
                     }
-                    decoder.lock().unwrap().process_received_data(&buffer.as_mut_slice()[..number_of_bytes]);
+                    decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
             }
         });

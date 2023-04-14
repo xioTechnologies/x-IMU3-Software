@@ -45,7 +45,7 @@ impl GenericConnection for SerialConnection {
 
             while let Err(_) = close_receiver.try_recv() {
                 if let Ok(number_of_bytes) = serial_port.read(buffer.as_mut_slice()) {
-                    decoder.lock().unwrap().process_received_data(&buffer.as_mut_slice()[..number_of_bytes]);
+                    decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
                 while let Some(terminated_json) = write_receiver.try_recv().iter().next() {
                     serial_port.write(terminated_json.as_bytes()).ok();
