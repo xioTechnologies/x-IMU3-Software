@@ -14,7 +14,7 @@ public:
         const auto destination = "C:/";
         const auto source = "C:/file.ximu3";
 
-        if (helpers::yesOrNo("Use async implementation?") == true)
+        if (helpers::question("Use async implementation?"))
         {
             ximu3::FileConverter fileConverter(destination, source, callback);
             std::this_thread::sleep_for(std::chrono::seconds(60));

@@ -5,7 +5,7 @@
 
 void TcpConnection()
 {
-    if (YesOrNo("Search for connections?") == true)
+    if (Question("Search for connections?"))
     {
         printf("Searching for connections\n");
         XIMU3_NetworkAnnouncement* const network_announcement = XIMU3_network_announcement_new();

@@ -23,7 +23,7 @@ protected:
         ximu3::Connection connection(connectionInfo);
         connection.addDecodeErrorCallback(decodeErrorCallback);
         connection.addStatisticsCallback(statisticsCallback);
-        if (helpers::yesOrNo("Print data messages?") == true)
+        if (helpers::question("Print data messages?"))
         {
             connection.addInertialCallback(inertialCallback);
             connection.addMagnetometerCallback(magnetometerCallback);
