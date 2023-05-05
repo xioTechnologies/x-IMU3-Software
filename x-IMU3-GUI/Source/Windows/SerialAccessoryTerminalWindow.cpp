@@ -158,7 +158,7 @@ void SerialAccessoryTerminalWindow::loadSendHistory()
         sendValue.addItem(send.getProperty("send"), sendValue.getNumItems() + 1);
     }
 
-    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello, World!", juce::dontSendNotification);
+    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello World!", juce::dontSendNotification);
 }
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
