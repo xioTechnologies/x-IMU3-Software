@@ -18,7 +18,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
     if (!commandHistory.isValid())
     {
         commandHistory = juce::ValueTree("CommandHistory");
-        commandHistory.appendChild({ "Command", {{ "key", "note" }, { "type", static_cast<int>(Type::string) }, { "value", "Hello, World!" }}}, nullptr);
+        commandHistory.appendChild({ "Command", {{ "key", "note" }, { "type", static_cast<int>(Type::string) }, { "value", "Hello World!" }}}, nullptr);
     }
 
     typeValue.addItemList({ toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null) }, 1);
