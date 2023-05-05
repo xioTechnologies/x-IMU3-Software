@@ -15,7 +15,7 @@ namespace Ximu3Examples
             Console.WriteLine("D. FileConverter");
             Console.WriteLine("E. GetPortNames");
             Console.WriteLine("F. NetworkAnnouncement");
-            Console.WriteLine("G. OpenAndPing");
+            Console.WriteLine("G. Ping");
             Console.WriteLine("H. PortScanner");
             Console.WriteLine("I. SerialConnection");
             Console.WriteLine("J. TcpConnection");
@@ -42,7 +42,7 @@ namespace Ximu3Examples
                     new NetworkAnnouncement();
                     break;
                 case 'G':
-                    new OpenAndPing();
+                    new Ping();
                     break;
                 case 'H':
                     new PortScanner();

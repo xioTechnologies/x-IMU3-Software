@@ -7,7 +7,7 @@ pub mod data_logger;
 pub mod file_converter;
 pub mod get_port_names;
 pub mod network_announcement;
-pub mod open_and_ping;
+pub mod ping;
 pub mod port_scanner;
 pub mod serial_connection;
 pub mod tcp_connection;

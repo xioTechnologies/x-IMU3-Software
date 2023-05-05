@@ -6,10 +6,10 @@
 #include <memory>
 #include <thread>
 
-class OpenAndPing
+class Ping
 {
 public:
-    OpenAndPing()
+    Ping()
     {
         // Create connection info
         const ximu3::UsbConnectionInfo connectionInfo("COM1");

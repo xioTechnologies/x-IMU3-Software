@@ -6,7 +6,7 @@
 #include "Examples/FileConverter.h"
 #include "Examples/GetPortNames.h"
 #include "Examples/NetworkAnnouncement.h"
-#include "Examples/OpenAndPing.h"
+#include "Examples/Ping.h"
 #include "Examples/PortScanner.h"
 #include "Examples/SerialConnection.h"
 #include "Examples/TcpConnection.h"
@@ -25,7 +25,7 @@ int main(int argc, const char* argv[])
     std::cout << "D. FileConverter.h" << std::endl;
     std::cout << "E. GetPortNames.h" << std::endl;
     std::cout << "F. NetworkAnnouncement.h" << std::endl;
-    std::cout << "G. OpenAndPing.h" << std::endl;
+    std::cout << "G. Ping.h" << std::endl;
     std::cout << "H. PortScanner.h" << std::endl;
     std::cout << "I. SerialConnection.h" << std::endl;
     std::cout << "J. TcpConnection.h" << std::endl;
@@ -52,7 +52,7 @@ int main(int argc, const char* argv[])
             NetworkAnnouncement();
             break;
         case 'G':
-            OpenAndPing();
+            Ping();
             break;
         case 'H':
             PortScanner();
