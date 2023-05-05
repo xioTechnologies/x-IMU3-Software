@@ -5,7 +5,7 @@ pub fn run() {
     let destination = "C:/";
     let source = "C:/file.ximu3";
 
-    if helpers::yes_or_no("Use async implementation?") {
+    if helpers::ask_question("Use async implementation?") {
         let _file_converter = FileConverter::new(destination, source, Box::new(|progress| {
             print_progress(progress);
         }));

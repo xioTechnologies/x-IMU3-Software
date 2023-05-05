@@ -5,7 +5,7 @@
 
 void SerialConnection()
 {
-    if (YesOrNo("Search for connections?") == true)
+    if (AskQuestion("Search for connections?"))
     {
         printf("Searching for connections\n");
         const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeSerial);

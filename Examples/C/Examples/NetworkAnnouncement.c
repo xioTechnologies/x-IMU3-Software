@@ -11,7 +11,7 @@ void NetworkAnnouncement()
 {
     XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
 
-    if (YesOrNo("Use async implementation?") == true)
+    if (AskQuestion("Use async implementation?"))
     {
         XIMU3_network_announcement_add_callback(networkAnnouncement, Callback, NULL);
         Wait(60);

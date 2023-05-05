@@ -5,7 +5,7 @@ class UsbConnection : public Connection
 public:
     UsbConnection()
     {
-        if (helpers::yesOrNo("Search for connections?") == true)
+        if (helpers::askQuestion("Search for connections?"))
         {
             std::cout << "Searching for connections" << std::endl;
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);

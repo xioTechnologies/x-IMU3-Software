@@ -9,7 +9,7 @@ namespace Ximu3Examples
             string destination = "C:/";
             string source = "C:/file.ximu3";
 
-            if (Helpers.YesOrNo("Use async implementation?") == true)
+            if (Helpers.AskQuestion("Use async implementation?"))
             {
                 Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, source, FileConverterEvent);
                 System.Threading.Thread.Sleep(60000);

@@ -36,7 +36,7 @@ namespace Ximu3Examples
             };
 
             // Send commands
-            if (Helpers.YesOrNo("Use async implementation?") == true)
+            if (Helpers.AskQuestion("Use async implementation?"))
             {
                 connection.SendCommandsAsync(commands, 2, 500, SendCommandsEvent);
                 System.Threading.Thread.Sleep(3000);

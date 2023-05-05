@@ -44,7 +44,7 @@ pub struct SerialConnectionInfo {
 
 impl fmt::Display for SerialConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let enabled_disabled = if self.rts_cts_enabled == true { "Enabled" } else { "Disabled" };
+        let enabled_disabled = if self.rts_cts_enabled { "Enabled" } else { "Disabled" };
         write!(formatter, "Serial - {}, {}, RTS/CTS {}", self.port_name, self.baud_rate, enabled_disabled)
     }
 }

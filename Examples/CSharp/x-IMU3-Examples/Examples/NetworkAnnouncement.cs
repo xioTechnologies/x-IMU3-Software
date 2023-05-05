@@ -8,7 +8,7 @@ namespace Ximu3Examples
         {
             Ximu3.NetworkAnnouncement networkAnnouncement = new Ximu3.NetworkAnnouncement();
 
-            if (Helpers.YesOrNo("Use async implementation?") == true)
+            if (Helpers.AskQuestion("Use async implementation?"))
             {
                 networkAnnouncement.NetworkAnnouncementEvent += NetworkAnnouncementEvent;
                 System.Threading.Thread.Sleep(60000);

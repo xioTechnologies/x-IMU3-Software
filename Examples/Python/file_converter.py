@@ -18,7 +18,7 @@ def callback(progress):
 destination = "C:/"
 source = "C:/file.ximu3"
 
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     _ = ximu3.FileConverter(destination, source, callback)
     time.sleep(60)
 else:

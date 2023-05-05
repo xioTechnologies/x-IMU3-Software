@@ -11,7 +11,7 @@ namespace Ximu3Examples
 
             connection.DecodeErrorEvent += this.DecodeErrorEvent;
             connection.StatisticsEvent += this.StatisticsEvent;
-            if (Helpers.YesOrNo("Print data messages?") == true)
+            if (Helpers.AskQuestion("Print data messages?"))
             {
                 connection.InertialEvent += this.InertialEvent;
                 connection.MagnetometerEvent += this.MagnetometerEvent;

@@ -6,7 +6,7 @@ namespace Ximu3Examples
     {
         public TcpConnection()
         {
-            if (Helpers.YesOrNo("Search for connections?") == true)
+            if (Helpers.AskQuestion("Search for connections?"))
             {
                 Console.WriteLine("Searching for connections");
                 Ximu3.NetworkAnnouncementMessage[] messages = new Ximu3.NetworkAnnouncement().GetMessagesAfterShortDelay();

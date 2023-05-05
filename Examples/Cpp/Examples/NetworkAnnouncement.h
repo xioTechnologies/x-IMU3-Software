@@ -11,7 +11,7 @@ public:
     {
         ximu3::NetworkAnnouncement networkAnnouncement;
 
-        if (helpers::yesOrNo("Use async implementation?") == true)
+        if (helpers::askQuestion("Use async implementation?"))
         {
             networkAnnouncement.addCallback(callback);
             std::this_thread::sleep_for(std::chrono::seconds(60));

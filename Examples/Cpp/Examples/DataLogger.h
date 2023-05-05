@@ -30,7 +30,7 @@ public:
         // Log data
         const auto directory = "C:/";
         const auto name = "Data Logger Example";
-        if (helpers::yesOrNo("Use async implementation?") == true)
+        if (helpers::askQuestion("Use async implementation?"))
         {
             auto dataLogger = ximu3::DataLogger(directory, name, toRawPointers(connections), callback);
             std::this_thread::sleep_for(std::chrono::seconds(3));

@@ -25,7 +25,7 @@ for device in devices:
 directory = "C:/"
 name = "Data Logger Example"
 
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     data_logger = ximu3.DataLogger(directory, name, connections, callback)
     time.sleep(3)
     del data_logger

@@ -25,7 +25,7 @@ pub fn run() {
     let directory = "C:/";
     let name = "Data Logger Example";
 
-    if helpers::yes_or_no("Use async implementation?") {
+    if helpers::ask_question("Use async implementation?") {
         let _data_logger = DataLogger::new(directory, name, connections.iter().collect(), Box::new(|result| {
             print_result(result);
         }));

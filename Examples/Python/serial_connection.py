@@ -2,7 +2,7 @@ import connection
 import helpers
 import ximu3
 
-if helpers.yes_or_no("Search for connections?"):
+if helpers.ask_question("Search for connections?"):
     print("Searching for connections")
 
     devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_SERIAL)

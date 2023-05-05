@@ -19,7 +19,7 @@ static char GetKey()
     return toupper(string[0]);
 }
 
-static bool YesOrNo(const char* question)
+static bool AskQuestion(const char* question)
 {
     while (true)
     {

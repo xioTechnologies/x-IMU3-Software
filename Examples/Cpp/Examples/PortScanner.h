@@ -9,7 +9,7 @@ class PortScanner
 public:
     PortScanner()
     {
-        if (helpers::yesOrNo("Use async implementation?") == true)
+        if (helpers::askQuestion("Use async implementation?"))
         {
             ximu3::PortScanner portScanner(callback);
             std::this_thread::sleep_for(std::chrono::seconds(60));

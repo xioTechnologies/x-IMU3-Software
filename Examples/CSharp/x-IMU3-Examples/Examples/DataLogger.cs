@@ -29,7 +29,7 @@ namespace Ximu3Examples
             // Log data
             string directory = "C:/";
             string name = "Data Logger Example";
-            if (Helpers.YesOrNo("Use async implementation?") == true)
+            if (Helpers.AskQuestion("Use async implementation?"))
             {
                 Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(directory, name, connections.ToArray(), DataLoggerEvent);
                 System.Threading.Thread.Sleep(3000);

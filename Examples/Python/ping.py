@@ -23,7 +23,7 @@ def callback(result):
         print("Unable to open connection")
 
 
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     connection.open_async(callback)
     time.sleep(3)
 else:

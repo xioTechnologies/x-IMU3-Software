@@ -12,7 +12,7 @@ void FileConverter()
     const char* destination = "C:/";
     const char* source = "C:/file.ximu3";
 
-    if (YesOrNo("Use async implementation?") == true)
+    if (AskQuestion("Use async implementation?"))
     {
         XIMU3_FileConverter* const file_converter = XIMU3_file_converter_new(destination, source, Callback, NULL);
         Wait(60);

@@ -41,7 +41,7 @@ def callback(responses):
 
 
 # Send commands
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     connection.send_commands_async(commands, 2, 500, callback)
     time.sleep(3)
 else:

@@ -5,7 +5,7 @@ class TcpConnection : public Connection
 public:
     TcpConnection()
     {
-        if (helpers::yesOrNo("Search for connections?") == true)
+        if (helpers::askQuestion("Search for connections?"))
         {
             std::cout << "Searching for connections" << std::endl;
             const auto messages = ximu3::NetworkAnnouncement().getMessagesAfterShortDelay();
