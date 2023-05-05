@@ -11,7 +11,7 @@ class FileConverter
 public:
     FileConverter()
     {
-        const auto destination = "C:/"; // TODO: Example should work for macOS and Windows
+        const auto destination = "C:/";
         const auto source = "C:/file.ximu3";
 
         if (helpers::yesOrNo("Use async implementation?") == true)
