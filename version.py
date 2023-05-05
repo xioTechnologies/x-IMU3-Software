@@ -35,5 +35,5 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
         if file == "AssemblyInfo.cs":
             replace(file_path, "AssemblyFileVersion\(\".*\"\)")
 
-        if file == "InnoSetupScript.iss":
+        if file == "WindowsInstaller.iss":
             replace(file_path, "AppVersion=.*\n")
