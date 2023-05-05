@@ -72,7 +72,7 @@
     <Compile Include="Examples\FileConverter.cs" />
     <Compile Include="Examples\GetPortNames.cs" />
     <Compile Include="Examples\NetworkAnnouncement.cs" />
-    <Compile Include="Examples\OpenAndPing.cs" />
+    <Compile Include="Examples\Ping.cs" />
     <Compile Include="Examples\PortScanner.cs" />
     <Compile Include="Examples\SerialConnection.cs" />
     <Compile Include="Examples\TcpConnection.cs" />

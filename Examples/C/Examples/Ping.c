@@ -7,7 +7,7 @@ static void PrintPingResponse(const XIMU3_PingResponse pingResponse);
 
 static void Callback(const XIMU3_Result result, void* context);
 
-void OpenAndPing()
+void Ping()
 {
     // Create connection info
     const XIMU3_UsbConnectionInfo connectionInfo = (XIMU3_UsbConnectionInfo) {

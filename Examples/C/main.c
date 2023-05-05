@@ -15,7 +15,7 @@ void GetPortNames();
 
 void NetworkAnnouncement();
 
-void OpenAndPing();
+void Ping();
 
 void PortScanner();
 
@@ -36,7 +36,7 @@ int main(int argc, const char* argv[])
     printf("D. FileConverter.c\n");
     printf("E. GetPortNames.c\n");
     printf("F. NetworkAnnouncement.c\n");
-    printf("G. OpenAndPing.c\n");
+    printf("G. Ping.c\n");
     printf("H. PortScanner.c\n");
     printf("I. SerialConnection.c\n");
     printf("J. TcpConnection.c\n");
@@ -63,7 +63,7 @@ int main(int argc, const char* argv[])
             NetworkAnnouncement();
             break;
         case 'G':
-            OpenAndPing();
+            Ping();
             break;
         case 'H':
             PortScanner();

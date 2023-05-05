@@ -2,9 +2,9 @@ using System;
 
 namespace Ximu3Examples
 {
-    class OpenAndPing
+    class Ping
     {
-        public OpenAndPing()
+        public Ping()
         {
             // Create connection info
             Ximu3.UsbConnectionInfo connectionInfo = new Ximu3.UsbConnectionInfo("COM1");

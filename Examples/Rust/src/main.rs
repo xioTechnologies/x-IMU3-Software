@@ -13,7 +13,7 @@ fn main() {
     println!("D. file_converter.rs");
     println!("E. get_port_names.rs");
     println!("F. network_announcement.rs");
-    println!("G. open_and_ping.rs");
+    println!("G. ping.rs");
     println!("H. port_scanner.rs");
     println!("I. serial_connection.rs");
     println!("J. tcp_connection.rs");
@@ -27,7 +27,7 @@ fn main() {
         'D' => file_converter::run(),
         'E' => get_port_names::run(),
         'F' => network_announcement::run(),
-        'G' => open_and_ping::run(),
+        'G' => ping::run(),
         'H' => port_scanner::run(),
         'I' => serial_connection::run(),
         'J' => tcp_connection::run(),
