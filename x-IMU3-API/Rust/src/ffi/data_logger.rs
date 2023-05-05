@@ -11,7 +11,7 @@ pub extern "C" fn XIMU3_data_logger_new(directory: *const c_char, name: *const c
     let void_ptr = VoidPtr(context);
     Box::into_raw(Box::new(DataLogger::new(char_ptr_to_str(directory), char_ptr_to_str(name), connections, Box::new(move |result| {
         match result {
-            Ok(()) => callback(Result::Ok, void_ptr.0),
+            Ok(_) => callback(Result::Ok, void_ptr.0),
             Err(_) => callback(Result::Error, void_ptr.0),
         }
     }))))
@@ -26,7 +26,7 @@ pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLogger) {
 pub extern "C" fn XIMU3_data_logger_log(directory: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> Result {
     let connections = connection_array_to_vec(connections, length);
     match DataLogger::log(char_ptr_to_str(directory), char_ptr_to_str(name), connections, seconds) {
-        Ok(()) => Result::Ok,
+        Ok(_) => Result::Ok,
         Err(_) => Result::Error,
     }
 }

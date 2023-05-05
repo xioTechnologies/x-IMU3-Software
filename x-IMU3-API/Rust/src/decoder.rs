@@ -39,7 +39,7 @@ impl Decoder {
 
             if *byte == '\n' as u8 {
                 match self.process_message() {
-                    Ok(()) => self.statistics.message_total += 1,
+                    Ok(_) => self.statistics.message_total += 1,
                     Err(decode_error) => {
                         self.statistics.error_total += 1;
                         self.dispatcher.sender.send(DispatcherData::DecodeError(decode_error)).ok();
