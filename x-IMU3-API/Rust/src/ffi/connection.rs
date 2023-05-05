@@ -50,7 +50,7 @@ pub extern "C" fn XIMU3_connection_free(connection: *mut Connection) {
 pub extern "C" fn XIMU3_connection_open(connection: *mut Connection) -> Result {
     let connection: &Connection = unsafe { &*connection };
     match connection.open() {
-        Ok(()) => Result::Ok,
+        Ok(_) => Result::Ok,
         Err(_) => Result::Error,
     }
 }
@@ -61,7 +61,7 @@ pub extern "C" fn XIMU3_connection_open_async(connection: *mut Connection, callb
     let void_ptr = VoidPtr(context);
     connection.open_async(Box::new(move |result| {
         match result {
-            Ok(()) => callback(Result::Ok, void_ptr.0),
+            Ok(_) => callback(Result::Ok, void_ptr.0),
             Err(_) => callback(Result::Error, void_ptr.0),
         }
     }));

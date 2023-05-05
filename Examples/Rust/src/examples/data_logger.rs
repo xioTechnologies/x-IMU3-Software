@@ -43,7 +43,7 @@ pub fn run() {
 
 fn print_result(result: Result<(), ()>) {
     match result {
-        Ok(()) => println!("Ok"),
-        Err(()) => println!("Error"),
+        Ok(_) => println!("Ok"),
+        Err(_) => println!("Error"),
     }
 }
