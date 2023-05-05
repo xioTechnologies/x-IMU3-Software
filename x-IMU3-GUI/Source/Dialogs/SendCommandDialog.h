@@ -29,7 +29,7 @@ private:
 
     SimpleLabel keyLabel { "Key:" };
     CustomTextEditor keyValue;
-    IconButton commandKeys { BinaryData::search_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
+    IconButton commandKeys { BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
 
     SimpleLabel valueLabel { "Value:" };
     CustomComboBox typeValue;
@@ -39,7 +39,7 @@ private:
     SimpleLabel commandLabel { "Command:" };
     CustomTextEditor commandValue;
 
-    IconButton historyButton { BinaryData::default_svg, "Command History", std::bind(&SendCommandDialog::getHistoryMenu, this) };
+    IconButton historyButton { BinaryData::history_svg, "Command History", std::bind(&SendCommandDialog::getHistoryMenu, this) };
 
     const juce::ValueTree keysTree = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
