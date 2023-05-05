@@ -11,7 +11,7 @@
 #include "Dialogs/ErrorDialog.h"
 #include "Dialogs/NewConnectionDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
-#include "Dialogs/SearchForConnectionsDialog.h"
+#include "Dialogs/SearchingForConnectionsDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
@@ -43,9 +43,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             existingConnections.push_back(devicePanel->getConnection().getInfo());
         }
 
-        DialogLauncher::launchDialog(std::make_unique<SearchForConnectionsDialog>(std::move(existingConnections)), [this]
+        DialogLauncher::launchDialog(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
         {
-            if (auto* dialog = dynamic_cast<SearchForConnectionsDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogLauncher::getLaunchedDialog()))
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {

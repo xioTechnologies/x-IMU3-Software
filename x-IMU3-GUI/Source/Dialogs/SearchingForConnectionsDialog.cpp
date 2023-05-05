@@ -1,8 +1,8 @@
 #include "../ApplicationSettings.h"
 #include "ApplicationSettingsDialog.h"
-#include "SearchForConnectionsDialog.h"
+#include "SearchingForConnectionsDialog.h"
 
-SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
+SearchingForConnectionsDialog::SearchingForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
         : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
           existingConnections(std::move(existingConnections_))
 {
@@ -16,13 +16,13 @@ SearchForConnectionsDialog::SearchForConnectionsDialog(std::vector<std::unique_p
     startTimerHz(10);
 }
 
-void SearchForConnectionsDialog::resized()
+void SearchingForConnectionsDialog::resized()
 {
     Dialog::resized();
     table.setBounds(getContentBounds(true));
 }
 
-std::vector<ximu3::ConnectionInfo*> SearchForConnectionsDialog::getConnectionInfos() const
+std::vector<ximu3::ConnectionInfo*> SearchingForConnectionsDialog::getConnectionInfos() const
 {
     std::vector<ximu3::ConnectionInfo*> connectionInfos;
 
@@ -37,7 +37,7 @@ std::vector<ximu3::ConnectionInfo*> SearchForConnectionsDialog::getConnectionInf
     return connectionInfos;
 }
 
-juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
+juce::PopupMenu SearchingForConnectionsDialog::getFilterMenu()
 {
     juce::PopupMenu menu;
     const auto addFilterItem = [&](const auto& name, juce::CachedValue<bool>& value)
@@ -55,7 +55,7 @@ juce::PopupMenu SearchForConnectionsDialog::getFilterMenu()
     return menu;
 }
 
-void SearchForConnectionsDialog::timerCallback()
+void SearchingForConnectionsDialog::timerCallback()
 {
     std::vector<ConnectionsTable::Row> rows;
     std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
@@ -109,7 +109,7 @@ void SearchForConnectionsDialog::timerCallback()
     {
         numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first)) + ", ";
     }
-    getTopLevelComponent()->setName("Search for Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
+    getTopLevelComponent()->setName("Searching for Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
     setOkButton(getConnectionInfos().empty() == false);
 }

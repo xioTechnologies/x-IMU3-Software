@@ -6,11 +6,11 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
-class SearchForConnectionsDialog : public Dialog,
-                                   private juce::Timer
+class SearchingForConnectionsDialog : public Dialog,
+                                      private juce::Timer
 {
 public:
-    SearchForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_);
+    SearchingForConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_);
 
     void resized() override;
 
@@ -27,11 +27,11 @@ private:
 
     ConnectionsTable table;
 
-    IconButton filterButton { BinaryData::filter_svg, "Filter", std::bind(&SearchForConnectionsDialog::getFilterMenu, this) };
+    IconButton filterButton { BinaryData::filter_svg, "Filter", std::bind(&SearchingForConnectionsDialog::getFilterMenu, this) };
 
     juce::PopupMenu getFilterMenu();
 
     void timerCallback() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SearchForConnectionsDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SearchingForConnectionsDialog)
 };

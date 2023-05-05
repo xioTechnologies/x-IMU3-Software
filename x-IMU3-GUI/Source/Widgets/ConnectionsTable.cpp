@@ -8,6 +8,7 @@ ConnectionsTable::ConnectionsTable()
     addAndMakeVisible(connectionLabel);
     addAndMakeVisible(table);
 
+    selectAllButton.setToggleState(true, juce::dontSendNotification);
     selectAllButton.onClick = [&]
     {
         for (size_t index = 0; index < rows.size(); index++)
