@@ -16,7 +16,7 @@ def callback(devices):
     print_devices(devices)
 
 
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     _ = ximu3.PortScanner(callback)
     time.sleep(60)
 else:

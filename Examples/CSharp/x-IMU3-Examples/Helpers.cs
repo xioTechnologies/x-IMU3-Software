@@ -11,7 +11,7 @@ namespace Ximu3Examples
             return key;
         }
 
-        public static bool Question(string question)
+        public static bool AskQuestion(string question)
         {
             while (true)
             {

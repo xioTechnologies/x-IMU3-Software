@@ -158,7 +158,7 @@ def run(connection_info):
     connection.add_decode_error_callback(decode_error_callback)
     connection.add_statistics_callback(statistics_callback)
 
-    if helpers.yes_or_no("Print data messages?"):
+    if helpers.ask_question("Print data messages?"):
         connection.add_inertial_callback(inertial_callback)
         connection.add_magnetometer_callback(magnetometer_callback)
         connection.add_quaternion_callback(quaternion_callback)

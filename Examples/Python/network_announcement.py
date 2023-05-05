@@ -22,7 +22,7 @@ def callback(message):
 
 network_announcement = ximu3.NetworkAnnouncement()
 
-if helpers.yes_or_no("Use async implementation?"):
+if helpers.ask_question("Use async implementation?"):
     network_announcement.add_callback(callback)
     time.sleep(60)
 else:

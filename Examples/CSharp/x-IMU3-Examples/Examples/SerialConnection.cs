@@ -6,7 +6,7 @@ namespace Ximu3Examples
     {
         public SerialConnection()
         {
-            if (Helpers.Question("Search for connections?"))
+            if (Helpers.AskQuestion("Search for connections?"))
             {
                 Console.WriteLine("Searching for connections");
                 Ximu3.Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.ConnectionType.Serial);

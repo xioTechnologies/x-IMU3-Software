@@ -2,7 +2,7 @@ use ximu3::port_scanner::*;
 use crate::helpers;
 
 pub fn run() {
-    if helpers::yes_or_no("Use async implementation?") {
+    if helpers::ask_question("Use async implementation?") {
         let _port_scanner = PortScanner::new(Box::new(|devices| {
             println!("Devices updated ({} devices available)", devices.len());
 

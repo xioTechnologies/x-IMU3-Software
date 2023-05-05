@@ -8,7 +8,7 @@ static void PrintDevices(const XIMU3_Devices devices);
 
 void PortScanner()
 {
-    if (Question("Use async implementation?"))
+    if (AskQuestion("Use async implementation?"))
     {
         XIMU3_PortScanner* const portScanner = XIMU3_port_scanner_new(Callback, NULL);
         Wait(60);

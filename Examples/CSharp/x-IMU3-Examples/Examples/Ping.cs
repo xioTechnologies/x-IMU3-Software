@@ -11,7 +11,7 @@ namespace Ximu3Examples
 
             // Open and ping
             Ximu3.Connection connection = new Ximu3.Connection(connectionInfo);
-            if (Helpers.Question("Use async implementation?"))
+            if (Helpers.AskQuestion("Use async implementation?"))
             {
                 connection.OpenAsync(OpenEvent);
                 System.Threading.Thread.Sleep(3000);

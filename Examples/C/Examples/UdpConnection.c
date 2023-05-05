@@ -5,7 +5,7 @@
 
 void UdpConnection()
 {
-    if (Question("Search for connections?"))
+    if (AskQuestion("Search for connections?"))
     {
         printf("Searching for connections\n");
         XIMU3_NetworkAnnouncement* const network_announcement = XIMU3_network_announcement_new();

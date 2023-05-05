@@ -1,7 +1,7 @@
 import time
 
 
-def yes_or_no(question):
+def ask_question(question):
     while True:
         key = input(question + " [Y/N]\n")
 

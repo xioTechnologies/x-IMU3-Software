@@ -40,7 +40,7 @@ public:
         };
 
         // Send commands
-        if (helpers::question("Use async implementation?"))
+        if (helpers::askQuestion("Use async implementation?"))
         {
             connection.sendCommandsAsync(commands, 2, 500, callback);
             std::this_thread::sleep_for(std::chrono::seconds(3));

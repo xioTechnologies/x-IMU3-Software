@@ -11,7 +11,7 @@ namespace helpers
         return toupper(c);
     }
 
-    static bool question(const char* question)
+    static bool askQuestion(const char* question)
     {
         while (true)
         {

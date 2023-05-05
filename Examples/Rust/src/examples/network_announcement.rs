@@ -4,7 +4,7 @@ use crate::helpers;
 pub fn run() {
     let network_announcement = NetworkAnnouncement::new();
 
-    if helpers::yes_or_no("Use async implementation?") {
+    if helpers::ask_question("Use async implementation?") {
         network_announcement.add_closure(Box::new(|message| {
             print_message(message);
         }));

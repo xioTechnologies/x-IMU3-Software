@@ -5,7 +5,7 @@ class UdpConnection : public Connection
 public:
     UdpConnection()
     {
-        if (helpers::question("Search for connections?"))
+        if (helpers::askQuestion("Search for connections?"))
         {
             std::cout << "Searching for connections" << std::endl;
             const auto messages = ximu3::NetworkAnnouncement().getMessagesAfterShortDelay();
