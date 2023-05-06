@@ -151,10 +151,10 @@ impl FileConverter {
         }));
 
         loop {
-            let progress = receiver.recv().unwrap();
-
-            if progress.status != FileConverterStatus::InProgress {
-                return progress;
+            if let Ok(progress) = receiver.recv() {
+                if progress.status != FileConverterStatus::InProgress {
+                    return progress;
+                }
             }
         }
     }

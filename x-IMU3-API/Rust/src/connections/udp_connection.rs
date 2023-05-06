@@ -46,7 +46,7 @@ impl GenericConnection for UdpConnection {
                     decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
                 while let Some(terminated_json) = write_receiver.try_recv().iter().next() {
-                    socket.send_to(terminated_json.as_bytes(), socket_address).unwrap();
+                    socket.send_to(terminated_json.as_bytes(), socket_address).ok();
                 }
             }
         });
