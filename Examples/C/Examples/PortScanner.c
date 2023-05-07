@@ -36,6 +36,7 @@ static void PrintDevices(const XIMU3_Devices devices)
     {
         const XIMU3_Device* const device = &devices.array[index];
         const char* connectionInfo;
+
         switch (device->connection_type)
         {
             case XIMU3_ConnectionTypeUsb:
@@ -51,6 +52,7 @@ static void PrintDevices(const XIMU3_Devices devices)
                 connectionInfo = "";
                 break;
         }
+
         printf("%s, %s, %s\n",
                device->device_name,
                device->serial_number,

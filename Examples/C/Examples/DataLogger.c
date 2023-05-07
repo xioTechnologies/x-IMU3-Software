@@ -12,8 +12,10 @@ void DataLogger()
 {
     // Open all USB connections
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
+
     XIMU3_Connection* connections[MAX_NUMBER_OF_CONNECTION];
     uint32_t numberOfConnections = 0;
+
     for (uint32_t index = 0; index < devices.length; index++)
     {
         if (index > MAX_NUMBER_OF_CONNECTION)
@@ -21,7 +23,9 @@ void DataLogger()
             break;
         }
         printf("%s\n", XIMU3_device_to_string(devices.array[index]));
+
         XIMU3_Connection* const connection = XIMU3_connection_new_usb(devices.array[index].usb_connection_info);
+
         if (XIMU3_connection_open(connection) == XIMU3_ResultOk)
         {
             connections[numberOfConnections++] = connection;
@@ -37,6 +41,7 @@ void DataLogger()
     // Log data
     const char* directory = "C:/";
     const char* name = "Data Logger Example";
+
     if (AskQuestion("Use async implementation?"))
     {
         XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(directory, name, connections, numberOfConnections, Callback, NULL);

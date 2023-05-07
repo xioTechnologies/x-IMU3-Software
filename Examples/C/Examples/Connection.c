@@ -46,6 +46,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     // Add callbacks
     XIMU3_connection_add_decode_error_callback(connection, DecodeErrorCallback, NULL);
     XIMU3_connection_add_statistics_callback(connection, StatisticsCallback, NULL);
+
     if (AskQuestion("Print data messages?"))
     {
         XIMU3_connection_add_inertial_callback(connection, InertialCallback, NULL);
@@ -66,6 +67,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
 
     // Open connection
     printf("Connecting to %s\n", connectionInfoString);
+
     if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
     {
         printf("Unable to open connection\n");
