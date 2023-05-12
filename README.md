@@ -17,11 +17,22 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 3. Install [Clion](https://www.jetbrains.com/clion/), including Rust plugin
 4. Configure Clion toolchain (Windows)
     - Settings > Build, Execution, Deployment > Toolchains > Add > Visual Studio, Architecture: x86_amd64
+5. Select Ninja to improve compile time (Windows)
+    - Settings > Build, Execution, Deployment > CMake > Generator: Ninja
 
 ## Branch Protection
 
-The github repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
+The GitHub repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
 
 - *Require a pull request before merging*
 - *Require linear history*
 - *Include administrators*
+
+## Distributions
+
+- [Rust crate](https://crates.io/crates/ximu3/)
+- [Python package](https://pypi.org/project/ximu3/)
+- [x-IMU3 GUI Windows](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Setup.exe)
+- [x-IMU3 GUI macOS Intel](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Intel.dmg)
+- [x-IMU3 GUI macOS Apple Silicon](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
+- [x-IMU3 GUI Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
