@@ -43,6 +43,7 @@ prefix = "XIMU3_"
 "BluetoothConnectionInfoC" = "BluetoothConnectionInfo"
 "FileConnectionInfoC" = "FileConnectionInfo"
 "NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
+"NetworkAnnouncementC" = "NetworkAnnouncement"
 "DeviceC" = "Device"
 "PingResponseC" = "PingResponse"
 

@@ -27,6 +27,11 @@ static void network_announcement_free(NetworkAnnouncement* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* network_announcement_get_result(NetworkAnnouncement* self, PyObject* args)
+{
+    return Py_BuildValue("i", XIMU3_network_announcement_get_result(self->network_announcement));
+}
+
 static PyObject* network_announcement_add_callback(NetworkAnnouncement* self, PyObject* args)
 {
     PyObject* callable;
@@ -80,6 +85,7 @@ static PyObject* network_announcement_get_messages_after_short_delay(NetworkAnno
 }
 
 static PyMethodDef network_announcement_methods[] = {
+        { "get_result",                     (PyCFunction) network_announcement_get_result,                     METH_NOARGS,  "" },
         { "add_callback",                   (PyCFunction) network_announcement_add_callback,                   METH_VARARGS, "" },
         { "remove_callback",                (PyCFunction) network_announcement_remove_callback,                METH_VARARGS, "" },
         { "get_messages",                   (PyCFunction) network_announcement_get_messages,                   METH_NOARGS,  "" },

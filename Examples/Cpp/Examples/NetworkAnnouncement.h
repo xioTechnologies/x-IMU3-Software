@@ -11,6 +11,12 @@ public:
     {
         ximu3::NetworkAnnouncement networkAnnouncement;
 
+        if (networkAnnouncement.getResult() != ximu3::XIMU3_ResultOk)
+        {
+            std::cout << "Unable to open network announcement socket" << std::endl;
+            return;
+        }
+
         if (helpers::askQuestion("Use async implementation?"))
         {
             networkAnnouncement.addCallback(callback);

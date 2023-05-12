@@ -8,6 +8,12 @@ namespace Ximu3Examples
         {
             Ximu3.NetworkAnnouncement networkAnnouncement = new Ximu3.NetworkAnnouncement();
 
+            if (networkAnnouncement.GetResult() != Ximu3.Result.Ok)
+            {
+                Console.WriteLine("Unable to open network announcement socket");
+                return;
+            }
+
             if (Helpers.AskQuestion("Use async implementation?"))
             {
                 networkAnnouncement.NetworkAnnouncementEvent += NetworkAnnouncementEvent;

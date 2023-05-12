@@ -503,6 +503,8 @@ struct XIMU3_NetworkAnnouncement *XIMU3_network_announcement_new(void);
 
 void XIMU3_network_announcement_free(struct XIMU3_NetworkAnnouncement *network_announcement);
 
+enum XIMU3_Result XIMU3_network_announcement_get_result(struct XIMU3_NetworkAnnouncement *network_announcement);
+
 uint64_t XIMU3_network_announcement_add_callback(struct XIMU3_NetworkAnnouncement *network_announcement, XIMU3_CallbackNetworkAnnouncementMessageC callback, void *context);
 
 void XIMU3_network_announcement_remove_callback(struct XIMU3_NetworkAnnouncement *network_announcement, uint64_t callback_id);

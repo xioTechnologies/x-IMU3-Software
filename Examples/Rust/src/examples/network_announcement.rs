@@ -4,6 +4,13 @@ use crate::helpers;
 pub fn run() {
     let network_announcement = NetworkAnnouncement::new();
 
+    if network_announcement.is_err() {
+        println!("Unable to open network announcement socket");
+        return;
+    }
+
+    let network_announcement = network_announcement.unwrap();
+
     if helpers::ask_question("Use async implementation?") {
         network_announcement.add_closure(Box::new(|message| {
             print_message(message);

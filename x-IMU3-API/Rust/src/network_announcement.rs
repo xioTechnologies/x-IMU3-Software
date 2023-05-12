@@ -76,7 +76,9 @@ pub struct NetworkAnnouncement {
 }
 
 impl NetworkAnnouncement {
-    pub fn new() -> NetworkAnnouncement {
+    pub fn new() -> Result<NetworkAnnouncement, std::io::Error> {
+        let socket = UdpSocket::bind("0.0.0.0:10000")?;
+
         let network_announcement = NetworkAnnouncement {
             dropped: Arc::new(Mutex::new(false)),
             closure_counter: AtomicU64::new(0),
@@ -89,43 +91,41 @@ impl NetworkAnnouncement {
         let messages = network_announcement.messages.clone();
 
         std::thread::spawn(move || {
-            if let Ok(socket) = UdpSocket::bind("0.0.0.0:10000") {
-                socket.set_read_timeout(Some(std::time::Duration::from_millis(100))).ok();
+            socket.set_read_timeout(Some(std::time::Duration::from_millis(100))).ok();
 
-                loop {
-                    let mut buffer = [0_u8; 1024];
+            loop {
+                let mut buffer = [0_u8; 1024];
 
-                    let mut message = None;
+                let mut message = None;
 
-                    if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
-                        message = NetworkAnnouncement::parse_json(&buffer[..number_of_bytes]);
-                    }
+                if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
+                    message = NetworkAnnouncement::parse_json(&buffer[..number_of_bytes]);
+                }
 
-                    if let Some(message) = &message {
-                        if let Ok(mut messages) = messages.lock() {
-                            if let Some(index) = messages.iter().position(|element| element == message) {
-                                messages[index] = message.clone(); // overwrite with new rssi, battery, power, expiry
-                            } else {
-                                messages.push(message.clone());
-                            }
+                if let Some(message) = &message {
+                    if let Ok(mut messages) = messages.lock() {
+                        if let Some(index) = messages.iter().position(|element| element == message) {
+                            messages[index] = message.clone(); // overwrite with new rssi, battery, power, expiry
+                        } else {
+                            messages.push(message.clone());
                         }
                     }
+                }
 
-                    messages.lock().unwrap().retain(|device| device.expiry > SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis());
+                messages.lock().unwrap().retain(|device| device.expiry > SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis());
 
-                    if let Ok(dropped) = dropped.lock() {
-                        if *dropped {
-                            return;
-                        }
-                        if let Some(message) = message {
-                            closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message.clone()));
-                        }
+                if let Ok(dropped) = dropped.lock() {
+                    if *dropped {
+                        return;
+                    }
+                    if let Some(message) = message {
+                        closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message.clone()));
                     }
                 }
             }
         });
 
-        network_announcement
+        Ok(network_announcement)
     }
 
     fn parse_json(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
