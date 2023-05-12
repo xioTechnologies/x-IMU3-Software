@@ -6,7 +6,6 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
-
 with open("../DeviceSettings/DeviceSettings.json") as file:
     deviceSettings = [helpers.camel_case(j["name"]) for j in json.load(file)]
 
