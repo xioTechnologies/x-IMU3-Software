@@ -14,7 +14,6 @@ IconButton::IconButton(const juce::String& icon, const juce::String& tooltip_,
     setColour(juce::TextButton::buttonOnColourId, {});
 
     setIcon(icon, iconOn);
-    setTriggeredOnMouseDown(true);
 }
 
 void IconButton::paint(juce::Graphics& g)
