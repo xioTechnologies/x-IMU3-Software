@@ -13,7 +13,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyTrademarkAttribute(L"")];
 [assembly:AssemblyCultureAttribute(L"")];
 
-[assembly:AssemblyVersionAttribute("1.1.3")];
+[assembly:AssemblyVersionAttribute("1.1.4")];
 
 [assembly:ComVisible(false)];
 
