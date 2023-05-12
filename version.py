@@ -1,7 +1,7 @@
 import os
 import re
 
-version = "1.1.1"
+version = "1.1.2"
 
 
 def replace(file_path, string):
