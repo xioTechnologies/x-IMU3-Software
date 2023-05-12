@@ -123,7 +123,7 @@ jobs:
           - [ macos-latest, aarch64-apple-darwin, macosx_arm64 ]
           - [ ubuntu-latest, i686-unknown-linux-gnu, manylinux_i686 ]
           - [ ubuntu-latest, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
-          # - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ] # temporary workaround (see below)
+          # - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
           - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
 
         python-version: [ "cp38-", "cp39-", "cp310-", "cp311-" ]
@@ -162,46 +162,7 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYTHON_TOKEN }}
-        run: python -m twine upload --verbose --repository pypi wheelhouse/*
-
-  python-ubuntu-x86_64: # temporary workaround (see above)
-    runs-on: ubuntu-latest
-    needs: rust
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download from artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: rust-x86_64-unknown-linux-gnu
-          path: x-IMU3-API/Rust/target/release
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install twine
-          python -m pip install wheel
-          python -m pip install numpy && sudo apt-get update && sudo apt-get install -y libudev-dev
-
-      - name: Build wheel
-        run: python setup.py bdist_wheel
-
-      - if: startsWith(github.ref, 'refs/tags/v')
-        name: Publish Python package
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYTHON_TOKEN }}
-        run: python -m twine upload --verbose --repository pypi dist/*
+        run: python -m twine upload --verbose --repository pypi wheelhouse/* --skip-existing
 
   gui:
     runs-on: ${{ matrix.target[0] }}
@@ -270,12 +231,13 @@ jobs:
 
       - if: matrix.target[0] == 'macos-latest'
         name: Sign and notarize for macOS
+        working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
         run: |
-          codesign --options runtime --timestamp --sign 29X883CFTW "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI.app"
+          codesign --options runtime --timestamp --sign 29X883CFTW "x-IMU3 GUI.app"
           brew install create-dmg
           create-dmg \
           --volname "x-IMU3-GUI${{ matrix.target[3] }}" \
-          --background "installer_background.png" \
+          --background "../../../../installer_background.png" \
           --window-pos 200 120 \
           --window-size 600 320 \
           --icon-size 100 \
@@ -283,13 +245,13 @@ jobs:
           --hide-extension "x-IMU3 GUI.app" \
           --app-drop-link 450 125 \
           "x-IMU3-GUI${{ matrix.target[3] }}" \
-          "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI.app"
+          "x-IMU3 GUI.app"
           xcrun notarytool submit "x-IMU3-GUI${{ matrix.target[3] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
           xcrun stapler staple "x-IMU3-GUI${{ matrix.target[3] }}"
 
       - if: matrix.target[0] == 'ubuntu-latest'
-        name: Move app for Ubuntu
-        run: mv 'cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI' 'x-IMU3-GUI'
+        name: Rename file for Ubuntu
+        run: mv "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI${{ matrix.target[3] }}" "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI${{ matrix.target[3] }}"
 
       - if: matrix.target[0] == 'windows-latest'
         name: Create installer for Windows
@@ -299,4 +261,4 @@ jobs:
         name: Upload to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} "x-IMU3-GUI${{ matrix.target[3] }}"
+        run: gh release upload ${{ github.ref_name }} "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI${{ matrix.target[3] }}"
