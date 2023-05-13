@@ -31,6 +31,8 @@ impl GenericConnection for SerialConnection {
             .timeout(Duration::from_millis(1))
             .open()?;
 
+        serial_port.write_data_terminal_ready(true).ok();
+
         let decoder = self.decoder.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
