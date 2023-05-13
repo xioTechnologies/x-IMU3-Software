@@ -32,7 +32,7 @@ The GitHub repository applies the following branch protection rules to the main 
 
 - [Rust crate](https://crates.io/crates/ximu3/)
 - [Python package](https://pypi.org/project/ximu3/)
-- [x-IMU3 GUI Windows](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Setup.exe)
-- [x-IMU3 GUI macOS Intel](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Intel.dmg)
-- [x-IMU3 GUI macOS Apple Silicon](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
-- [x-IMU3 GUI Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
+- [x-IMU3 GUI for Windows](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Setup.exe)
+- [x-IMU3 GUI for macOS (Intel)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Intel.dmg)
+- [x-IMU3 GUI for macOS (Apple Silicon)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
+- [x-IMU3 GUI for Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
