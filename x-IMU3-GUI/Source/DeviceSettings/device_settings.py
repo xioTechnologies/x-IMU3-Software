@@ -6,7 +6,6 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
-
 with open("DeviceSettings.json") as file:
     settings = json.load(file)
 
@@ -32,7 +31,6 @@ for setting in settings:
         enum_types.append(json_type)
 
     json_types.append(json_type)
-
 
 with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")
