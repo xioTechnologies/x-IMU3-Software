@@ -29,7 +29,7 @@ public:
 
     bool operator==(const CommandMessage& other) const
     {
-        return key.isNotEmpty() && key == other.key;
+        return key.isNotEmpty() && key == other.key; // empty key in response indicates no response
     }
 
     operator const std::string&() const
