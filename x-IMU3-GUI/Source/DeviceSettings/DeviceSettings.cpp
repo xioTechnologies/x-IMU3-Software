@@ -1,5 +1,4 @@
 #include "DeviceSettings.h"
-#include <regex>
 
 DeviceSettings::DeviceSettings()
 {
@@ -26,12 +25,17 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     return commands;
 }
 
-std::vector<CommandMessage> DeviceSettings::getWriteCommands() const
+std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipReadOnly) const
 {
     std::vector<CommandMessage> commands;
     for (auto setting : settingsVector)
     {
-        if (setting.getProperty(DeviceSettingsIDs::readOnly) || setting.hasProperty(DeviceSettingsIDs::value) == false)
+        if (setting.hasProperty(DeviceSettingsIDs::value) == false)
+        {
+            continue;
+        }
+
+        if (setting.getProperty(DeviceSettingsIDs::readOnly) && skipReadOnly)
         {
             continue;
         }
@@ -51,6 +55,11 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands() const
 void DeviceSettings::setValue(const CommandMessage& response)
 {
     auto setting = findSetting(response.key);
+    if (setting.isValid() == false)
+    {
+        return;
+    }
+
     if (setting[DeviceSettingsIDs::value] != response.value)
     {
         setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
@@ -61,12 +70,13 @@ void DeviceSettings::setValue(const CommandMessage& response)
 
 void DeviceSettings::setStatus(const juce::String& key, const Setting::Status status)
 {
-    findSetting(key).setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
-}
+    auto setting = findSetting(key);
+    if (setting.isValid() == false)
+    {
+        return;
+    }
 
-juce::String DeviceSettings::normaliseKey(const juce::String& key)
-{
-    return std::regex_replace(key.toLowerCase().toStdString(), std::regex("[^0-9a-z]"), "");
+    setting.setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
 }
 
 std::vector<juce::ValueTree> DeviceSettings::flatten(const juce::ValueTree& parent)
@@ -90,7 +100,7 @@ juce::ValueTree DeviceSettings::findSetting(const juce::String& key) const
 {
     for (auto setting : settingsVector)
     {
-        if (normaliseKey(setting.getProperty(DeviceSettingsIDs::key)) == normaliseKey(key))
+        if (CommandMessage::normaliseKey(setting.getProperty(DeviceSettingsIDs::key)) == CommandMessage::normaliseKey(key))
         {
             return setting;
         }

@@ -132,11 +132,11 @@ void DevicePanelHeader::updateDeviceDescriptor(const std::vector<CommandMessage>
 {
     for (const auto& response : responses)
     {
-        if (response.key == "deviceName")
+        if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("deviceName"))
         {
             deviceName = response.value;
         }
-        else if (response.key == "serialNumber")
+        else if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serialNumber"))
         {
             serialNumber = response.value;
         }

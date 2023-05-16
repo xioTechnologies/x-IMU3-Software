@@ -14,7 +14,7 @@ public:
 
     std::vector<CommandMessage> getReadCommands() const;
 
-    std::vector<CommandMessage> getWriteCommands() const;
+    std::vector<CommandMessage> getWriteCommands(const bool skipReadOnly = true) const;
 
     void setValue(const CommandMessage& response);
 
@@ -24,8 +24,6 @@ private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
     const std::vector<juce::ValueTree> settingsVector = flatten(settingsTree);
     DeviceSettingsItem rootItem { settingsTree, settingsVector };
-
-    static juce::String normaliseKey(const juce::String& key);
 
     static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 

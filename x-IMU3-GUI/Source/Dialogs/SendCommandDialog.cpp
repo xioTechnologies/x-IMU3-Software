@@ -30,7 +30,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title) : Dialog(BinaryD
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
 
-        setOkButton(juce::JSON::parse(commandValue.getText()).isVoid() == false);
+        setOkButton((keyValue.isEmpty() == false) && (juce::JSON::parse(commandValue.getText()).isVoid() == false));
     };
 
     selectCommand(commandHistory.getChild(0));

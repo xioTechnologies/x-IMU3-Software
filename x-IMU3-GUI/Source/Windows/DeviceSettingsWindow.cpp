@@ -82,14 +82,14 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     saveToFileButton.onClick = [&]
     {
-        juce::FileChooser fileChooser("Save Device Settings", directory.getChildFile("Device Settings"), "*.json");
+        juce::FileChooser fileChooser("Save Device Settings", directory.getChildFile(devicePanel.getDeviceDescriptor()), "*.json");
         if (fileChooser.browseForFileToSave(true) == false)
         {
             return;
         }
 
         juce::DynamicObject object;
-        for (const auto& command : settingsTree.getWriteCommands())
+        for (const auto& command : settingsTree.getWriteCommands(false))
         {
             object.setProperty(command.key, command.value);
         }
