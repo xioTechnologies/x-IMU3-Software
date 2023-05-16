@@ -89,7 +89,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         }
 
         juce::DynamicObject object;
-        for (const auto& command : settingsTree.getWriteCommands())
+        for (const auto& command : settingsTree.getWriteCommands(false))
         {
             object.setProperty(command.key, command.value);
         }

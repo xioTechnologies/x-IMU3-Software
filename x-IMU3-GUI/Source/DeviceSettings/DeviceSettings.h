@@ -14,7 +14,7 @@ public:
 
     std::vector<CommandMessage> getReadCommands() const;
 
-    std::vector<CommandMessage> getWriteCommands() const;
+    std::vector<CommandMessage> getWriteCommands(const bool skipReadOnly = true) const;
 
     void setValue(const CommandMessage& response);
 

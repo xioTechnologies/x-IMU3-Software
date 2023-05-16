@@ -26,12 +26,17 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     return commands;
 }
 
-std::vector<CommandMessage> DeviceSettings::getWriteCommands() const
+std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipReadOnly) const
 {
     std::vector<CommandMessage> commands;
     for (auto setting : settingsVector)
     {
-        if (setting.getProperty(DeviceSettingsIDs::readOnly) || setting.hasProperty(DeviceSettingsIDs::value) == false)
+        if (setting.hasProperty(DeviceSettingsIDs::value) == false)
+        {
+            continue;
+        }
+
+        if (setting.getProperty(DeviceSettingsIDs::readOnly) && skipReadOnly)
         {
             continue;
         }
