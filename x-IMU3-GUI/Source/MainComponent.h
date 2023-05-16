@@ -5,7 +5,7 @@
 #include "Dialogs/Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
-#include "OpenGL/GLRenderer.h"
+#include "OpenGL/Common/GLRenderer.h"
 #include "Windows/WindowIDs.h"
 
 class MainComponent : public juce::Component

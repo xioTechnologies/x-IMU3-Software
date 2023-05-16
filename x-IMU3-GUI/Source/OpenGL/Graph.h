@@ -1,11 +1,11 @@
 #pragma once
 
-#include "GLRenderer.h"
-#include "GraphDataBuffer.h"
-#include "GridLines.h"
+#include "Common/GLRenderer.h"
+#include "Common/Text.h"
+#include "Graph/GraphDataBuffer.h"
+#include "Graph/GridLines.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGLComponent.h"
-#include "Text.h"
 
 class Graph : public OpenGLComponent
 {

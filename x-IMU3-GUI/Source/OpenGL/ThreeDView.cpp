@@ -4,11 +4,11 @@
 
 ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings& other)
 {
-    azimuth = other.azimuth.load();
-    elevation = other.elevation.load();
-    zoom = other.zoom.load();
+    cameraAzimuth = other.cameraAzimuth.load();
+    cameraElevation = other.cameraElevation.load();
+    cameraOrbitDistance = other.cameraOrbitDistance.load();
     isModelEnabled = other.isModelEnabled.load();
-    isStageEnabled = other.isStageEnabled.load();
+    isWorldEnabled = other.isWorldEnabled.load();
     isAxesEnabled = other.isAxesEnabled.load();
     model = other.model.load();
     axesConvention = other.axesConvention.load();
@@ -28,159 +28,58 @@ ThreeDView::~ThreeDView()
 
 void ThreeDView::render()
 {
+    using namespace ::juce::gl;
+
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
     auto& resources = renderer.getResources();
+    auto& camera = resources.orbitCamera;
 
-    resources.threeDViewShader.use();
-    renderer.refreshScreen(juce::Colours::black, bounds);
-    resources.threeDViewShader.projectionMatrix.setMatrix4(renderer.getProjectionMatrix(bounds).mat, 1, false);
+    // Update camera for current component view settings
+    camera.setViewportBounds(bounds);
+    camera.setOrbit(settings.cameraAzimuth, settings.cameraElevation, settings.cameraOrbitDistance);
 
-    const auto worldRotation = rotation(settings.elevation, settings.azimuth, 0.0f) * rotation(90.0f, 0.0f, 0.0f);
-    const auto worldTransformation = translation(0.0f, 0.0f, settings.zoom) * worldRotation;
-    const auto deviceRotation = juce::Quaternion<GLfloat>(-1.0f * quaternionX, -1.0f * quaternionY, -1.0f * quaternionZ, quaternionW).getRotationMatrix(); // quaternion conjugate
-    auto axesConventionRotation = rotation(0.0f, 0.0f, 0.0f);
+    const auto projectionMatrix = camera.getPerspectiveProjectionMatrix();
+    const auto viewMatrix = camera.getViewMatrix();
 
+    // Convert device rotation from x-io coordinate space into OpenGL coordinate space where OpenGL X == x-io X, OpenGL Y == x-io Z, OpenGL Z == z-io -Y
+    const auto deviceRotation = glm::mat4_cast(glm::quat(quaternionW.load(), quaternionX.load(), quaternionZ.load(), -1.0f * quaternionY.load()));
+
+    // Calculations to ensure model does not pass through floor at any orientation
+    const float modelScale = 0.55f;
+    const float normalizedModelMaxExtent = 1.0f;
+    const float gapBetweenModelAndFloor = 0.1f;
+    const float floorHeight = -(normalizedModelMaxExtent + gapBetweenModelAndFloor) * modelScale;
+
+    // Create rotation matrix based on axes convention user setting
+    glm::mat4 axesConventionRotation(1.0f);
     switch (settings.axesConvention.load())
     {
         case AxesConvention::nwu:
             break;
         case AxesConvention::enu:
-            axesConventionRotation = rotation(0.0f, 0.0f, 90.0f);
+            axesConventionRotation = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             break;
         case AxesConvention::ned:
-            axesConventionRotation = rotation(180.0f, 0.0f, 0.0f);
+            axesConventionRotation = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             break;
     }
 
-    const auto lightAmbient = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
-    const auto lightDiffuse = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
-    const auto lightSpecular = juce::Vector3D<GLfloat>(1.0f, 1.0f, 1.0f);
-    const auto lightPosition = juce::Vector3D<GLfloat>(3.0f, 3.0f, 0.0f);
-
-    resources.threeDViewShader.lightIntensity.set(0.5f);
-    resources.threeDViewShader.lightColour.set(1.0f, 1.0f, 1.0f, 1.0f);
-    resources.threeDViewShader.lightPosition.set(lightPosition.x, lightPosition.y, lightPosition.z);
-
-    // TODO: comment what each of these does
-    resources.threeDViewShader.emissivity.set(0.5f);
-    resources.threeDViewShader.maxSpecularRange.set(10.0f); // low = glossy. high = matte
-    resources.threeDViewShader.specularFactor.set(1.0f); // low = glossy. high = matte
-
-    resources.threeDViewShader.cameraPosition.set(0.0f, 0.0f, 0.0f);
-
-    //Please note - These values are for the alternative lighting shader that uses materials
-    //They can be passed each frame call, but will only become effective when the 'threeDViewShaderWithMaterial' is in use
-    resources.threeDViewShaderWithMaterial.lightAmbient.set(lightAmbient.x, lightAmbient.y, lightAmbient.z);
-    resources.threeDViewShaderWithMaterial.lightDiffuse.set(lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
-    resources.threeDViewShaderWithMaterial.lightSpecular.set(lightSpecular.x, lightSpecular.y, lightSpecular.z);
-    resources.threeDViewShaderWithMaterial.lightPosition.set(lightPosition.x, lightPosition.y, lightPosition.z);
-
-    const auto calcMatrix = [&](juce::Matrix3D<float> matrixArg, juce::Vector3D<float> vector)
-    {
-        auto matrix = matrixArg * juce::Matrix3D<float>::fromTranslation(vector);
-        auto newMatrix = juce::Matrix3D<float> {};
-        newMatrix.mat[12] = matrix.mat[12];
-        newMatrix.mat[13] = matrix.mat[13];
-        newMatrix.mat[14] = matrix.mat[14];
-        return newMatrix;
-    };
+    // Draw scene
+    renderer.refreshScreen(UIColours::backgroundDark, bounds);
 
     if (settings.isModelEnabled)
     {
-        resources.threeDViewShader.emissivity.set(0.8f);
-        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * axesConventionRotation * deviceRotation).mat, 1, false);
-
-        switch (settings.model.load())
-        {
-            case Model::board:
-                resources.board.render(resources, false);
-                break;
-            case Model::housing:
-                resources.housing.render(resources, false);
-                break;
-            case Model::custom:
-                resources.custom.render(resources, false);
-                break;
-        }
+        renderIMUModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    // TODO:   if ((resources.board.getIsLoaded() == false) || (resources.housing.getIsLoaded() == false) || (resources.custom.getIsLoaded() == false)) { }
-
-    if (settings.isStageEnabled)
+    if (settings.isWorldEnabled)
     {
-        resources.threeDViewShader.emissivity.set(0.0f);
-        resources.threeDViewShader.isTextured.set(true);
-        resources.compassTexture.bind();
-        resources.threeDViewShader.modelMatrix.setMatrix4((worldTransformation * translation(0.0f, 0.0f, -0.5f) * scale(1.5f)).mat, 1, false);
-        resources.stage.setColour(juce::Colours::white.withAlpha(0.75f));
-        resources.stage.render(resources, true);
-        resources.compassTexture.unbind();
-        resources.threeDViewShader.isTextured.set(false);
+        renderWorldGrid(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
     }
 
     if (settings.isAxesEnabled)
     {
-        resources.threeDViewShader.emissivity.set(0.3f);
-
-        renderer.turnDepthTestOff(); // axes brought to front
-
-        auto renderAxes = [&](const auto& matrix)
-        {
-            const auto alpha = 0.5f;
-
-            resources.threeDViewShader.modelMatrix.setMatrix4(matrix.mat, 1, false);
-            resources.arrow.setColour(UIColours::graphRed.withAlpha(alpha));
-            resources.arrow.render(resources, false);
-
-            resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.7071f, 0.7071f, 0.0f, 0.0f).getRotationMatrix()).mat, 1, false);
-            resources.arrow.setColour(UIColours::graphGreen.withAlpha(alpha));
-            resources.arrow.render(resources, false);
-
-            resources.threeDViewShader.modelMatrix.setMatrix4((matrix * juce::Quaternion<GLfloat>(0.0f, 0.7071f, 0.0f, 0.7071f).getRotationMatrix()).mat, 1, false);
-            resources.arrow.setColour(UIColours::graphBlue.withAlpha(alpha));
-            resources.arrow.render(resources, false);
-        };
-
-        const auto bottomLeftX = -0.45f;
-        const auto bottomLeftY = -0.2f;
-
-        renderAxes(translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.1f));
-        renderAxes(translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * axesConventionRotation * scale(0.1f));
-
-        renderer.turnCullingOff(); // render text only after culling off
-        renderer.getResources().textShader.use();
-
-        const auto renderText = [&](Text& text, const juce::String& label, const juce::Colour& colour, juce::Matrix3D<float> matrix)
-        {
-            text.setText(label);
-            text.setColour(colour);
-
-            const juce::Point<GLfloat> pixelSize(2.0f / bounds.getWidth(), 2.0f / bounds.getHeight());
-            text.setScale({ pixelSize.x, pixelSize.y });
-
-            juce::Vector3D<GLfloat> position(matrix.mat[12], matrix.mat[13], matrix.mat[14]);
-            auto clipCoordinate = renderer.getProjectionMatrix(bounds) * juce::Matrix3D<GLfloat>::fromTranslation(position);
-
-            auto x = clipCoordinate.mat[12] / clipCoordinate.mat[15];
-            auto y = clipCoordinate.mat[13] / clipCoordinate.mat[15];
-
-            auto ndcMatrix = juce::Matrix3D<float> {};
-            ndcMatrix.mat[12] = x;
-            ndcMatrix.mat[13] = y;
-
-            resources.textShader.transformation.setMatrix4(ndcMatrix.mat, 1, false);
-            text.render(resources);
-        };
-
-        auto matrixA = translation(0.0f, 0.0f, -1.0f) * worldRotation * axesConventionRotation * deviceRotation * scale(0.11f);
-        renderText(resources.get3DViewAxisText(), "X", UIColours::graphRed, calcMatrix(matrixA, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Y", UIColours::graphGreen, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Z", UIColours::graphBlue, calcMatrix(matrixA, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
-
-        auto matrixB = translation(bottomLeftX, bottomLeftY, -1.0f) * worldRotation * axesConventionRotation * scale(0.11f);
-        renderText(resources.get3DViewAxisText(), "X", UIColours::graphRed, calcMatrix(matrixB, juce::Vector3D<float>(1.0f, 0.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Y", UIColours::graphGreen, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 1.0f, 0.0f)));
-        renderText(resources.get3DViewAxisText(), "Z", UIColours::graphBlue, calcMatrix(matrixB, juce::Vector3D<float>(0.0f, 0.0f, 1.0f)));
+        renderAxes(resources, bounds, deviceRotation, axesConventionRotation);
     }
 }
 
@@ -219,21 +118,236 @@ bool ThreeDView::isLoading() const
     return false;
 }
 
-juce::Matrix3D<GLfloat> ThreeDView::rotation(const float roll, const float pitch, const float yaw)
+void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
 {
-    return Convert::toQuaternion(roll, pitch, yaw).getRotationMatrix();
+    const auto& camera = resources.orbitCamera;
+    const auto rotateModelFlat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+
+    const auto modelMatrix = axesConventionRotation * deviceRotation * rotateModelFlat * glm::scale(glm::mat4(1.0f), glm::vec3(modelScale));
+
+    auto& threeDViewShader = resources.threeDViewShader;
+    threeDViewShader.use();
+    threeDViewShader.cameraPosition.set(camera.getPosition());
+    threeDViewShader.modelMatrix.set(modelMatrix);
+    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(modelMatrix)));
+    threeDViewShader.viewMatrix.set(viewMatrix);
+    threeDViewShader.projectionMatrix.set(projectionMatrix);
+    threeDViewShader.isTextured.set(false);
+    threeDViewShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
+    threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
+    threeDViewShader.lightIntensity.set(1.0f);
+
+    switch (settings.model.load())
+    {
+        case Model::board:
+            resources.board.renderWithMaterials(threeDViewShader);
+            break;
+        case Model::housing:
+            resources.housing.renderWithMaterials(threeDViewShader);
+            break;
+        case Model::custom:
+            resources.custom.renderWithMaterials(threeDViewShader);
+            break;
+    }
 }
 
-juce::Matrix3D<GLfloat> ThreeDView::translation(const float x, const float y, const float z)
+void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotationGLM, const float floorHeight)
 {
-    return juce::Matrix3D<GLfloat>::fromTranslation(juce::Vector3D<GLfloat>(x, y, z));
+    using namespace ::juce::gl;
+
+    glDisable(GL_CULL_FACE); // allow front and back face of grid and compass planes to be seen
+
+    // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
+    const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
+    const auto translateGrid = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, floorHeight, 0.0f));
+    resources.grid3DShader.use();
+    resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotationGLM);
+    resources.plane.render();
+
+    // Compass - will be moved to new HUD element soon
+    // Rendered in two plane layers, one above grid, one below grid. We could render only 1 plane and do manual sorting for transparent objects (must draw further objects first), but this code will be replaced soon so not worth the optimization.
+    const auto compassOffsetFromGrid = 0.001f;
+    const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.65f));
+    const auto compassTopModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight + compassOffsetFromGrid, 0.0f)) * compassRotateScale;
+    const auto compassBottomModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight - compassOffsetFromGrid, 0.0f)) * compassRotateScale;
+    auto& unlitShader = resources.unlitShader;
+    unlitShader.use();
+    unlitShader.colour.set(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f)); // tint color to 80% brightness
+    unlitShader.isTextured.set(true);
+    resources.compassTexture.bind();
+    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassTopModelMatrix); // top compass layer above grid
+    resources.plane.render();
+    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassBottomModelMatrix); // bottom compass layer below grid
+    resources.plane.render();
+    resources.compassTexture.unbind();
+
+    glEnable(GL_CULL_FACE); // restore cull state
 }
 
-juce::Matrix3D<GLfloat> ThreeDView::scale(const float value)
+void ThreeDView::renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
 {
-    juce::Matrix3D<GLfloat> matrix;
-    matrix.mat[0] = value;
-    matrix.mat[5] = value;
-    matrix.mat[10] = value;
-    return matrix;
+    auto& text = resources.get3DViewAxisText();
+    // TODO: Optimization: Only necessary IF bounds have changed . . .
+    // NOTE: This could be moved to GLRenderer, so text scale of whole app is always updated when viewport changes instead of manually updating it per GLComponent.
+    text.setScale({ 1.0f / (float) viewportBounds.getWidth(), 1.0f / (float) viewportBounds.getHeight() }); // sets text scale to the normalized size of a screen pixel
+
+    renderAxesWorldSpace(resources, deviceRotation, axesConventionRotation); // attached to model, shows orientation
+    renderAxesScreenSpace(resources, axesConventionRotation); // in HUD top right
+}
+
+// TODO: We may want to make these axes a constant size in screen pixels, like renderAxesScreenSpace(), so the size does not scale with the viewport. Test this out in practice, this current implementation may actually be better for the average use case.
+void ThreeDView::renderAxesWorldSpace(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
+{
+    using namespace ::juce::gl;
+
+    const auto& threeDViewShader = resources.threeDViewShader;
+    const auto& camera = resources.orbitCamera;
+
+    const auto projectionMatrix = camera.getOrthogonalProjectionMatrix();
+    const auto viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)) * camera.getRotationMatrix(); // axes not affected by zoom, so this is a custom "camera" translation of -1 on the Z axis so the objects become visible and are not clipped out of view
+    const auto axesScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
+    const auto modelMatrixNoScale = axesConventionRotation * deviceRotation;
+    const auto modelMatrix = modelMatrixNoScale * axesScaleMatrix;
+
+    // Setup lighting for axes
+    threeDViewShader.use();
+    threeDViewShader.cameraPosition.set(camera.getPosition());
+    threeDViewShader.projectionMatrix.set(projectionMatrix);
+    threeDViewShader.isTextured.set(false);
+    threeDViewShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
+    threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
+    threeDViewShader.lightIntensity.set(1.0f);
+    threeDViewShader.viewMatrix.set(viewMatrix);
+
+    // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+    const auto xModelMatrix = modelMatrix;
+    threeDViewShader.materialColour.setRGBA(UIColours::graphRed);
+    threeDViewShader.modelMatrix.set(xModelMatrix);
+    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(xModelMatrix)));
+    resources.arrow.render();
+
+    // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+    const auto yModelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    threeDViewShader.materialColour.setRGBA(UIColours::graphGreen);
+    threeDViewShader.modelMatrix.set(yModelMatrix);
+    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(yModelMatrix)));
+    resources.arrow.render();
+
+    // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+    const auto zModelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    threeDViewShader.materialColour.setRGBA(UIColours::graphBlue);
+    threeDViewShader.modelMatrix.set(zModelMatrix);
+    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(zModelMatrix)));
+    resources.arrow.render();
+
+    // Text labels XYZ
+    // TODO: Maybe Test can be refactored so disable culling is not necessary. I bet winding order on text planes is backwards! Needs to be counter-clockwize to be visible facing user. I bet culprit is GLResources::createTextBuffer, just fix to be correct winding order.
+    glDisable(GL_CULL_FACE); // text needs disabled culling
+
+    renderer.getResources().textShader.use();
+
+    // TODO: Right now, because the text does not scale with viewport like the model axes, the text is not always a consistent distance from the arrows. We will likely refactor to have constant sized axes just like the screen space axes.
+    const auto textDistanceFromOrigin = 0.37f;
+    const auto mvpMatrixNoScale = projectionMatrix * viewMatrix * modelMatrixNoScale;
+
+    auto& text = resources.get3DViewAxisText();
+
+    // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+    text.renderScreenSpace(resources, "X", UIColours::graphRed, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOrigin, 0.0f, 0.0f)) * axesScaleMatrix);
+
+    // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+    text.renderScreenSpace(resources, "Y", UIColours::graphGreen, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOrigin)) * axesScaleMatrix);
+
+    // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+    text.renderScreenSpace(resources, "Z", UIColours::graphBlue, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOrigin, 0.0f)) * axesScaleMatrix);
+
+    glEnable(GL_CULL_FACE); // restore cull state
+}
+
+void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& axesConventionRotation) const
+{
+    using namespace ::juce::gl;
+
+    const auto bounds = toOpenGLBounds(getBoundsInMainWindow()); // already accounts for context.getRenderingScale()
+    const auto& screenSpaceShader = resources.screenSpaceLitShader;
+    const auto& camera = resources.orbitCamera;
+
+    const auto modelMatrix = axesConventionRotation;
+    const auto viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)) * camera.getRotationMatrix(); // axes not affected by zoom, so this is a custom "camera" translation of -1 on the Z axis so the objects become visible and are not clipped out of view
+    const auto projectionMatrix = camera.getOrthogonalProjectionMatrix();
+
+    const double screenPixelScale = context.getRenderingScale();
+
+    // Use Normalized Device Coordinates (NDC) to position in top right corner of viewport
+    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(150.0f, 150.0f) * (float) screenPixelScale;
+    const glm::vec2 viewportPixelDimensions(bounds.getWidth(), bounds.getHeight());
+    const glm::vec2 pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
+    const glm::vec2 topRightNDC(1.0f, 1.0f);
+    const auto ndcMat = glm::translate(glm::mat4(1.0f), glm::vec3(topRightNDC - pixelOffsetNDC, 0.0f));
+
+    // Keep object constant size in screen pixels regardless of viewport size by scaling by the inverse of the screen scale
+    // Ref: https://community.khronos.org/t/draw-an-object-that-looks-the-same-size-regarles-the-distance-in-perspective-view/67804/6
+    const float objectSizeInPixels = 90.0f * (float) screenPixelScale;
+    const float screenHeightPixels = (float) bounds.getHeight();
+    glm::vec4 originInClipSpace = projectionMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); // get origin in normalized device coordinates
+    const float normalizedScreenScale = objectSizeInPixels / screenHeightPixels;
+    const float inverseScreenScale = normalizedScreenScale * originInClipSpace.w; // multiply by clip coordinate w to cancel out the division by w done by OpenGL via the viewport transform
+
+    screenSpaceShader.use();
+    screenSpaceShader.cameraPosition.set(camera.getPosition());
+    screenSpaceShader.isTextured.set(false);
+    screenSpaceShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
+    screenSpaceShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
+    screenSpaceShader.lightIntensity.set(1.0f);
+
+    screenSpaceShader.viewMatrix.set(viewMatrix);
+    screenSpaceShader.projectionMatrix.set(ndcMat * projectionMatrix);
+
+    // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+    const glm::mat4 xRotate = glm::mat4(1.0f);
+    const glm::mat4 xModel = modelMatrix * xRotate;
+    screenSpaceShader.materialColour.setRGBA(UIColours::graphRed);
+    screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
+    screenSpaceShader.modelMatrix.set(xModel);
+    screenSpaceShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(xModel)));
+    resources.arrow.render();
+
+    // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+    const glm::mat4 yRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    const glm::mat4 yModel = modelMatrix * yRotate;
+    screenSpaceShader.materialColour.setRGBA(UIColours::graphGreen);
+    screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
+    screenSpaceShader.modelMatrix.set(yModel);
+    screenSpaceShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(yModel)));
+    resources.arrow.render();
+
+    // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+    const glm::mat4 zRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    const glm::mat4 zModel = modelMatrix * zRotate;
+    screenSpaceShader.materialColour.setRGBA(UIColours::graphBlue);
+    screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
+    screenSpaceShader.modelMatrix.set(zModel);
+    screenSpaceShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(zModel)));
+    resources.arrow.render();
+
+    // Text labels XYZ
+    // TODO: Maybe Test can be refactored so disable culling is not necessary. I bet winding order on text planes is backwards! Needs to be counter-clockwize to be visible facing user. I bet culprit is GLResources::createTextBuffer, just fix to be correct winding order.
+    glDisable(GL_CULL_FACE); // text needs disabled culling
+
+    renderer.getResources().textShader.use();
+
+    const auto textDistanceFromOrigin = 1.3f;
+
+    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOrigin * inverseScreenScale, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+    const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOrigin * inverseScreenScale)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOrigin * inverseScreenScale, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+
+    const auto textTransform = ndcMat * projectionMatrix * viewMatrix * modelMatrix;
+
+    auto& text = resources.get3DViewAxisText();
+    text.renderScreenSpace(resources, "X", UIColours::graphRed, textTransform * xTranslate);
+    text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
+    text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
+
+    glEnable(GL_CULL_FACE); // restore cull state
 }
