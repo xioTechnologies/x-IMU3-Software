@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <regex>
 
 class CommandMessage
 {
@@ -34,5 +35,10 @@ public:
     operator const std::string&() const
     {
         return json;
+    }
+
+    static juce::String normaliseKey(const juce::String& key)
+    {
+        return std::regex_replace(key.toLowerCase().toStdString(), std::regex("[^0-9a-z]"), "");
     }
 };

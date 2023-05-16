@@ -25,8 +25,6 @@ private:
     const std::vector<juce::ValueTree> settingsVector = flatten(settingsTree);
     DeviceSettingsItem rootItem { settingsTree, settingsVector };
 
-    static juce::String normaliseKey(const juce::String& key);
-
     static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 
     juce::ValueTree findSetting(const juce::String& key) const;
