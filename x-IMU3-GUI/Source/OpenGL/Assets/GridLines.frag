@@ -1,3 +1,5 @@
+#version 330 core
+
 in float colourScale;
 out vec4 colourFrag;
 uniform vec4 colour;

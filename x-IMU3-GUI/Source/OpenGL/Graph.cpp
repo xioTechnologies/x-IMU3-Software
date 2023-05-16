@@ -1,7 +1,7 @@
 #include "../Convert.h"
 #include "../CustomLookAndFeel.h"
-#include "AxesRange.h"
 #include "Graph.h"
+#include "Graph/AxesRange.h"
 
 Graph::Settings::Settings(const bool horizontalAutoscale, const float horizontalMin, const float horizontalMax,
                           const bool verticalAutoscale, const float verticalMin, const float verticalMax)
@@ -83,8 +83,8 @@ void Graph::render()
 
     const auto innerBounds = toOpenGLBounds(padded(getBoundsInMainWindow()));
 
-    renderer.turnCullingOff();
-    renderer.turnDepthTestOff();
+    juce::gl::glDisable(juce::gl::GL_CULL_FACE);
+    juce::gl::glDisable(juce::gl::GL_DEPTH_TEST);
 
     juce::gl::glDisable(juce::gl::GL_LINE_SMOOTH);
     gridLines.render(renderer.getResources(), innerBounds, axesRange, juce::Point<GLfloat>(2.0f / innerBounds.getWidth(), 2.0f / innerBounds.getHeight()));
@@ -120,8 +120,8 @@ void Graph::render()
         juce::gl::glViewport(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
         resources.textShader.use();
 
+        resources.textShader.colour.setRGBA(colour);
         text.setText(label);
-        text.setColour(colour);
 
         const juce::Point<GLfloat> pixelSize(2.0f / bounds.getWidth(), 2.0f / bounds.getHeight());
         text.setScale({ rotated ? pixelSize.y : pixelSize.x, rotated ? pixelSize.x : pixelSize.y });

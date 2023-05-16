@@ -18,7 +18,7 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
     const char* directory;
     const char* name;
     PyObject* connections_list;
-    
+
     if (PyArg_ParseTuple(args, "ssO!", &directory, &name, &PyList_Type, &connections_list) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);

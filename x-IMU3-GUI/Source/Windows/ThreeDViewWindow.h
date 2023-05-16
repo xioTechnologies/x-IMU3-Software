@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../DevicePanel/DevicePanel.h"
-#include "../OpenGL/GLRenderer.h"
+#include "../OpenGL/Common/GLRenderer.h"
 #include "../OpenGL/ThreeDView.h"
 #include "../Widgets/PopupMenuHeader.h"
 #include "../Widgets/SimpleLabel.h"

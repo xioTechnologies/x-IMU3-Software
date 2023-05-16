@@ -105,10 +105,10 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
         return;
     }
 
-    const auto scale = -0.5f;
+    const auto scale = 0.5f;
 
-    settings.azimuth = wrapAngle(settings.azimuth + (scale * (mouseEvent.getPosition().getX() - lastMousePosition.getX())));
-    settings.elevation = wrapAngle(settings.elevation + (scale * (mouseEvent.getPosition().getY() - lastMousePosition.getY())));
+    settings.cameraAzimuth = wrapAngle(settings.cameraAzimuth + (scale * (mouseEvent.getPosition().getX() - lastMousePosition.getX())));
+    settings.cameraElevation = wrapAngle(settings.cameraElevation + (scale * (mouseEvent.getPosition().getY() - lastMousePosition.getY())));
     threeDView.setSettings(settings);
 
     lastMousePosition = mouseEvent.getPosition();
@@ -116,7 +116,7 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 
 void ThreeDViewWindow::mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel)
 {
-    settings.zoom = juce::jlimit(-4.0f, -1.0f, settings.zoom + (0.5f * wheel.deltaY));
+    settings.cameraOrbitDistance = juce::jlimit(1.0f, 4.0f, settings.cameraOrbitDistance + (0.5f * -wheel.deltaY));
     threeDView.setSettings(settings);
 }
 
@@ -152,9 +152,9 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         settings.isModelEnabled = !settings.isModelEnabled;
         threeDView.setSettings(settings);
     });
-    menu.addItem("Stage", true, settings.isStageEnabled, [&]
+    menu.addItem("World", true, settings.isWorldEnabled, [&]
     {
-        settings.isStageEnabled = !settings.isStageEnabled;
+        settings.isWorldEnabled = !settings.isWorldEnabled;
         threeDView.setSettings(settings);
     });
     menu.addItem("Axes", true, settings.isAxesEnabled, [&]

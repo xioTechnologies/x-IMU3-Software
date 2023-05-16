@@ -1,3 +1,5 @@
+#version 330 core
+
 in vec4 position;
 out float colourScale;
 

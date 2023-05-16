@@ -1,3 +1,5 @@
+#version 330 core
+
 in vec2 position;
 uniform vec4 window;
 uniform vec4 offsetAndScale;
