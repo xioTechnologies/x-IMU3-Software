@@ -56,6 +56,11 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipRead
 void DeviceSettings::setValue(const CommandMessage& response)
 {
     auto setting = findSetting(response.key);
+    if (setting.isValid() == false)
+    {
+        return;
+    }
+
     if (setting[DeviceSettingsIDs::value] != response.value)
     {
         setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
@@ -66,7 +71,13 @@ void DeviceSettings::setValue(const CommandMessage& response)
 
 void DeviceSettings::setStatus(const juce::String& key, const Setting::Status status)
 {
-    findSetting(key).setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
+    auto setting = findSetting(key);
+    if (setting.isValid() == false)
+    {
+        return;
+    }
+
+    setting.setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
 }
 
 juce::String DeviceSettings::normaliseKey(const juce::String& key)
