@@ -10,7 +10,14 @@ pub fn run() {
     if helpers::ask_question("Search for connections?") {
         println!("Searching for connections");
 
-        let messages = NetworkAnnouncement::new().get_messages_after_short_delay();
+        let network_announcement = NetworkAnnouncement::new();
+
+        if network_announcement.is_err() {
+            println!("Unable to open network announcement socket");
+            return;
+        }
+
+        let messages = network_announcement.unwrap().get_messages_after_short_delay();
 
         if messages.is_empty() {
             println!("No UDP connections available");

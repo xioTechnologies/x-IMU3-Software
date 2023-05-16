@@ -21,6 +21,11 @@ namespace ximu3
             XIMU3_network_announcement_free(networkAnnouncement);
         }
 
+        XIMU3_Result getResult()
+        {
+            return XIMU3_network_announcement_get_result(networkAnnouncement);
+        }
+
         uint64_t addCallback(std::function<void(XIMU3_NetworkAnnouncementMessage)>& callback)
         {
             return XIMU3_network_announcement_add_callback(networkAnnouncement, Helpers::wrapCallable<XIMU3_NetworkAnnouncementMessage>(callback), &callback);

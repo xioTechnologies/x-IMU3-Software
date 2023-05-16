@@ -9,9 +9,18 @@ void UdpConnection()
     {
         printf("Searching for connections\n");
 
-        XIMU3_NetworkAnnouncement* const network_announcement = XIMU3_network_announcement_new();
-        const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(network_announcement);
-        XIMU3_network_announcement_free(network_announcement);
+        XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
+
+        if (XIMU3_network_announcement_get_result(networkAnnouncement) != XIMU3_ResultOk)
+        {
+            printf("Unable to open network announcement socket\n");
+            XIMU3_network_announcement_free(networkAnnouncement);
+            return;
+        }
+
+        const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(networkAnnouncement);
+
+        XIMU3_network_announcement_free(networkAnnouncement);
 
         if (messages.length == 0)
         {

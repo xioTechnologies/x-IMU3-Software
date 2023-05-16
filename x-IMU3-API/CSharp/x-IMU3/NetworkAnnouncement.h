@@ -25,6 +25,11 @@ namespace Ximu3
             ximu3::XIMU3_network_announcement_free(networkAnnouncement);
         }
 
+        Result GetResult()
+        {
+            return (Result)ximu3::XIMU3_network_announcement_get_result(networkAnnouncement);
+        }
+
         array<NetworkAnnouncementMessage^>^ GetMessages()
         {
             return NetworkAnnouncementMessage::ToArrayAndFree(ximu3::XIMU3_network_announcement_get_messages(networkAnnouncement));
