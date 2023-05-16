@@ -46,6 +46,7 @@ prefix = "XIMU3_"
 "NetworkAnnouncementC" = "NetworkAnnouncement"
 "DeviceC" = "Device"
 "PingResponseC" = "PingResponse"
+"DataLoggerC" = "DataLogger"
 
 [export.mangle]
 

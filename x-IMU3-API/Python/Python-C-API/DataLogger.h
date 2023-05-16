@@ -18,9 +18,8 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
     const char* directory;
     const char* name;
     PyObject* connections_list;
-    PyObject* callable;
-
-    if (PyArg_ParseTuple(args, "ssO!O:set_callback", &directory, &name, &PyList_Type, &connections_list, &callable) == 0)
+    
+    if (PyArg_ParseTuple(args, "ssO!", &directory, &name, &PyList_Type, &connections_list) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
@@ -48,25 +47,20 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
         connections_array[index] = ((Connection*) connection)->connection;
     }
 
-    if (PyCallable_Check(callable) == 0)
-    {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        return NULL;
-    }
-
-    Py_INCREF(callable); // this will never be destroyed (memory leak)
-
     DataLogger* const self = (DataLogger*) subtype->tp_alloc(subtype, 0);
-    self->data_logger = XIMU3_data_logger_new(directory, name, connections_array, length, result_callback, callable);
+    self->data_logger = XIMU3_data_logger_new(directory, name, connections_array, length);
     return (PyObject*) self;
 }
 
 static void data_logger_free(DataLogger* self)
 {
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_data_logger_free(self->data_logger);
-    Py_END_ALLOW_THREADS
+    XIMU3_data_logger_free(self->data_logger);
     Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject* data_logger_get_result(DataLogger* self, PyObject* args)
+{
+    return Py_BuildValue("i", XIMU3_data_logger_get_result(self->data_logger));
 }
 
 static PyObject* data_logger_log(PyObject* null, PyObject* args)
@@ -108,7 +102,8 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
 }
 
 static PyMethodDef data_logger_methods[] = {
-        { "log", (PyCFunction) data_logger_log, METH_VARARGS | METH_STATIC, "" },
+        { "get_result", (PyCFunction) data_logger_get_result, METH_NOARGS, "" },
+        { "log",        (PyCFunction) data_logger_log,        METH_VARARGS | METH_STATIC, "" },
         { NULL } /* sentinel */
 };
 

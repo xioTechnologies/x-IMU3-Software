@@ -1,25 +1,31 @@
-use std::os::raw::{c_char, c_void};
+use std::os::raw::c_char;
 use crate::connection::*;
 use crate::data_logger::*;
-use crate::ffi::callback::*;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
 
-#[no_mangle]
-pub extern "C" fn XIMU3_data_logger_new(directory: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, callback: Callback<Result>, context: *mut c_void) -> *mut DataLogger<'static> {
-    let connections = connection_array_to_vec(connections, length);
-    let void_ptr = VoidPtr(context);
-    Box::into_raw(Box::new(DataLogger::new(char_ptr_to_str(directory), char_ptr_to_str(name), connections, Box::new(move |result| {
-        match result {
-            Ok(_) => callback(Result::Ok, void_ptr.0),
-            Err(_) => callback(Result::Error, void_ptr.0),
-        }
-    }))))
+pub struct DataLoggerC {
+    internal: core::result::Result<DataLogger<'static>, ()>,
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLogger) {
+pub extern "C" fn XIMU3_data_logger_new(directory: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32) -> *mut DataLoggerC {
+    let connections = connection_array_to_vec(connections, length);
+    Box::into_raw(Box::new(DataLoggerC { internal: DataLogger::new(char_ptr_to_str(directory), char_ptr_to_str(name), connections) }))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
     unsafe { Box::from_raw(data_logger) };
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> Result {
+    let data_logger: &DataLoggerC = unsafe { &*data_logger };
+    match data_logger.internal {
+        Ok(_) => Result::Ok,
+        Err(_) => Result::Error,
+    }
 }
 
 #[no_mangle]

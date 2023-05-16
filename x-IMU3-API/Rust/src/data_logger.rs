@@ -16,7 +16,22 @@ pub struct DataLogger<'a> {
 }
 
 impl DataLogger<'_> {
-    pub fn new<'a>(directory: &str, name: &str, connections: Vec<&'a Connection>, closure: Box<dyn FnOnce(Result<(), ()>) + Send>) -> DataLogger<'a> {
+    pub fn new<'a>(directory: &str, name: &str, connections: Vec<&'a Connection>) -> Result<DataLogger<'a>, ()> {
+
+        // Create root directory
+        if Path::new(directory).exists() == false {
+            return Err(());
+        }
+
+        let root = Path::new(directory).join(name);
+
+        if Path::new(&root).exists() {
+            return Err(());
+        }
+
+        if std::fs::create_dir_all(&root).is_err() {
+            return Err(());
+        }
 
         // Initialise structure
         let mut data_logger = DataLogger {
@@ -25,24 +40,6 @@ impl DataLogger<'_> {
             in_progress: Arc::new(Mutex::new(false)),
             end_of_file: Arc::new(Mutex::new(false)),
         };
-
-        // Create root directory
-        if Path::new(directory).exists() == false {
-            closure(Err(()));
-            return data_logger;
-        }
-
-        let root = Path::new(directory).join(name);
-
-        if Path::new(&root).exists() {
-            closure(Err(()));
-            return data_logger;
-        }
-
-        if std::fs::create_dir_all(&root).is_err() {
-            closure(Err(()));
-            return data_logger;
-        }
 
         // Create connection directories
         let mut paths = Vec::new();
@@ -136,7 +133,6 @@ impl DataLogger<'_> {
                 }
             }
 
-            closure(Ok(()));
             *in_progress.lock().unwrap() = false;
         });
 
@@ -145,21 +141,17 @@ impl DataLogger<'_> {
             connection.send_commands_async(vec!["{\"ping\":null}", "{\"time\":null}"], 4, 200, Box::new(|_| {}));
         }
 
-        data_logger
+        Ok(data_logger)
     }
 
     pub fn log(directory: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> Result<(), ()> {
-        let (sender, receiver) = crossbeam::channel::unbounded();
-
-        let data_logger = DataLogger::new(directory, name, connections, Box::new(move |result| {
-            sender.send(result).ok();
-        }));
+        let data_logger = DataLogger::new(directory, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
 
         drop(data_logger);
 
-        receiver.recv().unwrap()
+        Ok(())
     }
 }
 

@@ -14,14 +14,19 @@ namespace Ximu3
     public ref class DataLogger
     {
     public:
-        DataLogger(String^ directory, String^ name, array<Connection^>^ connections, EventHandler<DataLoggerEventArgs^>^ dataLoggerEvent) : dataLoggerEvent{ dataLoggerEvent }
+        DataLogger(String^ directory, String^ name, array<Connection^>^ connections)
         {
             const auto connectionsC = toConnectionsC(connections);
-            dataLogger = ximu3::XIMU3_data_logger_new(Helpers::ToCharPtr(directory), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size(), static_cast<ximu3::XIMU3_CallbackResult>(Marshal::GetFunctionPointerForDelegate(dataLoggerDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
+            dataLogger = ximu3::XIMU3_data_logger_new(Helpers::ToCharPtr(directory), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size());
         }
 
         ~DataLogger() {
             ximu3::XIMU3_data_logger_free(dataLogger);
+        }
+
+        Result GetResult()
+        {
+            return (Result)ximu3::XIMU3_data_logger_get_result(dataLogger);
         }
 
         static Result Log(String^ directory, String^ name, array<Connection^>^ connections, int seconds)
@@ -35,8 +40,6 @@ namespace Ximu3
 
         GCHandle thisHandle = GCHandle::Alloc(this, GCHandleType::Weak);
 
-        EventHandler<DataLoggerEventArgs^>^ dataLoggerEvent;
-
         static std::vector<ximu3::XIMU3_Connection*> toConnectionsC(array<Connection^>^ connections) {
             std::vector<ximu3::XIMU3_Connection*> connectionsC(connections->Length);
             for (size_t index = 0; index < connectionsC.size(); index++)
@@ -45,15 +48,5 @@ namespace Ximu3
             }
             return connectionsC;
         }
-
-        delegate void DataLoggerDelegate(ximu3::XIMU3_Result data, void* context);
-
-        static void DataLoggerCallback(ximu3::XIMU3_Result data, void* context)
-        {
-            auto sender = GCHandle::FromIntPtr(IntPtr(context)).Target;
-            static_cast<DataLogger^>(sender)->dataLoggerEvent(sender, gcnew DataLoggerEventArgs(Result(data)));
-        }
-
-        const DataLoggerDelegate^ dataLoggerDelegate = gcnew DataLoggerDelegate(DataLoggerCallback);
     };
 }

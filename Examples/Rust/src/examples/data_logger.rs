@@ -26,13 +26,17 @@ pub fn run() {
     let name = "Data Logger Example";
 
     if helpers::ask_question("Use async implementation?") {
-        let _data_logger = DataLogger::new(directory, name, connections.iter().collect(), Box::new(|result| {
-            print_result(result);
-        }));
+        let data_logger = DataLogger::new(directory, name, connections.iter().collect());
 
-        std::thread::sleep(std::time::Duration::from_secs(3));
+        if data_logger.is_ok() {
+            std::thread::sleep(std::time::Duration::from_secs(3));
+        }
+
+        print_result(&data_logger);
+
+        drop(data_logger);
     } else {
-        print_result(DataLogger::log(directory, name, connections.iter().collect(), 3));
+        print_result(&DataLogger::log(directory, name, connections.iter().collect(), 3));
     }
 
     // Close all connections
@@ -41,7 +45,7 @@ pub fn run() {
     }
 }
 
-fn print_result(result: Result<(), ()>) {
+fn print_result<T>(result: &Result<T, ()>) {
     match result {
         Ok(_) => println!("Ok"),
         Err(_) => println!("Error"),
