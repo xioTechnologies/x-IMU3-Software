@@ -32,8 +32,16 @@ public:
         const auto name = "Data Logger Example";
         if (helpers::askQuestion("Use async implementation?"))
         {
-            auto dataLogger = ximu3::DataLogger(directory, name, toRawPointers(connections), callback);
-            std::this_thread::sleep_for(std::chrono::seconds(3));
+            ximu3::DataLogger dataLogger(directory, name, toRawPointers(connections));
+
+            const auto result = dataLogger.getResult();
+
+            if (result == ximu3::XIMU3_ResultOk)
+            {
+                std::this_thread::sleep_for(std::chrono::seconds(3));
+            }
+
+            printResult(result);
         }
         else
         {
@@ -57,11 +65,6 @@ private:
         }
         return rawPointers;
     }
-
-    std::function<void(const ximu3::XIMU3_Result)> callback = [](const auto& result)
-    {
-        printResult(result);
-    };
 
     static void printResult(const ximu3::XIMU3_Result result)
     {

@@ -70,6 +70,7 @@ private:
     };
 
     DataLoggerSettingsDialog::Settings dataLoggerSettings;
+    juce::String dataLoggerName;
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
 

@@ -4,8 +4,6 @@
 
 #define MAX_NUMBER_OF_CONNECTION (8)
 
-static void Callback(const XIMU3_Result result, void* context);
-
 static void PrintResult(const XIMU3_Result result);
 
 void DataLogger()
@@ -44,13 +42,22 @@ void DataLogger()
 
     if (AskQuestion("Use async implementation?"))
     {
-        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(directory, name, connections, numberOfConnections, Callback, NULL);
-        Wait(3);
+        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(directory, name, connections, numberOfConnections);
+
+        const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
+
+        if (result == XIMU3_ResultOk)
+        {
+            Wait(3);
+        }
+
+        PrintResult(result);
+
         XIMU3_data_logger_free(data_logger);
     }
     else
     {
-        XIMU3_data_logger_log(directory, name, connections, numberOfConnections, 3);
+        PrintResult(XIMU3_data_logger_log(directory, name, connections, numberOfConnections, 3));
     }
 
     // Close all connections
@@ -59,11 +66,6 @@ void DataLogger()
         XIMU3_connection_close(connections[index]);
         XIMU3_connection_free(connections[index]);
     }
-}
-
-static void Callback(const XIMU3_Result result, void* context)
-{
-    PrintResult(result);
 }
 
 static void PrintResult(const XIMU3_Result result)

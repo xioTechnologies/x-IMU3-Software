@@ -445,9 +445,11 @@ const char *XIMU3_file_connection_info_to_string(struct XIMU3_FileConnectionInfo
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 
-struct XIMU3_DataLogger *XIMU3_data_logger_new(const char *directory, const char *name, struct XIMU3_Connection *const *connections, uint32_t length, XIMU3_CallbackResult callback, void *context);
+struct XIMU3_DataLogger *XIMU3_data_logger_new(const char *directory, const char *name, struct XIMU3_Connection *const *connections, uint32_t length);
 
 void XIMU3_data_logger_free(struct XIMU3_DataLogger *data_logger);
+
+enum XIMU3_Result XIMU3_data_logger_get_result(struct XIMU3_DataLogger *data_logger);
 
 enum XIMU3_Result XIMU3_data_logger_log(const char *directory, const char *name, struct XIMU3_Connection *const *connections, uint32_t length, uint32_t seconds);
 

@@ -91,6 +91,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             dataLogger.reset();
             stopTimer();
             dataLoggerStartStopButton.setToggleState(false, juce::dontSendNotification);
+            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName).revealToUser();
             return;
         }
 
@@ -100,13 +101,13 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 dataLoggerSettings = dialog->getSettings();
 
-                auto name = dataLoggerSettings.name;
+                dataLoggerName = dataLoggerSettings.name;
                 if (dataLoggerSettings.appendDateAndTime)
                 {
-                    name += juce::Time::getCurrentTime().formatted(" %Y-%m-%d %H-%M-%S");
+                    dataLoggerName += juce::Time::getCurrentTime().formatted(" %Y-%m-%d %H-%M-%S");
                 }
 
-                const auto startDataLogger = [&, name]
+                const auto startDataLogger = [&]
                 {
                     std::vector<ximu3::Connection*> connections;
                     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
@@ -114,24 +115,11 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                         connections.push_back(&devicePanel->getConnection());
                     }
 
-                    bool failed = false;
-
                     dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
-                                                                     name.toStdString(),
-                                                                     connections,
-                                                                     [&, name](ximu3::XIMU3_Result result)
-                                                                     {
-                                                                         if (result == ximu3::XIMU3_ResultOk)
-                                                                         {
-                                                                             juce::File(dataLoggerSettings.directory).getChildFile(name).revealToUser();
-                                                                         }
-                                                                         else
-                                                                         {
-                                                                             failed = true; // callback will be on same thread if data logger fails
-                                                                         }
-                                                                     });
+                                                                     dataLoggerName.toStdString(),
+                                                                     connections);
 
-                    if (failed)
+                    if (dataLogger->getResult() != ximu3::XIMU3_ResultOk)
                     {
                         DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."));
                         return;
@@ -142,10 +130,10 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
                 };
 
-                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(name);
+                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName);
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(name), [directory, startDataLogger]
+                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerName), [directory, startDataLogger]
                     {
                         directory.deleteRecursively();
                         startDataLogger();
