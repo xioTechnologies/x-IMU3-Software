@@ -3,10 +3,10 @@
 #include <BinaryData.h>
 #include "OpenGL/Common/Shader.h"
 
-class GridLinesShader : public Shader
+class GraphGridShader : public Shader
 {
 public:
-    explicit GridLinesShader(juce::OpenGLContext& context_) : Shader("GridLines", context_, BinaryData::GridLines_vert, BinaryData::GridLines_frag)
+    explicit GraphGridShader(juce::OpenGLContext& context_) : Shader("GraphGrid", context_, BinaryData::GraphGrid_vert, BinaryData::GraphGrid_frag)
     {
     }
 
