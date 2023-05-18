@@ -5,8 +5,8 @@
 #include "OpenGL/Common/Text.h"
 #include "OpenGL/Graph/Buffer.h"
 #include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/Grid3DShader.h"
-#include "OpenGL/Shaders/GridLinesShader.h"
+#include "OpenGL/Shaders/WorldGridShader.h"
+#include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/Shaders/ScreenSpaceLitShader.h"
 #include "OpenGL/Shaders/TextShader.h"
@@ -37,8 +37,6 @@ public:
 
     Text& getGraphAxisLabelText();
 
-    Text& get3DViewLoadingText();
-
     Text& get3DViewAxisText();
 
     // Buffers
@@ -52,14 +50,13 @@ public:
     Model arrow { context };
     Model board { context };
     Model housing { context };
-    Model teapot { context };
     Model custom { context };
     PlaneModel plane;
 
     // Shaders
     const GraphDataShader graphDataShader { context };
-    const GridLinesShader gridLinesShader { context };
-    const Grid3DShader grid3DShader { context };
+    const GraphGridShader gridLinesShader { context };
+    const WorldGridShader grid3DShader { context };
     const TextShader textShader { context };
     const LitShader threeDViewShader { context };
     const UnlitShader unlitShader { context };

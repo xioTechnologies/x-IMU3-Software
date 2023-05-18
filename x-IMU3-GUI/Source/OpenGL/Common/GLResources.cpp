@@ -22,8 +22,7 @@ GLResources::GLResources(juce::OpenGLContext& context_) : context(context_)
     const auto& [housingObj, housingMtl] = unzipObjAndMtl(BinaryData::xIMU3_Housing_zip, BinaryData::xIMU3_Housing_zipSize, "x-IMU3 Housing");
     housing.setModel(housingObj, housingMtl);
 
-    arrow.setModel(BinaryData::Arrow2_obj, "");
-    teapot.setModel(BinaryData::Teapot_obj, "");
+    arrow.setModel(BinaryData::Arrow_obj, "");
 
     compassTexture.loadImage(juce::ImageFileFormat::loadFrom(BinaryData::Compass_png, BinaryData::Compass_pngSize));
 
@@ -63,17 +62,6 @@ Text& GLResources::getGraphAxisLabelText()
         axisLabelText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSize);
     }
     return *axisLabelText;
-}
-
-Text& GLResources::get3DViewLoadingText()
-{
-    const auto fontSize = (GLuint) juce::roundToInt(24 * context.getRenderingScale());
-    if (infoText == nullptr || infoText->getFontSize() != fontSize)
-    {
-        infoText = std::make_unique<Text>(false);
-        infoText->loadFont(BinaryData::MontserratBold_ttf, BinaryData::MontserratBold_ttfSize, fontSize);
-    }
-    return *infoText;
 }
 
 Text& GLResources::get3DViewAxisText()
