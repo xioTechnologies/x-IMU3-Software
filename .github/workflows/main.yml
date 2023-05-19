@@ -155,7 +155,7 @@ jobs:
           CIBW_ARCHS: all
           CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
           CIBW_BEFORE_BUILD: pip install numpy
-          CIBW_BEFORE_BUILD_LINUX: pip install numpy && yum update && yum install -y libudev-devel
+          CIBW_BEFORE_BUILD_LINUX: pip install numpy && yum install -y libudev-devel
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Publish Python package
