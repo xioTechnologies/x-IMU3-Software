@@ -67,7 +67,9 @@ private:
 
     void renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
 
-    void renderAxesWorldSpace(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
+    void renderAxesInstance(GLResources& resources, const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const;
 
-    void renderAxesScreenSpace(GLResources& resources, const glm::mat4& axesConventionRotation) const;
+    void renderAxesForDeviceOrientation(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
+
+    void renderAxesForWorldOrientation(GLResources& resources, const glm::mat4& axesConventionRotation) const;
 };
