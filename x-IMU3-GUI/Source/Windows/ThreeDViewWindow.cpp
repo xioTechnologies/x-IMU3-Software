@@ -157,6 +157,11 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         settings.isWorldEnabled = !settings.isWorldEnabled;
         threeDView.setSettings(settings);
     });
+    menu.addItem("Compass", true, settings.isCompassEnabled, [&]
+    {
+        settings.isCompassEnabled = !settings.isCompassEnabled;
+        threeDView.setSettings(settings);
+    });
     menu.addItem("Axes", true, settings.isAxesEnabled, [&]
     {
         settings.isAxesEnabled = !settings.isAxesEnabled;

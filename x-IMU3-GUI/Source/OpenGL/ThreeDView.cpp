@@ -9,6 +9,7 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     cameraOrbitDistance = other.cameraOrbitDistance.load();
     isModelEnabled = other.isModelEnabled.load();
     isWorldEnabled = other.isWorldEnabled.load();
+    isCompassEnabled = other.isCompassEnabled.load();
     isAxesEnabled = other.isAxesEnabled.load();
     model = other.model.load();
     axesConvention = other.axesConvention.load();
@@ -75,6 +76,11 @@ void ThreeDView::render()
     if (settings.isWorldEnabled)
     {
         renderWorldGrid(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
+    }
+
+    if (settings.isCompassEnabled)
+    {
+        renderCompass(resources, projectionMatrix, viewMatrix, floorHeight);
     }
 
     if (settings.isAxesEnabled)
@@ -155,7 +161,7 @@ void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projec
 {
     using namespace ::juce::gl;
 
-    glDisable(GL_CULL_FACE); // allow front and back face of grid and compass planes to be seen
+    glDisable(GL_CULL_FACE); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
@@ -164,10 +170,19 @@ void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projec
     resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotationGLM);
     resources.plane.render();
 
-    // Compass - will be moved to new HUD element soon
-    // Rendered in two plane layers, one above grid, one below grid. We could render only 1 plane and do manual sorting for transparent objects (must draw further objects first), but this code will be replaced soon so not worth the optimization.
-    const auto compassOffsetFromGrid = 0.001f;
-    const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.65f));
+    glEnable(GL_CULL_FACE); // restore cull state
+}
+
+void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
+{
+    using namespace ::juce::gl;
+
+    glDisable(GL_CULL_FACE); // allow front and back face of compass to be seen
+
+    // Compass
+    // Rendered in two plane layers, one above grid, one below grid.
+    const auto compassOffsetFromGrid = 0.005f;
+    const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     const auto compassTopModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight + compassOffsetFromGrid, 0.0f)) * compassRotateScale;
     const auto compassBottomModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight - compassOffsetFromGrid, 0.0f)) * compassRotateScale;
     auto& unlitShader = resources.unlitShader;
