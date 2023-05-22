@@ -264,10 +264,13 @@ void ThreeDView::renderAxesInstance(GLResources& resources, const glm::mat4& mod
     renderer.getResources().textShader.use();
 
     const auto textDistanceFromOrigin = 1.3f;
+    const auto textDistanceFromOriginZ = textDistanceFromOrigin * inverseScreenScale;
+    const auto paddingOffset = 0.06f; // account for distance of glyph from render square edge
+    const auto textDistanceFromOriginXY = (textDistanceFromOrigin - paddingOffset) * inverseScreenScale;
 
-    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOrigin * inverseScreenScale, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
-    const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOrigin * inverseScreenScale)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
-    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOrigin * inverseScreenScale, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+    const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOriginXY)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
 
     const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 
@@ -290,7 +293,7 @@ void ThreeDView::renderAxesForWorldOrientation(GLResources& resources, const glm
     const double screenPixelScale = context.getRenderingScale();
 
     // Use Normalized Device Coordinates (NDC) to position in top right corner of viewport
-    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(150.0f, 150.0f) * (float) screenPixelScale;
+    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(148.0f, 152.0f) * (float) screenPixelScale;
     const glm::vec2 viewportPixelDimensions(bounds.getWidth(), bounds.getHeight());
     const glm::vec2 pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
     const glm::vec2 topRightNDC(1.0f, 1.0f);
