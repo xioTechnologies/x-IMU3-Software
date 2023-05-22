@@ -2,7 +2,7 @@
 
 using namespace ::juce::gl;
 
-Buffer::Buffer(juce::OpenGLContext& context) : glContext(context)
+Buffer::Buffer()
 {
     vao = 0;
     ebo = 0;
