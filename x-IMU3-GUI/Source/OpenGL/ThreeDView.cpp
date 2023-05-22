@@ -157,7 +157,7 @@ void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& project
     }
 }
 
-void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotationGLM, const float floorHeight)
+void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
 {
     using namespace ::juce::gl;
 
@@ -167,7 +167,7 @@ void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projec
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
     const auto translateGrid = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, floorHeight, 0.0f));
     resources.grid3DShader.use();
-    resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotationGLM);
+    resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotation);
     resources.plane.render();
 
     glEnable(GL_CULL_FACE); // restore cull state
