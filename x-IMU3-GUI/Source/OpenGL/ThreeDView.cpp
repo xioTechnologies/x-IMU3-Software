@@ -29,8 +29,6 @@ ThreeDView::~ThreeDView()
 
 void ThreeDView::render()
 {
-    using namespace ::juce::gl;
-
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
     auto& resources = renderer.getResources();
     auto& camera = resources.orbitCamera;
@@ -159,9 +157,7 @@ void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& project
 
 void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
 {
-    using namespace ::juce::gl;
-
-    glDisable(GL_CULL_FACE); // allow front and back face of grid to be seen
+    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
@@ -170,14 +166,12 @@ void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projec
     resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotation);
     resources.plane.render();
 
-    glEnable(GL_CULL_FACE); // restore cull state
+    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
 }
 
-void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
+void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotationGLM, const float floorHeight)
 {
-    using namespace ::juce::gl;
-
-    glDisable(GL_CULL_FACE); // allow front and back face of compass to be seen
+    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // allow front and back face of compass to be seen
 
     // Compass
     // Rendered in two plane layers, one above grid, one below grid.
@@ -196,7 +190,7 @@ void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projecti
     resources.plane.render();
     resources.compassTexture.unbind();
 
-    glEnable(GL_CULL_FACE); // restore cull state
+    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
 }
 
 void ThreeDView::renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
@@ -213,7 +207,6 @@ void ThreeDView::renderAxes(GLResources& resources, const juce::Rectangle<int>& 
 // TODO: We may want to make these axes a constant size in screen pixels, like renderAxesScreenSpace(), so the size does not scale with the viewport. Test this out in practice, this current implementation may actually be better for the average use case.
 void ThreeDView::renderAxesWorldSpace(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
 {
-    using namespace ::juce::gl;
 
     const auto& threeDViewShader = resources.threeDViewShader;
     const auto& camera = resources.orbitCamera;
@@ -347,7 +340,7 @@ void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& 
 
     // Text labels XYZ
     // TODO: Maybe Test can be refactored so disable culling is not necessary. I bet winding order on text planes is backwards! Needs to be counter-clockwize to be visible facing user. I bet culprit is GLResources::createTextBuffer, just fix to be correct winding order.
-    glDisable(GL_CULL_FACE); // text needs disabled culling
+    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // text needs disabled culling
 
     renderer.getResources().textShader.use();
 
@@ -364,5 +357,5 @@ void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& 
     text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
     text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
 
-    glEnable(GL_CULL_FACE); // restore cull state
+    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
 }
