@@ -173,15 +173,15 @@ void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projecti
 {
     juce::gl::glDisable(juce::gl::GL_CULL_FACE); // allow front and back face of compass to be seen
 
-    // Compass
-    // Rendered in two plane layers, one above grid, one below grid.
+    // Compass - rendered in two plane layers, one above grid, one below grid.
     const auto compassOffsetFromGrid = 0.005f;
     const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     const auto compassTopModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight + compassOffsetFromGrid, 0.0f)) * compassRotateScale;
     const auto compassBottomModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight - compassOffsetFromGrid, 0.0f)) * compassRotateScale;
     auto& unlitShader = resources.unlitShader;
     unlitShader.use();
-    unlitShader.colour.set(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f)); // tint color to 80% brightness
+    const auto brightness = 0.8f;
+    unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
     unlitShader.isTextured.set(true);
     resources.compassTexture.bind();
     unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassTopModelMatrix); // top compass layer above grid
