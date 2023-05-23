@@ -133,8 +133,9 @@ void Text::setPosition(const juce::Vector3D<GLfloat>& position_)
 void Text::renderScreenSpace(GLResources& resources, const juce::String& label, const juce::Colour& colour, const glm::mat4& transform)
 {
     // Calculate Normalized Device Coordinates (NDC) transformation to place text at position on screen with a constant size
-    glm::vec2 ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of translation portion then divide by w of translation
-    const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, 0.0f));
+    glm::vec2 ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of matrix translation then divide by w of translation for constant size in pixels
+    const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
+    const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
     resources.textShader.colour.setRGBA(colour);
     resources.textShader.transformation.set(ndcMatrix);
