@@ -187,6 +187,37 @@ namespace GLUtil
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Uniform)
     };
 
+    static void setCapabilityEnabled(GLenum capability, GLboolean shouldBeEnabled)
+    {
+        if (shouldBeEnabled)
+        {
+            juce::gl::glEnable(capability);
+        }
+        else
+        {
+            juce::gl::glDisable(capability);
+        }
+    }
+
+    class ScopedCapability
+    {
+    public:
+        ScopedCapability(GLenum capability_, GLboolean shouldBeEnabled)
+        {
+            capability = capability_;
+            wasEnabled = juce::gl::glIsEnabled(capability);
+            setCapabilityEnabled(capability, shouldBeEnabled);
+        }
+
+        ~ScopedCapability()
+        {
+            setCapabilityEnabled(capability, wasEnabled);
+        }
+
+        GLenum capability;
+        GLboolean wasEnabled;
+    };
+
     // Keeping around in case we need this for later potential refactor
     /*
     static juce::Matrix3D<GLfloat> toJUCEMatrix(const glm::mat4 & matrix)

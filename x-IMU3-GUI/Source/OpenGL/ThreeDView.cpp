@@ -157,7 +157,7 @@ void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& project
 
 void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
 {
-    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // allow front and back face of grid to be seen
+    GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
@@ -165,13 +165,11 @@ void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projec
     resources.grid3DShader.use();
     resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotation);
     resources.plane.render();
-
-    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
 }
 
 void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
 {
-    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // allow front and back face of compass to be seen
+    GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
 
     // Compass - rendered in two plane layers, one above grid, one below grid.
     const auto compassOffsetFromGrid = 0.005f;
@@ -189,8 +187,6 @@ void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projecti
     unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassBottomModelMatrix); // bottom compass layer below grid
     resources.plane.render();
     resources.compassTexture.unbind();
-
-    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
 }
 
 void ThreeDView::renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
@@ -259,27 +255,27 @@ void ThreeDView::renderAxesInstance(GLResources& resources, const glm::mat4& mod
     resources.arrow.render();
 
     // Text labels XYZ
-    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // text needs disabled culling
+    {
+        GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // TODO: why does text needs culling disabled?
 
-    renderer.getResources().textShader.use();
+        renderer.getResources().textShader.use();
 
-    const auto textDistanceFromOrigin = 1.3f;
-    const auto textDistanceFromOriginZ = textDistanceFromOrigin * inverseScreenScale;
-    const auto paddingOffset = 0.06f; // account for distance of glyph from render square edge
-    const auto textDistanceFromOriginXY = (textDistanceFromOrigin - paddingOffset) * inverseScreenScale;
+        const auto textDistanceFromOrigin = 1.3f;
+        const auto textDistanceFromOriginZ = textDistanceFromOrigin * inverseScreenScale;
+        const auto paddingOffset = 0.06f; // account for distance of glyph from render square edge
+        const auto textDistanceFromOriginXY = (textDistanceFromOrigin - paddingOffset) * inverseScreenScale;
 
-    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
-    const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOriginXY)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
-    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+        const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+        const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOriginXY)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+        const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
 
-    const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
+        const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 
-    auto& text = resources.get3DViewAxisText();
-    text.renderScreenSpace(resources, "X", UIColours::graphRed, textTransform * xTranslate);
-    text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
-    text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
-
-    juce::gl::glEnable(juce::gl::GL_CULL_FACE); // restore cull state
+        auto& text = resources.get3DViewAxisText();
+        text.renderScreenSpace(resources, "X", UIColours::graphRed, textTransform * xTranslate);
+        text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
+        text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
+    }
 }
 
 void ThreeDView::renderAxesForDeviceOrientation(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
