@@ -66,7 +66,8 @@ void ThreeDView::render()
     // Draw scene
     renderer.refreshScreen(UIColours::backgroundDark, bounds);
 
-    if (settings.isModelEnabled)
+    bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
+    if (renderModelBehindWorldAndCompass && settings.isModelEnabled)
     {
         renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
@@ -79,6 +80,11 @@ void ThreeDView::render()
     if (settings.isCompassEnabled)
     {
         renderCompass(resources, projectionMatrix, viewMatrix, floorHeight);
+    }
+
+    if (!renderModelBehindWorldAndCompass && settings.isModelEnabled)
+    {
+        renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
     if (settings.isAxesEnabled)
@@ -166,22 +172,19 @@ void ThreeDView::renderWorld(GLResources& resources, const glm::mat4& projection
 
 void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
 {
-    GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
+    // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
+    GLUtil::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
+    GLUtil::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
 
-    // Compass - rendered in two plane layers, one above grid, one below grid.
-    const auto compassOffsetFromGrid = 0.005f;
     const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
-    const auto compassTopModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight + compassOffsetFromGrid, 0.0f)) * compassRotateScale;
-    const auto compassBottomModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight - compassOffsetFromGrid, 0.0f)) * compassRotateScale;
+    const auto compassModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight, 0.0f)) * compassRotateScale;
     auto& unlitShader = resources.unlitShader;
     unlitShader.use();
     const auto brightness = 0.8f;
     unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
     unlitShader.isTextured.set(true);
+    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassModelMatrix); // top compass layer above grid
     resources.compassTexture.bind();
-    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassTopModelMatrix); // top compass layer above grid
-    resources.plane.render();
-    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassBottomModelMatrix); // bottom compass layer below grid
     resources.plane.render();
     resources.compassTexture.unbind();
 }
@@ -253,7 +256,7 @@ void ThreeDView::renderAxesInstance(GLResources& resources, const glm::mat4& mod
 
     // Text labels XYZ
     {
-        GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // TODO: why does text needs culling disabled?
+        GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // TODO: why does Text need culling disabled?
 
         renderer.getResources().textShader.use();
 
