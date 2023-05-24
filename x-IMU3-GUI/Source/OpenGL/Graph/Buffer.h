@@ -49,7 +49,7 @@ public:
         UV = 2
     };
 
-    explicit Buffer(juce::OpenGLContext& context);
+    explicit Buffer();
 
     ~Buffer();
 
@@ -75,8 +75,6 @@ public:
     void render(DrawType drawType, const int numberOfVertices = -1);
 
 private:
-    juce::OpenGLContext& glContext;
-
     GLuint vao;
     bool hasEbo;
     GLuint ebo;

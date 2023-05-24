@@ -5,12 +5,12 @@
 #include "OpenGL/Common/Text.h"
 #include "OpenGL/Graph/Buffer.h"
 #include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/WorldGridShader.h"
 #include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/Shaders/ScreenSpaceLitShader.h"
 #include "OpenGL/Shaders/TextShader.h"
 #include "OpenGL/Shaders/UnlitShader.h"
+#include "OpenGL/Shaders/WorldGridShader.h"
 #include "OpenGL/ThreeDView/Model.h"
 #include "OpenGL/ThreeDView/OrbitCamera.h"
 #include "OpenGL/ThreeDView/PlaneModel.h"
@@ -40,11 +40,11 @@ public:
     Text& get3DViewAxisText();
 
     // Buffers
-    Buffer textBuffer { context };
-    Buffer gridBorderBuffer { context };
-    Buffer gridVerticalBuffer { context };
-    Buffer gridHorizontalBuffer { context };
-    Buffer graphDataBuffer { context };
+    Buffer textBuffer;
+    Buffer gridBorderBuffer;
+    Buffer gridVerticalBuffer;
+    Buffer gridHorizontalBuffer;
+    Buffer graphDataBuffer;
 
     // Models
     Model arrow { context };

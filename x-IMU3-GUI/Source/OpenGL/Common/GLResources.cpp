@@ -97,18 +97,20 @@ void GLResources::createGridBuffers()
 
 void GLResources::createTextBuffer()
 {
-    GLfloat vertices[] = { -0.5f, -0.5f, 0.0f,
-                           0.5f, -0.5f, 0.0f,
-                           0.5f, 0.5f, 0.0f,
-                           -0.5f, 0.5f, 0.0f };
+    // Oriented parallel to the screen on the XY plane of OpenGL's default coordinate system
+    GLfloat vertices[] = { -0.5f, -0.5f, 0.0f, // bottom left
+                           0.5f, -0.5f, 0.0f, // bottom right
+                           0.5f, 0.5f, 0.0f, // top right
+                           -0.5f, 0.5f, 0.0f }; // top left
 
-    GLfloat UVs[] = { 0.0f, 0.0f,
-                      1.0f, 0.0f,
-                      1.0f, 1.0f,
-                      0.0f, 1.0f };
+    GLfloat UVs[] = { 0.0f, 0.0f, // bottom left
+                      1.0f, 0.0f, // bottom right
+                      1.0f, 1.0f, // top right
+                      0.0f, 1.0f }; // top left
 
-    GLuint indices[] = { 0, 1, 3,
-                         3, 1, 2 };
+    // Triangles have counterclockwise winding order, so they are front-facing towards the screen
+    GLuint indices[] = { 0, 1, 3, // first triangle
+                         3, 1, 2 }; // second triangle
 
     textBuffer.create(6, true);
     textBuffer.fillEbo(indices, sizeof(indices), Buffer::multipleFill);

@@ -7,9 +7,10 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     cameraAzimuth = other.cameraAzimuth.load();
     cameraElevation = other.cameraElevation.load();
     cameraOrbitDistance = other.cameraOrbitDistance.load();
-    isModelEnabled = other.isModelEnabled.load();
     isWorldEnabled = other.isWorldEnabled.load();
+    isModelEnabled = other.isModelEnabled.load();
     isAxesEnabled = other.isAxesEnabled.load();
+    isCompassEnabled = other.isCompassEnabled.load();
     model = other.model.load();
     axesConvention = other.axesConvention.load();
     return *this;
@@ -28,8 +29,6 @@ ThreeDView::~ThreeDView()
 
 void ThreeDView::render()
 {
-    using namespace ::juce::gl;
-
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
     auto& resources = renderer.getResources();
     auto& camera = resources.orbitCamera;
@@ -67,14 +66,25 @@ void ThreeDView::render()
     // Draw scene
     renderer.refreshScreen(UIColours::backgroundDark, bounds);
 
-    if (settings.isModelEnabled)
+    bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
+    if (renderModelBehindWorldAndCompass && settings.isModelEnabled)
     {
-        renderIMUModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
+        renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
     if (settings.isWorldEnabled)
     {
-        renderWorldGrid(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
+        renderWorld(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
+    }
+
+    if (settings.isCompassEnabled)
+    {
+        renderCompass(resources, projectionMatrix, viewMatrix, floorHeight);
+    }
+
+    if (!renderModelBehindWorldAndCompass && settings.isModelEnabled)
+    {
+        renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
     if (settings.isAxesEnabled)
@@ -107,18 +117,15 @@ bool ThreeDView::isLoading() const
     {
         case Model::board:
             return renderer.getResources().board.isLoading();
-
         case Model::housing:
             return renderer.getResources().housing.isLoading();
-
         case Model::custom:
             return renderer.getResources().custom.isLoading();
     }
-
     return false;
 }
 
-void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
+void ThreeDView::renderModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
 {
     const auto& camera = resources.orbitCamera;
     const auto rotateModelFlat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
@@ -151,139 +158,56 @@ void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& project
     }
 }
 
-void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotationGLM, const float floorHeight)
+void ThreeDView::renderWorld(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
 {
-    using namespace ::juce::gl;
-
-    glDisable(GL_CULL_FACE); // allow front and back face of grid and compass planes to be seen
+    GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
     const auto translateGrid = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, floorHeight, 0.0f));
     resources.grid3DShader.use();
-    resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotationGLM);
+    resources.grid3DShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * translateGrid * scaleGrid * axesConventionRotation);
     resources.plane.render();
+}
 
-    // Compass - will be moved to new HUD element soon
-    // Rendered in two plane layers, one above grid, one below grid. We could render only 1 plane and do manual sorting for transparent objects (must draw further objects first), but this code will be replaced soon so not worth the optimization.
-    const auto compassOffsetFromGrid = 0.001f;
-    const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.65f));
-    const auto compassTopModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight + compassOffsetFromGrid, 0.0f)) * compassRotateScale;
-    const auto compassBottomModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight - compassOffsetFromGrid, 0.0f)) * compassRotateScale;
+void ThreeDView::renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
+{
+    // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
+    GLUtil::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
+    GLUtil::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
+
+    const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+    const auto compassModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight, 0.0f)) * compassRotateScale;
     auto& unlitShader = resources.unlitShader;
     unlitShader.use();
-    unlitShader.colour.set(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f)); // tint color to 80% brightness
+    const auto brightness = 0.8f;
+    unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
     unlitShader.isTextured.set(true);
+    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassModelMatrix); // top compass layer above grid
     resources.compassTexture.bind();
-    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassTopModelMatrix); // top compass layer above grid
-    resources.plane.render();
-    unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassBottomModelMatrix); // bottom compass layer below grid
     resources.plane.render();
     resources.compassTexture.unbind();
-
-    glEnable(GL_CULL_FACE); // restore cull state
 }
 
 void ThreeDView::renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
 {
     auto& text = resources.get3DViewAxisText();
     // TODO: Optimization: Only necessary IF bounds have changed . . .
-    // NOTE: This could be moved to GLRenderer, so text scale of whole app is always updated when viewport changes instead of manually updating it per GLComponent.
     text.setScale({ 1.0f / (float) viewportBounds.getWidth(), 1.0f / (float) viewportBounds.getHeight() }); // sets text scale to the normalized size of a screen pixel
 
-    renderAxesWorldSpace(resources, deviceRotation, axesConventionRotation); // attached to model, shows orientation
-    renderAxesScreenSpace(resources, axesConventionRotation); // in HUD top right
+    renderAxesForDeviceOrientation(resources, deviceRotation, axesConventionRotation); // attached to model
+    renderAxesForWorldOrientation(resources, axesConventionRotation); // in HUD top right
 }
 
-// TODO: We may want to make these axes a constant size in screen pixels, like renderAxesScreenSpace(), so the size does not scale with the viewport. Test this out in practice, this current implementation may actually be better for the average use case.
-void ThreeDView::renderAxesWorldSpace(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
+void ThreeDView::renderAxesInstance(GLResources& resources, const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const
 {
-    using namespace ::juce::gl;
-
-    const auto& threeDViewShader = resources.threeDViewShader;
-    const auto& camera = resources.orbitCamera;
-
-    const auto projectionMatrix = camera.getOrthogonalProjectionMatrix();
-    const auto viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)) * camera.getRotationMatrix(); // axes not affected by zoom, so this is a custom "camera" translation of -1 on the Z axis so the objects become visible and are not clipped out of view
-    const auto axesScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
-    const auto modelMatrixNoScale = axesConventionRotation * deviceRotation;
-    const auto modelMatrix = modelMatrixNoScale * axesScaleMatrix;
-
-    // Setup lighting for axes
-    threeDViewShader.use();
-    threeDViewShader.cameraPosition.set(camera.getPosition());
-    threeDViewShader.projectionMatrix.set(projectionMatrix);
-    threeDViewShader.isTextured.set(false);
-    threeDViewShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
-    threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
-    threeDViewShader.lightIntensity.set(1.0f);
-    threeDViewShader.viewMatrix.set(viewMatrix);
-
-    // X-Axis in x-io coordinate space aligns with OpenGL +X axis
-    const auto xModelMatrix = modelMatrix;
-    threeDViewShader.materialColour.setRGBA(UIColours::graphRed);
-    threeDViewShader.modelMatrix.set(xModelMatrix);
-    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(xModelMatrix)));
-    resources.arrow.render();
-
-    // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
-    const auto yModelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    threeDViewShader.materialColour.setRGBA(UIColours::graphGreen);
-    threeDViewShader.modelMatrix.set(yModelMatrix);
-    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(yModelMatrix)));
-    resources.arrow.render();
-
-    // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
-    const auto zModelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    threeDViewShader.materialColour.setRGBA(UIColours::graphBlue);
-    threeDViewShader.modelMatrix.set(zModelMatrix);
-    threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(zModelMatrix)));
-    resources.arrow.render();
-
-    // Text labels XYZ
-    // TODO: Maybe Test can be refactored so disable culling is not necessary. I bet winding order on text planes is backwards! Needs to be counter-clockwize to be visible facing user. I bet culprit is GLResources::createTextBuffer, just fix to be correct winding order.
-    glDisable(GL_CULL_FACE); // text needs disabled culling
-
-    renderer.getResources().textShader.use();
-
-    // TODO: Right now, because the text does not scale with viewport like the model axes, the text is not always a consistent distance from the arrows. We will likely refactor to have constant sized axes just like the screen space axes.
-    const auto textDistanceFromOrigin = 0.37f;
-    const auto mvpMatrixNoScale = projectionMatrix * viewMatrix * modelMatrixNoScale;
-
-    auto& text = resources.get3DViewAxisText();
-
-    // X-Axis in x-io coordinate space aligns with OpenGL +X axis
-    text.renderScreenSpace(resources, "X", UIColours::graphRed, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOrigin, 0.0f, 0.0f)) * axesScaleMatrix);
-
-    // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
-    text.renderScreenSpace(resources, "Y", UIColours::graphGreen, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOrigin)) * axesScaleMatrix);
-
-    // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
-    text.renderScreenSpace(resources, "Z", UIColours::graphBlue, mvpMatrixNoScale * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOrigin, 0.0f)) * axesScaleMatrix);
-
-    glEnable(GL_CULL_FACE); // restore cull state
-}
-
-void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& axesConventionRotation) const
-{
-    using namespace ::juce::gl;
-
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow()); // already accounts for context.getRenderingScale()
     const auto& screenSpaceShader = resources.screenSpaceLitShader;
     const auto& camera = resources.orbitCamera;
 
-    const auto modelMatrix = axesConventionRotation;
     const auto viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)) * camera.getRotationMatrix(); // axes not affected by zoom, so this is a custom "camera" translation of -1 on the Z axis so the objects become visible and are not clipped out of view
-    const auto projectionMatrix = camera.getOrthogonalProjectionMatrix();
 
     const double screenPixelScale = context.getRenderingScale();
-
-    // Use Normalized Device Coordinates (NDC) to position in top right corner of viewport
-    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(150.0f, 150.0f) * (float) screenPixelScale;
-    const glm::vec2 viewportPixelDimensions(bounds.getWidth(), bounds.getHeight());
-    const glm::vec2 pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
-    const glm::vec2 topRightNDC(1.0f, 1.0f);
-    const auto ndcMat = glm::translate(glm::mat4(1.0f), glm::vec3(topRightNDC - pixelOffsetNDC, 0.0f));
 
     // Keep object constant size in screen pixels regardless of viewport size by scaling by the inverse of the screen scale
     // Ref: https://community.khronos.org/t/draw-an-object-that-looks-the-same-size-regarles-the-distance-in-perspective-view/67804/6
@@ -301,7 +225,7 @@ void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& 
     screenSpaceShader.lightIntensity.set(1.0f);
 
     screenSpaceShader.viewMatrix.set(viewMatrix);
-    screenSpaceShader.projectionMatrix.set(ndcMat * projectionMatrix);
+    screenSpaceShader.projectionMatrix.set(projectionMatrix);
 
     // X-Axis in x-io coordinate space aligns with OpenGL +X axis
     const glm::mat4 xRotate = glm::mat4(1.0f);
@@ -331,23 +255,45 @@ void ThreeDView::renderAxesScreenSpace(GLResources& resources, const glm::mat4& 
     resources.arrow.render();
 
     // Text labels XYZ
-    // TODO: Maybe Test can be refactored so disable culling is not necessary. I bet winding order on text planes is backwards! Needs to be counter-clockwize to be visible facing user. I bet culprit is GLResources::createTextBuffer, just fix to be correct winding order.
-    glDisable(GL_CULL_FACE); // text needs disabled culling
+    {
+        GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // TODO: why does Text need culling disabled?
 
-    renderer.getResources().textShader.use();
+        renderer.getResources().textShader.use();
 
-    const auto textDistanceFromOrigin = 1.3f;
+        const auto textDistanceFromOrigin = 1.3f;
+        const auto textDistanceFromOriginZ = textDistanceFromOrigin * inverseScreenScale;
+        const auto paddingOffset = 0.06f; // account for distance of glyph from render square edge
+        const auto textDistanceFromOriginXY = (textDistanceFromOrigin - paddingOffset) * inverseScreenScale;
 
-    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOrigin * inverseScreenScale, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
-    const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOrigin * inverseScreenScale)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
-    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOrigin * inverseScreenScale, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
+        const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f)); // X-Axis in x-io coordinate space aligns with OpenGL +X axis
+        const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOriginXY)); // Y-Axis in x-io coordinate space aligns with OpenGL -Z axis
+        const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f)); // Z-Axis in x-io coordinate space aligns with OpenGL +Y axis
 
-    const auto textTransform = ndcMat * projectionMatrix * viewMatrix * modelMatrix;
+        const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 
-    auto& text = resources.get3DViewAxisText();
-    text.renderScreenSpace(resources, "X", UIColours::graphRed, textTransform * xTranslate);
-    text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
-    text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
+        auto& text = resources.get3DViewAxisText();
+        text.renderScreenSpace(resources, "X", UIColours::graphRed, textTransform * xTranslate);
+        text.renderScreenSpace(resources, "Y", UIColours::graphGreen, textTransform * yTranslate);
+        text.renderScreenSpace(resources, "Z", UIColours::graphBlue, textTransform * zTranslate);
+    }
+}
 
-    glEnable(GL_CULL_FACE); // restore cull state
+void ThreeDView::renderAxesForDeviceOrientation(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
+{
+    renderAxesInstance(resources, axesConventionRotation * deviceRotation, resources.orbitCamera.getOrthogonalProjectionMatrix());
+}
+
+void ThreeDView::renderAxesForWorldOrientation(GLResources& resources, const glm::mat4& axesConventionRotation) const
+{
+    const auto bounds = toOpenGLBounds(getBoundsInMainWindow()); // already accounts for context.getRenderingScale()
+    const double screenPixelScale = context.getRenderingScale();
+
+    // Use Normalized Device Coordinates (NDC) to position in top right corner of viewport
+    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(148.0f, 152.0f) * (float) screenPixelScale;
+    const glm::vec2 viewportPixelDimensions(bounds.getWidth(), bounds.getHeight());
+    const glm::vec2 pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
+    const glm::vec2 topRightNDC(1.0f, 1.0f);
+    const auto ndcMat = glm::translate(glm::mat4(1.0f), glm::vec3(topRightNDC - pixelOffsetNDC, 0.0f));
+
+    renderAxesInstance(resources, axesConventionRotation, ndcMat * resources.orbitCamera.getOrthogonalProjectionMatrix());
 }

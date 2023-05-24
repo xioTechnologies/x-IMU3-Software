@@ -143,23 +143,28 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
-    menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
+    menu.addItem("World", true, settings.isWorldEnabled, [&]
     {
-        setEulerAnglesVisible(!rollLabel.isVisible());
+        settings.isWorldEnabled = !settings.isWorldEnabled;
+        threeDView.setSettings(settings);
     });
     menu.addItem("Model", true, settings.isModelEnabled, [&]
     {
         settings.isModelEnabled = !settings.isModelEnabled;
         threeDView.setSettings(settings);
     });
-    menu.addItem("World", true, settings.isWorldEnabled, [&]
+    menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
-        settings.isWorldEnabled = !settings.isWorldEnabled;
-        threeDView.setSettings(settings);
+        setEulerAnglesVisible(!rollLabel.isVisible());
     });
     menu.addItem("Axes", true, settings.isAxesEnabled, [&]
     {
         settings.isAxesEnabled = !settings.isAxesEnabled;
+        threeDView.setSettings(settings);
+    });
+    menu.addItem("Compass", true, settings.isCompassEnabled, [&]
+    {
+        settings.isCompassEnabled = !settings.isCompassEnabled;
         threeDView.setSettings(settings);
     });
 
