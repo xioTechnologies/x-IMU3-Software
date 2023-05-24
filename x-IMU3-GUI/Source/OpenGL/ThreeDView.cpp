@@ -7,10 +7,10 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     cameraAzimuth = other.cameraAzimuth.load();
     cameraElevation = other.cameraElevation.load();
     cameraOrbitDistance = other.cameraOrbitDistance.load();
-    isModelEnabled = other.isModelEnabled.load();
     isWorldEnabled = other.isWorldEnabled.load();
-    isCompassEnabled = other.isCompassEnabled.load();
+    isModelEnabled = other.isModelEnabled.load();
     isAxesEnabled = other.isAxesEnabled.load();
+    isCompassEnabled = other.isCompassEnabled.load();
     model = other.model.load();
     axesConvention = other.axesConvention.load();
     return *this;
@@ -68,12 +68,12 @@ void ThreeDView::render()
 
     if (settings.isModelEnabled)
     {
-        renderIMUModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
+        renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
     if (settings.isWorldEnabled)
     {
-        renderWorldGrid(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
+        renderWorld(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
     }
 
     if (settings.isCompassEnabled)
@@ -111,18 +111,15 @@ bool ThreeDView::isLoading() const
     {
         case Model::board:
             return renderer.getResources().board.isLoading();
-
         case Model::housing:
             return renderer.getResources().housing.isLoading();
-
         case Model::custom:
             return renderer.getResources().custom.isLoading();
     }
-
     return false;
 }
 
-void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
+void ThreeDView::renderModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
 {
     const auto& camera = resources.orbitCamera;
     const auto rotateModelFlat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
@@ -155,7 +152,7 @@ void ThreeDView::renderIMUModel(GLResources& resources, const glm::mat4& project
     }
 }
 
-void ThreeDView::renderWorldGrid(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
+void ThreeDView::renderWorld(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
 {
     GLUtil::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
