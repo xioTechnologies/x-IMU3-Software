@@ -20,14 +20,6 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 5. Select Ninja to improve compile time (Windows)
     - Settings > Build, Execution, Deployment > CMake > Generator: Ninja
 
-## Branch Protection
-
-The GitHub repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
-
-- *Require a pull request before merging*
-- *Require linear history*
-- *Include administrators*
-
 ## Distributions
 
 - [Rust crate](https://crates.io/crates/ximu3/)
@@ -36,3 +28,11 @@ The GitHub repository applies the following branch protection rules to the main 
 - [x-IMU3 GUI for macOS (Intel)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Intel.dmg)
 - [x-IMU3 GUI for macOS (Apple Silicon)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
 - [x-IMU3 GUI for Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
+
+## Branch Protection
+
+The GitHub repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
+
+- *Require a pull request before merging*
+- *Require linear history*
+- *Include administrators*
