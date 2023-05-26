@@ -40,7 +40,7 @@ public:
         std::atomic<AxesConvention> axesConvention { AxesConvention::nwu };
     };
 
-    explicit ThreeDView(GLRenderer& renderer_);
+    explicit ThreeDView(GLRenderer& renderer_, const Settings& settings_);
 
     ~ThreeDView() override;
 
@@ -48,16 +48,14 @@ public:
 
     void update(const float x, const float y, const float z, const float w);
 
-    void setSettings(const Settings& settings_);
-
     void setCustomModel(const juce::File& file);
 
     bool isLoading() const;
 
 private:
     GLRenderer& renderer;
+    const Settings& settings;
     std::atomic<float> quaternionX { 0.0f }, quaternionY { 0.0f }, quaternionZ { 0.0f }, quaternionW { 1.0f };
-    Settings settings;
 
     void renderModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const;
 
