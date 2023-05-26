@@ -9,7 +9,7 @@ namespace UIColours
     static const juce::Colour backgroundLight = juce::Colour::fromRGB(45, 45, 48);
     static const juce::Colour backgroundLightest = juce::Colour::fromRGB(62, 62, 66);
     static const juce::Colour textEditor = juce::Colour::fromRGB(228, 228, 228);
-    static const juce::Colour highlight = juce::Colour::fromRGB(0, 145, 255);
+    static const juce::Colour highlight = juce::Colour::fromRGB(61, 138, 154);
     static const juce::Colour hyperlink = juce::Colour::fromRGB(29, 228, 230);
     static const juce::Colour warning = juce::Colour::fromRGB(247, 181, 0);
     static const juce::Colour graphRed = juce::Colour::fromRGB(224, 32, 32);
