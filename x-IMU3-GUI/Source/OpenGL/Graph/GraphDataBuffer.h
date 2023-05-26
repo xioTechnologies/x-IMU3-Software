@@ -22,8 +22,6 @@ public:
 
     size_t getNumberAvailable() const;
 
-    uint64_t getMostRecentTimestamp() const;
-
 private:
     struct FifoDatum
     {

@@ -123,8 +123,3 @@ size_t GraphDataBuffer::getNumberAvailable() const
 {
     return numberAvailable;
 }
-
-uint64_t GraphDataBuffer::getMostRecentTimestamp() const
-{
-    return mostRecentTimestamp;
-}

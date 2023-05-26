@@ -159,10 +159,7 @@ void Graph::render()
     };
 
     // Render x axis label
-    const auto timestamp = "Timestamp (" + juce::String(1E-6f * (float) graphDataBuffer.getMostRecentTimestamp(), 3) + ")";
-    renderer.getResources().getGraphAxisLabelText().setText(timestamp.replaceCharacters("123456789", "000000000"));
-    const auto secondsTextWidth = renderer.getResources().getGraphAxisLabelText().getTotalWidth();
-    renderText(renderer.getResources().getGraphAxisLabelText(), timestamp, juce::Colours::white, (float) (bounds.getWidth() / 2) - secondsTextWidth / 2, (xAxisLabelHeight / 2.0f) * (float) context.getRenderingScale(), juce::Justification::centredLeft, false);
+    renderText(renderer.getResources().getGraphAxisLabelText(), "Time (s)", juce::Colours::white, (float) (bounds.getWidth() / 2), (xAxisLabelHeight / 2.0f) * (float) context.getRenderingScale(), juce::Justification::centred, false);
 
     // Render y axis label
     renderText(renderer.getResources().getGraphAxisLabelText(), yAxis, juce::Colours::white, (yAxisLabelWidth / 2.0f) * (float) context.getRenderingScale(), (float) (innerBounds.getCentreY() - bounds.getY()), juce::Justification::centred, true);
