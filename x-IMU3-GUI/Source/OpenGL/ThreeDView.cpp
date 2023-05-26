@@ -16,8 +16,9 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     return *this;
 }
 
-ThreeDView::ThreeDView(GLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()),
-                                                renderer(renderer_)
+ThreeDView::ThreeDView(GLRenderer& renderer_, const Settings& settings_) : OpenGLComponent(renderer_.getContext()),
+                                                                           renderer(renderer_),
+                                                                           settings(settings_)
 {
     renderer.addComponent(*this);
 }
@@ -99,11 +100,6 @@ void ThreeDView::update(const float x, const float y, const float z, const float
     quaternionY = y;
     quaternionZ = z;
     quaternionW = w;
-}
-
-void ThreeDView::setSettings(const Settings& settings_)
-{
-    settings = settings_;
 }
 
 void ThreeDView::setCustomModel(const juce::File& file)

@@ -27,7 +27,8 @@ public:
 
 private:
     ThreeDView threeDView;
-    ThreeDView::Settings settings;
+    static ThreeDView::Settings settings;
+    static bool eulerAnglesVisible;
 
     SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
             rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
@@ -56,8 +57,6 @@ private:
 
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
     uint64_t earthAccelerationCallbackID;
-
-    void setEulerAnglesVisible(const bool visible);
 
     juce::PopupMenu getMenu();
 

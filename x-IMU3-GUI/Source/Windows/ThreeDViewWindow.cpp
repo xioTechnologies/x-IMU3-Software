@@ -2,9 +2,12 @@
 #include "Convert.h"
 #include "ThreeDViewWindow.h"
 
+ThreeDView::Settings ThreeDViewWindow::settings;
+bool ThreeDViewWindow::eulerAnglesVisible = true;
+
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : Window(devicePanel_, windowLayout_, type_, "3D View Menu", std::bind(&ThreeDViewWindow::getMenu, this)),
-          threeDView(glRenderer)
+          threeDView(glRenderer, settings)
 {
     addAndMakeVisible(threeDView);
 
@@ -109,7 +112,6 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 
     settings.cameraAzimuth = wrapAngle(settings.cameraAzimuth + (scale * (mouseEvent.getPosition().getX() - lastMousePosition.getX())));
     settings.cameraElevation = wrapAngle(settings.cameraElevation + (scale * (mouseEvent.getPosition().getY() - lastMousePosition.getY())));
-    threeDView.setSettings(settings);
 
     lastMousePosition = mouseEvent.getPosition();
 }
@@ -117,17 +119,6 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 void ThreeDViewWindow::mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel)
 {
     settings.cameraOrbitDistance = juce::jlimit(1.0f, 4.0f, settings.cameraOrbitDistance + (0.5f * -wheel.deltaY));
-    threeDView.setSettings(settings);
-}
-
-void ThreeDViewWindow::setEulerAnglesVisible(const bool visible)
-{
-    rollLabel.setVisible(visible);
-    pitchLabel.setVisible(visible);
-    yawLabel.setVisible(visible);
-    rollValue.setVisible(visible);
-    pitchValue.setVisible(visible);
-    yawValue.setVisible(visible);
 }
 
 juce::PopupMenu ThreeDViewWindow::getMenu()
@@ -137,8 +128,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     menu.addItem("Restore Defaults", true, false, [&]
     {
         settings = {};
-        threeDView.setSettings(settings);
-        setEulerAnglesVisible(true);
+        eulerAnglesVisible = true;
     });
 
     menu.addSeparator();
@@ -146,26 +136,22 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     menu.addItem("World", true, settings.worldEnabled, [&]
     {
         settings.worldEnabled = !settings.worldEnabled;
-        threeDView.setSettings(settings);
     });
     menu.addItem("Model", true, settings.modelEnabled, [&]
     {
         settings.modelEnabled = !settings.modelEnabled;
-        threeDView.setSettings(settings);
     });
     menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
-        setEulerAnglesVisible(!rollLabel.isVisible());
+        eulerAnglesVisible = !eulerAnglesVisible;
     });
     menu.addItem("Axes", true, settings.axesEnabled, [&]
     {
         settings.axesEnabled = !settings.axesEnabled;
-        threeDView.setSettings(settings);
     });
     menu.addItem("Compass", true, settings.compassEnabled, [&]
     {
         settings.compassEnabled = !settings.compassEnabled;
-        threeDView.setSettings(settings);
     });
 
     menu.addSeparator();
@@ -173,12 +159,10 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     menu.addItem("Board", true, settings.model == ThreeDView::Model::board, [&]
     {
         settings.model = ThreeDView::Model::board;
-        threeDView.setSettings(settings);
     });
     menu.addItem("Housing", true, settings.model == ThreeDView::Model::housing, [&]
     {
         settings.model = ThreeDView::Model::housing;
-        threeDView.setSettings(settings);
     });
     menu.addItem("Custom", true, settings.model == ThreeDView::Model::custom, [&]
     {
@@ -188,7 +172,6 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         {
             threeDView.setCustomModel(fileChooser.getResult());
             settings.model = ThreeDView::Model::custom;
-            threeDView.setSettings(settings);
         }
     });
 
@@ -197,17 +180,14 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     menu.addItem("North-West-Up (NWU)", true, settings.axesConvention == ThreeDView::AxesConvention::nwu, [&]
     {
         settings.axesConvention = ThreeDView::AxesConvention::nwu;
-        threeDView.setSettings(settings);
     });
     menu.addItem("East-North-Up (ENU)", true, settings.axesConvention == ThreeDView::AxesConvention::enu, [&]
     {
         settings.axesConvention = ThreeDView::AxesConvention::enu;
-        threeDView.setSettings(settings);
     });
     menu.addItem("North-East-Down (NED)", true, settings.axesConvention == ThreeDView::AxesConvention::ned, [&]
     {
         settings.axesConvention = ThreeDView::AxesConvention::ned;
-        threeDView.setSettings(settings);
     });
 
     return menu;
@@ -215,14 +195,25 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
 void ThreeDViewWindow::timerCallback()
 {
-    static const auto formatAngle = [](const float angle)
+    rollLabel.setVisible(eulerAnglesVisible);
+    pitchLabel.setVisible(eulerAnglesVisible);
+    yawLabel.setVisible(eulerAnglesVisible);
+    rollValue.setVisible(eulerAnglesVisible);
+    pitchValue.setVisible(eulerAnglesVisible);
+    yawValue.setVisible(eulerAnglesVisible);
+
+    if (eulerAnglesVisible)
     {
-        const auto text = juce::String(angle, 1);
-        return ((text == "-0.0") ? "0.0" : text) + "°";
-    };
-    rollValue.setText(formatAngle(roll));
-    pitchValue.setText(formatAngle(pitch));
-    yawValue.setText(formatAngle(yaw));
+        static const auto formatAngle = [](const float angle)
+        {
+            const auto text = juce::String(angle, 1);
+            return ((text == "-0.0") ? "0.0" : text) + "°";
+        };
+        rollValue.setText(formatAngle(roll));
+        pitchValue.setText(formatAngle(pitch));
+        yawValue.setText(formatAngle(yaw));
+    }
+
     loadingLabel.setText(threeDView.isLoading() ? "Loading..." : "");
 }
 
