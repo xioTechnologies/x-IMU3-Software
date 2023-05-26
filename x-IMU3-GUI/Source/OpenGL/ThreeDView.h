@@ -32,10 +32,10 @@ public:
         std::atomic<float> cameraElevation = 20.0f;
         std::atomic<float> cameraOrbitDistance = 2.5f;
 
-        std::atomic<bool> isWorldEnabled = true;
-        std::atomic<bool> isModelEnabled = true;
-        std::atomic<bool> isAxesEnabled = true;
-        std::atomic<bool> isCompassEnabled = true;
+        std::atomic<bool> worldEnabled = true;
+        std::atomic<bool> modelEnabled = true;
+        std::atomic<bool> axesEnabled = true;
+        std::atomic<bool> compassEnabled = true;
         std::atomic<Model> model { Model::housing };
         std::atomic<AxesConvention> axesConvention { AxesConvention::nwu };
     };

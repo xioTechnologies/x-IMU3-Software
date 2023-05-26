@@ -7,10 +7,10 @@ ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings
     cameraAzimuth = other.cameraAzimuth.load();
     cameraElevation = other.cameraElevation.load();
     cameraOrbitDistance = other.cameraOrbitDistance.load();
-    isWorldEnabled = other.isWorldEnabled.load();
-    isModelEnabled = other.isModelEnabled.load();
-    isAxesEnabled = other.isAxesEnabled.load();
-    isCompassEnabled = other.isCompassEnabled.load();
+    worldEnabled = other.worldEnabled.load();
+    modelEnabled = other.modelEnabled.load();
+    axesEnabled = other.axesEnabled.load();
+    compassEnabled = other.compassEnabled.load();
     model = other.model.load();
     axesConvention = other.axesConvention.load();
     return *this;
@@ -67,27 +67,27 @@ void ThreeDView::render()
     renderer.refreshScreen(UIColours::backgroundDark, bounds);
 
     bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
-    if (renderModelBehindWorldAndCompass && settings.isModelEnabled)
+    if (renderModelBehindWorldAndCompass && settings.modelEnabled)
     {
         renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    if (settings.isWorldEnabled)
+    if (settings.worldEnabled)
     {
         renderWorld(resources, projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
     }
 
-    if (settings.isCompassEnabled)
+    if (settings.compassEnabled)
     {
         renderCompass(resources, projectionMatrix, viewMatrix, floorHeight);
     }
 
-    if (!renderModelBehindWorldAndCompass && settings.isModelEnabled)
+    if (!renderModelBehindWorldAndCompass && settings.modelEnabled)
     {
         renderModel(resources, projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    if (settings.isAxesEnabled)
+    if (settings.axesEnabled)
     {
         renderAxes(resources, bounds, deviceRotation, axesConventionRotation);
     }

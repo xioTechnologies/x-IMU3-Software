@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Widgets/SimpleLabel.h"
+#include <BinaryData.h>
 #include "Dialog.h"
 
 class NotificationAndErrorMessagesDialog : public Dialog,
@@ -9,10 +10,22 @@ class NotificationAndErrorMessagesDialog : public Dialog,
 public:
     struct Message
     {
-        bool isError;
+        enum class Type
+        {
+            notification,
+            error,
+        };
+
+        Type type;
         uint64_t timestamp;
         juce::String message;
-        bool isUnread = true;
+        bool unread = true;
+
+        juce::String getIcon() const;
+
+        juce::String getTooltip() const;
+
+        juce::Colour getColour() const;
     };
 
     NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear);

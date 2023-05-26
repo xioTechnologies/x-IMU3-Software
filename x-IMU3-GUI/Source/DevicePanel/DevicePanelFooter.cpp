@@ -1,7 +1,6 @@
 #include "ApplicationSettings.h"
 #include "CustomLookAndFeel.h"
 #include "DevicePanelFooter.h"
-#include "DevicePanelHeader.h"
 
 DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connection(connection_)
 {
@@ -44,7 +43,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                      {
                                          for (auto& notificationMessage : messages)
                                          {
-                                             notificationMessage.isUnread = false;
+                                             notificationMessage.unread = false;
                                          }
                                          messagesChanged();
                                          return true;
@@ -60,7 +59,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                                 return;
                                             }
 
-                                            messages.push_back({ false, message.timestamp, message.char_array });
+                                            messages.push_back({ NotificationAndErrorMessagesDialog::Message::Type::notification, message.timestamp, message.char_array });
 
                                             messagesChanged();
                                         });
@@ -76,7 +75,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                                 return;
                                             }
 
-                                            messages.push_back({ true, message.timestamp, message.char_array });
+                                            messages.push_back({ NotificationAndErrorMessagesDialog::Message::Type::error, message.timestamp, message.char_array });
 
                                             messagesChanged();
                                         });
@@ -122,12 +121,12 @@ void DevicePanelFooter::resized()
 
 void DevicePanelFooter::messagesChanged()
 {
-    const auto getCountText = [&](const auto isError)
+    const auto getCountText = [&](const auto type)
     {
         int count = 0;
         for (const auto& message : messages)
         {
-            if ((message.isError == isError) && message.isUnread && (++count >= 100))
+            if ((message.type == type) && message.unread && (++count >= 100))
             {
                 return juce::String("99+");
             }
@@ -135,16 +134,16 @@ void DevicePanelFooter::messagesChanged()
         return juce::String(count);
     };
 
-    numberOfNotificationsLabel.setText(getCountText(false));
+    numberOfNotificationsLabel.setText(getCountText(NotificationAndErrorMessagesDialog::Message::Type::notification));
     notificationsButton.setToggleState(numberOfNotificationsLabel.getText() != "0", juce::dontSendNotification);
 
-    numberOfErrorsLabel.setText(getCountText(true));
+    numberOfErrorsLabel.setText(getCountText(NotificationAndErrorMessagesDialog::Message::Type::error));
     errorsButton.setToggleState(numberOfErrorsLabel.getText() != "0", juce::dontSendNotification);
 
-    if (messages.empty() == false && messages.back().isUnread)
+    if (messages.empty() == false && messages.back().unread)
     {
         latestMessageLabel.setText(messages.back().message);
-        latestMessageLabel.setColour(juce::Label::textColourId, messages.back().isError ? UIColours::warning : juce::Colours::white);
+        latestMessageLabel.setColour(juce::Label::textColourId, messages.back().getColour());
     }
     else
     {

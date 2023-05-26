@@ -143,28 +143,28 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
-    menu.addItem("World", true, settings.isWorldEnabled, [&]
+    menu.addItem("World", true, settings.worldEnabled, [&]
     {
-        settings.isWorldEnabled = !settings.isWorldEnabled;
+        settings.worldEnabled = !settings.worldEnabled;
         threeDView.setSettings(settings);
     });
-    menu.addItem("Model", true, settings.isModelEnabled, [&]
+    menu.addItem("Model", true, settings.modelEnabled, [&]
     {
-        settings.isModelEnabled = !settings.isModelEnabled;
+        settings.modelEnabled = !settings.modelEnabled;
         threeDView.setSettings(settings);
     });
     menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
         setEulerAnglesVisible(!rollLabel.isVisible());
     });
-    menu.addItem("Axes", true, settings.isAxesEnabled, [&]
+    menu.addItem("Axes", true, settings.axesEnabled, [&]
     {
-        settings.isAxesEnabled = !settings.isAxesEnabled;
+        settings.axesEnabled = !settings.axesEnabled;
         threeDView.setSettings(settings);
     });
-    menu.addItem("Compass", true, settings.isCompassEnabled, [&]
+    menu.addItem("Compass", true, settings.compassEnabled, [&]
     {
-        settings.isCompassEnabled = !settings.isCompassEnabled;
+        settings.compassEnabled = !settings.compassEnabled;
         threeDView.setSettings(settings);
     });
 

@@ -37,7 +37,7 @@ void GraphWindow::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce:
 
 void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
 {
-    if (isPaused)
+    if (paused)
     {
         return;
     }
@@ -52,15 +52,15 @@ juce::PopupMenu GraphWindow::getMenu()
     menu.addItem("Restore Defaults", true, false, [&]
     {
         settings = {};
-        isPaused = false;
+        paused = false;
     });
     menu.addItem("Clear", true, false, [&]
     {
         graph.clear();
     });
-    menu.addItem("Pause", true, isPaused, [&]
+    menu.addItem("Pause", true, paused, [&]
     {
-        isPaused = !isPaused;
+        paused = !paused;
     });
     menu.addItem("Horizontal Autoscale", true, settings.horizontal.autoscale, [&]
     {
