@@ -32,13 +32,13 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
 
         if (thisDeletedChecker.shouldBailOut() == false)
         {
-            DialogLauncher::launchDialog(nullptr);
+            DialogQueue::getSingleton().pop();
         }
     };
 
     cancelButton.onClick = []
     {
-        DialogLauncher::launchDialog(nullptr);
+        DialogQueue::getSingleton().pop();
     };
 }
 
@@ -108,51 +108,9 @@ void Dialog::setCancelButton(const bool valid, const juce::String& buttonText)
     }
 }
 
-std::unique_ptr<DialogLauncher> DialogLauncher::launchedDialog = nullptr;
-
-void DialogLauncher::launchDialog(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
-{
-    launchedDialog.reset();
-
-    if (content != nullptr)
-    {
-        launchedDialog.reset(new DialogLauncher(std::move(content), std::move(okCallback)));
-
-        static const struct CleanupAtShutdown : juce::DeletedAtShutdown
-        {
-            ~CleanupAtShutdown() override
-            {
-                launchedDialog.reset();
-            }
-        } * cleanupAtShutdown = new CleanupAtShutdown();
-        juce::ignoreUnused(cleanupAtShutdown);
-    }
-}
-
-Dialog* DialogLauncher::getLaunchedDialog()
-{
-    return launchedDialog ? static_cast<Dialog*>(launchedDialog->getContentComponent()) : nullptr;
-}
-
-void DialogLauncher::closeButtonPressed()
-{
-    dismiss();
-}
-
-bool DialogLauncher::escapeKeyPressed()
-{
-    dismiss();
-    return true;
-}
-
-DialogLauncher::DialogLauncher(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
+DialogWindow::DialogWindow(std::unique_ptr<Dialog> content)
         : juce::DialogWindow(content->getName(), UIColours::backgroundLight, true, true)
 {
-    if (okCallback != nullptr)
-    {
-        content->okCallback = std::move(okCallback);
-    }
-
     setContentOwned(content.get(), true);
     setTitleBarHeight(Dialog::titleBarHeight);
     centreAroundComponent(nullptr, getWidth(), getHeight());
@@ -177,8 +135,42 @@ DialogLauncher::DialogLauncher(std::unique_ptr<Dialog> content, std::function<bo
     content.release();
 }
 
-void DialogLauncher::dismiss()
+void DialogWindow::closeButtonPressed()
 {
-    exitModalState(0);
-    launchedDialog.reset();
+    DialogQueue::getSingleton().pop();
+}
+
+bool DialogWindow::escapeKeyPressed()
+{
+    DialogQueue::getSingleton().pop();
+    return true;
+}
+
+Dialog* DialogQueue::getActive()
+{
+    return active ? static_cast<Dialog*>(active->getContentComponent()) : nullptr;
+}
+
+void DialogQueue::push(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
+{
+    content->okCallback = okCallback;
+
+    queue.push(std::move(content));
+    if (active == nullptr)
+    {
+        pop();
+    }
+}
+
+void DialogQueue::pop()
+{
+    active.reset();
+
+    if (queue.empty())
+    {
+        return;
+    }
+
+    active = std::make_unique<DialogWindow>(std::move(queue.front()));
+    queue.pop();
 }

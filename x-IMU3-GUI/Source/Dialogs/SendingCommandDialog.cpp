@@ -169,5 +169,5 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
 void SendingCommandDialog::timerCallback()
 {
-    DialogLauncher::launchDialog(nullptr);
+    DialogQueue::getSingleton().pop();
 }

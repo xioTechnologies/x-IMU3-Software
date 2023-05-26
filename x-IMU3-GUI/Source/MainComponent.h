@@ -3,6 +3,7 @@
 #include "CustomLookAndFeel.h"
 #include "DevicePanelContainer.h"
 #include "Dialogs/Dialog.h"
+#include "Dialogs/ErrorDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/GLRenderer.h"
@@ -22,6 +23,11 @@ public:
         setSize(1280, 768);
 
         tooltipWindow.setOpaque(false);
+
+        if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
+        {
+            DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Unable to open network announcement socket."));
+        }
     }
 
     void resized() override
