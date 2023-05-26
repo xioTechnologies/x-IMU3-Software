@@ -43,9 +43,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             existingConnections.push_back(devicePanel->getConnection().getInfo());
         }
 
-        DialogLauncher::launchDialog(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
+        DialogQueue::getSingleton().push(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
         {
-            if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogQueue::getSingleton().getActive()))
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
@@ -63,20 +63,20 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     shutdownButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
+        DialogQueue::getSingleton().push(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
-            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelContainer.getDevicePanels()));
+            DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelContainer.getDevicePanels()));
             return true;
         });
     };
 
     sendCommandButton.onClick = [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SendCommandDialog>("Send Command to All Devices"), [this]
+        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to All Devices"), [this]
         {
-            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
+                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
             }
             return true;
         });
@@ -95,9 +95,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             return;
         }
 
-        DialogLauncher::launchDialog(std::make_unique<DataLoggerSettingsDialog>(dataLoggerSettings), [this]
+        DialogQueue::getSingleton().push(std::make_unique<DataLoggerSettingsDialog>(dataLoggerSettings), [this]
         {
-            if (auto* dialog = dynamic_cast<DataLoggerSettingsDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (auto* dialog = dynamic_cast<DataLoggerSettingsDialog*>(DialogQueue::getSingleton().getActive()))
             {
                 dataLoggerSettings = dialog->getSettings();
 
@@ -121,7 +121,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
                     if (dataLogger->getResult() != ximu3::XIMU3_ResultOk)
                     {
-                        DialogLauncher::launchDialog(std::make_unique<ErrorDialog>("Data logger failed."));
+                        DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Data logger failed."));
                         return;
                     }
 
@@ -133,7 +133,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName);
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerName), [directory, startDataLogger]
+                    DialogQueue::getSingleton().push(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerName), [directory, startDataLogger]
                     {
                         directory.deleteRecursively();
                         startDataLogger();
@@ -151,12 +151,12 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     mainSettingsButton.onClick = []
     {
-        DialogLauncher::launchDialog(std::make_unique<ApplicationSettingsDialog>());
+        DialogQueue::getSingleton().push(std::make_unique<ApplicationSettingsDialog>());
     };
 
     versionButton.onClick = []
     {
-        DialogLauncher::launchDialog(std::make_unique<AboutDialog>());
+        DialogQueue::getSingleton().push(std::make_unique<AboutDialog>());
     };
     versionButton.setColour(juce::TextButton::buttonColourId, {});
     versionButton.setColour(juce::TextButton::buttonOnColourId, {});
@@ -269,7 +269,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
 
     const auto connectCallback = [this]
     {
-        if (auto* dialog = dynamic_cast<NewConnectionDialog*>(DialogLauncher::getLaunchedDialog()))
+        if (auto* dialog = dynamic_cast<NewConnectionDialog*>(DialogQueue::getSingleton().getActive()))
         {
             auto connectionInfo = dialog->getConnectionInfo();
             devicePanelContainer.connectToDevice(*connectionInfo);
@@ -279,23 +279,23 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
     };
     menu.addItem("New USB Connection", [connectCallback]
     {
-        DialogLauncher::launchDialog(std::make_unique<UsbConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().push(std::make_unique<UsbConnectionDialog>(), connectCallback);
     });
     menu.addItem("New Serial Connection", [connectCallback]
     {
-        DialogLauncher::launchDialog(std::make_unique<SerialConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().push(std::make_unique<SerialConnectionDialog>(), connectCallback);
     });
     menu.addItem("New TCP Connection", [connectCallback]
     {
-        DialogLauncher::launchDialog(std::make_unique<TcpConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().push(std::make_unique<TcpConnectionDialog>(), connectCallback);
     });
     menu.addItem("New UDP Connection", [connectCallback]
     {
-        DialogLauncher::launchDialog(std::make_unique<UdpConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().push(std::make_unique<UdpConnectionDialog>(), connectCallback);
     });
     menu.addItem("New Bluetooth Connection", [connectCallback]
     {
-        DialogLauncher::launchDialog(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().push(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
     });
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNECTION HISTORY"), nullptr);
@@ -445,9 +445,9 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CUSTOM LAYOUTS"), nullptr);
     menu.addItem("Save As...", [this]
     {
-        DialogLauncher::launchDialog(std::make_unique<SaveWindowLayoutDialog>(), [this]
+        DialogQueue::getSingleton().push(std::make_unique<SaveWindowLayoutDialog>(), [this]
         {
-            if (auto* saveWindowLayoutDialog = dynamic_cast<SaveWindowLayoutDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (auto* saveWindowLayoutDialog = dynamic_cast<SaveWindowLayoutDialog*>(DialogQueue::getSingleton().getActive()))
             {
                 const auto layoutName = saveWindowLayoutDialog->getLayoutName();
 
@@ -459,7 +459,7 @@ juce::PopupMenu MenuStrip::getWindowLayoutMenu()
 
                 if (CustomLayouts().exists(layoutName))
                 {
-                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
+                    DialogQueue::getSingleton().push(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
                 }
                 else
                 {
@@ -512,27 +512,27 @@ juce::PopupMenu MenuStrip::getToolsMenu()
     juce::PopupMenu menu;
     menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
     {
-        DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
+        DialogQueue::getSingleton().push(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
         {
-            DialogLauncher::launchDialog(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), devicePanelContainer.getDevicePanels()));
+            DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), devicePanelContainer.getDevicePanels()));
             return true;
         });
     });
     menu.addItem("Convert File (.ximu3)", []
     {
-        DialogLauncher::launchDialog(std::make_unique<ConvertFileDialog>(), []
+        DialogQueue::getSingleton().push(std::make_unique<ConvertFileDialog>(), []
         {
-            if (const auto* const convertFileDialog = dynamic_cast<ConvertFileDialog*>(DialogLauncher::getLaunchedDialog()))
+            if (const auto* const convertFileDialog = dynamic_cast<ConvertFileDialog*>(DialogQueue::getSingleton().getActive()))
             {
                 const auto startFileConverter = [source = convertFileDialog->getSource(), destination = convertFileDialog->getDestination()]
                 {
-                    DialogLauncher::launchDialog(std::make_unique<ConvertingFileDialog>(source, destination));
+                    DialogQueue::getSingleton().push(std::make_unique<ConvertingFileDialog>(source, destination));
                 };
 
                 const auto directory = juce::File(convertFileDialog->getDestination()).getChildFile(juce::File(convertFileDialog->getSource()).getFileNameWithoutExtension());
                 if (directory.exists())
                 {
-                    DialogLauncher::launchDialog(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]
+                    DialogQueue::getSingleton().push(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]
                     {
                         directory.deleteRecursively();
                         startFileConverter();
@@ -551,11 +551,11 @@ juce::PopupMenu MenuStrip::getToolsMenu()
     {
         const auto launchUpdateFirmwareDialog = []
         {
-            DialogLauncher::launchDialog(std::make_unique<UpdateFirmwareDialog>(), []
+            DialogQueue::getSingleton().push(std::make_unique<UpdateFirmwareDialog>(), []
             {
-                if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogLauncher::getLaunchedDialog()))
+                if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
                 {
-                    DialogLauncher::launchDialog(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getFileName()));
+                    DialogQueue::getSingleton().push(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getFileName()));
                 }
                 return true;
             });
@@ -563,7 +563,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
 
         if (devicePanelContainer.getDevicePanels().size() > 0)
         {
-            DialogLauncher::launchDialog(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&, launchUpdateFirmwareDialog]
+            DialogQueue::getSingleton().push(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&, launchUpdateFirmwareDialog]
             {
                 disconnect(nullptr);
                 launchUpdateFirmwareDialog();

@@ -36,18 +36,18 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        DialogLauncher::launchDialog(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
+        DialogQueue::getSingleton().push(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
         {
             messagesChanged();
         }), [this]
-                                     {
-                                         for (auto& notificationMessage : messages)
                                          {
-                                             notificationMessage.unread = false;
-                                         }
-                                         messagesChanged();
-                                         return true;
-                                     });
+                                             for (auto& notificationMessage : messages)
+                                             {
+                                                 notificationMessage.unread = false;
+                                             }
+                                             messagesChanged();
+                                             return true;
+                                         });
     };
 
     notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -150,7 +150,7 @@ void DevicePanelFooter::messagesChanged()
         latestMessageLabel.setText("");
     }
 
-    if (auto* const dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogLauncher::getLaunchedDialog()))
+    if (auto* const dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogQueue::getSingleton().getActive()))
     {
         dialog->messagesChanged();
     }

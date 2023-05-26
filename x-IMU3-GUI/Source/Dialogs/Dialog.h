@@ -52,23 +52,32 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };
 
-class DialogLauncher : public juce::DialogWindow
+class DialogWindow : public juce::DialogWindow
 {
 public:
-    static void launchDialog(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
-
-    static Dialog* getLaunchedDialog();
+    DialogWindow(std::unique_ptr<Dialog> content);
 
     void closeButtonPressed() override;
 
     bool escapeKeyPressed() override;
+};
+
+class DialogQueue : private juce::DeletedAtShutdown
+{
+public:
+    static DialogQueue& getSingleton()
+    {
+        static auto* singleton = new DialogQueue();
+        return *singleton;
+    }
+
+    Dialog* getActive();
+
+    void push(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
+
+    void pop();
 
 private:
-    static std::unique_ptr<DialogLauncher> launchedDialog;
-
-    DialogLauncher(std::unique_ptr<Dialog> content, std::function<bool()> okCallback);
-
-    void dismiss();
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogLauncher)
+    std::unique_ptr<DialogWindow> active;
+    std::queue<std::unique_ptr<Dialog>> queue;
 };
