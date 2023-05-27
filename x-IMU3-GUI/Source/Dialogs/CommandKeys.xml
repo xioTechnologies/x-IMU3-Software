@@ -8,7 +8,6 @@
     <Command key="shutdown"/>
     <Command key="strobe"/>
     <Command key="colour"/>
-    <Command key="color"/>
     <Command key="heading"/>
     <Command key="accessory"/>
     <Command key="note"/>
@@ -27,7 +26,6 @@
     <Command key="serialAccessoryNumberOfBytes"/>
     <Command key="serialAccessoryTerminationByte"/>
     <Command key="serialAccessoryTimeout"/>
-    <Command key="serialAccessoryTransmitEnabled"/>
     <Command key="wirelessMode"/>
     <Command key="wirelessFirmwareVersion"/>
     <Command key="externalAntennaeEnabled"/>

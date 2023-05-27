@@ -21,7 +21,6 @@ with open("CommandKeys.xml", "w") as file:
     file.write("    <Command key=\"shutdown\"/>\n")
     file.write("    <Command key=\"strobe\"/>\n")
     file.write("    <Command key=\"colour\"/>\n")
-    file.write("    <Command key=\"color\"/>\n")
     file.write("    <Command key=\"heading\"/>\n")
     file.write("    <Command key=\"accessory\"/>\n")
     file.write("    <Command key=\"note\"/>\n")
