@@ -1,7 +1,7 @@
 #include "AreYouSureDialog.h"
 #include <BinaryData.h>
 
-AreYouSureDialog::AreYouSureDialog(const juce::String& text) : Dialog(BinaryData::warning_white_svg, "Are You Sure?", "Yes", "No"), label(text)
+AreYouSureDialog::AreYouSureDialog(const juce::String& text) : Dialog(BinaryData::warning_white_svg, "Are You Sure?", "Yes"), label(text)
 {
     addAndMakeVisible(label);
 
