@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[repr(C)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy)]
 pub enum ChargingStatus {
     NotConnected,
     Charging,

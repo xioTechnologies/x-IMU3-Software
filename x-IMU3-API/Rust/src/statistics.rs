@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub struct Statistics {
     pub timestamp: u64,
     pub data_total: u64,
