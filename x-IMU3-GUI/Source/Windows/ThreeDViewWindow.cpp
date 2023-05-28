@@ -206,8 +206,18 @@ void ThreeDViewWindow::timerCallback()
     {
         static const auto formatAngle = [](const float angle)
         {
-            const auto text = juce::String(angle, 1);
-            return ((text == "-0.0") ? "0.0" : text) + "°";
+            auto text = juce::String(angle, 1);
+
+            if (text == "-0.0")
+            {
+                text = "0.0";
+            }
+            else if (text == "-180.0")
+            {
+                text = "180.0";
+            }
+
+            return text + "°";
         };
         rollValue.setText(formatAngle(roll));
         pitchValue.setText(formatAngle(pitch));
