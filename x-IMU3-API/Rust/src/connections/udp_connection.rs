@@ -26,7 +26,8 @@ impl UdpConnection {
 impl GenericConnection for UdpConnection {
     fn open(&mut self) -> std::io::Result<()> {
         let socket = UdpSocket::bind(SocketAddr::new("0.0.0.0".parse::<IpAddr>().unwrap(), self.connection_info.receive_port))?;
-        socket.set_read_timeout(Some(std::time::Duration::from_millis(100))).ok();
+
+        socket.set_read_timeout(Some(std::time::Duration::from_millis(1))).ok();
 
         let socket_address = SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.send_port);
 
