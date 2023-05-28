@@ -6,7 +6,7 @@ use crate::data_messages::*;
 use crate::decode_error::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub struct MagnetometerMessage {
     pub timestamp: u64,
     pub x_axis: f32,

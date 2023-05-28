@@ -4,7 +4,6 @@ use crate::connection_info::*;
 use crate::ffi::helpers::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct UsbConnectionInfoC {
     pub port_name: [c_char; CHAR_ARRAY_SIZE],
 }
@@ -39,7 +38,6 @@ pub extern "C" fn XIMU3_usb_connection_info_to_string(connection_info: UsbConnec
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct SerialConnectionInfoC {
     pub port_name: [c_char; CHAR_ARRAY_SIZE],
     pub baud_rate: u32,
@@ -82,7 +80,6 @@ pub extern "C" fn XIMU3_serial_connection_info_to_string(connection_info: Serial
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct TcpConnectionInfoC {
     pub ip_address: [c_char; CHAR_ARRAY_SIZE],
     pub port: u16,
@@ -122,7 +119,6 @@ pub extern "C" fn XIMU3_tcp_connection_info_to_string(connection_info: TcpConnec
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct UdpConnectionInfoC {
     pub ip_address: [c_char; CHAR_ARRAY_SIZE],
     pub send_port: u16,
@@ -165,7 +161,6 @@ pub extern "C" fn XIMU3_udp_connection_info_to_string(connection_info: UdpConnec
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct BluetoothConnectionInfoC {
     pub port_name: [c_char; CHAR_ARRAY_SIZE],
 }

@@ -8,7 +8,6 @@ use crate::ffi::helpers::*;
 use crate::port_scanner::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct DeviceC {
     device_name: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],

@@ -6,7 +6,6 @@ use crate::data_messages::*;
 use crate::decode_error::*;
 use crate::statistics::*;
 
-#[derive(Clone)]
 pub enum DispatcherData {
     DecodeError(DecodeError),
     Statistics(Statistics),

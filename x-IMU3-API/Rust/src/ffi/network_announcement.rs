@@ -10,7 +10,6 @@ use crate::network_announcement::*;
 use crate::connection_info::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct NetworkAnnouncementMessageC {
     device_name: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],

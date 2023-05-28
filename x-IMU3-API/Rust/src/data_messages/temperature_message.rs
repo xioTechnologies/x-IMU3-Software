@@ -6,7 +6,7 @@ use crate::data_messages::*;
 use crate::decode_error::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub struct TemperatureMessage {
     pub timestamp: u64,
     pub temperature: f32,

@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Clone, Copy)]
 pub enum ConnectionType {
     Usb,
     Serial,

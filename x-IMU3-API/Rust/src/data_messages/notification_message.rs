@@ -8,7 +8,7 @@ use crate::data_messages::*;
 use crate::decode_error::*;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub struct NotificationMessage {
     pub timestamp: u64,
     pub char_array: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE],
