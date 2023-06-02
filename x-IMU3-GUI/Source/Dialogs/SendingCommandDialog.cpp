@@ -13,7 +13,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::connection, 110);
     table.getHeader().addColumn("", (int) ColumnIDs::complete, 70, 70, 70);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
