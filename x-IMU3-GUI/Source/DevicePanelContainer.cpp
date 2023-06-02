@@ -96,12 +96,12 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                                   {
                                                                       static unsigned int counter;
 
-                                                                      if (devicePanels.empty() || (++counter >= UIColours::panelTags.size()))
+                                                                      if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
                                                                       {
                                                                           counter = 0;
                                                                       }
 
-                                                                      return UIColours::panelTags[counter];
+                                                                      return UIColours::tags[counter];
                                                                   }())));
 
                                                                   devicePanelsSizeChanged();

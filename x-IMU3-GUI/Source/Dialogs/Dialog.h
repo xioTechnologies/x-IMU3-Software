@@ -14,7 +14,8 @@ public:
            const juce::String& cancelButtonText = "Cancel",
            juce::Component* const bottomLeftComponent_ = nullptr,
            const int bottomLeftComponentWidth_ = 0,
-           const bool resizable_ = false);
+           const bool resizable_ = false,
+           const std::optional<juce::Colour>& tag_ = {});
 
     ~Dialog() override;
 
@@ -27,6 +28,8 @@ public:
     void cancel();
 
     const juce::String icon;
+
+    const std::optional<juce::Colour> tag;
 
     std::function<bool()> okCallback;
 

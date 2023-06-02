@@ -71,13 +71,17 @@ DevicePanelHeader::~DevicePanelHeader()
 void DevicePanelHeader::paint(juce::Graphics& g)
 {
     g.fillAll(UIColours::backgroundLightest);
-    g.setColour(devicePanel.getColourTag());
-    g.fillRect(getLocalBounds().removeFromLeft(colourTagWidth));
+    g.setColour(devicePanel.getTag());
+    g.fillRect(getLocalBounds().removeFromLeft(UILayout::tagWidth));
 }
 
 void DevicePanelHeader::resized()
 {
+    static constexpr int margin = 7;
+
     auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20);
+
+    bounds.removeFromLeft(UILayout::tagWidth);
 
     strobeButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     bounds.removeFromLeft(margin);

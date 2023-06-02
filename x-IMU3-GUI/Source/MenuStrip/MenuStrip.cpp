@@ -263,12 +263,12 @@ void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel
             action(*devicePanel);
         };
 
-        auto colourTag = std::make_unique<juce::DrawableRectangle>();
+        auto tag = std::make_unique<juce::DrawableRectangle>();
         int _, height;
         getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
-        colourTag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) DevicePanelHeader::colourTagWidth, (float) height));
-        colourTag->setFill({ devicePanel->getColourTag() });
-        item.image = std::move(colourTag);
+        tag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) UILayout::tagWidth, (float) height));
+        tag->setFill({ devicePanel->getTag() });
+        item.image = std::move(tag);
 
         menu.addItem(item);
     }
@@ -536,7 +536,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu()
 
     addDevices(menu, [&](auto& devicePanel)
     {
-        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getDeviceDescriptor()), [&, devicePanel = &devicePanel]
+        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getDeviceDescriptor(), devicePanel.getTag()), [&, devicePanel = &devicePanel]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {

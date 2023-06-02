@@ -1,5 +1,6 @@
 #include <BinaryData.h>
 #include "CustomLookAndFeel.h"
+#include "Dialogs/Dialog.h"
 
 juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
 {
@@ -357,6 +358,15 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window,
     g.fillAll(UIColours::backgroundLightest);
 
     juce::Rectangle<int> bounds(w, h);
+
+    if (DialogWindow* dialogWindow = dynamic_cast<DialogWindow*>(&window))
+    {
+        if (const auto tag = static_cast<Dialog*>(dialogWindow->getContentComponent())->tag)
+        {
+            g.setColour(*tag);
+            g.fillRect(bounds.removeFromLeft(UILayout::tagWidth));
+        }
+    }
 
     if (icon != nullptr)
     {

@@ -1,8 +1,9 @@
+#include "../DevicePanel/DevicePanel.h"
 #include "../Widgets/Icon.h"
 #include <BinaryData.h>
-#include "NotificationAndErrorMessagesDialog.h"
+#include "NotificationsAndErrorsDialog.h"
 
-juce::String NotificationAndErrorMessagesDialog::Message::getIcon() const
+juce::String NotificationsAndErrorsDialog::Message::getIcon() const
 {
     switch (type)
     {
@@ -14,7 +15,7 @@ juce::String NotificationAndErrorMessagesDialog::Message::getIcon() const
     return {}; // avoid compiler warning
 }
 
-juce::String NotificationAndErrorMessagesDialog::Message::getTooltip() const
+juce::String NotificationsAndErrorsDialog::Message::getTooltip() const
 {
     switch (type)
     {
@@ -26,7 +27,7 @@ juce::String NotificationAndErrorMessagesDialog::Message::getTooltip() const
     return {}; // avoid compiler warning
 }
 
-juce::Colour NotificationAndErrorMessagesDialog::Message::getColour() const
+juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 {
     switch (type)
     {
@@ -38,8 +39,8 @@ juce::Colour NotificationAndErrorMessagesDialog::Message::getColour() const
     return {}; // avoid compiler warning
 }
 
-NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vector<Message>& messages_, const std::function<void()>& onClear)
-        : Dialog(BinaryData::speech_white_svg, "Notification and Error Messages", "Close", "", &clearAllButton, 80, true),
+NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const DevicePanel& devicePanel)
+        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + devicePanel.getDeviceDescriptor(), "Close", "", &clearAllButton, 80, true, devicePanel.getTag()),
           messages(messages_)
 {
     addAndMakeVisible(clearAllButton);
@@ -65,7 +66,7 @@ NotificationAndErrorMessagesDialog::NotificationAndErrorMessagesDialog(std::vect
     setSize(800, 480);
 }
 
-void NotificationAndErrorMessagesDialog::resized()
+void NotificationsAndErrorsDialog::resized()
 {
     Dialog::resized();
 
@@ -80,17 +81,17 @@ void NotificationAndErrorMessagesDialog::resized()
     table.setBounds(bounds);
 }
 
-void NotificationAndErrorMessagesDialog::messagesChanged()
+void NotificationsAndErrorsDialog::messagesChanged()
 {
     table.updateContent();
 }
 
-int NotificationAndErrorMessagesDialog::getNumRows()
+int NotificationsAndErrorsDialog::getNumRows()
 {
     return (int) messages.size();
 }
 
-juce::Component* NotificationAndErrorMessagesDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
+juce::Component* NotificationsAndErrorsDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
 {
     if (rowNumber >= (int) messages.size())
     {

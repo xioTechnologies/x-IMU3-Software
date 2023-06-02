@@ -16,7 +16,7 @@ namespace UIColours
     static const juce::Colour graphBlue = juce::Colour::fromRGB(50, 197, 255);
     static const juce::Colour graphGreen = juce::Colour::fromRGB(109, 212, 0);
 
-    static const std::vector<juce::Colour> panelTags =
+    static const std::vector<juce::Colour> tags =
             {
                     juce::Colour(0xFF000000),
                     juce::Colour(0xFF964B00),
@@ -43,8 +43,9 @@ namespace UIColours
 
 namespace UILayout
 {
-    static int constexpr panelMargin = 3;
-    static int constexpr textComponentHeight = 26;
+    static constexpr int panelMargin = 3;
+    static constexpr int textComponentHeight = 26;
+    static constexpr int tagWidth = 4;
 }
 
 namespace UIFonts

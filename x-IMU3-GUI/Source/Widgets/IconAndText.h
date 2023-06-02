@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SimpleLabel.h"
+
 class IconAndText : public juce::Component,
                     private juce::Timer
 {
