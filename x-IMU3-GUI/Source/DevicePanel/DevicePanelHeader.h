@@ -42,7 +42,7 @@ private:
 
     juce::String deviceName, serialNumber;
 
-    IconButton menuButton { BinaryData::menu_svg, "Device Menu", std::bind(&DevicePanelHeader::getMenu, this), false };
+    IconButton strobeButton { BinaryData::brightness_svg, "Strobe LED" };
     SimpleLabel deviceDescriptor;
     SimpleLabel connectionInfo;
     IconAndText rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
@@ -61,8 +61,6 @@ private:
     void updateRssi(const int percentage);
 
     void updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status);
-
-    juce::PopupMenu getMenu() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelHeader)
 };
