@@ -24,6 +24,8 @@ public:
 
     bool isResizable() const;
 
+    void cancel();
+
     const juce::String icon;
 
     std::function<bool()> okCallback;
