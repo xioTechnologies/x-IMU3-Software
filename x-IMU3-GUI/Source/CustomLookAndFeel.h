@@ -28,6 +28,16 @@ namespace UIColours
                     juce::Colour(0xFF9400D3),
                     juce::Colour(0xFFA0A0A0),
                     juce::Colour(0xFFFFFFFF),
+                    juce::Colour(0xFF0C2A51),
+                    juce::Colour(0xFF23869A),
+                    juce::Colour(0xFF5AFBF1),
+                    juce::Colour(0xFF41993C),
+                    juce::Colour(0xFFFFE057),
+                    juce::Colour(0xFFEE672B),
+                    juce::Colour(0xFFD1366C),
+                    juce::Colour(0xFFFF9CAA),
+                    juce::Colour(0xFFFFF0C4),
+                    juce::Colour(0xFFD19B1D),
             };
 }
 
