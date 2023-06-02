@@ -22,7 +22,7 @@ void ConnectionHistory::update(const ximu3::ConnectionInfo& connectionInfo)
             }
         }
 
-        while (connectionHistory.getNumChildren() > 5)
+        while (connectionHistory.getNumChildren() >= 6)
         {
             connectionHistory.removeChild(connectionHistory.getChild(connectionHistory.getNumChildren() - 1), nullptr);
         }

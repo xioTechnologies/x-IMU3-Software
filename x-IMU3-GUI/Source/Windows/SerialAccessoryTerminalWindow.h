@@ -24,8 +24,8 @@ private:
     CustomComboBox sendValue;
     IconButton sendButton { BinaryData::send_svg, "Send", nullptr, false, BinaryData::send_warning_svg, "Send (Failed)" };
 
-    juce::ValueTree sendHistory;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Send History.xml");
+    juce::ValueTree serialHistory;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Serial History.xml");
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackID;
