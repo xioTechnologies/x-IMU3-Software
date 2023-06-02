@@ -87,6 +87,7 @@ public:
             setFullScreen (true);
 #else
             setResizable(true, true);
+            setResizeLimits(static_cast<MainComponent*>(getContentComponent())->getMinimumWidth(), static_cast<MainComponent*>(getContentComponent())->getMinimumHeight(), std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
             centreWithSize(getWidth(), getHeight());
 #endif
 

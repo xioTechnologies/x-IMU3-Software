@@ -42,6 +42,16 @@ public:
         devicePanelContainer.resized();
     }
 
+    int getMinimumWidth() const
+    {
+        return menuStrip.getMinimumWidth();
+    }
+
+    int getMinimumHeight() const
+    {
+        return juce::roundToInt(menuStrip.getMinimumWidth() / (1024.0f / 768.0f));
+    }
+
 private:
     struct DefaultLookAndFeelSetter
     {
