@@ -83,6 +83,14 @@ bool Dialog::isResizable() const
     return resizable;
 }
 
+void Dialog::cancel()
+{
+    if (cancelButton.isVisible())
+    {
+        cancelButton.triggerClick();
+    }
+}
+
 int Dialog::calculateHeight(const int numberOfRows) const
 {
     // This "adjust" fixes a bug that the dialog height doesn't adjust after changing the title bar height
@@ -137,12 +145,12 @@ DialogWindow::DialogWindow(std::unique_ptr<Dialog> content)
 
 void DialogWindow::closeButtonPressed()
 {
-    DialogQueue::getSingleton().pop();
+    DialogQueue::getSingleton().getActive()->cancel();
 }
 
 bool DialogWindow::escapeKeyPressed()
 {
-    DialogQueue::getSingleton().pop();
+    DialogQueue::getSingleton().getActive()->cancel();
     return true;
 }
 
