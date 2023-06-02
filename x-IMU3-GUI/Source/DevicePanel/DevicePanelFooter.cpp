@@ -1,8 +1,9 @@
 #include "ApplicationSettings.h"
 #include "CustomLookAndFeel.h"
+#include "DevicePanel.h"
 #include "DevicePanelFooter.h"
 
-DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connection(connection_)
+DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(devicePanel_), connection(devicePanel.getConnection())
 {
     addAndMakeVisible(statisticsLabel);
 
@@ -36,10 +37,10 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        DialogQueue::getSingleton().push(std::make_unique<NotificationAndErrorMessagesDialog>(messages, [&]
+        DialogQueue::getSingleton().push(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
         {
             messagesChanged();
-        }), [this]
+        }, devicePanel), [this]
                                          {
                                              for (auto& notificationMessage : messages)
                                              {
@@ -59,7 +60,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                                 return;
                                             }
 
-                                            messages.push_back({ NotificationAndErrorMessagesDialog::Message::Type::notification, message.timestamp, message.char_array });
+                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, message.char_array });
 
                                             messagesChanged();
                                         });
@@ -75,7 +76,7 @@ DevicePanelFooter::DevicePanelFooter(ximu3::Connection& connection_) : connectio
                                                 return;
                                             }
 
-                                            messages.push_back({ NotificationAndErrorMessagesDialog::Message::Type::error, message.timestamp, message.char_array });
+                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, message.char_array });
 
                                             messagesChanged();
                                         });
@@ -134,10 +135,10 @@ void DevicePanelFooter::messagesChanged()
         return juce::String(count);
     };
 
-    numberOfNotificationsLabel.setText(getCountText(NotificationAndErrorMessagesDialog::Message::Type::notification));
+    numberOfNotificationsLabel.setText(getCountText(NotificationsAndErrorsDialog::Message::Type::notification));
     notificationsButton.setToggleState(numberOfNotificationsLabel.getText() != "0", juce::dontSendNotification);
 
-    numberOfErrorsLabel.setText(getCountText(NotificationAndErrorMessagesDialog::Message::Type::error));
+    numberOfErrorsLabel.setText(getCountText(NotificationsAndErrorsDialog::Message::Type::error));
     errorsButton.setToggleState(numberOfErrorsLabel.getText() != "0", juce::dontSendNotification);
 
     if (messages.empty() == false && messages.back().unread)
@@ -150,7 +151,7 @@ void DevicePanelFooter::messagesChanged()
         latestMessageLabel.setText("");
     }
 
-    if (auto* const dialog = dynamic_cast<NotificationAndErrorMessagesDialog*>(DialogQueue::getSingleton().getActive()))
+    if (auto* const dialog = dynamic_cast<NotificationsAndErrorsDialog*>(DialogQueue::getSingleton().getActive()))
     {
         dialog->messagesChanged();
     }

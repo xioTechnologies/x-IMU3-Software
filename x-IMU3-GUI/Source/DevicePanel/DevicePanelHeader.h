@@ -15,9 +15,6 @@ class DevicePanelContainer;
 class DevicePanelHeader : public juce::Component
 {
 public:
-    static constexpr int colourTagWidth = 4;
-    static constexpr int margin = 10;
-
     DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_);
 
     ~DevicePanelHeader() override;

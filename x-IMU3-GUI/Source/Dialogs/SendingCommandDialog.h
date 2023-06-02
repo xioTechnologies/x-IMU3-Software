@@ -18,7 +18,7 @@ public:
 private:
     enum class ColumnIDs
     {
-        colourTag = 1,
+        tag = 1,
         device,
         connection,
         complete,

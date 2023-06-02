@@ -26,12 +26,12 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
                          std::shared_ptr<ximu3::Connection> connection_,
                          GLRenderer& glRenderer_,
                          DevicePanelContainer& devicePanelContainer_,
-                         const juce::Colour& colourTag_)
+                         const juce::Colour& tag_)
         : windowLayout(windowLayout_),
           connection(connection_),
           glRenderer(glRenderer_),
           devicePanelContainer(devicePanelContainer_),
-          colourTag(colourTag_)
+          tag(tag_)
 {
     windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
     addAndMakeVisible(*windowContainer);
@@ -88,9 +88,9 @@ void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, Safe
     });
 }
 
-const juce::Colour& DevicePanel::getColourTag() const
+const juce::Colour& DevicePanel::getTag() const
 {
-    return colourTag;
+    return tag;
 }
 
 std::shared_ptr<Window> DevicePanel::getOrCreateWindow(const juce::ValueTree& windowTree)

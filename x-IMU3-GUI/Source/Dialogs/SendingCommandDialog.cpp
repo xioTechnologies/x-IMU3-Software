@@ -10,8 +10,8 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
 
-    const int colourTagColumnWidth = DevicePanelHeader::colourTagWidth + 5;
-    table.getHeader().addColumn("", (int) ColumnIDs::colourTag, colourTagColumnWidth, colourTagColumnWidth, colourTagColumnWidth);
+    const int tagColumnWidth = UILayout::tagWidth + 5;
+    table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 110);
     table.getHeader().addColumn("", (int) ColumnIDs::complete, 70, 70, 70);
@@ -122,8 +122,8 @@ void SendingCommandDialog::paintRowBackground(juce::Graphics& g, int rowNumber, 
         return; // index may exceed size on Windows if display scaling >100%
     }
 
-    g.setColour(rows[(size_t) rowNumber].devicePanel.getColourTag());
-    g.fillRect(0, 0, DevicePanelHeader::colourTagWidth, height);
+    g.setColour(rows[(size_t) rowNumber].devicePanel.getTag());
+    g.fillRect(0, 0, UILayout::tagWidth, height);
 }
 
 juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
@@ -137,7 +137,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
     switch ((ColumnIDs) columnID)
     {
-        case ColumnIDs::colourTag:
+        case ColumnIDs::tag:
             return nullptr;
 
         case ColumnIDs::device:

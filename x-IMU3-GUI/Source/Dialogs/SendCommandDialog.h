@@ -11,7 +11,7 @@
 class SendCommandDialog : public Dialog
 {
 public:
-    explicit SendCommandDialog(const juce::String& title);
+    explicit SendCommandDialog(const juce::String& title, const std::optional<juce::Colour>& tag_ = {});
 
     void resized() override;
 

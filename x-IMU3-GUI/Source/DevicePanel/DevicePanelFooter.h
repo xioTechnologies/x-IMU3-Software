@@ -1,15 +1,17 @@
 #pragma once
 
-#include "../Dialogs/NotificationAndErrorMessagesDialog.h"
+#include "../Dialogs/NotificationsAndErrorsDialog.h"
 #include "../Widgets/IconButton.h"
 #include "../Widgets/SimpleLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
+class DevicePanel;
+
 class DevicePanelFooter : public juce::Component
 {
 public:
-    DevicePanelFooter(ximu3::Connection& connection_);
+    DevicePanelFooter(DevicePanel& devicePanel_);
 
     ~DevicePanelFooter() override;
 
@@ -18,6 +20,7 @@ public:
     void resized() override;
 
 private:
+    DevicePanel& devicePanel;
     ximu3::Connection& connection;
 
     SimpleLabel statisticsLabel { "", UIFonts::getSmallFont() };
@@ -36,7 +39,7 @@ private:
     std::function<void(ximu3::XIMU3_ErrorMessage)> errorCallback;
     uint64_t errorCallbackID;
 
-    std::vector<NotificationAndErrorMessagesDialog::Message> messages;
+    std::vector<NotificationsAndErrorsDialog::Message> messages;
 
     void messagesChanged();
 
