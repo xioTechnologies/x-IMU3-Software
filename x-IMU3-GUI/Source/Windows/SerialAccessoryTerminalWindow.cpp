@@ -37,7 +37,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
             }
         }
 
-        while (serialHistory.getNumChildren() > 9)
+        while (serialHistory.getNumChildren() >= 12)
         {
             serialHistory.removeChild(serialHistory.getChild(serialHistory.getNumChildren() - 1), nullptr);
         }
