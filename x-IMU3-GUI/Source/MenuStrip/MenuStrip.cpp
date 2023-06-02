@@ -224,8 +224,8 @@ void MenuStrip::resized()
                 return 35;
             }();
 
-            button->setSize(buttonWidth, 0);
-            groupMargin -= buttonWidth;
+            button->setSize(buttonWidth, buttonHeight);
+            groupMargin -= button->getWidth();
         }
     }
     groupMargin /= buttonGroups.size();
@@ -236,7 +236,7 @@ void MenuStrip::resized()
     {
         for (auto* const button : buttonGroup.buttons)
         {
-            button->setBounds((int) x, buttonY, button->getWidth(), buttonHeight);
+            button->setBounds((int) x, buttonY, button->getWidth(), button->getHeight());
             x += button->getWidth();
         }
         x += groupMargin;
@@ -246,6 +246,19 @@ void MenuStrip::resized()
         const auto labelHeight = (int) std::ceil(UIFonts::getDefaultFont().getHeight());
         buttonGroup.label.setBounds(juce::Rectangle<int>(labelWidth, labelHeight).withCentre({ labelCentreX, labelCentreY }));
     }
+}
+
+int MenuStrip::getMinimumWidth() const
+{
+    int width = 0;
+    for (const auto& buttonGroup : buttonGroups)
+    {
+        for (auto* const button : buttonGroup.buttons)
+        {
+            width += button->getWidth();
+        }
+    }
+    return width;
 }
 
 void MenuStrip::disconnect(const DevicePanel* const devicePanel)

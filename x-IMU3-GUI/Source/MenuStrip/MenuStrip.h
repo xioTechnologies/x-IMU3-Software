@@ -21,6 +21,8 @@ public:
 
     void resized() override;
 
+    int getMinimumWidth() const;
+
 private:
     juce::ValueTree& windowLayout;
     DevicePanelContainer& devicePanelContainer;
