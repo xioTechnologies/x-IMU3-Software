@@ -192,8 +192,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         }
     };
     devicePanelContainer.onDevicePanelsSizeChanged();
-
-
 }
 
 void MenuStrip::paint(juce::Graphics& g)
