@@ -22,8 +22,8 @@ ConnectionsTable::ConnectionsTable()
     };
 
     table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
-    table.getHeader().addColumn("", (int) ColumnIDs::device, 240);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 280);
+    table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::connection, 140);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
