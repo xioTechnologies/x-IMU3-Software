@@ -1,6 +1,3 @@
-#include "../Dialogs/LedColourDialog.h"
-#include "../Dialogs/SendCommandDialog.h"
-#include "../Dialogs/SendingCommandDialog.h"
 #include "DevicePanel.h"
 #include "DevicePanelContainer.h"
 #include "DevicePanelHeader.h"
@@ -189,16 +186,6 @@ void DevicePanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_C
 juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
-
-    menu.addItem("Strobe LED", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
-    });
-
-    menu.addItem("LED Colour", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<LedColourDialog>(devicePanel));
-    });
 
     menu.addItem("Disconnect", [this]
     {
