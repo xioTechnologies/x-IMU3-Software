@@ -38,24 +38,13 @@ void IconButton::resized()
     auto bounds = getLocalBounds().toFloat();
     bounds = bounds.reduced(margin);
 
-    const auto iconSize = bounds.getHeight();
-
-    if (popupArrow == nullptr)
+    if (popupArrow != nullptr)
     {
-        imageBounds = bounds;
+        popupArrowBounds = bounds.removeFromRight(8.0f);
+        bounds.removeFromRight(margin);
     }
-    else
-    {
-        const auto arrowSize = 8.0f;
-        const auto arrowMargin = margin;
-        const auto iconAndArrowWidth = iconSize + arrowMargin + arrowSize;
-        bounds = bounds.withSizeKeepingCentre(iconAndArrowWidth, bounds.getHeight());
 
-        imageBounds = bounds.removeFromLeft(bounds.getHeight());
-        bounds.removeFromLeft(arrowMargin);
-
-        popupArrowBounds = bounds.withSizeKeepingCentre(arrowSize, arrowSize);
-    }
+    imageBounds = bounds;
 
     juce::DrawableButton::resized();
 }

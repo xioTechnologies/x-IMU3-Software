@@ -34,7 +34,7 @@ private:
     IconButton windowLayoutButton { BinaryData::layout_svg, "Window Layout", std::bind(&MenuStrip::getWindowLayoutMenu, this) };
     IconButton devicePanelLayoutButton { BinaryData::single_svg, "Device Panel Layout", std::bind(&MenuStrip::getPanelLayoutMenu, this) };
     IconButton shutdownButton { BinaryData::shutdown_svg, "Shutdown All Devices" };
-    IconButton sendCommandButton { BinaryData::json_svg, "Send Command to All Devices" };
+    IconButton sendCommandButton { BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this) };
     IconButton dataLoggerStartStopButton { BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger" };
     Stopwatch dataLoggerTime;
     IconButton toolsButton { BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
@@ -78,6 +78,8 @@ private:
 
     std::optional<DevicePanelContainer::Layout> preferredMultipleDevicePanelLayout;
 
+    void addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel&)> action);
+
     void disconnect(const DevicePanel* const);
 
     juce::PopupMenu getManualConnectMenu();
@@ -89,6 +91,8 @@ private:
     juce::PopupMenu getWindowLayoutMenu();
 
     juce::PopupMenu getPanelLayoutMenu();
+
+    juce::PopupMenu getSendCommandMenu();
 
     juce::PopupMenu getToolsMenu();
 

@@ -1,5 +1,3 @@
-#include "../Dialogs/LedColourDialog.h"
-#include "../Dialogs/SendCommandDialog.h"
 #include "../Dialogs/SendingCommandDialog.h"
 #include "DevicePanel.h"
 #include "DevicePanelContainer.h"
@@ -10,13 +8,16 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
           devicePanelContainer(devicePanelContainer_),
           connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::getDefaultFont())
 {
-    addAndMakeVisible(menuButton);
+    addAndMakeVisible(strobeButton);
     addAndMakeVisible(rssiIcon);
     addAndMakeVisible(batteryIcon);
     addAndMakeVisible(deviceDescriptor);
     addAndMakeVisible(connectionInfo);
 
-    setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+    strobeButton.onClick = [&]
+    {
+        DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
+    };
 
     deviceDescriptor.setText(getDeviceDescriptor());
 
@@ -56,6 +57,8 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
                                                                  resized();
                                                              });
                          });
+
+    setMouseCursor(juce::MouseCursor::DraggingHandCursor);
 }
 
 DevicePanelHeader::~DevicePanelHeader()
@@ -76,7 +79,7 @@ void DevicePanelHeader::resized()
 {
     auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20);
 
-    menuButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
+    strobeButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     bounds.removeFromLeft(margin);
 
     const auto deviceDescriptorWidth = (int) std::ceil(deviceDescriptor.getTextWidth());
@@ -184,38 +187,4 @@ void DevicePanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_C
                        percentage <= 75 ? BinaryData::battery_75_svg :
                        BinaryData::battery_100_svg,
                        status != ximu3::XIMU3_ChargingStatusNotConnected ? "USB" : juce::String(percentage) + "%");
-}
-
-juce::PopupMenu DevicePanelHeader::getMenu() const
-{
-    juce::PopupMenu menu;
-
-    menu.addItem("Send Command", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to " + deviceDescriptor.getText()), [this]
-        {
-            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
-            {
-                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage(dialog->getCommand()), std::vector<DevicePanel*> { &devicePanel }));
-            }
-            return true;
-        });
-    });
-
-    menu.addItem("Strobe LED", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
-    });
-
-    menu.addItem("LED Colour", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<LedColourDialog>(devicePanel));
-    });
-
-    menu.addItem("Disconnect", [this]
-    {
-        devicePanelContainer.removePanel(devicePanel);
-    });
-
-    return menu;
 }

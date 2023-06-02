@@ -70,18 +70,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         });
     };
 
-    sendCommandButton.onClick = [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to All Devices"), [this]
-        {
-            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
-            {
-                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
-            }
-            return true;
-        });
-    };
-
     juce::File(dataLoggerSettings.directory).createDirectory();
 
     dataLoggerStartStopButton.onClick = [&]
@@ -261,6 +249,31 @@ int MenuStrip::getMinimumWidth() const
     return width;
 }
 
+void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel&)> action)
+{
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
+
+    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+    {
+        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection().getInfo()->toString());
+
+        item.action = [devicePanel, action]
+        {
+            action(*devicePanel);
+        };
+
+        auto colourTag = std::make_unique<juce::DrawableRectangle>();
+        int _, height;
+        getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
+        colourTag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) DevicePanelHeader::colourTagWidth, (float) height));
+        colourTag->setFill({ devicePanel->getColourTag() });
+        item.image = std::move(colourTag);
+
+        menu.addItem(item);
+    }
+}
+
 void MenuStrip::disconnect(const DevicePanel* const devicePanel)
 {
     dataLoggerTime.setTime(juce::RelativeTime());
@@ -333,26 +346,10 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
     {
         disconnect(nullptr);
     });
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
-    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+    addDevices(menu, [&](auto& devicePanel)
     {
-        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection().getInfo()->toString());
-
-        item.action = [this, devicePanel]
-        {
-            disconnect(devicePanel);
-        };
-
-        auto colourTag = std::make_unique<juce::DrawableRectangle>();
-        int _, height;
-        getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
-        colourTag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) DevicePanelHeader::colourTagWidth, (float) height));
-        colourTag->setFill({ devicePanel->getColourTag() });
-        item.image = std::move(colourTag);
-
-        menu.addItem(item);
-    }
+        disconnect(&devicePanel);
+    });
 
     return menu;
 }
@@ -516,6 +513,38 @@ juce::PopupMenu MenuStrip::getPanelLayoutMenu()
     addItem(DevicePanelContainer::Layout::columns, "Columns", devicePanelContainer.getDevicePanels().size() > 1);
     addItem(DevicePanelContainer::Layout::grid, "Grid", devicePanelContainer.getDevicePanels().size() > 1);
     addItem(DevicePanelContainer::Layout::accordion, "Accordion", devicePanelContainer.getDevicePanels().size() > 1);
+
+    return menu;
+}
+
+juce::PopupMenu MenuStrip::getSendCommandMenu()
+{
+    juce::PopupMenu menu;
+
+    const auto toAll = "Send Command to All (" + juce::String(devicePanelContainer.getDevicePanels().size()) + ")";
+    menu.addItem(toAll, [&, toAll]
+    {
+        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>(toAll), [this]
+        {
+            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
+            {
+                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
+            }
+            return true;
+        });
+    });
+
+    addDevices(menu, [&](auto& devicePanel)
+    {
+        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getDeviceDescriptor()), [&, devicePanel = &devicePanel]
+        {
+            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
+            {
+                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<DevicePanel*>({ devicePanel })));
+            }
+            return true;
+        });
+    });
 
     return menu;
 }

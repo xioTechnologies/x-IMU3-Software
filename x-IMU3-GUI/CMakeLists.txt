@@ -163,7 +163,6 @@ juce_add_binary_data(x-IMU3-GUI-AppData SOURCES
 target_link_libraries(x-IMU3-GUI
         PRIVATE
         x-IMU3-GUI-AppData
-        juce::juce_gui_extra
         juce::juce_opengl
         "${FREETYPE_LIBRARIES}"
         glm::glm

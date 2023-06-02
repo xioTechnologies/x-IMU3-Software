@@ -1,6 +1,5 @@
 #include <BinaryData.h>
 #include "CustomLookAndFeel.h"
-#include <juce_gui_extra/juce_gui_extra.h>
 
 juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
 {
@@ -32,7 +31,6 @@ CustomLookAndFeel::CustomLookAndFeel()
     setDefaultSansSerifTypeface(UIFonts::Typefaces::getMontserratMedium()); // progress bar only
 
     setColour(juce::CaretComponent::caretColourId, UIColours::backgroundDark);
-    setColour(juce::ColourSelector::backgroundColourId, {});
     setColour(juce::ComboBox::backgroundColourId, UIColours::textEditor);
     setColour(juce::ComboBox::textColourId, UIColours::backgroundDark);
     setColour(juce::ComboBox::arrowColourId, juce::Colours::grey);
