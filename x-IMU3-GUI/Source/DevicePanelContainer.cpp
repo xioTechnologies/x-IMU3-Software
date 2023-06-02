@@ -75,7 +75,7 @@ void DevicePanelContainer::resized()
             left = bounds.getRight() + UILayout::panelMargin;
         }
 
-        top = devicePanels[devicePanelIndex - 1]->getBottom() + UILayout::panelMargin;
+        top = rowBounds.getBottom() + UILayout::panelMargin;
     }
 }
 
