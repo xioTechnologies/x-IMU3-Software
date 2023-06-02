@@ -190,18 +190,6 @@ juce::PopupMenu DevicePanelHeader::getMenu() const
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Send Command", [this]
-    {
-        DialogQueue::getSingleton().push(std::make_unique<SendCommandDialog>("Send Command to " + deviceDescriptor.getText()), [this]
-        {
-            if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
-            {
-                DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage(dialog->getCommand()), std::vector<DevicePanel*> { &devicePanel }));
-            }
-            return true;
-        });
-    });
-
     menu.addItem("Strobe LED", [this]
     {
         DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
