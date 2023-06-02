@@ -161,7 +161,10 @@ Dialog* DialogQueue::getActive()
 
 void DialogQueue::push(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
 {
-    content->okCallback = okCallback;
+    if (okCallback != nullptr)
+    {
+        content->okCallback = okCallback;
+    }
 
     queue.push(std::move(content));
     if (active == nullptr)
