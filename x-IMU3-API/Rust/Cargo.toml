@@ -14,11 +14,11 @@ crate-type = ["rlib", "staticlib"]
 [dependencies]
 crossbeam = "0.8.2"
 libc = "0.2.144"
-regex = "1.8.1"
+regex = "1.8.3"
 scan_fmt = "0.2.6"
 serde = "1.0.163"
 serde_json = "1.0.96"
-serialport = "4.2.0"
+serialport = "4.2.1"
 
 [build-dependencies]
-cbindgen = "0.24.3"
+cbindgen = "0.24.5"
