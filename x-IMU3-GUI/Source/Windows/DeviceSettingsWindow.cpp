@@ -63,7 +63,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 if (saveFailedCommands.empty() == false)
                 {
-                    DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Write settings to device failed. Unable to confirm save command."));
+                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Write settings to device failed. Unable to confirm save command."));
                     return;
                 }
 
@@ -71,7 +71,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                 {
                     if (applyFailedCommands.empty() == false)
                     {
-                        DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Write settings to device failed. Unable to confirm apply command."));
+                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Write settings to device failed. Unable to confirm apply command."));
                     }
                 });
             });
@@ -120,7 +120,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     defaultsButton.onClick = [this]
     {
-        DialogQueue::getSingleton().push(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
+        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
         {
             setInProgress(true);
 
@@ -129,7 +129,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                 if (defaultFailedCommands.empty() == false)
                 {
                     setInProgress(false);
-                    DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm default command."));
+                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm default command."));
                     return;
                 }
 
@@ -138,7 +138,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     if (saveFailedCommands.empty() == false)
                     {
                         setInProgress(false);
-                        DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm save command."));
+                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm save command."));
                         return;
                     }
 
@@ -147,7 +147,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                         if (applyFailedCommands.empty() == false)
                         {
                             setInProgress(false);
-                            DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm apply command."));
+                            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Restore default device settings failed. Unable to confirm apply command."));
                             return;
                         }
 
