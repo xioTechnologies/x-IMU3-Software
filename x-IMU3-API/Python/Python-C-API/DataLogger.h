@@ -54,7 +54,9 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
 
 static void data_logger_free(DataLogger* self)
 {
-    XIMU3_data_logger_free(self->data_logger);
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_data_logger_free(self->data_logger);
+    Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
