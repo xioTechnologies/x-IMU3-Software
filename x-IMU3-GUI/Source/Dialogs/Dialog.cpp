@@ -160,14 +160,28 @@ Dialog* DialogQueue::getActive()
     return active ? static_cast<Dialog*>(active->getContentComponent()) : nullptr;
 }
 
-void DialogQueue::push(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
+void DialogQueue::pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
 {
     if (okCallback != nullptr)
     {
         content->okCallback = okCallback;
     }
 
-    queue.push(std::move(content));
+    queue.push_front(std::move(content));
+    if (active == nullptr)
+    {
+        pop();
+    }
+}
+
+void DialogQueue::pushBack(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
+{
+    if (okCallback != nullptr)
+    {
+        content->okCallback = okCallback;
+    }
+
+    queue.push_back(std::move(content));
     if (active == nullptr)
     {
         pop();
@@ -184,5 +198,5 @@ void DialogQueue::pop()
     }
 
     active = std::make_unique<DialogWindow>(std::move(queue.front()));
-    queue.pop();
+    queue.erase(queue.begin());
 }

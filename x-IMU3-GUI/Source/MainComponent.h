@@ -26,7 +26,7 @@ public:
 
         if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
         {
-            DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Unable to open network announcement socket."));
+            DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to open network announcement socket."));
         }
     }
 

@@ -21,7 +21,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                              {
                                  juce::MessageManager::callAsync([&]
                                                                  {
-                                                                     DialogQueue::getSingleton().push(std::make_unique<ErrorDialog>("Firmware update failed."));
+                                                                     DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Firmware update failed."));
                                                                      DialogQueue::getSingleton().pop();
                                                                  });
                              };

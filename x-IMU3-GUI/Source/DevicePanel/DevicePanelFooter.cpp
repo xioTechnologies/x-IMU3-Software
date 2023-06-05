@@ -37,7 +37,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
-        DialogQueue::getSingleton().push(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
+        DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
         {
             messagesChanged();
         }, devicePanel), [this]

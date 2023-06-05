@@ -16,7 +16,7 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
 
     strobeButton.onClick = [&]
     {
-        DialogQueue::getSingleton().push(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
     };
 
     deviceDescriptor.setText(getDeviceDescriptor());

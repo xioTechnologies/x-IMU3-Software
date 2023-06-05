@@ -78,11 +78,13 @@ public:
 
     Dialog* getActive();
 
-    void push(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
+    void pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
+
+    void pushBack(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
 
     void pop();
 
 private:
     std::unique_ptr<DialogWindow> active;
-    std::queue<std::unique_ptr<Dialog>> queue;
+    std::list<std::unique_ptr<Dialog>> queue;
 };
