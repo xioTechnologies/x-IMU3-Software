@@ -26,6 +26,8 @@ public:
 
         Axis horizontal;
         Axis vertical;
+
+        std::array<std::atomic<bool>, 3> visibleLines { true, true, true };
     };
 
     struct LegendItem
@@ -39,6 +41,8 @@ public:
     ~Graph() override;
 
     void render() override;
+
+    const std::vector<LegendItem>& getLegend() const;
 
     void update(const uint64_t timestamp, const std::vector<float>& values);
 
