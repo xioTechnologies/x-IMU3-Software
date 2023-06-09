@@ -3,6 +3,7 @@
 #pragma comment(lib, "setupapi")
 #pragma comment(lib, "userenv")
 #pragma comment(lib, "ws2_32")
+#pragma comment(lib, "NtDll")
 #endif
 
 #ifndef XIMU3_H
