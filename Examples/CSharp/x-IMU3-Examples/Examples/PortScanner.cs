@@ -8,9 +8,8 @@ namespace Ximu3Examples
         {
             if (Helpers.AskQuestion("Use async implementation?"))
             {
-                Ximu3.PortScanner portScanner = new Ximu3.PortScanner(PortScannerEvent);
+                using Ximu3.PortScanner portScanner = new Ximu3.PortScanner(PortScannerEvent);
                 System.Threading.Thread.Sleep(60000);
-                portScanner.Dispose();
             }
             else
             {

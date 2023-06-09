@@ -11,9 +11,8 @@ namespace Ximu3Examples
 
             if (Helpers.AskQuestion("Use async implementation?"))
             {
-                Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, source, FileConverterEvent);
+                using Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, source, FileConverterEvent);
                 System.Threading.Thread.Sleep(60000);
-                file_converter.Dispose();
             }
             else
             {
