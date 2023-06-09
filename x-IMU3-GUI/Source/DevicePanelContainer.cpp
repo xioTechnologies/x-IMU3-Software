@@ -33,8 +33,6 @@ void DevicePanelContainer::resized()
             numberOfColumns = (int) std::ceil(std::sqrt(devicePanels.size()));
             break;
         case Layout::accordion:
-            numberOfRows = numberOfColumns = 0; // avoid compiler warning
-
             for (size_t index = 0; index < devicePanels.size(); index++)
             {
                 auto& devicePanel = devicePanels[index];
@@ -96,10 +94,10 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                                   {
                                                                       static unsigned int counter;
 
-                                                                      if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
-                                                                      {
-                                                                          counter = 0;
-                                                                      }
+                                                                          if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
+                                                                          {
+                                                                              counter = 0;
+                                                                          }
 
                                                                       return UIColours::tags[counter];
                                                                   }())));
