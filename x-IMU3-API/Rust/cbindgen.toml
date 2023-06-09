@@ -15,6 +15,7 @@ header = """\
 #pragma comment(lib, "setupapi")\n\
 #pragma comment(lib, "userenv")\n\
 #pragma comment(lib, "ws2_32")\n\
+#pragma comment(lib, "NtDll")\n\
 #endif"""
 
 include_guard = "XIMU3_H"
