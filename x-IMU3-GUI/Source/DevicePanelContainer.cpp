@@ -77,6 +77,27 @@ void DevicePanelContainer::resized()
     }
 }
 
+void DevicePanelContainer::updateSize()
+{
+    juce::Rectangle<int> bounds;
+    if (const auto* const viewport = findParentComponentOfClass<juce::Viewport>())
+    {
+        bounds = viewport->getLocalBounds();
+    }
+
+    if (layout == Layout::accordion)
+    {
+        bounds.setHeight(0);
+        for (size_t index = 0; index < devicePanels.size(); index++)
+        {
+            bounds.setHeight(bounds.getHeight() + UILayout::panelMargin + (expandedDevicePanel == devicePanels[index].get() ? expandedPanelHeight : DevicePanel::collapsedHeight));
+        }
+    }
+
+    setBounds(bounds);
+    resized();
+}
+
 void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo)
 {
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
@@ -94,10 +115,10 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                                   {
                                                                       static unsigned int counter;
 
-                                                                          if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
-                                                                          {
-                                                                              counter = 0;
-                                                                          }
+                                                                      if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
+                                                                      {
+                                                                          counter = 0;
+                                                                      }
 
                                                                       return UIColours::tags[counter];
                                                                   }())));
@@ -204,34 +225,12 @@ void DevicePanelContainer::setLayout(Layout layout_)
     accordionResizeBar.setVisible(layout == Layout::accordion);
     setExpandedDevicePanel(expandedDevicePanel);
 
-    setBounds(findParentComponentOfClass<juce::Viewport>()->getBounds());
-    resized();
+    updateSize();
 }
 
 DevicePanelContainer::Layout DevicePanelContainer::getLayout()
 {
     return layout;
-}
-
-void DevicePanelContainer::updateHeightInAccordionMode()
-{
-    if (layout != Layout::accordion)
-    {
-        return;
-    }
-
-    int height = 0;
-    for (size_t index = 0; index < devicePanels.size(); index++)
-    {
-        height += UILayout::panelMargin + (expandedDevicePanel == devicePanels[index].get() ? expandedPanelHeight : DevicePanel::collapsedHeight);
-    }
-
-    if (getHeight() == height)
-    {
-        resized();
-        return;
-    }
-    setSize(getWidth(), height);
 }
 
 void DevicePanelContainer::setExpandedDevicePanel(DevicePanel* const devicePanel)
@@ -254,7 +253,7 @@ void DevicePanelContainer::setExpandedDevicePanel(DevicePanel* const devicePanel
         expandedDevicePanel->setAlpha(1.0f);
     }
 
-    updateHeightInAccordionMode();
+    updateSize();
 }
 
 const DevicePanel* DevicePanelContainer::getExpandedDevicePanel() const
@@ -272,12 +271,11 @@ void DevicePanelContainer::AccordionResizeBar::mouseDrag(const juce::MouseEvent&
     auto* const devicePanelContainer = static_cast<DevicePanelContainer*>(getParentComponent());
     const auto newHeight = mouseEvent.getEventRelativeTo(devicePanelContainer->expandedDevicePanel).getPosition().getY() - getHeight() / 2;
     devicePanelContainer->expandedPanelHeight = juce::jmax(DevicePanel::collapsedHeight, newHeight);
-    devicePanelContainer->updateHeightInAccordionMode();
+    devicePanelContainer->updateSize();
 }
 
 void DevicePanelContainer::devicePanelsSizeChanged()
 {
     setExpandedDevicePanel(expandedDevicePanel);
-    resized();
     onDevicePanelsSizeChanged();
 }

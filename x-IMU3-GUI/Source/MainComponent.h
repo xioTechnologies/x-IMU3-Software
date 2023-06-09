@@ -38,8 +38,7 @@ public:
         bounds.removeFromTop(UILayout::panelMargin);
 
         devicePanelViewport.setBounds(bounds);
-        devicePanelContainer.setSize(bounds.getWidth(), (devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion) ? devicePanelContainer.getHeight() : bounds.getHeight());
-        devicePanelContainer.resized();
+        devicePanelContainer.updateSize();
     }
 
     int getMinimumWidth() const

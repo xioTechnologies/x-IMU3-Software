@@ -13,6 +13,8 @@ public:
 
     void resized() override;
 
+    void updateSize();
+
     void connectToDevice(const ximu3::ConnectionInfo& connectionInfo);
 
     std::vector<DevicePanel*> getDevicePanels() const;
@@ -41,8 +43,6 @@ public:
     void setLayout(Layout layout_);
 
     Layout getLayout();
-
-    void updateHeightInAccordionMode();
 
     void setExpandedDevicePanel(DevicePanel* const devicePanel);
 
