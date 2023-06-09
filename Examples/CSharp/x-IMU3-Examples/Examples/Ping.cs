@@ -18,11 +18,7 @@ namespace Ximu3Examples
             }
             else
             {
-                try
-                {
-                    connection.Open();
-                }
-                catch
+                if (connection.Open() != Ximu3.Result.Ok)
                 {
                     Console.WriteLine("Unable to open connection");
                     return;
@@ -46,7 +42,7 @@ namespace Ximu3Examples
 
         private void PrintPingResponse(Ximu3.PingResponse pingResponse)
         {
-            if (pingResponse.Interface.Length == 0)
+            if (pingResponse.Result != Ximu3.Result.Ok)
             {
                 Console.WriteLine("Ping failed");
                 return;

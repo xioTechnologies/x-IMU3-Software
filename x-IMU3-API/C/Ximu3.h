@@ -123,6 +123,7 @@ typedef void (*XIMU3_CallbackResult)(enum XIMU3_Result data, void *context);
 
 typedef struct XIMU3_PingResponse
 {
+    enum XIMU3_Result result;
     char interface[XIMU3_CHAR_ARRAY_SIZE];
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];

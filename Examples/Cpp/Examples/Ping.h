@@ -1,7 +1,6 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <chrono>
-#include <cstring>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -50,7 +49,7 @@ private:
 
     static void printPingResponse(const ximu3::XIMU3_PingResponse pingResponse)
     {
-        if (strlen(pingResponse.interface) == 0)
+        if (pingResponse.result != ximu3::XIMU3_ResultOk)
         {
             std::cout << "Ping failed" << std::endl;
             return;

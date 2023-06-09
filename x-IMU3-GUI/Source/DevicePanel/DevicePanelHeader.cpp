@@ -51,6 +51,11 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
                                                                      return;
                                                                  }
 
+                                                                 if (response.result != ximu3::XIMU3_ResultOk)
+                                                                 {
+                                                                     return;
+                                                                 }
+
                                                                  deviceName = response.device_name;
                                                                  serialNumber = response.serial_number;
                                                                  deviceDescriptor.setText(getDeviceDescriptor());
