@@ -31,7 +31,7 @@ namespace Ximu3Examples
             string name = "Data Logger Example";
             if (Helpers.AskQuestion("Use async implementation?"))
             {
-                Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(directory, name, connections.ToArray());
+                using Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(directory, name, connections.ToArray());
 
                 Ximu3.Result result = dataLogger.GetResult();
 
@@ -41,8 +41,6 @@ namespace Ximu3Examples
                 }
 
                 PrintResult(result);
-
-                dataLogger.Dispose();
             }
             else
             {
