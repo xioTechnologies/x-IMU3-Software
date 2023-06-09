@@ -21,14 +21,7 @@ void GraphWindow::resized()
 
 void GraphWindow::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel)
 {
-    if (mouseEvent.mods.isAltDown())
-    {
-        zoom(false, wheel.deltaY);
-    }
-    else
-    {
-        zoom(true, wheel.deltaY);
-    }
+    zoom(mouseEvent.mods.isAltDown() == false, wheel.deltaY);
 }
 
 void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
