@@ -73,11 +73,11 @@ juce::PopupMenu GraphWindow::getMenu()
     {
         settings.vertical.autoscale = !settings.vertical.autoscale;
     });
-    menu.addItem("Zoom In (Alt + Scroll)", settings.vertical.autoscale == false, false, [&]
+    menu.addItem("Zoom In (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
         zoom(false, 0.5f);
     });
-    menu.addItem("Zoom Out (Alt + Scroll)", settings.vertical.autoscale == false, false, [&]
+    menu.addItem("Zoom Out (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
         zoom(false, -0.5f);
     });
