@@ -1,6 +1,3 @@
-import time
-
-
 def ask_question(question):
     while True:
         key = input(question + " [Y/N]\n")
