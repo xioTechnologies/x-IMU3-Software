@@ -56,6 +56,7 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
                                                                      return;
                                                                  }
 
+                                                                 pingInProgress = false;
                                                                  deviceName = response.device_name;
                                                                  serialNumber = response.serial_number;
                                                                  deviceDescriptor.setText(getDeviceDescriptor());
@@ -160,17 +161,11 @@ void DevicePanelHeader::updateDeviceDescriptor(const std::vector<CommandMessage>
 
 juce::String DevicePanelHeader::getDeviceDescriptor() const
 {
-    if (deviceName.isEmpty() && serialNumber.isEmpty())
+    if (pingInProgress)
     {
         return "Unknown Device";
     }
-
-    if (deviceName.isNotEmpty() && serialNumber.isNotEmpty())
-    {
-        return deviceName + " - " + serialNumber;
-    }
-
-    return deviceName + serialNumber;
+    return deviceName + " - " + serialNumber;
 }
 
 void DevicePanelHeader::updateRssi(const int percentage)

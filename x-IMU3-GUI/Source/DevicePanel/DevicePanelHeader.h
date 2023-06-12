@@ -37,6 +37,7 @@ private:
     DevicePanel& devicePanel;
     DevicePanelContainer& devicePanelContainer;
 
+    bool pingInProgress = true;
     juce::String deviceName, serialNumber;
 
     IconButton strobeButton { BinaryData::brightness_svg, "Strobe LED" };
