@@ -187,11 +187,11 @@ void Graph::render()
 
     // Render legend
     auto x = innerBounds.getRight() - bounds.getX();
-    for (auto it = legend.rbegin(); it != legend.rend(); it++)
+    for (int index = (int) legend.size() - 1; index >= 0; index--)
     {
         auto topPadding = bounds.getBottom() - innerBounds.getBottom();
         auto y = innerBounds.getY() - bounds.getY() + innerBounds.getHeight() + topPadding / 2 - (int) renderer.getResources().getGraphLegendText().getFontSize() / 2;
-        renderText(renderer.getResources().getGraphLegendText(), it->label, it->colour, (float) x, (float) y, juce::Justification::right);
+        renderText(renderer.getResources().getGraphLegendText(), legend[(size_t) index].label, settings.visibleLines[(size_t) index] ? legend[(size_t) index].colour : juce::Colours::grey, (float) x, (float) y, juce::Justification::right);
         x -= (int) renderer.getResources().getGraphLegendText().getTotalWidth() + 15;
     }
 }
