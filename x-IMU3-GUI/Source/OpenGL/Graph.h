@@ -17,6 +17,8 @@ public:
 
         Settings& operator=(const Settings& other);
 
+        std::atomic<bool> paused { false };
+
         struct Axis
         {
             std::atomic<bool> autoscale;

@@ -24,7 +24,6 @@ private:
     Graph::Settings& settings;
 
     Graph graph;
-    std::atomic<bool> paused = false;
 
     juce::PopupMenu getMenu();
 

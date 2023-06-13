@@ -203,6 +203,11 @@ const std::vector<Graph::LegendItem>& Graph::getLegend() const
 
 void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
 {
+    if (settings.paused)
+    {
+        return;
+    }
+
     graphDataBuffer.write(timestamp, values);
 }
 
