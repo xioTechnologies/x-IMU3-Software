@@ -21,7 +21,14 @@ void GraphWindow::resized()
 
 void GraphWindow::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel)
 {
-    zoom(mouseEvent.mods.isAltDown() == false, wheel.deltaY);
+    if (mouseEvent.mods.isAltDown())
+    {
+        zoomVertical(wheel.deltaY > 0);
+    }
+    else
+    {
+        zoomHorizontal(wheel.deltaY > 0);
+    }
 }
 
 void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
@@ -60,11 +67,11 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Zoom In (Scroll)", settings.horizontal.autoscale == false, false, [&]
     {
-        zoom(true, 0.5f);
+        zoomHorizontal(true);
     });
     menu.addItem("Zoom Out (Scroll)", settings.horizontal.autoscale == false, false, [&]
     {
-        zoom(true, -0.5f);
+        zoomHorizontal(false);
     });
 
     menu.addSeparator();
@@ -75,11 +82,11 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Zoom In (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
-        zoom(false, 0.5f);
+        zoomVertical(true);
     });
     menu.addItem("Zoom Out (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
-        zoom(false, -0.5f);
+        zoomVertical(false);
     });
 
     if (graph.getLegend().size() > 1)
@@ -112,19 +119,15 @@ juce::PopupMenu GraphWindow::getMenu()
     return menu;
 }
 
-void GraphWindow::zoom(const bool horizontal, const float amount)
+void GraphWindow::zoomHorizontal(const bool direction)
 {
-    static constexpr auto deltaScale = 2.0f;
+    const auto amount = (settings.horizontal.max - settings.horizontal.min) * 0.125f;
+    settings.horizontal.min = settings.horizontal.min + (direction ? amount : -amount);
+}
 
-    if (horizontal)
-    {
-        const auto delta = juce::jmap<float>(amount, 0.0f, deltaScale, 0.0f, settings.horizontal.max - settings.horizontal.min);
-        settings.horizontal.min = std::min(0.0f, settings.horizontal.min + delta);
-    }
-    else
-    {
-        const auto delta = juce::jmap<float>(amount, 0.0f, deltaScale, 0.0f, settings.vertical.max - settings.vertical.min);
-        settings.vertical.max = settings.vertical.max - delta;
-        settings.vertical.min = settings.vertical.min + delta;
-    }
+void GraphWindow::zoomVertical(const bool direction)
+{
+    const auto amount = (settings.vertical.max - settings.vertical.min) * 0.125f;
+    settings.vertical.max = settings.vertical.max - (direction ? amount : -amount);
+    settings.vertical.min = settings.vertical.min + (direction ? amount : -amount);
 }
