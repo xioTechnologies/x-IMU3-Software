@@ -1,7 +1,6 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
 #include "../Helpers.h"
 #include <stdio.h>
-#include <string.h>
 
 static void PrintPingResponse(const XIMU3_PingResponse pingResponse);
 
@@ -40,7 +39,7 @@ void Ping()
 
 static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
 {
-    if (strlen(pingResponse.interface) == 0)
+    if (pingResponse.result != XIMU3_ResultOk)
     {
         printf("Ping failed\n");
         return;

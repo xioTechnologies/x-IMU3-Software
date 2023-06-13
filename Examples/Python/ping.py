@@ -10,6 +10,10 @@ connection = ximu3.Connection(connection_info)
 
 
 def print_ping_response(ping_response):
+    if ping_response.result != ximu3.RESULT_OK:
+        print("Ping failed")
+        return
+
     print(ping_response.interface + ", " +
           ping_response.device_name + ", " +
           ping_response.serial_number)

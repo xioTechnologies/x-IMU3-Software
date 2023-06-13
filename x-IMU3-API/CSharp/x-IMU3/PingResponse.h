@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../C/Ximu3.h"
+#include "Result.h"
 
 using namespace System;
 
@@ -17,6 +18,14 @@ namespace Ximu3
         ~PingResponse()
         {
             delete pingResponse;
+        }
+
+        property Result Result
+        {
+            Ximu3::Result get()
+            {
+                return (Ximu3::Result)pingResponse->result;
+            }
         }
 
         property String^ Interface
