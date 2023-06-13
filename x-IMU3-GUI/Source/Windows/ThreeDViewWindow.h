@@ -28,7 +28,7 @@ public:
 private:
     ThreeDView threeDView;
     static ThreeDView::Settings settings;
-    static bool eulerAnglesVisible;
+    static bool eulerAnglesEnabled;
 
     SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
             rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
