@@ -3,7 +3,7 @@
 #include "ThreeDViewWindow.h"
 
 ThreeDView::Settings ThreeDViewWindow::settings;
-bool ThreeDViewWindow::eulerAnglesVisible = true;
+bool ThreeDViewWindow::eulerAnglesEnabled = true;
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : Window(devicePanel_, windowLayout_, type_, "3D View Menu", std::bind(&ThreeDViewWindow::getMenu, this)),
@@ -128,7 +128,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     menu.addItem("Restore Defaults", true, false, [&]
     {
         settings = {};
-        eulerAnglesVisible = true;
+        eulerAnglesEnabled = true;
     });
 
     menu.addSeparator();
@@ -143,7 +143,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
     menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
     {
-        eulerAnglesVisible = !eulerAnglesVisible;
+        eulerAnglesEnabled = !eulerAnglesEnabled;
     });
     menu.addItem("Axes", true, settings.axesEnabled, [&]
     {
@@ -195,14 +195,14 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
 void ThreeDViewWindow::timerCallback()
 {
-    rollLabel.setVisible(eulerAnglesVisible);
-    pitchLabel.setVisible(eulerAnglesVisible);
-    yawLabel.setVisible(eulerAnglesVisible);
-    rollValue.setVisible(eulerAnglesVisible);
-    pitchValue.setVisible(eulerAnglesVisible);
-    yawValue.setVisible(eulerAnglesVisible);
+    rollLabel.setVisible(eulerAnglesEnabled);
+    pitchLabel.setVisible(eulerAnglesEnabled);
+    yawLabel.setVisible(eulerAnglesEnabled);
+    rollValue.setVisible(eulerAnglesEnabled);
+    pitchValue.setVisible(eulerAnglesEnabled);
+    yawValue.setVisible(eulerAnglesEnabled);
 
-    if (eulerAnglesVisible)
+    if (eulerAnglesEnabled)
     {
         static const auto formatAngle = [](const float angle)
         {
