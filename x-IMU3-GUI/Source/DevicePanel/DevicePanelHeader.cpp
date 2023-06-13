@@ -44,14 +44,14 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
                          {
                              const auto response = devicePanel.getConnection().ping();
 
+                             if (response.result != ximu3::XIMU3_ResultOk)
+                             {
+                                 return;
+                             }
+
                              juce::MessageManager::callAsync([&, self, response]
                                                              {
                                                                  if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
-
-                                                                 if (response.result != ximu3::XIMU3_ResultOk)
                                                                  {
                                                                      return;
                                                                  }
