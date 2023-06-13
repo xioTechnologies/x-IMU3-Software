@@ -46,7 +46,7 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Clear", true, false, [&]
     {
-        graph.clear();
+        settings.clearCounter++;
     });
     menu.addItem("Pause", true, settings.paused, [&]
     {

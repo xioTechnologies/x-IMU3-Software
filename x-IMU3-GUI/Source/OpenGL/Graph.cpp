@@ -46,12 +46,17 @@ void Graph::render()
 
     renderer.refreshScreen(UIColours::backgroundLight, bounds);
 
+    if (settings.clearCounter > clearCounter)
+    {
+        graphDataBuffer.clear();
+    }
+    clearCounter = settings.clearCounter;
+
     AxesRange axesRange;
     axesRange.xMin = settings.horizontal.min;
     axesRange.xMax = settings.horizontal.max;
     axesRange.yMin = settings.vertical.min;
     axesRange.yMax = settings.vertical.max;
-
     axesRange = graphDataBuffer.update(axesRange, settings.horizontal.autoscale, settings.vertical.autoscale, settings.visibleLines);
 
     const auto numberOfDecimalPlacesX = getNumberOfDecimalPlaces((float) axesRange.xMin, (float) axesRange.xMax);
@@ -209,11 +214,6 @@ void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
     }
 
     graphDataBuffer.write(timestamp, values);
-}
-
-void Graph::clear()
-{
-    graphDataBuffer.clear();
 }
 
 juce::Rectangle<int> Graph::padded(juce::Rectangle<int> rectangle)
