@@ -10,7 +10,7 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
                                                                                           { "Y", UIColours::graphGreen },
                                                                                           { "Z", UIColours::graphBlue }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
     }));
@@ -20,6 +20,6 @@ EarthAccelerationGraphWindow::~EarthAccelerationGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

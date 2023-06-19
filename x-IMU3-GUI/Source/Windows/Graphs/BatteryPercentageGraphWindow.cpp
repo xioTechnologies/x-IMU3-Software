@@ -8,7 +8,7 @@ Graph::Settings BatteryPercentageGraphWindow::settings = Graph::Settings(true);
 BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Percentage (%)", {{{}, juce::Colours::yellow }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         update(message.timestamp, { message.percentage });
     }));
@@ -18,6 +18,6 @@ BatteryPercentageGraphWindow::~BatteryPercentageGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

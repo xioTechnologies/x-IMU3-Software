@@ -10,7 +10,7 @@ AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& window
                                                                                           { "Y", UIColours::graphGreen },
                                                                                           { "Z", UIColours::graphBlue }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
     {
         update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
     }));
@@ -20,6 +20,6 @@ AccelerometerGraphWindow::~AccelerometerGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

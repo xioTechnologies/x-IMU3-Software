@@ -10,7 +10,7 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
                                                                                           { "Y", UIColours::graphGreen },
                                                                                           { "Z", UIColours::graphBlue }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
     {
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
     }));
@@ -20,6 +20,6 @@ HighGAccelerometerGraphWindow::~HighGAccelerometerGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

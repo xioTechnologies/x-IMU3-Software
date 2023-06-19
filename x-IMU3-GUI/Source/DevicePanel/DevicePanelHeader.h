@@ -37,7 +37,7 @@ private:
     DevicePanel& devicePanel;
     DevicePanelContainer& devicePanelContainer;
 
-    bool pingInProgress = true;
+    std::shared_ptr<std::atomic<bool>> pingInProgress = std::make_shared<std::atomic<bool>>(true);
     juce::String deviceName, serialNumber;
 
     IconButton strobeButton { BinaryData::brightness_svg, "Strobe LED" };

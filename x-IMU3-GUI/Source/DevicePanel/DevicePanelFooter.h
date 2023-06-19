@@ -21,7 +21,6 @@ public:
 
 private:
     DevicePanel& devicePanel;
-    ximu3::Connection& connection;
 
     SimpleLabel statisticsLabel { "", UIFonts::getSmallFont() };
 

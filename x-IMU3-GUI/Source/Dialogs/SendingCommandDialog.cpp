@@ -144,7 +144,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getDeviceDescriptor());
 
         case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getConnection().getInfo()->toString());
+            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getConnection()->getInfo()->toString());
 
         case ColumnIDs::complete:
             switch (rows[(size_t) rowNumber].state)

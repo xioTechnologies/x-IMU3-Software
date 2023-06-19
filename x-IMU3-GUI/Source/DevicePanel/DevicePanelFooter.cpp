@@ -3,7 +3,7 @@
 #include "DevicePanel.h"
 #include "DevicePanelFooter.h"
 
-DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(devicePanel_), connection(devicePanel.getConnection())
+DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(devicePanel_)
 {
     addAndMakeVisible(statisticsLabel);
 
@@ -23,7 +23,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             resized();
                                         });
     };
-    statisticsCallbackID = connection.addStatisticsCallback(statisticsCallback);
+    statisticsCallbackID = devicePanel.getConnection()->addStatisticsCallback(statisticsCallback);
 
     addAndMakeVisible(latestMessageLabel);
 
@@ -41,14 +41,14 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
         {
             messagesChanged();
         }, devicePanel), [this]
-                                         {
-                                             for (auto& notificationMessage : messages)
-                                             {
-                                                 notificationMessage.unread = false;
-                                             }
-                                             messagesChanged();
-                                             return true;
-                                         });
+                                              {
+                                                  for (auto& notificationMessage : messages)
+                                                  {
+                                                      notificationMessage.unread = false;
+                                                  }
+                                                  messagesChanged();
+                                                  return true;
+                                              });
     };
 
     notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -65,7 +65,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             messagesChanged();
                                         });
     };
-    notificationCallbackID = connection.addNotificationCallback(notificationCallback);
+    notificationCallbackID = devicePanel.getConnection()->addNotificationCallback(notificationCallback);
 
     errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
@@ -81,14 +81,14 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             messagesChanged();
                                         });
     };
-    errorCallbackID = connection.addErrorCallback(errorCallback);
+    errorCallbackID = devicePanel.getConnection()->addErrorCallback(errorCallback);
 }
 
 DevicePanelFooter::~DevicePanelFooter()
 {
-    connection.removeCallback(statisticsCallbackID);
-    connection.removeCallback(notificationCallbackID);
-    connection.removeCallback(errorCallbackID);
+    devicePanel.getConnection()->removeCallback(statisticsCallbackID);
+    devicePanel.getConnection()->removeCallback(notificationCallbackID);
+    devicePanel.getConnection()->removeCallback(errorCallbackID);
 }
 
 void DevicePanelFooter::paint(juce::Graphics& g)

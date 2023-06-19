@@ -10,13 +10,13 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
                                                                                                       { "Pitch", UIColours::graphGreen },
                                                                                                       { "Yaw",   UIColours::graphBlue }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addQuaternionCallback(quaternionCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 
-    callbackIDs.push_back(devicePanel.getConnection().addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
         const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,
                                                       message.yx_element, message.yy_element, message.yz_element,
@@ -25,18 +25,18 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 
-    callbackIDs.push_back(devicePanel.getConnection().addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
         update(message.timestamp, { message.roll, message.pitch, message.yaw });
     }));
 
-    callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 
-    callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
@@ -47,6 +47,6 @@ EulerAnglesGraphWindow::~EulerAnglesGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

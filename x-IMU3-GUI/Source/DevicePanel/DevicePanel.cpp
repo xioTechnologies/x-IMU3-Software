@@ -56,9 +56,9 @@ void DevicePanel::resized()
     windowContainer->setBounds(bounds);
 }
 
-ximu3::Connection& DevicePanel::getConnection()
+std::shared_ptr<ximu3::Connection> DevicePanel::getConnection()
 {
-    return *connection;
+    return connection;
 }
 
 void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)> callback)

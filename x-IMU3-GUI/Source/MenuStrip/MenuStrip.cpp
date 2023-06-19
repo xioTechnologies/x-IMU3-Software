@@ -40,7 +40,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
         for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
         {
-            existingConnections.push_back(devicePanel->getConnection().getInfo());
+            existingConnections.push_back(devicePanel->getConnection()->getInfo());
         }
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
@@ -100,7 +100,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                     std::vector<ximu3::Connection*> connections;
                     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
                     {
-                        connections.push_back(&devicePanel->getConnection());
+                        connections.push_back(devicePanel->getConnection().get());
                     }
 
                     dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
@@ -256,7 +256,7 @@ void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel
 
     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
     {
-        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection().getInfo()->toString());
+        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection()->getInfo()->toString());
 
         item.action = [devicePanel, action]
         {
