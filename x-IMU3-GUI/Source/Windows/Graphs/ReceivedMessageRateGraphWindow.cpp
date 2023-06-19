@@ -8,7 +8,7 @@ Graph::Settings ReceivedMessageRateGraphWindow::settings = Graph::Settings(true)
 ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Receive rate (messages/s)", {{{}, juce::Colours::yellow }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addStatisticsCallback(statisticsCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {
         update(message.timestamp, { (float) message.message_rate });
     }));
@@ -18,6 +18,6 @@ ReceivedMessageRateGraphWindow::~ReceivedMessageRateGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

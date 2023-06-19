@@ -8,7 +8,7 @@ Graph::Settings BatteryVoltageGraphWindow::settings = Graph::Settings(true);
 BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Voltage (V)", {{{}, juce::Colours::yellow }}, settings)
 {
-    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
+    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         update(message.timestamp, { message.voltage });
     }));
@@ -18,6 +18,6 @@ BatteryVoltageGraphWindow::~BatteryVoltageGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
-        devicePanel.getConnection().removeCallback(callbackID);
+        devicePanel.getConnection()->removeCallback(callbackID);
     }
 }

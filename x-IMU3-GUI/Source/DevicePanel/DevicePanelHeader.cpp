@@ -6,7 +6,7 @@
 DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_)
         : devicePanel(devicePanel_),
           devicePanelContainer(devicePanelContainer_),
-          connectionInfo(devicePanel.getConnection().getInfo()->toString(), UIFonts::getDefaultFont())
+          connectionInfo(devicePanel.getConnection()->getInfo()->toString(), UIFonts::getDefaultFont())
 {
     addAndMakeVisible(strobeButton);
     addAndMakeVisible(rssiIcon);
@@ -30,38 +30,39 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
         }
     });
 
-    rssiCallbackID = devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)
+    rssiCallbackID = devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
         updateRssi((int) message.percentage);
     });
 
-    batteryCallbackID = devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)
+    batteryCallbackID = devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         updateBattery((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
 
-    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
+    juce::Thread::launch([&, connection = devicePanel.getConnection(), pingInProgress = pingInProgress]
                          {
-                             const auto response = devicePanel.getConnection().ping();
-
-                             if (response.result != ximu3::XIMU3_ResultOk)
+                             while (*pingInProgress)
                              {
-                                 return;
+                                 auto response = connection->ping();
+
+                                 if (response.result == ximu3::XIMU3_ResultOk)
+                                 {
+                                     juce::MessageManager::callAsync([&, pingInProgress, response]
+                                                                     {
+                                                                         if (pingInProgress->exchange(false) == false)
+                                                                         {
+                                                                             return;
+                                                                         }
+
+                                                                         deviceName = response.device_name;
+                                                                         serialNumber = response.serial_number;
+                                                                         deviceDescriptor.setText(getDeviceDescriptor());
+                                                                         resized();
+                                                                     });
+                                     return;
+                                 }
                              }
-
-                             juce::MessageManager::callAsync([&, self, response]
-                                                             {
-                                                                 if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
-
-                                                                 pingInProgress = false;
-                                                                 deviceName = response.device_name;
-                                                                 serialNumber = response.serial_number;
-                                                                 deviceDescriptor.setText(getDeviceDescriptor());
-                                                                 resized();
-                                                             });
                          });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
@@ -70,8 +71,10 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
 DevicePanelHeader::~DevicePanelHeader()
 {
     networkAnnouncement->removeCallback(networkAnnouncementCallbackID);
-    devicePanel.getConnection().removeCallback(rssiCallbackID);
-    devicePanel.getConnection().removeCallback(batteryCallbackID);
+    devicePanel.getConnection()->removeCallback(rssiCallbackID);
+    devicePanel.getConnection()->removeCallback(batteryCallbackID);
+
+    *pingInProgress = false;
 }
 
 void DevicePanelHeader::paint(juce::Graphics& g)
@@ -161,7 +164,7 @@ void DevicePanelHeader::updateDeviceDescriptor(const std::vector<CommandMessage>
 
 juce::String DevicePanelHeader::getDeviceDescriptor() const
 {
-    if (pingInProgress)
+    if (*pingInProgress)
     {
         return "Unknown Device";
     }

@@ -20,7 +20,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     addAndMakeVisible(loadingLabel);
 
-    quaternionCallbackID = devicePanel.getConnection().addQuaternionCallback(quaternionCallback = [&](auto message)
+    quaternionCallbackID = devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
         threeDView.update(message.x_element, message.y_element, message.z_element, message.w_element);
 
@@ -31,7 +31,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = eulerAngles.z;
     });
 
-    rotationMatrixCallbackID = devicePanel.getConnection().addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
+    rotationMatrixCallbackID = devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
         const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,
                                                       message.yx_element, message.yy_element, message.yz_element,
@@ -40,7 +40,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         quaternionCallback({ message.timestamp, quaternion.scalar, quaternion.vector.x, quaternion.vector.y, quaternion.vector.z });
     });
 
-    eulerAnglesCallbackID = devicePanel.getConnection().addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
+    eulerAnglesCallbackID = devicePanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
         const auto quaternion = Convert::toQuaternion(message.roll, message.pitch, message.yaw);
 
@@ -51,12 +51,12 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = message.yaw;
     });
 
-    linearAccelerationCallbackID = devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
+    linearAccelerationCallbackID = devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
         quaternionCallback({ message.timestamp, message.w_element, message.x_element, message.y_element, message.z_element });
     });
 
-    earthAccelerationCallbackID = devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    earthAccelerationCallbackID = devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         quaternionCallback({ message.timestamp, message.w_element, message.x_element, message.y_element, message.z_element });
     });
@@ -67,11 +67,11 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
 ThreeDViewWindow::~ThreeDViewWindow()
 {
-    devicePanel.getConnection().removeCallback(quaternionCallbackID);
-    devicePanel.getConnection().removeCallback(rotationMatrixCallbackID);
-    devicePanel.getConnection().removeCallback(eulerAnglesCallbackID);
-    devicePanel.getConnection().removeCallback(linearAccelerationCallbackID);
-    devicePanel.getConnection().removeCallback(earthAccelerationCallbackID);
+    devicePanel.getConnection()->removeCallback(quaternionCallbackID);
+    devicePanel.getConnection()->removeCallback(rotationMatrixCallbackID);
+    devicePanel.getConnection()->removeCallback(eulerAnglesCallbackID);
+    devicePanel.getConnection()->removeCallback(linearAccelerationCallbackID);
+    devicePanel.getConnection()->removeCallback(earthAccelerationCallbackID);
 }
 
 void ThreeDViewWindow::resized()

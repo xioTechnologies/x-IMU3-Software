@@ -27,7 +27,7 @@ windows = [
                                                                                                                    { \"Y\", UIColours::graphGreen },\n\
                                                                                                                    { \"Z\", UIColours::graphBlue }}",
         callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
     }));",
@@ -40,7 +40,7 @@ windows = [
                                                                                           { \"Y\", UIColours::graphGreen },\n\
                                                                                           { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addInertialCallback(inertialCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });\n\
     }));",
@@ -53,7 +53,7 @@ windows = [
                                                                                           { \"Y\", UIColours::graphGreen },\n\
                                                                                           { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
@@ -72,13 +72,13 @@ windows = [
                                                                                                       { \"Pitch\", UIColours::graphGreen },\n\
                                                                                                       { \"Yaw\",   UIColours::graphBlue }}",
         callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addQuaternionCallback(quaternionCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection().addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
     {\n\
         const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,\n\
                                                       message.yx_element, message.yy_element, message.yz_element,\n\
@@ -87,18 +87,18 @@ windows = [
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection().addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.roll, message.pitch, message.yaw });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
@@ -112,7 +112,7 @@ windows = [
                                                                                           { \"Y\", UIColours::graphGreen },\n\
                                                                                           { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
@@ -125,7 +125,7 @@ windows = [
                                                                                           { \"Y\", UIColours::graphGreen },\n\
                                                                                           { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
@@ -138,7 +138,7 @@ windows = [
                                                                                           { \"Y\", UIColours::graphGreen },\n\
                                                                                           { \"Z\", UIColours::graphBlue }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
@@ -149,7 +149,7 @@ windows = [
            y_axis="Temperature (\" + degreeSymbol + \"C)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addTemperatureCallback(temperatureCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.temperature });\n\
     }));",
@@ -160,7 +160,7 @@ windows = [
            y_axis="Percentage (%)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.percentage });\n\
     }));",
@@ -171,7 +171,7 @@ windows = [
            y_axis="Voltage (V)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addBatteryCallback(batteryCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.voltage });\n\
     }));",
@@ -182,7 +182,7 @@ windows = [
            y_axis="Percentage (%)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.percentage });\n\
     }));",
@@ -193,7 +193,7 @@ windows = [
            y_axis="Power (dBm)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addRssiCallback(rssiCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.power });\n\
     }));",
@@ -205,7 +205,7 @@ windows = [
         y_axis="Receive rate (messages/s)",
         legend="{{{}, juce::Colours::yellow }}",
         callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addStatisticsCallback(statisticsCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { (float) message.message_rate });\n\
     }));",
@@ -216,7 +216,7 @@ windows = [
            y_axis="Receive rate (kB/s)",
            legend="{{{}, juce::Colours::yellow }}",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection().addStatisticsCallback(statisticsCallback = [&](auto message)\n\
+    callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { (float) message.data_rate / 1000.0f });\n\
     }));",

@@ -31,7 +31,7 @@ public:
 
     void resized() override;
 
-    ximu3::Connection& getConnection();
+    std::shared_ptr<ximu3::Connection> getConnection();
 
     void sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)> callback = nullptr);
 
