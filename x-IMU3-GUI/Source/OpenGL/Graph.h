@@ -17,6 +17,9 @@ public:
 
         Settings& operator=(const Settings& other);
 
+        std::atomic<int> clearCounter { 0 };
+        std::atomic<bool> paused { false };
+
         struct Axis
         {
             std::atomic<bool> autoscale;
@@ -26,6 +29,8 @@ public:
 
         Axis horizontal;
         Axis vertical;
+
+        std::array<std::atomic<bool>, 3> visibleLines { true, true, true };
     };
 
     struct LegendItem
@@ -40,9 +45,9 @@ public:
 
     void render() override;
 
-    void update(const uint64_t timestamp, const std::vector<float>& values);
+    const std::vector<LegendItem>& getLegend() const;
 
-    void clear();
+    void update(const uint64_t timestamp, const std::vector<float>& values);
 
     juce::Rectangle<int> padded(juce::Rectangle<int> rectangle);
 
@@ -55,6 +60,8 @@ private:
     const juce::String yAxis;
     std::vector<LegendItem> legend;
     const Settings& settings;
+
+    int clearCounter = 0;
 
     GridLines gridLines;
     GraphDataBuffer graphDataBuffer { legend.size() };

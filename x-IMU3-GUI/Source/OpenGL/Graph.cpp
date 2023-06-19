@@ -46,13 +46,18 @@ void Graph::render()
 
     renderer.refreshScreen(UIColours::backgroundLight, bounds);
 
+    if (settings.clearCounter > clearCounter)
+    {
+        graphDataBuffer.clear();
+    }
+    clearCounter = settings.clearCounter;
+
     AxesRange axesRange;
     axesRange.xMin = settings.horizontal.min;
     axesRange.xMax = settings.horizontal.max;
     axesRange.yMin = settings.vertical.min;
     axesRange.yMax = settings.vertical.max;
-
-    axesRange = graphDataBuffer.update(axesRange, settings.horizontal.autoscale, settings.vertical.autoscale);
+    axesRange = graphDataBuffer.update(axesRange, settings.horizontal.autoscale, settings.vertical.autoscale, settings.visibleLines);
 
     const auto numberOfDecimalPlacesX = getNumberOfDecimalPlaces((float) axesRange.xMin, (float) axesRange.xMax);
     const auto numberOfDecimalPlacesY = getNumberOfDecimalPlaces((float) axesRange.yMin, (float) axesRange.yMax);
@@ -103,6 +108,11 @@ void Graph::render()
 
     for (size_t index = 0; index < graphDataBuffer.getLineBuffers().size(); index++)
     {
+        if (settings.visibleLines[index] == false)
+        {
+            continue;
+        }
+
         setUniforms(legend[index].colour,
                     { 0.0f, 0.0f, 1.0f, 1.0f },
                     { (GLfloat) -axesRange.getXCenter(),
@@ -182,23 +192,28 @@ void Graph::render()
 
     // Render legend
     auto x = innerBounds.getRight() - bounds.getX();
-    for (auto it = legend.rbegin(); it != legend.rend(); it++)
+    for (int index = (int) legend.size() - 1; index >= 0; index--)
     {
         auto topPadding = bounds.getBottom() - innerBounds.getBottom();
         auto y = innerBounds.getY() - bounds.getY() + innerBounds.getHeight() + topPadding / 2 - (int) renderer.getResources().getGraphLegendText().getFontSize() / 2;
-        renderText(renderer.getResources().getGraphLegendText(), it->label, it->colour, (float) x, (float) y, juce::Justification::right);
+        renderText(renderer.getResources().getGraphLegendText(), legend[(size_t) index].label, settings.visibleLines[(size_t) index] ? legend[(size_t) index].colour : juce::Colours::grey, (float) x, (float) y, juce::Justification::right);
         x -= (int) renderer.getResources().getGraphLegendText().getTotalWidth() + 15;
     }
 }
 
-void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
+const std::vector<Graph::LegendItem>& Graph::getLegend() const
 {
-    graphDataBuffer.write(timestamp, values);
+    return legend;
 }
 
-void Graph::clear()
+void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
 {
-    graphDataBuffer.clear();
+    if (settings.paused)
+    {
+        return;
+    }
+
+    graphDataBuffer.write(timestamp, values);
 }
 
 juce::Rectangle<int> Graph::padded(juce::Rectangle<int> rectangle)

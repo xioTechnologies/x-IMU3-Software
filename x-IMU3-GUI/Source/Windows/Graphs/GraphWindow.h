@@ -24,9 +24,12 @@ private:
     Graph::Settings& settings;
 
     Graph graph;
-    std::atomic<bool> paused = false;
 
     juce::PopupMenu getMenu();
+
+    void zoomHorizontal(const bool direction);
+
+    void zoomVertical(const bool direction);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWindow)
 };
