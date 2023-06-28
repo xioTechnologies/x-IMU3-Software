@@ -11,7 +11,7 @@ class Connection:
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
-        if not ping_response.interface:
+        if ping_response.result != ximu3.RESULT_OK:
             raise Exception("Ping failed for " + connection_info.to_string())
 
         self.__prefix = ping_response.device_name + " - " + ping_response.serial_number
