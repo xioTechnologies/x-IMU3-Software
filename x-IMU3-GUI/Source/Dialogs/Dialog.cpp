@@ -20,7 +20,15 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
     initButton(okButton, okButtonText.isNotEmpty(), okButtonText, true);
     initButton(cancelButton, cancelButtonText.isNotEmpty(), cancelButtonText, false);
 
-    okButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey)); // Esc is already managed by parent juce::DialogWindow
+    okButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
+    if (cancelButton.isVisible())
+    {
+        cancelButton.addShortcut(juce::KeyPress(juce::KeyPress::escapeKey));
+    }
+    else
+    {
+        okButton.addShortcut(juce::KeyPress(juce::KeyPress::escapeKey));
+    }
 
     okButton.onClick = [this]
     {
@@ -84,14 +92,6 @@ bool Dialog::isResizable() const
     return resizable;
 }
 
-void Dialog::cancel()
-{
-    if (cancelButton.isVisible())
-    {
-        cancelButton.triggerClick();
-    }
-}
-
 int Dialog::calculateHeight(const int numberOfRows) const
 {
     // This "adjust" fixes a bug that the dialog height doesn't adjust after changing the title bar height
@@ -115,44 +115,6 @@ void Dialog::setCancelButton(const bool valid, const juce::String& buttonText)
     {
         cancelButton.setButtonText(buttonText);
     }
-}
-
-DialogWindow::DialogWindow(std::unique_ptr<Dialog> content)
-        : juce::DialogWindow(content->getName(), UIColours::backgroundLight, true, true)
-{
-    setContentOwned(content.get(), true);
-    setTitleBarHeight(Dialog::titleBarHeight);
-    centreAroundComponent(nullptr, getWidth(), getHeight());
-    setVisible(true);
-    setTitleBarButtonsRequired(0, false);
-
-    enterModalState(true);
-
-    content->grabKeyboardFocus();
-
-    if (content->isResizable())
-    {
-        setResizable(true, true);
-    }
-
-    juce::Image iconImage(juce::Image::ARGB, 2 * 50, 2 * Dialog::titleBarHeight, true);
-    juce::Graphics g(iconImage);
-    const auto bounds = juce::Rectangle<float>((float) iconImage.getWidth(), (float) iconImage.getHeight()).withCentre(iconImage.getBounds().getCentre().toFloat());
-    juce::Drawable::createFromSVG(*juce::XmlDocument::parse(content->icon))->drawWithin(g, bounds, juce::RectanglePlacement::centred, 1.0f);
-    setIcon(iconImage);
-
-    content.release();
-}
-
-void DialogWindow::closeButtonPressed()
-{
-    DialogQueue::getSingleton().getActive()->cancel();
-}
-
-bool DialogWindow::escapeKeyPressed()
-{
-    DialogQueue::getSingleton().getActive()->cancel();
-    return true;
 }
 
 Dialog* DialogQueue::getActive()
@@ -197,6 +159,22 @@ void DialogQueue::pop()
         return;
     }
 
-    active = std::make_unique<DialogWindow>(std::move(queue.front()));
+    active = std::make_unique<juce::DialogWindow>(queue.front()->getName(), UIColours::backgroundLight, true, true);
+    active->setContentOwned(queue.front().get(), true);
+    active->setTitleBarHeight(Dialog::titleBarHeight);
+    active->centreAroundComponent(nullptr, active->getWidth(), active->getHeight());
+    active->setVisible(true);
+    active->setTitleBarButtonsRequired(0, false);
+    active->enterModalState(true);
+    active->setResizable(queue.front()->isResizable(), queue.front()->isResizable());
+
+    juce::Image iconImage(juce::Image::ARGB, 2 * 50, 2 * Dialog::titleBarHeight, true);
+    juce::Graphics g(iconImage);
+    const auto bounds = juce::Rectangle<float>((float) iconImage.getWidth(), (float) iconImage.getHeight()).withCentre(iconImage.getBounds().getCentre().toFloat());
+    juce::Drawable::createFromSVG(*juce::XmlDocument::parse(queue.front()->icon))->drawWithin(g, bounds, juce::RectanglePlacement::centred, 1.0f);
+    active->setIcon(iconImage);
+
+    queue.front()->grabKeyboardFocus();
+    queue.front().release();
     queue.erase(queue.begin());
 }

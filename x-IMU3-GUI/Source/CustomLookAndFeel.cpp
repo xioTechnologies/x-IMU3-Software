@@ -359,7 +359,7 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window,
 
     juce::Rectangle<int> bounds(w, h);
 
-    if (DialogWindow* dialogWindow = dynamic_cast<DialogWindow*>(&window))
+    if (const auto* const dialogWindow = dynamic_cast<juce::DialogWindow*>(&window))
     {
         if (const auto tag = static_cast<Dialog*>(dialogWindow->getContentComponent())->tag)
         {
