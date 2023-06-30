@@ -22,6 +22,10 @@ Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
     vertical.autoscale = other.vertical.autoscale.load();
     vertical.min = other.vertical.min.load();
     vertical.max = other.vertical.max.load();
+    for (size_t index = 0; index < visibleLines.size(); index++)
+    {
+        visibleLines[index] = other.visibleLines[index].load();
+    }
     return *this;
 }
 
