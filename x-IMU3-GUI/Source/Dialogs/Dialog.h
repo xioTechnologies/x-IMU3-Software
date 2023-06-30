@@ -25,8 +25,6 @@ public:
 
     bool isResizable() const;
 
-    void cancel();
-
     const juce::String icon;
 
     const std::optional<juce::Colour> tag;
@@ -57,16 +55,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };
 
-class DialogWindow : public juce::DialogWindow
-{
-public:
-    DialogWindow(std::unique_ptr<Dialog> content);
-
-    void closeButtonPressed() override;
-
-    bool escapeKeyPressed() override;
-};
-
 class DialogQueue : private juce::DeletedAtShutdown
 {
 public:
@@ -85,6 +73,6 @@ public:
     void pop();
 
 private:
-    std::unique_ptr<DialogWindow> active;
+    std::unique_ptr<juce::DialogWindow> active;
     std::list<std::unique_ptr<Dialog>> queue;
 };
