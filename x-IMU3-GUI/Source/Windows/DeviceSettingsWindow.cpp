@@ -36,7 +36,10 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         });
     };
 
-    readAllButton.onClick();
+    if (ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens)
+    {
+        readAllButton.onClick();
+    }
 
     writeAllButton.onClick = [this]
     {
@@ -213,25 +216,9 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
 {
     juce::PopupMenu menu;
 
-    menu.addItem(readAllButton.getTooltip(), [&]
+    menu.addItem("Read Settings When Window Opens", true, ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, [&]
     {
-        readAllButton.onClick();
-    });
-    menu.addItem(writeAllButton.getTooltip(), [&]
-    {
-        writeAllButton.onClick();
-    });
-    menu.addItem(saveToFileButton.getTooltip(), [&]
-    {
-        saveToFileButton.onClick();
-    });
-    menu.addItem(loadFromFileButton.getTooltip(), [&]
-    {
-        loadFromFileButton.onClick();
-    });
-    menu.addItem(defaultsButton.getTooltip(), [&]
-    {
-        defaultsButton.onClick();
+        ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
     });
 
     return menu;

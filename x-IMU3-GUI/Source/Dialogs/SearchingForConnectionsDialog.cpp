@@ -47,11 +47,11 @@ juce::PopupMenu SearchingForConnectionsDialog::getFilterMenu()
             value = !value;
         });
     };
-    addFilterItem("USB", ApplicationSettings::getSingleton().searchUsb);
-    addFilterItem("Serial", ApplicationSettings::getSingleton().searchSerial);
-    addFilterItem("TCP", ApplicationSettings::getSingleton().searchTcp);
-    addFilterItem("UDP", ApplicationSettings::getSingleton().searchUdp);
-    addFilterItem("Bluetooth", ApplicationSettings::getSingleton().searchBluetooth);
+    addFilterItem("USB", ApplicationSettings::getSingleton().searchForConnections.usb);
+    addFilterItem("Serial", ApplicationSettings::getSingleton().searchForConnections.serial);
+    addFilterItem("TCP", ApplicationSettings::getSingleton().searchForConnections.tcp);
+    addFilterItem("UDP", ApplicationSettings::getSingleton().searchForConnections.udp);
+    addFilterItem("Bluetooth", ApplicationSettings::getSingleton().searchForConnections.bluetooth);
     return menu;
 }
 
@@ -76,15 +76,15 @@ void SearchingForConnectionsDialog::timerCallback()
 
     for (const auto& device : portScanner.getDevices())
     {
-        if (device.connection_type == ximu3::XIMU3_ConnectionTypeUsb && ApplicationSettings::getSingleton().searchUsb)
+        if (device.connection_type == ximu3::XIMU3_ConnectionTypeUsb && ApplicationSettings::getSingleton().searchForConnections.usb)
         {
             addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::UsbConnectionInfo>(device.usb_connection_info), device.connection_type);
         }
-        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeSerial && ApplicationSettings::getSingleton().searchSerial)
+        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeSerial && ApplicationSettings::getSingleton().searchForConnections.serial)
         {
             addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::SerialConnectionInfo>(device.serial_connection_info), device.connection_type);
         }
-        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth && ApplicationSettings::getSingleton().searchBluetooth)
+        else if (device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth && ApplicationSettings::getSingleton().searchForConnections.bluetooth)
         {
             addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info), device.connection_type);
         }
@@ -92,11 +92,11 @@ void SearchingForConnectionsDialog::timerCallback()
 
     for (const auto& message : networkAnnouncement->getMessages())
     {
-        if (ApplicationSettings::getSingleton().searchUdp)
+        if (ApplicationSettings::getSingleton().searchForConnections.udp)
         {
             addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(message)), ximu3::XIMU3_ConnectionTypeUdp);
         }
-        if (ApplicationSettings::getSingleton().searchTcp)
+        if (ApplicationSettings::getSingleton().searchForConnections.tcp)
         {
             addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message)), ximu3::XIMU3_ConnectionTypeTcp);
         }

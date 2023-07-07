@@ -7,16 +7,31 @@ class ApplicationSettings : private juce::DeletedAtShutdown, private juce::Value
     juce::ValueTree tree { "Settings" };
 
 public:
-    juce::CachedValue<bool> showSearchForConnectionsOnStartup { tree, "showSearchForConnectionsOnStartup", nullptr, true };
-    juce::CachedValue<bool> searchUsb { tree, "searchUsb", nullptr, true };
-    juce::CachedValue<bool> searchSerial { tree, "searchSerial", nullptr, true };
-    juce::CachedValue<bool> searchTcp { tree, "searchTcp", nullptr, false };
-    juce::CachedValue<bool> searchUdp { tree, "searchUdp", nullptr, true };
-    juce::CachedValue<bool> searchBluetooth { tree, "searchBluetooth", nullptr, true };
-    juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, 2 };
-    juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, 500 };
-    juce::CachedValue<bool> hideUnusedDeviceSettings { tree, "hideUnusedDeviceSettings", nullptr, true };
-    juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
+    struct
+    {
+        juce::ValueTree tree;
+        juce::CachedValue<bool> showOnStartup { tree, "showOnStartup", nullptr, true };
+        juce::CachedValue<bool> usb { tree, "usb", nullptr, true };
+        juce::CachedValue<bool> serial { tree, "serial", nullptr, true };
+        juce::CachedValue<bool> tcp { tree, "tcp", nullptr, false };
+        juce::CachedValue<bool> udp { tree, "udp", nullptr, true };
+        juce::CachedValue<bool> bluetooth { tree, "bluetooth", nullptr, true };
+    } searchForConnections { tree.getOrCreateChildWithName("SearchForConnections", nullptr) };
+
+    struct
+    {
+        juce::ValueTree tree;
+        juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, 2 };
+        juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, 500 };
+        juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
+    } commands { tree.getOrCreateChildWithName("Commands", nullptr) };
+
+    struct
+    {
+        juce::ValueTree tree;
+        juce::CachedValue<bool> readSettingsWhenWindowOpens { tree, "readSettingsWhenWindowOpens", nullptr, true };
+        juce::CachedValue<bool> hideUnusedSettings { tree, "hideUnusedSettings", nullptr, true };
+    } deviceSettings { tree.getOrCreateChildWithName("DeviceSettings", nullptr) };
 
     static ApplicationSettings& getSingleton()
     {

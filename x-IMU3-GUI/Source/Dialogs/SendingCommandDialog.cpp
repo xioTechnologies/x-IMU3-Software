@@ -27,10 +27,10 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     }
 
     closeWhenCompleteButton.setClickingTogglesState(true);
-    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
     closeWhenCompleteButton.onClick = [&]
     {
-        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
+        ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
     };
 
     okCallback = [&, command]
@@ -75,7 +75,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                 setOkButton(true, "Close");
                 setCancelButton(false);
 
-                if (ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete)
+                if (ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete)
                 {
                     startTimer(1000);
                 }
