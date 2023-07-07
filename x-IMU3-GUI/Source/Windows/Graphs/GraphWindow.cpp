@@ -24,11 +24,11 @@ void GraphWindow::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce:
 {
     if (mouseEvent.mods.isAltDown())
     {
-        zoomVertical(wheel.deltaY > 0);
+        zoomVertical(std::exp2(wheel.deltaY));
     }
     else
     {
-        zoomHorizontal(wheel.deltaY > 0);
+        zoomHorizontal(std::exp2(wheel.deltaY));
     }
 }
 
@@ -62,11 +62,11 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Zoom In (Scroll)", settings.horizontal.autoscale == false, false, [&]
     {
-        zoomHorizontal(true);
+        zoomHorizontal(0.5f);
     });
     menu.addItem("Zoom Out (Scroll)", settings.horizontal.autoscale == false, false, [&]
     {
-        zoomHorizontal(false);
+        zoomHorizontal(2.0f);
     });
 
     menu.addSeparator();
@@ -77,11 +77,11 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Zoom In (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
-        zoomVertical(true);
+        zoomVertical(0.5f);
     });
     menu.addItem("Zoom Out (Alt+Scroll)", settings.vertical.autoscale == false, false, [&]
     {
-        zoomVertical(false);
+        zoomVertical(2.0f);
     });
 
     if (graph.getLegend().size() > 1)
@@ -114,15 +114,15 @@ juce::PopupMenu GraphWindow::getMenu()
     return menu;
 }
 
-void GraphWindow::zoomHorizontal(const bool direction)
+void GraphWindow::zoomHorizontal(const float multiplier)
 {
-    const auto amount = (settings.horizontal.max - settings.horizontal.min) * 0.125f;
-    settings.horizontal.min = settings.horizontal.min + (direction ? amount : -amount);
+    settings.horizontal.min = settings.horizontal.min * multiplier;
 }
 
-void GraphWindow::zoomVertical(const bool direction)
+void GraphWindow::zoomVertical(const float multiplier)
 {
-    const auto amount = (settings.vertical.max - settings.vertical.min) * 0.125f;
-    settings.vertical.max = settings.vertical.max - (direction ? amount : -amount);
-    settings.vertical.min = settings.vertical.min + (direction ? amount : -amount);
+    const auto currentRange = settings.vertical.max - settings.vertical.min;
+    const auto offset = (multiplier * currentRange - currentRange) / 2;
+    settings.vertical.max = settings.vertical.max + offset;
+    settings.vertical.min = settings.vertical.min - offset;
 }
