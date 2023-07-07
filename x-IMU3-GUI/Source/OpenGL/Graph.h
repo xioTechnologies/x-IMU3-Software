@@ -15,6 +15,8 @@ public:
         Settings(const bool horizontalAutoscale = false, const float horizontalMin = -5.0f, const float horizontalMax = 0.0f,
                  const bool verticalAutoscale = true, const float verticalMin = -1.0f, const float verticalMax = 1.0f);
 
+        Settings(const Settings& other);
+
         Settings& operator=(const Settings& other);
 
         std::atomic<int> clearCounter { 0 };

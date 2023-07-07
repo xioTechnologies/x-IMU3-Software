@@ -6,7 +6,7 @@
 Graph::Settings TemperatureGraphWindow::settings = Graph::Settings(true);
 
 TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }}, settings)
+        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Temperature (" + degreeSymbol + "C)", {{{}, juce::Colours::yellow }}, settings, Graph::Settings(true))
 {
     callbackIDs.push_back(devicePanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)
     {
