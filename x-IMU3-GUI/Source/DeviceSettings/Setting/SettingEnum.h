@@ -46,8 +46,12 @@ public:
 protected:
     void valueChanged() override
     {
-        const auto newValue = getValue();
-        value.setSelectedId(newValue.isVoid() ? 0 : ((int) newValue + 1), juce::dontSendNotification);
+        int id = 0;
+        if (getValue().has_value())
+        {
+            id = (int) *getValue() + 1;
+        }
+        value.setSelectedId(id, juce::dontSendNotification);
     }
 
 private:
