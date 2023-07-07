@@ -40,5 +40,5 @@ void ApplicationSettingsDialog::initialiseGroups()
 {
     addAndMakeVisible(*groups.emplace_back(std::make_unique<SearchForConnectionsGroup>()));
     addAndMakeVisible(*groups.emplace_back(std::make_unique<CommandsGroup>()));
-    addAndMakeVisible(*groups.emplace_back(std::make_unique<MiscGroup>()));
+    addAndMakeVisible(*groups.emplace_back(std::make_unique<DeviceSettingsGroup>()));
 }

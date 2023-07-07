@@ -8,11 +8,12 @@
 class ApplicationSettingsGroup : public juce::GroupComponent
 {
 public:
-    static constexpr int rowHeight = 30;
-
-    ApplicationSettingsGroup(const juce::String& name, int numberOfRows);
+    ApplicationSettingsGroup(const juce::String& name, const int numberOfRows);
 
     juce::Rectangle<int> getContentBounds() const;
+
+protected:
+    static constexpr int rowMargin = 7;
 
 private:
     static constexpr int verticalMargin = 15;
@@ -30,11 +31,11 @@ public:
 
 private:
     CustomToggleButton showOnStartupToggle { "Show on Startup" };
-    CustomToggleButton searchUsbToggle { "USB" };
-    CustomToggleButton searchSerialToggle { "Serial" };
-    CustomToggleButton searchTcpToggle { "TCP" };
-    CustomToggleButton searchUdpToggle { "UDP" };
-    CustomToggleButton searchBluetoothToggle { "Bluetooth" };
+    CustomToggleButton usbToggle { "USB" };
+    CustomToggleButton serialToggle { "Serial" };
+    CustomToggleButton tcpToggle { "TCP" };
+    CustomToggleButton udpToggle { "UDP" };
+    CustomToggleButton bluetoothToggle { "Bluetooth" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SearchForConnectionsGroup)
 };
@@ -53,19 +54,21 @@ private:
     SimpleLabel timeoutLabel { "Timeout (ms)" };
     CustomTextEditor timeoutValue;
 
+    CustomToggleButton closeSendingCommandDialogWhenCompleteButton { "Close Sending Command Dialog When Complete" };
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };
 
-class MiscGroup : public ApplicationSettingsGroup
+class DeviceSettingsGroup : public ApplicationSettingsGroup
 {
 public:
-    MiscGroup();
+    DeviceSettingsGroup();
 
     void resized() override;
 
 private:
-    CustomToggleButton hideUnusedDeviceSettingsButton { "Hide Unused Device Settings" };
-    CustomToggleButton closeSendingCommandDialogWhenCompleteButton { "Close Sending Command Dialog When Complete" };
+    CustomToggleButton readSettingsWhenWindowOpens { "Read Settings When Window Opens" };
+    CustomToggleButton hideUnusedSettingsButton { "Hide Unused Settings" };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MiscGroup)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsGroup)
 };

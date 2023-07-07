@@ -63,7 +63,7 @@ std::shared_ptr<ximu3::Connection> DevicePanel::getConnection()
 
 void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)> callback)
 {
-    connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout, [this, commands = commands, callbackOwner, callback](auto responses_)
+    connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [this, commands = commands, callbackOwner, callback](auto responses_)
     {
         const std::vector<CommandMessage> responses(responses_.begin(), responses_.end());
 

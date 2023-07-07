@@ -46,7 +46,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
 
                              // Send bootloader command
                              updateProgress("Sending Bootloader Command");
-                             if (connection->sendCommands({ "{\"bootloader\":null}" }, ApplicationSettings::getSingleton().retries, ApplicationSettings::getSingleton().timeout).empty())
+                             if (connection->sendCommands({ "{\"bootloader\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout).empty())
                              {
                                  showError();
                                  return;

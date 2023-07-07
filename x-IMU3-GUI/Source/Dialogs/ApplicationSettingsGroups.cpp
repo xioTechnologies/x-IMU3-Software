@@ -1,9 +1,9 @@
 #include "../ApplicationSettings.h"
 #include "ApplicationSettingsGroups.h"
 
-ApplicationSettingsGroup::ApplicationSettingsGroup(const juce::String& name, int numberOfRows) : juce::GroupComponent("", name)
+ApplicationSettingsGroup::ApplicationSettingsGroup(const juce::String& name, const int numberOfRows) : juce::GroupComponent("", name)
 {
-    setSize(0, topExtraMargin + verticalMargin * 2 + numberOfRows * rowHeight);
+    setSize(0, topExtraMargin + verticalMargin * 2 + numberOfRows * UILayout::textComponentHeight + (numberOfRows - 1) * rowMargin);
 }
 
 juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const
@@ -14,124 +14,136 @@ juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const
 SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search for Connections", 2)
 {
     addAndMakeVisible(showOnStartupToggle);
-    addAndMakeVisible(searchUsbToggle);
-    addAndMakeVisible(searchSerialToggle);
-    addAndMakeVisible(searchTcpToggle);
-    addAndMakeVisible(searchUdpToggle);
-    addAndMakeVisible(searchBluetoothToggle);
+    addAndMakeVisible(usbToggle);
+    addAndMakeVisible(serialToggle);
+    addAndMakeVisible(tcpToggle);
+    addAndMakeVisible(udpToggle);
+    addAndMakeVisible(bluetoothToggle);
 
     showOnStartupToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().showSearchForConnectionsOnStartup = showOnStartupToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.showOnStartup = showOnStartupToggle.getToggleState();
     };
 
-    searchUsbToggle.onClick = [this]
+    usbToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchUsb = searchUsbToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.usb = usbToggle.getToggleState();
     };
 
-    searchSerialToggle.onClick = [this]
+    serialToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchSerial = searchSerialToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.serial = serialToggle.getToggleState();
     };
 
-    searchTcpToggle.onClick = [this]
+    tcpToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchTcp = searchTcpToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.tcp = tcpToggle.getToggleState();
     };
 
-    searchUdpToggle.onClick = [this]
+    udpToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchUdp = searchUdpToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.udp = udpToggle.getToggleState();
     };
 
-    searchBluetoothToggle.onClick = [this]
+    bluetoothToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchBluetooth = searchBluetoothToggle.getToggleState();
+        ApplicationSettings::getSingleton().searchForConnections.bluetooth = bluetoothToggle.getToggleState();
     };
 
-    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().showSearchForConnectionsOnStartup, juce::dontSendNotification);
-    searchUsbToggle.setToggleState(ApplicationSettings::getSingleton().searchUsb, juce::dontSendNotification);
-    searchSerialToggle.setToggleState(ApplicationSettings::getSingleton().searchSerial, juce::dontSendNotification);
-    searchTcpToggle.setToggleState(ApplicationSettings::getSingleton().searchTcp, juce::dontSendNotification);
-    searchUdpToggle.setToggleState(ApplicationSettings::getSingleton().searchUdp, juce::dontSendNotification);
-    searchBluetoothToggle.setToggleState(ApplicationSettings::getSingleton().searchBluetooth, juce::dontSendNotification);
+    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.showOnStartup, juce::dontSendNotification);
+    usbToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.usb, juce::dontSendNotification);
+    serialToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.serial, juce::dontSendNotification);
+    tcpToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.tcp, juce::dontSendNotification);
+    udpToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.udp, juce::dontSendNotification);
+    bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.bluetooth, juce::dontSendNotification);
 }
 
 void SearchForConnectionsGroup::resized()
 {
     auto bounds = getContentBounds();
 
-    showOnStartupToggle.setBounds(bounds.removeFromTop(rowHeight));
+    showOnStartupToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    bounds.removeFromTop(rowMargin);
 
     static constexpr int toggleWidth = 80;
-    searchUsbToggle.setBounds(bounds.removeFromLeft(toggleWidth));
-    searchSerialToggle.setBounds(bounds.removeFromLeft(toggleWidth));
-    searchTcpToggle.setBounds(bounds.removeFromLeft(toggleWidth));
-    searchUdpToggle.setBounds(bounds.removeFromLeft(toggleWidth));
-    searchBluetoothToggle.setBounds(bounds);
+    usbToggle.setBounds(bounds.removeFromLeft(toggleWidth));
+    serialToggle.setBounds(bounds.removeFromLeft(toggleWidth));
+    tcpToggle.setBounds(bounds.removeFromLeft(toggleWidth));
+    udpToggle.setBounds(bounds.removeFromLeft(toggleWidth));
+    bluetoothToggle.setBounds(bounds);
 }
 
-CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 2)
+CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3)
 {
     addAndMakeVisible(retriesLabel);
     addAndMakeVisible(retriesValue);
     addAndMakeVisible(timeoutLabel);
     addAndMakeVisible(timeoutValue);
+    addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
 
     retriesValue.onTextChange = [this]
     {
-        ApplicationSettings::getSingleton().retries = (uint32_t) retriesValue.getText().getIntValue();
+        ApplicationSettings::getSingleton().commands.retries = (uint32_t) retriesValue.getText().getIntValue();
     };
 
     timeoutValue.onTextChange = [this]
     {
-        ApplicationSettings::getSingleton().timeout = (uint32_t) timeoutValue.getText().getIntValue();
+        ApplicationSettings::getSingleton().commands.timeout = (uint32_t) timeoutValue.getText().getIntValue();
     };
 
-    retriesValue.setText(juce::String(ApplicationSettings::getSingleton().retries.get()), juce::dontSendNotification);
-    timeoutValue.setText(juce::String(ApplicationSettings::getSingleton().timeout.get()), juce::dontSendNotification);
+    closeSendingCommandDialogWhenCompleteButton.onClick = [this]
+    {
+        ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
+    };
+
+    retriesValue.setText(juce::String(ApplicationSettings::getSingleton().commands.retries.get()), juce::dontSendNotification);
+    timeoutValue.setText(juce::String(ApplicationSettings::getSingleton().commands.timeout.get()), juce::dontSendNotification);
+    closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
 }
 
 void CommandsGroup::resized()
 {
     auto bounds = getContentBounds();
 
-    bounds.removeFromLeft(6); // align with toggle checkbox, from CustomToggleButtonLookAndFeel
-
-    const auto setBounds = [&](juce::Component& label, juce::Component& value)
+    const auto setTextSettingBounds = [&](auto& label, auto& value)
     {
-        auto retriesBounds = bounds.removeFromTop(rowHeight);
-        label.setBounds(retriesBounds.removeFromLeft(100));
-        retriesBounds.removeFromLeft(15);
-        value.setBounds(retriesBounds.removeFromLeft(100).reduced(0, 2));
+        auto row = bounds.removeFromTop(UILayout::textComponentHeight).withTrimmedLeft(6); // align with toggle checkbox, from CustomToggleButtonLookAndFeel
+        label.setBounds(row.removeFromLeft(100));
+        row.removeFromLeft(15);
+        value.setBounds(row.removeFromLeft(100));
+        bounds.removeFromTop(rowMargin);
     };
-    setBounds(retriesLabel, retriesValue);
-    setBounds(timeoutLabel, timeoutValue);
+
+    setTextSettingBounds(retriesLabel, retriesValue);
+    setTextSettingBounds(timeoutLabel, timeoutValue);
+
+    closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }
 
-MiscGroup::MiscGroup() : ApplicationSettingsGroup("Misc", 2)
+DeviceSettingsGroup::DeviceSettingsGroup() : ApplicationSettingsGroup("Device Settings", 2)
 {
-    addAndMakeVisible(hideUnusedDeviceSettingsButton);
-    addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
+    addAndMakeVisible(readSettingsWhenWindowOpens);
+    addAndMakeVisible(hideUnusedSettingsButton);
 
-    hideUnusedDeviceSettingsButton.onClick = [this]
+    readSettingsWhenWindowOpens.onClick = [this]
     {
-        ApplicationSettings::getSingleton().hideUnusedDeviceSettings = hideUnusedDeviceSettingsButton.getToggleState();
+        ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = readSettingsWhenWindowOpens.getToggleState();
     };
 
-    closeSendingCommandDialogWhenCompleteButton.onClick = [this]
+    hideUnusedSettingsButton.onClick = [this]
     {
-        ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
+        ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings = hideUnusedSettingsButton.getToggleState();
     };
 
-    hideUnusedDeviceSettingsButton.setToggleState(ApplicationSettings::getSingleton().hideUnusedDeviceSettings, juce::dontSendNotification);
-    closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    readSettingsWhenWindowOpens.setToggleState(ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, juce::dontSendNotification);
+    hideUnusedSettingsButton.setToggleState(ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings, juce::dontSendNotification);
 }
 
-void MiscGroup::resized()
+void DeviceSettingsGroup::resized()
 {
     auto bounds = getContentBounds();
-    hideUnusedDeviceSettingsButton.setBounds(bounds.removeFromTop(rowHeight));
-    closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(rowHeight));
+
+    readSettingsWhenWindowOpens.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    bounds.removeFromTop(rowMargin);
+    hideUnusedSettingsButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }

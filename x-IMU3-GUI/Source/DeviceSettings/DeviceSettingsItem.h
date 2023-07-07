@@ -40,7 +40,7 @@ public:
 
     int getItemHeight() const override
     {
-        if (ApplicationSettings::getSingleton().hideUnusedDeviceSettings)
+        if (ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings)
         {
             if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
             {
