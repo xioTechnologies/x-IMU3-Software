@@ -153,10 +153,13 @@ void SerialAccessoryTerminalWindow::loadSendHistory()
     }
 
     sendValue.clear(juce::dontSendNotification);
-    for (const auto send : serialHistory)
+
+    juce::StringArray items;
+    for (const auto serial : serialHistory)
     {
-        sendValue.addItem(send.getProperty("serial"), sendValue.getNumItems() + 1);
+        items.add(serial["serial"]);
     }
+    sendValue.addItemList(items, 1);
 
     sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello World!", juce::dontSendNotification);
 }
