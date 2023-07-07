@@ -28,9 +28,9 @@ private:
 
     juce::PopupMenu getMenu();
 
-    void zoomHorizontal(const bool direction);
+    void zoomHorizontal(const float multiplier);
 
-    void zoomVertical(const bool direction);
+    void zoomVertical(const float multiplier);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWindow)
 };
