@@ -4,9 +4,10 @@
 
 const juce::String GraphWindow::degreeSymbol = (juce::CharPointer_UTF8("\xc2\xba"));
 
-GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer, const juce::String& yAxis, const std::vector<Graph::LegendItem>& legend, Graph::Settings& settings_)
+GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer, const juce::String& yAxis, const std::vector<Graph::LegendItem>& legend, Graph::Settings& settings_, const Graph::Settings& defaultSettings_)
         : Window(devicePanel_, windowLayout_, type_, getWindowTitle(type_) + " Graph Menu", std::bind(&GraphWindow::getMenu, this)),
           settings(settings_),
+          defaultSettings(defaultSettings_),
           graph(glRenderer, yAxis, legend, settings)
 {
     addAndMakeVisible(graph);
@@ -42,7 +43,7 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [&]
     {
-        settings = {};
+        settings = defaultSettings;
     });
     menu.addItem("Clear", true, false, [&]
     {

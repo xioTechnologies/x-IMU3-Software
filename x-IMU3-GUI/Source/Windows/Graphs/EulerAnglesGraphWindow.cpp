@@ -8,7 +8,7 @@ Graph::Settings EulerAnglesGraphWindow::settings = Graph::Settings(false);
 EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "Angle (" + degreeSymbol + ")", {{ "Roll",  UIColours::graphRed },
                                                                                                       { "Pitch", UIColours::graphGreen },
-                                                                                                      { "Yaw",   UIColours::graphBlue }}, settings)
+                                                                                                      { "Yaw",   UIColours::graphBlue }}, settings, Graph::Settings(false))
 {
     callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {

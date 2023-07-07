@@ -14,6 +14,11 @@ Graph::Settings::Settings(const bool horizontalAutoscale, const float horizontal
     vertical.max = verticalMax;
 }
 
+Graph::Settings::Settings(const Settings& other)
+{
+    (*this) = other;
+}
+
 Graph::Settings& Graph::Settings::operator=(const Graph::Settings& other)
 {
     horizontal.autoscale = other.horizontal.autoscale.load();
