@@ -10,10 +10,9 @@ public:
     explicit SettingText(const juce::ValueTree& settingTree) : Setting(settingTree)
     {
         addAndMakeVisible(value);
-
         value.onTextChange = [&]
         {
-            if (settingTree[DeviceSettingsIDs::type] == "number")
+            if (tree[DeviceSettingsIDs::type] == "number")
             {
                 try
                 {
@@ -21,15 +20,16 @@ public:
                 }
                 catch (...)
                 {
-                    setValue({});
+                    setValue({}); // will be interpreted as null in json
                 }
             }
             else
             {
                 setValue(value.getText());
             }
-        };
 
+            updateTextToShowWhenEmpty();
+        };
         value.setReadOnly(isReadOnly());
 
         valueChanged();
@@ -44,15 +44,27 @@ public:
 protected:
     CustomTextEditor value;
 
+    void updateTextToShowWhenEmpty()
+    {
+        value.setTextToShowWhenEmpty((tree[DeviceSettingsIDs::type] == "number") ? "Invalid" : "None", {});
+    }
+
     void valueChanged() override
     {
-        if (getValue().isDouble() && (std::abs((int) getValue()) >= 1000)) // do not use scientific notation
+        if (getValue().has_value() == false)
         {
-            value.setText(juce::String((int) getValue()), juce::dontSendNotification);
+            return;
+        }
+
+        updateTextToShowWhenEmpty();
+
+        if (getValue()->isDouble() && (std::abs((int) *getValue()) >= 1000)) // do not use scientific notation
+        {
+            value.setText(juce::String((int) *getValue()), juce::dontSendNotification);
         }
         else
         {
-            value.setText(getValue(), juce::dontSendNotification);
+            value.setText(*getValue(), juce::dontSendNotification);
         }
     }
 

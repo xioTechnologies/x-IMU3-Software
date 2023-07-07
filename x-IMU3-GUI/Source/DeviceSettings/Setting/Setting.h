@@ -30,11 +30,13 @@ public:
     void resized() override;
 
 protected:
+    juce::ValueTree tree;
+
     bool isReadOnly() const;
 
     const juce::Rectangle<int>& getValueBounds() const;
 
-    juce::var getValue() const;
+    std::optional<juce::var> getValue() const;
 
     void setValue(const juce::var& value);
 
@@ -43,7 +45,6 @@ protected:
     }
 
 private:
-    juce::ValueTree tree;
     SimpleLabel name;
     Icon modifiedIcon { BinaryData::modify_svg, "Modified but Not Written to Device" };
     Icon readFailedIcon { BinaryData::warning_orange_svg, "Unable to Read from Device" };

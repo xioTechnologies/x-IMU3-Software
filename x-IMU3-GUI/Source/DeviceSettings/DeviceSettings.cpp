@@ -20,7 +20,7 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     std::vector<CommandMessage> commands;
     for (auto setting : settingsVector)
     {
-        commands.push_back({ setting.getProperty(DeviceSettingsIDs::key), {}});
+        commands.push_back({ setting[DeviceSettingsIDs::key], {}});
     }
     return commands;
 }
@@ -35,19 +35,13 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipRead
             continue;
         }
 
-        if (setting.getProperty(DeviceSettingsIDs::readOnly) && skipReadOnly)
+        if (setting[DeviceSettingsIDs::readOnly] && skipReadOnly)
         {
             continue;
         }
 
-        if (setting.getProperty(DeviceSettingsIDs::type) == "bool")
-        {
-            commands.push_back({ setting.getProperty(DeviceSettingsIDs::key), setting.getProperty(DeviceSettingsIDs::value) ? true : false });
-        }
-        else
-        {
-            commands.push_back({ setting.getProperty(DeviceSettingsIDs::key), setting.getProperty(DeviceSettingsIDs::value) });
-        }
+        const auto value = setting[DeviceSettingsIDs::value];
+        commands.push_back({ setting[DeviceSettingsIDs::key], (setting[DeviceSettingsIDs::type] == "bool") ? juce::var((bool) value) : value });
     }
     return commands;
 }
@@ -100,7 +94,7 @@ juce::ValueTree DeviceSettings::findSetting(const juce::String& key) const
 {
     for (auto setting : settingsVector)
     {
-        if (CommandMessage::normaliseKey(setting.getProperty(DeviceSettingsIDs::key)) == CommandMessage::normaliseKey(key))
+        if (CommandMessage::normaliseKey(setting[DeviceSettingsIDs::key]) == CommandMessage::normaliseKey(key))
         {
             return setting;
         }
