@@ -232,6 +232,11 @@
         "default": "{WirelessWlanAPChannel36}"
     },
     {
+        "name": "Wi-Fi AP IP address",
+        "declaration": "RS9116IPAddress name",
+        "default": "{0x0101A8C0}"
+    },
+    {
         "name": "TCP port",
         "declaration": "uint16_t name",
         "default": "{7000}"

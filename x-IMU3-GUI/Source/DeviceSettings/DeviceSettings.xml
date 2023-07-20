@@ -37,6 +37,7 @@
                 <Setting key="wiFiAPSsid" name="SSID" type="string"/>
                 <Setting key="wiFiAPKey" name="Key" type="string"/>
                 <Setting key="wiFiAPChannel" name="Channel" type="WirelessWlanAPChannel"/>
+                <Setting key="wiFiAPIPAddress" name="IP Address" type="string" />
             </Group>
             <Group name="TCP">
                 <Setting key="tcpPort" name="Port" type="number"/>
