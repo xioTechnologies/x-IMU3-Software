@@ -28,7 +28,7 @@ if helpers.ask_question("Use async implementation?"):
     if result == ximu3.RESULT_OK:
         time.sleep(3)
 
-    print(result)
+    print(ximu3.result_to_string(result))
 
     del data_logger
 else:
