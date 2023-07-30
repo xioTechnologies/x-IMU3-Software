@@ -8,6 +8,7 @@
     <Command key="shutdown"/>
     <Command key="strobe"/>
     <Command key="colour"/>
+    <Command key="initialise"/>
     <Command key="heading"/>
     <Command key="accessory"/>
     <Command key="note"/>
@@ -42,6 +43,7 @@
     <Command key="wiFiAPSsid"/>
     <Command key="wiFiAPKey"/>
     <Command key="wiFiAPChannel"/>
+    <Command key="wiFiAPIPAddress"/>
     <Command key="tcpPort"/>
     <Command key="udpIPAddress"/>
     <Command key="udpSendPort"/>
