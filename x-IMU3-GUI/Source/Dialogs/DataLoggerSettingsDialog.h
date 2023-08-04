@@ -18,7 +18,7 @@ public:
         juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
         juce::String name = "Logged Data";
         bool appendDateAndTime = true;
-        float timeValue = 60.0f;
+        float timeValue = 10.0f;
         enum class TimeUnit
         {
             unlimited,
