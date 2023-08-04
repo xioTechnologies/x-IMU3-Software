@@ -75,7 +75,7 @@ AxesRange GraphDataBuffer::update(AxesRange axesRange, const bool horizontalAuto
     // Update axis range
     const auto xMin = lineBuffers[0][(size_t) std::max((int) numberAvailable - 1, 0)].x;
     const auto xMax = lineBuffers[0][0].x;
-    if (horizontalAutoscale && xMin != xMax)
+    if (horizontalAutoscale && numberAvailable > 1)
     {
         axesRange.xMin = xMin;
         axesRange.xMax = xMax;
@@ -83,7 +83,7 @@ AxesRange GraphDataBuffer::update(AxesRange axesRange, const bool horizontalAuto
 
     if (verticalAutoscale)
     {
-        if (yMin == yMax)
+        if ((yMin - yMax) > 0.0f)
         {
             yMin -= 1.0f;
             yMax += 1.0f;

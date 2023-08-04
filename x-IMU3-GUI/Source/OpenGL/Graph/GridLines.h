@@ -17,9 +17,9 @@ public:
 
     void render(GLResources& resources, const juce::Rectangle<GLint>& viewport_, const AxesRange& axesRange_, juce::Point<GLfloat> pixelSize_);
 
-    std::vector<float> getMajorXPositions() const;
+    const std::vector<float>& getMajorXPositions() const;
 
-    std::vector<float> getMajorYPositions() const;
+    const std::vector<float>& getMajorYPositions() const;
 
 private:
     static constexpr float subTickColor = 0.45f;
@@ -39,6 +39,9 @@ private:
     std::vector<Vec4> verticesBorderLines;
     std::vector<Vec4> verticesVerticalLines;
     std::vector<Vec4> verticesHorizontalLines;
+
+    std::vector<float> majorXPositions;
+    std::vector<float> majorYPositions;
 
     juce::Rectangle<GLint> viewport;
     AxesRange axesRange;

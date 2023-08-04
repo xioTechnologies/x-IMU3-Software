@@ -49,30 +49,14 @@ void GridLines::render(GLResources& resources, const juce::Rectangle<GLint>& vie
     renderVertices(resources.gridBorderBuffer, verticesBorderLines, false, true);
 }
 
-std::vector<float> GridLines::getMajorXPositions() const
+const std::vector<float>& GridLines::getMajorXPositions() const
 {
-    std::vector<float> positions;
-    for (auto& line : verticesVerticalLines)
-    {
-        if ((line.w == majorTickColor) || (line.w == subMajorTickColor))
-        {
-            positions.push_back(line.x);
-        }
-    }
-    return positions;
+    return majorXPositions;
 }
 
-std::vector<float> GridLines::getMajorYPositions() const
+const std::vector<float>& GridLines::getMajorYPositions() const
 {
-    std::vector<float> positions;
-    for (auto& line : verticesHorizontalLines)
-    {
-        if ((line.w == majorTickColor) || (line.w == subMajorTickColor))
-        {
-            positions.push_back(line.y);
-        }
-    }
-    return positions;
+    return majorYPositions;
 }
 
 void GridLines::getMajorMinorTicks(double& tickSize, int& majorEveryInt, int& labelEveryInt, double pixelsPerUnit, float pixelThreshold)
@@ -181,20 +165,27 @@ int GridLines::createHorizontalLines()
     double xMax = axesRange.xMax;
 
     verticesHorizontalLines.clear();
+    majorYPositions.clear();
 
     while (y <= yMax)
     {
         if (y >= yMin)
         {
-            float colour = subTickColor;
+            float colour;
 
             if (majorLineIndex == 0)
             {
                 colour = majorTickColor;
+                majorYPositions.push_back((float) y);
             }
             else if (labelLineIndex == 0)
             {
                 colour = subMajorTickColor;
+                majorYPositions.push_back((float) y);
+            }
+            else
+            {
+                colour = subTickColor;
             }
 
             verticesHorizontalLines.push_back({ (float) xMin, (float) y, 0.5f, colour });
@@ -236,21 +227,27 @@ int GridLines::createVerticalLines()
     double xMax = axesRange.xMax;
 
     verticesVerticalLines.clear();
+    majorXPositions.clear();
 
     while (x <= xMax)
     {
         if (x >= xMin)
         {
-            float colour = subTickColor;
+            float colour;
 
             if (majorLineIndex == 0)
             {
                 colour = majorTickColor;
+                majorXPositions.push_back((float) x);
             }
-
             else if (labelLineIndex == 0)
             {
                 colour = subMajorTickColor;
+                majorXPositions.push_back((float) x);
+            }
+            else
+            {
+                colour = subTickColor;
             }
 
             verticesVerticalLines.push_back({ (float) x, (float) yMin, 0.5f, colour });
