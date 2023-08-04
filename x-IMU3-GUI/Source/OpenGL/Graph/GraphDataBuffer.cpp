@@ -56,11 +56,6 @@ AxesRange GraphDataBuffer::update(AxesRange axesRange, const bool horizontalAuto
 
     for (size_t lineIndex = 0; lineIndex < lineBuffers.size(); lineIndex++)
     {
-        if (visibleLines[lineIndex] == false)
-        {
-            continue;
-        }
-
         auto& lineBuffer = lineBuffers[lineIndex];
 
         for (size_t dataIndex = 0; dataIndex < numberAvailable; dataIndex++)
@@ -69,7 +64,7 @@ AxesRange GraphDataBuffer::update(AxesRange axesRange, const bool horizontalAuto
 
             lineBuffer[dataIndex].x = relativeTimestamp;
 
-            if (horizontalAutoscale || (relativeTimestamp >= axesRange.xMin && relativeTimestamp <= axesRange.xMax))
+            if (visibleLines[lineIndex] && (horizontalAutoscale || (relativeTimestamp >= axesRange.xMin && relativeTimestamp <= axesRange.xMax)))
             {
                 yMin = std::min(yMin, lineBuffer[dataIndex].y);
                 yMax = std::max(yMax, lineBuffer[dataIndex].y);
