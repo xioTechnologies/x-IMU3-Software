@@ -9,7 +9,7 @@ public:
     static constexpr int minimumWidth = 18;
     static constexpr int maximumWidth = 60;
 
-    IconAndText(const juce::String& unknownIcon_, const juce::String& tooltip) : unknownIcon(unknownIcon_), icon(unknownIcon, tooltip)
+    IconAndText(const juce::String& unknownIcon_, const juce::String& tooltip_) : unknownIcon(unknownIcon_), tooltip(tooltip_), icon(unknownIcon, tooltip)
     {
         addAndMakeVisible(icon);
         addAndMakeVisible(text);
@@ -35,19 +35,26 @@ public:
                                             }
 
                                             icon.setIcon(icon_);
-                                            text.setText(text_);
+                                            setText(text_);
                                             startTimer(3000);
                                         });
     }
 
 private:
     const juce::String unknownIcon;
+    const juce::String tooltip;
     Icon icon;
     SimpleLabel text;
+
+    void setText(const juce::String& text_)
+    {
+        icon.setTooltip(tooltip + (text_.isNotEmpty() ? (" (" + text_ + ")") : ""));
+        text.setText(text_);
+    }
 
     void timerCallback() override
     {
         icon.setIcon(unknownIcon);
-        text.setText("");
+        setText("");
     }
 };
