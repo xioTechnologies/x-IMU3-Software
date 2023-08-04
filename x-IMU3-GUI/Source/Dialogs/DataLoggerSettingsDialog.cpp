@@ -9,9 +9,9 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
     addAndMakeVisible(appendDateAndTimeToggle);
-    addAndMakeVisible(secondsLabel);
-    addAndMakeVisible(secondsValue);
-    addAndMakeVisible(unlimitedToggle);
+    addAndMakeVisible(timeLabel);
+    addAndMakeVisible(timeValue);
+    addAndMakeVisible(timeUnit);
 
     directoryButton.onClick = [&]
     {
@@ -22,23 +22,25 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
         }
     };
 
-    unlimitedToggle.onClick = [this]
-    {
-        secondsValue.setEnabled(!unlimitedToggle.getToggleState());
-        secondsValue.applyFontToAllText(secondsValue.isEnabled() ? UIFonts::getDefaultFont() : UIFonts::getDefaultFont().withHorizontalScale(0.0f));
-    };
-
     directoryValue.setText(settings.directory, false);
     nameValue.setText(settings.name, false);
     appendDateAndTimeToggle.setToggleState(settings.appendDateAndTime, juce::dontSendNotification);
-    secondsValue.setText(juce::String(settings.seconds), false);
-    unlimitedToggle.setToggleState(settings.unlimited, juce::sendNotificationSync);
+    timeValue.setText(juce::String(settings.timeValue), false);
+    timeUnit.addItemList({ "Unlimited", "Hours", "Minutes", "Seconds" }, 1);
+    timeUnit.setSelectedItemIndex(static_cast<int>(settings.timeUnit), juce::dontSendNotification);
 
     directoryValue.onTextChange = nameValue.onTextChange = [&]
     {
         setOkButton(std::filesystem::exists(directoryValue.getText().toStdString()) && nameValue.getText().isNotEmpty());
     };
     directoryValue.onTextChange();
+
+    timeUnit.onChange = [&]
+    {
+        timeValue.setEnabled(timeUnit.getSelectedItemIndex() > 0);
+        timeValue.applyColourToAllText(timeUnit.getSelectedItemIndex() > 0 ? findColour(juce::TextEditor::textColourId) : juce::Colour());
+    };
+    timeUnit.onChange();
 
     setSize(600, calculateHeight(3));
 }
@@ -57,17 +59,17 @@ void DataLoggerSettingsDialog::resized()
 
     auto nameRow = bounds.removeFromTop(UILayout::textComponentHeight);
     nameLabel.setBounds(nameRow.removeFromLeft(columnWidth));
-    nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth));
+    nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth + margin));
     nameRow.removeFromLeft(margin);
     appendDateAndTimeToggle.setBounds(nameRow);
 
     bounds.removeFromTop(Dialog::margin);
 
     auto secondsRow = bounds.removeFromTop(UILayout::textComponentHeight);
-    secondsLabel.setBounds(secondsRow.removeFromLeft(columnWidth));
-    secondsValue.setBounds(secondsRow.removeFromLeft(columnWidth));
+    timeLabel.setBounds(secondsRow.removeFromLeft(columnWidth));
+    timeValue.setBounds(secondsRow.removeFromLeft(columnWidth));
     secondsRow.removeFromLeft(margin);
-    unlimitedToggle.setBounds(secondsRow);
+    timeUnit.setBounds(secondsRow.removeFromLeft(columnWidth));
 }
 
 DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
@@ -76,7 +78,7 @@ DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
     settings.directory = directoryValue.getText();
     settings.name = nameValue.getText();
     settings.appendDateAndTime = appendDateAndTimeToggle.getToggleState();
-    settings.seconds = secondsValue.getText().getIntValue();
-    settings.unlimited = unlimitedToggle.getToggleState();
+    settings.timeValue = timeValue.getText().getFloatValue();
+    settings.timeUnit = static_cast<Settings::TimeUnit>(timeUnit.getSelectedItemIndex());
     return settings;
 }
