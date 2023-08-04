@@ -646,14 +646,14 @@ void MenuStrip::setWindowLayout(juce::ValueTree windowLayout_)
 
 void MenuStrip::timerCallback()
 {
-    const auto relativeTime = juce::Time::getCurrentTime() - dataLoggerStartTime;
-    if (dataLoggerSettings.unlimited == false && relativeTime.inSeconds() >= dataLoggerSettings.seconds)
+    const auto timePassed = juce::Time::getCurrentTime() - dataLoggerStartTime;
+    if (dataLoggerSettings.getTime().has_value() && timePassed >= *dataLoggerSettings.getTime())
     {
         dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
-        dataLoggerTime.setTime(juce::RelativeTime::seconds(dataLoggerSettings.seconds));
+        dataLoggerTime.setTime(*dataLoggerSettings.getTime());
     }
     else
     {
-        dataLoggerTime.setTime(relativeTime);
+        dataLoggerTime.setTime(timePassed);
     }
 }

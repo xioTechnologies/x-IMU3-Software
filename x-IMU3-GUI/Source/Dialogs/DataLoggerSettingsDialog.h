@@ -3,6 +3,7 @@
 #include "../ApplicationSettings.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
 #include "Widgets/Icon.h"
@@ -17,8 +18,31 @@ public:
         juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
         juce::String name = "Logged Data";
         bool appendDateAndTime = true;
-        int seconds = 60;
-        bool unlimited = true;
+        float timeValue = 60.0f;
+        enum class TimeUnit
+        {
+            unlimited,
+            hours,
+            minutes,
+            seconds,
+        };
+        TimeUnit timeUnit = TimeUnit::unlimited;
+
+        std::optional<juce::RelativeTime> getTime() const
+        {
+            switch (timeUnit)
+            {
+                case TimeUnit::unlimited:
+                    return {};
+                case TimeUnit::hours:
+                    return juce::RelativeTime::hours((double) timeValue);
+                case TimeUnit::minutes:
+                    return juce::RelativeTime::minutes((double) timeValue);
+                case TimeUnit::seconds:
+                    return juce::RelativeTime::seconds((double) timeValue);
+            }
+            return {};
+        }
     };
 
     explicit DataLoggerSettingsDialog(const Settings& settings);
@@ -34,9 +58,9 @@ private:
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
     CustomToggleButton appendDateAndTimeToggle { "Append Date and Time" };
-    SimpleLabel secondsLabel { "Seconds:" };
-    CustomTextEditor secondsValue;
-    CustomToggleButton unlimitedToggle { "Unlimited" };
+    SimpleLabel timeLabel { "Time:" };
+    CustomTextEditor timeValue;
+    CustomComboBox timeUnit;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataLoggerSettingsDialog)
 };
