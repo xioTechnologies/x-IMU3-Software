@@ -40,7 +40,7 @@ public:
 
     int getItemHeight() const override
     {
-        if (ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings)
+        if (ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings && (isStatusSet(tree) == false))
         {
             if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
             {
@@ -92,6 +92,18 @@ private:
     const juce::ValueTree tree;
     const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
     juce::ValueTree hideSetting;
+
+    static bool isStatusSet(juce::ValueTree tree_)
+    {
+        for (auto child : tree_)
+        {
+            if (isStatusSet(child))
+            {
+                return true;
+            }
+        }
+        return (int) tree_[DeviceSettingsIDs::status] != (int) Setting::Status::normal;
+    }
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)
 
