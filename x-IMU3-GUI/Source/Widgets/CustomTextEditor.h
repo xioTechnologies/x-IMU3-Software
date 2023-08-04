@@ -13,29 +13,6 @@ public:
         setEscapeAndReturnKeysConsumed(false);
     }
 
-    void paintOverChildren(juce::Graphics& g) override
-    {
-        if (getTextToShowWhenEmpty().isNotEmpty()
-            && (!hasKeyboardFocus(false))
-            && getTotalNumChars() == 0)
-        {
-            g.setColour(juce::Colours::grey);
-            g.setFont(getFont().italicised());
-
-            juce::Rectangle<int> textBounds(getLeftIndent(),
-                                            getTopIndent(),
-                                            getWidth() - getBorder().getLeftAndRight() - getLeftIndent(),
-                                            getHeight() - getTopIndent());
-
-            if (!textBounds.isEmpty())
-            {
-                g.drawText(getTextToShowWhenEmpty(), textBounds, getJustificationType(), true);
-            }
-        }
-
-        getLookAndFeel().drawTextEditorOutline(g, getWidth(), getHeight(), *this);
-    }
-
     void focusLost(FocusChangeType cause) override
     {
         juce::TextEditor::focusLost(cause);
