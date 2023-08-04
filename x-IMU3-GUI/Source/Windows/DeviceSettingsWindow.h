@@ -33,7 +33,9 @@ private:
 
     const juce::File directory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 
-    void setInProgress(const bool inProgress);
+    void enableInProgress(const std::vector<CommandMessage>& commands);
+
+    void disableInProgress();
 
     juce::PopupMenu getMenu();
 
