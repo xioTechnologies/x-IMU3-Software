@@ -37,7 +37,7 @@
                 <Setting key="wiFiAPSsid" name="SSID" type="string"/>
                 <Setting key="wiFiAPKey" name="Key" type="string"/>
                 <Setting key="wiFiAPChannel" name="Channel" type="WirelessWlanAPChannel"/>
-                <Setting key="wiFiAPIPAddress" name="IP Address" type="string" />
+                <Setting key="wiFiAPIPAddress" name="IP Address" type="string"/>
             </Group>
             <Group name="TCP">
                 <Setting key="tcpPort" name="Port" type="number"/>
@@ -46,6 +46,7 @@
                 <Setting key="udpIPAddress" name="IP Address" type="string"/>
                 <Setting key="udpSendPort" name="Send Port" type="number"/>
                 <Setting key="udpReceivePort" name="Receive Port" type="number"/>
+                <Setting key="udpLowLatency" name="Low Latency" type="bool"/>
             </Group>
             <Group name="Synchronisation">
                 <Setting key="synchronisationEnabled" name="Enabled" type="bool"/>
