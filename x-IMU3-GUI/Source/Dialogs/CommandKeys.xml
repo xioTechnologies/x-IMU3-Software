@@ -48,6 +48,7 @@
     <Command key="udpIPAddress"/>
     <Command key="udpSendPort"/>
     <Command key="udpReceivePort"/>
+    <Command key="udpLowLatency"/>
     <Command key="synchronisationEnabled"/>
     <Command key="synchronisationNetworkLatency"/>
     <Command key="bluetoothAddress"/>

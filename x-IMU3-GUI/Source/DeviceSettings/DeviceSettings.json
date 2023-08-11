@@ -257,6 +257,11 @@
         "default": "{9000}"
     },
     {
+        "name": "UDP low latency",
+        "declaration": "bool name",
+        "default": "{false}"
+    },
+    {
         "name": "Synchronisation enabled",
         "declaration": "bool name",
         "default": "{true}"
