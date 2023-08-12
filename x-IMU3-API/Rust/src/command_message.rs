@@ -27,7 +27,7 @@ impl CommandMessage {
                         }
 
                         let json = serde_json::to_string(object).unwrap();
-                        let terminated_json = format!("{}\r\n", json);
+                        let terminated_json = format!("{}\n", json);
                         let key = object.keys().nth(0).unwrap().to_owned();
 
                         Ok(CommandMessage { json, terminated_json, key })
