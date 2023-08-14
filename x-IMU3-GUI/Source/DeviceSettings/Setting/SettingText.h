@@ -46,7 +46,7 @@ protected:
 
     void updateTextToShowWhenEmpty()
     {
-        value.setTextToShowWhenEmpty((tree[DeviceSettingsIDs::type] == "number") ? "Invalid" : "None", juce::Colours::grey);
+        value.setTextToShowWhenEmpty(tree.getProperty(DeviceSettingsIDs::emptyValue, "Empty"), juce::Colours::grey);
     }
 
     void valueChanged() override
