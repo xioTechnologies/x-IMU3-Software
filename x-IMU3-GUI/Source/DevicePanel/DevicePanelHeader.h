@@ -40,7 +40,7 @@ private:
     std::shared_ptr<std::atomic<bool>> pingInProgress = std::make_shared<std::atomic<bool>>(true);
     juce::String deviceName, serialNumber;
 
-    IconButton strobeButton { BinaryData::brightness_svg, "Strobe LED" };
+    IconButton strobeButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };
     SimpleLabel deviceDescriptor;
     SimpleLabel connectionInfo;
     IconAndText rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
