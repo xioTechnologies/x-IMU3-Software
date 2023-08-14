@@ -14,9 +14,9 @@ namespace DeviceSettingsIDs
     DECLARE_ID(readOnly)
     DECLARE_ID(hideKey)
     DECLARE_ID(hideValues)
-    DECLARE_ID(valueToShowWhenEmpty)
-    DECLARE_ID(value)
+    DECLARE_ID(emptyValue)
 
+    DECLARE_ID(value)
     DECLARE_ID(status)
 
 #undef DECLARE_ID
