@@ -380,7 +380,7 @@ juce::PopupMenu MenuStrip::getWindowMenu() const
                 totalWindowSizes += (float) window.getProperty(WindowIDs::size, 1.0f);
             }
 
-            const auto newSize = (totalWindowSizes == 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
+            const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
             windowLayout.getRoot().appendChild({ id, {{ WindowIDs::size, newSize }}}, nullptr);
         });
     };
