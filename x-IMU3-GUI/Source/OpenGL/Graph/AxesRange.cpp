@@ -102,7 +102,7 @@ void AxesRange::getMostSignificantTick(double& minTick, double& tickSize, double
 
     tickSize = orderOfMagnitude * 0.01f;
 
-    double sign = (min > 0.0) ? 1.0 : ((min == 0.0) ? 0.0 : -1.0);
+    double sign = (min > 0.0) ? 1.0 : (min < 0.0) ? -1.0 : 0.0;
 
     minTick = std::ceil(std::abs(min / orderOfMagnitude)) * orderOfMagnitude * sign;
 

@@ -477,14 +477,14 @@ private:
         }
 
         // Prevent divide by 0 error
-        if (maxMagnitudeComponent == 0.0f)
+        if (juce::exactlyEqual(maxMagnitudeComponent, 0.0f))
         {
             jassertfalse; // you tried importing & normalizing a mesh with no positions other than the origin (0.0, 0.0, 0.0)
             return;
         }
 
         // Vertex positions are already normalized in this case, do not modify them
-        if (maxMagnitudeComponent == 1.0f)
+        if (juce::exactlyEqual(maxMagnitudeComponent, 1.0f))
         {
             return;
         }
