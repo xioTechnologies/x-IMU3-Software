@@ -35,7 +35,7 @@
             </Group>
             <Group name="AP Mode" hideKey="wirelessMode" hideValues="0 1 3">
                 <Setting key="wiFiAPSsid" name="SSID" type="string" emptyValue="x-IMU3"/>
-                <Setting key="wiFiAPKey" name="Key" type="string" emptyValue="Security Disabled"/>
+                <Setting key="wiFiAPKey" name="Key" type="string" emptyValue="No Security"/>
                 <Setting key="wiFiAPChannel" name="Channel" type="WirelessWlanAPChannel"/>
                 <Setting key="wiFiAPIPAddress" name="IP Address" type="string"/>
             </Group>
