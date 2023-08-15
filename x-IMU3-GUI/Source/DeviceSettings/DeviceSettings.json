@@ -184,12 +184,12 @@
     {
         "name": "Wi-Fi client SSID",
         "declaration": "char name[32]",
-        "default": "{\"x-IMU3 Network\"}"
+        "default": "{\"\"}"
     },
     {
         "name": "Wi-Fi client key",
         "declaration": "char name[32]",
-        "default": "{\"xiotechnologies\"}"
+        "default": "{\"\"}"
     },
     {
         "name": "Wi-Fi client channel",
@@ -285,7 +285,7 @@
     {
         "name": "Bluetooth pin code",
         "declaration": "char name[16]",
-        "default": "{\"1234\"}"
+        "default": "{\"\"}"
     },
     {
         "name": "Bluetooth discovery mode",
