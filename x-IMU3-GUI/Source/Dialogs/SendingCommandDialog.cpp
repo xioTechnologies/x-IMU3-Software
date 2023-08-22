@@ -75,10 +75,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                 setOkButton(true, "Close");
                 setCancelButton(false);
 
-                if (ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete)
-                {
-                    startTimer(1000);
-                }
+                startTimer(1000);
             });
         }
 
@@ -169,5 +166,10 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
 void SendingCommandDialog::timerCallback()
 {
-    DialogQueue::getSingleton().pop();
+    stopTimer();
+
+    if (ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete)
+    {
+        DialogQueue::getSingleton().pop();
+    }
 }
