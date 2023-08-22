@@ -116,7 +116,7 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                               {
                                                                   if (result != ximu3::XIMU3_ResultOk)
                                                                   {
-                                                                      DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to open connection " + connection->getInfo()->toString() + "."));
+                                                                      DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to open connection. " + connection->getInfo()->toString() + "."));
                                                                       return;
                                                                   }
 
