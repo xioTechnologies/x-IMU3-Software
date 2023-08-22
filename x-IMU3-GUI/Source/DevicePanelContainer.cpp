@@ -100,6 +100,15 @@ void DevicePanelContainer::updateSize()
 
 void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo)
 {
+    for (const auto& devicePanel : devicePanels)
+    {
+        if (devicePanel->getConnection()->getInfo()->toString() == connectionInfo.toString())
+        {
+            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + connectionInfo.toString() + "."));
+            return;
+        }
+    }
+
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
     connection->openAsync([&, connection](auto result)
                           {
@@ -107,7 +116,7 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
                                                               {
                                                                   if (result != ximu3::XIMU3_ResultOk)
                                                                   {
-                                                                      DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to open connection " + connection->getInfo()->toString() + "."));
+                                                                      DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to open connection. " + connection->getInfo()->toString() + "."));
                                                                       return;
                                                                   }
 
