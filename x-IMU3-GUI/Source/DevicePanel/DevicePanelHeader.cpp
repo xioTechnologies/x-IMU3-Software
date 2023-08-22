@@ -168,7 +168,7 @@ juce::String DevicePanelHeader::getDeviceDescriptor() const
     {
         return "Unknown Device";
     }
-    return deviceName + " - " + serialNumber;
+    return deviceName + " " + serialNumber;
 }
 
 void DevicePanelHeader::updateRssi(const int percentage)

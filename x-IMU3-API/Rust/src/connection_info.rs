@@ -31,7 +31,7 @@ pub struct UsbConnectionInfo {
 
 impl fmt::Display for UsbConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "USB - {}", self.port_name)
+        write!(formatter, "USB {}", self.port_name)
     }
 }
 
@@ -45,7 +45,7 @@ pub struct SerialConnectionInfo {
 impl fmt::Display for SerialConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         let enabled_disabled = if self.rts_cts_enabled { "Enabled" } else { "Disabled" };
-        write!(formatter, "Serial - {}, {}, RTS/CTS {}", self.port_name, self.baud_rate, enabled_disabled)
+        write!(formatter, "Serial {}, {}, RTS/CTS {}", self.port_name, self.baud_rate, enabled_disabled)
     }
 }
 
@@ -57,7 +57,7 @@ pub struct TcpConnectionInfo {
 
 impl fmt::Display for TcpConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "TCP - {}:{}", self.ip_address, self.port)
+        write!(formatter, "TCP {}:{}", self.ip_address, self.port)
     }
 }
 
@@ -70,7 +70,7 @@ pub struct UdpConnectionInfo {
 
 impl fmt::Display for UdpConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "UDP - {}:{}, {}", self.ip_address, self.send_port, self.receive_port)
+        write!(formatter, "UDP {}:{}, {}", self.ip_address, self.send_port, self.receive_port)
     }
 }
 
@@ -81,7 +81,7 @@ pub struct BluetoothConnectionInfo {
 
 impl fmt::Display for BluetoothConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "Bluetooth - {}", self.port_name)
+        write!(formatter, "Bluetooth {}", self.port_name)
     }
 }
 
@@ -92,6 +92,6 @@ pub struct FileConnectionInfo {
 
 impl fmt::Display for FileConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "File - {}", self.file_path)
+        write!(formatter, "File {}", self.file_path)
     }
 }

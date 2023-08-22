@@ -26,7 +26,7 @@ pub fn run() {
 
         let message = messages.first().unwrap();
 
-        println!("Found {} - {}", message.device_name, message.serial_number);
+        println!("Found {} {}", message.device_name, message.serial_number);
 
         connection_info = message.into();
     } else {

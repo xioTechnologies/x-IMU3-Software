@@ -14,7 +14,7 @@ public:
                 std::cout << "No Bluetooth connections available" << std::endl;
                 return;
             }
-            std::cout << "Found " << devices[0].device_name << " - " << devices[0].serial_number << std::endl;
+            std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
             run(ximu3::BluetoothConnectionInfo(devices[0].bluetooth_connection_info));
         }
         else

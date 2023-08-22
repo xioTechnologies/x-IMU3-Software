@@ -18,7 +18,7 @@ void Commands()
         printf("No USB connections available\n");
         return;
     }
-    printf("Found %s - %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+    printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
 
     // Open connection
     XIMU3_Connection* const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);

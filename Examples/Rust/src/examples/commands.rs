@@ -17,7 +17,7 @@ pub fn run() {
 
     let device = devices.first().unwrap();
 
-    println!("Found {} - {}", device.device_name, device.serial_number);
+    println!("Found {} {}", device.device_name, device.serial_number);
 
     // Open connection
     let connection = Connection::new(&device.connection_info);

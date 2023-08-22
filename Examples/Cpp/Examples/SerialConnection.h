@@ -14,7 +14,7 @@ public:
                 std::cout << "No serial connections available" << std::endl;
                 return;
             }
-            std::cout << "Found " << devices[0].device_name << " - " << devices[0].serial_number << std::endl;
+            std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
             run(ximu3::SerialConnectionInfo(devices[0].serial_connection_info));
         }
         else

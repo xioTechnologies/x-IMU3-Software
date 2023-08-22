@@ -15,7 +15,7 @@ namespace Ximu3Examples
                     Console.WriteLine("No USB connections available");
                     return;
                 }
-                Console.WriteLine("Found " + devices[0].DeviceName + " - " + devices[0].SerialNumber);
+                Console.WriteLine("Found " + devices[0].DeviceName + " " + devices[0].SerialNumber);
                 Run(devices[0].ConnectionInfo);
             }
             else

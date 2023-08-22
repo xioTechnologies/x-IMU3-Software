@@ -10,7 +10,7 @@ if helpers.ask_question("Search for connections?"):
     if not devices:
         raise Exception("No Bluetooth connections available")
 
-    print("Found " + devices[0].device_name + " - " + devices[0].serial_number)
+    print("Found " + devices[0].device_name + " " + devices[0].serial_number)
 
     connection.run(devices[0].connection_info)
 else:

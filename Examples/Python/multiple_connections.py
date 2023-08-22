@@ -14,7 +14,7 @@ class Connection:
         if ping_response.result != ximu3.RESULT_OK:
             raise Exception("Ping failed for " + connection_info.to_string())
 
-        self.__prefix = ping_response.device_name + " - " + ping_response.serial_number
+        self.__prefix = ping_response.device_name + " " + ping_response.serial_number
 
         self.__connection.add_inertial_callback(self.__inertial_callback)
         self.__connection.add_magnetometer_callback(self.__magnetometer_callback)

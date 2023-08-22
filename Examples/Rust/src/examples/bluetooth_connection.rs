@@ -19,7 +19,7 @@ pub fn run() {
 
         let device = devices.first().unwrap();
 
-        println!("Found {} - {}", device.device_name, device.serial_number);
+        println!("Found {} {}", device.device_name, device.serial_number);
 
         connection_info = device.connection_info.clone();
     } else {
