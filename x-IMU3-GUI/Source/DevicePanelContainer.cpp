@@ -104,7 +104,7 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
     {
         if (devicePanel->getConnection()->getInfo()->toString() == connectionInfo.toString())
         {
-            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection " + connectionInfo.toString() + " already exists."));
+            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + connectionInfo.toString() + "."));
             return;
         }
     }
