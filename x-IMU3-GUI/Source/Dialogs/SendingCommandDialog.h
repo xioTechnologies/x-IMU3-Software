@@ -19,7 +19,6 @@ private:
     enum class ColumnIDs
     {
         tag = 1,
-        device,
         connection,
         complete,
     };
@@ -37,9 +36,6 @@ private:
         State state = State::inProgress;
     };
 
-    SimpleLabel deviceLabel { "Device" };
-    SimpleLabel connectionLabel { "Connection" };
-    SimpleLabel completeLabel { "Complete", UIFonts::getDefaultFont(), juce::Justification::centred };
     juce::TableListBox table { "", this };
     std::vector<Row> rows;
 
