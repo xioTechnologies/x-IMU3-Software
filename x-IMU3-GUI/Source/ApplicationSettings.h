@@ -66,7 +66,12 @@ private:
     void load()
     {
         tree.removeListener(this);
-        tree.copyPropertiesFrom(juce::ValueTree::fromXml(file.loadFileAsString()), nullptr);
+
+        auto rootTree = juce::ValueTree::fromXml(file.loadFileAsString());
+        searchForConnections.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(searchForConnections.tree.getType(), nullptr), nullptr);
+        commands.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(commands.tree.getType(), nullptr), nullptr);
+        deviceSettings.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(deviceSettings.tree.getType(), nullptr), nullptr);
+
         tree.addListener(this);
     }
 
