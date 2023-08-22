@@ -4,16 +4,12 @@
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels)
         : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
-    addAndMakeVisible(deviceLabel);
-    addAndMakeVisible(connectionLabel);
-    addAndMakeVisible(completeLabel);
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 110);
+    table.getHeader().addColumn("", (int) ColumnIDs::connection, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::complete, 70, 70, 70);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
@@ -89,22 +85,14 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     okCallback();
 
-    setSize(600, calculateHeight(6));
+    setSize(600, calculateHeight(0) + margin + std::min(20, (int) devicePanels.size()) * table.getRowHeight());
 }
 
 void SendingCommandDialog::resized()
 {
     Dialog::resized();
 
-    auto bounds = getContentBounds(true);
-
-    static constexpr int headerHeight = 30;
-    bounds.removeFromTop(headerHeight);
-    deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
-    connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
-    completeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::complete - 1).withHeight(headerHeight));
-
-    table.setBounds(bounds);
+    table.setBounds(getContentBounds(true));
 }
 
 int SendingCommandDialog::getNumRows()
@@ -137,11 +125,8 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::tag:
             return nullptr;
 
-        case ColumnIDs::device:
-            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getDeviceDescriptor());
-
         case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getConnection()->getInfo()->toString());
+            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getDeviceDescriptor() + "    " + rows[(size_t) rowNumber].devicePanel.getConnection()->getInfo()->toString());
 
         case ColumnIDs::complete:
             switch (rows[(size_t) rowNumber].state)
