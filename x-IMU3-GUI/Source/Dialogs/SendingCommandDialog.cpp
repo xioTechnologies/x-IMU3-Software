@@ -85,7 +85,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     okCallback();
 
-    setSize(600, calculateHeight(0) + margin + std::min(20, (int) devicePanels.size()) * table.getRowHeight());
+    setSize(600, calculateHeight(0) + margin + (int) devicePanels.size() * table.getRowHeight());
 }
 
 void SendingCommandDialog::resized()
