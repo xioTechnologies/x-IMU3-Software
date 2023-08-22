@@ -63,7 +63,7 @@ private:
                                                                 break;
                                                         }
 
-                                                        deviceValue.addItem(juce::String(device.device_name) + " - " + juce::String(device.serial_number) + " (" + connectionInfo + ")", 1 + deviceValue.getNumItems());
+                                                        deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + connectionInfo + ")", 1 + deviceValue.getNumItems());
                                                     }
 
                                                     deviceValue.setSelectedId(std::max(1, id));
