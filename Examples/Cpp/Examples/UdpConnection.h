@@ -14,7 +14,7 @@ public:
                 std::cout << "No UDP connections available" << std::endl;
                 return;
             }
-            std::cout << "Found " << messages[0].device_name << " - " << messages[0].serial_number << std::endl;
+            std::cout << "Found " << messages[0].device_name << " " << messages[0].serial_number << std::endl;
             run(ximu3::UdpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0])));
         }
         else

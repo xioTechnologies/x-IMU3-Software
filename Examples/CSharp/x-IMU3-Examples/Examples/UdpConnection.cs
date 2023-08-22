@@ -15,7 +15,7 @@ namespace Ximu3Examples
                     Console.WriteLine("No UDP connections available");
                     return;
                 }
-                Console.WriteLine("Found " + messages[0].DeviceName + " - " + messages[0].SerialNumber);
+                Console.WriteLine("Found " + messages[0].DeviceName + " " + messages[0].SerialNumber);
                 Run(messages[0].ToUdpConnectionInfo());
             }
             else

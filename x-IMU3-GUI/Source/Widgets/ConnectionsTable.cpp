@@ -116,7 +116,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " - " + rows[(size_t) rowNumber].serialNumber);
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " " + rows[(size_t) rowNumber].serialNumber);
             break;
 
         case ColumnIDs::connection:

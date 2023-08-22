@@ -25,7 +25,7 @@ void TcpConnection()
             printf("No TCP connections available\n");
             return;
         }
-        printf("Found %s - %s\n", messages.array[0].device_name, messages.array[0].serial_number);
+        printf("Found %s %s\n", messages.array[0].device_name, messages.array[0].serial_number);
 
         const XIMU3_TcpConnectionInfo connectionInfo = XIMU3_network_announcement_message_to_tcp_connection_info(messages.array[0]);
 

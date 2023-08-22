@@ -16,7 +16,7 @@ void SerialConnection()
             printf("No serial connections available\n");
             return;
         }
-        printf("Found %s - %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+        printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
 
         const XIMU3_SerialConnectionInfo connectionInfo = devices.array[0].serial_connection_info;
 

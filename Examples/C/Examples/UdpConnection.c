@@ -27,7 +27,7 @@ void UdpConnection()
             printf("No UDP connections available\n");
             return;
         }
-        printf("Found %s - %s\n", messages.array[0].device_name, messages.array[0].serial_number);
+        printf("Found %s %s\n", messages.array[0].device_name, messages.array[0].serial_number);
 
         const XIMU3_UdpConnectionInfo connectionInfo = XIMU3_network_announcement_message_to_udp_connection_info(messages.array[0]);
 

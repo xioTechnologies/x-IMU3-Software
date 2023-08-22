@@ -10,7 +10,7 @@ if helpers.ask_question("Search for connections?"):
     if not messages:
         raise Exception("No TCP connections available")
 
-    print("Found " + messages[0].device_name + " - " + messages[0].serial_number)
+    print("Found " + messages[0].device_name + " " + messages[0].serial_number)
 
     connection.run(messages[0].to_tcp_connection_info())
 else:
