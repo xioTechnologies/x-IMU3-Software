@@ -43,7 +43,7 @@ pub extern "C" fn XIMU3_connection_new_file(connection_info: FileConnectionInfoC
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_free(connection: *mut Connection) {
-    unsafe { Box::from_raw(connection) };
+    unsafe { drop(Box::from_raw(connection)) };
 }
 
 #[no_mangle]
