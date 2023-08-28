@@ -16,7 +16,7 @@ pub extern "C" fn XIMU3_data_logger_new(directory: *const c_char, name: *const c
 
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
-    unsafe { Box::from_raw(data_logger) };
+    unsafe { drop(Box::from_raw(data_logger)) };
 }
 
 #[no_mangle]

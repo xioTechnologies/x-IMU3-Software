@@ -125,7 +125,7 @@ pub extern "C" fn XIMU3_network_announcement_new() -> *mut NetworkAnnouncementC 
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_free(network_announcement: *mut NetworkAnnouncementC) {
-    unsafe { Box::from_raw(network_announcement) };
+    unsafe { drop(Box::from_raw(network_announcement)) };
 }
 
 #[no_mangle]
