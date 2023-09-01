@@ -2,14 +2,14 @@
 
 #include "SimpleLabel.h"
 
-class IconAndText : public juce::Component,
-                    private juce::Timer
+class StatusIcon : public juce::Component,
+                   private juce::Timer
 {
 public:
     static constexpr int minimumWidth = 18;
     static constexpr int maximumWidth = 60;
 
-    IconAndText(const juce::String& unknownIcon_, const juce::String& tooltip_) : unknownIcon(unknownIcon_), tooltip(tooltip_), icon(unknownIcon, tooltip)
+    StatusIcon(const juce::String& unknownIcon_, const juce::String& tooltip_) : unknownIcon(unknownIcon_), tooltip(tooltip_), icon(unknownIcon, tooltip)
     {
         addAndMakeVisible(icon);
         addAndMakeVisible(text);
