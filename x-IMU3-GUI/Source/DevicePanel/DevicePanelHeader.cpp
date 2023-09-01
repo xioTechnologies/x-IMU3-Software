@@ -179,15 +179,13 @@ void DevicePanelHeader::updateTitle(const std::vector<CommandMessage>& responses
     {
         if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("deviceName"))
         {
-            deviceName = response.value;
+            updateTitle(response.value, serialNumber);
         }
         else if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serialNumber"))
         {
-            serialNumber = response.value;
+            updateTitle(deviceName, response.value);
         }
     }
-
-    updateTitle(deviceName, serialNumber);
 }
 
 void DevicePanelHeader::updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_)
