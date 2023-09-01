@@ -40,7 +40,7 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 }
 
 NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const DevicePanel& devicePanel)
-        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + devicePanel.getDeviceDescriptor(), "Close", "", &clearAllButton, 80, true, devicePanel.getTag()),
+        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + devicePanel.getTitle(), "Close", "", &clearAllButton, 80, true, devicePanel.getTag()),
           messages(messages_)
 {
     addAndMakeVisible(clearAllButton);

@@ -15,6 +15,13 @@ class DevicePanelContainer;
 class DevicePanelHeader : public juce::Component
 {
 public:
+    enum class State
+    {
+        connecting,
+        connected,
+        connectionFailed,
+    };
+
     DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_);
 
     ~DevicePanelHeader() override;
@@ -29,20 +36,28 @@ public:
 
     void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
-    void updateDeviceDescriptor(const std::vector<CommandMessage>& responses);
+    void setState(const State state);
 
-    juce::String getDeviceDescriptor() const;
+    juce::String getTitle() const;
+
+    void updateTitle(const std::vector<CommandMessage>& responses);
+
+    void updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_);
+
+    std::function<void()> onRetry;
 
 private:
     DevicePanel& devicePanel;
     DevicePanelContainer& devicePanelContainer;
+    const std::shared_ptr<ximu3::Connection> connection;
 
-    std::shared_ptr<std::atomic<bool>> pingInProgress = std::make_shared<std::atomic<bool>>(true);
+    std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
+
     juce::String deviceName, serialNumber;
 
+    IconButton retryButton { BinaryData::refresh_svg, "Retry" };
     IconButton strobeButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };
-    SimpleLabel deviceDescriptor;
-    SimpleLabel connectionInfo;
+    SimpleLabel title;
     IconAndText rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
     IconAndText batteryIcon { BinaryData::battery_unknown_svg, "Battery Level" };
 
@@ -55,6 +70,8 @@ private:
 
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     uint64_t batteryCallbackID;
+
+    void updateTitle(const juce::String& status);
 
     void updateRssi(const int percentage);
 

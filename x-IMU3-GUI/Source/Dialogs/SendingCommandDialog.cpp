@@ -126,7 +126,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return nullptr;
 
         case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getDeviceDescriptor() + "    " + rows[(size_t) rowNumber].devicePanel.getConnection()->getInfo()->toString());
+            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getTitle());
 
         case ColumnIDs::complete:
             switch (rows[(size_t) rowNumber].state)

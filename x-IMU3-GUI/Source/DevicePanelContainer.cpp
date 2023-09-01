@@ -110,31 +110,19 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
     }
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
-    connection->openAsync([&, connection](auto result)
-                          {
-                              juce::MessageManager::callAsync([&, connection, result]
-                                                              {
-                                                                  if (result != ximu3::XIMU3_ResultOk)
-                                                                  {
-                                                                      DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to open connection. " + connection->getInfo()->toString() + "."));
-                                                                      return;
-                                                                  }
+    addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
+    {
+        static unsigned int counter;
 
-                                                                  addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
-                                                                  {
-                                                                      static unsigned int counter;
+        if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
+        {
+            counter = 0;
+        }
 
-                                                                      if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
-                                                                      {
-                                                                          counter = 0;
-                                                                      }
+        return UIColours::tags[counter];
+    }())));
 
-                                                                      return UIColours::tags[counter];
-                                                                  }())));
-
-                                                                  devicePanelsSizeChanged();
-                                                              });
-                          });
+    devicePanelsSizeChanged();
 }
 
 std::vector<DevicePanel*> DevicePanelContainer::getDevicePanels() const
