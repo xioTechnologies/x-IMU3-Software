@@ -62,6 +62,11 @@ void DeviceSettings::setValue(const CommandMessage& response)
     setting.sendPropertyChangeMessage(DeviceSettingsIDs::value);
 }
 
+juce::var DeviceSettings::getValue(const juce::String& key) const
+{
+    return findSetting(key)[DeviceSettingsIDs::value];
+}
+
 void DeviceSettings::setStatus(const juce::String& key, const Setting::Status status)
 {
     auto setting = findSetting(key);
