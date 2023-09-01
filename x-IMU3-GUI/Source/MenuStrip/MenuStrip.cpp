@@ -142,12 +142,36 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
         DialogQueue::getSingleton().pushFront(std::make_unique<ApplicationSettingsDialog>());
     };
 
-    versionButton.onClick = []
+    versionButton.onClick = [&]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<AboutDialog>());
+        DialogQueue::getSingleton().pushFront(std::make_unique<AboutDialog>(latestVersion));
     };
     versionButton.setColour(juce::TextButton::buttonColourId, {});
     versionButton.setColour(juce::TextButton::buttonOnColourId, {});
+
+    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
+                         {
+                             const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
+
+                             juce::MessageManager::callAsync([&, self, parsed]
+                                                             {
+                                                                 if (self == nullptr)
+                                                                 {
+                                                                     return;
+                                                                 }
+
+                                                                 if (const auto* const object = parsed.getDynamicObject())
+                                                                 {
+                                                                     latestVersion = object->getProperty("tag_name");
+                                                                     if (latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()))
+                                                                     {
+                                                                         versionButton.setButtonText(versionButton.getButtonText() + "*");
+                                                                         versionButton.setTooltip(versionButton.getTooltip() + " (" + latestVersion + " available)");
+                                                                     }
+                                                                     resized();
+                                                                 }
+                                                             });
+                         });
 
     devicePanelContainer.onDevicePanelsSizeChanged = [&]
     {

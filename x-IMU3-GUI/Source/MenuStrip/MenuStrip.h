@@ -78,6 +78,8 @@ private:
 
     std::optional<DevicePanelContainer::Layout> preferredMultipleDevicePanelLayout;
 
+    juce::String latestVersion;
+
     void addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel&)> action);
 
     void disconnect(const DevicePanel* const);

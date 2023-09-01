@@ -1,60 +1,36 @@
 #include "AboutDialog.h"
 
-AboutDialog::AboutDialog() : Dialog(BinaryData::xio_icon_svg, "About", "Close", "")
+AboutDialog::AboutDialog(const juce::String& latestVersion) : Dialog(BinaryData::xio_icon_svg, "About", "Close", "", &sourceCodeButton, iconButtonWidth)
 {
     addAndMakeVisible(logo);
     addAndMakeVisible(applicationNameLabel);
     addAndMakeVisible(applicationVersionLabel);
     addAndMakeVisible(expectedFirmwareVersionLabel);
-    addAndMakeVisible(sourceCodeLabel);
     addAndMakeVisible(applicationNameValue);
     addAndMakeVisible(applicationVersionValue);
-    addChildComponent(applicationVersionUpdateLabel);
     addAndMakeVisible(expectedFirmwareVersionValue);
-    addAndMakeVisible(sourceCodeValue);
+    addAndMakeVisible(sourceCodeButton);
 
     logo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     logo.addMouseListener(this, true);
 
-    const auto initialiseUrl = [&](auto& label, const juce::String& url)
+    addAndMakeVisible(applicationVersionUpdateLabel);
+    applicationVersionUpdateLabel.setInterceptsMouseClicks(true, false);
+    applicationVersionUpdateLabel.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    applicationVersionUpdateLabel.setTooltip(updateUrl);
+    applicationVersionUpdateLabel.addMouseListener(this, true);
+    applicationVersionUpdateLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+    if (latestVersion.isNotEmpty())
     {
-        label.setColour(juce::Label::textColourId, UIColours::hyperlink);
-        label.setInterceptsMouseClicks(true, false);
-        label.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-        label.setTooltip(url);
-        label.addMouseListener(this, true);
+        applicationVersionUpdateLabel.setText(" (" + ((latestVersion == "v" + juce::JUCEApplication::getInstance()->getApplicationVersion()) ? "latest" : (latestVersion + " available")) + ")");
+    }
+
+    sourceCodeButton.onClick = [&]
+    {
+        juce::URL("https://github.com/xioTechnologies/x-IMU3-Software").launchInDefaultBrowser();
     };
 
-    initialiseUrl(applicationVersionUpdateLabel, updateUrl);
-    initialiseUrl(sourceCodeValue, sourceCodeUrl);
-
-    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
-                         {
-                             const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
-
-                             juce::MessageManager::callAsync([&, self, parsed]
-                                                             {
-                                                                 if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
-
-                                                                 if (const auto* const object = parsed.getDynamicObject())
-                                                                 {
-                                                                     const auto tagName = object->getProperty("tag_name").toString();
-
-                                                                     if (applicationVersionValue.getText() != tagName)
-                                                                     {
-                                                                         applicationVersionUpdateLabel.setVisible(true);
-                                                                         applicationVersionUpdateLabel.setText(" (" + tagName + " available)");
-                                                                     }
-
-                                                                     resized();
-                                                                 }
-                                                             });
-                         });
-
-    setSize(400, calculateHeight(6));
+    setSize(400, calculateHeight(5));
 }
 
 void AboutDialog::resized()
@@ -66,7 +42,7 @@ void AboutDialog::resized()
     logo.setBounds(bounds.removeFromTop(3 * UILayout::textComponentHeight));
     bounds.removeFromTop(margin);
 
-    const auto rowHeight = bounds.getHeight() / 4;
+    const auto rowHeight = bounds.getHeight() / 3;
 
     auto rowBounds = bounds.removeFromTop(rowHeight);
     applicationNameLabel.setBounds(rowBounds.removeFromLeft(200));
@@ -83,10 +59,6 @@ void AboutDialog::resized()
     rowBounds = bounds.removeFromTop(rowHeight);
     expectedFirmwareVersionLabel.setBounds(rowBounds.removeFromLeft(200));
     expectedFirmwareVersionValue.setBounds(rowBounds);
-
-    rowBounds = bounds.removeFromTop(rowHeight);
-    sourceCodeLabel.setBounds(rowBounds.removeFromLeft(200));
-    sourceCodeValue.setBounds(rowBounds);
 }
 
 void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -98,9 +70,5 @@ void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
     else if (mouseEvent.eventComponent == &applicationVersionUpdateLabel)
     {
         juce::URL(updateUrl).launchInDefaultBrowser();
-    }
-    else if (mouseEvent.eventComponent == &sourceCodeValue)
-    {
-        juce::URL(sourceCodeUrl).launchInDefaultBrowser();
     }
 }
