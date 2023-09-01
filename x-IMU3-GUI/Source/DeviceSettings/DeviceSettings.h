@@ -18,6 +18,8 @@ public:
 
     void setValue(const CommandMessage& response);
 
+    juce::var getValue(const juce::String& key) const;
+
     void setStatus(const juce::String& key, const Setting::Status status);
 
 private:

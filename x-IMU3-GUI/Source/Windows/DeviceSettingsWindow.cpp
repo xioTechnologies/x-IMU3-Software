@@ -79,7 +79,17 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     saveToFileButton.onClick = [&]
     {
-        juce::FileChooser fileChooser("Save Device Settings", directory.getChildFile(devicePanel.getDeviceDescriptor()), "*.json");
+        auto fileName = settingsTree.getValue("deviceName").toString();
+        if (fileName.isEmpty())
+        {
+            fileName = "Unknown Device";
+        }
+        if (const auto serialNumber = settingsTree.getValue("serialNumber").toString(); serialNumber.isNotEmpty())
+        {
+            fileName += " " + serialNumber;
+        }
+
+        juce::FileChooser fileChooser("Save Device Settings", directory.getChildFile(fileName), "*.json");
         if (fileChooser.browseForFileToSave(true) == false)
         {
             return;
