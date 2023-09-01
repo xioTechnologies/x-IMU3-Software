@@ -80,7 +80,7 @@ void DevicePanelHeader::resized()
     bounds.removeFromLeft(margin);
 
     const auto titleWidth = (int) std::ceil(title.getTextWidth());
-    const auto iconWidth = juce::jlimit(IconAndText::minimumWidth, IconAndText::maximumWidth, (int) (bounds.getWidth() - titleWidth - 2 * margin) / 2);
+    const auto iconWidth = juce::jlimit(StatusIcon::minimumWidth, StatusIcon::maximumWidth, (int) (bounds.getWidth() - titleWidth - 2 * margin) / 2);
 
     batteryIcon.setBounds(bounds.removeFromRight(iconWidth));
     bounds.removeFromRight(margin);
