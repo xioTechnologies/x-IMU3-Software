@@ -33,16 +33,22 @@ DevicePanel::DevicePanel(const juce::ValueTree& windowLayout_,
           devicePanelContainer(devicePanelContainer_),
           tag(tag_)
 {
-    windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
-    addAndMakeVisible(*windowContainer);
-
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
+
+    header.onRetry = [&]
+    {
+        connect();
+    };
+
+    connect();
 }
 
 DevicePanel::~DevicePanel()
 {
     connection->close();
+
+    *destroyed = true;
 }
 
 void DevicePanel::resized()
@@ -52,8 +58,11 @@ void DevicePanel::resized()
     header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
     footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
 
-    bounds.removeFromTop(UILayout::panelMargin);
-    windowContainer->setBounds(bounds);
+    if (windowContainer)
+    {
+        bounds.removeFromTop(UILayout::panelMargin);
+        windowContainer->setBounds(bounds);
+    }
 }
 
 std::shared_ptr<ximu3::Connection> DevicePanel::getConnection()
@@ -78,7 +87,7 @@ void DevicePanel::sendCommands(const std::vector<CommandMessage>& commands, Safe
 
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses, failedCommands]
                                         {
-                                            header.updateDeviceDescriptor(responses);
+                                            header.updateTitle(responses);
 
                                             if (callbackOwner != nullptr && callback != nullptr)
                                             {
@@ -180,14 +189,42 @@ void DevicePanel::cleanupWindows()
     triggerAsyncUpdate();
 }
 
-juce::String DevicePanel::getDeviceDescriptor() const
+juce::String DevicePanel::getTitle() const
 {
-    return header.getDeviceDescriptor();
+    return header.getTitle();
 }
 
 DevicePanelContainer& DevicePanel::getDevicePanelContainer()
 {
     return devicePanelContainer;
+}
+
+void DevicePanel::connect()
+{
+    header.setState(DevicePanelHeader::State::connecting);
+
+    connection->openAsync([&, destroyed = destroyed](auto result)
+                          {
+                              juce::MessageManager::callAsync([&, destroyed, result]
+                                                              {
+                                                                  if (*destroyed)
+                                                                  {
+                                                                      return;
+                                                                  }
+
+                                                                  if (result != ximu3::XIMU3_ResultOk)
+                                                                  {
+                                                                      header.setState(DevicePanelHeader::State::connectionFailed);
+                                                                      return;
+                                                                  }
+
+                                                                  windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
+                                                                  addAndMakeVisible(*windowContainer);
+                                                                  resized();
+
+                                                                  header.setState(DevicePanelHeader::State::connected);
+                                                              });
+                          });
 }
 
 void DevicePanel::handleAsyncUpdate()

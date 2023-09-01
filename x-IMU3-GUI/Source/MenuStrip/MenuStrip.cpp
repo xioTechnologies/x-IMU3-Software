@@ -256,7 +256,7 @@ void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel
 
     for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
     {
-        juce::PopupMenu::Item item(devicePanel->getDeviceDescriptor() + "   " + devicePanel->getConnection()->getInfo()->toString());
+        juce::PopupMenu::Item item(devicePanel->getTitle());
 
         item.action = [devicePanel, action]
         {
@@ -536,7 +536,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu()
 
     addDevices(menu, [&](auto& devicePanel)
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getDeviceDescriptor(), devicePanel.getTag()), [&, devicePanel = &devicePanel]
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getTitle(), devicePanel.getTag()), [&, devicePanel = &devicePanel]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {

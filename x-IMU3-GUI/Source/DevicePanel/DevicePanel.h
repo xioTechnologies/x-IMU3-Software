@@ -41,7 +41,7 @@ public:
 
     void cleanupWindows();
 
-    juce::String getDeviceDescriptor() const;
+    juce::String getTitle() const;
 
     DevicePanelContainer& getDevicePanelContainer();
 
@@ -57,6 +57,10 @@ private:
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;
+
+    std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
+
+    void connect();
 
     void handleAsyncUpdate() override;
 
