@@ -6,9 +6,6 @@ class StatusIcon : public juce::Component,
                    private juce::Timer
 {
 public:
-    static constexpr int minimumWidth = 18;
-    static constexpr int maximumWidth = 60;
-
     StatusIcon(const juce::String& unknownIcon_, const juce::String& tooltip_) : unknownIcon(unknownIcon_), tooltip(tooltip_), icon(unknownIcon, tooltip)
     {
         addAndMakeVisible(icon);
@@ -20,8 +17,8 @@ public:
     void resized() override
     {
         auto bounds = getLocalBounds();
-        icon.setBounds(bounds.removeFromLeft(minimumWidth));
-        bounds.reduce(5, 0);
+        icon.setBounds(bounds.removeFromLeft(iconWidth));
+        bounds.removeFromLeft(5);
         text.setBounds(bounds);
     }
 
@@ -40,7 +37,14 @@ public:
                                         });
     }
 
+    int getWidth(const bool showText) const
+    {
+        return iconWidth + ((showText && text.getText().isNotEmpty()) ? 40 : 0);
+    }
+
 private:
+    static constexpr int iconWidth = 18;
+
     const juce::String unknownIcon;
     const juce::String tooltip;
     Icon icon;
@@ -48,8 +52,13 @@ private:
 
     void setText(const juce::String& text_)
     {
-        icon.setTooltip(tooltip + (text_.isNotEmpty() ? (" (" + text_ + ")") : ""));
+        const auto resizeParent = text.getText().isEmpty() || text_.isEmpty();
+        icon.setTooltip(tooltip + " (" + (text_.isEmpty() ? "Unavailable" : text_) + ")");
         text.setText(text_);
+        if (resizeParent && getParentComponent() != nullptr)
+        {
+            getParentComponent()->resized();
+        }
     }
 
     void timerCallback() override

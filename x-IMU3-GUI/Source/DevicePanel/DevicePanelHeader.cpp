@@ -79,12 +79,11 @@ void DevicePanelHeader::resized()
     strobeButton.setBounds(retryButton.getBounds());
     bounds.removeFromLeft(margin);
 
-    const auto titleWidth = (int) std::ceil(title.getTextWidth());
-    const auto iconWidth = juce::jlimit(StatusIcon::minimumWidth, StatusIcon::maximumWidth, (int) (bounds.getWidth() - titleWidth - 2 * margin) / 2);
+    const auto showIconText = getWidth() > 500;
 
-    batteryIcon.setBounds(bounds.removeFromRight(iconWidth));
+    batteryIcon.setBounds(bounds.removeFromRight(batteryIcon.getWidth(showIconText)));
     bounds.removeFromRight(margin);
-    rssiIcon.setBounds(bounds.removeFromRight(iconWidth));
+    rssiIcon.setBounds(bounds.removeFromRight(rssiIcon.getWidth(showIconText)));
     bounds.removeFromRight(margin);
 
     title.setBounds(bounds);
@@ -198,7 +197,6 @@ void DevicePanelHeader::updateTitle(const juce::String& deviceName_, const juce:
 void DevicePanelHeader::updateTitle(const juce::String& status)
 {
     title.setText(status + "    " + connection->getInfo()->toString());
-    resized();
 }
 
 void DevicePanelHeader::updateRssi(const int percentage)
