@@ -1,6 +1,6 @@
+#include "../../Widgets/PopupMenuHeader.h"
 #include "../WindowIDs.h"
 #include "GraphWindow.h"
-#include "../../Widgets/PopupMenuHeader.h"
 
 const juce::String GraphWindow::degreeSymbol = (juce::CharPointer_UTF8("\xc2\xba"));
 
