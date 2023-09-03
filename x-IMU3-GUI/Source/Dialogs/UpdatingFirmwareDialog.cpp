@@ -57,7 +57,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                              // Check compatibility
                              const auto firmwareIsV2 = juce::File(fileName).getFileName().startsWith("x-IMU3-Firmware-v2.");
                              const auto hardwareIsV2 = hardwareVersion.startsWith("v2.");
-                             if (firmwareIsV2 ^ hardwareIsV2)
+                             if (firmwareIsV2 != hardwareIsV2)
                              {
                                  showError("The detected " + hardwareVersion + " hardware is " + (firmwareIsV2 ? "not" : "only") + " compatible with v2.x.x firmware.");
                                  return;
