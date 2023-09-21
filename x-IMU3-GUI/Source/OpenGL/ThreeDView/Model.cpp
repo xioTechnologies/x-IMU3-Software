@@ -44,13 +44,6 @@ void Model::renderWithMaterials(const LitShader& shader)
 
         shader.materialColour.set(glm::vec4(material.diffuse, 1.0f));
 
-        // TODO: Could eventually implement a full material system by paying attention to the other model color properties.
-        //  Wavefront .mtl files also have these other properties:
-        //        shader.materialAmbient.set (material.ambient.x, material.ambient.y, material.ambient.z);
-        //        shader.materialDiffuse.set (material.diffuse.x, material.diffuse.y, material.diffuse.z);
-        //        shader.materialSpecular.set (material.specular.x, material.specular.y, material.specular.z);
-        //        shader.materialShininess.set (material.shininess);
-
         glBindVertexArray(glBuffer->vao); // bind VAO for all vertex data (VBO, EBO, attributes)
         glDrawElements(GL_TRIANGLES, (GLsizei) glBuffer->indicesSize, GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0); // unbind VAO to prevent modification to the VAO by subsequent GL calls

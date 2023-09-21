@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLUtil.hpp"
+#include "OpenGL/Common/GLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class WorldGridShader : public Shader
@@ -11,5 +11,8 @@ public:
     {
     }
 
-    GLUtil::Uniform modelViewProjectionMatrix { *this, "modelViewProjectionMatrix" };
+    GLHelpers::Uniform modelViewProjectionMatrix { *this, "modelViewProjectionMatrix" };
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WorldGridShader)
 };

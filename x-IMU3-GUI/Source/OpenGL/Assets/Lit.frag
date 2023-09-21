@@ -18,19 +18,17 @@ out vec4 fragColour;
 
 uniform vec4 materialColour;
 uniform Light light;
-uniform bool isTextured;
 uniform vec3 cameraPosition;
-uniform sampler2D textureImage;
 
-const float ambientStrength = 0.1; // base world lighting, ranges from 0 to 1
-const float specularStrength = 0.53; // highlights, ranges from 0 to 1, Blender default lighting is close to 0.53
-const float shininess = 2.0; // ranges from around 2 (rough) to 256 (shiny), a decent halfway default 32.0
+const float ambientStrength = 0.1;// base world lighting, ranges from 0 to 1
+const float specularStrength = 0.53;// highlights, ranges from 0 to 1, Blender default lighting is close to 0.53
+const float shininess = 2.0;// ranges from around 2 (rough) to 256 (shiny), a decent halfway default 32.0
 
 // Prevent material colour from being too dark or bright since real life materials are rarely pure black or pure white
 const float maxMaterialBrightness = 0.99;
 const float minMaterialBrightness = 0.008;
 
-const float gamma = 1.7; // gamma correction, 1.7 for more contrast than default 2.2, ref: https://learnopengl.com/Advanced-Lighting/Gamma-Correction
+const float gamma = 1.7;// gamma correction, 1.7 for more contrast than default 2.2, ref: https://learnopengl.com/Advanced-Lighting/Gamma-Correction
 const float exposure = 1.2;
 
 vec3 calculateLight (const Light light)
@@ -54,10 +52,10 @@ vec3 calculateLight (const Light light)
 
     // Light attenuation, ref: https://learnopengl.com/Lighting/Light-casters
     float distance = length(light.position - position_frag);
-    float attenuation = 1.0 / distance * distance; // quadratic attenuation, works well with gamma correction
+    float attenuation = 1.0 / distance * distance;// quadratic attenuation, works well with gamma correction
 
     vec3 lightingColour = vec3 (ambient + diffuse + specular) * attenuation * materialColourClamped;
-    return isTextured ? vec3 (texture(textureImage, textureCoord_frag)) * lightingColour : lightingColour;
+    return lightingColour;
 }
 
 void main()
@@ -65,8 +63,8 @@ void main()
     vec3 color = vec3(0.0);
     color += calculateLight(light);
 
-    color = vec3(1.0) - exp(-color * exposure); // HDR tone mapping with exposure, ref: https://learnopengl.com/Advanced-Lighting/HDR
-    color = pow (color, vec3(1.0 / gamma)); // gamma correction
+    color = vec3(1.0) - exp(-color * exposure);// HDR tone mapping with exposure, ref: https://learnopengl.com/Advanced-Lighting/HDR
+    color = pow (color, vec3(1.0 / gamma));// gamma correction
 
     fragColour = vec4(color, materialColour.a);
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLUtil.hpp"
+#include "OpenGL/Common/GLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class ScreenSpaceLitShader : public Shader
@@ -11,19 +11,20 @@ public:
     {
     }
 
-    GLUtil::Uniform inverseScreenScale { *this, "inverseScreenScale" };
+    GLHelpers::Uniform inverseScreenScale { *this, "inverseScreenScale" };
 
-    GLUtil::Uniform modelMatrix { *this, "modelMatrix" };
-    GLUtil::Uniform modelMatrixInverseTranspose { *this, "modelMatrixInverseTranspose" };
-    GLUtil::Uniform viewMatrix { *this, "viewMatrix" };
-    GLUtil::Uniform projectionMatrix { *this, "projectionMatrix" };
-    GLUtil::Uniform cameraPosition { *this, "cameraPosition" };
+    GLHelpers::Uniform modelMatrix { *this, "modelMatrix" };
+    GLHelpers::Uniform modelMatrixInverseTranspose { *this, "modelMatrixInverseTranspose" };
+    GLHelpers::Uniform viewMatrix { *this, "viewMatrix" };
+    GLHelpers::Uniform projectionMatrix { *this, "projectionMatrix" };
+    GLHelpers::Uniform cameraPosition { *this, "cameraPosition" };
 
-    GLUtil::Uniform lightColour { *this, "light.colour" };
-    GLUtil::Uniform lightPosition { *this, "light.position" };
-    GLUtil::Uniform lightIntensity { *this, "light.intensity" };
+    GLHelpers::Uniform lightColour { *this, "light.colour" };
+    GLHelpers::Uniform lightPosition { *this, "light.position" };
+    GLHelpers::Uniform lightIntensity { *this, "light.intensity" };
 
-    GLUtil::Uniform materialColour { *this, "materialColour" };
-    GLUtil::Uniform isTextured { *this, "isTextured" };
-    GLUtil::Uniform textureImage { *this, "textureImage" };
+    GLHelpers::Uniform materialColour { *this, "materialColour" };
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenSpaceLitShader)
 };

@@ -57,17 +57,19 @@ private:
     const Settings& settings;
     std::atomic<float> quaternionX { 0.0f }, quaternionY { 0.0f }, quaternionZ { 0.0f }, quaternionW { 1.0f };
 
-    void renderModel(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const;
+    void renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const;
 
-    void renderWorld(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight);
+    void renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight);
 
-    void renderCompass(GLResources& resources, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight);
+    void renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight);
 
-    void renderAxes(GLResources& resources, const juce::Rectangle<int>& viewportBounds, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
+    void renderAxes(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
 
-    void renderAxesInstance(GLResources& resources, const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const;
+    void renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const;
 
-    void renderAxesForDeviceOrientation(GLResources& resources, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
+    void renderAxesForDeviceOrientation(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
 
-    void renderAxesForWorldOrientation(GLResources& resources, const glm::mat4& axesConventionRotation) const;
+    void renderAxesForWorldOrientation(const glm::mat4& axesConventionRotation) const;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThreeDView)
 };

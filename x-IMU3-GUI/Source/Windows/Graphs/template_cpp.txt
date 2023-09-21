@@ -1,10 +1,17 @@
 #include "../../Convert.h"
+#include "../../DevicePanel/DevicePanel.h"
 #include "$name$GraphWindow.h"
 
-Graph::Settings $name$GraphWindow::settings = Graph::Settings($horizontal_autoscale$);
+juce::ValueTree $name$GraphWindow::settingsTree_("$name$GraphSettings");
 
 $name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, devicePanel_, glRenderer, "$y_axis$", $legend$, settings, Graph::Settings($horizontal_autoscale$))
+        : GraphWindow(windowLayout, type_, devicePanel_,
+                      glRenderer,
+                      "$y_axis$",
+                      $legend_strings$,
+                      $legend_colours$,
+                      settingsTree_,
+                      $horizontal_autoscale$)
 {
 $callback_implementations$
 }

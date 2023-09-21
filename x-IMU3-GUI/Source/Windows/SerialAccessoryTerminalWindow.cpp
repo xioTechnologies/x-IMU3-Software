@@ -3,7 +3,7 @@
 #include "SerialAccessoryTerminalWindow.h"
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
-        : Window(devicePanel_, windowLayout_, type_, "Serial Accessory Terminal Menu", std::bind(&SerialAccessoryTerminalWindow::getMenu, this))
+        : Window(windowLayout_, type_, devicePanel_, "Serial Accessory Terminal Menu", std::bind(&SerialAccessoryTerminalWindow::getMenu, this))
 {
     addAndMakeVisible(serialAccessoryTerminal);
 

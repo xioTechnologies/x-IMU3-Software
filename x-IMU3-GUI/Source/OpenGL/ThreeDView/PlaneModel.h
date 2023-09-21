@@ -26,4 +26,6 @@ private:
     GLuint EBO = 0; // element buffer object
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlaneModel)
 };

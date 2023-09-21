@@ -1,14 +1,14 @@
 #version 330 core
 
-in vec3 vertexIn;
-in vec2 textureIn;
+layout (location = 0) in vec3 position_vert;
+layout (location = 1) in vec2 textureCoord_vert;
 
-out vec2 textureOut;
+out vec2 textureCoord_frag;
 
-uniform mat4 transformation;
+uniform mat4 transform;
 
-void main(void)
+void main()
 {
-    textureOut = textureIn;
-    gl_Position = transformation * vec4(vertexIn, 1.0);
+    textureCoord_frag = textureCoord_vert;
+    gl_Position = transform * vec4(position_vert, 1.0);
 }

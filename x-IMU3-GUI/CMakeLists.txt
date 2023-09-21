@@ -180,4 +180,4 @@ target_include_directories(x-IMU3-GUI
 
 add_dependencies(x-IMU3-GUI freetype)
 
-set_property(TARGET x-IMU3-GUI PROPERTY CXX_STANDARD 17)
+set_property(TARGET x-IMU3-GUI PROPERTY CXX_STANDARD 20)

@@ -6,7 +6,7 @@
 #include "glm/vec4.hpp"
 #include <juce_opengl/juce_opengl.h>
 
-namespace GLUtil
+namespace GLHelpers
 {
     /** Represents an OpenGL uniform value.
         After a juce::OpenGLShaderProgram has been linked, you can create Uniform objects to
@@ -33,7 +33,7 @@ namespace GLUtil
             assertUniformExistsInShaderProgram();
         }
 
-        [[nodiscard]] bool isValid() const noexcept
+        bool isValid() const noexcept
         {
             return uniformID >= 0;
         }
@@ -184,7 +184,7 @@ namespace GLUtil
         juce::String uniformName;
 #endif
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Uniform)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Uniform)
     };
 
     static void setCapabilityEnabled(GLenum capability, GLboolean shouldBeEnabled)
@@ -217,6 +217,29 @@ namespace GLUtil
         GLenum capability;
         GLboolean wasEnabled;
     };
+
+    static inline void viewport(const juce::Rectangle<int>& bounds)
+    {
+        juce::gl::glViewport((GLint) bounds.getX(), (GLint) bounds.getY(), (GLsizei) bounds.getWidth(), (GLsizei) bounds.getHeight());
+    }
+
+    static inline void scissor(const juce::Rectangle<int>& bounds)
+    {
+        juce::gl::glScissor((GLint) bounds.getX(), (GLint) bounds.getY(), (GLsizei) bounds.getWidth(), (GLsizei) bounds.getHeight());
+    }
+
+    static inline void viewportAndScissor(const juce::Rectangle<int>& bounds)
+    {
+        GLHelpers::viewport(bounds);
+        GLHelpers::scissor(bounds);
+    }
+
+    static inline void clear(const juce::Colour& colour, const juce::Rectangle<int>& bounds)
+    {
+        GLHelpers::ScopedCapability _(juce::gl::GL_SCISSOR_TEST, true);
+        GLHelpers::viewportAndScissor(bounds);
+        juce::OpenGLHelpers::clear(colour);
+    }
 
     // Keeping around in case we need this for later potential refactor
     /*

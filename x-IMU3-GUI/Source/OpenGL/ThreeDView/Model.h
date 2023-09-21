@@ -1,7 +1,6 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "OpenGL/Graph/Buffer.h"
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/ThreeDView/WavefrontObjFile.h"
 

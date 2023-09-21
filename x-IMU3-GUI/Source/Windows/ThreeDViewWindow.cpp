@@ -6,7 +6,7 @@ ThreeDView::Settings ThreeDViewWindow::settings;
 bool ThreeDViewWindow::eulerAnglesEnabled = true;
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
-        : Window(devicePanel_, windowLayout_, type_, "3D View Menu", std::bind(&ThreeDViewWindow::getMenu, this)),
+        : Window(windowLayout_, type_, devicePanel_, "3D View Menu", std::bind(&ThreeDViewWindow::getMenu, this)),
           threeDView(glRenderer, settings)
 {
     addAndMakeVisible(threeDView);

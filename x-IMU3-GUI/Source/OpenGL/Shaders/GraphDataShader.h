@@ -1,6 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
+#include "OpenGL/Common/GLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class GraphDataShader : public Shader
@@ -10,11 +11,9 @@ public:
     {
     }
 
-    // TODO: Attribute variables can be removed in refactor
-    Attribute position { *this, "position" };
-    Uniform window { *this, "window" };
-    Uniform offsetAndScale { *this, "offsetAndScale" };
-    Uniform colour { *this, "colour" };
+    GLHelpers::Uniform axisLimitsRange { *this, "axisLimitsRange" };
+    GLHelpers::Uniform axisLimitsMin { *this, "axisLimitsMin" };
+    GLHelpers::Uniform colour { *this, "colour" };
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphDataShader)

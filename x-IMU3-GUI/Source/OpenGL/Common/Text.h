@@ -1,80 +1,81 @@
 #pragma once
 
+#include "freetype/freetype.h"
 #include "glm/mat4x4.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <map>
-#include "OpenGL/Common/Shader.h"
-#include "OpenGL/Graph/Buffer.h"
+#include "Shader.h"
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 class GLResources;
 
 class Text
 {
 public:
-    explicit Text(const bool isFirstLetterCentered_);
+    Text(std::unordered_set<unsigned char> charactersToLoad_);
 
-    bool loadFont(const char* data, size_t dataSize, GLuint fontSize_);
+    virtual ~Text();
+
+    bool loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_);
 
     void unloadFont();
 
-    GLuint getFontSize();
+    int getFontSizeGLPixels() const;
 
-    GLuint getTotalWidth();
+    int getFontSizeJucePixels() const;
 
-    float getDescender() const;
+    float getStringWidthGLPixels(const juce::String& string) const;
 
-    const juce::String& getText() const;
+    float getStringWidthJucePixels(const juce::String& string) const;
 
-    void setText(const juce::String& text_);
+    void draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport);
 
-    void setScale(const juce::Point<GLfloat>& scale_);
+    void drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds);
 
-    void setPosition(const juce::Vector3D<GLfloat>& position_);
-
-    void render(GLResources& resources);
-
-    void renderScreenSpace(GLResources& resources, const juce::String& label, const juce::Colour& colour, const glm::mat4& transform);
+    static int toGLPixels(int jucePixels);
 
 private:
 
-    class Initializer
+    /*  Default FreeType glyph loading for some data uses fractional pixels in the 26.6 fixed point float format, F26Dot6, where 1 unit = 1/64th of a pixel.
+        Freetype glyph units can optionally be represented in raw pixels by calling FT_Load_Char with the FT_LOAD_NO_SCALE flag.
+        Refs: https://freetype.org/freetype2/docs/tutorial/step2.html https://freetype.org/freetype1/docs/api/freetype1.txt
+    */
+    static float toPixels(float f26Dot6Units)
+    {
+        return f26Dot6Units / 64.0f;
+    }
+
+    class FreeTypeLibrary
     {
     public:
-        Initializer();
+        FreeTypeLibrary();
 
-        ~Initializer();
+        ~FreeTypeLibrary();
+
+        FT_Library get();
 
     private:
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Initializer)
+        FT_Library freetypeLibrary = nullptr;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FreeTypeLibrary)
     };
 
-    juce::SharedResourcePointer<Initializer> initializer;
+    juce::SharedResourcePointer<FreeTypeLibrary> freeTypeLibrary;
 
     struct Glyph
     {
-        GLuint textureID; //texture freetypeTextureID for each letter
-        GLuint width; //width of the letter
-        GLuint height; //height of the letter
-        GLint bearingX; //distance from the y-axis origin
-        GLint bearingY; //distance from the x-axis baseline
-        GLint advance; //offset to advance to next glyph
+        GLuint textureID; // texture freetypeTextureID for each letter
+        glm::ivec2 size; // width/height of glyph
+        glm::ivec2 bearing; // offset from origin to top left of glyph
+        float advance; // offset to advance to next glyph in pixels
     };
 
-    juce::Vector3D<GLfloat> position;
+    unsigned int fontSizeGLPixels = 0;
+    int fontSizeJucePixels = 0;
+    float descender = 0;
 
-    juce::String text;
-
-    juce::Point<GLfloat> scale = juce::Point<GLfloat>(1.0f, 1.0f);
-
-    GLuint fontSize = 0;
-    GLuint totalWidth = 0;
-
-    GLfloat descender = 0;
-
-    bool isFirstLetterCentered = false;
-
-    std::map<GLchar, Glyph> alphabet;
+    std::unordered_set<unsigned char> charactersToLoad;
+    std::unordered_map<unsigned char, Glyph> glyphs;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Text)
 };

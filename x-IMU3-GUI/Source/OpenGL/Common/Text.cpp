@@ -1,201 +1,208 @@
-#include "freetype/freetype.h"
 #include "OpenGL/Common/GLResources.h"
 #include "Text.h"
 
-static FT_Library freetypeLibrary;
-
-Text::Initializer::Initializer()
-{
-    FT_Init_FreeType(&freetypeLibrary);
-}
-
-Text::Initializer::~Initializer()
-{
-    FT_Done_FreeType(freetypeLibrary);
-}
-
-Text::Text(const bool isFirstLetterCentered_) : isFirstLetterCentered(isFirstLetterCentered_)
+Text::Text(std::unordered_set<unsigned char> charactersToLoad_) : charactersToLoad(charactersToLoad_)
 {
 }
 
-bool Text::loadFont(const char* data, size_t dataSize, GLuint fontSize_)
+Text::~Text()
 {
-    FT_Face freetypeFace = nullptr;
+    unloadFont();
+}
 
-    if (FT_New_Memory_Face(freetypeLibrary, reinterpret_cast<const FT_Byte*>(data), (FT_Long) dataSize, 0, &freetypeFace))
+bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
+{
+    using namespace ::juce::gl;
+
+    unloadFont();
+
+    fontSizeJucePixels = fontSizeJucePixels_;
+    fontSizeGLPixels = (GLuint) toGLPixels(fontSizeJucePixels);
+
+    FT_Face face = nullptr;
+    if (FT_New_Memory_Face(freeTypeLibrary->get(), reinterpret_cast<const FT_Byte*>(data), (FT_Long) dataSize, 0, &face))
     {
         return false;
     }
 
-    FT_Set_Pixel_Sizes(freetypeFace, (FT_UInt) fontSize_, (FT_UInt) fontSize_);
+    FT_Set_Pixel_Sizes(face, fontSizeGLPixels, fontSizeGLPixels);
 
-    juce::gl::glPixelStorei(juce::gl::GL_UNPACK_ALIGNMENT, 1);
+    descender = toPixels((float) face->size->metrics.descender);
 
-    for (int i = 0; i < 256; i++)
+    // Create OpenGL Textures for every font character that will be used
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable OpenGL default 4-byte alignment restriction since we store grayscale data with 1 byte per pixel
+    glActiveTexture(GL_TEXTURE0); // use first texture unit for all textures bound below because shader only uses 1 texture at a time
+    for (const auto& character : charactersToLoad)
     {
-        if (FT_Load_Char(freetypeFace, (FT_ULong) i, FT_LOAD_RENDER))
+        if (FT_Load_Char(face, (FT_ULong) character, FT_LOAD_RENDER)) // if freetype fails to load the current glyph index
         {
             continue;
         }
 
-        GLuint freetypeTextureID;
-        juce::gl::glGenTextures(1, &freetypeTextureID);
-        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, freetypeTextureID);
+        // Generate texture
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_RED,
+                     (GLsizei) face->glyph->bitmap.width,
+                     (GLsizei) face->glyph->bitmap.rows,
+                     0,
+                     GL_RED,
+                     GL_UNSIGNED_BYTE,
+                     face->glyph->bitmap.buffer);
 
-        juce::gl::glTexParameterf(juce::gl::GL_TEXTURE_2D, juce::gl::GL_TEXTURE_MAG_FILTER, juce::gl::GL_LINEAR);
-        juce::gl::glTexParameterf(juce::gl::GL_TEXTURE_2D, juce::gl::GL_TEXTURE_MIN_FILTER, juce::gl::GL_LINEAR);
+        // Texture wrapping preferences
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        juce::gl::glTexParameterf(juce::gl::GL_TEXTURE_2D, juce::gl::GL_TEXTURE_WRAP_S, juce::gl::GL_CLAMP_TO_EDGE);
-        juce::gl::glTexParameterf(juce::gl::GL_TEXTURE_2D, juce::gl::GL_TEXTURE_WRAP_T, juce::gl::GL_CLAMP_TO_EDGE);
+        // Magnification/minification filters - GL_NEAREST for sharper text
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-        juce::gl::glTexImage2D(juce::gl::GL_TEXTURE_2D,
-                               0,
-                               juce::gl::GL_RED,
-                               (GLsizei) freetypeFace->glyph->bitmap.width,
-                               (GLsizei) freetypeFace->glyph->bitmap.rows,
-                               0,
-                               juce::gl::GL_RED,
-                               juce::gl::GL_UNSIGNED_BYTE,
-                               freetypeFace->glyph->bitmap.buffer);
-
-        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, 0);
-
-        Glyph glyph = { freetypeTextureID,
-                        freetypeFace->glyph->bitmap.width,
-                        freetypeFace->glyph->bitmap.rows,
-                        freetypeFace->glyph->bitmap_left,
-                        freetypeFace->glyph->bitmap_top,
-                        (GLint) freetypeFace->glyph->advance.x };
-
-        alphabet[(GLchar) i] = glyph;
+        Glyph glyph = { textureID,
+                        glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                        glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                        toPixels((float) face->glyph->advance.x) };
+        glyphs[character] = glyph;
     }
 
-    fontSize = fontSize_;
-    descender = freetypeFace->size->metrics.descender / 64.0f;
-
-    FT_Done_Face(freetypeFace);
+    FT_Done_Face(face);
     return true;
 }
 
 void Text::unloadFont()
 {
-    for (auto& glyph : alphabet)
+    for (auto& glyph : glyphs)
     {
         juce::gl::glDeleteTextures(1, &(glyph.second.textureID));
     }
 
-    alphabet.clear();
+    glyphs.clear();
 }
 
-GLuint Text::getFontSize()
+int Text::getFontSizeGLPixels() const
 {
-    return fontSize;
+    return (int) fontSizeGLPixels;
 }
 
-GLuint Text::getTotalWidth()
+int Text::getFontSizeJucePixels() const
 {
-    totalWidth = 0;
+    return fontSizeJucePixels;
+}
 
-    for (int i = 0; i < text.length(); i++)
+float Text::getStringWidthGLPixels(const juce::String& string) const
+{
+    float width = 0.0f;
+
+    for (const auto& character : string)
     {
-        Glyph glyph = alphabet[(GLchar) text[i]];
-        totalWidth += (GLuint) (glyph.advance / 64.0f);
+        auto glyphSearch = glyphs.find(static_cast<unsigned char>(character));
+        if (glyphSearch == glyphs.end())
+        {
+            continue;
+        }
+        const Glyph glyph = glyphSearch->second;
+        width += glyph.advance;
     }
 
-    return totalWidth;
+    return width;
 }
 
-float Text::getDescender() const
+float Text::getStringWidthJucePixels(const juce::String& string) const
 {
-    return descender;
+    auto context = juce::OpenGLContext::getCurrentContext();
+    return (float) ((double) getStringWidthGLPixels(string) / (context ? context->getRenderingScale() : 1.0));
 }
 
-const juce::String& Text::getText() const
+void Text::draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport)
 {
-    return text;
+    if (justification.testFlags(juce::Justification::horizontallyCentred))
+    {
+        screenPosition.x -= getStringWidthGLPixels(text) / 2.0f;
+    }
+    else if (justification.testFlags(juce::Justification::right))
+    {
+        screenPosition.x -= getStringWidthGLPixels(text);
+    }
+
+    if (justification.testFlags(juce::Justification::verticallyCentred))
+    {
+        const auto offset = (GLfloat) getFontSizeGLPixels() / 2.0f + descender;
+        screenPosition.y -= offset;
+    }
+
+    auto projection = glm::ortho((float) viewport.getX(), (float) viewport.getRight(), (float) viewport.getY(), (float) viewport.getY() + (float) viewport.getHeight());
+
+    auto& textShader = resources->textShader;
+    textShader.use();
+    textShader.colour.setRGBA(colour);
+    auto textOrigin = screenPosition;
+    for (size_t index = 0; index < (size_t) text.length(); index++)
+    {
+        auto glyphSearch = glyphs.find(static_cast<unsigned char>(text[(int) index]));
+        if (glyphSearch == glyphs.end())
+        {
+            continue;
+        }
+        const Glyph glyph = glyphSearch->second;
+
+        auto scale = glm::scale(glm::mat4(1.0), glm::vec3(glyph.size, 1.0f));
+        auto glyphCentre = glm::vec2((float) glyph.bearing.x + (0.5f * (float) glyph.size.x), (0.5f * (float) glyph.size.y) - ((float) glyph.size.y - (float) glyph.bearing.y));
+        auto translation = glm::translate(glm::mat4(1.0), glm::vec3(textOrigin + glyphCentre, 0.0f));
+        glm::mat4 transform = projection * translation * scale;
+        textShader.transform.set(transform);
+        textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
+        resources->textQuad.draw();
+
+        textOrigin.x += glyph.advance; // move origin to next character
+    }
 }
 
-void Text::setText(const juce::String& text_)
+void Text::drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds)
 {
-    text = text_;
-}
+    auto glyphSearch = glyphs.find(character);
+    if (glyphSearch == glyphs.end())
+    {
+        return;
+    }
+    const Glyph glyph = glyphSearch->second;
 
-void Text::setScale(const juce::Point<GLfloat>& scale_)
-{
-    scale = scale_;
-}
-
-void Text::setPosition(const juce::Vector3D<GLfloat>& position_)
-{
-    position = position_;
-}
-
-void Text::renderScreenSpace(GLResources& resources, const juce::String& label, const juce::Colour& colour, const glm::mat4& transform)
-{
     // Calculate Normalized Device Coordinates (NDC) transformation to place text at position on screen with a constant size
     glm::vec2 ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of matrix translation then divide by w of translation for constant size in pixels
     const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
     const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
-    resources.textShader.colour.setRGBA(colour);
-    resources.textShader.transformation.set(ndcMatrix);
+    auto& textShader = resources->textShader;
+    textShader.use();
+    textShader.colour.setRGBA(colour);
 
-    setText(label);
-    render(resources);
+    auto scaleFactor = glm::vec2((float) glyph.size.x / (float) viewportBounds.getWidth(), (float) glyph.size.y / (float) viewportBounds.getHeight());
+    auto scale = glm::scale(glm::mat4(1.0), glm::vec3(scaleFactor, 1.0f));
+    auto ndcTransform = ndcMatrix * scale;
+    textShader.transform.set(ndcTransform);
+    textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
+    resources->textQuad.draw();
 }
 
-void Text::render(GLResources& resources)
+int Text::toGLPixels(int jucePixels)
 {
-    auto textOrigin = position;
+    auto context = juce::OpenGLContext::getCurrentContext();
+    return juce::roundToInt((double) jucePixels * (context ? context->getRenderingScale() : 1.0));
+}
 
-    for (size_t index = 0; index < (size_t) text.length(); index++)
-    {
-        Glyph glyph = alphabet[(GLchar) text[(int) index]];
+Text::FreeTypeLibrary::FreeTypeLibrary()
+{
+    FT_Init_FreeType(&freetypeLibrary);
+}
 
-        auto halfWidth = glyph.width * 0.5f;
-        auto halfBearingY = glyph.bearingY * 0.5f;
+Text::FreeTypeLibrary::~FreeTypeLibrary()
+{
+    FT_Done_FreeType(freetypeLibrary);
+}
 
-        if (isFirstLetterCentered)
-        {
-            GLfloat vertices[] = { textOrigin.x - (halfWidth * scale.x), textOrigin.y + (halfBearingY * scale.y), 0.0f,
-                                   textOrigin.x + (halfWidth * scale.x), textOrigin.y + (halfBearingY * scale.y), 0.0f,
-                                   textOrigin.x + (halfWidth * scale.x), textOrigin.y + (halfBearingY * scale.y) - (glyph.height * scale.y), 0.0f,
-                                   textOrigin.x - (halfWidth * scale.x), textOrigin.y + (halfBearingY * scale.y) - (glyph.height * scale.y), 0.0f };
-
-            resources.textBuffer.fillVbo(Buffer::vertexBuffer, vertices, sizeof(vertices), Buffer::multipleFill);
-        }
-
-        else
-        {
-            GLfloat vertices[] = { textOrigin.x + (glyph.bearingX * scale.x), textOrigin.y + (glyph.bearingY * scale.y), 0.0f,
-                                   textOrigin.x + (glyph.bearingX * scale.x) + (glyph.width * scale.x), textOrigin.y + (glyph.bearingY * scale.y), 0.0f,
-                                   textOrigin.x + (glyph.bearingX * scale.x) + (glyph.width * scale.x), textOrigin.y + (glyph.bearingY * scale.y) - (glyph.height * scale.y), 0.0f,
-                                   textOrigin.x + (glyph.bearingX * scale.x), textOrigin.y + (glyph.bearingY * scale.y) - (glyph.height * scale.y), 0.0f };
-
-            resources.textBuffer.fillVbo(Buffer::vertexBuffer, vertices, sizeof(vertices), Buffer::multipleFill);
-        }
-
-        GLfloat UVs[] = { 0.0f, 0.0f,
-                          1.0f, 0.0f,
-                          1.0f, 1.0f,
-                          0.0f, 1.0f };
-
-        GLuint indices[] = { 0, 1, 3,
-                             3, 1, 2 };
-
-        resources.textBuffer.linkEbo();
-        resources.textBuffer.linkVbo(resources.textShader.vertexIn.attributeID, Buffer::vertexBuffer, Buffer::Xyz, Buffer::floatingPoint);
-        resources.textBuffer.linkVbo(resources.textShader.textureIn.attributeID, Buffer::textureBuffer, Buffer::UV, Buffer::floatingPoint);
-
-        resources.textBuffer.fillEbo(indices, sizeof(indices), Buffer::multipleFill);
-        resources.textBuffer.fillVbo(Buffer::textureBuffer, UVs, sizeof(UVs), Buffer::multipleFill);
-
-        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, glyph.textureID);
-
-        resources.textBuffer.render(Buffer::triangles);
-
-        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, 0);
-
-        textOrigin.x += (glyph.advance * scale.x) / 64.0f;
-    }
+FT_Library Text::FreeTypeLibrary::get()
+{
+    return freetypeLibrary;
 }

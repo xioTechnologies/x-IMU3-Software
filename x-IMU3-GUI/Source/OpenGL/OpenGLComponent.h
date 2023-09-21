@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common/GLResources.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_opengl/juce_opengl.h>
 #include <mutex>
@@ -19,6 +20,8 @@ public:
 protected:
     juce::OpenGLContext& context;
 
+    GLResources* resources = nullptr;
+
     juce::Rectangle<int> getBoundsInMainWindow() const;
 
     juce::Rectangle<int> toOpenGLBounds(const juce::Rectangle<int>& bounds) const;
@@ -36,6 +39,8 @@ private:
     void updateBounds();
 
     void componentMovedOrResized(juce::Component&, bool, bool) override;
+
+    friend class GLRenderer; // sets resources
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OpenGLComponent)
 };
