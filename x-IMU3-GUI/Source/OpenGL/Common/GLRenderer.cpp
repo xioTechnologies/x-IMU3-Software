@@ -81,6 +81,20 @@ void GLRenderer::renderOpenGL()
         {
             component->render();
         }
+
+        /*  As a possible future optimization, OpenGL instancing (batch rendering) could be implemented for some ThreeDView and Graph rendering.
+         *  Instancing improves performance of CPU to GPU communication by rendering similar GL data in a single draw command instead of issuing a draw command per-instance.
+         *
+         *  The text drawn in Graph by OpenGL may be the easiest candidate for an instancing optimization. Instead of issuing a draw
+         *  command for each text string, all OpenGL text strings on screen could be drawn in a single draw command to the GPU. To
+         *  implement this, we would need to add a global queue of text data to GLRenderer. Instead of drawing Text on its own, each
+         *  Graph component would add data to this queue in it's render() function to describe how it wants its text rendered. Then
+         *  after all OpenGL components have completed rendering, GLRender would empty the queue of text data and send it off to the
+         *  GPU in one draw command. This queue empty and draw command would happen here, immediately after looping through all OpenGL
+         *  components.
+         *
+         *  Ref: https://learnopengl.com/Advanced-OpenGL/Instancing
+         */
     }
 
     juce::gl::glDisable(juce::gl::GL_CULL_FACE); // prevent cull interference with JUCE Component paint() via OpenGL
