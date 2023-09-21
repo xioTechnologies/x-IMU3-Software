@@ -1,7 +1,7 @@
 #include "OpenGL/Common/GLResources.h"
 #include "Text.h"
 
-Text::Text(std::unordered_set<unsigned char> charactersToLoad_) : charactersToLoad(charactersToLoad_)
+Text::Text(const std::unordered_set<unsigned char>& charactersToLoad_) : charactersToLoad(charactersToLoad_)
 {
 }
 
@@ -61,10 +61,10 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-        Glyph glyph = { textureID,
-                        glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-                        glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                        toPixels((float) face->glyph->advance.x) };
+        const Glyph glyph = { textureID,
+                              glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                              glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                              toPixels((float) face->glyph->advance.x) };
         glyphs[character] = glyph;
     }
 
@@ -116,7 +116,7 @@ float Text::getStringWidthJucePixels(const juce::String& string) const
     return (float) ((double) getStringWidthGLPixels(string) / (context ? context->getRenderingScale() : 1.0));
 }
 
-void Text::draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport)
+void Text::draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
 {
     if (justification.testFlags(juce::Justification::horizontallyCentred))
     {
@@ -133,9 +133,9 @@ void Text::draw(GLResources* const resources, const juce::String& text, const ju
         screenPosition.y -= offset;
     }
 
-    auto projection = glm::ortho((float) viewport.getX(), (float) viewport.getRight(), (float) viewport.getY(), (float) viewport.getY() + (float) viewport.getHeight());
+    const auto projection = glm::ortho((float) viewport.getX(), (float) viewport.getRight(), (float) viewport.getY(), (float) viewport.getY() + (float) viewport.getHeight());
 
-    auto& textShader = resources->textShader;
+    const auto& textShader = resources->textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
     auto textOrigin = screenPosition;
@@ -148,10 +148,10 @@ void Text::draw(GLResources* const resources, const juce::String& text, const ju
         }
         const Glyph glyph = glyphSearch->second;
 
-        auto scale = glm::scale(glm::mat4(1.0), glm::vec3(glyph.size, 1.0f));
-        auto glyphCentre = glm::vec2((float) glyph.bearing.x + (0.5f * (float) glyph.size.x), (0.5f * (float) glyph.size.y) - ((float) glyph.size.y - (float) glyph.bearing.y));
-        auto translation = glm::translate(glm::mat4(1.0), glm::vec3(textOrigin + glyphCentre, 0.0f));
-        glm::mat4 transform = projection * translation * scale;
+        const auto scale = glm::scale(glm::mat4(1.0), glm::vec3(glyph.size, 1.0f));
+        const auto glyphCentre = glm::vec2((float) glyph.bearing.x + (0.5f * (float) glyph.size.x), (0.5f * (float) glyph.size.y) - ((float) glyph.size.y - (float) glyph.bearing.y));
+        const auto translation = glm::translate(glm::mat4(1.0), glm::vec3(textOrigin + glyphCentre, 0.0f));
+        const auto transform = projection * translation * scale;
         textShader.transform.set(transform);
         textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
         resources->textQuad.draw();
@@ -160,7 +160,7 @@ void Text::draw(GLResources* const resources, const juce::String& text, const ju
     }
 }
 
-void Text::drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds)
+void Text::drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
 {
     auto glyphSearch = glyphs.find(character);
     if (glyphSearch == glyphs.end())
@@ -170,17 +170,17 @@ void Text::drawChar3D(GLResources* const resources, unsigned char character, con
     const Glyph glyph = glyphSearch->second;
 
     // Calculate Normalized Device Coordinates (NDC) transformation to place text at position on screen with a constant size
-    glm::vec2 ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of matrix translation then divide by w of translation for constant size in pixels
+    const auto ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of matrix translation then divide by w of translation for constant size in pixels
     const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
     const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
-    auto& textShader = resources->textShader;
+    const auto& textShader = resources->textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
 
-    auto scaleFactor = glm::vec2((float) glyph.size.x / (float) viewportBounds.getWidth(), (float) glyph.size.y / (float) viewportBounds.getHeight());
-    auto scale = glm::scale(glm::mat4(1.0), glm::vec3(scaleFactor, 1.0f));
-    auto ndcTransform = ndcMatrix * scale;
+    const auto scaleFactor = glm::vec2((float) glyph.size.x / (float) viewportBounds.getWidth(), (float) glyph.size.y / (float) viewportBounds.getHeight());
+    const auto scale = glm::scale(glm::mat4(1.0), glm::vec3(scaleFactor, 1.0f));
+    const auto ndcTransform = ndcMatrix * scale;
     textShader.transform.set(ndcTransform);
     textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
     resources->textQuad.draw();

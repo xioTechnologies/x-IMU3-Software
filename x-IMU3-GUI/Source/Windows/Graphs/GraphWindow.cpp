@@ -75,7 +75,7 @@ void GraphWindow::resized()
         xLabel.setBounds(graphArea.removeFromBottom(labelHeight).withTrimmedLeft(labelHeight));
 
         // Rotate Y label vertical
-        auto yLabelBounds = graphArea.removeFromLeft(labelHeight);
+        const auto yLabelBounds = graphArea.removeFromLeft(labelHeight);
         yLabel.setTransform({}); // prevent glitch on subsequent resize
         yLabel.setSize(yLabelBounds.getHeight(), yLabelBounds.getWidth()); // invert width/height
         yLabel.setCentrePosition(0, 0);
@@ -204,8 +204,8 @@ void GraphWindow::zoomHorizontal(const float multiplier)
 void GraphWindow::zoomVertical(const float multiplier)
 {
     auto settings = graph.getSettings();
-    auto yLimits = settings.axesLimits.y;
-    auto range = yLimits.getRange();
+    const auto yLimits = settings.axesLimits.y;
+    const auto range = yLimits.getRange();
     const auto offset = (multiplier * range - range) / 2;
     settings.axesLimits.y = { yLimits.min - offset, yLimits.max + offset };
 

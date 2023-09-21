@@ -26,7 +26,7 @@ GLResources::GLResources(juce::OpenGLContext& context_) : context(context_)
 
     compassTexture.loadImage(juce::ImageFileFormat::loadFrom(BinaryData::Compass_png, BinaryData::Compass_pngSize));
 
-    std::unordered_set<unsigned char> charactersToLoad = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'e', 'X', 'Y', 'Z' };
+    const std::unordered_set<unsigned char> charactersToLoad = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'e', 'X', 'Y', 'Z' };
     graphTickText = std::make_unique<Text>(charactersToLoad);
     threeDViewAxesText = std::make_unique<Text>(charactersToLoad);
 }

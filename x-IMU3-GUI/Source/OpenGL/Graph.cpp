@@ -122,7 +122,7 @@ int Graph::getMaximumStringWidth(const std::vector<Tick>& ticks, const Text& tex
 void Graph::drawPlot(const juce::Rectangle<int>& bounds, const AxesLimits& limits, const std::vector<Tick>& xTicks, const std::vector<Tick>& yTicks, const std::vector<std::span<const juce::Point<GLfloat>>>& channels, const std::vector<bool>& enabledChannels)
 {
     // Set rendering bounds
-    auto glBounds = toOpenGLBounds(bounds);
+    const auto glBounds = toOpenGLBounds(bounds);
     GLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
     GLHelpers::viewportAndScissor(glBounds);
 
@@ -156,7 +156,7 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
         // Add line to grid based on position in graph units
         auto addLine = [&](float position, bool isMajorTick)
         {
-            float tickBrightness = isMajorTick ? majorTickBrightness : minorTickBrightness;
+            const float tickBrightness = isMajorTick ? majorTickBrightness : minorTickBrightness;
             const float ndcPosition = engineeringValueToNDC(position, axisLimits);
             if (areVertical)
             {
@@ -207,7 +207,7 @@ void Graph::drawData(const AxesLimits& limits, const std::vector<std::span<const
         return;
     }
 
-    auto& graphDataShader = resources->graphDataShader;
+    const auto& graphDataShader = resources->graphDataShader;
     auto& graphDataBuffer = resources->graphDataBuffer;
     graphDataShader.use();
     graphDataShader.axisLimitsRange.set({ limits.x.getRange(), limits.y.getRange() });
@@ -229,27 +229,26 @@ void Graph::drawData(const AxesLimits& limits, const std::vector<std::span<const
 void Graph::drawXTicks(const juce::Rectangle<int>& bounds, int yTicksLeftEdge, const AxisLimits& limits, const std::vector<Tick>& ticks)
 {
     // Expand drawing bounds to allow text to be drawn past the corners of the plot.
-    auto drawBounds = bounds.withRight(bounds.getRight() + rightMargin);
-    drawBounds.setLeft(yTicksLeftEdge);
+    const auto drawBounds = bounds.withRight(bounds.getRight() + rightMargin).withLeft(yTicksLeftEdge);
     drawTicks(true, bounds, drawBounds, limits, ticks);
 }
 
 void Graph::drawYTicks(const juce::Rectangle<int>& bounds, const AxisLimits& limits, const std::vector<Tick>& ticks)
 {
     // Expand drawing bounds to allow text to be drawn past the corners of the plot.
-    auto drawBounds = bounds.expanded(0, legendHeight);
+    const auto drawBounds = bounds.expanded(0, legendHeight);
     drawTicks(false, bounds, drawBounds, limits, ticks);
 }
 
 void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, const juce::Rectangle<int>& drawBounds, const AxisLimits& limits, const std::vector<Tick>& ticks)
 {
     // Set rendering bounds, expanded to allow drawing past graph edges
-    auto glPlotBounds = toOpenGLBounds(plotBounds); // only plot area
-    auto glDrawBounds = toOpenGLBounds(drawBounds); // full area allowed to draw text
+    const auto glPlotBounds = toOpenGLBounds(plotBounds); // only plot area
+    const auto glDrawBounds = toOpenGLBounds(drawBounds); // full area allowed to draw text
     GLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
     GLHelpers::viewportAndScissor(glDrawBounds);
 
-    auto& text = resources->getGraphTickText();
+    const auto& text = resources->getGraphTickText();
     const int distanceOfPlotAxis = isXTicks ? glPlotBounds.getWidth() : glPlotBounds.getHeight();
     const int plotStartOffset = isXTicks ? (glPlotBounds.getX() - glDrawBounds.getX()) : (glPlotBounds.getY() - glDrawBounds.getY());
 
@@ -274,7 +273,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
         // Remove any tick text which would extend past the edges of the drawing bounds
         labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto& tick)
         {
-            auto [leftEdgeX, rightEdgeX] = getLabelEdges(tick);
+            const auto [leftEdgeX, rightEdgeX] = getLabelEdges(tick);
             return leftEdgeX < (float) glDrawBounds.getX() || rightEdgeX > (float) glDrawBounds.getRight();
         }), labelsToDraw.end());
 
@@ -284,8 +283,8 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
             constexpr float minimumSpaceBetweenLabels = 8.0f;
             for (size_t index = 0; index < labelsToDraw.size() - 1; index++)
             {
-                auto [label1LeftEdge, label1RightEdge] = getLabelEdges(labelsToDraw[index]);
-                auto [label2LeftEdge, label2RightEdge] = getLabelEdges(labelsToDraw[index + 1]);
+                const auto [label1LeftEdge, label1RightEdge] = getLabelEdges(labelsToDraw[index]);
+                const auto [label2LeftEdge, label2RightEdge] = getLabelEdges(labelsToDraw[index + 1]);
                 if (label1RightEdge + minimumSpaceBetweenLabels > label2LeftEdge)
                 {
                     return true;

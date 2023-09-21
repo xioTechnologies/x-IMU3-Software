@@ -59,9 +59,9 @@ private:
 
     void renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const;
 
-    void renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight);
+    void renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight) const;
 
-    void renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight);
+    void renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight) const;
 
     void renderAxes(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const;
 

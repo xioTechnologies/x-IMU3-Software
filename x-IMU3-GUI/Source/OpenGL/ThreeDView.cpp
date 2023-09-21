@@ -68,7 +68,7 @@ void ThreeDView::render()
     GLHelpers::viewportAndScissor(bounds); // clip drawing to bounds
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
-    bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
+    const bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
     if (renderModelBehindWorldAndCompass && settings.modelEnabled)
     {
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
@@ -154,7 +154,7 @@ void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4&
     }
 }
 
-void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight)
+void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight) const
 {
     GLHelpers::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
@@ -166,7 +166,7 @@ void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4&
     resources->plane.render();
 }
 
-void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight)
+void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight) const
 {
     // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
     GLHelpers::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
@@ -202,11 +202,11 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
 
     // Keep object constant size in screen pixels regardless of viewport size by scaling by the inverse of the screen scale
     // Ref: https://community.khronos.org/t/draw-an-object-that-looks-the-same-size-regarles-the-distance-in-perspective-view/67804/6
-    const float objectSizeInPixels = 90.0f * (float) screenPixelScale;
-    const float screenHeightPixels = (float) bounds.getHeight();
+    const auto objectSizeInPixels = 90.0f * (float) screenPixelScale;
+    const auto screenHeightPixels = (float) bounds.getHeight();
     glm::vec4 originInClipSpace = projectionMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); // get origin in normalized device coordinates
-    const float normalizedScreenScale = objectSizeInPixels / screenHeightPixels;
-    const float inverseScreenScale = normalizedScreenScale * originInClipSpace.w; // multiply by clip coordinate w to cancel out the division by w done by OpenGL via the viewport transform
+    const auto normalizedScreenScale = objectSizeInPixels / screenHeightPixels;
+    const auto inverseScreenScale = normalizedScreenScale * originInClipSpace.w; // multiply by clip coordinate w to cancel out the division by w done by OpenGL via the viewport transform
 
     screenSpaceShader.use();
     screenSpaceShader.cameraPosition.set(camera.getPosition());
@@ -218,8 +218,8 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
     screenSpaceShader.projectionMatrix.set(projectionMatrix);
 
     // Earth x-axis (aligned with OpenGL +x-axis)
-    const glm::mat4 xRotate = glm::mat4(1.0f);
-    const glm::mat4 xModel = modelMatrix * xRotate;
+    const auto xRotate = glm::mat4(1.0f);
+    const auto xModel = modelMatrix * xRotate;
     screenSpaceShader.materialColour.setRGBA(UIColours::graphX);
     screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
     screenSpaceShader.modelMatrix.set(xModel);
@@ -227,8 +227,8 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
     resources->arrow.render();
 
     // Earth y-axis (aligned with OpenGL -z-axis)
-    const glm::mat4 yRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    const glm::mat4 yModel = modelMatrix * yRotate;
+    const auto yRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    const auto yModel = modelMatrix * yRotate;
     screenSpaceShader.materialColour.setRGBA(UIColours::graphY);
     screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
     screenSpaceShader.modelMatrix.set(yModel);
@@ -236,8 +236,8 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
     resources->arrow.render();
 
     // Earth z-axis (aligned with OpenGL +y-axis)
-    const glm::mat4 zRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    const glm::mat4 zModel = modelMatrix * zRotate;
+    const auto zRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    const auto zModel = modelMatrix * zRotate;
     screenSpaceShader.materialColour.setRGBA(UIColours::graphZ);
     screenSpaceShader.inverseScreenScale.set(inverseScreenScale);
     screenSpaceShader.modelMatrix.set(zModel);
@@ -258,7 +258,7 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
 
     const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 
-    auto& text = resources->get3DViewAxesText();
+    const auto& text = resources->get3DViewAxesText();
     text.drawChar3D(resources, 'X', UIColours::graphX, textTransform * xTranslate, bounds);
     text.drawChar3D(resources, 'Y', UIColours::graphY, textTransform * yTranslate, bounds);
     text.drawChar3D(resources, 'Z', UIColours::graphZ, textTransform * zTranslate, bounds);
@@ -275,9 +275,9 @@ void ThreeDView::renderAxesForWorldOrientation(const glm::mat4& axesConventionRo
     const double screenPixelScale = context.getRenderingScale();
 
     // Use Normalized Device Coordinates (NDC) to position in top right corner of viewport
-    const glm::vec2 pixelOffsetFromTopRight = glm::vec2(148.0f, 152.0f) * (float) screenPixelScale;
+    const auto pixelOffsetFromTopRight = glm::vec2(148.0f, 152.0f) * (float) screenPixelScale;
     const glm::vec2 viewportPixelDimensions(bounds.getWidth(), bounds.getHeight());
-    const glm::vec2 pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
+    const auto pixelOffsetNDC = pixelOffsetFromTopRight / viewportPixelDimensions;
     const glm::vec2 topRightNDC(1.0f, 1.0f);
     const auto ndcMat = glm::translate(glm::mat4(1.0f), glm::vec3(topRightNDC - pixelOffsetNDC, 0.0f));
 

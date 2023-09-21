@@ -40,8 +40,7 @@ void Model::renderWithMaterials(const LitShader& shader)
     {
         using namespace ::juce::gl;
 
-        auto& material = glBuffer->associatedShape.material;
-
+        const auto& material = glBuffer->associatedShape.material;
         shader.materialColour.set(glm::vec4(material.diffuse, 1.0f));
 
         glBindVertexArray(glBuffer->vao); // bind VAO for all vertex data (VBO, EBO, attributes)
@@ -138,7 +137,7 @@ void Model::GLBuffer::fillBuffers()
 {
     using namespace ::juce::gl;
 
-    auto& mesh = associatedShape.mesh;
+    const auto& mesh = associatedShape.mesh;
 
     glBindVertexArray(vao); // bind VAO to cache all VBO, EBO, and vertex attribute state
 
