@@ -9,7 +9,7 @@ juce::ValueTree GyroscopeGraphWindow::settingsTree_("GyroscopeGraphSettings");
 GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_,
                       glRenderer,
-                      "Angular velocity (" + degreeSymbol + "/s)",
+                      "Angular Rate (" + degreeSymbol + "/s)",
                       { "X", "Y", "Z" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                       settingsTree_,

@@ -9,7 +9,7 @@ juce::ValueTree ReceivedDataRateGraphWindow::settingsTree_("ReceivedDataRateGrap
 ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_,
                       glRenderer,
-                      "Receive rate (kB/s)",
+                      "Receive Rate (kB/s)",
                       { "" },
                       { UIColours::graphChannel1 },
                       settingsTree_,
