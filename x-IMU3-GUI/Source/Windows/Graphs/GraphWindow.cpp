@@ -146,7 +146,7 @@ void GraphWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 
 void GraphWindow::mouseDoubleClick([[maybe_unused]] const juce::MouseEvent& mouseEvent)
 {
-    graph.scaleToFit();
+    settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
 }
 
 void GraphWindow::write(const uint64_t timestamp, const std::vector<float>& arguments)
@@ -225,6 +225,10 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.enabledChannels.resize((size_t) numberOfChannels, true);
         writeToValueTree(settings);
         repaint(); // refresh legend text color
+    });
+    menu.addItem("Scale to Fit", true, false, [this]
+    {
+        settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
     });
     menu.addItem("Clear", true, false, [this]
     {
@@ -309,6 +313,12 @@ juce::PopupMenu GraphWindow::getMenu()
 
 void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
 {
+    if (property.toString() == "scaleToFit")
+    {
+        graph.scaleToFit();
+        return;
+    }
+
     if (property.toString() == "clear")
     {
         graph.clear();
