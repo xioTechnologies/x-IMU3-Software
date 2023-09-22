@@ -79,7 +79,7 @@ void ThreeDViewWindow::resized()
     Window::resized();
     juce::Rectangle<int> bounds = getContentBounds();
 
-    compactView = (getWidth() < 200) || (getHeight() < 200);
+    compactView = (getWidth() < 300) || (getHeight() < 150);
 
     threeDView.setBounds(bounds);
     threeDView.setHudEnabled(compactView == false);
