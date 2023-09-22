@@ -1,4 +1,4 @@
-#include "../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include "Convert.h"
 #include "ThreeDView.h"
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../CommandMessage.h"
-#include "../DevicePanel/DevicePanel.h"
-#include "../Widgets/CustomToggleButton.h"
-#include "../Widgets/SimpleLabel.h"
+#include "CommandMessage.h"
+#include "DevicePanel/DevicePanel.h"
+#include "Widgets/CustomToggleButton.h"
+#include "Widgets/SimpleLabel.h"
 #include "Dialog.h"
 
 class SendingCommandDialog : public Dialog,

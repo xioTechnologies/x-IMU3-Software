@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Firmware/Firmware.h"
+#include "Firmware/Firmware.h"
 #include "Dialogs/DataLoggerSettingsDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <optional>

@@ -1,4 +1,4 @@
-#include "../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include "ConnectionsTable.h"
 
 ConnectionsTable::ConnectionsTable()

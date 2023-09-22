@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Widgets/CustomTextEditor.h"
-#include "../Widgets/CustomToggleButton.h"
-#include "../Widgets/SimpleLabel.h"
+#include "Widgets/CustomTextEditor.h"
+#include "Widgets/CustomToggleButton.h"
+#include "Widgets/SimpleLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class ApplicationSettingsGroup : public juce::GroupComponent

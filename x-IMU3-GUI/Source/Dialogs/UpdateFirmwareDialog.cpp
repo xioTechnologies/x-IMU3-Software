@@ -1,5 +1,5 @@
-#include "../ApplicationSettings.h"
-#include "../Firmware/Firmware.h"
+#include "ApplicationSettings.h"
+#include "Firmware/Firmware.h"
 #include <filesystem>
 #include "UpdateFirmwareDialog.h"
 

@@ -1,4 +1,4 @@
-#include "../DevicePanelContainer.h"
+#include "DevicePanelContainer.h"
 #include "ApplicationSettings.h"
 #include "DevicePanel.h"
 #include "Windows/DeviceSettingsWindow.h"

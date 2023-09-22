@@ -1,4 +1,4 @@
-#include "../Convert.h"
+#include "Convert.h"
 #include "DevicePanel/DevicePanel.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "SerialAccessoryTerminalWindow.h"

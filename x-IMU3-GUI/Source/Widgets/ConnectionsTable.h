@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Widgets/CustomToggleButton.h"
-#include "../Widgets/SimpleLabel.h"
+#include "Widgets/CustomToggleButton.h"
+#include "Widgets/SimpleLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 

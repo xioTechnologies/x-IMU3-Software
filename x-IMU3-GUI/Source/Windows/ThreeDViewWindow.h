@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../DevicePanel/DevicePanel.h"
-#include "../OpenGL/Common/GLRenderer.h"
-#include "../OpenGL/ThreeDView.h"
-#include "../Widgets/PopupMenuHeader.h"
-#include "../Widgets/SimpleLabel.h"
+#include "DevicePanel/DevicePanel.h"
+#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/ThreeDView.h"
+#include "Widgets/PopupMenuHeader.h"
+#include "Widgets/SimpleLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Window.h"
 #include "Ximu3.hpp"

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Widgets/ConnectionsTable.h"
-#include "../Widgets/IconButton.h"
+#include "Widgets/ConnectionsTable.h"
+#include "Widgets/IconButton.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"

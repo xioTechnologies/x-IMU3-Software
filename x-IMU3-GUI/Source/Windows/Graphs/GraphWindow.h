@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../OpenGL/Graph.h"
-#include "../../Widgets/SimpleLabel.h"
-#include "../Window.h"
+#include "OpenGL/Graph.h"
+#include "Widgets/SimpleLabel.h"
+#include "Windows/Window.h"
 #include "Ximu3.hpp"
 
 class GraphWindow : public Window, private juce::ValueTree::Listener

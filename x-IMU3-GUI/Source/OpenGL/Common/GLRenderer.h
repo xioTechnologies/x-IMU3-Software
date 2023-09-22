@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../OpenGLComponent.h"
+#include "OpenGL/OpenGLComponent.h"
 #include <algorithm>
 #include "GLResources.h"
 #include <vector>

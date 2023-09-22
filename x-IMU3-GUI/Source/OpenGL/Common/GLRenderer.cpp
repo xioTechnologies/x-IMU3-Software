@@ -1,4 +1,4 @@
-#include "../../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include "GLRenderer.h"
 
 GLRenderer::GLRenderer(juce::Component& attachTo)

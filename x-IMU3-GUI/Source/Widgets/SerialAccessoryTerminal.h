@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class SerialAccessoryTerminal : public juce::Component,

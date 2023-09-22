@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../ApplicationSettings.h"
-#include "../CommandMessage.h"
-#include "../Widgets/CustomComboBox.h"
-#include "../Widgets/CustomTextEditor.h"
-#include "../Widgets/IconButton.h"
-#include "../Widgets/SimpleLabel.h"
+#include "ApplicationSettings.h"
+#include "CommandMessage.h"
+#include "Widgets/CustomComboBox.h"
+#include "Widgets/CustomTextEditor.h"
+#include "Widgets/IconButton.h"
+#include "Widgets/SimpleLabel.h"
 #include "Dialog.h"
 
 class SendCommandDialog : public Dialog

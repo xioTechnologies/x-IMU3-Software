@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include "Common/GLHelpers.h"
 #include "Common/GLRenderer.h"
 #include "Graph/AxesLimits.h"

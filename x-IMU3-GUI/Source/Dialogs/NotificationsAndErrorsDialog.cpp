@@ -1,5 +1,5 @@
-#include "../DevicePanel/DevicePanel.h"
-#include "../Widgets/Icon.h"
+#include "DevicePanel/DevicePanel.h"
+#include "Widgets/Icon.h"
 #include <BinaryData.h>
 #include "NotificationsAndErrorsDialog.h"
 

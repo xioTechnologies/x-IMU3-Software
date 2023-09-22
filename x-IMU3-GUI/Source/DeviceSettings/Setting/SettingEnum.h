@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../DeviceSettingsIDs.h"
+#include "DeviceSettings/DeviceSettingsIDs.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting.h"
 #include "Widgets/CustomComboBox.h"

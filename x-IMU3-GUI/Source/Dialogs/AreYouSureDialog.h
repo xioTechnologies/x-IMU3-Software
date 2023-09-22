@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Widgets/SimpleLabel.h"
+#include "Widgets/SimpleLabel.h"
 #include "Dialog.h"
 
 class AreYouSureDialog : public Dialog
