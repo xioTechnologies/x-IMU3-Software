@@ -28,7 +28,7 @@ impl TcpConnection {
 impl GenericConnection for TcpConnection {
     fn open(&mut self) -> std::io::Result<()> {
         let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port), Duration::new(3, 0))?;
-        
+
         stream.set_read_timeout(Some(std::time::Duration::from_millis(1))).ok();
 
         let decoder = self.decoder.clone();
