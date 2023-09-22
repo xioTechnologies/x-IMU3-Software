@@ -14,8 +14,9 @@ namespace Ximu3
     public ref class UsbConnectionInfo : public ConnectionInfo
     {
     internal:
-        UsbConnectionInfo(ximu3::XIMU3_UsbConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        UsbConnectionInfo(ximu3::XIMU3_UsbConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_UsbConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
@@ -41,8 +42,9 @@ namespace Ximu3
     public ref class SerialConnectionInfo : public ConnectionInfo
     {
     internal:
-        SerialConnectionInfo(ximu3::XIMU3_SerialConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        SerialConnectionInfo(ximu3::XIMU3_SerialConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_SerialConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
@@ -70,8 +72,9 @@ namespace Ximu3
     public ref class TcpConnectionInfo : public ConnectionInfo
     {
     internal:
-        TcpConnectionInfo(ximu3::XIMU3_TcpConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        TcpConnectionInfo(ximu3::XIMU3_TcpConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_TcpConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
@@ -98,8 +101,9 @@ namespace Ximu3
     public ref class UdpConnectionInfo : public ConnectionInfo
     {
     internal:
-        UdpConnectionInfo(ximu3::XIMU3_UdpConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        UdpConnectionInfo(ximu3::XIMU3_UdpConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_UdpConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
@@ -127,8 +131,9 @@ namespace Ximu3
     public ref class BluetoothConnectionInfo : public ConnectionInfo
     {
     internal:
-        BluetoothConnectionInfo(ximu3::XIMU3_BluetoothConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        BluetoothConnectionInfo(ximu3::XIMU3_BluetoothConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_BluetoothConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
@@ -154,8 +159,9 @@ namespace Ximu3
     public ref class FileConnectionInfo : public ConnectionInfo
     {
     internal:
-        FileConnectionInfo(ximu3::XIMU3_FileConnectionInfo* connectionInfo) : connectionInfo{ connectionInfo }
+        FileConnectionInfo(ximu3::XIMU3_FileConnectionInfo* connectionInfo) : connectionInfo{ new ximu3::XIMU3_FileConnectionInfo{} }
         {
+            *this->connectionInfo = *connectionInfo;
         }
 
     public:
