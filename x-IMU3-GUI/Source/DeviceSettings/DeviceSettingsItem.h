@@ -90,7 +90,7 @@ public:
 
 private:
     const juce::ValueTree tree;
-    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
+    inline static const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
     juce::ValueTree hideSetting;
 
     static bool isStatusSet(juce::ValueTree tree_)
