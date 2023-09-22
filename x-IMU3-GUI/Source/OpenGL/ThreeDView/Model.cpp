@@ -40,16 +40,8 @@ void Model::renderWithMaterials(const LitShader& shader)
     {
         using namespace ::juce::gl;
 
-        auto& material = glBuffer->associatedShape.material;
-
+        const auto& material = glBuffer->associatedShape.material;
         shader.materialColour.set(glm::vec4(material.diffuse, 1.0f));
-
-        // TODO: Could eventually implement a full material system by paying attention to the other model color properties.
-        //  Wavefront .mtl files also have these other properties:
-        //        shader.materialAmbient.set (material.ambient.x, material.ambient.y, material.ambient.z);
-        //        shader.materialDiffuse.set (material.diffuse.x, material.diffuse.y, material.diffuse.z);
-        //        shader.materialSpecular.set (material.specular.x, material.specular.y, material.specular.z);
-        //        shader.materialShininess.set (material.shininess);
 
         glBindVertexArray(glBuffer->vao); // bind VAO for all vertex data (VBO, EBO, attributes)
         glDrawElements(GL_TRIANGLES, (GLsizei) glBuffer->indicesSize, GL_UNSIGNED_INT, nullptr);
@@ -145,7 +137,7 @@ void Model::GLBuffer::fillBuffers()
 {
     using namespace ::juce::gl;
 
-    auto& mesh = associatedShape.mesh;
+    const auto& mesh = associatedShape.mesh;
 
     glBindVertexArray(vao); // bind VAO to cache all VBO, EBO, and vertex attribute state
 

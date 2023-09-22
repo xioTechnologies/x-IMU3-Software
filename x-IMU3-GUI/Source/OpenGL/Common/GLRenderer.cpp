@@ -22,6 +22,7 @@ juce::OpenGLContext& GLRenderer::getContext()
 void GLRenderer::addComponent(OpenGLComponent& component)
 {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
+    component.resources = resources.get();
     components.push_back(&component);
 }
 
@@ -29,70 +30,74 @@ void GLRenderer::removeComponent(OpenGLComponent& component)
 {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
     components.erase(std::remove(components.begin(), components.end(), &component), components.end());
+    component.resources = nullptr;
 }
 
-GLResources& GLRenderer::getResources()
+void GLRenderer::resetDefaultOpenGLState()
 {
-    return *resources;
-}
-
-void GLRenderer::refreshScreen(const juce::Colour& colour, const juce::Rectangle<GLint>& viewport)
-{
-    // TODO: Remove the majority of these settings but keep scissor test, viewport, and clear color.
-    // Move some of these settings to beginning of GLRender::render() and some inverses of these settings
-    // to the end of GLRender::render() so GL state is ready for JUCE Component GL rendering which happens
-    // immediately after.
-    // NOTE: We will also want to run scissor test per GLComponent. Each GL component should ONLY draw
-    // in its viewport, so glDisable(GL_SCISSOR_TEST) must happen AFTER an individual GL component has
-    // rendered itself. Or we could just put it at the end of the GLRenderer::render() loop, making sure
-    // we call glScissor for each GL component.
-    // Might also be advantageous to do a non-scissored glClear to the entire viewport at the start of
-    // GLRenderer::render() so we do not need to do individual clears. This would be most convenient if
-    // the background colors of all GL components were the same, but if not, this may not be necessary
-
+    // Blend settings
     juce::gl::glEnable(juce::gl::GL_BLEND);
-    juce::gl::glEnable(juce::gl::GL_CULL_FACE);
-    juce::gl::glEnable(juce::gl::GL_DEPTH_TEST);
-    juce::gl::glEnable(juce::gl::GL_SCISSOR_TEST);
+    juce::gl::glBlendFunc(juce::gl::GL_SRC_ALPHA, juce::gl::GL_ONE_MINUS_SRC_ALPHA); // alpha value of top fragment determines blend
 
-    juce::gl::glLineWidth(1.0f);
+    // Cull settings
+    juce::gl::glEnable(juce::gl::GL_CULL_FACE);
+    juce::gl::glCullFace(juce::gl::GL_BACK); // back faces not drawn
+    juce::gl::glFrontFace(juce::gl::GL_CCW); // front facing polygons are counter-clockwise (default)
+
+    // Depth settings
+    juce::gl::glEnable(juce::gl::GL_DEPTH_TEST);
+
+    // Anti-aliasing & sampling
     juce::gl::glEnable(juce::gl::GL_LINE_SMOOTH);
     juce::gl::glEnable(juce::gl::GL_MULTISAMPLE);
-
-    juce::gl::glCullFace(juce::gl::GL_BACK);
-    juce::gl::glFrontFace(juce::gl::GL_CCW);
-    juce::gl::glBlendFunc(juce::gl::GL_SRC_ALPHA, juce::gl::GL_ONE_MINUS_SRC_ALPHA);
-
-    juce::gl::glViewport(viewport.getX(), viewport.getY(), viewport.getWidth(), viewport.getHeight());
-    juce::gl::glScissor(viewport.getX(), viewport.getY(), viewport.getWidth(), viewport.getHeight());
-    juce::gl::glClearColor(colour.getFloatRed(), colour.getFloatGreen(), colour.getFloatBlue(), colour.getFloatAlpha());
-    juce::gl::glClear(juce::gl::GL_COLOR_BUFFER_BIT | juce::gl::GL_DEPTH_BUFFER_BIT);
-
-    juce::gl::glDisable(juce::gl::GL_SCISSOR_TEST);
 }
 
 void GLRenderer::newOpenGLContextCreated()
 {
-    //All texture, shader, model and buffer resources are created here
+    std::lock_guard<std::mutex> _(sharedGLDataLock);
+
+    // All texture, shader, model and buffer resources are created here
     resources = std::make_unique<GLResources>(context);
+
+    // If components have already been added, ensure they have valid resources
+    for (auto& component : components)
+    {
+        component->resources = resources.get();
+    }
 }
 
 void GLRenderer::renderOpenGL()
 {
-    std::lock_guard<std::mutex> _(sharedGLDataLock);
+    resetDefaultOpenGLState(); // JUCE paint() modifies OpenGL state, so we must set default state every render loop
 
-    // TODO: This may not be necessary, could only clear per GLComponent viewport
-    // Clear the entire OpenGL screen with the background color
+    // Clear entire OpenGL screen with the background color and clear depth/stencil buffers
+    juce::gl::glDisable(juce::gl::GL_SCISSOR_TEST);
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
     // Render components
-    for (auto& component : components)
     {
-        component->render();
+        std::lock_guard<std::mutex> _(sharedGLDataLock);
+        for (auto& component : components)
+        {
+            component->render();
+        }
+
+        /*  As a possible future optimization, OpenGL instancing (batch rendering) could be implemented for some ThreeDView and Graph rendering.
+         *  Instancing improves performance of CPU to GPU communication by rendering similar GL data in a single draw command instead of issuing a draw command per-instance.
+         *
+         *  The text drawn in Graph by OpenGL may be the easiest candidate for an instancing optimization. Instead of issuing a draw
+         *  command for each text string, all OpenGL text strings on screen could be drawn in a single draw command to the GPU. To
+         *  implement this, we would need to add a global queue of text data to GLRenderer. Instead of drawing Text on its own, each
+         *  Graph component would add data to this queue in it's render() function to describe how it wants its text rendered. Then
+         *  after all OpenGL components have completed rendering, GLRender would empty the queue of text data and send it off to the
+         *  GPU in one draw command. This queue empty and draw command would happen here, immediately after looping through all OpenGL
+         *  components.
+         *
+         *  Ref: https://learnopengl.com/Advanced-OpenGL/Instancing
+         */
     }
 
-    // Prevent cull interference with JUCE Component paint() via OpenGL regardless of the last used cull settings of any of the OpenGL components
-    juce::gl::glDisable(juce::gl::GL_CULL_FACE);
+    juce::gl::glDisable(juce::gl::GL_CULL_FACE); // prevent cull interference with JUCE Component paint() via OpenGL
 }
 
 void GLRenderer::openGLContextClosing()

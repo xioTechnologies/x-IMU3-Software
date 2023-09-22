@@ -26,94 +26,29 @@ GLResources::GLResources(juce::OpenGLContext& context_) : context(context_)
 
     compassTexture.loadImage(juce::ImageFileFormat::loadFrom(BinaryData::Compass_png, BinaryData::Compass_pngSize));
 
-    createGraphDataBuffer();
-    createGridBuffers();
-    createTextBuffer();
+    const std::unordered_set<unsigned char> charactersToLoad = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'e', 'X', 'Y', 'Z' };
+    graphTickText = std::make_unique<Text>(charactersToLoad);
+    threeDViewAxesText = std::make_unique<Text>(charactersToLoad);
 }
 
-Text& GLResources::getGraphLegendText()
+Text& GLResources::getGraphTickText()
 {
-    const auto fontSize = (GLuint) juce::roundToInt(13 * context.getRenderingScale());
-    if (legendText == nullptr || legendText->getFontSize() != fontSize)
+    // Handles font reload if window moved between low and high DPI monitors because GL pixel size will differ
+    const auto fontSizeJucePixels = 12;
+    if (graphTickText->getFontSizeGLPixels() != Text::toGLPixels(fontSizeJucePixels))
     {
-        legendText = std::make_unique<Text>(false);
-        legendText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSize);
+        graphTickText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSizeJucePixels);
     }
-    return *legendText;
+    return *graphTickText;
 }
 
-Text& GLResources::getGraphAxisValuesText()
+Text& GLResources::get3DViewAxesText()
 {
-    const auto fontSize = (GLuint) juce::roundToInt(12 * context.getRenderingScale());
-    if (axisValuesText == nullptr || axisValuesText->getFontSize() != fontSize)
+    // Handles font reload if window moved between low and high DPI monitors because GL pixel size will differ
+    const auto fontSizeJucePixels = 30;
+    if (threeDViewAxesText->getFontSizeGLPixels() != Text::toGLPixels(fontSizeJucePixels))
     {
-        axisValuesText = std::make_unique<Text>(false);
-        axisValuesText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSize);
+        threeDViewAxesText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSizeJucePixels);
     }
-    return *axisValuesText;
-}
-
-Text& GLResources::getGraphAxisLabelText()
-{
-    const auto fontSize = (GLuint) juce::roundToInt(13 * context.getRenderingScale());
-    if (axisLabelText == nullptr || axisLabelText->getFontSize() != fontSize)
-    {
-        axisLabelText = std::make_unique<Text>(false);
-        axisLabelText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSize);
-    }
-    return *axisLabelText;
-}
-
-Text& GLResources::get3DViewAxisText()
-{
-    const auto fontSize = (GLuint) juce::roundToInt(30 * context.getRenderingScale());
-    if (axisMarkerText == nullptr || axisMarkerText->getFontSize() != fontSize)
-    {
-        axisMarkerText = std::make_unique<Text>(true);
-        axisMarkerText->loadFont(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize, fontSize);
-    }
-    return *axisMarkerText;
-}
-
-void GLResources::createGraphDataBuffer()
-{
-    graphDataBuffer.create(graphBufferSize);
-    graphDataBuffer.fillVbo(Buffer::vertexBuffer, nullptr, graphBufferSize * sizeof(juce::Point<GLfloat>), Buffer::multipleFill);
-}
-
-void GLResources::createGridBuffers()
-{
-    const int TOTAL_BYTES_VBO = 1024 * sizeof(Vec4);  //xyzw (w is for scalar color)
-    const int TOTAL_BYTES_VBO_BORDER = 12 * borderThickness * sizeof(Vec4);  //xyzw (w is for scalar color)
-
-    gridBorderBuffer.create(12 * borderThickness);
-    gridVerticalBuffer.create(1024);
-    gridHorizontalBuffer.create(1024);
-
-    gridBorderBuffer.fillVbo(Buffer::vertexBuffer, nullptr, TOTAL_BYTES_VBO_BORDER, Buffer::multipleFill);
-    gridVerticalBuffer.fillVbo(Buffer::vertexBuffer, nullptr, TOTAL_BYTES_VBO, Buffer::multipleFill);
-    gridHorizontalBuffer.fillVbo(Buffer::vertexBuffer, nullptr, TOTAL_BYTES_VBO, Buffer::multipleFill);
-}
-
-void GLResources::createTextBuffer()
-{
-    // Oriented parallel to the screen on the XY plane of OpenGL's default coordinate system
-    GLfloat vertices[] = { -0.5f, -0.5f, 0.0f, // bottom left
-                           0.5f, -0.5f, 0.0f, // bottom right
-                           0.5f, 0.5f, 0.0f, // top right
-                           -0.5f, 0.5f, 0.0f }; // top left
-
-    GLfloat UVs[] = { 0.0f, 0.0f, // bottom left
-                      1.0f, 0.0f, // bottom right
-                      1.0f, 1.0f, // top right
-                      0.0f, 1.0f }; // top left
-
-    // Triangles have counterclockwise winding order, so they are front-facing towards the screen
-    GLuint indices[] = { 0, 1, 3, // first triangle
-                         3, 1, 2 }; // second triangle
-
-    textBuffer.create(6, true);
-    textBuffer.fillEbo(indices, sizeof(indices), Buffer::multipleFill);
-    textBuffer.fillVbo(Buffer::vertexBuffer, vertices, sizeof(vertices), Buffer::multipleFill);
-    textBuffer.fillVbo(Buffer::textureBuffer, UVs, sizeof(UVs), Buffer::multipleFill);
+    return *threeDViewAxesText;
 }

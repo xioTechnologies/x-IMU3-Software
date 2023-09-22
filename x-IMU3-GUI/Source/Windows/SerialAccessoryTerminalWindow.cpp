@@ -3,9 +3,10 @@
 #include "SerialAccessoryTerminalWindow.h"
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
-        : Window(devicePanel_, windowLayout_, type_, "Serial Accessory Terminal Menu", std::bind(&SerialAccessoryTerminalWindow::getMenu, this))
+        : Window(windowLayout_, type_, devicePanel_, "Serial Accessory Terminal Menu", std::bind(&SerialAccessoryTerminalWindow::getMenu, this))
 {
     addAndMakeVisible(serialAccessoryTerminal);
+    serialAccessoryTerminal.addMouseListener(this, true);
 
     addAndMakeVisible(sendValue);
     sendValue.setEditableText(true);
@@ -84,6 +85,14 @@ void SerialAccessoryTerminalWindow::resized()
     sendValue.setBounds(sendCommandBounds);
 
     serialAccessoryTerminal.setBounds(bounds);
+}
+
+void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent)
+{
+    if (mouseEvent.mods.isPopupMenu())
+    {
+        getMenu().show();
+    }
 }
 
 juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::String& input)

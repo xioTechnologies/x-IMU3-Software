@@ -90,7 +90,7 @@ void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat>& ver
     };
 
     // All vertices have the same normal vector pointing up
-    glm::vec3 normal = { 0.0f, 1.0f, 0.0f };
+    const glm::vec3 normal = { 0.0f, 1.0f, 0.0f };
 
     std::array<glm::vec2, numberOfVertices> textureCoordinates = {
             glm::vec2(1.0f, 1.0f), // far right

@@ -10,10 +10,11 @@
 #include "Ximu3.hpp"
 
 class ThreeDViewWindow : public Window,
-                         private juce::Timer
+                         private juce::Timer,
+                         private juce::ValueTree::Listener
 {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer, juce::ValueTree settingsTree_);
 
     ~ThreeDViewWindow() override;
 
@@ -23,12 +24,13 @@ public:
 
     void mouseDrag(const juce::MouseEvent& mouseEvent) override;
 
+    void mouseDoubleClick(const juce::MouseEvent& mouseEvent) override;
+
     void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override;
 
 private:
     ThreeDView threeDView;
-    static ThreeDView::Settings settings;
-    static bool eulerAnglesEnabled;
+    juce::ValueTree settingsTree;
 
     SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
             rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
@@ -58,11 +60,21 @@ private:
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
     uint64_t earthAccelerationCallbackID;
 
+    bool compactView = false;
+
+    static float wrapAngle(float angle);
+
+    void writeToValueTree(const ThreeDView::Settings& settings);
+
+    ThreeDView::Settings readFromValueTree() const;
+
+    void updateLabelVisibilities();
+
     juce::PopupMenu getMenu();
 
     void timerCallback() override;
 
-    static float wrapAngle(float angle);
+    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& property) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThreeDViewWindow)
 };

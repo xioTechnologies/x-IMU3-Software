@@ -7,6 +7,9 @@
 class OrbitCamera
 {
 public:
+    OrbitCamera()
+    {
+    }
 
     // Updates projectionMatrix from view size
     void setViewportBounds(juce::Rectangle<GLint> viewport_)
@@ -113,4 +116,5 @@ private:
     float azimuthDegrees = 45.0f; // horizontal movement
     float altitudeDegrees = 20.0f; // vertical movement
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OrbitCamera)
 };

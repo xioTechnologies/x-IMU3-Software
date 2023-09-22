@@ -3,11 +3,11 @@
 out vec4 fragColor;
 in vec2 textureCoord_frag;
 
-const float gridBrightness = 0.4; // 1.0 is white, 0.0 is black
-const vec3 graphRed = vec3(0.878, 0.125, 0.125);
-const vec3 graphGreen = vec3(0.427, 0.831, 0.0);
-const float gridTilingFactor = 80.0; // number of tiles across but only works for even numbers, 80 makes each grid tile width of 0.25 for a matrix scale of 20
-const float gridFadeoutDistance = 0.2; // 0.5 fades out to edges of plane, anything closer to 0.0 fades out sooner
+const float gridBrightness = 0.4;// 1.0 is white, 0.0 is black
+const vec3 graphX = vec3(0.878, 0.125, 0.125);
+const vec3 graphY = vec3(0.427, 0.831, 0.0);
+const float gridTilingFactor = 80.0;// number of tiles across but only works for even numbers, 80 makes each grid tile width of 0.25 for a matrix scale of 20
+const float gridFadeoutDistance = 0.2;// 0.5 fades out to edges of plane, anything closer to 0.0 fades out sooner
 
 /*  Outputs color for a grid to be drawn via UV texture coordinates.
 
@@ -30,7 +30,7 @@ vec4 grid(vec2 uvPos, float scale)
     // XY position determines color based on repeating grid pattern
     // Uses fwidth screen-space partial derivatives to provide anti-aliasing and consistent line thickness
     vec2 gridCoord = xyPos * scale;
-    vec2 derivative = fwidth(gridCoord); // Can add line thickness by scaling this value
+    vec2 derivative = fwidth(gridCoord);// Can add line thickness by scaling this value
     vec2 grid = abs(fract(gridCoord - 0.5) - 0.5) / derivative;
     float line = min(grid.x, grid.y);
     vec4 color = vec4(gridBrightness, gridBrightness, gridBrightness, 1.0 - min(line, 1.0));
@@ -41,8 +41,8 @@ vec4 grid(vec2 uvPos, float scale)
     // X and Y axis are swapped here based on the axes setup in ThreeDView
     float xAxisPresent = step(abs(xyPos.y), minimumY * inverseScale);
     float yAxisPresent = step(abs(xyPos.x), minimumX * inverseScale);
-    color.rgb = mix(color.rgb, graphRed, xAxisPresent);   // If X-axis present at this position, color red
-    color.rgb = mix(color.rgb, graphGreen, yAxisPresent); // If Y-axis present at this position, color green
+    color.rgb = mix(color.rgb, graphX, xAxisPresent);// If X-axis present at this position, color red
+    color.rgb = mix(color.rgb, graphY, yAxisPresent);// If Y-axis present at this position, color green
 
     // Fade out edge of grid in the distance by setting
     // alpha (opacity) of color based on distance from origin
@@ -50,7 +50,7 @@ vec4 grid(vec2 uvPos, float scale)
     // Remaps distance to a 0.0 to 1.0 range where 1.0 becomes the minimum distance
     // from the origin to an edge of the plane
     float normalizedDistanceFromOrigin = min(distanceFromOrigin, gridFadeoutDistance) / gridFadeoutDistance;
-    color.a *= 1.0 - normalizedDistanceFromOrigin; // Closer to edges of plane become more transparent
+    color.a *= 1.0 - normalizedDistanceFromOrigin;// Closer to edges of plane become more transparent
 
     return color;
 }

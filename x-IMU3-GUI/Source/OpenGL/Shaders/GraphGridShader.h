@@ -1,6 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
+#include "OpenGL/Common/GLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class GraphGridShader : public Shader
@@ -10,11 +11,6 @@ public:
     {
     }
 
-    // TODO: Attribute variables can be removed in refactor
-    Attribute position { *this, "position" };
-    Uniform window { *this, "window" };
-    Uniform offsetAndScale { *this, "offsetAndScale" };
-    Uniform colour { *this, "colour" };
-    Uniform isBorder { *this, "isBorder" };
-    Uniform isVertical { *this, "isVertical" };
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphGridShader)
 };

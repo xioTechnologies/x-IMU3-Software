@@ -1,19 +1,32 @@
 #pragma once
 
-#include "../../DevicePanel/DevicePanel.h"
-#include "../../OpenGL/Common/GLRenderer.h"
 #include "../../OpenGL/Graph.h"
+#include "../../Widgets/SimpleLabel.h"
 #include "../Window.h"
-#include <juce_gui_basics/juce_gui_basics.h>
+#include "Ximu3.hpp"
 
-class GraphWindow : public Window
+class GraphWindow : public Window, private juce::ValueTree::Listener
 {
 public:
-    GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer, const juce::String& yAxis, const std::vector<Graph::LegendItem>& legend, Graph::Settings& settings_, const Graph::Settings& defaultSettings_);
+    GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_,
+                GLRenderer& glRenderer,
+                const juce::String& yAxis,
+                std::vector<juce::String> legendStrings_,
+                std::vector<juce::Colour> legendColours_,
+                juce::ValueTree settingsTree_,
+                bool defaultHorizontalAutoscale_);
+
+    void paint(juce::Graphics& g) override;
 
     void resized() override;
 
     void mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce::MouseWheelDetails& wheel) override;
+
+    void mouseDown([[maybe_unused]] const juce::MouseEvent& mouseEvent) override;
+
+    void mouseDrag(const juce::MouseEvent& mouseEvent) override;
+
+    void mouseDoubleClick(const juce::MouseEvent& mouseEvent) override;
 
 protected:
     void update(const uint64_t timestamp, const std::vector<float>& arguments);
@@ -21,16 +34,38 @@ protected:
     static const juce::String degreeSymbol;
 
 private:
-    Graph::Settings& settings;
-    const Graph::Settings defaultSettings;
+    static constexpr int labelHeight = 22;
+    static constexpr int rightMargin = 10;
+
+    const std::vector<juce::String> legendStrings;
+    const std::vector<juce::Colour> legendColours;
+    const bool defaultHorizontalAutoscale;
+    juce::ValueTree settingsTree;
+    const int numberOfChannels = (int) legendStrings.size();
 
     Graph graph;
 
-    juce::PopupMenu getMenu();
+    SimpleLabel xLabel;
+    SimpleLabel yLabel;
+
+    bool paused = settingsTree["paused"];
+
+    bool compactView = false;
+
+    // Graph state for mouse dragging
+    Graph::Settings graphSettingsMouseCache;
+    float plotWidthJUCEPixelsMouseCache = 1.0f;
+    float plotHeightJUCEPixelsMouseCache = 1.0f;
+
+    void writeToValueTree(const Graph::Settings& settings);
+
+    Graph::Settings readFromValueTree() const;
 
     void zoomHorizontal(const float multiplier);
 
     void zoomVertical(const float multiplier);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWindow)
+    juce::PopupMenu getMenu();
+
+    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
 };

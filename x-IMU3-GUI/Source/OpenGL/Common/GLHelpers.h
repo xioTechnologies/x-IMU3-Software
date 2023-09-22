@@ -6,7 +6,7 @@
 #include "glm/vec4.hpp"
 #include <juce_opengl/juce_opengl.h>
 
-namespace GLUtil
+namespace GLHelpers
 {
     /** Represents an OpenGL uniform value.
         After a juce::OpenGLShaderProgram has been linked, you can create Uniform objects to
@@ -33,7 +33,7 @@ namespace GLUtil
             assertUniformExistsInShaderProgram();
         }
 
-        [[nodiscard]] bool isValid() const noexcept
+        bool isValid() const noexcept
         {
             return uniformID >= 0;
         }
@@ -184,7 +184,7 @@ namespace GLUtil
         juce::String uniformName;
 #endif
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Uniform)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Uniform)
     };
 
     static void setCapabilityEnabled(GLenum capability, GLboolean shouldBeEnabled)
@@ -218,55 +218,27 @@ namespace GLUtil
         GLboolean wasEnabled;
     };
 
-    // Keeping around in case we need this for later potential refactor
-    /*
-    static juce::Matrix3D<GLfloat> toJUCEMatrix(const glm::mat4 & matrix)
+    static inline void viewport(const juce::Rectangle<int>& bounds)
     {
-        juce::Matrix3D<GLfloat> juceMatrix;
-
-        juceMatrix.mat[0] = matrix[0][0];
-        juceMatrix.mat[1] = matrix[0][1];
-        juceMatrix.mat[2] = matrix[0][2];
-        juceMatrix.mat[3] = matrix[0][3];
-        juceMatrix.mat[4] = matrix[1][0];
-        juceMatrix.mat[5] = matrix[1][1];
-        juceMatrix.mat[6] = matrix[1][2];
-        juceMatrix.mat[7] = matrix[1][3];
-        juceMatrix.mat[8] = matrix[2][0];
-        juceMatrix.mat[9] = matrix[2][1];
-        juceMatrix.mat[10] = matrix[2][2];
-        juceMatrix.mat[11] = matrix[2][3];
-        juceMatrix.mat[12] = matrix[3][0];
-        juceMatrix.mat[13] = matrix[3][1];
-        juceMatrix.mat[14] = matrix[3][2];
-        juceMatrix.mat[15] = matrix[3][3];
-
-        return juceMatrix;
+        juce::gl::glViewport((GLint) bounds.getX(), (GLint) bounds.getY(), (GLsizei) bounds.getWidth(), (GLsizei) bounds.getHeight());
     }
 
-    static glm::mat4 toGLMMatrix(juce::Matrix3D<GLfloat> juceMatrix)
+    static inline void scissor(const juce::Rectangle<int>& bounds)
     {
-        glm::mat4 matrix;
-
-        matrix[0][0] = juceMatrix.mat[0];
-        matrix[0][1] = juceMatrix.mat[1];
-        matrix[0][2] = juceMatrix.mat[2];
-        matrix[0][3] = juceMatrix.mat[3];
-        matrix[1][0] = juceMatrix.mat[4];
-        matrix[1][1] = juceMatrix.mat[5];
-        matrix[1][2] = juceMatrix.mat[6];
-        matrix[1][3] = juceMatrix.mat[7];
-        matrix[2][0] = juceMatrix.mat[8];
-        matrix[2][1] = juceMatrix.mat[9];
-        matrix[2][2] = juceMatrix.mat[10];
-        matrix[2][3] = juceMatrix.mat[11];
-        matrix[3][0] = juceMatrix.mat[12];
-        matrix[3][1] = juceMatrix.mat[13];
-        matrix[3][2] = juceMatrix.mat[14];
-        matrix[3][3] = juceMatrix.mat[15];
-
-        return matrix;
+        juce::gl::glScissor((GLint) bounds.getX(), (GLint) bounds.getY(), (GLsizei) bounds.getWidth(), (GLsizei) bounds.getHeight());
     }
-    */
+
+    static inline void viewportAndScissor(const juce::Rectangle<int>& bounds)
+    {
+        GLHelpers::viewport(bounds);
+        GLHelpers::scissor(bounds);
+    }
+
+    static inline void clear(const juce::Colour& colour, const juce::Rectangle<int>& bounds)
+    {
+        GLHelpers::ScopedCapability _(juce::gl::GL_SCISSOR_TEST, true);
+        GLHelpers::viewportAndScissor(bounds);
+        juce::OpenGLHelpers::clear(colour);
+    }
 
 } // GLUtil
