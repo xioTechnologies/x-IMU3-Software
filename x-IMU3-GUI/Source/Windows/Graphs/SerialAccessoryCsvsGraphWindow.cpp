@@ -2,11 +2,11 @@
 
 #include "Convert.h"
 #include "DevicePanel/DevicePanel.h"
-#include "SerialAccessoryGraphWindow.h"
+#include "SerialAccessoryCsvsGraphWindow.h"
 
-juce::ValueTree SerialAccessoryGraphWindow::settingsTree_("SerialAccessoryGraphSettings");
+juce::ValueTree SerialAccessoryCsvsGraphWindow::settingsTree_("SerialAccessoryCsvsGraphSettings");
 
-SerialAccessoryGraphWindow::SerialAccessoryGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
+SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, devicePanel_,
                       glRenderer,
                       "CSV",
@@ -26,7 +26,7 @@ SerialAccessoryGraphWindow::SerialAccessoryGraphWindow(const juce::ValueTree& wi
     }));
 }
 
-SerialAccessoryGraphWindow::~SerialAccessoryGraphWindow()
+SerialAccessoryCsvsGraphWindow::~SerialAccessoryCsvsGraphWindow()
 {
     for (const auto callbackID : callbackIDs)
     {
