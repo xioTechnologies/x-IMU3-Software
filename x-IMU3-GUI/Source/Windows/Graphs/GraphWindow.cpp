@@ -252,6 +252,22 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.horizontalAutoscale = !settings.horizontalAutoscale;
         writeToValueTree(settings);
     });
+    menu.addItem("Move Left (Mouse Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
+    {
+        auto settings = graph.getSettings();
+        const auto offset = settings.axesLimits.x.getRange() / 2;
+        settings.axesLimits.x.min -= offset;
+        settings.axesLimits.x.max -= offset;
+        writeToValueTree(settings);
+    });
+    menu.addItem("Move Right (Mouse Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
+    {
+        auto settings = graph.getSettings();
+        const auto offset = settings.axesLimits.x.getRange() / 2;
+        settings.axesLimits.x.min += offset;
+        settings.axesLimits.x.max += offset;
+        writeToValueTree(settings);
+    });
     menu.addItem("Zoom In (Scroll)", graph.getSettings().horizontalAutoscale == false, false, [this]
     {
         zoomHorizontal(0.5f);
@@ -267,6 +283,22 @@ juce::PopupMenu GraphWindow::getMenu()
     {
         auto settings = graph.getSettings();
         settings.verticalAutoscale = !settings.verticalAutoscale;
+        writeToValueTree(settings);
+    });
+    menu.addItem("Move Up (Mouse Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
+    {
+        auto settings = graph.getSettings();
+        const auto offset = settings.axesLimits.y.getRange() / 2;
+        settings.axesLimits.y.min += offset;
+        settings.axesLimits.y.max += offset;
+        writeToValueTree(settings);
+    });
+    menu.addItem("Move Down (Mouse Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
+    {
+        auto settings = graph.getSettings();
+        const auto offset = settings.axesLimits.y.getRange() / 2;
+        settings.axesLimits.y.min -= offset;
+        settings.axesLimits.y.max -= offset;
         writeToValueTree(settings);
     });
     menu.addItem("Zoom In (Alt+Scroll)", graph.getSettings().verticalAutoscale == false, false, [this]
