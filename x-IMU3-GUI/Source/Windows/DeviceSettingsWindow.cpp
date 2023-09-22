@@ -21,13 +21,13 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             for (const auto& response : responses)
             {
-//                settingsTree.setValue(response);
-//                settingsTree.setStatus(response.key, Setting::Status::normal);
+                settingsTree.setValue(response);
+                settingsTree.setStatus(response.key, Setting::Status::normal);
             }
 
             for (const auto& failedCommand : failedCommands)
             {
-//                settingsTree.setStatus(failedCommand.key, Setting::Status::readFailed);
+                settingsTree.setStatus(failedCommand.key, Setting::Status::readFailed);
             }
 
             readAllButton.setToggleState(failedCommands.empty() == false, juce::dontSendNotification);
@@ -194,7 +194,7 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 {
     for (const auto& command : commands)
     {
-//        settingsTree.setStatus(command.key, Setting::Status::normal);
+        settingsTree.setStatus(command.key, Setting::Status::normal);
     }
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);
