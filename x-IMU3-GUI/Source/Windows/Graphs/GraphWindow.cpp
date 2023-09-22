@@ -223,13 +223,7 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [this]
     {
-        settingsTree.setProperty("paused", false, nullptr);
-
-        Graph::Settings settings;
-        settings.horizontalAutoscale = defaultHorizontalAutoscale;
-        settings.enabledChannels.resize((size_t) numberOfChannels, true);
-        writeToValueTree(settings);
-        repaint(); // refresh legend text color
+        settingsTree.removeAllProperties(nullptr);
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
     {
@@ -340,7 +334,6 @@ juce::PopupMenu GraphWindow::getMenu()
                 auto settings_ = graph.getSettings();
                 settings_.enabledChannels[index] = settings_.enabledChannels[index] == false;
                 writeToValueTree(settings_);
-                repaint(); // refresh legend text color
             });
         }
     }
@@ -366,6 +359,11 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHas
     {
         paused = treeWhosePropertyHasChanged["paused"];
         return;
+    }
+
+    if (property.toString().startsWith("enabledChannels"))
+    {
+        repaint();
     }
 
     graph.setSettings(readFromValueTree());
