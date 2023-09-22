@@ -23,10 +23,9 @@ public:
 
         if (tree.hasProperty(DeviceSettingsIDs::hideKey))
         {
-            const auto normalisedKey = CommandMessage::normaliseKey(tree[DeviceSettingsIDs::hideKey]);
             for (const auto& setting : settings)
             {
-                if (setting.first == normalisedKey)
+                if (setting.second[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
                 {
                     hideSetting = setting.second;
                     break;
