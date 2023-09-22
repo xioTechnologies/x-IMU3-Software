@@ -231,7 +231,7 @@ juce::PopupMenu GraphWindow::getMenu()
         writeToValueTree(settings);
         repaint(); // refresh legend text color
     });
-    menu.addItem("Scale to Fit", true, false, [this]
+    menu.addItem("Scale to Fit (Double Click)", true, false, [this]
     {
         settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
     });
