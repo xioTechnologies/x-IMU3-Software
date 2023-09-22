@@ -17,7 +17,7 @@ AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& window
 {
     callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
     {
-        write(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
+        update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
     }));
 }
 

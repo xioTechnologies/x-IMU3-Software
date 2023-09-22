@@ -17,7 +17,7 @@ TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayo
 {
     callbackIDs.push_back(devicePanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)
     {
-        write(message.timestamp, { message.temperature });
+        update(message.timestamp, { message.temperature });
     }));
 }
 

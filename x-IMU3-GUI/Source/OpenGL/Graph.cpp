@@ -99,7 +99,7 @@ void Graph::clear()
     buffer.clear();
 }
 
-void Graph::write(const uint64_t timestamp, const std::vector<float>& values)
+void Graph::update(const uint64_t timestamp, const std::vector<float>& values)
 {
     buffer.write(timestamp, values);
 }

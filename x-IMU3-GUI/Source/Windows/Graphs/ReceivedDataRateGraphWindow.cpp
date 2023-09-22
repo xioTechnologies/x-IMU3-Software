@@ -17,7 +17,7 @@ ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& 
 {
     callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {
-        write(message.timestamp, { (float) message.data_rate / 1000.0f });
+        update(message.timestamp, { (float) message.data_rate / 1000.0f });
     }));
 }
 

@@ -17,7 +17,7 @@ MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLa
 {
     callbackIDs.push_back(devicePanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)
     {
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
     }));
 }
 

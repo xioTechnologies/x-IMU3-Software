@@ -29,7 +29,7 @@ public:
     void mouseDoubleClick(const juce::MouseEvent& mouseEvent) override;
 
 protected:
-    void write(const uint64_t timestamp, const std::vector<float>& arguments);
+    void update(const uint64_t timestamp, const std::vector<float>& arguments);
 
     static const juce::String degreeSymbol;
 

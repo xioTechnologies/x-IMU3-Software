@@ -17,7 +17,7 @@ GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout, 
 {
     callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
     {
-        write(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
+        update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
     }));
 }
 

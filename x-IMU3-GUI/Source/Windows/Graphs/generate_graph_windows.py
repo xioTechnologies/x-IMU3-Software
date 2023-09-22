@@ -29,7 +29,7 @@ windows = [
         callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
+        update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
     }));",
     ),
     Window(name="Accelerometer",
@@ -41,7 +41,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });\n\
+        update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });\n\
     }));",
            ),
     Window(name="Magnetometer",
@@ -53,7 +53,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
            ),
     Window(name="EulerAngles",
@@ -71,7 +71,7 @@ windows = [
     callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
-        write(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
@@ -80,24 +80,24 @@ windows = [
                                                       message.yx_element, message.yy_element, message.yz_element,\n\
                                                       message.zx_element, message.zy_element, message.zz_element);\n\
         const auto eulerAngles = Convert::toEulerAngles(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);\n\
-        write(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.roll, message.pitch, message.yaw });\n\
+        update(message.timestamp, { message.roll, message.pitch, message.yaw });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
-        write(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
-        write(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));",
            ),
     Window(name="LinearAcceleration",
@@ -109,7 +109,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
            ),
     Window(name="EarthAcceleration",
@@ -121,7 +121,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
            ),
     Window(name="HighGAccelerometer",
@@ -133,7 +133,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
     }));",
            ),
     Window(name="Temperature",
@@ -145,7 +145,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.temperature });\n\
+        update(message.timestamp, { message.temperature });\n\
     }));",
            ),
     Window(name="BatteryPercentage",
@@ -157,7 +157,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.percentage });\n\
+        update(message.timestamp, { message.percentage });\n\
     }));",
            ),
     Window(name="BatteryVoltage",
@@ -169,7 +169,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.voltage });\n\
+        update(message.timestamp, { message.voltage });\n\
     }));",
            ),
     Window(name="RssiPercentage",
@@ -181,7 +181,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.percentage });\n\
+        update(message.timestamp, { message.percentage });\n\
     }));",
            ),
     Window(name="RssiPower",
@@ -193,7 +193,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { message.power });\n\
+        update(message.timestamp, { message.power });\n\
     }));",
            ),
     Window(name="SerialAccessory",
@@ -210,7 +210,7 @@ windows = [
         {\n\
             values.push_back(string.getFloatValue());\n\
         }\n\
-        write(message.timestamp, values);\n\
+        update(message.timestamp, values);\n\
     }));",
            ),
     Window(name="ReceivedMessageRate",
@@ -222,7 +222,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { (float) message.message_rate });\n\
+        update(message.timestamp, { (float) message.message_rate });\n\
     }));",
            ),
     Window(name="ReceivedDataRate",
@@ -234,7 +234,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
-        write(message.timestamp, { (float) message.data_rate / 1000.0f });\n\
+        update(message.timestamp, { (float) message.data_rate / 1000.0f });\n\
     }));",
            ),
 ]

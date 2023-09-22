@@ -17,7 +17,7 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
 {
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
-        write(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
+        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
     }));
 }
 

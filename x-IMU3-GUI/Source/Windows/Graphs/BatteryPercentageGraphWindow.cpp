@@ -17,7 +17,7 @@ BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree
 {
     callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
-        write(message.timestamp, { message.percentage });
+        update(message.timestamp, { message.percentage });
     }));
 }
 

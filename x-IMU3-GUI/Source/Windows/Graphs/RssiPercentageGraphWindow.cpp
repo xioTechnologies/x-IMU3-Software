@@ -17,7 +17,7 @@ RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& wind
 {
     callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
-        write(message.timestamp, { message.percentage });
+        update(message.timestamp, { message.percentage });
     }));
 }
 

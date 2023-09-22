@@ -35,7 +35,7 @@ public:
 
     void clear();
 
-    void write(const uint64_t timestamp, const std::vector<float>& values);
+    void update(const uint64_t timestamp, const std::vector<float>& values);
 
     std::atomic<float> plotWidthJUCEPixels = 0.0f;
     std::atomic<float> plotHeightJUCEPixels = 0.0f;

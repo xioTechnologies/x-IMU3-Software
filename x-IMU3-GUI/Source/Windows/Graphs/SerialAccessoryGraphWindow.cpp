@@ -22,7 +22,7 @@ SerialAccessoryGraphWindow::SerialAccessoryGraphWindow(const juce::ValueTree& wi
         {
             values.push_back(string.getFloatValue());
         }
-        write(message.timestamp, values);
+        update(message.timestamp, values);
     }));
 }
 

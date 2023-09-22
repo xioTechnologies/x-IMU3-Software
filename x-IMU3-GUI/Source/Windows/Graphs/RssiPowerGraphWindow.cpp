@@ -17,7 +17,7 @@ RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree& windowLayout, 
 {
     callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
-        write(message.timestamp, { message.power });
+        update(message.timestamp, { message.power });
     }));
 }
 

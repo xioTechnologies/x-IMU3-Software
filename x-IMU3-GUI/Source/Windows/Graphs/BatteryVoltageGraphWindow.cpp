@@ -17,7 +17,7 @@ BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& wind
 {
     callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
-        write(message.timestamp, { message.voltage });
+        update(message.timestamp, { message.voltage });
     }));
 }
 

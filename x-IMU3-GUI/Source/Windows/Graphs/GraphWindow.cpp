@@ -154,13 +154,13 @@ void GraphWindow::mouseDoubleClick([[maybe_unused]] const juce::MouseEvent& mous
     settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
 }
 
-void GraphWindow::write(const uint64_t timestamp, const std::vector<float>& arguments)
+void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
 {
     if (paused)
     {
         return;
     }
-    graph.write(timestamp, arguments);
+    graph.update(timestamp, arguments);
 }
 
 void GraphWindow::writeToValueTree(const Graph::Settings& settings)

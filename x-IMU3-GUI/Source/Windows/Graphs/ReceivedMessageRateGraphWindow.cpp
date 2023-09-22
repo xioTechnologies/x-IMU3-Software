@@ -17,7 +17,7 @@ ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::Value
 {
     callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {
-        write(message.timestamp, { (float) message.message_rate });
+        update(message.timestamp, { (float) message.message_rate });
     }));
 }
 
