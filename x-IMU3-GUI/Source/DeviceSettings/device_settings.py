@@ -6,6 +6,7 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
+
 with open("DeviceSettings.json") as file:
     settings = json.load(file)
 
@@ -13,20 +14,13 @@ json_types = []
 enum_types = []
 
 for setting in settings:
-    json_type = ""
-
-    for declaration in {"char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"}:
-        if declaration in setting["declaration"]:
-            json_type = "string"
-
-    for declaration in {"float", "uint32_t", "int32_t", "uint16_t"}:
-        if declaration in setting["declaration"]:
-            json_type = "number"
-
-    if "bool" in setting["declaration"]:
+    if any([d in setting["declaration"] for d in ["char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"]]):
+        json_type = "string"
+    elif any([d in setting["declaration"] for d in ["float", "uint32_t", "int32_t", "uint16_t"]]):
+        json_type = "number"
+    elif "bool" in setting["declaration"]:
         json_type = "bool"
-
-    if json_type == "":
+    else:
         json_type = setting["declaration"].split()[0]
         enum_types.append(json_type)
 
