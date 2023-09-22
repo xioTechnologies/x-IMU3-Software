@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Widgets/IconButton.h"
-#include "../Widgets/SimpleLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Widgets/IconButton.h"
+#include "Widgets/SimpleLabel.h"
 
 class DevicePanel;
 

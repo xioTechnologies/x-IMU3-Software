@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Widgets/IconButton.h"
 #include "Dialog.h"
+#include "Widgets/IconButton.h"
 
 class ApplicationSettingsDialog : public Dialog
 {

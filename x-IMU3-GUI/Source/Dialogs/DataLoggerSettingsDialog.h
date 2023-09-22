@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ApplicationSettings.h"
+#include "ApplicationSettings.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"

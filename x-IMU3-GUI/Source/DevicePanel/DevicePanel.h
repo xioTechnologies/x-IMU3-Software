@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../CommandMessage.h"
-#include "../OpenGL/Common/GLRenderer.h"
 #include <cassert>
+#include "CommandMessage.h"
 #include "DevicePanelFooter.h"
 #include "DevicePanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <list>
+#include "OpenGL/Common/GLRenderer.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
 #include "Ximu3.hpp"

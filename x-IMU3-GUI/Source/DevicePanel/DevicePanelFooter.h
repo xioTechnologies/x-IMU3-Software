@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Dialogs/NotificationsAndErrorsDialog.h"
-#include "../Widgets/IconButton.h"
-#include "../Widgets/SimpleLabel.h"
+#include "Dialogs/NotificationsAndErrorsDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Widgets/IconButton.h"
+#include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
 class DevicePanel;

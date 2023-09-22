@@ -1,5 +1,5 @@
-#include "../CustomLookAndFeel.h"
 #include "ConnectionsTable.h"
+#include "CustomLookAndFeel.h"
 
 ConnectionsTable::ConnectionsTable()
 {

@@ -1,4 +1,4 @@
-#include "../ApplicationSettings.h"
+#include "ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CommandMessage.h"
+#include "CommandMessage.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"

@@ -1,5 +1,5 @@
-#include "../CustomLookAndFeel.h"
 #include "CustomComboBox.h"
+#include "CustomLookAndFeel.h"
 
 class CustomComboBox::LookAndFeel : public CustomLookAndFeel
 {

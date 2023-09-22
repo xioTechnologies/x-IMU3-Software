@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Widgets/CustomComboBox.h"
-#include "../Widgets/CustomTextEditor.h"
-#include "../Widgets/IconButton.h"
-#include "../Widgets/SimpleLabel.h"
 #include "Dialog.h"
+#include "Widgets/CustomComboBox.h"
+#include "Widgets/CustomTextEditor.h"
+#include "Widgets/IconButton.h"
+#include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
 class UpdateFirmwareDialog : public Dialog

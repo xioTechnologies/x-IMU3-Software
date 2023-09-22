@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Firmware/Firmware.h"
 #include "Dialogs/DataLoggerSettingsDialog.h"
+#include "Firmware/Firmware.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <optional>
 #include "Widgets/IconButton.h"

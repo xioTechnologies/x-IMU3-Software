@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CommandMessage.h"
+#include "CommandMessage.h"
 #include "DeviceSettingsItem.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 

@@ -1,7 +1,7 @@
-#include "../DevicePanel/DevicePanel.h"
-#include "../Widgets/Icon.h"
 #include <BinaryData.h>
+#include "DevicePanel/DevicePanel.h"
 #include "NotificationsAndErrorsDialog.h"
+#include "Widgets/Icon.h"
 
 juce::String NotificationsAndErrorsDialog::Message::getIcon() const
 {

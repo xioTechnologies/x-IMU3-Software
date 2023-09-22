@@ -1,6 +1,6 @@
-#include "../ApplicationSettings.h"
-#include "../Firmware/Firmware.h"
+#include "ApplicationSettings.h"
 #include <filesystem>
+#include "Firmware/Firmware.h"
 #include "UpdateFirmwareDialog.h"
 
 UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update")

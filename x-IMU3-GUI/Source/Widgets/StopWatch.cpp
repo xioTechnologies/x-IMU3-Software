@@ -1,4 +1,4 @@
-#include "../CustomLookAndFeel.h"
+#include "CustomLookAndFeel.h"
 #include "Stopwatch.h"
 
 class Stopwatch::LookAndFeel : public CustomLookAndFeel

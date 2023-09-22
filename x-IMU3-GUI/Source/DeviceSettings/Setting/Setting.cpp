@@ -1,5 +1,5 @@
-#include "../DeviceSettingsIDs.h"
-#include "../DeviceSettingsItem.h"
+#include "DeviceSettings/DeviceSettingsIDs.h"
+#include "DeviceSettings/DeviceSettingsItem.h"
 #include "Setting.h"
 
 Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentIfExpandable_) : tree(tree_),

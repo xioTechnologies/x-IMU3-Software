@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../MenuStrip/CustomLayouts.h"
 #include "AreYouSureDialog.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "MenuStrip/CustomLayouts.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/SimpleLabel.h"
 

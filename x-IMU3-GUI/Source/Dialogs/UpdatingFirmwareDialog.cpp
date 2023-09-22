@@ -1,7 +1,7 @@
-#include "../ApplicationSettings.h"
-#include "../Firmware/Firmware.h"
+#include "ApplicationSettings.h"
 #include "CommandMessage.h"
 #include "ErrorDialog.h"
+#include "Firmware/Firmware.h"
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 

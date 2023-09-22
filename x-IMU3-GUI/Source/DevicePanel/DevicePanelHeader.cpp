@@ -1,7 +1,7 @@
-#include "../Dialogs/SendingCommandDialog.h"
 #include "DevicePanel.h"
 #include "DevicePanelContainer.h"
 #include "DevicePanelHeader.h"
+#include "Dialogs/SendingCommandDialog.h"
 
 DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_)
         : devicePanel(devicePanel_),

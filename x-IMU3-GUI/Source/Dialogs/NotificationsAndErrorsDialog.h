@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Widgets/SimpleLabel.h"
 #include <BinaryData.h>
 #include "Dialog.h"
+#include "Widgets/SimpleLabel.h"
 
 class DevicePanel;
 

@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "../../OpenGL/Common/GLRenderer.h"
 #include "GraphWindow.h"
+#include "OpenGL/Common/GLRenderer.h"
 #include "Ximu3.hpp"
 
 class RssiPercentageGraphWindow : public GraphWindow
