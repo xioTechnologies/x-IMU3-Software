@@ -26,29 +26,27 @@ public:
 
     struct Settings
     {
-        Settings& operator=(const Settings& other);
+        float cameraAzimuth = 45.0f;
+        float cameraElevation = 20.0f;
+        float cameraOrbitDistance = 2.5f;
 
-        std::atomic<float> cameraAzimuth = 45.0f;
-        std::atomic<float> cameraElevation = 20.0f;
-        std::atomic<float> cameraOrbitDistance = 2.5f;
-
-        std::atomic<bool> worldEnabled = true;
-        std::atomic<bool> modelEnabled = true;
-        std::atomic<bool> axesEnabled = true;
-        std::atomic<bool> compassEnabled = true;
-        std::atomic<Model> model { Model::housing };
-        std::atomic<AxesConvention> axesConvention { AxesConvention::nwu };
+        bool worldEnabled = true;
+        bool modelEnabled = true;
+        bool axesEnabled = true;
+        bool compassEnabled = true;
+        Model model { Model::housing };
+        AxesConvention axesConvention { AxesConvention::nwu };
     };
 
-    explicit ThreeDView(GLRenderer& renderer_, const Settings& settings_);
+    explicit ThreeDView(GLRenderer& renderer_);
 
     ~ThreeDView() override;
 
     void render() override;
 
-//    void setSettings(Settings settings_);
-//
-//    Settings getSettings() const;
+    void setSettings(Settings settings_);
+
+    Settings getSettings() const;
 
     void setCustomModel(const juce::File& file);
 
@@ -56,13 +54,14 @@ public:
 
     void setHudEnabled(const bool enabled);
 
-//    void write(const float x, const float y, const float z, const float w);
-
     void update(const float x, const float y, const float z, const float w);
 
 private:
     GLRenderer& renderer;
-    const Settings& settings;
+
+    mutable std::mutex settingsMutex;
+    Settings settings;
+
     std::atomic<float> quaternionX { 0.0f }, quaternionY { 0.0f }, quaternionZ { 0.0f }, quaternionW { 1.0f };
 
     std::atomic<bool> hudEnabled { true };

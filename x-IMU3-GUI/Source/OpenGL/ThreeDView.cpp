@@ -2,23 +2,7 @@
 #include "Convert.h"
 #include "ThreeDView.h"
 
-ThreeDView::Settings& ThreeDView::Settings::operator=(const ThreeDView::Settings& other)
-{
-    cameraAzimuth = other.cameraAzimuth.load();
-    cameraElevation = other.cameraElevation.load();
-    cameraOrbitDistance = other.cameraOrbitDistance.load();
-    worldEnabled = other.worldEnabled.load();
-    modelEnabled = other.modelEnabled.load();
-    axesEnabled = other.axesEnabled.load();
-    compassEnabled = other.compassEnabled.load();
-    model = other.model.load();
-    axesConvention = other.axesConvention.load();
-    return *this;
-}
-
-ThreeDView::ThreeDView(GLRenderer& renderer_, const Settings& settings_) : OpenGLComponent(renderer_.getContext()),
-                                                                           renderer(renderer_),
-                                                                           settings(settings_)
+ThreeDView::ThreeDView(GLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_)
 {
     renderer.addComponent(*this);
 }
@@ -30,6 +14,8 @@ ThreeDView::~ThreeDView()
 
 void ThreeDView::render()
 {
+    std::scoped_lock lock(settingsMutex);
+
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
     auto& camera = resources->orbitCamera;
 
@@ -41,7 +27,7 @@ void ThreeDView::render()
     const auto viewMatrix = camera.getViewMatrix();
 
     // Convert device rotation to OpenGL coordinate space where OpenGL +X+Y+Z = Earth +X+Z-Y
-    const auto deviceRotation = glm::mat4_cast(glm::quat(quaternionW.load(), quaternionX.load(), quaternionZ.load(), -1.0f * quaternionY.load()));
+    const auto deviceRotation = glm::mat4_cast(glm::quat(quaternionW, quaternionX, quaternionZ, -1.0f * quaternionY));
 
     // Calculations to ensure model does not pass through floor at any orientation
     const float modelScale = 0.55f;
@@ -51,7 +37,7 @@ void ThreeDView::render()
 
     // Create rotation matrix based on axes convention user setting
     glm::mat4 axesConventionRotation(1.0f);
-    switch (settings.axesConvention.load())
+    switch (settings.axesConvention)
     {
         case AxesConvention::nwu:
             break;
@@ -64,7 +50,7 @@ void ThreeDView::render()
     }
 
     // Draw scene
-    GLHelpers::ScopedCapability _(juce::gl::GL_SCISSOR_TEST, true);
+    GLHelpers::ScopedCapability scopedCapability(juce::gl::GL_SCISSOR_TEST, true);
     GLHelpers::viewportAndScissor(bounds); // clip drawing to bounds
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
@@ -95,12 +81,16 @@ void ThreeDView::render()
     }
 }
 
-void ThreeDView::update(const float x, const float y, const float z, const float w)
+void ThreeDView::setSettings(Settings settings_)
 {
-    quaternionX = x;
-    quaternionY = y;
-    quaternionZ = z;
-    quaternionW = w;
+    std::scoped_lock _(settingsMutex);
+    settings = settings_;
+}
+
+ThreeDView::Settings ThreeDView::getSettings() const
+{
+    std::scoped_lock _(settingsMutex);
+    return settings;
 }
 
 void ThreeDView::setCustomModel(const juce::File& file)
@@ -110,7 +100,7 @@ void ThreeDView::setCustomModel(const juce::File& file)
 
 bool ThreeDView::isLoading() const
 {
-    switch (settings.model.load())
+    switch (settings.model)
     {
         case Model::board:
             return resources->board.isLoading();
@@ -125,6 +115,14 @@ bool ThreeDView::isLoading() const
 void ThreeDView::setHudEnabled(const bool enabled)
 {
     hudEnabled = enabled;
+}
+
+void ThreeDView::update(const float x, const float y, const float z, const float w)
+{
+    quaternionX = x;
+    quaternionY = y;
+    quaternionZ = z;
+    quaternionW = w;
 }
 
 void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
@@ -145,7 +143,7 @@ void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4&
     threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
     threeDViewShader.lightIntensity.set(1.0f);
 
-    switch (settings.model.load())
+    switch (settings.model)
     {
         case Model::board:
             resources->board.renderWithMaterials(threeDViewShader);
