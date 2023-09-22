@@ -90,11 +90,11 @@ void GraphWindow::mouseWheelMove(const juce::MouseEvent& mouseEvent, const juce:
 {
     if (mouseEvent.mods.isAltDown())
     {
-        zoomVertical(std::exp2(wheel.deltaY));
+        zoomVertical(std::exp2(-wheel.deltaY));
     }
     else
     {
-        zoomHorizontal(std::exp2(wheel.deltaY));
+        zoomHorizontal(std::exp2(-wheel.deltaY));
     }
 }
 
