@@ -60,6 +60,8 @@ private:
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
     uint64_t earthAccelerationCallbackID;
 
+    bool compactView = false;
+
     juce::PopupMenu getMenu();
 
     void timerCallback() override;

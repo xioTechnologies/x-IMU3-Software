@@ -89,7 +89,7 @@ void ThreeDView::render()
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    if (settings.axesEnabled)
+    if (settings.axesEnabled && hudEnabled)
     {
         renderAxes(deviceRotation, axesConventionRotation);
     }
@@ -120,6 +120,11 @@ bool ThreeDView::isLoading() const
             return resources->custom.isLoading();
     }
     return false;
+}
+
+void ThreeDView::setHudEnabled(const bool enabled)
+{
+    hudEnabled = enabled;
 }
 
 void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const

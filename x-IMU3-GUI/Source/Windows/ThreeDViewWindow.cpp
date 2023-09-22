@@ -78,7 +78,11 @@ void ThreeDViewWindow::resized()
 {
     Window::resized();
     juce::Rectangle<int> bounds = getContentBounds();
+
+    compactView = std::min(getWidth(), getHeight()) < 200;
+
     threeDView.setBounds(bounds);
+    threeDView.setHudEnabled(compactView == false);
 
     bounds.reduce(10, 10);
 
@@ -86,7 +90,7 @@ void ThreeDViewWindow::resized()
     {
         auto row = bounds.removeFromTop(20);
         label.setBounds(row.removeFromLeft(50));
-        value.setBounds(row);
+        value.setBounds(row);   
     };
 
     setRow(rollLabel, rollValue);
@@ -148,11 +152,11 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     {
         settings.modelEnabled = !settings.modelEnabled;
     });
-    menu.addItem("Euler Angles", true, rollLabel.isVisible(), [&]
+    menu.addItem("Euler Angles", compactView == false, rollLabel.isVisible(), [&]
     {
         eulerAnglesEnabled = !eulerAnglesEnabled;
     });
-    menu.addItem("Axes", true, settings.axesEnabled, [&]
+    menu.addItem("Axes", compactView == false, settings.axesEnabled, [&]
     {
         settings.axesEnabled = !settings.axesEnabled;
     });
@@ -202,14 +206,16 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
 void ThreeDViewWindow::timerCallback()
 {
-    rollLabel.setVisible(eulerAnglesEnabled);
-    pitchLabel.setVisible(eulerAnglesEnabled);
-    yawLabel.setVisible(eulerAnglesEnabled);
-    rollValue.setVisible(eulerAnglesEnabled);
-    pitchValue.setVisible(eulerAnglesEnabled);
-    yawValue.setVisible(eulerAnglesEnabled);
+    const auto visible = (eulerAnglesEnabled && compactView == false);
 
-    if (eulerAnglesEnabled)
+    rollLabel.setVisible(visible);
+    pitchLabel.setVisible(visible);
+    yawLabel.setVisible(visible);
+    rollValue.setVisible(visible);
+    pitchValue.setVisible(visible);
+    yawValue.setVisible(visible);
+
+    if (visible)
     {
         static const auto formatAngle = [](const float angle)
         {

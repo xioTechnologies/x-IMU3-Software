@@ -46,16 +46,26 @@ public:
 
     void render() override;
 
-    void update(const float x, const float y, const float z, const float w);
+//    void setSettings(Settings settings_);
+//
+//    Settings getSettings() const;
 
     void setCustomModel(const juce::File& file);
 
     bool isLoading() const;
 
+    void setHudEnabled(const bool enabled);
+
+//    void write(const float x, const float y, const float z, const float w);
+
+    void update(const float x, const float y, const float z, const float w);
+
 private:
     GLRenderer& renderer;
     const Settings& settings;
     std::atomic<float> quaternionX { 0.0f }, quaternionY { 0.0f }, quaternionZ { 0.0f }, quaternionW { 1.0f };
+
+    std::atomic<bool> hudEnabled { true };
 
     void renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const;
 
