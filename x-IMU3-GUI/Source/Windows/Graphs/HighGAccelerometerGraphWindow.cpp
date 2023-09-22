@@ -17,7 +17,7 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
 {
     callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
     {
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
+        update(message.timestamp, { message.x, message.y, message.z });
     }));
 }
 

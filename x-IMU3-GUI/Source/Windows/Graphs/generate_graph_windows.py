@@ -53,7 +53,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
     {\n\
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x, message.y, message.z });\n\
     }));",
            ),
     Window(name="EulerAngles",
@@ -70,15 +70,15 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
+        const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
     {\n\
-        const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,\n\
-                                                      message.yx_element, message.yy_element, message.yz_element,\n\
-                                                      message.zx_element, message.zy_element, message.zz_element);\n\
+        const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,\n\
+                                                      message.yx, message.yy, message.yz,\n\
+                                                      message.zx, message.zy, message.zz);\n\
         const auto eulerAngles = Convert::toEulerAngles(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
@@ -90,13 +90,13 @@ windows = [
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
+        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);\n\
+        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));",
            ),
@@ -109,7 +109,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });\n\
     }));",
            ),
     Window(name="EarthAcceleration",
@@ -121,7 +121,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });\n\
     }));",
            ),
     Window(name="HighGAccelerometer",
@@ -133,7 +133,7 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
     {\n\
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });\n\
+        update(message.timestamp, { message.x, message.y, message.z });\n\
     }));",
            ),
     Window(name="Temperature",

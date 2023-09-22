@@ -47,32 +47,32 @@ def inertial_callback(message):
 
 def magnetometer_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.x_axis) + " a.u." +
-          float_format(message.y_axis) + " a.u." +
-          float_format(message.z_axis) + " a.u.")
+          float_format(message.x) + " a.u." +
+          float_format(message.y) + " a.u." +
+          float_format(message.z) + " a.u.")
     # print(message.to_string())  # alternative to above
 
 
 def quaternion_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.w_element) +
-          float_format(message.x_element) +
-          float_format(message.y_element) +
-          float_format(message.z_element))
+          float_format(message.w) +
+          float_format(message.x) +
+          float_format(message.y) +
+          float_format(message.z))
     # print(message.to_string())  # alternative to above
 
 
 def rotation_matrix_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.xx_element) +
-          float_format(message.xy_element) +
-          float_format(message.xz_element) +
-          float_format(message.yx_element) +
-          float_format(message.yy_element) +
-          float_format(message.yz_element) +
-          float_format(message.zx_element) +
-          float_format(message.zy_element) +
-          float_format(message.zz_element))
+          float_format(message.xx) +
+          float_format(message.xy) +
+          float_format(message.xz) +
+          float_format(message.yx) +
+          float_format(message.yy) +
+          float_format(message.yz) +
+          float_format(message.zx) +
+          float_format(message.zy) +
+          float_format(message.zz))
     # print(message.to_string())  # alternative to above
 
 
@@ -86,33 +86,33 @@ def euler_angles_callback(message):
 
 def linear_acceleration_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.w_element) +
-          float_format(message.x_element) +
-          float_format(message.y_element) +
-          float_format(message.z_element) +
-          float_format(message.x_axis) + " g" +
-          float_format(message.y_axis) + " g" +
-          float_format(message.z_axis) + " g")
+          float_format(message.quaternion_w) +
+          float_format(message.quaternion_x) +
+          float_format(message.quaternion_y) +
+          float_format(message.quaternion_z) +
+          float_format(message.acceleration_x) + " g" +
+          float_format(message.acceleration_y) + " g" +
+          float_format(message.acceleration_z) + " g")
     # print(message.to_string())  # alternative to above
 
 
 def earth_acceleration_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.w_element) +
-          float_format(message.x_element) +
-          float_format(message.y_element) +
-          float_format(message.z_element) +
-          float_format(message.x_axis) + " g" +
-          float_format(message.y_axis) + " g" +
-          float_format(message.z_axis) + " g")
+          float_format(message.quaternion_w) +
+          float_format(message.quaternion_x) +
+          float_format(message.quaternion_y) +
+          float_format(message.quaternion_z) +
+          float_format(message.acceleration_x) + " g" +
+          float_format(message.acceleration_y) + " g" +
+          float_format(message.acceleration_z) + " g")
     # print(message.to_string())  # alternative to above
 
 
 def high_g_accelerometer_callback(message):
     print(timestamp_format(message.timestamp) +
-          float_format(message.x_axis) + " g" +
-          float_format(message.y_axis) + " g" +
-          float_format(message.z_axis) + " g")
+          float_format(message.x) + " g" +
+          float_format(message.y) + " g" +
+          float_format(message.z) + " g")
     # print(message.to_string())  # alternative to above
 
 

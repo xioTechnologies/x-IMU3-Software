@@ -17,15 +17,15 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
 {
     callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
+        const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 
     callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
-        const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,
-                                                      message.yx_element, message.yy_element, message.yz_element,
-                                                      message.zx_element, message.zy_element, message.zz_element);
+        const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,
+                                                      message.yx, message.yy, message.yz,
+                                                      message.zx, message.zy, message.zz);
         const auto eulerAngles = Convert::toEulerAngles(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
@@ -37,13 +37,13 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
 
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
+        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 
     callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
+        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });
     }));
 }
