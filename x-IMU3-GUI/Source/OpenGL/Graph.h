@@ -59,8 +59,6 @@ private:
     static constexpr GLfloat minorTickBrightness = 0.45f;
     static constexpr GLfloat borderBrightness = 0.65f;
 
-    static float engineeringValueToNDC(float value, const AxisLimits& axisLimits); // map to OpenGL Normalized Device Coordinates (NDC) with values ranging from -1.0 to 1.0
-
     static int getMaximumStringWidth(const std::vector<Tick>& ticks, const Text& text);
 
     void drawPlot(const juce::Rectangle<int>& bounds, const AxesLimits& limits, const std::vector<Tick>& xTicks, const std::vector<Tick>& yTicks, const std::vector<std::span<const juce::Point<GLfloat>>>& channels, const std::vector<bool>& enabledChannels);

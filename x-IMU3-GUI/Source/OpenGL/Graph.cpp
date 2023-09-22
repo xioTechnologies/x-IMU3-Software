@@ -104,11 +104,6 @@ void Graph::write(const uint64_t timestamp, const std::vector<float>& values)
     buffer.write(timestamp, values);
 }
 
-float Graph::engineeringValueToNDC(float value, const AxisLimits& axisLimits)
-{
-    return (((value - axisLimits.min) / axisLimits.getRange()) * 2.0f) - 1.0f;
-}
-
 int Graph::getMaximumStringWidth(const std::vector<Tick>& ticks, const Text& text)
 {
     int maxStringWidth = 0;
@@ -157,7 +152,7 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
         auto addLine = [&](float position, bool isMajorTick)
         {
             const float tickBrightness = isMajorTick ? majorTickBrightness : minorTickBrightness;
-            const float ndcPosition = engineeringValueToNDC(position, axisLimits);
+            const float ndcPosition = (((position - axisLimits.min) / axisLimits.getRange()) * 2.0f) - 1.0f;
             if (areVertical)
             {
                 linesToAddTo.insert(linesToAddTo.end(), { ndcPosition, -1.0f, tickBrightness, ndcPosition, 1.0f, tickBrightness });
