@@ -224,11 +224,11 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         settings.modelEnabled = !settings.modelEnabled;
         writeToValueTree(settings);
     });
-    menu.addItem("Euler Angles", compactView == false, settingsTree.getProperty("eulerAnglesEnabled", true), [&]
+    menu.addItem("Euler Angles", compactView == false, settingsTree.getProperty("eulerAnglesEnabled", true) && (compactView == false), [&]
     {
         settingsTree.setProperty("eulerAnglesEnabled", (bool) settingsTree.getProperty("eulerAnglesEnabled", true) == false, nullptr);
     });
-    menu.addItem("Axes", compactView == false, threeDView.getSettings().axesEnabled, [&]
+    menu.addItem("Axes", compactView == false, threeDView.getSettings().axesEnabled && (compactView == false), [&]
     {
         auto settings = threeDView.getSettings();
         settings.axesEnabled = !settings.axesEnabled;
