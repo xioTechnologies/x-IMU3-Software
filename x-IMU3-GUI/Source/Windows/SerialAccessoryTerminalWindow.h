@@ -24,7 +24,7 @@ public:
 private:
     SerialAccessoryTerminal serialAccessoryTerminal;
     CustomComboBox sendValue;
-    IconButton sendButton { BinaryData::send_svg, "Send", nullptr, false, BinaryData::send_warning_svg, "Send (Failed)" };
+    IconButton sendButton { BinaryData::send_svg, "Send" };
 
     juce::ValueTree serialHistory;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Serial History.xml");
