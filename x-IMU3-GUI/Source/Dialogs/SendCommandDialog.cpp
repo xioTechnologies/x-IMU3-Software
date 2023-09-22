@@ -162,10 +162,12 @@ juce::PopupMenu SendCommandDialog::getCommandKeysMenu()
     {
         if (child.hasType("Command"))
         {
-            const auto key = child["key"];
-            menu.addItem(key, [&, key]
+            menu.addItem(child["key"], [&, child]
             {
-                keyValue.setText(key, juce::sendNotification);
+                keyValue.setText(child["key"], juce::sendNotification);
+                typeValue.setSelectedItemIndex(child["type"], juce::sendNotification);
+                stringValue.setText({}, juce::sendNotification);
+                numberValue.setText({}, juce::sendNotification);
             });
         }
         else if (child.hasType("Separator"))
