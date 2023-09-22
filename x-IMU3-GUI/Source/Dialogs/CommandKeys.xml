@@ -1,88 +1,103 @@
 <CommandKeys>
-    <Command key="default"/>
-    <Command key="apply"/>
-    <Command key="save"/>
-    <Command key="time"/>
-    <Command key="ping"/>
-    <Command key="reset"/>
-    <Command key="shutdown"/>
-    <Command key="strobe"/>
-    <Command key="colour"/>
-    <Command key="initialise"/>
-    <Command key="heading"/>
-    <Command key="accessory"/>
-    <Command key="note"/>
-    <Command key="format"/>
-    <Command key="test"/>
-    <Command key="bootloader"/>
-    <Separator header="DEVICE SETTINGS"/>
-    <Command key="deviceName"/>
-    <Command key="serialNumber"/>
-    <Command key="firmwareVersion"/>
-    <Command key="bootloaderVersion"/>
-    <Command key="hardwareVersion"/>
-    <Command key="serialMode"/>
-    <Command key="serialBaudRate"/>
-    <Command key="serialRtsCtsEnabled"/>
-    <Command key="serialAccessoryNumberOfBytes"/>
-    <Command key="serialAccessoryTerminationByte"/>
-    <Command key="serialAccessoryTimeout"/>
-    <Command key="wirelessMode"/>
-    <Command key="wirelessFirmwareVersion"/>
-    <Command key="externalAntennaeEnabled"/>
-    <Command key="wiFiRegion"/>
-    <Command key="wiFiMacAddress"/>
-    <Command key="wiFiIPAddress"/>
-    <Command key="wiFiClientSsid"/>
-    <Command key="wiFiClientKey"/>
-    <Command key="wiFiClientChannel"/>
-    <Command key="wiFiClientDhcpEnabled"/>
-    <Command key="wiFiClientIPAddress"/>
-    <Command key="wiFiClientNetmask"/>
-    <Command key="wiFiClientGateway"/>
-    <Command key="wiFiAPSsid"/>
-    <Command key="wiFiAPKey"/>
-    <Command key="wiFiAPChannel"/>
-    <Command key="wiFiAPIPAddress"/>
-    <Command key="tcpPort"/>
-    <Command key="udpIPAddress"/>
-    <Command key="udpSendPort"/>
-    <Command key="udpReceivePort"/>
-    <Command key="udpLowLatency"/>
-    <Command key="synchronisationEnabled"/>
-    <Command key="synchronisationNetworkLatency"/>
-    <Command key="bluetoothAddress"/>
-    <Command key="bluetoothName"/>
-    <Command key="bluetoothPinCode"/>
-    <Command key="bluetoothDiscoveryMode"/>
-    <Command key="bluetoothPairedAddress"/>
-    <Command key="bluetoothPairedLinkKey"/>
-    <Command key="dataLoggerEnabled"/>
-    <Command key="dataLoggerFileNamePrefix"/>
-    <Command key="dataLoggerFileNameTimeEnabled"/>
-    <Command key="dataLoggerFileNameCounterEnabled"/>
-    <Command key="dataLoggerMaxFileSize"/>
-    <Command key="dataLoggerMaxFilePeriod"/>
-    <Command key="axesAlignment"/>
-    <Command key="gyroscopeOffsetCorrectionEnabled"/>
-    <Command key="ahrsAxesConvention"/>
-    <Command key="ahrsGain"/>
-    <Command key="ahrsIgnoreMagnetometer"/>
-    <Command key="ahrsAccelerationRejectionEnabled"/>
-    <Command key="ahrsMagneticRejectionEnabled"/>
-    <Command key="binaryModeEnabled"/>
-    <Command key="usbDataMessagesEnabled"/>
-    <Command key="serialDataMessagesEnabled"/>
-    <Command key="tcpDataMessagesEnabled"/>
-    <Command key="udpDataMessagesEnabled"/>
-    <Command key="bluetoothDataMessagesEnabled"/>
-    <Command key="dataLoggerDataMessagesEnabled"/>
-    <Command key="ahrsMessageType"/>
-    <Command key="inertialMessageRateDivisor"/>
-    <Command key="magnetometerMessageRateDivisor"/>
-    <Command key="ahrsMessageRateDivisor"/>
-    <Command key="highGAccelerometerMessageRateDivisor"/>
-    <Command key="temperatureMessageRateDivisor"/>
-    <Command key="batteryMessageRateDivisor"/>
-    <Command key="rssiMessageRateDivisor"/>
+    <Command key="default" type="null"/>
+    <Command key="apply" type="null"/>
+    <Command key="save" type="null"/>
+    <Command key="time" type="string"/>
+    <Command key="ping" type="null"/>
+    <Command key="reset" type="null"/>
+    <Command key="shutdown" type="null"/>
+    <Command key="strobe" type="null"/>
+    <Command key="colour" type="string"/>
+    <Command key="initialise" type="null"/>
+    <Command key="heading" type="number"/>
+    <Command key="accessory" type="string"/>
+    <Command key="note" type="string"/>
+    <Command key="format" type="null"/>
+    <Command key="test" type="null"/>
+    <Command key="bootloader" type="null"/>
+    <Separator header="DEVICE SETTINGS" type="null"/>
+    <Command key="calibrationDate" type="null"/>
+    <Command key="systemClockCalibration" type="null"/>
+    <Command key="rtcCalibration" type="null"/>
+    <Command key="batteryVoltmeterSensitivity" type="null"/>
+    <Command key="gyroscopeMisalignment" type="null"/>
+    <Command key="gyroscopeSensitivity" type="null"/>
+    <Command key="gyroscopeOffset" type="null"/>
+    <Command key="accelerometerMisalignment" type="null"/>
+    <Command key="accelerometerSensitivity" type="null"/>
+    <Command key="accelerometerOffset" type="null"/>
+    <Command key="softIronMatrix" type="null"/>
+    <Command key="hardIronOffset" type="null"/>
+    <Command key="highGAccelerometerMisalignment" type="null"/>
+    <Command key="highGAccelerometerSensitivity" type="null"/>
+    <Command key="highGAccelerometerOffset" type="null"/>
+    <Command key="deviceName" type="null"/>
+    <Command key="serialNumber" type="null"/>
+    <Command key="firmwareVersion" type="null"/>
+    <Command key="bootloaderVersion" type="null"/>
+    <Command key="hardwareVersion" type="null"/>
+    <Command key="serialMode" type="null"/>
+    <Command key="serialBaudRate" type="null"/>
+    <Command key="serialRtsCtsEnabled" type="null"/>
+    <Command key="serialAccessoryNumberOfBytes" type="null"/>
+    <Command key="serialAccessoryTerminationByte" type="null"/>
+    <Command key="serialAccessoryTimeout" type="null"/>
+    <Command key="wirelessMode" type="null"/>
+    <Command key="wirelessFirmwareVersion" type="null"/>
+    <Command key="externalAntennaeEnabled" type="null"/>
+    <Command key="wiFiRegion" type="null"/>
+    <Command key="wiFiMacAddress" type="null"/>
+    <Command key="wiFiIPAddress" type="null"/>
+    <Command key="wiFiClientSsid" type="null"/>
+    <Command key="wiFiClientKey" type="null"/>
+    <Command key="wiFiClientChannel" type="null"/>
+    <Command key="wiFiClientDhcpEnabled" type="null"/>
+    <Command key="wiFiClientIPAddress" type="null"/>
+    <Command key="wiFiClientNetmask" type="null"/>
+    <Command key="wiFiClientGateway" type="null"/>
+    <Command key="wiFiAPSsid" type="null"/>
+    <Command key="wiFiAPKey" type="null"/>
+    <Command key="wiFiAPChannel" type="null"/>
+    <Command key="wiFiAPIPAddress" type="null"/>
+    <Command key="tcpPort" type="null"/>
+    <Command key="udpIPAddress" type="null"/>
+    <Command key="udpSendPort" type="null"/>
+    <Command key="udpReceivePort" type="null"/>
+    <Command key="udpLowLatency" type="null"/>
+    <Command key="synchronisationEnabled" type="null"/>
+    <Command key="synchronisationNetworkLatency" type="null"/>
+    <Command key="bluetoothAddress" type="null"/>
+    <Command key="bluetoothName" type="null"/>
+    <Command key="bluetoothPinCode" type="null"/>
+    <Command key="bluetoothDiscoveryMode" type="null"/>
+    <Command key="bluetoothPairedAddress" type="null"/>
+    <Command key="bluetoothPairedLinkKey" type="null"/>
+    <Command key="dataLoggerEnabled" type="null"/>
+    <Command key="dataLoggerFileNamePrefix" type="null"/>
+    <Command key="dataLoggerFileNameTimeEnabled" type="null"/>
+    <Command key="dataLoggerFileNameCounterEnabled" type="null"/>
+    <Command key="dataLoggerMaxFileSize" type="null"/>
+    <Command key="dataLoggerMaxFilePeriod" type="null"/>
+    <Command key="axesAlignment" type="null"/>
+    <Command key="gyroscopeOffsetCorrectionEnabled" type="null"/>
+    <Command key="ahrsAxesConvention" type="null"/>
+    <Command key="ahrsGain" type="null"/>
+    <Command key="ahrsIgnoreMagnetometer" type="null"/>
+    <Command key="ahrsAccelerationRejectionEnabled" type="null"/>
+    <Command key="ahrsMagneticRejectionEnabled" type="null"/>
+    <Command key="binaryModeEnabled" type="null"/>
+    <Command key="usbDataMessagesEnabled" type="null"/>
+    <Command key="serialDataMessagesEnabled" type="null"/>
+    <Command key="tcpDataMessagesEnabled" type="null"/>
+    <Command key="udpDataMessagesEnabled" type="null"/>
+    <Command key="bluetoothDataMessagesEnabled" type="null"/>
+    <Command key="dataLoggerDataMessagesEnabled" type="null"/>
+    <Command key="ahrsMessageType" type="null"/>
+    <Command key="inertialMessageRateDivisor" type="null"/>
+    <Command key="magnetometerMessageRateDivisor" type="null"/>
+    <Command key="ahrsMessageRateDivisor" type="null"/>
+    <Command key="highGAccelerometerMessageRateDivisor" type="null"/>
+    <Command key="temperatureMessageRateDivisor" type="null"/>
+    <Command key="batteryMessageRateDivisor" type="null"/>
+    <Command key="rssiMessageRateDivisor" type="null"/>
 </CommandKeys>
