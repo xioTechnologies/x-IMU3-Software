@@ -6,12 +6,12 @@
 #include "OpenGL/Common/GLRenderer.h"
 #include "Ximu3.hpp"
 
-class SerialAccessoryGraphWindow : public GraphWindow
+class SerialAccessoryCsvsGraphWindow : public GraphWindow
 {
 public:
-    SerialAccessoryGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
 
-    ~SerialAccessoryGraphWindow() override;
+    ~SerialAccessoryCsvsGraphWindow() override;
 
 private:
     static juce::ValueTree settingsTree_;

@@ -196,7 +196,7 @@ windows = [
         update(message.timestamp, { message.power });\n\
     }));",
            ),
-    Window(name="SerialAccessory",
+    Window(name="SerialAccessoryCsvs",
            callback_declarations="    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback;",
            horizontal_autoscale="false",
            y_axis="CSV",
@@ -272,19 +272,10 @@ code = "".join(["#include \"Windows/Graphs/" + w.name + "GraphWindow.h\"\n" for 
 helpers.insert(file_path, code, "0")
 
 template = "\
-    if (type == WindowIDs::$name$Graph)\n\
+    if (type == WindowIDs::$name$)\n\
     {\n\
         return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, glRenderer);\n\
     }\n"
 
 code = "".join([template.replace("$name$", w.name) for w in windows])
 helpers.insert(file_path, code, 1)
-
-# Insert code into x-IMU3-GUI/Source/MenuStrip/MenuStrip.cpp
-file_path = "../../MenuStrip/MenuStrip.cpp"
-
-code = "".join(["    addWindowItem(WindowIDs::" + w.name + "Graph);\n" for w in windows])
-helpers.insert(file_path, code, "0")
-
-code = "".join(["    addSingleWindowItem(WindowIDs::" + w.name + "Graph);\n" for w in windows])
-helpers.insert(file_path, code, "1")
