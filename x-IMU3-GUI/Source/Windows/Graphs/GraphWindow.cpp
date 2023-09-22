@@ -223,7 +223,12 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [this]
     {
-        settingsTree.removeAllProperties(nullptr);
+        settingsTree.removeProperty("paused", nullptr);
+
+        Graph::Settings settings;
+        settings.horizontalAutoscale = defaultHorizontalAutoscale;
+        settings.enabledChannels.resize((size_t) numberOfChannels, true);
+        writeToValueTree(settings);
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
     {
