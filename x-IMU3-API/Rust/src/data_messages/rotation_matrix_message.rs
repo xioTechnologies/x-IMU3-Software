@@ -9,15 +9,15 @@ use crate::decode_error::*;
 #[derive(Clone, Copy)]
 pub struct RotationMatrixMessage {
     pub timestamp: u64,
-    pub xx_element: f32,
-    pub xy_element: f32,
-    pub xz_element: f32,
-    pub yx_element: f32,
-    pub yy_element: f32,
-    pub yz_element: f32,
-    pub zx_element: f32,
-    pub zy_element: f32,
-    pub zz_element: f32,
+    pub xx: f32,
+    pub xy: f32,
+    pub xz: f32,
+    pub yx: f32,
+    pub yy: f32,
+    pub yz: f32,
+    pub zx: f32,
+    pub zy: f32,
+    pub zz: f32,
 }
 
 impl DataMessage for RotationMatrixMessage {
@@ -27,7 +27,7 @@ impl DataMessage for RotationMatrixMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{f},{f},{f},{f},{f},{f},{f},{f},{f}\r\n",  char, u64, f32, f32, f32, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, xx_element, xy_element, xz_element, yx_element, yy_element, yz_element, zx_element, zy_element, zz_element)) => Ok(RotationMatrixMessage { timestamp, xx_element, xy_element, xz_element, yx_element, yy_element, yz_element, zx_element, zy_element, zz_element }),
+            Ok((_, timestamp, xx, xy, xz, yx, yy, yz, zx, zy, zz)) => Ok(RotationMatrixMessage { timestamp, xx, xy, xz, yx, yy, yz, zx, zy, zz }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -37,15 +37,15 @@ impl DataMessage for RotationMatrixMessage {
         struct BinaryMessage {
             id: u8,
             timestamp: u64,
-            xx_element: f32,
-            xy_element: f32,
-            xz_element: f32,
-            yx_element: f32,
-            yy_element: f32,
-            yz_element: f32,
-            zx_element: f32,
-            zy_element: f32,
-            zz_element: f32,
+            xx: f32,
+            xy: f32,
+            xz: f32,
+            yx: f32,
+            yy: f32,
+            yz: f32,
+            zx: f32,
+            zy: f32,
+            zz: f32,
             termination: u8,
         }
 
@@ -58,7 +58,7 @@ impl DataMessage for RotationMatrixMessage {
             binary_message
         };
 
-        Ok(RotationMatrixMessage { timestamp: binary_message.timestamp, xx_element: binary_message.xx_element, xy_element: binary_message.xy_element, xz_element: binary_message.xz_element, yx_element: binary_message.yx_element, yy_element: binary_message.yy_element, yz_element: binary_message.yz_element, zx_element: binary_message.zx_element, zy_element: binary_message.zy_element, zz_element: binary_message.zz_element })
+        Ok(RotationMatrixMessage { timestamp: binary_message.timestamp, xx: binary_message.xx, xy: binary_message.xy, xz: binary_message.xz, yx: binary_message.yx, yy: binary_message.yy, yz: binary_message.yz, zx: binary_message.zx, zy: binary_message.zy, zz: binary_message.zz })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
@@ -66,16 +66,16 @@ impl DataMessage for RotationMatrixMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),XX Element,XY Element,XZ Element,YX Element,YY Element,YZ Element,ZX Element,ZY Element,ZZ Element\n"
+        "Timestamp (us),XX,XY,XZ,YX,YY,YZ,ZX,ZY,ZZ\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.xx_element, self.xy_element, self.xz_element, self.yx_element, self.yy_element, self.yz_element, self.zx_element, self.zy_element, self.zz_element)
+        format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.xx, self.xy, self.xz, self.yx, self.yy, self.yz, self.zx, self.zy, self.zz)
     }
 }
 
 impl fmt::Display for RotationMatrixMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3}", self.timestamp, self.xx_element, self.xy_element, self.xz_element, self.yx_element, self.yy_element, self.yz_element, self.zx_element, self.zy_element, self.zz_element)
+        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3}", self.timestamp, self.xx, self.xy, self.xz, self.yx, self.yy, self.yz, self.zx, self.zy, self.zz)
     }
 }

@@ -22,39 +22,39 @@ static PyObject* earth_acceleration_message_get_timestamp(EarthAccelerationMessa
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* earth_acceleration_message_get_w_element(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_quaternion_w(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.w_element);
+    return Py_BuildValue("f", self->message.quaternion_w);
 }
 
-static PyObject* earth_acceleration_message_get_x_element(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_quaternion_x(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_element);
+    return Py_BuildValue("f", self->message.quaternion_x);
 }
 
-static PyObject* earth_acceleration_message_get_y_element(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_quaternion_y(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_element);
+    return Py_BuildValue("f", self->message.quaternion_y);
 }
 
-static PyObject* earth_acceleration_message_get_z_element(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_quaternion_z(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_element);
+    return Py_BuildValue("f", self->message.quaternion_z);
 }
 
-static PyObject* earth_acceleration_message_get_x_axis(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_acceleration_x(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_axis);
+    return Py_BuildValue("f", self->message.acceleration_x);
 }
 
-static PyObject* earth_acceleration_message_get_y_axis(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_acceleration_y(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_axis);
+    return Py_BuildValue("f", self->message.acceleration_y);
 }
 
-static PyObject* earth_acceleration_message_get_z_axis(EarthAccelerationMessage* self)
+static PyObject* earth_acceleration_message_get_acceleration_z(EarthAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_axis);
+    return Py_BuildValue("f", self->message.acceleration_z);
 }
 
 static PyObject* earth_acceleration_message_to_string(EarthAccelerationMessage* self, PyObject* args)
@@ -63,14 +63,14 @@ static PyObject* earth_acceleration_message_to_string(EarthAccelerationMessage* 
 }
 
 static PyGetSetDef earth_acceleration_message_get_set[] = {
-        { "timestamp", (getter) earth_acceleration_message_get_timestamp, NULL, "", NULL },
-        { "w_element", (getter) earth_acceleration_message_get_w_element, NULL, "", NULL },
-        { "x_element", (getter) earth_acceleration_message_get_x_element, NULL, "", NULL },
-        { "y_element", (getter) earth_acceleration_message_get_y_element, NULL, "", NULL },
-        { "z_element", (getter) earth_acceleration_message_get_z_element, NULL, "", NULL },
-        { "x_axis",    (getter) earth_acceleration_message_get_x_axis,    NULL, "", NULL },
-        { "y_axis",    (getter) earth_acceleration_message_get_y_axis,    NULL, "", NULL },
-        { "z_axis",    (getter) earth_acceleration_message_get_z_axis,    NULL, "", NULL },
+        { "timestamp",      (getter) earth_acceleration_message_get_timestamp,      NULL, "", NULL },
+        { "quaternion_w",   (getter) earth_acceleration_message_get_quaternion_w,   NULL, "", NULL },
+        { "quaternion_x",   (getter) earth_acceleration_message_get_quaternion_x,   NULL, "", NULL },
+        { "quaternion_y",   (getter) earth_acceleration_message_get_quaternion_y,   NULL, "", NULL },
+        { "quaternion_z",   (getter) earth_acceleration_message_get_quaternion_z,   NULL, "", NULL },
+        { "acceleration_x", (getter) earth_acceleration_message_get_acceleration_x, NULL, "", NULL },
+        { "acceleration_y", (getter) earth_acceleration_message_get_acceleration_y, NULL, "", NULL },
+        { "acceleration_z", (getter) earth_acceleration_message_get_acceleration_z, NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

@@ -29,59 +29,59 @@ namespace Ximu3
             }
         }
 
-        property float WElement
+        property float QuaternionW
         {
             float get()
             {
-                return message->w_element;
+                return message->quaternion_w;
             }
         }
 
-        property float XElement
+        property float QuaternionX
         {
             float get()
             {
-                return message->x_element;
+                return message->quaternion_x;
             }
         }
 
-        property float YElement
+        property float QuaternionY
         {
             float get()
             {
-                return message->y_element;
+                return message->quaternion_y;
             }
         }
 
-        property float ZElement
+        property float QuaternionZ
         {
             float get()
             {
-                return message->z_element;
+                return message->quaternion_z;
             }
         }
 
-        property float XAxis
+        property float AccelerationX
         {
             float get()
             {
-                return message->x_axis;
+                return message->acceleration_x;
             }
         }
 
-        property float YAxis
+        property float AccelerationY
         {
             float get()
             {
-                return message->y_axis;
+                return message->acceleration_y;
             }
         }
 
-        property float ZAxis
+        property float AccelerationZ
         {
             float get()
             {
-                return message->z_axis;
+                return message->acceleration_z;
             }
         }
 

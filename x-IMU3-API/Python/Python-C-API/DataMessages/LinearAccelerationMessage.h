@@ -22,39 +22,39 @@ static PyObject* linear_acceleration_message_get_timestamp(LinearAccelerationMes
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* linear_acceleration_message_get_w_element(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_quaternion_w(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.w_element);
+    return Py_BuildValue("f", self->message.quaternion_w);
 }
 
-static PyObject* linear_acceleration_message_get_x_element(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_quaternion_x(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_element);
+    return Py_BuildValue("f", self->message.quaternion_x);
 }
 
-static PyObject* linear_acceleration_message_get_y_element(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_quaternion_y(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_element);
+    return Py_BuildValue("f", self->message.quaternion_y);
 }
 
-static PyObject* linear_acceleration_message_get_z_element(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_quaternion_z(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_element);
+    return Py_BuildValue("f", self->message.quaternion_z);
 }
 
-static PyObject* linear_acceleration_message_get_x_axis(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_acceleration_x(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_axis);
+    return Py_BuildValue("f", self->message.acceleration_x);
 }
 
-static PyObject* linear_acceleration_message_get_y_axis(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_acceleration_y(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_axis);
+    return Py_BuildValue("f", self->message.acceleration_y);
 }
 
-static PyObject* linear_acceleration_message_get_z_axis(LinearAccelerationMessage* self)
+static PyObject* linear_acceleration_message_get_acceleration_z(LinearAccelerationMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_axis);
+    return Py_BuildValue("f", self->message.acceleration_z);
 }
 
 static PyObject* linear_acceleration_message_to_string(LinearAccelerationMessage* self, PyObject* args)
@@ -63,14 +63,14 @@ static PyObject* linear_acceleration_message_to_string(LinearAccelerationMessage
 }
 
 static PyGetSetDef linear_acceleration_message_get_set[] = {
-        { "timestamp", (getter) linear_acceleration_message_get_timestamp, NULL, "", NULL },
-        { "w_element", (getter) linear_acceleration_message_get_w_element, NULL, "", NULL },
-        { "x_element", (getter) linear_acceleration_message_get_x_element, NULL, "", NULL },
-        { "y_element", (getter) linear_acceleration_message_get_y_element, NULL, "", NULL },
-        { "z_element", (getter) linear_acceleration_message_get_z_element, NULL, "", NULL },
-        { "x_axis",    (getter) linear_acceleration_message_get_x_axis,    NULL, "", NULL },
-        { "y_axis",    (getter) linear_acceleration_message_get_y_axis,    NULL, "", NULL },
-        { "z_axis",    (getter) linear_acceleration_message_get_z_axis,    NULL, "", NULL },
+        { "timestamp",      (getter) linear_acceleration_message_get_timestamp,      NULL, "", NULL },
+        { "quaternion_w",   (getter) linear_acceleration_message_get_quaternion_w,   NULL, "", NULL },
+        { "quaternion_x",   (getter) linear_acceleration_message_get_quaternion_x,   NULL, "", NULL },
+        { "quaternion_y",   (getter) linear_acceleration_message_get_quaternion_y,   NULL, "", NULL },
+        { "quaternion_z",   (getter) linear_acceleration_message_get_quaternion_z,   NULL, "", NULL },
+        { "acceleration_x", (getter) linear_acceleration_message_get_acceleration_x, NULL, "", NULL },
+        { "acceleration_y", (getter) linear_acceleration_message_get_acceleration_y, NULL, "", NULL },
+        { "acceleration_z", (getter) linear_acceleration_message_get_acceleration_z, NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

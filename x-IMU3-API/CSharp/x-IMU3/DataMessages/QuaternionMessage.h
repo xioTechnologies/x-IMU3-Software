@@ -29,35 +29,35 @@ namespace Ximu3
             }
         }
 
-        property float WElement
+        property float W
         {
             float get()
             {
-                return message->w_element;
+                return message->w;
             }
         }
 
-        property float XElement
+        property float X
         {
             float get()
             {
-                return message->x_element;
+                return message->x;
             }
         }
 
-        property float YElement
+        property float Y
         {
             float get()
             {
-                return message->y_element;
+                return message->y;
             }
         }
 
-        property float ZElement
+        property float Z
         {
             float get()
             {
-                return message->z_element;
+                return message->z;
             }
         }
 

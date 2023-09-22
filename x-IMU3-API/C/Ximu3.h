@@ -162,9 +162,9 @@ typedef void (*XIMU3_CallbackInertialMessage)(struct XIMU3_InertialMessage data,
 typedef struct XIMU3_MagnetometerMessage
 {
     uint64_t timestamp;
-    float x_axis;
-    float y_axis;
-    float z_axis;
+    float x;
+    float y;
+    float z;
 } XIMU3_MagnetometerMessage;
 
 typedef void (*XIMU3_CallbackMagnetometerMessage)(struct XIMU3_MagnetometerMessage data, void *context);
@@ -172,10 +172,10 @@ typedef void (*XIMU3_CallbackMagnetometerMessage)(struct XIMU3_MagnetometerMessa
 typedef struct XIMU3_QuaternionMessage
 {
     uint64_t timestamp;
-    float w_element;
-    float x_element;
-    float y_element;
-    float z_element;
+    float w;
+    float x;
+    float y;
+    float z;
 } XIMU3_QuaternionMessage;
 
 typedef void (*XIMU3_CallbackQuaternionMessage)(struct XIMU3_QuaternionMessage data, void *context);
@@ -183,15 +183,15 @@ typedef void (*XIMU3_CallbackQuaternionMessage)(struct XIMU3_QuaternionMessage d
 typedef struct XIMU3_RotationMatrixMessage
 {
     uint64_t timestamp;
-    float xx_element;
-    float xy_element;
-    float xz_element;
-    float yx_element;
-    float yy_element;
-    float yz_element;
-    float zx_element;
-    float zy_element;
-    float zz_element;
+    float xx;
+    float xy;
+    float xz;
+    float yx;
+    float yy;
+    float yz;
+    float zx;
+    float zy;
+    float zz;
 } XIMU3_RotationMatrixMessage;
 
 typedef void (*XIMU3_CallbackRotationMatrixMessage)(struct XIMU3_RotationMatrixMessage data, void *context);
@@ -209,13 +209,13 @@ typedef void (*XIMU3_CallbackEulerAnglesMessage)(struct XIMU3_EulerAnglesMessage
 typedef struct XIMU3_LinearAccelerationMessage
 {
     uint64_t timestamp;
-    float w_element;
-    float x_element;
-    float y_element;
-    float z_element;
-    float x_axis;
-    float y_axis;
-    float z_axis;
+    float quaternion_w;
+    float quaternion_x;
+    float quaternion_y;
+    float quaternion_z;
+    float acceleration_x;
+    float acceleration_y;
+    float acceleration_z;
 } XIMU3_LinearAccelerationMessage;
 
 typedef void (*XIMU3_CallbackLinearAccelerationMessage)(struct XIMU3_LinearAccelerationMessage data, void *context);
@@ -223,13 +223,13 @@ typedef void (*XIMU3_CallbackLinearAccelerationMessage)(struct XIMU3_LinearAccel
 typedef struct XIMU3_EarthAccelerationMessage
 {
     uint64_t timestamp;
-    float w_element;
-    float x_element;
-    float y_element;
-    float z_element;
-    float x_axis;
-    float y_axis;
-    float z_axis;
+    float quaternion_w;
+    float quaternion_x;
+    float quaternion_y;
+    float quaternion_z;
+    float acceleration_x;
+    float acceleration_y;
+    float acceleration_z;
 } XIMU3_EarthAccelerationMessage;
 
 typedef void (*XIMU3_CallbackEarthAccelerationMessage)(struct XIMU3_EarthAccelerationMessage data, void *context);
@@ -237,9 +237,9 @@ typedef void (*XIMU3_CallbackEarthAccelerationMessage)(struct XIMU3_EarthAcceler
 typedef struct XIMU3_HighGAccelerometerMessage
 {
     uint64_t timestamp;
-    float x_axis;
-    float y_axis;
-    float z_axis;
+    float x;
+    float y;
+    float z;
 } XIMU3_HighGAccelerometerMessage;
 
 typedef void (*XIMU3_CallbackHighGAccelerometerMessage)(struct XIMU3_HighGAccelerometerMessage data, void *context);
