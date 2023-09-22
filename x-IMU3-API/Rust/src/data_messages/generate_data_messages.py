@@ -25,19 +25,19 @@ messages = [
     Message(
         name="Magnetometer",
         ascii_id="M",
-        argument_names=["X Axis", "Y Axis", "Z Axis"],
+        argument_names=["X", "Y", "Z"],
         argument_units=["a.u.", "a.u.", "a.u."]
     ),
     Message(
         name="Quaternion",
         ascii_id="Q",
-        argument_names=["W Element", "X Element", "Y Element", "Z Element"],
+        argument_names=["W", "X", "Y", "Z"],
         argument_units=["", "", "", ""]
     ),
     Message(
         name="Rotation Matrix",
         ascii_id="R",
-        argument_names=["XX Element", "XY Element", "XZ Element", "YX Element", "YY Element", "YZ Element", "ZX Element", "ZY Element", "ZZ Element"],
+        argument_names=["XX", "XY", "XZ", "YX", "YY", "YZ", "ZX", "ZY", "ZZ"],
         argument_units=["", "", "", "", "", "", "", "", ""]
     ),
     Message(
@@ -49,19 +49,19 @@ messages = [
     Message(
         name="Linear acceleration",
         ascii_id="L",
-        argument_names=["W Element", "X Element", "Y Element", "Z Element", "X Axis", "Y Axis", "Z Axis"],
+        argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
         argument_units=["", "", "", "", "g", "g", "g"]
     ),
     Message(
         name="Earth acceleration",
         ascii_id="E",
-        argument_names=["W Element", "X Element", "Y Element", "Z Element", "X Axis", "Y Axis", "Z Axis"],
+        argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
         argument_units=["", "", "", "", "g", "g", "g"]
     ),
     Message(
         name="High-g accelerometer",
         ascii_id="H",
-        argument_names=["X Axis", "Y Axis", "Z Axis"],
+        argument_names=["X", "Y", "Z"],
         argument_units=["g", "g", "g"]
     ),
     Message(

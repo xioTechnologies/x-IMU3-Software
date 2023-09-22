@@ -6,7 +6,6 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
-
 STRING = "0"
 NUMBER = "1"
 TRUE = "2"

@@ -104,34 +104,34 @@ namespace Ximu3Examples
         private void MagnetometerEvent(Object sender, Ximu3.MagnetometerEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                 FloatFormat(args.message.XAxis) + " a.u." +
-                 FloatFormat(args.message.YAxis) + " a.u." +
-                 FloatFormat(args.message.ZAxis) + " a.u.");
+                 FloatFormat(args.message.X) + " a.u." +
+                 FloatFormat(args.message.Y) + " a.u." +
+                 FloatFormat(args.message.Z) + " a.u.");
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
         private void QuaternionEvent(Object sender, Ximu3.QuaternionEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.WElement) +
-                FloatFormat(args.message.XElement) +
-                FloatFormat(args.message.YElement) +
-                FloatFormat(args.message.ZElement));
+                FloatFormat(args.message.W) +
+                FloatFormat(args.message.X) +
+                FloatFormat(args.message.Y) +
+                FloatFormat(args.message.Z));
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
         private void RotationMatrixEvent(Object sender, Ximu3.RotationMatrixEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.XXElement) +
-                FloatFormat(args.message.XYElement) +
-                FloatFormat(args.message.XZElement) +
-                FloatFormat(args.message.YXElement) +
-                FloatFormat(args.message.YYElement) +
-                FloatFormat(args.message.YZElement) +
-                FloatFormat(args.message.ZXElement) +
-                FloatFormat(args.message.ZYElement) +
-                FloatFormat(args.message.ZZElement));
+                FloatFormat(args.message.XX) +
+                FloatFormat(args.message.XY) +
+                FloatFormat(args.message.XZ) +
+                FloatFormat(args.message.YX) +
+                FloatFormat(args.message.YY) +
+                FloatFormat(args.message.YZ) +
+                FloatFormat(args.message.ZX) +
+                FloatFormat(args.message.ZY) +
+                FloatFormat(args.message.ZZ));
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
@@ -147,35 +147,35 @@ namespace Ximu3Examples
         private void LinearAccelerationEvent(Object sender, Ximu3.LinearAccelerationEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.WElement) +
-                FloatFormat(args.message.XElement) +
-                FloatFormat(args.message.YElement) +
-                FloatFormat(args.message.ZElement) +
-                FloatFormat(args.message.XAxis) + " g" +
-                FloatFormat(args.message.YAxis) + " g" +
-                FloatFormat(args.message.ZAxis) + " g");
+                FloatFormat(args.message.QuaternionW) +
+                FloatFormat(args.message.QuaternionX) +
+                FloatFormat(args.message.QuaternionY) +
+                FloatFormat(args.message.QuaternionZ) +
+                FloatFormat(args.message.AccelerationX) + " g" +
+                FloatFormat(args.message.AccelerationY) + " g" +
+                FloatFormat(args.message.AccelerationZ) + " g");
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
         private void EarthAccelerationEvent(Object sender, Ximu3.EarthAccelerationEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.WElement) +
-                FloatFormat(args.message.XElement) +
-                FloatFormat(args.message.YElement) +
-                FloatFormat(args.message.ZElement) +
-                FloatFormat(args.message.XAxis) + " g" +
-                FloatFormat(args.message.YAxis) + " g" +
-                FloatFormat(args.message.ZAxis) + " g");
+                FloatFormat(args.message.QuaternionW) +
+                FloatFormat(args.message.QuaternionX) +
+                FloatFormat(args.message.QuaternionY) +
+                FloatFormat(args.message.QuaternionZ) +
+                FloatFormat(args.message.AccelerationX) + " g" +
+                FloatFormat(args.message.AccelerationY) + " g" +
+                FloatFormat(args.message.AccelerationZ) + " g");
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 
         private void HighGAccelerometerEvent(Object sender, Ximu3.HighGAccelerometerEventArgs args)
         {
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.XAxis) + " g" +
-                FloatFormat(args.message.YAxis) + " g" +
-                FloatFormat(args.message.ZAxis) + " g");
+                FloatFormat(args.message.X) + " g" +
+                FloatFormat(args.message.Y) + " g" +
+                FloatFormat(args.message.Z) + " g");
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 

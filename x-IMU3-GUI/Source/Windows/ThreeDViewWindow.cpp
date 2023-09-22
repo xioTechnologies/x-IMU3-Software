@@ -20,9 +20,9 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     quaternionCallbackID = devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
-        threeDView.update(message.x_element, message.y_element, message.z_element, message.w_element);
+        threeDView.update(message.x, message.y, message.z, message.w);
 
-        const auto eulerAngles = Convert::toEulerAngles(message.x_element, message.y_element, message.z_element, message.w_element);
+        const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);
 
         roll = eulerAngles.x;
         pitch = eulerAngles.y;
@@ -31,9 +31,9 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     rotationMatrixCallbackID = devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
-        const auto quaternion = Convert::toQuaternion(message.xx_element, message.xy_element, message.xz_element,
-                                                      message.yx_element, message.yy_element, message.yz_element,
-                                                      message.zx_element, message.zy_element, message.zz_element);
+        const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,
+                                                      message.yx, message.yy, message.yz,
+                                                      message.zx, message.zy, message.zz);
 
         quaternionCallback({ message.timestamp, quaternion.scalar, quaternion.vector.x, quaternion.vector.y, quaternion.vector.z });
     });
@@ -51,12 +51,12 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     linearAccelerationCallbackID = devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
-        quaternionCallback({ message.timestamp, message.w_element, message.x_element, message.y_element, message.z_element });
+        quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
     });
 
     earthAccelerationCallbackID = devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
-        quaternionCallback({ message.timestamp, message.w_element, message.x_element, message.y_element, message.z_element });
+        quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
     });
 
     settingsTree.addListener(this);

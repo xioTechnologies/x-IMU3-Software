@@ -9,13 +9,13 @@ use crate::decode_error::*;
 #[derive(Clone, Copy)]
 pub struct LinearAccelerationMessage {
     pub timestamp: u64,
-    pub w_element: f32,
-    pub x_element: f32,
-    pub y_element: f32,
-    pub z_element: f32,
-    pub x_axis: f32,
-    pub y_axis: f32,
-    pub z_axis: f32,
+    pub quaternion_w: f32,
+    pub quaternion_x: f32,
+    pub quaternion_y: f32,
+    pub quaternion_z: f32,
+    pub acceleration_x: f32,
+    pub acceleration_y: f32,
+    pub acceleration_z: f32,
 }
 
 impl DataMessage for LinearAccelerationMessage {
@@ -25,7 +25,7 @@ impl DataMessage for LinearAccelerationMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{f},{f},{f},{f},{f},{f},{f}\r\n",  char, u64, f32, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, w_element, x_element, y_element, z_element, x_axis, y_axis, z_axis)) => Ok(LinearAccelerationMessage { timestamp, w_element, x_element, y_element, z_element, x_axis, y_axis, z_axis }),
+            Ok((_, timestamp, quaternion_w, quaternion_x, quaternion_y, quaternion_z, acceleration_x, acceleration_y, acceleration_z)) => Ok(LinearAccelerationMessage { timestamp, quaternion_w, quaternion_x, quaternion_y, quaternion_z, acceleration_x, acceleration_y, acceleration_z }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -35,13 +35,13 @@ impl DataMessage for LinearAccelerationMessage {
         struct BinaryMessage {
             id: u8,
             timestamp: u64,
-            w_element: f32,
-            x_element: f32,
-            y_element: f32,
-            z_element: f32,
-            x_axis: f32,
-            y_axis: f32,
-            z_axis: f32,
+            quaternion_w: f32,
+            quaternion_x: f32,
+            quaternion_y: f32,
+            quaternion_z: f32,
+            acceleration_x: f32,
+            acceleration_y: f32,
+            acceleration_z: f32,
             termination: u8,
         }
 
@@ -54,7 +54,7 @@ impl DataMessage for LinearAccelerationMessage {
             binary_message
         };
 
-        Ok(LinearAccelerationMessage { timestamp: binary_message.timestamp, w_element: binary_message.w_element, x_element: binary_message.x_element, y_element: binary_message.y_element, z_element: binary_message.z_element, x_axis: binary_message.x_axis, y_axis: binary_message.y_axis, z_axis: binary_message.z_axis })
+        Ok(LinearAccelerationMessage { timestamp: binary_message.timestamp, quaternion_w: binary_message.quaternion_w, quaternion_x: binary_message.quaternion_x, quaternion_y: binary_message.quaternion_y, quaternion_z: binary_message.quaternion_z, acceleration_x: binary_message.acceleration_x, acceleration_y: binary_message.acceleration_y, acceleration_z: binary_message.acceleration_z })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
@@ -62,16 +62,16 @@ impl DataMessage for LinearAccelerationMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),W Element,X Element,Y Element,Z Element,X Axis (g),Y Axis (g),Z Axis (g)\n"
+        "Timestamp (us),Quaternion W,Quaternion X,Quaternion Y,Quaternion Z,Acceleration X (g),Acceleration Y (g),Acceleration Z (g)\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element, self.x_axis, self.y_axis, self.z_axis)
+        format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.quaternion_w, self.quaternion_x, self.quaternion_y, self.quaternion_z, self.acceleration_x, self.acceleration_y, self.acceleration_z)
     }
 }
 
 impl fmt::Display for LinearAccelerationMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} g {:>8.3} g {:>8.3} g", self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element, self.x_axis, self.y_axis, self.z_axis)
+        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} g {:>8.3} g {:>8.3} g", self.timestamp, self.quaternion_w, self.quaternion_x, self.quaternion_y, self.quaternion_z, self.acceleration_x, self.acceleration_y, self.acceleration_z)
     }
 }

@@ -9,9 +9,9 @@ use crate::decode_error::*;
 #[derive(Clone, Copy)]
 pub struct MagnetometerMessage {
     pub timestamp: u64,
-    pub x_axis: f32,
-    pub y_axis: f32,
-    pub z_axis: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl DataMessage for MagnetometerMessage {
@@ -21,7 +21,7 @@ impl DataMessage for MagnetometerMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{f},{f},{f}\r\n",  char, u64, f32, f32, f32) {
-            Ok((_, timestamp, x_axis, y_axis, z_axis)) => Ok(MagnetometerMessage { timestamp, x_axis, y_axis, z_axis }),
+            Ok((_, timestamp, x, y, z)) => Ok(MagnetometerMessage { timestamp, x, y, z }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -31,9 +31,9 @@ impl DataMessage for MagnetometerMessage {
         struct BinaryMessage {
             id: u8,
             timestamp: u64,
-            x_axis: f32,
-            y_axis: f32,
-            z_axis: f32,
+            x: f32,
+            y: f32,
+            z: f32,
             termination: u8,
         }
 
@@ -46,7 +46,7 @@ impl DataMessage for MagnetometerMessage {
             binary_message
         };
 
-        Ok(MagnetometerMessage { timestamp: binary_message.timestamp, x_axis: binary_message.x_axis, y_axis: binary_message.y_axis, z_axis: binary_message.z_axis })
+        Ok(MagnetometerMessage { timestamp: binary_message.timestamp, x: binary_message.x, y: binary_message.y, z: binary_message.z })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
@@ -54,16 +54,16 @@ impl DataMessage for MagnetometerMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),X Axis (a.u.),Y Axis (a.u.),Z Axis (a.u.)\n"
+        "Timestamp (us),X (a.u.),Y (a.u.),Z (a.u.)\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6}\n", self.timestamp, self.x_axis, self.y_axis, self.z_axis)
+        format!("{},{:.6},{:.6},{:.6}\n", self.timestamp, self.x, self.y, self.z)
     }
 }
 
 impl fmt::Display for MagnetometerMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} a.u. {:>8.3} a.u. {:>8.3} a.u.", self.timestamp, self.x_axis, self.y_axis, self.z_axis)
+        write!(formatter, "{:>8} us {:>8.3} a.u. {:>8.3} a.u. {:>8.3} a.u.", self.timestamp, self.x, self.y, self.z)
     }
 }

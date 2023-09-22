@@ -22,49 +22,49 @@ static PyObject* rotation_matrix_message_get_timestamp(RotationMatrixMessage* se
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* rotation_matrix_message_get_xx_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_xx(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.xx_element);
+    return Py_BuildValue("f", self->message.xx);
 }
 
-static PyObject* rotation_matrix_message_get_xy_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_xy(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.xy_element);
+    return Py_BuildValue("f", self->message.xy);
 }
 
-static PyObject* rotation_matrix_message_get_xz_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_xz(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.xz_element);
+    return Py_BuildValue("f", self->message.xz);
 }
 
-static PyObject* rotation_matrix_message_get_yx_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_yx(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.yx_element);
+    return Py_BuildValue("f", self->message.yx);
 }
 
-static PyObject* rotation_matrix_message_get_yy_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_yy(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.yy_element);
+    return Py_BuildValue("f", self->message.yy);
 }
 
-static PyObject* rotation_matrix_message_get_yz_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_yz(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.yz_element);
+    return Py_BuildValue("f", self->message.yz);
 }
 
-static PyObject* rotation_matrix_message_get_zx_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_zx(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.zx_element);
+    return Py_BuildValue("f", self->message.zx);
 }
 
-static PyObject* rotation_matrix_message_get_zy_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_zy(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.zy_element);
+    return Py_BuildValue("f", self->message.zy);
 }
 
-static PyObject* rotation_matrix_message_get_zz_element(RotationMatrixMessage* self)
+static PyObject* rotation_matrix_message_get_zz(RotationMatrixMessage* self)
 {
-    return Py_BuildValue("f", self->message.zz_element);
+    return Py_BuildValue("f", self->message.zz);
 }
 
 static PyObject* rotation_matrix_message_to_string(RotationMatrixMessage* self, PyObject* args)
@@ -73,16 +73,16 @@ static PyObject* rotation_matrix_message_to_string(RotationMatrixMessage* self, 
 }
 
 static PyGetSetDef rotation_matrix_message_get_set[] = {
-        { "timestamp",  (getter) rotation_matrix_message_get_timestamp,  NULL, "", NULL },
-        { "xx_element", (getter) rotation_matrix_message_get_xx_element, NULL, "", NULL },
-        { "xy_element", (getter) rotation_matrix_message_get_xy_element, NULL, "", NULL },
-        { "xz_element", (getter) rotation_matrix_message_get_xz_element, NULL, "", NULL },
-        { "yx_element", (getter) rotation_matrix_message_get_yx_element, NULL, "", NULL },
-        { "yy_element", (getter) rotation_matrix_message_get_yy_element, NULL, "", NULL },
-        { "yz_element", (getter) rotation_matrix_message_get_yz_element, NULL, "", NULL },
-        { "zx_element", (getter) rotation_matrix_message_get_zx_element, NULL, "", NULL },
-        { "zy_element", (getter) rotation_matrix_message_get_zy_element, NULL, "", NULL },
-        { "zz_element", (getter) rotation_matrix_message_get_zz_element, NULL, "", NULL },
+        { "timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL },
+        { "xx",        (getter) rotation_matrix_message_get_xx,        NULL, "", NULL },
+        { "xy",        (getter) rotation_matrix_message_get_xy,        NULL, "", NULL },
+        { "xz",        (getter) rotation_matrix_message_get_xz,        NULL, "", NULL },
+        { "yx",        (getter) rotation_matrix_message_get_yx,        NULL, "", NULL },
+        { "yy",        (getter) rotation_matrix_message_get_yy,        NULL, "", NULL },
+        { "yz",        (getter) rotation_matrix_message_get_yz,        NULL, "", NULL },
+        { "zx",        (getter) rotation_matrix_message_get_zx,        NULL, "", NULL },
+        { "zy",        (getter) rotation_matrix_message_get_zy,        NULL, "", NULL },
+        { "zz",        (getter) rotation_matrix_message_get_zz,        NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

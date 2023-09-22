@@ -29,27 +29,27 @@ namespace Ximu3
             }
         }
 
-        property float XAxis
+        property float X
         {
             float get()
             {
-                return message->x_axis;
+                return message->x;
             }
         }
 
-        property float YAxis
+        property float Y
         {
             float get()
             {
-                return message->y_axis;
+                return message->y;
             }
         }
 
-        property float ZAxis
+        property float Z
         {
             float get()
             {
-                return message->z_axis;
+                return message->z;
             }
         }
 

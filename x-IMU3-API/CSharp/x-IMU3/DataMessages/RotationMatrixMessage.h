@@ -29,75 +29,75 @@ namespace Ximu3
             }
         }
 
-        property float XXElement
+        property float XX
         {
             float get()
             {
-                return message->xx_element;
+                return message->xx;
             }
         }
 
-        property float XYElement
+        property float XY
         {
             float get()
             {
-                return message->xy_element;
+                return message->xy;
             }
         }
 
-        property float XZElement
+        property float XZ
         {
             float get()
             {
-                return message->xz_element;
+                return message->xz;
             }
         }
 
-        property float YXElement
+        property float YX
         {
             float get()
             {
-                return message->yx_element;
+                return message->yx;
             }
         }
 
-        property float YYElement
+        property float YY
         {
             float get()
             {
-                return message->yy_element;
+                return message->yy;
             }
         }
 
-        property float YZElement
+        property float YZ
         {
             float get()
             {
-                return message->yz_element;
+                return message->yz;
             }
         }
 
-        property float ZXElement
+        property float ZX
         {
             float get()
             {
-                return message->zx_element;
+                return message->zx;
             }
         }
 
-        property float ZYElement
+        property float ZY
         {
             float get()
             {
-                return message->zy_element;
+                return message->zy;
             }
         }
 
-        property float ZZElement
+        property float ZZ
         {
             float get()
             {
-                return message->zz_element;
+                return message->zz;
             }
         }
 

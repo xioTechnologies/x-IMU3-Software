@@ -22,19 +22,19 @@ static PyObject* magnetometer_message_get_timestamp(MagnetometerMessage* self)
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* magnetometer_message_get_x_axis(MagnetometerMessage* self)
+static PyObject* magnetometer_message_get_x(MagnetometerMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_axis);
+    return Py_BuildValue("f", self->message.x);
 }
 
-static PyObject* magnetometer_message_get_y_axis(MagnetometerMessage* self)
+static PyObject* magnetometer_message_get_y(MagnetometerMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_axis);
+    return Py_BuildValue("f", self->message.y);
 }
 
-static PyObject* magnetometer_message_get_z_axis(MagnetometerMessage* self)
+static PyObject* magnetometer_message_get_z(MagnetometerMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_axis);
+    return Py_BuildValue("f", self->message.z);
 }
 
 static PyObject* magnetometer_message_to_string(MagnetometerMessage* self, PyObject* args)
@@ -44,9 +44,9 @@ static PyObject* magnetometer_message_to_string(MagnetometerMessage* self, PyObj
 
 static PyGetSetDef magnetometer_message_get_set[] = {
         { "timestamp", (getter) magnetometer_message_get_timestamp, NULL, "", NULL },
-        { "x_axis",    (getter) magnetometer_message_get_x_axis,    NULL, "", NULL },
-        { "y_axis",    (getter) magnetometer_message_get_y_axis,    NULL, "", NULL },
-        { "z_axis",    (getter) magnetometer_message_get_z_axis,    NULL, "", NULL },
+        { "x",         (getter) magnetometer_message_get_x,         NULL, "", NULL },
+        { "y",         (getter) magnetometer_message_get_y,         NULL, "", NULL },
+        { "z",         (getter) magnetometer_message_get_z,         NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

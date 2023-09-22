@@ -9,10 +9,10 @@ use crate::decode_error::*;
 #[derive(Clone, Copy)]
 pub struct QuaternionMessage {
     pub timestamp: u64,
-    pub w_element: f32,
-    pub x_element: f32,
-    pub y_element: f32,
-    pub z_element: f32,
+    pub w: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl DataMessage for QuaternionMessage {
@@ -22,7 +22,7 @@ impl DataMessage for QuaternionMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!( message, "{},{d},{f},{f},{f},{f}\r\n",  char, u64, f32, f32, f32, f32) {
-            Ok((_, timestamp, w_element, x_element, y_element, z_element)) => Ok(QuaternionMessage { timestamp, w_element, x_element, y_element, z_element }),
+            Ok((_, timestamp, w, x, y, z)) => Ok(QuaternionMessage { timestamp, w, x, y, z }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -32,10 +32,10 @@ impl DataMessage for QuaternionMessage {
         struct BinaryMessage {
             id: u8,
             timestamp: u64,
-            w_element: f32,
-            x_element: f32,
-            y_element: f32,
-            z_element: f32,
+            w: f32,
+            x: f32,
+            y: f32,
+            z: f32,
             termination: u8,
         }
 
@@ -48,7 +48,7 @@ impl DataMessage for QuaternionMessage {
             binary_message
         };
 
-        Ok(QuaternionMessage { timestamp: binary_message.timestamp, w_element: binary_message.w_element, x_element: binary_message.x_element, y_element: binary_message.y_element, z_element: binary_message.z_element })
+        Ok(QuaternionMessage { timestamp: binary_message.timestamp, w: binary_message.w, x: binary_message.x, y: binary_message.y, z: binary_message.z })
     }
 
     fn get_csv_file_name(&self) -> &'static str {
@@ -56,16 +56,16 @@ impl DataMessage for QuaternionMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),W Element,X Element,Y Element,Z Element\n"
+        "Timestamp (us),W,X,Y,Z\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element)
+        format!("{},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.w, self.x, self.y, self.z)
     }
 }
 
 impl fmt::Display for QuaternionMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3}", self.timestamp, self.w_element, self.x_element, self.y_element, self.z_element)
+        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3}", self.timestamp, self.w, self.x, self.y, self.z)
     }
 }

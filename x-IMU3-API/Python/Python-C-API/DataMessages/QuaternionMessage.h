@@ -22,24 +22,24 @@ static PyObject* quaternion_message_get_timestamp(QuaternionMessage* self)
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* quaternion_message_get_w_element(QuaternionMessage* self)
+static PyObject* quaternion_message_get_w(QuaternionMessage* self)
 {
-    return Py_BuildValue("f", self->message.w_element);
+    return Py_BuildValue("f", self->message.w);
 }
 
-static PyObject* quaternion_message_get_x_element(QuaternionMessage* self)
+static PyObject* quaternion_message_get_x(QuaternionMessage* self)
 {
-    return Py_BuildValue("f", self->message.x_element);
+    return Py_BuildValue("f", self->message.x);
 }
 
-static PyObject* quaternion_message_get_y_element(QuaternionMessage* self)
+static PyObject* quaternion_message_get_y(QuaternionMessage* self)
 {
-    return Py_BuildValue("f", self->message.y_element);
+    return Py_BuildValue("f", self->message.y);
 }
 
-static PyObject* quaternion_message_get_z_element(QuaternionMessage* self)
+static PyObject* quaternion_message_get_z(QuaternionMessage* self)
 {
-    return Py_BuildValue("f", self->message.z_element);
+    return Py_BuildValue("f", self->message.z);
 }
 
 static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject* args)
@@ -49,10 +49,10 @@ static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject*
 
 static PyGetSetDef quaternion_message_get_set[] = {
         { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },
-        { "w_element", (getter) quaternion_message_get_w_element, NULL, "", NULL },
-        { "x_element", (getter) quaternion_message_get_x_element, NULL, "", NULL },
-        { "y_element", (getter) quaternion_message_get_y_element, NULL, "", NULL },
-        { "z_element", (getter) quaternion_message_get_z_element, NULL, "", NULL },
+        { "w",         (getter) quaternion_message_get_w,         NULL, "", NULL },
+        { "x",         (getter) quaternion_message_get_x,         NULL, "", NULL },
+        { "y",         (getter) quaternion_message_get_y,         NULL, "", NULL },
+        { "z",         (getter) quaternion_message_get_z,         NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

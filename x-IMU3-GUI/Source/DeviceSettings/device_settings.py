@@ -6,7 +6,6 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
-
 with open("DeviceSettings.json") as file:
     settings = json.load(file)
 

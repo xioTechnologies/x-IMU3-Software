@@ -17,7 +17,7 @@ LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTr
 {
     callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
-        update(message.timestamp, { message.x_axis, message.y_axis, message.z_axis });
+        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
     }));
 }
 
