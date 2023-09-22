@@ -2,11 +2,11 @@
 
 #include "ApplicationSettings.h"
 #include "CommandMessage.h"
+#include "Dialog.h"
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
-#include "Dialog.h"
 
 class SendCommandDialog : public Dialog
 {

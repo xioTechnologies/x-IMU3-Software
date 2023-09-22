@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CustomLookAndFeel.h"
 #include "Common/GLHelpers.h"
 #include "Common/GLRenderer.h"
+#include "CustomLookAndFeel.h"
 #include "Graph/AxesLimits.h"
 #include "Graph/ChannelBuffers.h"
 #include "Graph/Ticks.h"
