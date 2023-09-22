@@ -251,7 +251,7 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.horizontalAutoscale = !settings.horizontalAutoscale;
         writeToValueTree(settings);
     });
-    menu.addItem("Move Left (Mouse Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
+    menu.addItem("Move Left (Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
     {
         auto settings = graph.getSettings();
         const auto offset = settings.axesLimits.x.getRange() / 2;
@@ -259,7 +259,7 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.axesLimits.x.max -= offset;
         writeToValueTree(settings);
     });
-    menu.addItem("Move Right (Mouse Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
+    menu.addItem("Move Right (Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
     {
         auto settings = graph.getSettings();
         const auto offset = settings.axesLimits.x.getRange() / 2;
@@ -284,7 +284,7 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.verticalAutoscale = !settings.verticalAutoscale;
         writeToValueTree(settings);
     });
-    menu.addItem("Move Up (Mouse Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
+    menu.addItem("Move Up (Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
     {
         auto settings = graph.getSettings();
         const auto offset = settings.axesLimits.y.getRange() / 2;
@@ -292,7 +292,7 @@ juce::PopupMenu GraphWindow::getMenu()
         settings.axesLimits.y.max += offset;
         writeToValueTree(settings);
     });
-    menu.addItem("Move Down (Mouse Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
+    menu.addItem("Move Down (Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
     {
         auto settings = graph.getSettings();
         const auto offset = settings.axesLimits.y.getRange() / 2;
