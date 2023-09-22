@@ -116,6 +116,13 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
     lastMousePosition = mouseEvent.getPosition();
 }
 
+void ThreeDViewWindow::mouseDoubleClick(const juce::MouseEvent&)
+{
+    settings.cameraAzimuth = ThreeDView::Settings().cameraAzimuth.load();
+    settings.cameraElevation = ThreeDView::Settings().cameraElevation.load();
+    settings.cameraOrbitDistance = ThreeDView::Settings().cameraOrbitDistance.load();
+}
+
 void ThreeDViewWindow::mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel)
 {
     settings.cameraOrbitDistance = juce::jlimit(1.0f, 4.0f, settings.cameraOrbitDistance + (0.5f * -wheel.deltaY));

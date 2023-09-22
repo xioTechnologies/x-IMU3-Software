@@ -23,6 +23,8 @@ public:
 
     void mouseDrag(const juce::MouseEvent& mouseEvent) override;
 
+    void mouseDoubleClick(const juce::MouseEvent& mouseEvent) override;
+
     void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override;
 
 private:
