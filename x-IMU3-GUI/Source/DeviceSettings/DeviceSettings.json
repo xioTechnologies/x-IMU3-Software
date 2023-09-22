@@ -6,24 +6,6 @@
         "calibration": true
     },
     {
-        "name": "System clock calibration",
-        "declaration": "float name",
-        "default": "{1.0f}",
-        "calibration": true
-    },
-    {
-        "name": "RTC calibration",
-        "declaration": "float name",
-        "default": "{1.0f}",
-        "calibration": true
-    },
-    {
-        "name": "Battery voltmeter sensitivity",
-        "declaration": "float name",
-        "default": "{1.0f}",
-        "calibration": true
-    },
-    {
         "name": "Gyroscope misalignment",
         "declaration": "FusionMatrix name",
         "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
@@ -96,7 +78,7 @@
     },
     {
         "name": "Serial number",
-        "declaration": "char name[32]",
+        "declaration": "char name[16]",
         "default": "{\"Unknown\"}",
         "read only": true
     },
