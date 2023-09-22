@@ -19,6 +19,8 @@ public:
 
     void resized() override;
 
+    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+
 private:
     SerialAccessoryTerminal serialAccessoryTerminal;
     CustomComboBox sendValue;

@@ -104,6 +104,11 @@ void GraphWindow::mouseDown([[maybe_unused]] const juce::MouseEvent& mouseEvent)
     graphSettingsMouseCache = graph.getSettings();
     plotWidthJUCEPixelsMouseCache = graph.plotWidthJUCEPixels;
     plotHeightJUCEPixelsMouseCache = graph.plotHeightJUCEPixels;
+
+    if (mouseEvent.mods.isPopupMenu())
+    {
+        getMenu().show();
+    }
 }
 
 void GraphWindow::mouseDrag(const juce::MouseEvent& mouseEvent)

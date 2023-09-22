@@ -90,7 +90,7 @@ void ThreeDViewWindow::resized()
     {
         auto row = bounds.removeFromTop(20);
         label.setBounds(row.removeFromLeft(50));
-        value.setBounds(row);   
+        value.setBounds(row);
     };
 
     setRow(rollLabel, rollValue);
@@ -103,6 +103,11 @@ void ThreeDViewWindow::resized()
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 {
     lastMousePosition = mouseEvent.getPosition();
+
+    if (mouseEvent.mods.isPopupMenu())
+    {
+        getMenu().show();
+    }
 }
 
 void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
