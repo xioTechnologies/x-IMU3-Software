@@ -24,12 +24,10 @@ public:
 
 private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
-    const std::vector<juce::ValueTree> settingsVector = flatten(settingsTree);
-    DeviceSettingsItem rootItem { settingsTree, settingsVector };
+    std::map<juce::String, juce::ValueTree> settingsMap = flatten(settingsTree);
+    DeviceSettingsItem rootItem { settingsTree, settingsMap };
 
-    static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
-
-    juce::ValueTree findSetting(const juce::String& key) const;
+    static std::map<juce::String, juce::ValueTree> flatten(const juce::ValueTree& parent);
 
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
 

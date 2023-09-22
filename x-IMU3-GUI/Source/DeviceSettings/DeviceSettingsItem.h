@@ -7,11 +7,12 @@
 #include "Setting/SettingEnum.h"
 #include "Setting/SettingText.h"
 #include "Setting/SettingToggle.h"
+#include "CommandMessage.h"
 
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    DeviceSettingsItem(const juce::ValueTree& tree_, const std::vector<juce::ValueTree>& settings) : tree(tree_)
+    DeviceSettingsItem(const juce::ValueTree& tree_, const std::map<juce::String, juce::ValueTree>& settings) : tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
@@ -24,9 +25,9 @@ public:
         {
             for (const auto& setting : settings)
             {
-                if (setting[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
+                if (setting.second[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
                 {
-                    hideSetting = setting;
+                    hideSetting = setting.second;
                     break;
                 }
             }
@@ -90,7 +91,7 @@ public:
 
 private:
     const juce::ValueTree tree;
-    const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
+    inline static const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
     juce::ValueTree hideSetting;
 
     static bool isStatusSet(juce::ValueTree tree_)
