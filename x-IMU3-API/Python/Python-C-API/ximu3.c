@@ -92,6 +92,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         add_object(module, &euler_angles_message_object, "EulerAnglesMessage") &&
         add_object(module, &linear_acceleration_message_object, "LinearAccelerationMessage") &&
         add_object(module, &earth_acceleration_message_object, "EarthAccelerationMessage") &&
+        add_object(module, &ahrs_status_message_object, "AhrsStatusMessage") &&
         add_object(module, &high_g_accelerometer_message_object, "HighGAccelerometerMessage") &&
         add_object(module, &temperature_message_object, "TemperatureMessage") &&
         add_object(module, &battery_message_object, "BatteryMessage") &&

@@ -135,6 +135,17 @@ namespace Ximu3
         }
     };
 
+    public ref class AhrsStatusEventArgs : public EventArgs
+    {
+    public:
+        AhrsStatusMessage^ message;
+
+    internal:
+        AhrsStatusEventArgs(AhrsStatusMessage^ message) : message(message)
+        {
+        }
+    };
+
     public ref class HighGAccelerometerEventArgs : public EventArgs
     {
     public:

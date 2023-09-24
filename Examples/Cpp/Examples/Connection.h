@@ -32,6 +32,7 @@ protected:
             connection.addEulerAnglesCallback(eulerAnglesCallback);
             connection.addLinearAccelerationCallback(linearAccelerationCallback);
             connection.addEarthAccelerationCallback(earthAccelerationCallback);
+            connection.addAhrsStatusCallback(ahrsStatusCallback);
             connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
             connection.addTemperatureCallback(temperatureCallback);
             connection.addBatteryCallback(batteryCallback);
@@ -164,6 +165,17 @@ private:
                message.acceleration_y,
                message.acceleration_z);
         // std::cout << XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message)
+    {
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
+               message.timestamp,
+               message.initialising,
+               message.angular_rate_recovery,
+               message.acceleration_recovery,
+               message.magnetic_recovery);
+        // std::cout << XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message)

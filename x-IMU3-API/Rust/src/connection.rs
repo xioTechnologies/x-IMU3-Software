@@ -240,6 +240,10 @@ impl Connection {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_earth_acceleration_closure(closure)
     }
 
+    pub fn add_ahrs_status_closure(&self, closure: Box<dyn Fn(AhrsStatusMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_ahrs_status_closure(closure)
+    }
+
     pub fn add_high_g_accelerometer_closure(&self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
     }

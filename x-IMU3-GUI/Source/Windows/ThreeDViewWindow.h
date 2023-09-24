@@ -60,7 +60,18 @@ private:
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
     uint64_t earthAccelerationCallbackID;
 
+    std::function<void(ximu3::XIMU3_AhrsStatusMessage)> ahrsStatusMessageCallback;
+    uint64_t ahrsStatusMessageCallbackID;
+
     bool compactView = false;
+
+    std::atomic<bool> angularRateRecoveryState { false };
+    std::atomic<bool> accelerationRecoveryState { false };
+    std::atomic<bool> magneticRecoveryState { false };
+
+    Icon angularRateRecoveryIcon { BinaryData::speed_grey_svg, "Angular Rate Recovery" };
+    Icon accelerationRecoveryIcon { BinaryData::vibration_grey_svg, "Acceleration Recovery" };
+    Icon magneticRecoveryIcon { BinaryData::magnet_grey_svg, "Magnetic Recovery" };
 
     static float wrapAngle(float angle);
 
@@ -68,7 +79,9 @@ private:
 
     ThreeDView::Settings readFromValueTree() const;
 
-    void updateLabelVisibilities();
+    void updateEulerAnglesVisibilities();
+
+    void updateAhrsStatusVisibilities();
 
     juce::PopupMenu getMenu();
 

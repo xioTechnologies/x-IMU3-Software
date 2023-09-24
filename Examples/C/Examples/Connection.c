@@ -27,6 +27,8 @@ void LinearAccelerationCallback(const XIMU3_LinearAccelerationMessage message, v
 
 void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, void* context);
 
+void AhrsStatusCallback(const XIMU3_AhrsStatusMessage message, void* context);
+
 void HighGAccelerometerCallback(const XIMU3_HighGAccelerometerMessage message, void* context);
 
 void TemperatureCallback(const XIMU3_TemperatureMessage message, void* context);
@@ -56,6 +58,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
         XIMU3_connection_add_euler_angles_callback(connection, EulerAnglesCallback, NULL);
         XIMU3_connection_add_linear_acceleration_callback(connection, LinearAccelerationCallback, NULL);
         XIMU3_connection_add_earth_acceleration_callback(connection, EarthAccelerationCallback, NULL);
+        XIMU3_connection_add_ahrs_status_callback(connection, AhrsStatusCallback, NULL);
         XIMU3_connection_add_high_g_accelerometer_callback(connection, HighGAccelerometerCallback, NULL);
         XIMU3_connection_add_temperature_callback(connection, TemperatureCallback, NULL);
         XIMU3_connection_add_battery_callback(connection, BatteryCallback, NULL);
@@ -197,6 +200,17 @@ void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, voi
            message.acceleration_y,
            message.acceleration_z);
     // printf("%s\n", XIMU3_earth_acceleration_message_to_string(message)); // alternative to above
+}
+
+void AhrsStatusCallback(const XIMU3_AhrsStatusMessage message, void* context)
+{
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
+           message.timestamp,
+           message.initialising,
+           message.angular_rate_recovery,
+           message.acceleration_recovery,
+           message.magnetic_recovery);
+    // printf("%s\n", XIMU3_ahrs_status_message_to_string(message)); // alternative to above
 }
 
 void HighGAccelerometerCallback(const XIMU3_HighGAccelerometerMessage message, void* context)

@@ -7,6 +7,7 @@
 #include "EulerAnglesMessage.h"
 #include "LinearAccelerationMessage.h"
 #include "EarthAccelerationMessage.h"
+#include "AhrsStatusMessage.h"
 #include "HighGAccelerometerMessage.h"
 #include "TemperatureMessage.h"
 #include "BatteryMessage.h"

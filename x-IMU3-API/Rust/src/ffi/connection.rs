@@ -236,6 +236,13 @@ pub extern "C" fn XIMU3_connection_add_earth_acceleration_callback(connection: *
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_add_ahrs_status_callback(connection: *mut Connection, callback: Callback<AhrsStatusMessage>, context: *mut c_void) -> u64 {
+    let connection: &Connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_ahrs_status_closure(Box::new(move |message: AhrsStatusMessage| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection: *mut Connection, callback: Callback<HighGAccelerometerMessage>, context: *mut c_void) -> u64 {
     let connection: &Connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);

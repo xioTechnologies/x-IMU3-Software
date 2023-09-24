@@ -234,6 +234,17 @@ typedef struct XIMU3_EarthAccelerationMessage
 
 typedef void (*XIMU3_CallbackEarthAccelerationMessage)(struct XIMU3_EarthAccelerationMessage data, void *context);
 
+typedef struct XIMU3_AhrsStatusMessage
+{
+    uint64_t timestamp;
+    float initialising;
+    float angular_rate_recovery;
+    float acceleration_recovery;
+    float magnetic_recovery;
+} XIMU3_AhrsStatusMessage;
+
+typedef void (*XIMU3_CallbackAhrsStatusMessage)(struct XIMU3_AhrsStatusMessage data, void *context);
+
 typedef struct XIMU3_HighGAccelerometerMessage
 {
     uint64_t timestamp;
@@ -417,6 +428,8 @@ uint64_t XIMU3_connection_add_linear_acceleration_callback(struct XIMU3_Connecti
 
 uint64_t XIMU3_connection_add_earth_acceleration_callback(struct XIMU3_Connection *connection, XIMU3_CallbackEarthAccelerationMessage callback, void *context);
 
+uint64_t XIMU3_connection_add_ahrs_status_callback(struct XIMU3_Connection *connection, XIMU3_CallbackAhrsStatusMessage callback, void *context);
+
 uint64_t XIMU3_connection_add_high_g_accelerometer_callback(struct XIMU3_Connection *connection, XIMU3_CallbackHighGAccelerometerMessage callback, void *context);
 
 uint64_t XIMU3_connection_add_temperature_callback(struct XIMU3_Connection *connection, XIMU3_CallbackTemperatureMessage callback, void *context);
@@ -468,6 +481,8 @@ const char *XIMU3_euler_angles_message_to_string(struct XIMU3_EulerAnglesMessage
 const char *XIMU3_linear_acceleration_message_to_string(struct XIMU3_LinearAccelerationMessage message);
 
 const char *XIMU3_earth_acceleration_message_to_string(struct XIMU3_EarthAccelerationMessage message);
+
+const char *XIMU3_ahrs_status_message_to_string(struct XIMU3_AhrsStatusMessage message);
 
 const char *XIMU3_high_g_accelerometer_message_to_string(struct XIMU3_HighGAccelerometerMessage message);
 

@@ -47,16 +47,22 @@ messages = [
         argument_units=["deg", "deg", "deg"]
     ),
     Message(
-        name="Linear acceleration",
+        name="Linear Acceleration",
         ascii_id="L",
         argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
         argument_units=["", "", "", "", "g", "g", "g"]
     ),
     Message(
-        name="Earth acceleration",
+        name="Earth Acceleration",
         ascii_id="E",
         argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
         argument_units=["", "", "", "", "g", "g", "g"]
+    ),
+    Message(
+        name="AHRS status",
+        ascii_id="U",
+        argument_names=["Initialising", "Angular Rate Recovery", "Acceleration Recovery", "Magnetic Recovery"],
+        argument_units=["", "", "", ""]
     ),
     Message(
         name="High-g accelerometer",
