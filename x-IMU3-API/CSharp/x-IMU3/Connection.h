@@ -29,6 +29,7 @@ namespace Ximu3
         event EventHandler<EulerAnglesEventArgs^>^ EulerAnglesEvent;
         event EventHandler<LinearAccelerationEventArgs^>^ LinearAccelerationEvent;
         event EventHandler<EarthAccelerationEventArgs^>^ EarthAccelerationEvent;
+        event EventHandler<AhrsStatusEventArgs^>^ AhrsStatusEvent;
         event EventHandler<HighGAccelerometerEventArgs^>^ HighGAccelerometerEvent;
         event EventHandler<TemperatureEventArgs^>^ TemperatureEvent;
         event EventHandler<BatteryEventArgs^>^ BatteryEvent;
@@ -52,6 +53,7 @@ namespace Ximu3
             ximu3::XIMU3_connection_add_euler_angles_callback(connection, static_cast<ximu3::XIMU3_CallbackEulerAnglesMessage>(Marshal::GetFunctionPointerForDelegate(eulerAnglesDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
             ximu3::XIMU3_connection_add_linear_acceleration_callback(connection, static_cast<ximu3::XIMU3_CallbackLinearAccelerationMessage>(Marshal::GetFunctionPointerForDelegate(linearAccelerationDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
             ximu3::XIMU3_connection_add_earth_acceleration_callback(connection, static_cast<ximu3::XIMU3_CallbackEarthAccelerationMessage>(Marshal::GetFunctionPointerForDelegate(earthAccelerationDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
+            ximu3::XIMU3_connection_add_ahrs_status_callback(connection, static_cast<ximu3::XIMU3_CallbackAhrsStatusMessage>(Marshal::GetFunctionPointerForDelegate(ahrsStatusDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
             ximu3::XIMU3_connection_add_high_g_accelerometer_callback(connection, static_cast<ximu3::XIMU3_CallbackHighGAccelerometerMessage>(Marshal::GetFunctionPointerForDelegate(highGAccelerometerDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
             ximu3::XIMU3_connection_add_temperature_callback(connection, static_cast<ximu3::XIMU3_CallbackTemperatureMessage>(Marshal::GetFunctionPointerForDelegate(temperatureDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
             ximu3::XIMU3_connection_add_battery_callback(connection, static_cast<ximu3::XIMU3_CallbackBatteryMessage>(Marshal::GetFunctionPointerForDelegate(batteryDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
@@ -300,6 +302,16 @@ namespace Ximu3
         }
 
         const EarthAccelerationDelegate^ earthAccelerationDelegate = gcnew EarthAccelerationDelegate(EarthAccelerationCallback);
+
+        delegate void AhrsStatusDelegate(ximu3::XIMU3_AhrsStatusMessage data, void* context);
+
+        static void AhrsStatusCallback(ximu3::XIMU3_AhrsStatusMessage data, void* context)
+        {
+            auto sender = GCHandle::FromIntPtr(IntPtr(context)).Target;
+            static_cast<Connection^>(sender)->AhrsStatusEvent(sender, gcnew AhrsStatusEventArgs(gcnew AhrsStatusMessage(data)));
+        }
+
+        const AhrsStatusDelegate^ ahrsStatusDelegate = gcnew AhrsStatusDelegate(AhrsStatusCallback);
 
         delegate void HighGAccelerometerDelegate(ximu3::XIMU3_HighGAccelerometerMessage data, void* context);
 

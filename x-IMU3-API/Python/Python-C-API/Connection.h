@@ -482,6 +482,31 @@ static PyObject* connection_add_earth_acceleration_callback(Connection* self, Py
     return Py_BuildValue("K", id);
 }
 
+static PyObject* connection_add_ahrs_status_callback(Connection* self, PyObject* args)
+{
+    PyObject* callable;
+
+    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PyCallable_Check(callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    Py_INCREF(callable); // this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_ahrs_status_callback(self->connection, ahrs_status_message_callback, callable);
+    Py_END_ALLOW_THREADS
+    return Py_BuildValue("K", id);
+}
+
 static PyObject* connection_add_high_g_accelerometer_callback(Connection* self, PyObject* args)
 {
     PyObject* callable;
@@ -694,6 +719,7 @@ static PyMethodDef connection_methods[] = {
         { "add_euler_angles_callback",         (PyCFunction) connection_add_euler_angles_callback,         METH_VARARGS, "" },
         { "add_linear_acceleration_callback",  (PyCFunction) connection_add_linear_acceleration_callback,  METH_VARARGS, "" },
         { "add_earth_acceleration_callback",   (PyCFunction) connection_add_earth_acceleration_callback,   METH_VARARGS, "" },
+        { "add_ahrs_status_callback",          (PyCFunction) connection_add_ahrs_status_callback,          METH_VARARGS, "" },
         { "add_high_g_accelerometer_callback", (PyCFunction) connection_add_high_g_accelerometer_callback, METH_VARARGS, "" },
         { "add_temperature_callback",          (PyCFunction) connection_add_temperature_callback,          METH_VARARGS, "" },
         { "add_battery_callback",              (PyCFunction) connection_add_battery_callback,              METH_VARARGS, "" },

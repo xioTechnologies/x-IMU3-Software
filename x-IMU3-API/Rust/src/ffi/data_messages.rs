@@ -40,6 +40,11 @@ pub extern "C" fn XIMU3_earth_acceleration_message_to_string(message: EarthAccel
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_ahrs_status_message_to_string(message: AhrsStatusMessage) -> *const c_char {
+    str_to_char_ptr!(&message.to_string())
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_high_g_accelerometer_message_to_string(message: HighGAccelerometerMessage) -> *const c_char {
     str_to_char_ptr!(&message.to_string())
 }

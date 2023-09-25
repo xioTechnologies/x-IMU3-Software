@@ -18,6 +18,7 @@ pub enum DispatcherData {
     EulerAngles(EulerAnglesMessage),
     LinearAcceleration(LinearAccelerationMessage),
     EarthAcceleration(EarthAccelerationMessage),
+    AhrsStatus(AhrsStatusMessage),
     HighGAccelerometer(HighGAccelerometerMessage),
     Temperature(TemperatureMessage),
     Battery(BatteryMessage),
@@ -44,6 +45,7 @@ pub struct Dispatcher {
     euler_angles_closures: Arc<Mutex<Vec<(Box<dyn Fn(EulerAnglesMessage) + Send>, u64)>>>,
     linear_acceleration_closures: Arc<Mutex<Vec<(Box<dyn Fn(LinearAccelerationMessage) + Send>, u64)>>>,
     earth_acceleration_closures: Arc<Mutex<Vec<(Box<dyn Fn(EarthAccelerationMessage) + Send>, u64)>>>,
+    ahrs_status_closures: Arc<Mutex<Vec<(Box<dyn Fn(AhrsStatusMessage) + Send>, u64)>>>,
     high_g_accelerometer_closures: Arc<Mutex<Vec<(Box<dyn Fn(HighGAccelerometerMessage) + Send>, u64)>>>,
     temperature_closures: Arc<Mutex<Vec<(Box<dyn Fn(TemperatureMessage) + Send>, u64)>>>,
     battery_closures: Arc<Mutex<Vec<(Box<dyn Fn(BatteryMessage) + Send>, u64)>>>,
@@ -74,6 +76,7 @@ impl Dispatcher {
             euler_angles_closures: Arc::new(Mutex::new(Vec::new())),
             linear_acceleration_closures: Arc::new(Mutex::new(Vec::new())),
             earth_acceleration_closures: Arc::new(Mutex::new(Vec::new())),
+            ahrs_status_closures: Arc::new(Mutex::new(Vec::new())),
             high_g_accelerometer_closures: Arc::new(Mutex::new(Vec::new())),
             temperature_closures: Arc::new(Mutex::new(Vec::new())),
             battery_closures: Arc::new(Mutex::new(Vec::new())),
@@ -97,6 +100,7 @@ impl Dispatcher {
         let euler_angles_closures = dispatcher.euler_angles_closures.clone();
         let linear_acceleration_closures = dispatcher.linear_acceleration_closures.clone();
         let earth_acceleration_closures = dispatcher.earth_acceleration_closures.clone();
+        let ahrs_status_closures = dispatcher.ahrs_status_closures.clone();
         let high_g_accelerometer_closures = dispatcher.high_g_accelerometer_closures.clone();
         let temperature_closures = dispatcher.temperature_closures.clone();
         let battery_closures = dispatcher.battery_closures.clone();
@@ -142,6 +146,10 @@ impl Dispatcher {
                         DispatcherData::EarthAcceleration(message) => {
                             data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
                             earth_acceleration_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
+                        }
+                        DispatcherData::AhrsStatus(message) => {
+                            data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
+                            ahrs_status_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
                         }
                         DispatcherData::HighGAccelerometer(message) => {
                             data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
@@ -254,6 +262,12 @@ impl Dispatcher {
         id
     }
 
+    pub fn add_ahrs_status_closure(&self, closure: Box<dyn Fn(AhrsStatusMessage) + Send>) -> u64 {
+        let id = self.get_closure_id();
+        self.ahrs_status_closures.lock().unwrap().push((closure, id));
+        id
+    }
+
     pub fn add_high_g_accelerometer_closure(&self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
         let id = self.get_closure_id();
         self.high_g_accelerometer_closures.lock().unwrap().push((closure, id));
@@ -310,6 +324,7 @@ impl Dispatcher {
         self.euler_angles_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
         self.linear_acceleration_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
         self.earth_acceleration_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
+        self.ahrs_status_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
         self.high_g_accelerometer_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
         self.temperature_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
         self.battery_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);

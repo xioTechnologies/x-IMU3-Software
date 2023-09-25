@@ -15,6 +15,9 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
     addAndMakeVisible(pitchValue);
     addAndMakeVisible(yawLabel);
     addAndMakeVisible(yawValue);
+    addAndMakeVisible(angularRateRecoveryIcon);
+    addAndMakeVisible(accelerationRecoveryIcon);
+    addAndMakeVisible(magneticRecoveryIcon);
 
     addAndMakeVisible(loadingLabel);
 
@@ -59,6 +62,13 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
     });
 
+    ahrsStatusMessageCallbackID = devicePanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message)
+    {
+        angularRateRecoveryState = message.angular_rate_recovery != 0.0f;
+        accelerationRecoveryState = message.acceleration_recovery != 0.0f;
+        magneticRecoveryState = message.magnetic_recovery != 0.0f;
+    });
+
     settingsTree.addListener(this);
     threeDView.setSettings(readFromValueTree());
 
@@ -73,6 +83,7 @@ ThreeDViewWindow::~ThreeDViewWindow()
     devicePanel.getConnection()->removeCallback(eulerAnglesCallbackID);
     devicePanel.getConnection()->removeCallback(linearAccelerationCallbackID);
     devicePanel.getConnection()->removeCallback(earthAccelerationCallbackID);
+    devicePanel.getConnection()->removeCallback(ahrsStatusMessageCallbackID);
 }
 
 void ThreeDViewWindow::resized()
@@ -80,12 +91,13 @@ void ThreeDViewWindow::resized()
     Window::resized();
     juce::Rectangle<int> bounds = getContentBounds();
 
-    compactView = (getWidth() < 300) || (getHeight() < 150);
+    compactView = (getWidth() < 350) || (getHeight() < 200);
 
     threeDView.setBounds(bounds);
     threeDView.setHudEnabled(compactView == false);
 
-    updateLabelVisibilities();
+    updateEulerAnglesVisibilities();
+    updateAhrsStatusVisibilities();
 
     bounds.reduce(10, 10);
 
@@ -101,6 +113,20 @@ void ThreeDViewWindow::resized()
     setRow(yawLabel, yawValue);
 
     loadingLabel.setBounds(bounds.removeFromRight(100).removeFromBottom(20));
+
+    const auto iconHeight = 25;
+    const auto iconWidth = 25;
+    const auto margin = 25;
+    const auto numIcons = 3;
+    auto statusIconBounds = getContentBounds();
+    statusIconBounds.removeFromTop(10);
+    statusIconBounds = statusIconBounds.removeFromTop(iconHeight);
+    statusIconBounds = statusIconBounds.withSizeKeepingCentre((numIcons * iconWidth) + ((numIcons - 1) * margin), iconHeight);
+    angularRateRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
+    statusIconBounds.removeFromLeft(margin);
+    accelerationRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
+    statusIconBounds.removeFromLeft(margin);
+    magneticRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
 }
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -189,7 +215,7 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const
     return settings;
 }
 
-void ThreeDViewWindow::updateLabelVisibilities()
+void ThreeDViewWindow::updateEulerAnglesVisibilities()
 {
     const auto visible = (settingsTree.getProperty("eulerAnglesEnabled", true) && compactView == false);
 
@@ -199,6 +225,15 @@ void ThreeDViewWindow::updateLabelVisibilities()
     rollValue.setVisible(visible);
     pitchValue.setVisible(visible);
     yawValue.setVisible(visible);
+}
+
+void ThreeDViewWindow::updateAhrsStatusVisibilities()
+{
+    const auto visible = (settingsTree.getProperty("ahrsStatusEnabled", true) && compactView == false);
+
+    angularRateRecoveryIcon.setVisible(visible);
+    accelerationRecoveryIcon.setVisible(visible);
+    magneticRecoveryIcon.setVisible(visible);
 }
 
 juce::PopupMenu ThreeDViewWindow::getMenu()
@@ -224,20 +259,24 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         settings.modelEnabled = !settings.modelEnabled;
         writeToValueTree(settings);
     });
+    menu.addItem("Compass", true, threeDView.getSettings().compassEnabled, [&]
+    {
+        auto settings = threeDView.getSettings();
+        settings.compassEnabled = !settings.compassEnabled;
+        writeToValueTree(settings);
+    });
     menu.addItem("Euler Angles", compactView == false, settingsTree.getProperty("eulerAnglesEnabled", true) && (compactView == false), [&]
     {
         settingsTree.setProperty("eulerAnglesEnabled", (bool) settingsTree.getProperty("eulerAnglesEnabled", true) == false, nullptr);
+    });
+    menu.addItem("AHRS Status", compactView == false, settingsTree.getProperty("ahrsStatusEnabled", true) && (compactView == false), [&]
+    {
+        settingsTree.setProperty("ahrsStatusEnabled", (bool) settingsTree.getProperty("ahrsStatusEnabled", true) == false, nullptr);
     });
     menu.addItem("Axes", compactView == false, threeDView.getSettings().axesEnabled && (compactView == false), [&]
     {
         auto settings = threeDView.getSettings();
         settings.axesEnabled = !settings.axesEnabled;
-        writeToValueTree(settings);
-    });
-    menu.addItem("Compass", true, threeDView.getSettings().compassEnabled, [&]
-    {
-        auto settings = threeDView.getSettings();
-        settings.compassEnabled = !settings.compassEnabled;
         writeToValueTree(settings);
     });
 
@@ -314,14 +353,24 @@ void ThreeDViewWindow::timerCallback()
     pitchValue.setText(formatAngle(pitch));
     yawValue.setText(formatAngle(yaw));
 
-    loadingLabel.setText(threeDView.isLoading() ? "Loading.." : "");
+    loadingLabel.setText(threeDView.isLoading() ? "Loading..." : "");
+
+    angularRateRecoveryIcon.setIcon(angularRateRecoveryState.load() ? BinaryData::speed_white_svg : BinaryData::speed_grey_svg);
+    accelerationRecoveryIcon.setIcon(accelerationRecoveryState.load() ? BinaryData::vibration_white_svg : BinaryData::vibration_grey_svg);
+    magneticRecoveryIcon.setIcon(magneticRecoveryState.load() ? BinaryData::magnet_white_svg : BinaryData::magnet_grey_svg);
 }
 
 void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& property)
 {
     if (property.toString() == "eulerAnglesEnabled")
     {
-        updateLabelVisibilities();
+        updateEulerAnglesVisibilities();
+        return;
+    }
+
+    if (property.toString() == "ahrsStatusEnabled")
+    {
+        updateAhrsStatusVisibilities();
         return;
     }
 

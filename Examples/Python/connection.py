@@ -108,6 +108,15 @@ def earth_acceleration_callback(message):
     # print(message.to_string())  # alternative to above
 
 
+def ahrs_status_callback(message):
+    print(timestamp_format(message.timestamp) +
+          float_format(message.initialising) +
+          float_format(message.angular_rate_recovery) +
+          float_format(message.acceleration_recovery) +
+          float_format(message.magnetic_recovery))
+    # print(message.to_string())  # alternative to above
+
+
 def high_g_accelerometer_callback(message):
     print(timestamp_format(message.timestamp) +
           float_format(message.x) + " g" +
@@ -166,6 +175,7 @@ def run(connection_info):
         connection.add_euler_angles_callback(euler_angles_callback)
         connection.add_linear_acceleration_callback(linear_acceleration_callback)
         connection.add_earth_acceleration_callback(earth_acceleration_callback)
+        connection.add_ahrs_status_callback(ahrs_status_callback)
         connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
         connection.add_temperature_callback(temperature_callback)
         connection.add_battery_callback(battery_callback)

@@ -21,6 +21,7 @@ pub fn run(connection_info: ConnectionInfo) {
         connection.add_euler_angles_closure(Box::new(euler_angles_closure));
         connection.add_linear_acceleration_closure(Box::new(linear_acceleration_closure));
         connection.add_earth_acceleration_closure(Box::new(earth_acceleration_closure));
+        connection.add_ahrs_status_closure(Box::new(ahrs_status_closure));
         connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
         connection.add_temperature_closure(Box::new(temperature_closure));
         connection.add_battery_closure(Box::new(battery_closure));
@@ -149,6 +150,16 @@ pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
              message.acceleration_x,
              message.acceleration_y,
              message.acceleration_z);
+    // println!("{}", message); // alternative to above
+}
+
+pub fn ahrs_status_closure(message: AhrsStatusMessage) {
+    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!()),
+             message.timestamp,
+             message.initialising,
+             message.angular_rate_recovery,
+             message.acceleration_recovery,
+             message.magnetic_recovery);
     // println!("{}", message); // alternative to above
 }
 

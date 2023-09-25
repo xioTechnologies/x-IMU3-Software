@@ -91,6 +91,7 @@ impl Decoder {
         parse!(EulerAnglesMessage, EulerAngles);
         parse!(LinearAccelerationMessage, LinearAcceleration);
         parse!(EarthAccelerationMessage, EarthAcceleration);
+        parse!(AhrsStatusMessage, AhrsStatus);
         parse!(HighGAccelerometerMessage, HighGAccelerometer);
         parse!(TemperatureMessage, Temperature);
         parse!(BatteryMessage, Battery);

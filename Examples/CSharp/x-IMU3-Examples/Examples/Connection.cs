@@ -20,6 +20,7 @@ namespace Ximu3Examples
                 connection.EulerAnglesEvent += this.EulerAnglesEvent;
                 connection.LinearAccelerationEvent += this.LinearAccelerationEvent;
                 connection.EarthAccelerationEvent += this.EarthAccelerationEvent;
+                connection.AhrsStatusEvent += this.AhrsStatusEvent;
                 connection.HighGAccelerometerEvent += this.HighGAccelerometerEvent;
                 connection.TemperatureEvent += this.TemperatureEvent;
                 connection.BatteryEvent += this.BatteryEvent;
@@ -167,6 +168,16 @@ namespace Ximu3Examples
                 FloatFormat(args.message.AccelerationX) + " g" +
                 FloatFormat(args.message.AccelerationY) + " g" +
                 FloatFormat(args.message.AccelerationZ) + " g");
+            // Console.WriteLine(args.message.ToString()); // alternative to above
+        }
+
+        private void AhrsStatusEvent(Object sender, Ximu3.AhrsStatusEventArgs args)
+        {
+            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
+                FloatFormat(args.message.Initialising) +
+                FloatFormat(args.message.AngularRateRecovery) +
+                FloatFormat(args.message.AccelerationRecovery) +
+                FloatFormat(args.message.MagneticRecovery));
             // Console.WriteLine(args.message.ToString()); // alternative to above
         }
 

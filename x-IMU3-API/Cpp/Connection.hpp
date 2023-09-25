@@ -186,6 +186,11 @@ namespace ximu3
             return XIMU3_connection_add_earth_acceleration_callback(connection, Helpers::wrapCallable<XIMU3_EarthAccelerationMessage>(callback), &callback);
         }
 
+        uint64_t addAhrsStatusCallback(std::function<void(XIMU3_AhrsStatusMessage)>& callback)
+        {
+            return XIMU3_connection_add_ahrs_status_callback(connection, Helpers::wrapCallable<XIMU3_AhrsStatusMessage>(callback), &callback);
+        }
+
         uint64_t addHighGAccelerometerCallback(std::function<void(XIMU3_HighGAccelerometerMessage)>& callback)
         {
             return XIMU3_connection_add_high_g_accelerometer_callback(connection, Helpers::wrapCallable<XIMU3_HighGAccelerometerMessage>(callback), &callback);
