@@ -53,7 +53,7 @@ private:
 
         ~FreeTypeLibrary();
 
-        FT_Library get();
+        FT_Library get() const;
 
     private:
         FT_Library freetypeLibrary = nullptr;
