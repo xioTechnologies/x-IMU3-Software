@@ -202,7 +202,7 @@ Text::FreeTypeLibrary::~FreeTypeLibrary()
     FT_Done_FreeType(freetypeLibrary);
 }
 
-FT_Library Text::FreeTypeLibrary::get()
+FT_Library Text::FreeTypeLibrary::get() const
 {
     return freetypeLibrary;
 }
