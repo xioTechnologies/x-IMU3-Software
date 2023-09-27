@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/common.hpp"
-#include "glm/gtx/component_wise.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include <unordered_map>
@@ -472,7 +471,8 @@ private:
         {
             for (const auto& position : shape->mesh.positions)
             {
-                maxMagnitudeComponent = glm::max(glm::compMax(glm::abs(position)), maxMagnitudeComponent);
+                auto magnitude = glm::abs(position);
+                maxMagnitudeComponent = std::max({ magnitude.x, magnitude.y, magnitude.z, maxMagnitudeComponent });
             }
         }
 
