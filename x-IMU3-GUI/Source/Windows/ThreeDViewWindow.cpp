@@ -298,7 +298,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
 
     juce::PopupMenu userModelsMenu;
-    userModelsMenu.addItem("Load...", [&]
+    userModelsMenu.addItem("Load", [&]
     {
         juce::FileChooser fileChooser("Select Model", juce::File(), "*.obj");
 
