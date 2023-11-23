@@ -92,13 +92,17 @@ void DevicePanelContainer::updateSize()
         case Layout::single:
             break;
         case Layout::rows:
+        {
             static constexpr int minimumRowHeight = 100;
             bounds.setHeight(std::max(bounds.getHeight(), (int) devicePanels.size() * minimumRowHeight + (int) devicePanels.size() * UILayout::panelMargin));
             break;
+        }
         case Layout::columns:
+        {
             static constexpr int minimumColumnWidth = 100;
             bounds.setWidth(std::max(bounds.getWidth(), (int) devicePanels.size() * minimumColumnWidth + (int) devicePanels.size() * UILayout::panelMargin));
             break;
+        }
         case Layout::grid:
             break;
         case Layout::accordion:
@@ -148,15 +152,15 @@ void DevicePanelContainer::connectToDevice(const ximu3::ConnectionInfo& connecti
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
     addAndMakeVisible(*devicePanels.emplace_back(std::make_unique<DevicePanel>(windowLayout, connection, glRenderer, *this, [&]
     {
-        static unsigned int counter;
+            static unsigned int counter;
 
-        if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
-        {
-            counter = 0;
-        }
+            if (devicePanels.empty() || (++counter >= UIColours::tags.size()))
+            {
+                counter = 0;
+            }
 
-        return UIColours::tags[counter];
-    }())));
+            return UIColours::tags[counter];
+        }())));
 
     devicePanelsSizeChanged();
 }
