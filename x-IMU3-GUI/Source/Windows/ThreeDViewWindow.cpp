@@ -312,6 +312,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
             userModelsDirectory.createDirectory();
             objFileOriginal.copyFileTo(objFileCopy);
+            mtlFileCopy.deleteFile();
             mtlFileOriginal.copyFileTo(mtlFileCopy);
 
             auto settings = threeDView.getSettings();
