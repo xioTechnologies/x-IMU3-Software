@@ -85,17 +85,14 @@ void ThreeDView::setSettings(Settings settings_)
 {
     std::scoped_lock _(settingsMutex);
     settings = settings_;
+
+    resources->user.setModel(settings.userModel);
 }
 
 ThreeDView::Settings ThreeDView::getSettings() const
 {
     std::scoped_lock _(settingsMutex);
     return settings;
-}
-
-void ThreeDView::setCustomModel(const juce::File& file)
-{
-    resources->custom.setModel(file);
 }
 
 bool ThreeDView::isLoading() const
@@ -106,8 +103,8 @@ bool ThreeDView::isLoading() const
             return resources->board.isLoading();
         case Model::housing:
             return resources->housing.isLoading();
-        case Model::custom:
-            return resources->custom.isLoading();
+        case Model::user:
+            return resources->user.isLoading();
     }
     return false;
 }
@@ -151,8 +148,8 @@ void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4&
         case Model::housing:
             resources->housing.renderWithMaterials(threeDViewShader);
             break;
-        case Model::custom:
-            resources->custom.renderWithMaterials(threeDViewShader);
+        case Model::user:
+            resources->user.renderWithMaterials(threeDViewShader);
             break;
     }
 }

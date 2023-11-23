@@ -36,7 +36,7 @@ public:
     Model arrow { context };
     Model board { context };
     Model housing { context };
-    Model custom { context };
+    Model user { context };
     PlaneModel plane;
     TextQuad textQuad;
     LineBuffer graphGridBuffer { true };

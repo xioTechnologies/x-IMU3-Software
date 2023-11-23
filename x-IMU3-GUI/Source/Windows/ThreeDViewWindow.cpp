@@ -197,6 +197,7 @@ void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings& settings)
     settingsTree.setProperty("axesEnabled", settings.axesEnabled, nullptr);
     settingsTree.setProperty("compassEnabled", settings.compassEnabled, nullptr);
     settingsTree.setProperty("model", static_cast<int>(settings.model), nullptr);
+    settingsTree.setProperty("userModel", settings.userModel.getFullPathName(), nullptr);
     settingsTree.setProperty("axesConvention", static_cast<int>(settings.axesConvention), nullptr);
 }
 
@@ -211,6 +212,7 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const
     settings.axesEnabled = settingsTree.getProperty("axesEnabled", settings.axesEnabled);
     settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.axesEnabled);
     settings.model = static_cast<ThreeDView::Model>((int) settingsTree.getProperty("model", static_cast<int>(settings.model)));
+    settings.userModel = settingsTree["userModel"];
     settings.axesConvention = static_cast<ThreeDView::AxesConvention>((int) settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
     return settings;
 }
@@ -294,19 +296,45 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         settings.model = ThreeDView::Model::housing;
         writeToValueTree(settings);
     });
-    menu.addItem("Custom", true, threeDView.getSettings().model == ThreeDView::Model::custom, [&]
+
+    juce::PopupMenu userModelsMenu;
+    userModelsMenu.addItem("Load...", [&]
     {
-        juce::FileChooser fileChooser("Select Custom Model", juce::File(), "*.obj");
+        juce::FileChooser fileChooser("Select Model", juce::File(), "*.obj");
 
         if (fileChooser.browseForFileToOpen())
         {
-            threeDView.setCustomModel(fileChooser.getResult());
+            const auto objFileOriginal = fileChooser.getResult();
+            const auto mtlFileOriginal = objFileOriginal.withFileExtension(".mtl");
+
+            const auto objFileCopy = userModelsDirectory.getChildFile(objFileOriginal.getFileName());
+            const auto mtlFileCopy = userModelsDirectory.getChildFile(mtlFileOriginal.getFileName());
+
+            userModelsDirectory.createDirectory();
+            objFileOriginal.copyFileTo(objFileCopy);
+            mtlFileOriginal.copyFileTo(mtlFileCopy);
 
             auto settings = threeDView.getSettings();
-            settings.model = ThreeDView::Model::custom;
+            settings.model = ThreeDView::Model::user;
+            settings.userModel = objFileCopy;
             writeToValueTree(settings);
         }
     });
+    userModelsMenu.addSeparator();
+    userModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
+    for (const auto& file : userModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"))
+    {
+        const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::user) && (threeDView.getSettings().userModel == file);
+        userModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
+        {
+            auto settings = threeDView.getSettings();
+            settings.model = ThreeDView::Model::user;
+            settings.userModel = file;
+            writeToValueTree(settings);
+        });
+    }
+
+    menu.addSubMenu("User", userModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::user);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);

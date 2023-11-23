@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ApplicationSettings.h"
 #include "DevicePanel/DevicePanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
@@ -72,6 +73,8 @@ private:
     Icon angularRateRecoveryIcon { BinaryData::speed_grey_svg, "Angular Rate Recovery" };
     Icon accelerationRecoveryIcon { BinaryData::vibration_grey_svg, "Acceleration Recovery" };
     Icon magneticRecoveryIcon { BinaryData::magnet_grey_svg, "Magnetic Recovery" };
+
+    const juce::File userModelsDirectory = ApplicationSettings::getDirectory().getChildFile("User Models");
 
     static float wrapAngle(float angle);
 

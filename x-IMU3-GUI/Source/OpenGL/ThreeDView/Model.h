@@ -24,6 +24,8 @@ public:
 private:
     juce::OpenGLContext& context;
 
+    juce::File objFile;
+
     std::mutex objectLock;
     std::shared_ptr<WavefrontObjFile> object;
     bool fillBuffersPending = false;

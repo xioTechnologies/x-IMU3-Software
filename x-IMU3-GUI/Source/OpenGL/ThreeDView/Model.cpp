@@ -72,13 +72,19 @@ void Model::setModel(const juce::String& objFileContent, const juce::String& mtl
                          });
 }
 
-void Model::setModel(const juce::File& objFile)
+void Model::setModel(const juce::File& objFile_)
 {
+    if (objFile == objFile_)
+    {
+        return;
+    }
+    objFile = objFile_;
+
     loading = true;
-    juce::Thread::launch([&, self = juce::WeakReference(this), objFile]
+    juce::Thread::launch([&, self = juce::WeakReference(this), objFile_]
                          {
                              auto newObject = std::make_shared<WavefrontObjFile>();
-                             newObject->load(objFile);
+                             newObject->load(objFile_);
 
                              juce::MessageManager::callAsync([&, self, newObject]() mutable
                                                              {
