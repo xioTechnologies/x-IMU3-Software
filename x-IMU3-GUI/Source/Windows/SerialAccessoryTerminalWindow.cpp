@@ -12,7 +12,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendValue);
     sendValue.setEditableText(true);
 
-    loadHistory();
+    loadRecents();
 
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
@@ -21,24 +21,24 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
         serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
 
-        for (const auto data : history)
+        for (const auto data : recentSerialAccessoryData)
         {
             if (data["data"] == sendValue.getText())
             {
-                history.removeChild(data, nullptr);
+                recentSerialAccessoryData.removeChild(data, nullptr);
                 break;
             }
         }
 
-        while (history.getNumChildren() >= 12)
+        while (recentSerialAccessoryData.getNumChildren() >= 12)
         {
-            history.removeChild(history.getChild(history.getNumChildren() - 1), nullptr);
+            recentSerialAccessoryData.removeChild(recentSerialAccessoryData.getChild(recentSerialAccessoryData.getNumChildren() - 1), nullptr);
         }
 
-        history.addChild({ "Data", {{ "data", sendValue.getText() }}}, 0, nullptr);
-        file.replaceWithText(history.toXmlString());
+        recentSerialAccessoryData.addChild({ "Data", {{ "data", sendValue.getText() }}}, 0, nullptr);
+        file.replaceWithText(recentSerialAccessoryData.toXmlString());
 
-        loadHistory();
+        loadRecents();
     };
 
     callbackID = devicePanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -145,16 +145,16 @@ juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::S
     return output;
 }
 
-void SerialAccessoryTerminalWindow::loadHistory()
+void SerialAccessoryTerminalWindow::loadRecents()
 {
-    history = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (history.isValid() == false)
+    recentSerialAccessoryData = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (recentSerialAccessoryData.isValid() == false)
     {
-        history = juce::ValueTree("SerialAccessoryHistory");
+        recentSerialAccessoryData = juce::ValueTree("RecentSerialAccessoryData");
     }
 
     sendValue.clear(juce::dontSendNotification);
-    for (const auto data : history)
+    for (const auto data : recentSerialAccessoryData)
     {
         sendValue.addItem(data["data"], sendValue.getNumItems() + 1);
     }

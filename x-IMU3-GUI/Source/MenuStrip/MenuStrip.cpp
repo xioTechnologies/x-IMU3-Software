@@ -1,5 +1,4 @@
 #include "ApplicationSettings.h"
-#include "ConnectionHistory.h"
 #include "CustomLayouts.h"
 #include "CustomLookAndFeel.h"
 #include "DevicePanelContainer.h"
@@ -17,6 +16,7 @@
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "Dialogs/UpdatingFirmwareDialog.h"
 #include "MenuStrip.h"
+#include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Windows/WindowIDs.h"
 
@@ -323,7 +323,7 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         {
             auto connectionInfo = dialog->getConnectionInfo();
             devicePanelContainer.connectToDevice(*connectionInfo);
-            ConnectionHistory().update(*connectionInfo);
+            RecentConnections().update(*connectionInfo);
         }
         return true;
     };
@@ -348,10 +348,10 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
         DialogQueue::getSingleton().pushFront(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
     });
 
-    if (auto connectionInfos = ConnectionHistory().get(); connectionInfos.empty() == false)
+    if (auto connectionInfos = RecentConnections().get(); connectionInfos.empty() == false)
     {
         menu.addSeparator();
-        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNECTION HISTORY"), nullptr);
+        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT CONNECTIONS"), nullptr);
 
         for (auto& connectionInfo : connectionInfos)
         {
