@@ -79,19 +79,55 @@ void DevicePanelContainer::resized()
 
 void DevicePanelContainer::updateSize()
 {
-    juce::Rectangle<int> bounds;
-    if (const auto* const viewport = findParentComponentOfClass<juce::Viewport>())
+    auto* const viewport = findParentComponentOfClass<juce::Viewport>();
+    if (viewport == nullptr)
     {
-        bounds = viewport->getLocalBounds();
+        return;
     }
 
-    if (layout == Layout::accordion)
+    auto bounds = viewport->getLocalBounds();
+
+    switch (layout)
     {
-        bounds.setHeight(0);
-        for (size_t index = 0; index < devicePanels.size(); index++)
-        {
-            bounds.setHeight(bounds.getHeight() + UILayout::panelMargin + (expandedDevicePanel == devicePanels[index].get() ? expandedPanelHeight : DevicePanel::collapsedHeight));
-        }
+        case Layout::single:
+            break;
+        case Layout::rows:
+            static constexpr int minimumRowHeight = 100;
+            bounds.setHeight(std::max(bounds.getHeight(), (int) devicePanels.size() * minimumRowHeight + (int) devicePanels.size() * UILayout::panelMargin));
+            break;
+        case Layout::columns:
+            static constexpr int minimumColumnWidth = 100;
+            bounds.setWidth(std::max(bounds.getWidth(), (int) devicePanels.size() * minimumColumnWidth + (int) devicePanels.size() * UILayout::panelMargin));
+            break;
+        case Layout::grid:
+            break;
+        case Layout::accordion:
+            bounds.setHeight(0);
+            for (size_t index = 0; index < devicePanels.size(); index++)
+            {
+                bounds.setHeight(bounds.getHeight() + UILayout::panelMargin + (expandedDevicePanel == devicePanels[index].get() ? expandedPanelHeight : DevicePanel::collapsedHeight));
+            }
+            break;
+    }
+
+    setBounds(bounds); // Update the visibility of the scrollbars
+
+    // Prevent scrollbar overlap
+    switch (layout)
+    {
+        case Layout::single:
+            break;
+        case Layout::rows:
+            bounds.removeFromRight((bounds.getHeight() <= viewport->getMaximumVisibleHeight()) ? 0 : viewport->getScrollBarThickness());
+            break;
+        case Layout::columns:
+            bounds.removeFromBottom((bounds.getWidth() <= viewport->getMaximumVisibleWidth()) ? 0 : viewport->getScrollBarThickness());
+            break;
+        case Layout::grid:
+            break;
+        case Layout::accordion:
+            bounds.removeFromRight((bounds.getHeight() <= viewport->getMaximumVisibleHeight()) ? 0 : viewport->getScrollBarThickness());
+            break;
     }
 
     setBounds(bounds);

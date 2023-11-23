@@ -18,7 +18,7 @@ public:
         addAndMakeVisible(devicePanelViewport);
 
         devicePanelViewport.setViewedComponent(&devicePanelContainer, false);
-        devicePanelViewport.setScrollBarsShown(true, false);
+        devicePanelViewport.setScrollBarsShown(true, true);
 
         setSize(1280, 768);
 
