@@ -14,7 +14,7 @@ public:
     {
         board,
         housing,
-        custom,
+        user,
     };
 
     enum class AxesConvention
@@ -35,6 +35,7 @@ public:
         bool axesEnabled = true;
         bool compassEnabled = true;
         Model model { Model::housing };
+        juce::File userModel;
         AxesConvention axesConvention { AxesConvention::nwu };
     };
 
@@ -47,8 +48,6 @@ public:
     void setSettings(Settings settings_);
 
     Settings getSettings() const;
-
-    void setCustomModel(const juce::File& file);
 
     bool isLoading() const;
 
