@@ -347,16 +347,20 @@ juce::PopupMenu MenuStrip::getManualConnectMenu()
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
     });
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNECTION HISTORY"), nullptr);
 
-    for (auto& connectionInfo : ConnectionHistory().get())
+    if (auto connectionInfos = ConnectionHistory().get(); connectionInfos.empty() == false)
     {
-        const auto connectionInfoString = connectionInfo->toString();
-        menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
+        menu.addSeparator();
+        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNECTION HISTORY"), nullptr);
+
+        for (auto& connectionInfo : connectionInfos)
         {
-            devicePanelContainer.connectToDevice(*connectionInfo);
-        });
+            const auto connectionInfoString = connectionInfo->toString();
+            menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
+            {
+                devicePanelContainer.connectToDevice(*connectionInfo);
+            });
+        }
     }
 
     return menu;
