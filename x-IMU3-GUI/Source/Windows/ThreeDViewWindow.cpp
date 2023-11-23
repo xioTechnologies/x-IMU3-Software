@@ -298,7 +298,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
 
     juce::PopupMenu userModelsMenu;
-    userModelsMenu.addItem("Load...", [&]
+    userModelsMenu.addItem("Load", [&]
     {
         juce::FileChooser fileChooser("Select Model", juce::File(), "*.obj");
 
@@ -312,6 +312,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
             userModelsDirectory.createDirectory();
             objFileOriginal.copyFileTo(objFileCopy);
+            mtlFileCopy.deleteFile();
             mtlFileOriginal.copyFileTo(mtlFileCopy);
 
             auto settings = threeDView.getSettings();
@@ -320,20 +321,22 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
             writeToValueTree(settings);
         }
     });
-    userModelsMenu.addSeparator();
-    userModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
-    for (const auto& file : userModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"))
+    if (const auto userModels = userModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); userModels.isEmpty() == false)
     {
-        const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::user) && (threeDView.getSettings().userModel == file);
-        userModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
+        userModelsMenu.addSeparator();
+        userModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
+        for (const auto& file : userModels)
         {
-            auto settings = threeDView.getSettings();
-            settings.model = ThreeDView::Model::user;
-            settings.userModel = file;
-            writeToValueTree(settings);
-        });
+            const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::user) && (threeDView.getSettings().userModel == file);
+            userModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
+            {
+                auto settings = threeDView.getSettings();
+                settings.model = ThreeDView::Model::user;
+                settings.userModel = file;
+                writeToValueTree(settings);
+            });
+        }
     }
-
     menu.addSubMenu("User", userModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::user);
 
     menu.addSeparator();

@@ -1,35 +1,35 @@
-#include "ConnectionHistory.h"
+#include "RecentConnections.h"
 
-ConnectionHistory::ConnectionHistory()
+RecentConnections::RecentConnections()
 {
-    connectionHistory = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (connectionHistory.isValid() == false)
+    recentConnections = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (recentConnections.isValid() == false)
     {
-        connectionHistory = juce::ValueTree("ConnectionHistory");
+        recentConnections = juce::ValueTree("RecentConnections");
     }
 }
 
-void ConnectionHistory::update(const ximu3::ConnectionInfo& connectionInfo)
+void RecentConnections::update(const ximu3::ConnectionInfo& connectionInfo)
 {
     const auto prepend = [this](juce::ValueTree newChild)
     {
-        for (auto child : connectionHistory)
+        for (auto child : recentConnections)
         {
             if (child.isEquivalentTo(newChild))
             {
-                connectionHistory.removeChild(child, nullptr);
+                recentConnections.removeChild(child, nullptr);
                 break;
             }
         }
 
-        while (connectionHistory.getNumChildren() >= 6)
+        while (recentConnections.getNumChildren() >= 6)
         {
-            connectionHistory.removeChild(connectionHistory.getChild(connectionHistory.getNumChildren() - 1), nullptr);
+            recentConnections.removeChild(recentConnections.getChild(recentConnections.getNumChildren() - 1), nullptr);
         }
 
-        connectionHistory.addChild(newChild, 0, nullptr);
+        recentConnections.addChild(newChild, 0, nullptr);
         file.create();
-        file.replaceWithText(connectionHistory.toXmlString());
+        file.replaceWithText(recentConnections.toXmlString());
     };
 
     if (const auto* usbConnectionInfo = dynamic_cast<const ximu3::UsbConnectionInfo*>(&connectionInfo))
@@ -67,11 +67,11 @@ void ConnectionHistory::update(const ximu3::ConnectionInfo& connectionInfo)
     }
 }
 
-std::vector<std::unique_ptr<ximu3::ConnectionInfo>> ConnectionHistory::get() const
+std::vector<std::unique_ptr<ximu3::ConnectionInfo>> RecentConnections::get() const
 {
     std::vector<std::unique_ptr<ximu3::ConnectionInfo>> result;
 
-    for (auto connectionInfo : connectionHistory)
+    for (auto connectionInfo : recentConnections)
     {
         if (connectionInfo.hasType("UsbConnectionInfo"))
         {

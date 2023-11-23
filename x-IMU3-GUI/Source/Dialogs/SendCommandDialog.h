@@ -29,7 +29,7 @@ private:
 
     SimpleLabel keyLabel { "Key:" };
     CustomTextEditor keyValue;
-    IconButton commandKeys { BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
+    IconButton commandKeysButton { BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
 
     SimpleLabel valueLabel { "Value:" };
     CustomComboBox typeValue;
@@ -39,12 +39,12 @@ private:
     SimpleLabel commandLabel { "Command:" };
     CustomTextEditor commandValue;
 
-    IconButton historyButton { BinaryData::history_svg, "Command History", std::bind(&SendCommandDialog::getHistoryMenu, this) };
+    IconButton recentCommandsButton { BinaryData::history_svg, "Recent Commands", std::bind(&SendCommandDialog::getRecentCommandsMenu, this) };
 
-    const juce::ValueTree keysTree = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
+    const juce::ValueTree commandKeys = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
-    juce::ValueTree commandHistory;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Command History.xml");
+    juce::ValueTree recentCommands;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Commands.xml");
 
     static juce::String toString(const Type type);
 
@@ -54,7 +54,7 @@ private:
 
     juce::PopupMenu getCommandKeysMenu();
 
-    juce::PopupMenu getHistoryMenu();
+    juce::PopupMenu getRecentCommandsMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendCommandDialog)
 };
