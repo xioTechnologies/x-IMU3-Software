@@ -45,7 +45,7 @@ public:
             }
         }();
 
-        g.setColour(juce::Colours::white);
+        g.setColour(UIColours::foreground);
         g.drawRect(overlayBounds, 3);
     }
 
