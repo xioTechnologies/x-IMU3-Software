@@ -6,7 +6,7 @@ class CustomComboBox::LookAndFeel : public CustomLookAndFeel
 public:
     LookAndFeel()
     {
-        setColour(juce::PopupMenu::backgroundColourId, UIColours::textEditor);
+        setColour(juce::PopupMenu::backgroundColourId, UIColours::foreground);
         setColour(juce::PopupMenu::textColourId, UIColours::backgroundDark);
     }
 
