@@ -64,9 +64,9 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     ahrsStatusMessageCallbackID = devicePanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message)
     {
-        angularRateRecoveryState = message.angular_rate_recovery != 0.0f;
-        accelerationRecoveryState = message.acceleration_recovery != 0.0f;
-        magneticRecoveryState = message.magnetic_recovery != 0.0f;
+        angularRateRecoveryState = juce::exactlyEqual(message.angular_rate_recovery, 0.0f) == false;
+        accelerationRecoveryState = juce::exactlyEqual(message.acceleration_recovery, 0.0f) == false;
+        magneticRecoveryState = juce::exactlyEqual(message.magnetic_recovery, 0.0f) == false;
     });
 
     settingsTree.addListener(this);
