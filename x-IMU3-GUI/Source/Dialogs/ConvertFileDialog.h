@@ -13,7 +13,7 @@ public:
 
     void resized() override;
 
-    juce::String getSource() const;
+    juce::StringArray getSources() const;
 
     juce::String getDestination() const;
 

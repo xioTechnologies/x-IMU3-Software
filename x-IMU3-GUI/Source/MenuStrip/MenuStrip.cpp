@@ -615,25 +615,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
         {
             if (const auto* const convertFileDialog = dynamic_cast<ConvertFileDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                const auto startFileConverter = [source = convertFileDialog->getSource(), destination = convertFileDialog->getDestination()]
-                {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<ConvertingFileDialog>(source, destination));
-                };
-
-                const auto directory = juce::File(convertFileDialog->getDestination()).getChildFile(juce::File(convertFileDialog->getSource()).getFileNameWithoutExtension());
-                if (directory.exists())
-                {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(directory.getFileName()), [directory, startFileConverter]
-                    {
-                        directory.deleteRecursively();
-                        startFileConverter();
-                        return true;
-                    });
-                }
-                else
-                {
-                    startFileConverter();
-                }
+                ConvertingFileDialog::show(convertFileDialog->getSources(), convertFileDialog->getDestination());
             }
             return true;
         });

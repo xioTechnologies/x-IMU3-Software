@@ -8,11 +8,16 @@
 class ConvertingFileDialog : public Dialog, private juce::Timer
 {
 public:
-    ConvertingFileDialog(const juce::String& source, const juce::String& destination);
+    static void show(const juce::StringArray& sources_, const juce::String& destination_);
+
+    ConvertingFileDialog(const juce::StringArray& sources_, const juce::String& destination_);
 
     void resized() override;
 
 private:
+    juce::StringArray sources;
+    const juce::String destination;
+
     const juce::File file;
 
     double progressBarValue = 0.0;
