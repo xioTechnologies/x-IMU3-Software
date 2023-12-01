@@ -6,8 +6,9 @@ Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
         JUCE
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 7.0.7
+        GIT_TAG 7.0.9
         GIT_PROGRESS TRUE
+        GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(JUCE)
 
@@ -40,6 +41,7 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/g-truc/glm
         GIT_TAG 0.9.9.8
         GIT_PROGRESS TRUE
+        GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(glm)
 
