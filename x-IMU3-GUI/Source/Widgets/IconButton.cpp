@@ -10,6 +10,8 @@ IconButton::IconButton(const juce::String& icon, const juce::String& tooltip_,
           getPopup(std::move(getPopup_)),
           popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) : nullptr)
 {
+    setWantsKeyboardFocus(false);
+
     setColour(juce::TextButton::buttonColourId, {});
     setColour(juce::TextButton::buttonOnColourId, {});
 

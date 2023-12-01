@@ -15,6 +15,6 @@ void AreYouSureDialog::resized()
     label.setBounds(getContentBounds());
 }
 
-DoYouWantToReplaceItDialog::DoYouWantToReplaceItDialog(const juce::String& name) : AreYouSureDialog(name.quoted() + " already exists. Do you want to replace it?")
+DoYouWantToReplaceItDialog::DoYouWantToReplaceItDialog(const juce::String& name) : AreYouSureDialog(name + " already exists. Do you want to replace it?")
 {
 }

@@ -13,12 +13,21 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
     sourceButton.onClick = [&]
     {
         juce::FileChooser fileChooser(sourceButton.getTooltip(), std::filesystem::exists(sourceValue.getText().toStdString()) ? sourceValue.getText() : "", "*.ximu3");
-        if (fileChooser.browseForFileToOpen())
+        if (fileChooser.browseForMultipleFilesToOpen())
         {
-            sourceValue.setText(fileChooser.getResult().getFullPathName());
+            const auto files = fileChooser.getResults();
+
+            juce::String text;
+            for (auto file : files)
+            {
+                text += file.getFullPathName() + ";";
+            }
+            text = text.dropLastCharacters(1);
+            sourceValue.setText(text);
+
             if (destinationValue.isEmpty())
             {
-                destinationValue.setText(fileChooser.getResult().getParentDirectory().getFullPathName());
+                destinationValue.setText(files[0].getParentDirectory().getFullPathName());
             }
         }
     };
@@ -34,7 +43,15 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
 
     sourceValue.onTextChange = destinationValue.onTextChange = [&]
     {
-        setOkButton(std::filesystem::exists(sourceValue.getText().toStdString()) && std::filesystem::exists(destinationValue.getText().toStdString()));
+        setOkButton(std::filesystem::exists(destinationValue.getText().toStdString()));
+
+        for (const auto& source : getSources())
+        {
+            if (std::filesystem::exists(source.toStdString()) == false)
+            {
+                setOkButton(false);
+            }
+        }
     };
     setOkButton(false);
 
@@ -59,9 +76,9 @@ void ConvertFileDialog::resized()
     destinationValue.setBounds(destinationRow.withTrimmedRight(margin));
 }
 
-juce::String ConvertFileDialog::getSource() const
+juce::StringArray ConvertFileDialog::getSources() const
 {
-    return sourceValue.getText();
+    return juce::StringArray::fromTokens(sourceValue.getText(), ";", "");
 }
 
 juce::String ConvertFileDialog::getDestination() const
