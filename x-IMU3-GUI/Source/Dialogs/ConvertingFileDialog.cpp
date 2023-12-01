@@ -3,31 +3,30 @@
 #include "ConvertingFileDialog.h"
 #include "ErrorDialog.h"
 
-void ConvertingFileDialog::show(const juce::StringArray& sources_, const juce::String& destination_)
+void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juce::File& destination_)
 {
-    const auto directory = juce::File(destination_).getChildFile(juce::File(sources_[0]).getFileNameWithoutExtension());
+    const auto directory = destination_.getChildFile(files_[0].getFileNameWithoutExtension());
 
     if (directory.exists())
     {
-        DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(juce::File(sources_[0]).getFileName()), [directory, sources_, destination_]
+        DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(files_[0].getFileNameWithoutExtension()), [directory, files_, destination_]
         {
             directory.deleteRecursively();
-            DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(sources_, destination_));
+            DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(files_, destination_));
             return true;
         });
     }
     else
     {
-        DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(sources_, destination_));
+        DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(files_, destination_));
     }
 }
 
-ConvertingFileDialog::ConvertingFileDialog(const juce::StringArray& sources_, const juce::String& destination_)
-        : Dialog(BinaryData::tools_svg, "Converting " + juce::File(sources_[0]).getFileName(), "Cancel", ""),
-          sources(sources_),
+ConvertingFileDialog::ConvertingFileDialog(const std::vector<juce::File>& files_, const juce::File& destination_)
+        : Dialog(BinaryData::tools_svg, "Converting " + files_[0].getFileName(), "Cancel", ""),
+          files(files_),
           destination(destination_),
-          file(juce::File(destination).getChildFile(juce::File(sources[0]).getFileNameWithoutExtension())),
-          fileConverter(destination.toStdString(), sources[0].toStdString(), std::bind(&ConvertingFileDialog::progressCallback, this, std::placeholders::_1))
+          fileConverter(destination.getFullPathName().toStdString(), files[0].getFullPathName().toStdString(), std::bind(&ConvertingFileDialog::progressCallback, this, std::placeholders::_1))
 {
     addAndMakeVisible(progressBar);
 
@@ -70,14 +69,14 @@ void ConvertingFileDialog::progressCallback(ximu3::XIMU3_FileConverterProgress p
 
 void ConvertingFileDialog::timerCallback()
 {
-    if (sources.size() > 1)
+    if (files.size() > 1)
     {
-        sources.remove(0);
-        show(sources, destination);
+        files.erase(files.begin());
+        show(files, destination);
     }
     else
     {
-        juce::File(destination).revealToUser();
+        destination.revealToUser();
     }
 
     DialogQueue::getSingleton().pop();
