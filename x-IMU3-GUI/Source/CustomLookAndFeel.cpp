@@ -45,6 +45,7 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::PopupMenu::textColourId, UIColours::foreground);
     setColour(juce::PopupMenu::headerTextColourId, juce::Colours::grey);
     setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
+    setColour(juce::PopupMenu::highlightedTextColourId, UIColours::foreground);
     setColour(juce::ProgressBar::backgroundColourId, UIColours::textEditor);
     setColour(juce::ProgressBar::foregroundColourId, UIColours::highlight);
     setColour(juce::ResizableWindow::backgroundColourId, UIColours::backgroundLightest);
