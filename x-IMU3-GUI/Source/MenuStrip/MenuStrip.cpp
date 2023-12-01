@@ -5,7 +5,7 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
-#include "Dialogs/ConvertFileDialog.h"
+#include "Dialogs/ConvertFilesDialog.h"
 #include "Dialogs/ConvertingFileDialog.h"
 #include "Dialogs/ErrorDialog.h"
 #include "Dialogs/NewConnectionDialog.h"
@@ -609,13 +609,13 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             return true;
         });
     });
-    menu.addItem("Convert File (.ximu3)", []
+    menu.addItem("Convert .ximu3 Files", []
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFileDialog>(), []
+        DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(), []
         {
-            if (const auto* const convertFileDialog = dynamic_cast<ConvertFileDialog*>(DialogQueue::getSingleton().getActive()))
+            if (const auto* const convertFileDialog = dynamic_cast<ConvertFilesDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                ConvertingFileDialog::show(convertFileDialog->getSources(), convertFileDialog->getDestination());
+                ConvertingFileDialog::show(convertFileDialog->getFiles(), convertFileDialog->getDestination());
             }
             return true;
         });
@@ -628,7 +628,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             {
                 if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
                 {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getFileName()));
+                    DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile()));
                 }
                 return true;
             });

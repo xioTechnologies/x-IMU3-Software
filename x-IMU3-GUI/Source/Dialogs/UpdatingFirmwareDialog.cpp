@@ -5,10 +5,10 @@
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
-UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::String& fileName_)
+UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_)
         : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
           connectionInfo(std::move(connectionInfo_)),
-          fileName(fileName_)
+          hexFile(hexFile_)
 {
     addAndMakeVisible(progressBar);
 
@@ -55,7 +55,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                              const auto hardwareVersion = CommandMessage(responses[0]).value.toString();
 
                              // Check compatibility
-                             const auto firmwareIsV2 = juce::File(fileName).getFileName().startsWith("x-IMU3-Firmware-v2.");
+                             const auto firmwareIsV2 = hexFile.getFileName().startsWith("x-IMU3-Firmware-v2.");
                              const auto hardwareIsV2 = hardwareVersion.startsWith("v2.");
                              if (firmwareIsV2 != hardwareIsV2)
                              {
@@ -82,7 +82,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                              {
                                  updateProgress("Attempting Upload on " + portName);
 
-                                 if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", fileName.toRawUTF8(), portName.data()) == 0)
+                                 if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", hexFile.getFullPathName().toRawUTF8(), portName.data()) == 0)
                                  {
                                      updateProgress("Update Complete", true);
                                      juce::Timer::callAfterDelay(1000, [&]

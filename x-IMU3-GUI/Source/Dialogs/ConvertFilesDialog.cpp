@@ -1,18 +1,18 @@
-#include "ConvertFileDialog.h"
+#include "ConvertFilesDialog.h"
 #include <filesystem>
 
-ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert File (.ximu3)", "Convert")
+ConvertFilesDialog::ConvertFilesDialog() : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert")
 {
-    addAndMakeVisible(sourceLabel);
-    addAndMakeVisible(sourceValue);
-    addAndMakeVisible(sourceButton);
+    addAndMakeVisible(fileLabel);
+    addAndMakeVisible(fileValue);
+    addAndMakeVisible(fileButton);
     addAndMakeVisible(destinationLabel);
     addAndMakeVisible(destinationValue);
     addAndMakeVisible(destinationButton);
 
-    sourceButton.onClick = [&]
+    fileButton.onClick = [&]
     {
-        juce::FileChooser fileChooser(sourceButton.getTooltip(), std::filesystem::exists(sourceValue.getText().toStdString()) ? sourceValue.getText() : "", "*.ximu3");
+        juce::FileChooser fileChooser(fileButton.getTooltip(), std::filesystem::exists(fileValue.getText().toStdString()) ? fileValue.getText() : "", "*.ximu3");
         if (fileChooser.browseForMultipleFilesToOpen())
         {
             const auto files = fileChooser.getResults();
@@ -23,7 +23,7 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
                 text += file.getFullPathName() + ";";
             }
             text = text.dropLastCharacters(1);
-            sourceValue.setText(text);
+            fileValue.setText(text);
 
             if (destinationValue.isEmpty())
             {
@@ -41,32 +41,29 @@ ConvertFileDialog::ConvertFileDialog() : Dialog(BinaryData::tools_svg, "Convert 
         }
     };
 
-    sourceValue.onTextChange = destinationValue.onTextChange = [&]
+    fileValue.onTextChange = destinationValue.onTextChange = [&]
     {
-        setOkButton(std::filesystem::exists(destinationValue.getText().toStdString()));
-
-        for (const auto& source : getSources())
+        auto valid = std::filesystem::exists(destinationValue.getText().toStdString());
+        for (const auto& file : getFilesAsStrings())
         {
-            if (std::filesystem::exists(source.toStdString()) == false)
-            {
-                setOkButton(false);
-            }
+            valid = valid && std::filesystem::exists(file.toStdString());
         }
+        setOkButton(valid);
     };
     setOkButton(false);
 
     setSize(600, calculateHeight(2));
 }
 
-void ConvertFileDialog::resized()
+void ConvertFilesDialog::resized()
 {
     Dialog::resized();
     auto bounds = getContentBounds();
 
-    auto sourceRow = bounds.removeFromTop(UILayout::textComponentHeight);
-    sourceLabel.setBounds(sourceRow.removeFromLeft(columnWidth));
-    sourceButton.setBounds(sourceRow.removeFromRight(iconButtonWidth));
-    sourceValue.setBounds(sourceRow.withTrimmedRight(margin));
+    auto fileRow = bounds.removeFromTop(UILayout::textComponentHeight);
+    fileLabel.setBounds(fileRow.removeFromLeft(columnWidth));
+    fileButton.setBounds(fileRow.removeFromRight(iconButtonWidth));
+    fileValue.setBounds(fileRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -76,12 +73,22 @@ void ConvertFileDialog::resized()
     destinationValue.setBounds(destinationRow.withTrimmedRight(margin));
 }
 
-juce::StringArray ConvertFileDialog::getSources() const
+std::vector<juce::File> ConvertFilesDialog::getFiles() const
 {
-    return juce::StringArray::fromTokens(sourceValue.getText(), ";", "");
+    std::vector<juce::File> files;
+    for (auto file : getFilesAsStrings())
+    {
+        files.push_back(file);
+    }
+    return files;
 }
 
-juce::String ConvertFileDialog::getDestination() const
+juce::File ConvertFilesDialog::getDestination() const
 {
     return destinationValue.getText();
+}
+
+juce::StringArray ConvertFilesDialog::getFilesAsStrings() const
+{
+    return juce::StringArray::fromTokens(fileValue.getText(), ";", "");
 }
