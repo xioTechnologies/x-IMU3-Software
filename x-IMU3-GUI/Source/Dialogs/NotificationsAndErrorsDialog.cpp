@@ -32,7 +32,7 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
     switch (type)
     {
         case Message::Type::notification:
-            return juce::Colours::white;
+            return UIColours::foreground;
         case Message::Type::error:
             return UIColours::warning;
     }

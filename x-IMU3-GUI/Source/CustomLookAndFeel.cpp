@@ -35,12 +35,16 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::ComboBox::backgroundColourId, UIColours::textEditor);
     setColour(juce::ComboBox::textColourId, UIColours::backgroundDark);
     setColour(juce::ComboBox::arrowColourId, juce::Colours::grey);
+    setColour(juce::DocumentWindow::textColourId, UIColours::foreground);
     setColour(juce::GroupComponent::outlineColourId, juce::Colours::grey);
+    setColour(juce::GroupComponent::textColourId, UIColours::foreground);
+    setColour(juce::Label::textColourId, UIColours::foreground);
     setColour(juce::Label::textWhenEditingColourId, UIColours::backgroundLightest);
     setColour(juce::ListBox::backgroundColourId, {});
-    setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
     setColour(juce::PopupMenu::backgroundColourId, UIColours::backgroundDark);
+    setColour(juce::PopupMenu::textColourId, UIColours::foreground);
     setColour(juce::PopupMenu::headerTextColourId, juce::Colours::grey);
+    setColour(juce::PopupMenu::highlightedBackgroundColourId, UIColours::highlight);
     setColour(juce::ProgressBar::backgroundColourId, UIColours::textEditor);
     setColour(juce::ProgressBar::foregroundColourId, UIColours::highlight);
     setColour(juce::ResizableWindow::backgroundColourId, UIColours::backgroundLightest);
@@ -50,16 +54,19 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::TextButton::buttonColourId, UIColours::backgroundLightest);
     setColour(juce::TextButton::buttonOnColourId, UIColours::textEditor);
     setColour(juce::TextButton::textColourOnId, UIColours::backgroundDark);
+    setColour(juce::TextButton::textColourOffId, UIColours::foreground);
     setColour(juce::TextEditor::backgroundColourId, UIColours::textEditor);
     setColour(juce::TextEditor::textColourId, UIColours::backgroundDark);
     setColour(juce::TextEditor::highlightedTextColourId, UIColours::textEditor);
     setColour(juce::TextEditor::highlightColourId, UIColours::highlight);
     setColour(juce::TextEditor::outlineColourId, {});
     setColour(juce::TextEditor::focusedOutlineColourId, {});
-    setColour(juce::ToggleButton::tickDisabledColourId, juce::Colours::white);
+    setColour(juce::ToggleButton::textColourId, UIColours::foreground);
+    setColour(juce::ToggleButton::tickDisabledColourId, UIColours::foreground);
     setColour(juce::ToggleButton::tickColourId, UIColours::backgroundLightest);
-    setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
     setColour(juce::TooltipWindow::backgroundColourId, UIColours::backgroundDark);
+    setColour(juce::TooltipWindow::textColourId, UIColours::foreground);
+    setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
 }
 
 void CustomLookAndFeel::drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height,
@@ -375,7 +382,7 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window,
 
     const auto font = UIFonts::getDefaultFont();
     g.setFont(font);
-    g.setColour(juce::Colours::white);
+    g.setColour(UIColours::foreground);
     g.drawText(window.getName(), bounds, juce::Justification::left, true);
 }
 

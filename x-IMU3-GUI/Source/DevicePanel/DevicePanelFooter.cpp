@@ -32,9 +32,6 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
     addAndMakeVisible(numberOfNotificationsLabel);
     addAndMakeVisible(numberOfErrorsLabel);
 
-    numberOfErrorsLabel.setColour(juce::Label::textColourId, UIColours::textEditor);
-    numberOfNotificationsLabel.setColour(juce::Label::textColourId, UIColours::textEditor);
-
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
