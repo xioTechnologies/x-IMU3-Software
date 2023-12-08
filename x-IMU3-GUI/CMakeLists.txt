@@ -63,7 +63,7 @@ cmake_minimum_required(VERSION 3.15)
 # `project()` command. `project()` sets up some helpful variables that describe source/binary
 # directories, and the current project version. This is a standard CMake command.
 
-project(X_IMU3_GUI VERSION 1.3.3)
+project(X_IMU3_GUI VERSION 1.3.4)
 
 # If you've installed JUCE somehow (via a package manager, or directly using the CMake install
 # target), you'll need to tell this project that it depends on the installed copy of JUCE. If you've
