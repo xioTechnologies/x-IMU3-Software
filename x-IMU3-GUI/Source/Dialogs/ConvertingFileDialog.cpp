@@ -1,5 +1,5 @@
-#include <BinaryData.h>
 #include "AreYouSureDialog.h"
+#include <BinaryData.h>
 #include "ConvertingFileDialog.h"
 #include "ErrorDialog.h"
 
