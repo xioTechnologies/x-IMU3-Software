@@ -11,7 +11,7 @@
 class SerialAccessoryTerminalWindow : public Window
 {
 public:
-    SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_);
+    SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_);
 
     ~SerialAccessoryTerminalWindow() override;
 
@@ -36,7 +36,7 @@ private:
 
     void loadRecents();
 
-    juce::PopupMenu getMenu();
+    juce::PopupMenu getMenu() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialAccessoryTerminalWindow)
 };

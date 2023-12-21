@@ -1,15 +1,15 @@
 #pragma once
 
 #include "CommandMessage.h"
-#include "DevicePanel/DevicePanel.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "DragOverlay.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
 
-class DevicePanelContainer : public juce::Component
+class ConnectionPanelContainer : public juce::Component
 {
 public:
-    DevicePanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_);
+    ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_);
 
     void resized() override;
 
@@ -17,13 +17,13 @@ public:
 
     void connectToDevice(const ximu3::ConnectionInfo& connectionInfo);
 
-    std::vector<DevicePanel*> getDevicePanels() const;
+    std::vector<ConnectionPanel*> getConnectionPanels() const;
 
     void removeAllPanels();
 
-    void removePanel(const DevicePanel& panel);
+    void removePanel(const ConnectionPanel& panel);
 
-    void movePanel(DevicePanel& move, DevicePanel& target);
+    void movePanel(ConnectionPanel& move, ConnectionPanel& target);
 
     void showDragOverlayAtComponent(juce::Component& component, DragOverlay::Side side);
 
@@ -33,7 +33,6 @@ public:
 
     enum class Layout
     {
-        single,
         rows,
         columns,
         grid,
@@ -44,17 +43,17 @@ public:
 
     Layout getLayout();
 
-    void setExpandedDevicePanel(DevicePanel* const devicePanel);
+    void setExpandedConnectionPanel(ConnectionPanel* const connectionPanel);
 
-    const DevicePanel* getExpandedDevicePanel() const;
+    const ConnectionPanel* getExpandedConnectionPanel() const;
 
-    std::function<void()> onDevicePanelsSizeChanged;
+    std::function<void()> onConnectionPanelsSizeChanged;
 
 private:
     juce::ValueTree& windowLayout;
     GLRenderer& glRenderer;
 
-    std::vector<std::unique_ptr<DevicePanel>> devicePanels;
+    std::vector<std::unique_ptr<ConnectionPanel>> connectionPanels;
     std::unique_ptr<DragOverlay> dragOverlay;
 
     class AccordionResizeBar : public juce::Component
@@ -70,11 +69,13 @@ private:
 
     AccordionResizeBar accordionResizeBar;
 
-    Layout layout = Layout::single;
-    SafePointer<DevicePanel> expandedDevicePanel;
+    Layout layout = Layout::grid;
+    SafePointer<ConnectionPanel> expandedConnectionPanel;
     int expandedPanelHeight = 600;
 
-    void devicePanelsSizeChanged();
+    Layout getLayoutInternal() const;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelContainer)
+    void connectionPanelsSizeChanged();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelContainer)
 };

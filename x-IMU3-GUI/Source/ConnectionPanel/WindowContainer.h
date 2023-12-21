@@ -8,14 +8,14 @@ class WindowContainer : public juce::Component,
                         private juce::ValueTree::Listener
 {
 public:
-    WindowContainer(DevicePanel& devicePanel_, juce::ValueTree layoutTree_);
+    WindowContainer(ConnectionPanel& connectionPanel_, juce::ValueTree layoutTree_);
 
     ~WindowContainer() override;
 
     void resized() override;
 
 private:
-    DevicePanel& devicePanel;
+    ConnectionPanel& connectionPanel;
     juce::ValueTree layoutTree;
     const bool isVertical = layoutTree.hasType(WindowIDs::Column);
 

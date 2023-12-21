@@ -1,18 +1,19 @@
 #include "ApplicationSettings.h"
+#include "ConnectionPanelContainer.h"
 #include "CustomLayouts.h"
 #include "CustomLookAndFeel.h"
-#include "DevicePanelContainer.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ConvertFilesDialog.h"
 #include "Dialogs/ConvertingFileDialog.h"
 #include "Dialogs/ErrorDialog.h"
-#include "Dialogs/NewConnectionDialog.h"
+#include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
 #include "Dialogs/SearchingForConnectionsDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
+#include "Dialogs/SendNoteCommandDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "Dialogs/UpdatingFirmwareDialog.h"
 #include "MenuStrip.h"
@@ -20,27 +21,26 @@
 #include "Widgets/PopupMenuHeader.h"
 #include "Windows/WindowIDs.h"
 
-MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devicePanelContainer_) : windowLayout(windowLayout_),
-                                                                                                    devicePanelContainer(devicePanelContainer_)
+MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
+                                                                                                            connectionPanelContainer(connectionPanelContainer_)
 {
     setWindowLayout({});
 
     for (const auto& buttonGroup : buttonGroups)
     {
-        addAndMakeVisible(buttonGroup.label);
-        for (auto* const button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup)
         {
             addAndMakeVisible(button);
         }
     }
 
-    searchButton.onClick = [this]
+    searchForConnectionsButton.onClick = [this]
     {
         std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
 
-        for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+        for (auto* const connectionPanel : connectionPanelContainer.getConnectionPanels())
         {
-            existingConnections.push_back(devicePanel->getConnection()->getInfo());
+            existingConnections.push_back(connectionPanel->getConnection()->getInfo());
         }
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
@@ -49,7 +49,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
-                    devicePanelContainer.connectToDevice(*connectionInfo);
+                    connectionPanelContainer.connectToDevice(*connectionInfo);
                 }
             }
             return true;
@@ -58,14 +58,31 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
 
     if (ApplicationSettings::getSingleton().searchForConnections.showOnStartup)
     {
-        searchButton.triggerClick();
+        searchForConnectionsButton.triggerClick();
     }
 
     shutdownButton.onClick = [this]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), devicePanelContainer.getDevicePanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), connectionPanelContainer.getConnectionPanels()));
+            return true;
+        });
+    };
+
+    zeroHeadingButton.onClick = [this]
+    {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("heading", 0), connectionPanelContainer.getConnectionPanels()));
+    };
+
+    noteButton.onClick = [this]
+    {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendNoteCommandDialog>("Send Note Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")"), [this]
+        {
+            if (auto* dialog = dynamic_cast<SendNoteCommandDialog*>(DialogQueue::getSingleton().getActive()))
+            {
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("note", dialog->getNote()), connectionPanelContainer.getConnectionPanels()));
+            }
             return true;
         });
     };
@@ -98,9 +115,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                 const auto startDataLogger = [&]
                 {
                     std::vector<ximu3::Connection*> connections;
-                    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+                    for (auto* const connectionPanel : connectionPanelContainer.getConnectionPanels())
                     {
-                        connections.push_back(devicePanel->getConnection().get());
+                        connections.push_back(connectionPanel->getConnection().get());
                     }
 
                     dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
@@ -173,37 +190,16 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, DevicePanelContainer& devic
                                                              });
                          });
 
-    devicePanelContainer.onDevicePanelsSizeChanged = [&]
+    connectionPanelContainer.onConnectionPanelsSizeChanged = [&]
     {
-        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, windowsButton, windowLayoutButton, devicePanelLayoutButton,
-                                                                                      shutdownButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
+        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, windowsButton, shutdownButton, zeroHeadingButton, noteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
         {
-            component.get().setEnabled(devicePanelContainer.getDevicePanels().size() > 0);
+            component.get().setEnabled(connectionPanelContainer.getConnectionPanels().size() > 0);
         }
 
-        if (devicePanelContainer.getDevicePanels().size() <= 1)
-        {
-            devicePanelContainer.setLayout(DevicePanelContainer::Layout::single);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(DevicePanelContainer::Layout::single), {});
-        }
-        else
-        {
-            if (preferredMultipleDevicePanelLayout.has_value() == false)
-            {
-                preferredMultipleDevicePanelLayout = DevicePanelContainer::Layout::grid;
-
-                windowLayout.removeAllChildren(nullptr);
-                windowLayout.appendChild({ WindowIDs::Row, {},
-                                           {
-                                                   { WindowIDs::ThreeDView, {{ WindowIDs::size, 1 }}},
-                                           }}, nullptr);
-            }
-
-            devicePanelContainer.setLayout(*preferredMultipleDevicePanelLayout);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(*preferredMultipleDevicePanelLayout), {});
-        }
+        connectionLayoutButton.setEnabled(connectionPanelContainer.getConnectionPanels().size() > 1);
     };
-    devicePanelContainer.onDevicePanelsSizeChanged();
+    connectionPanelContainer.onConnectionPanelsSizeChanged();
 }
 
 void MenuStrip::paint(juce::Graphics& g)
@@ -213,15 +209,13 @@ void MenuStrip::paint(juce::Graphics& g)
 
 void MenuStrip::resized()
 {
-    static constexpr int buttonY = 8;
     static constexpr int buttonHeight = 22;
-    static constexpr int labelCentreY = 40;
 
     // Calculate groupMargin
     auto groupMargin = (float) getWidth();
     for (const auto& buttonGroup : buttonGroups)
     {
-        for (auto* const button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup)
         {
             const auto buttonWidth = [&]
             {
@@ -246,17 +240,12 @@ void MenuStrip::resized()
     auto x = groupMargin / 2;
     for (const auto& buttonGroup : buttonGroups)
     {
-        for (auto* const button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup)
         {
-            button->setBounds((int) x, buttonY, button->getWidth(), button->getHeight());
+            button->setBounds((int) x, getHeight() / 2 - button->getHeight() / 2, button->getWidth(), button->getHeight());
             x += button->getWidth();
         }
         x += groupMargin;
-
-        const auto labelCentreX = (buttonGroup.buttons.front()->getX() + buttonGroup.buttons.back()->getRight()) / 2;
-        const auto labelWidth = (int) std::ceil(buttonGroup.label.getTextWidth());
-        const auto labelHeight = (int) std::ceil(UIFonts::getDefaultFont().getHeight());
-        buttonGroup.label.setBounds(juce::Rectangle<int>(labelWidth, labelHeight).withCentre({ labelCentreX, labelCentreY }));
     }
 }
 
@@ -265,7 +254,7 @@ int MenuStrip::getMinimumWidth() const
     int width = 0;
     for (const auto& buttonGroup : buttonGroups)
     {
-        for (auto* const button : buttonGroup.buttons)
+        for (auto* const button : buttonGroup)
         {
             width += button->getWidth();
         }
@@ -273,92 +262,92 @@ int MenuStrip::getMinimumWidth() const
     return width;
 }
 
-void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(DevicePanel&)> action)
+void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(ConnectionPanel&)> action)
 {
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("INDIVIDUAL"), nullptr);
 
-    for (auto* const devicePanel : devicePanelContainer.getDevicePanels())
+    for (auto* const connectionPanel : connectionPanelContainer.getConnectionPanels())
     {
-        juce::PopupMenu::Item item(devicePanel->getTitle());
+        juce::PopupMenu::Item item(connectionPanel->getTitle());
 
-        item.action = [devicePanel, action]
+        item.action = [connectionPanel, action]
         {
-            action(*devicePanel);
+            action(*connectionPanel);
         };
 
         auto tag = std::make_unique<juce::DrawableRectangle>();
         int _, height;
         getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
         tag->setRectangle(juce::Rectangle<float>(0.0f, 0.0f, (float) UILayout::tagWidth, (float) height));
-        tag->setFill({ devicePanel->getTag() });
+        tag->setFill({ connectionPanel->getTag() });
         item.image = std::move(tag);
 
         menu.addItem(item);
     }
 }
 
-void MenuStrip::disconnect(const DevicePanel* const devicePanel)
+void MenuStrip::disconnect(const ConnectionPanel* const connectionPanel)
 {
     dataLoggerTime.setTime(juce::RelativeTime());
     dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
 
-    if (devicePanel != nullptr)
+    if (connectionPanel != nullptr)
     {
-        devicePanelContainer.removePanel(*devicePanel);
+        connectionPanelContainer.removePanel(*connectionPanel);
     }
     else
     {
-        devicePanelContainer.removeAllPanels();
+        connectionPanelContainer.removeAllPanels();
     }
 }
 
-juce::PopupMenu MenuStrip::getManualConnectMenu()
+juce::PopupMenu MenuStrip::getManualConnectionMenu()
 {
     juce::PopupMenu menu;
 
     const auto connectCallback = [this]
     {
-        if (auto* dialog = dynamic_cast<NewConnectionDialog*>(DialogQueue::getSingleton().getActive()))
+        if (auto* dialog = dynamic_cast<ManualConnectionDialog*>(DialogQueue::getSingleton().getActive()))
         {
             auto connectionInfo = dialog->getConnectionInfo();
-            devicePanelContainer.connectToDevice(*connectionInfo);
+            connectionPanelContainer.connectToDevice(*connectionInfo);
             RecentConnections().update(*connectionInfo);
         }
         return true;
     };
-    menu.addItem("New USB Connection", [connectCallback]
+    menu.addItem("USB", [connectCallback]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<UsbConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().pushFront(std::make_unique<ManualUsbConnectionDialog>(), connectCallback);
     });
-    menu.addItem("New Serial Connection", [connectCallback]
+    menu.addItem("Serial", [connectCallback]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SerialConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().pushFront(std::make_unique<ManualSerialConnectionDialog>(), connectCallback);
     });
-    menu.addItem("New TCP Connection", [connectCallback]
+    menu.addItem("TCP", [connectCallback]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<TcpConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().pushFront(std::make_unique<ManualTcpConnectionDialog>(), connectCallback);
     });
-    menu.addItem("New UDP Connection", [connectCallback]
+    menu.addItem("UDP", [connectCallback]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<UdpConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().pushFront(std::make_unique<ManualUdpConnectionDialog>(), connectCallback);
     });
-    menu.addItem("New Bluetooth Connection", [connectCallback]
+    menu.addItem("Bluetooth", [connectCallback]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<BluetoothConnectionDialog>(), connectCallback);
+        DialogQueue::getSingleton().pushFront(std::make_unique<ManualBluetoothConnectionDialog>(), connectCallback);
     });
 
     if (auto connectionInfos = RecentConnections().get(); connectionInfos.empty() == false)
     {
         menu.addSeparator();
-        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT CONNECTIONS"), nullptr);
+        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
 
         for (auto& connectionInfo : connectionInfos)
         {
             const auto connectionInfoString = connectionInfo->toString();
             menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
             {
-                devicePanelContainer.connectToDevice(*connectionInfo);
+                connectionPanelContainer.connectToDevice(*connectionInfo);
             });
         }
     }
@@ -370,26 +359,112 @@ juce::PopupMenu MenuStrip::getDisconnectMenu()
 {
     juce::PopupMenu menu;
 
-    menu.addItem("Disconnect All (" + juce::String(devicePanelContainer.getDevicePanels().size()) + ")", [this]
+    menu.addItem("Disconnect All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")", [this]
     {
         disconnect(nullptr);
     });
-    addDevices(menu, [&](auto& devicePanel)
+    addDevices(menu, [&](auto& connectionPanel)
     {
-        disconnect(&devicePanel);
+        disconnect(&connectionPanel);
     });
 
     return menu;
 }
 
-juce::PopupMenu MenuStrip::getWindowMenu() const
+juce::PopupMenu MenuStrip::getConnectionLayoutMenu()
 {
     juce::PopupMenu menu;
+
+    const auto addItem = [&](const auto layout, const auto& title)
+    {
+        menu.addItem(title, true, connectionPanelContainer.getLayout() == layout, [&, layout]
+        {
+            connectionPanelContainer.setLayout(layout);
+            connectionLayoutButton.setIcon(layoutIcons.at(layout), {});
+        });
+    };
+    addItem(ConnectionPanelContainer::Layout::rows, "Rows");
+    addItem(ConnectionPanelContainer::Layout::columns, "Columns");
+    addItem(ConnectionPanelContainer::Layout::grid, "Grid");
+    addItem(ConnectionPanelContainer::Layout::accordion, "Accordion");
+
+    return menu;
+}
+
+juce::PopupMenu MenuStrip::getWindowMenu()
+{
+    juce::PopupMenu menu;
+
+    const auto tile = [&](const bool horizontally)
+    {
+        juce::ValueTree windowLayout_(WindowIDs::Row);
+
+        for (const auto& [windowType, _] : windowTitles)
+        {
+            if (findWindow(windowLayout, windowType).isValid())
+            {
+                (horizontally ? windowLayout_.getOrCreateChildWithName(WindowIDs::Column, nullptr) : windowLayout_).appendChild({ windowType, {}}, nullptr);
+            }
+        }
+        setWindowLayout({ WindowIDs::Row, {}, { windowLayout_ }});
+    };
+
+    juce::PopupMenu arrangeMenu;
+    arrangeMenu.addItem("Tile Horizontally", [&, tile]
+    {
+        tile(true);
+    });
+    arrangeMenu.addItem("Tile Vertically", [&, tile]
+    {
+        tile(false);
+    });
+    arrangeMenu.addItem("Save As...", [this]
+    {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SaveWindowLayoutDialog>(), [this]
+        {
+            if (auto* saveWindowLayoutDialog = dynamic_cast<SaveWindowLayoutDialog*>(DialogQueue::getSingleton().getActive()))
+            {
+                const auto layoutName = saveWindowLayoutDialog->getLayoutName();
+
+                const auto save = [this, layoutName]
+                {
+                    CustomLayouts().save(layoutName, windowLayout);
+                    return true;
+                };
+
+                if (CustomLayouts().exists(layoutName))
+                {
+                    DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
+                }
+                else
+                {
+                    save();
+                }
+            }
+            return true;
+        });
+    });
+
+    if (const auto layouts = CustomLayouts().load(); layouts.empty() == false)
+    {
+        arrangeMenu.addSeparator();
+        arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED LAYOUTS"), nullptr);
+
+        for (auto layout : layouts)
+        {
+            arrangeMenu.addItem(layout.first, [&, layout]
+            {
+                setWindowLayout(layout.second);
+            });
+        }
+    }
+
+    menu.addSubMenu("Arrange", arrangeMenu);
 
     const auto addWindowItem = [&](const auto& id)
     {
         const auto toggled = findWindow(windowLayout, id).isValid();
-        menu.addItem(getWindowTitle(id), true, toggled, [this, id = id, toggled]
+        menu.addItem(windowTitles.at(id), true, toggled, [this, id = id, toggled]
         {
             if (toggled)
             {
@@ -413,6 +488,8 @@ juce::PopupMenu MenuStrip::getWindowMenu() const
         });
     };
 
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("DEVICE SETTINGS"), nullptr);
     addWindowItem(WindowIDs::DeviceSettings);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SENSORS"), nullptr);
@@ -445,151 +522,30 @@ juce::PopupMenu MenuStrip::getWindowMenu() const
     return menu;
 }
 
-juce::PopupMenu MenuStrip::getWindowLayoutMenu()
-{
-    juce::PopupMenu menu;
-
-    menu.addItem("Default", devicePanelContainer.getDevicePanels().size() == 1, false, [this]
-    {
-        setWindowLayout({});
-        preferredMultipleDevicePanelLayout = {};
-    });
-
-    juce::PopupMenu singleWindowMenu;
-    const auto addSingleWindowItem = [&](const auto& id)
-    {
-        singleWindowMenu.addItem(getWindowTitle(id), [this, id = id]
-        {
-            windowLayout.removeAllChildren(nullptr);
-            juce::ValueTree row(WindowIDs::Row);
-            juce::ValueTree window(id);
-            window.setProperty(WindowIDs::size, 0.5f, nullptr);
-            row.appendChild(window, nullptr);
-            windowLayout.appendChild(row, nullptr);
-        });
-    };
-
-    addSingleWindowItem(WindowIDs::DeviceSettings);
-    singleWindowMenu.addSeparator();
-    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SENSORS"), nullptr);
-    addSingleWindowItem(WindowIDs::Gyroscope);
-    addSingleWindowItem(WindowIDs::Accelerometer);
-    addSingleWindowItem(WindowIDs::Magnetometer);
-    addSingleWindowItem(WindowIDs::HighGAccelerometer);
-    singleWindowMenu.addSeparator();
-    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AHRS"), nullptr);
-    addSingleWindowItem(WindowIDs::ThreeDView);
-    addSingleWindowItem(WindowIDs::EulerAngles);
-    addSingleWindowItem(WindowIDs::LinearAcceleration);
-    addSingleWindowItem(WindowIDs::EarthAcceleration);
-    singleWindowMenu.addSeparator();
-    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SERIAL ACCESSORY"), nullptr);
-    addSingleWindowItem(WindowIDs::SerialAccessoryTerminal);
-    addSingleWindowItem(WindowIDs::SerialAccessoryCsvs);
-    singleWindowMenu.addSeparator();
-    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("STATUS"), nullptr);
-    addSingleWindowItem(WindowIDs::Temperature);
-    addSingleWindowItem(WindowIDs::BatteryPercentage);
-    addSingleWindowItem(WindowIDs::BatteryVoltage);
-    addSingleWindowItem(WindowIDs::RssiPercentage);
-    addSingleWindowItem(WindowIDs::RssiPower);
-    singleWindowMenu.addSeparator();
-    singleWindowMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNNECTION"), nullptr);
-    addSingleWindowItem(WindowIDs::ReceivedMessageRate);
-    addSingleWindowItem(WindowIDs::ReceivedDataRate);
-
-    menu.addSubMenu("Single Window", singleWindowMenu);
-
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CUSTOM LAYOUTS"), nullptr);
-    menu.addItem("Save As...", [this]
-    {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SaveWindowLayoutDialog>(), [this]
-        {
-            if (auto* saveWindowLayoutDialog = dynamic_cast<SaveWindowLayoutDialog*>(DialogQueue::getSingleton().getActive()))
-            {
-                const auto layoutName = saveWindowLayoutDialog->getLayoutName();
-
-                const auto save = [this, layoutName]
-                {
-                    CustomLayouts().save(layoutName, windowLayout);
-                    return true;
-                };
-
-                if (CustomLayouts().exists(layoutName))
-                {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
-                }
-                else
-                {
-                    save();
-                }
-            }
-            return true;
-        });
-    });
-
-    for (auto layout : CustomLayouts().load())
-    {
-        menu.addItem(layout.first, [&, layout]
-        {
-            setWindowLayout(layout.second);
-        });
-    }
-
-    return menu;
-}
-
-juce::PopupMenu MenuStrip::getPanelLayoutMenu()
-{
-    juce::PopupMenu menu;
-
-    const auto addItem = [&](const auto layout, const auto& title, const auto enabled)
-    {
-        menu.addItem(title, enabled, devicePanelContainer.getLayout() == layout, [&, layout]
-        {
-            devicePanelContainer.setLayout(layout);
-            devicePanelLayoutButton.setIcon(layoutIcons.at(layout), {});
-
-            if (layout != DevicePanelContainer::Layout::single)
-            {
-                preferredMultipleDevicePanelLayout = layout;
-            }
-        });
-    };
-    addItem(DevicePanelContainer::Layout::single, "Single", devicePanelContainer.getDevicePanels().size() == 1);
-    addItem(DevicePanelContainer::Layout::rows, "Rows", devicePanelContainer.getDevicePanels().size() > 1);
-    addItem(DevicePanelContainer::Layout::columns, "Columns", devicePanelContainer.getDevicePanels().size() > 1);
-    addItem(DevicePanelContainer::Layout::grid, "Grid", devicePanelContainer.getDevicePanels().size() > 1);
-    addItem(DevicePanelContainer::Layout::accordion, "Accordion", devicePanelContainer.getDevicePanels().size() > 1);
-
-    return menu;
-}
-
 juce::PopupMenu MenuStrip::getSendCommandMenu()
 {
     juce::PopupMenu menu;
 
-    const auto toAll = "Send Command to All (" + juce::String(devicePanelContainer.getDevicePanels().size()) + ")";
+    const auto toAll = "Send Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")";
     menu.addItem(toAll, [&, toAll]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>(toAll), [this]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), devicePanelContainer.getDevicePanels()));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), connectionPanelContainer.getConnectionPanels()));
             }
             return true;
         });
     });
 
-    addDevices(menu, [&](auto& devicePanel)
+    addDevices(menu, [&](auto& connectionPanel)
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + devicePanel.getTitle(), devicePanel.getTag()), [&, devicePanel = &devicePanel]
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getTitle(), connectionPanel.getTag()), [&, connectionPanel = &connectionPanel]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<DevicePanel*>({ devicePanel })));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<ConnectionPanel*>({ connectionPanel })));
             }
             return true;
         });
@@ -601,11 +557,11 @@ juce::PopupMenu MenuStrip::getSendCommandMenu()
 juce::PopupMenu MenuStrip::getToolsMenu()
 {
     juce::PopupMenu menu;
-    menu.addItem("Set Date and Time", devicePanelContainer.getDevicePanels().size() > 0, false, [&]
+    menu.addItem("Set Date and Time", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), devicePanelContainer.getDevicePanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), connectionPanelContainer.getConnectionPanels()));
             return true;
         });
     });
@@ -634,7 +590,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             });
         };
 
-        if (devicePanelContainer.getDevicePanels().size() > 0)
+        if (connectionPanelContainer.getConnectionPanels().size() > 0)
         {
             DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&, launchUpdateFirmwareDialog]
             {

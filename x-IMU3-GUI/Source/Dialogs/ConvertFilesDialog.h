@@ -18,9 +18,9 @@ public:
     juce::File getDestination() const;
 
 private:
-    SimpleLabel fileLabel { "File(s):" };
-    CustomTextEditor fileValue;
-    IconButton fileButton { BinaryData::open_svg, "Select .ximu3 File(s)" };
+    SimpleLabel filesLabel { ".ximu3 Files:" };
+    CustomTextEditor filesValue;
+    IconButton filesButton { BinaryData::open_svg, "Select .ximu3 Files" };
     SimpleLabel destinationLabel { "Destination:" };
     CustomTextEditor destinationValue;
     IconButton destinationButton { BinaryData::open_svg, "Select Destination Directory" };

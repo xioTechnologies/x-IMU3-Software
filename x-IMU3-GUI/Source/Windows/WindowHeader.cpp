@@ -1,15 +1,15 @@
-#include "DevicePanel/DevicePanel.h"
-#include "DevicePanelContainer.h"
+#include "ConnectionPanel/ConnectionPanel.h"
+#include "ConnectionPanelContainer.h"
 #include "DragOverlay.h"
 #include "WindowHeader.h"
 #include "WindowIDs.h"
 
-WindowHeader::WindowHeader(DevicePanel& devicePanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
-        : devicePanel(devicePanel_),
+WindowHeader::WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
+        : connectionPanel(connectionPanel_),
           windowLayout(windowLayout_),
           type(type_),
           menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
-          title(getWindowTitle(type_), UIFonts::getSmallFont(), juce::Justification::centred)
+          title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred)
 {
     addAndMakeVisible(menuButton);
     addAndMakeVisible(title);
@@ -38,7 +38,7 @@ void WindowHeader::mouseDown(const juce::MouseEvent& mouseEvent)
 
 void WindowHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
 {
-    if (auto* const component = devicePanel.getComponentAt(mouseEvent.getScreenPosition() - devicePanel.getScreenPosition()))
+    if (auto* const component = connectionPanel.getComponentAt(mouseEvent.getScreenPosition() - connectionPanel.getScreenPosition()))
     {
         if (auto* const targetWindow = [&]
         {
@@ -50,7 +50,7 @@ void WindowHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
             return component->findParentComponentOfClass<Window>();
         }())
         {
-            devicePanel.getDevicePanelContainer().showDragOverlayAtComponent(*targetWindow, [&]
+            connectionPanel.getConnectionPanelContainer().showDragOverlayAtComponent(*targetWindow, [&]
             {
                 if (targetWindow == getParentComponent())
                 {
@@ -81,7 +81,7 @@ void WindowHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
         }
         else
         {
-            devicePanel.getDevicePanelContainer().hideDragOverlay();
+            connectionPanel.getConnectionPanelContainer().hideDragOverlay();
         }
     }
 }
@@ -90,7 +90,7 @@ void WindowHeader::mouseUp(const juce::MouseEvent& mouseEvent)
 {
     mouseDrag(mouseEvent);
 
-    auto* const overlay = devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay();
+    auto* const overlay = connectionPanel.getConnectionPanelContainer().getCurrentlyShowingDragOverlay();
     const auto* const targetWindow = overlay ? dynamic_cast<Window*>(overlay->getTarget()) : nullptr;
     if (targetWindow != nullptr && targetWindow != getParentComponent())
     {
@@ -100,7 +100,7 @@ void WindowHeader::mouseUp(const juce::MouseEvent& mouseEvent)
         const auto targetTree = findWindow(windowLayout, targetWindow->getType());
         movingTree.setProperty(WindowIDs::size, targetTree.getProperty(WindowIDs::size, 1.0f), nullptr);
 
-        const auto side = devicePanel.getDevicePanelContainer().getCurrentlyShowingDragOverlay()->getSide();
+        const auto side = connectionPanel.getConnectionPanelContainer().getCurrentlyShowingDragOverlay()->getSide();
         const auto add = (side == DragOverlay::Side::bottom || side == DragOverlay::Side::right) ? 1 : 0;
 
         auto parent = targetTree.getParent();
@@ -121,7 +121,7 @@ void WindowHeader::mouseUp(const juce::MouseEvent& mouseEvent)
         }
     }
 
-    devicePanel.getDevicePanelContainer().hideDragOverlay();
+    connectionPanel.getConnectionPanelContainer().hideDragOverlay();
 }
 
 void WindowHeader::removeFromParent(juce::ValueTree tree)

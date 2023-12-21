@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ApplicationSettings.h"
-#include "DevicePanel/DevicePanel.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
 #include "OpenGL/ThreeDView.h"
@@ -15,7 +15,7 @@ class ThreeDViewWindow : public Window,
                          private juce::ValueTree::Listener
 {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_, GLRenderer& glRenderer, juce::ValueTree settingsTree_);
+    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer, juce::ValueTree settingsTree_);
 
     ~ThreeDViewWindow() override;
 
@@ -86,7 +86,7 @@ private:
 
     void updateAhrsStatusVisibilities();
 
-    juce::PopupMenu getMenu();
+    juce::PopupMenu getMenu() override;
 
     void timerCallback() override;
 

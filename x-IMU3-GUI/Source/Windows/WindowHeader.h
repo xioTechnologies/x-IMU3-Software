@@ -4,12 +4,12 @@
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
-class DevicePanel;
+class ConnectionPanel;
 
 class WindowHeader : public juce::Component
 {
 public:
-    explicit WindowHeader(DevicePanel& devicePanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
+    explicit WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
 
     void paint(juce::Graphics& g) override;
 
@@ -22,7 +22,7 @@ public:
     void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
 private:
-    DevicePanel& devicePanel;
+    ConnectionPanel& connectionPanel;
     const juce::ValueTree& windowLayout;
     const juce::Identifier type;
     IconButton menuButton;

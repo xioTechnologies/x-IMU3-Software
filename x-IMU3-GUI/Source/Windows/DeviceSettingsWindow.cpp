@@ -1,10 +1,10 @@
-#include "DevicePanel/DevicePanel.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ErrorDialog.h"
 
-DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
-        : Window(windowLayout_, type_, devicePanel_, "Device Settings Menu", std::bind(&DeviceSettingsWindow::getMenu, this))
+DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
+        : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
 {
     addAndMakeVisible(settingsTree);
     addAndMakeVisible(readAllButton);
@@ -17,7 +17,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     {
         enableInProgress(settingsTree.getReadCommands());
 
-        devicePanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
+        connectionPanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
         {
             for (const auto& response : responses)
             {
@@ -45,7 +45,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     {
         enableInProgress(settingsTree.getWriteCommands());
 
-        devicePanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
+        connectionPanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
         {
             for (const auto& response : responses)
             {
@@ -62,7 +62,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
             disableInProgress();
 
-            devicePanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
+            connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
             {
                 if (saveFailedCommands.empty() == false)
                 {
@@ -70,7 +70,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     return;
                 }
 
-                devicePanel.sendCommands({{ "apply", {}}});
+                connectionPanel.sendCommands({{ "apply", {}}});
             });
         });
     };
@@ -131,7 +131,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             enableInProgress(settingsTree.getReadCommands());
 
-            devicePanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
+            connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
             {
                 if (defaultFailedCommands.empty() == false)
                 {
@@ -140,7 +140,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     return;
                 }
 
-                devicePanel.sendCommands({{ "save", {}}}, this, [this](const auto&, const auto& saveFailedCommands)
+                connectionPanel.sendCommands({{ "save", {}}}, this, [this](const auto&, const auto& saveFailedCommands)
                 {
                     if (saveFailedCommands.empty() == false)
                     {
@@ -149,7 +149,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                         return;
                     }
 
-                    devicePanel.sendCommands({{ "apply", {}}}, this, [this](const auto&, const auto&)
+                    connectionPanel.sendCommands({{ "apply", {}}}, this, [this](const auto&, const auto&)
                     {
                         readAllButton.onClick();
                     });
@@ -217,7 +217,7 @@ void DeviceSettingsWindow::disableInProgress()
 
 juce::PopupMenu DeviceSettingsWindow::getMenu()
 {
-    juce::PopupMenu menu;
+    juce::PopupMenu menu = Window::getMenu();
 
     menu.addItem("Read Settings When Window Opens", true, ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, [&]
     {

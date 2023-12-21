@@ -1,7 +1,7 @@
 #pragma once
 
+#include "ConnectionPanelContainer.h"
 #include "CustomLookAndFeel.h"
-#include "DevicePanelContainer.h"
 #include "Dialogs/Dialog.h"
 #include "Dialogs/ErrorDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -15,10 +15,10 @@ public:
     MainComponent()
     {
         addAndMakeVisible(menuStrip);
-        addAndMakeVisible(devicePanelViewport);
+        addAndMakeVisible(connectionPanelViewport);
 
-        devicePanelViewport.setViewedComponent(&devicePanelContainer, false);
-        devicePanelViewport.setScrollBarsShown(true, true);
+        connectionPanelViewport.setViewedComponent(&connectionPanelContainer, false);
+        connectionPanelViewport.setScrollBarsShown(true, true);
 
         setSize(1280, 768);
 
@@ -34,11 +34,11 @@ public:
     {
         auto bounds = getLocalBounds();
 
-        menuStrip.setBounds(bounds.removeFromTop(58));
+        menuStrip.setBounds(bounds.removeFromTop(40));
         bounds.removeFromTop(UILayout::panelMargin);
 
-        devicePanelViewport.setBounds(bounds);
-        devicePanelContainer.updateSize();
+        connectionPanelViewport.setBounds(bounds);
+        connectionPanelContainer.updateSize();
     }
 
     int getMinimumWidth() const
@@ -65,9 +65,9 @@ private:
     const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
     juce::ValueTree windowLayout { WindowIDs::Row };
     GLRenderer glRenderer { *this };
-    DevicePanelContainer devicePanelContainer { windowLayout, glRenderer };
-    juce::Viewport devicePanelViewport;
-    MenuStrip menuStrip { windowLayout, devicePanelContainer };
+    ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer };
+    juce::Viewport connectionPanelViewport;
+    MenuStrip menuStrip { windowLayout, connectionPanelContainer };
     juce::TooltipWindow tooltipWindow { nullptr, 1200 };
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 

@@ -9,7 +9,7 @@
 class TemperatureGraphWindow : public GraphWindow
 {
 public:
-    TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~TemperatureGraphWindow() override;
 

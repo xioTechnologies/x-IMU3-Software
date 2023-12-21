@@ -1,9 +1,9 @@
 #include "ApplicationSettings.h"
+#include "ConnectionPanel.h"
+#include "ConnectionPanelFooter.h"
 #include "CustomLookAndFeel.h"
-#include "DevicePanel.h"
-#include "DevicePanelFooter.h"
 
-DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(devicePanel_)
+ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) : connectionPanel(connectionPanel_)
 {
     addAndMakeVisible(statisticsLabel);
 
@@ -23,7 +23,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             resized();
                                         });
     };
-    statisticsCallbackID = devicePanel.getConnection()->addStatisticsCallback(statisticsCallback);
+    statisticsCallbackID = connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback);
 
     addAndMakeVisible(latestMessageLabel);
 
@@ -37,7 +37,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
         DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
         {
             messagesChanged();
-        }, devicePanel), [this]
+        }, connectionPanel), [this]
                                               {
                                                   for (auto& notificationMessage : messages)
                                                   {
@@ -62,7 +62,7 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             messagesChanged();
                                         });
     };
-    notificationCallbackID = devicePanel.getConnection()->addNotificationCallback(notificationCallback);
+    notificationCallbackID = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
 
     errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
@@ -78,22 +78,22 @@ DevicePanelFooter::DevicePanelFooter(DevicePanel& devicePanel_) : devicePanel(de
                                             messagesChanged();
                                         });
     };
-    errorCallbackID = devicePanel.getConnection()->addErrorCallback(errorCallback);
+    errorCallbackID = connectionPanel.getConnection()->addErrorCallback(errorCallback);
 }
 
-DevicePanelFooter::~DevicePanelFooter()
+ConnectionPanelFooter::~ConnectionPanelFooter()
 {
-    devicePanel.getConnection()->removeCallback(statisticsCallbackID);
-    devicePanel.getConnection()->removeCallback(notificationCallbackID);
-    devicePanel.getConnection()->removeCallback(errorCallbackID);
+    connectionPanel.getConnection()->removeCallback(statisticsCallbackID);
+    connectionPanel.getConnection()->removeCallback(notificationCallbackID);
+    connectionPanel.getConnection()->removeCallback(errorCallbackID);
 }
 
-void DevicePanelFooter::paint(juce::Graphics& g)
+void ConnectionPanelFooter::paint(juce::Graphics& g)
 {
     g.fillAll(UIColours::backgroundDarkest);
 }
 
-void DevicePanelFooter::resized()
+void ConnectionPanelFooter::resized()
 {
     auto bounds = getLocalBounds().reduced(UILayout::panelMargin, 0);
 
@@ -117,7 +117,7 @@ void DevicePanelFooter::resized()
     latestMessageLabel.setBounds(bounds);
 }
 
-void DevicePanelFooter::messagesChanged()
+void ConnectionPanelFooter::messagesChanged()
 {
     const auto getCountText = [&](const auto type)
     {

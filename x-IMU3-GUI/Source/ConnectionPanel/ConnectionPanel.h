@@ -2,8 +2,8 @@
 
 #include <cassert>
 #include "CommandMessage.h"
-#include "DevicePanelFooter.h"
-#include "DevicePanelHeader.h"
+#include "ConnectionPanelFooter.h"
+#include "ConnectionPanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <list>
 #include "OpenGL/Common/GLRenderer.h"
@@ -11,23 +11,23 @@
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
 
-class DevicePanelContainer;
+class ConnectionPanelContainer;
 
-class DevicePanel : public juce::Component,
-                    private juce::AsyncUpdater
+class ConnectionPanel : public juce::Component,
+                        private juce::AsyncUpdater
 {
 public:
     static constexpr int headerHeight = 26;
     static constexpr int footerHeight = 20;
     static constexpr int collapsedHeight = headerHeight + UILayout::panelMargin + footerHeight + UILayout::panelMargin;
 
-    DevicePanel(const juce::ValueTree& windowLayout_,
-                std::shared_ptr<ximu3::Connection> connection_,
-                GLRenderer& glRenderer_,
-                DevicePanelContainer& devicePanelContainer_,
-                const juce::Colour& tag_);
+    ConnectionPanel(const juce::ValueTree& windowLayout_,
+                    std::shared_ptr<ximu3::Connection> connection_,
+                    GLRenderer& glRenderer_,
+                    ConnectionPanelContainer& connectionPanelContainer_,
+                    const juce::Colour& tag_);
 
-    ~DevicePanel() override;
+    ~ConnectionPanel() override;
 
     void resized() override;
 
@@ -43,17 +43,17 @@ public:
 
     juce::String getTitle() const;
 
-    DevicePanelContainer& getDevicePanelContainer();
+    ConnectionPanelContainer& getConnectionPanelContainer();
 
 private:
     const juce::ValueTree& windowLayout;
     std::shared_ptr<ximu3::Connection> connection;
     GLRenderer& glRenderer;
-    DevicePanelContainer& devicePanelContainer;
+    ConnectionPanelContainer& connectionPanelContainer;
     const juce::Colour tag;
 
-    DevicePanelHeader header { *this, devicePanelContainer };
-    DevicePanelFooter footer { *this };
+    ConnectionPanelHeader header { *this, connectionPanelContainer };
+    ConnectionPanelFooter footer { *this };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;
@@ -64,5 +64,5 @@ private:
 
     void handleAsyncUpdate() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanel)
 };

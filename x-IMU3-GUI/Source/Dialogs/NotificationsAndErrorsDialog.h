@@ -4,7 +4,7 @@
 #include "Dialog.h"
 #include "Widgets/SimpleLabel.h"
 
-class DevicePanel;
+class ConnectionPanel;
 
 class NotificationsAndErrorsDialog : public Dialog,
                                      private juce::TableListBoxModel
@@ -30,7 +30,7 @@ public:
         juce::Colour getColour() const;
     };
 
-    NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const DevicePanel& devicePanel);
+    NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel);
 
     void resized() override;
 
