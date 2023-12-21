@@ -47,9 +47,14 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         {
             if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                for (const auto& connectionInfo : dialog->getConnectionInfos())
+                const auto connectionInfos = dialog->getConnectionInfos();
+                for (const auto& connectionInfo : connectionInfos)
                 {
                     connectionPanelContainer.connectToDevice(*connectionInfo);
+                }
+                if (connectionInfos.size() > 1)
+                {
+                    setWindowLayout(juce::ValueTree { WindowIDs::Row, {}, {{ WindowIDs::ThreeDView, {}}, }});
                 }
             }
             return true;
@@ -410,6 +415,10 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     };
 
     juce::PopupMenu arrangeMenu;
+    arrangeMenu.addItem("Default", [&]
+    {
+        setWindowLayout({});
+    });
     arrangeMenu.addItem("Tile Horizontally", [&, tile]
     {
         tile(true);
