@@ -8,7 +8,7 @@
 
 class ConnectionPanel;
 
-class ConnectionPanelFooter : public juce::Component
+class ConnectionPanelFooter : public juce::Component, private juce::Timer
 {
 public:
     ConnectionPanelFooter(ConnectionPanel& connectionPanel_);
@@ -41,6 +41,8 @@ private:
     std::vector<NotificationsAndErrorsDialog::Message> messages;
 
     void messagesChanged();
+
+    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelFooter)
 };

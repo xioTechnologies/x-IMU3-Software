@@ -142,14 +142,21 @@ void ConnectionPanelFooter::messagesChanged()
     {
         latestMessageLabel.setText(messages.back().message);
         latestMessageLabel.setColour(juce::Label::textColourId, messages.back().getColour());
+        startTimer(5000);
     }
     else
     {
-        latestMessageLabel.setText("");
+        timerCallback();
     }
 
     if (auto* const dialog = dynamic_cast<NotificationsAndErrorsDialog*>(DialogQueue::getSingleton().getActive()))
     {
         dialog->messagesChanged();
     }
+}
+
+void ConnectionPanelFooter::timerCallback()
+{
+    latestMessageLabel.setText("");
+    stopTimer();
 }
