@@ -6,21 +6,21 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class DevicePanel;
+class ConnectionPanel;
 
-class DevicePanelFooter : public juce::Component
+class ConnectionPanelFooter : public juce::Component
 {
 public:
-    DevicePanelFooter(DevicePanel& devicePanel_);
+    ConnectionPanelFooter(ConnectionPanel& connectionPanel_);
 
-    ~DevicePanelFooter() override;
+    ~ConnectionPanelFooter() override;
 
     void paint(juce::Graphics&) override;
 
     void resized() override;
 
 private:
-    DevicePanel& devicePanel;
+    ConnectionPanel& connectionPanel;
 
     SimpleLabel statisticsLabel { "", UIFonts::getSmallFont() };
 
@@ -42,5 +42,5 @@ private:
 
     void messagesChanged();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelFooter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelFooter)
 };

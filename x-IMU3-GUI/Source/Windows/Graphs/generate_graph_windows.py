@@ -27,7 +27,7 @@ windows = [
         legend_strings="{ \"X\", \"Y\", \"Z\" }",
         legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
         callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });\n\
     }));",
@@ -39,7 +39,7 @@ windows = [
            legend_strings="{ \"X\", \"Y\", \"Z\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });\n\
     }));",
@@ -51,7 +51,7 @@ windows = [
            legend_strings="{ \"X\", \"Y\", \"Z\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x, message.y, message.z });\n\
     }));",
@@ -68,13 +68,13 @@ windows = [
            legend_strings="{ \"Roll\", \"Pitch\", \"Yaw\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
     {\n\
         const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,\n\
                                                       message.yx, message.yy, message.yz,\n\
@@ -83,18 +83,18 @@ windows = [
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.roll, message.pitch, message.yaw });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
     }));\n\
 \n\
-    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
         const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
         update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
@@ -107,7 +107,7 @@ windows = [
            legend_strings="{ \"X\", \"Y\", \"Z\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });\n\
     }));",
@@ -119,7 +119,7 @@ windows = [
            legend_strings="{ \"X\", \"Y\", \"Z\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });\n\
     }));",
@@ -131,7 +131,7 @@ windows = [
            legend_strings="{ \"X\", \"Y\", \"Z\" }",
            legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.x, message.y, message.z });\n\
     }));",
@@ -143,7 +143,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.temperature });\n\
     }));",
@@ -155,7 +155,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.percentage });\n\
     }));",
@@ -167,7 +167,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.voltage });\n\
     }));",
@@ -179,7 +179,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.percentage });\n\
     }));",
@@ -191,7 +191,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { message.power });\n\
     }));",
@@ -203,7 +203,7 @@ windows = [
            legend_strings="{ \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\" }",
            legend_colours="{ UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)\n\
     {\n\
         std::vector<float> values;\n\
         for (const auto& string : juce::StringArray::fromTokens(message.char_array, \",\", \"\"))\n\
@@ -220,7 +220,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { (float) message.message_rate });\n\
     }));",
@@ -232,7 +232,7 @@ windows = [
            legend_strings="{ \"\" }",
            legend_colours="{ UIColours::graphChannel1 }",
            callback_implementations="\
-    callbackIDs.push_back(devicePanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
+    callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)\n\
     {\n\
         update(message.timestamp, { (float) message.data_rate / 1000.0f });\n\
     }));",
@@ -265,8 +265,8 @@ for window in windows:
         file.write(helpers.preamble())
         file.write(template_cpp)
 
-# Insert code into x-IMU3-GUI/Source/DevicePanel/DevicePanel.cpp
-file_path = "../../DevicePanel/DevicePanel.cpp"
+# Insert code into x-IMU3-GUI/Source/ConnectionPanel/ConnectionPanel.cpp
+file_path = "../../ConnectionPanel/ConnectionPanel.cpp"
 
 code = "".join(["#include \"Windows/Graphs/" + w.name + "GraphWindow.h\"\n" for w in windows])
 helpers.insert(file_path, code, "0")

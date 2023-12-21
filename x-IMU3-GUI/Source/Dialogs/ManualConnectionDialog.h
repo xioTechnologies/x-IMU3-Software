@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DevicePanel/DevicePanel.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
@@ -10,26 +10,26 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class NewConnectionDialog : public Dialog
+class ManualConnectionDialog : public Dialog
 {
 public:
-    ~NewConnectionDialog() override;
+    ~ManualConnectionDialog() override;
 
     virtual std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const = 0;
 
 protected:
-    NewConnectionDialog(const juce::String& dialogTitle);
+    ManualConnectionDialog(const juce::String& dialogTitle);
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualConnectionDialog)
 };
 
-class UsbConnectionDialog : public NewConnectionDialog
+class ManualUsbConnectionDialog : public ManualConnectionDialog
 {
 public:
-    UsbConnectionDialog();
+    ManualUsbConnectionDialog();
 
-    ~UsbConnectionDialog() override;
+    ~ManualUsbConnectionDialog() override;
 
     void resized() override;
 
@@ -39,15 +39,15 @@ private:
     SimpleLabel portNameLabel { "Port Name:" };
     PortNameComboBox portNameValue;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UsbConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualUsbConnectionDialog)
 };
 
-class SerialConnectionDialog : public NewConnectionDialog
+class ManualSerialConnectionDialog : public ManualConnectionDialog
 {
 public:
-    SerialConnectionDialog();
+    ManualSerialConnectionDialog();
 
-    ~SerialConnectionDialog() override;
+    ~ManualSerialConnectionDialog() override;
 
     void resized() override;
 
@@ -63,15 +63,15 @@ private:
 
     void validateDialog();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualSerialConnectionDialog)
 };
 
-class TcpConnectionDialog : public NewConnectionDialog
+class ManualTcpConnectionDialog : public ManualConnectionDialog
 {
 public:
-    TcpConnectionDialog();
+    ManualTcpConnectionDialog();
 
-    ~TcpConnectionDialog() override;
+    ~ManualTcpConnectionDialog() override;
 
     void resized() override;
 
@@ -86,15 +86,15 @@ private:
 
     void validateDialog();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TcpConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualTcpConnectionDialog)
 };
 
-class UdpConnectionDialog : public NewConnectionDialog
+class ManualUdpConnectionDialog : public ManualConnectionDialog
 {
 public:
-    UdpConnectionDialog();
+    ManualUdpConnectionDialog();
 
-    ~UdpConnectionDialog() override;
+    ~ManualUdpConnectionDialog() override;
 
     void resized() override;
 
@@ -114,15 +114,15 @@ private:
 
     void validateDialog();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UdpConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualUdpConnectionDialog)
 };
 
-class BluetoothConnectionDialog : public NewConnectionDialog
+class ManualBluetoothConnectionDialog : public ManualConnectionDialog
 {
 public:
-    BluetoothConnectionDialog();
+    ManualBluetoothConnectionDialog();
 
-    ~BluetoothConnectionDialog() override;
+    ~ManualBluetoothConnectionDialog() override;
 
     void resized() override;
 
@@ -132,5 +132,5 @@ private:
     SimpleLabel portNameLabel { "Port Name:" };
     PortNameComboBox portNameValue;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BluetoothConnectionDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualBluetoothConnectionDialog)
 };

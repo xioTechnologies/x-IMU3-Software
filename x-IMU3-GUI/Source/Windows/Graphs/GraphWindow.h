@@ -8,7 +8,7 @@
 class GraphWindow : public Window, private juce::ValueTree::Listener
 {
 public:
-    GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_,
+    GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_,
                 GLRenderer& glRenderer,
                 const juce::String& yAxis,
                 std::vector<juce::String> legendStrings_,
@@ -65,7 +65,7 @@ private:
 
     void zoomVertical(const float multiplier);
 
-    juce::PopupMenu getMenu();
+    juce::PopupMenu getMenu() override;
 
     void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
 };

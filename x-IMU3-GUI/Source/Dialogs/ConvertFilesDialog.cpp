@@ -3,16 +3,16 @@
 
 ConvertFilesDialog::ConvertFilesDialog() : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert")
 {
-    addAndMakeVisible(fileLabel);
-    addAndMakeVisible(fileValue);
-    addAndMakeVisible(fileButton);
+    addAndMakeVisible(filesLabel);
+    addAndMakeVisible(filesValue);
+    addAndMakeVisible(filesButton);
     addAndMakeVisible(destinationLabel);
     addAndMakeVisible(destinationValue);
     addAndMakeVisible(destinationButton);
 
-    fileButton.onClick = [&]
+    filesButton.onClick = [&]
     {
-        juce::FileChooser fileChooser(fileButton.getTooltip(), std::filesystem::exists(fileValue.getText().toStdString()) ? fileValue.getText() : "", "*.ximu3");
+        juce::FileChooser fileChooser(filesButton.getTooltip(), std::filesystem::exists(filesValue.getText().toStdString()) ? filesValue.getText() : "", "*.ximu3");
         if (fileChooser.browseForMultipleFilesToOpen())
         {
             const auto files = fileChooser.getResults();
@@ -23,7 +23,7 @@ ConvertFilesDialog::ConvertFilesDialog() : Dialog(BinaryData::tools_svg, "Conver
                 text += file.getFullPathName() + ";";
             }
             text = text.dropLastCharacters(1);
-            fileValue.setText(text);
+            filesValue.setText(text);
 
             if (destinationValue.isEmpty())
             {
@@ -41,7 +41,7 @@ ConvertFilesDialog::ConvertFilesDialog() : Dialog(BinaryData::tools_svg, "Conver
         }
     };
 
-    fileValue.onTextChange = destinationValue.onTextChange = [&]
+    filesValue.onTextChange = destinationValue.onTextChange = [&]
     {
         auto valid = std::filesystem::exists(destinationValue.getText().toStdString());
         for (const auto& file : getFilesAsStrings())
@@ -60,10 +60,10 @@ void ConvertFilesDialog::resized()
     Dialog::resized();
     auto bounds = getContentBounds();
 
-    auto fileRow = bounds.removeFromTop(UILayout::textComponentHeight);
-    fileLabel.setBounds(fileRow.removeFromLeft(columnWidth));
-    fileButton.setBounds(fileRow.removeFromRight(iconButtonWidth));
-    fileValue.setBounds(fileRow.withTrimmedRight(margin));
+    auto filesRow = bounds.removeFromTop(UILayout::textComponentHeight);
+    filesLabel.setBounds(filesRow.removeFromLeft(columnWidth));
+    filesButton.setBounds(filesRow.removeFromRight(iconButtonWidth));
+    filesValue.setBounds(filesRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -90,5 +90,5 @@ juce::File ConvertFilesDialog::getDestination() const
 
 juce::StringArray ConvertFilesDialog::getFilesAsStrings() const
 {
-    return juce::StringArray::fromTokens(fileValue.getText(), ";", "");
+    return juce::StringArray::fromTokens(filesValue.getText(), ";", "");
 }

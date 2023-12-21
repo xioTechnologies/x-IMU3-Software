@@ -1,15 +1,15 @@
 #include "CustomLookAndFeel.h"
-#include "NewConnectionDialog.h"
+#include "ManualConnectionDialog.h"
 
-NewConnectionDialog::NewConnectionDialog(const juce::String& dialogTitle) : Dialog(BinaryData::manual_svg, dialogTitle, "Connect")
+ManualConnectionDialog::ManualConnectionDialog(const juce::String& dialogTitle) : Dialog(BinaryData::manual_svg, dialogTitle, "Connect")
 {
 }
 
-NewConnectionDialog::~NewConnectionDialog()
+ManualConnectionDialog::~ManualConnectionDialog()
 {
 }
 
-UsbConnectionDialog::UsbConnectionDialog() : NewConnectionDialog("New USB Connection")
+ManualUsbConnectionDialog::ManualUsbConnectionDialog() : ManualConnectionDialog("Manual USB Connection")
 {
     addAndMakeVisible(portNameLabel);
     addAndMakeVisible(portNameValue);
@@ -17,25 +17,25 @@ UsbConnectionDialog::UsbConnectionDialog() : NewConnectionDialog("New USB Connec
     setSize(dialogWidth, calculateHeight(1));
 }
 
-UsbConnectionDialog::~UsbConnectionDialog()
+ManualUsbConnectionDialog::~ManualUsbConnectionDialog()
 {
 }
 
-void UsbConnectionDialog::resized()
+void ManualUsbConnectionDialog::resized()
 {
-    NewConnectionDialog::resized();
+    ManualConnectionDialog::resized();
     auto bounds = getContentBounds();
     auto portRow = bounds.removeFromTop(UILayout::textComponentHeight);
     portNameLabel.setBounds(portRow.removeFromLeft(columnWidth));
     portNameValue.setBounds(portRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> UsbConnectionDialog::getConnectionInfo() const
+std::unique_ptr<ximu3::ConnectionInfo> ManualUsbConnectionDialog::getConnectionInfo() const
 {
     return std::make_unique<ximu3::UsbConnectionInfo>(portNameValue.getSelectedPortName());
 }
 
-SerialConnectionDialog::SerialConnectionDialog() : NewConnectionDialog("New Serial Connection")
+ManualSerialConnectionDialog::ManualSerialConnectionDialog() : ManualConnectionDialog("Manual Serial Connection")
 {
     addAndMakeVisible(portNameLabel);
     addAndMakeVisible(portNameValue);
@@ -62,13 +62,13 @@ SerialConnectionDialog::SerialConnectionDialog() : NewConnectionDialog("New Seri
     setSize(dialogWidth, calculateHeight(2));
 }
 
-SerialConnectionDialog::~SerialConnectionDialog()
+ManualSerialConnectionDialog::~ManualSerialConnectionDialog()
 {
 }
 
-void SerialConnectionDialog::resized()
+void ManualSerialConnectionDialog::resized()
 {
-    NewConnectionDialog::resized();
+    ManualConnectionDialog::resized();
     auto bounds = getContentBounds();
 
     auto portRow = bounds.removeFromTop(UILayout::textComponentHeight);
@@ -84,19 +84,19 @@ void SerialConnectionDialog::resized()
     rtsCtsEnabledToggle.setBounds(baudRateRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> SerialConnectionDialog::getConnectionInfo() const
+std::unique_ptr<ximu3::ConnectionInfo> ManualSerialConnectionDialog::getConnectionInfo() const
 {
     return std::make_unique<ximu3::SerialConnectionInfo>(portNameValue.getSelectedPortName(),
                                                          (uint32_t) baudRateValue.getText().getIntValue(),
                                                          rtsCtsEnabledToggle.getToggleState());
 }
 
-void SerialConnectionDialog::validateDialog()
+void ManualSerialConnectionDialog::validateDialog()
 {
     setOkButton(baudRateValue.getText().isNotEmpty());
 }
 
-TcpConnectionDialog::TcpConnectionDialog() : NewConnectionDialog("New TCP Connection")
+ManualTcpConnectionDialog::ManualTcpConnectionDialog() : ManualConnectionDialog("Manual TCP Connection")
 {
     addAndMakeVisible(ipAddressLabel);
     addAndMakeVisible(ipAddressValue);
@@ -121,13 +121,13 @@ TcpConnectionDialog::TcpConnectionDialog() : NewConnectionDialog("New TCP Connec
     setSize(dialogWidth, calculateHeight(2));
 }
 
-TcpConnectionDialog::~TcpConnectionDialog()
+ManualTcpConnectionDialog::~ManualTcpConnectionDialog()
 {
 }
 
-void TcpConnectionDialog::resized()
+void ManualTcpConnectionDialog::resized()
 {
-    NewConnectionDialog::resized();
+    ManualConnectionDialog::resized();
     auto bounds = getContentBounds();
 
     auto ipAddressRow = bounds.removeFromTop(UILayout::textComponentHeight);
@@ -141,18 +141,18 @@ void TcpConnectionDialog::resized()
     portValue.setBounds(portRow.removeFromLeft(columnWidth));
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> TcpConnectionDialog::getConnectionInfo() const
+std::unique_ptr<ximu3::ConnectionInfo> ManualTcpConnectionDialog::getConnectionInfo() const
 {
     return std::make_unique<ximu3::TcpConnectionInfo>(ipAddressValue.getText().toStdString(),
                                                       (uint16_t) portValue.getText().getIntValue());
 }
 
-void TcpConnectionDialog::validateDialog()
+void ManualTcpConnectionDialog::validateDialog()
 {
     setOkButton((ipAddressValue.isEmpty() || portValue.isEmpty()) == false);
 }
 
-UdpConnectionDialog::UdpConnectionDialog() : NewConnectionDialog("New UDP Connection")
+ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog("Manual UDP Connection")
 {
     addAndMakeVisible(ipAddressLabel);
     addAndMakeVisible(ipAddressValue);
@@ -201,13 +201,13 @@ UdpConnectionDialog::UdpConnectionDialog() : NewConnectionDialog("New UDP Connec
     setSize(dialogWidth, calculateHeight(3));
 }
 
-UdpConnectionDialog::~UdpConnectionDialog()
+ManualUdpConnectionDialog::~ManualUdpConnectionDialog()
 {
 }
 
-void UdpConnectionDialog::resized()
+void ManualUdpConnectionDialog::resized()
 {
-    NewConnectionDialog::resized();
+    ManualConnectionDialog::resized();
     auto bounds = getContentBounds();
 
     auto ipAddressRow = bounds.removeFromTop(UILayout::textComponentHeight);
@@ -230,19 +230,19 @@ void UdpConnectionDialog::resized()
     receivePortValue.setBounds(receivePortRow.removeFromLeft(columnWidth));
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> UdpConnectionDialog::getConnectionInfo() const
+std::unique_ptr<ximu3::ConnectionInfo> ManualUdpConnectionDialog::getConnectionInfo() const
 {
     return std::make_unique<ximu3::UdpConnectionInfo>(ipAddressValue.getText().toStdString(),
                                                       (uint16_t) sendPortValue.getText().getIntValue(),
                                                       (uint16_t) receivePortValue.getText().getIntValue());
 }
 
-void UdpConnectionDialog::validateDialog()
+void ManualUdpConnectionDialog::validateDialog()
 {
     setOkButton((ipAddressValue.isEmpty() || sendPortValue.isEmpty() || receivePortValue.isEmpty()) == false);
 }
 
-BluetoothConnectionDialog::BluetoothConnectionDialog() : NewConnectionDialog("New Bluetooth Connection")
+ManualBluetoothConnectionDialog::ManualBluetoothConnectionDialog() : ManualConnectionDialog("Manual Bluetooth Connection")
 {
     addAndMakeVisible(portNameLabel);
     addAndMakeVisible(portNameValue);
@@ -250,20 +250,20 @@ BluetoothConnectionDialog::BluetoothConnectionDialog() : NewConnectionDialog("Ne
     setSize(dialogWidth, calculateHeight(1));
 }
 
-BluetoothConnectionDialog::~BluetoothConnectionDialog()
+ManualBluetoothConnectionDialog::~ManualBluetoothConnectionDialog()
 {
 }
 
-void BluetoothConnectionDialog::resized()
+void ManualBluetoothConnectionDialog::resized()
 {
-    NewConnectionDialog::resized();
+    ManualConnectionDialog::resized();
     auto bounds = getContentBounds();
     auto portRow = bounds.removeFromTop(UILayout::textComponentHeight);
     portNameLabel.setBounds(portRow.removeFromLeft(columnWidth));
     portNameValue.setBounds(portRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> BluetoothConnectionDialog::getConnectionInfo() const
+std::unique_ptr<ximu3::ConnectionInfo> ManualBluetoothConnectionDialog::getConnectionInfo() const
 {
     return std::make_unique<ximu3::BluetoothConnectionInfo>(portNameValue.getSelectedPortName());
 }

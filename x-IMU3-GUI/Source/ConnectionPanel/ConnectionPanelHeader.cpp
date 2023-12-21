@@ -1,12 +1,12 @@
-#include "DevicePanel.h"
-#include "DevicePanelContainer.h"
-#include "DevicePanelHeader.h"
+#include "ConnectionPanel.h"
+#include "ConnectionPanelContainer.h"
+#include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
 
-DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_)
-        : devicePanel(devicePanel_),
-          devicePanelContainer(devicePanelContainer_),
-          connection(devicePanel.getConnection())
+ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
+        : connectionPanel(connectionPanel_),
+          connectionPanelContainer(connectionPanelContainer_),
+          connection(connectionPanel.getConnection())
 {
     addAndMakeVisible(retryButton);
     addChildComponent(strobeButton);
@@ -24,7 +24,7 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
 
     strobeButton.onClick = [&]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<DevicePanel*> { &devicePanel }));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<ConnectionPanel*> { &connectionPanel }));
     };
 
     networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&](auto message)
@@ -36,12 +36,12 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
         }
     });
 
-    rssiCallbackID = devicePanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
+    rssiCallbackID = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
         updateRssi((int) message.percentage);
     });
 
-    batteryCallbackID = devicePanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
+    batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         updateBattery((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
@@ -51,23 +51,23 @@ DevicePanelHeader::DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelConta
     setState(State::connecting);
 }
 
-DevicePanelHeader::~DevicePanelHeader()
+ConnectionPanelHeader::~ConnectionPanelHeader()
 {
     networkAnnouncement->removeCallback(networkAnnouncementCallbackID);
-    devicePanel.getConnection()->removeCallback(rssiCallbackID);
-    devicePanel.getConnection()->removeCallback(batteryCallbackID);
+    connectionPanel.getConnection()->removeCallback(rssiCallbackID);
+    connectionPanel.getConnection()->removeCallback(batteryCallbackID);
 
     *destroyed = true;
 }
 
-void DevicePanelHeader::paint(juce::Graphics& g)
+void ConnectionPanelHeader::paint(juce::Graphics& g)
 {
     g.fillAll(UIColours::backgroundLightest);
-    g.setColour(devicePanel.getTag());
+    g.setColour(connectionPanel.getTag());
     g.fillRect(getLocalBounds().removeFromLeft(UILayout::tagWidth));
 }
 
-void DevicePanelHeader::resized()
+void ConnectionPanelHeader::resized()
 {
     static constexpr int margin = 7;
 
@@ -89,42 +89,42 @@ void DevicePanelHeader::resized()
     title.setBounds(bounds);
 }
 
-void DevicePanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
+void ConnectionPanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
 {
     mouseDrag(mouseEvent);
 }
 
-void DevicePanelHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
+void ConnectionPanelHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
 {
     if (auto* componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition()))
     {
-        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<DevicePanel>())
+        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>())
         {
-            devicePanelContainer.showDragOverlayAtComponent(*targetPanel, DragOverlay::Side::all);
+            connectionPanelContainer.showDragOverlayAtComponent(*targetPanel, DragOverlay::Side::all);
             return;
         }
     }
-    devicePanelContainer.hideDragOverlay();
+    connectionPanelContainer.hideDragOverlay();
 }
 
-void DevicePanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
+void ConnectionPanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
 {
-    devicePanelContainer.hideDragOverlay();
+    connectionPanelContainer.hideDragOverlay();
     if (auto* componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition()))
     {
-        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<DevicePanel>(); targetPanel != nullptr && targetPanel != &devicePanel)
+        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>(); targetPanel != nullptr && targetPanel != &connectionPanel)
         {
-            devicePanelContainer.movePanel(devicePanel, *targetPanel);
+            connectionPanelContainer.movePanel(connectionPanel, *targetPanel);
         }
     }
 
-    if (mouseEvent.mouseWasClicked() && devicePanelContainer.getLayout() == DevicePanelContainer::Layout::accordion)
+    if (mouseEvent.mouseWasClicked() && connectionPanelContainer.getLayout() == ConnectionPanelContainer::Layout::accordion)
     {
-        devicePanelContainer.setExpandedDevicePanel((devicePanelContainer.getExpandedDevicePanel() == &devicePanel) ? nullptr : &devicePanel);
+        connectionPanelContainer.setExpandedConnectionPanel((connectionPanelContainer.getExpandedConnectionPanel() == &connectionPanel) ? nullptr : &connectionPanel);
     }
 }
 
-void DevicePanelHeader::setState(const State state)
+void ConnectionPanelHeader::setState(const State state)
 {
     switch (state)
     {
@@ -167,12 +167,12 @@ void DevicePanelHeader::setState(const State state)
     }
 }
 
-juce::String DevicePanelHeader::getTitle() const
+juce::String ConnectionPanelHeader::getTitle() const
 {
     return title.getText();
 }
 
-void DevicePanelHeader::updateTitle(const std::vector<CommandMessage>& responses)
+void ConnectionPanelHeader::updateTitle(const std::vector<CommandMessage>& responses)
 {
     for (const auto& response : responses)
     {
@@ -187,19 +187,19 @@ void DevicePanelHeader::updateTitle(const std::vector<CommandMessage>& responses
     }
 }
 
-void DevicePanelHeader::updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_)
+void ConnectionPanelHeader::updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_)
 {
     deviceName = deviceName_;
     serialNumber = serialNumber_;
     updateTitle(deviceName + " " + serialNumber);
 }
 
-void DevicePanelHeader::updateTitle(const juce::String& status)
+void ConnectionPanelHeader::updateTitle(const juce::String& status)
 {
     title.setText(status + "    " + connection->getInfo()->toString());
 }
 
-void DevicePanelHeader::updateRssi(const int percentage)
+void ConnectionPanelHeader::updateRssi(const int percentage)
 {
     if (percentage < 0)
     {
@@ -213,7 +213,7 @@ void DevicePanelHeader::updateRssi(const int percentage)
                     juce::String(percentage) + "%");
 }
 
-void DevicePanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status)
+void ConnectionPanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status)
 {
     batteryIcon.update(status == ximu3::XIMU3_ChargingStatusCharging ? BinaryData::battery_charging_svg :
                        status == ximu3::XIMU3_ChargingStatusChargingComplete ? BinaryData::battery_charging_complete_svg :

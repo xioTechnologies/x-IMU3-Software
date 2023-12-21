@@ -10,7 +10,7 @@
 class DeviceSettingsWindow : public Window
 {
 public:
-    DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, DevicePanel& devicePanel_);
+    DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_);
 
     ~DeviceSettingsWindow() override;
 
@@ -37,7 +37,7 @@ private:
 
     void disableInProgress();
 
-    juce::PopupMenu getMenu();
+    juce::PopupMenu getMenu() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsWindow)
 };

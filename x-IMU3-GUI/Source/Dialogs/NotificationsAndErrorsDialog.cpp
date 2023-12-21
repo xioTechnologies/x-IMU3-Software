@@ -1,5 +1,5 @@
 #include <BinaryData.h>
-#include "DevicePanel/DevicePanel.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "NotificationsAndErrorsDialog.h"
 #include "Widgets/Icon.h"
 
@@ -39,8 +39,8 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
     return {}; // avoid compiler warning
 }
 
-NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const DevicePanel& devicePanel)
-        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + devicePanel.getTitle(), "Close", "", &clearAllButton, 80, true, devicePanel.getTag()),
+NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel)
+        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearAllButton, 80, true, connectionPanel.getTag()),
           messages(messages_)
 {
     addAndMakeVisible(clearAllButton);

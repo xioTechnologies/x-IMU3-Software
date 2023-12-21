@@ -1,5 +1,5 @@
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "CustomLookAndFeel.h"
-#include "DevicePanel/DevicePanel.h"
 #include <numeric>
 #include "WindowContainer.h"
 #include "Windows/Window.h"
@@ -67,8 +67,8 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ResizeBar)
 };
 
-WindowContainer::WindowContainer(DevicePanel& devicePanel_, juce::ValueTree layoutTree_)
-        : devicePanel(devicePanel_),
+WindowContainer::WindowContainer(ConnectionPanel& connectionPanel_, juce::ValueTree layoutTree_)
+        : connectionPanel(connectionPanel_),
           layoutTree(layoutTree_)
 {
     layoutTree.addListener(this);
@@ -168,9 +168,9 @@ void WindowContainer::valueTreeChildAdded(juce::ValueTree& parentTree, juce::Val
     std::shared_ptr<juce::Component> componentToAdd;
     if (childWhichHasBeenAdded.hasType(WindowIDs::Row) || childWhichHasBeenAdded.hasType(WindowIDs::Column))
     {
-        componentToAdd = std::make_shared<WindowContainer>(devicePanel, childWhichHasBeenAdded);
+        componentToAdd = std::make_shared<WindowContainer>(connectionPanel, childWhichHasBeenAdded);
     }
-    else if (!(componentToAdd = devicePanel.getOrCreateWindow(childWhichHasBeenAdded)))
+    else if (!(componentToAdd = connectionPanel.getOrCreateWindow(childWhichHasBeenAdded)))
     {
         return;
     }
@@ -199,9 +199,9 @@ void WindowContainer::valueTreeChildRemoved(juce::ValueTree& parentTree, juce::V
                 break;
             }
         }
-        else if (auto* devicePanelWindow = dynamic_cast<Window*>(component.get()))
+        else if (auto* connectionPanelWindow = dynamic_cast<Window*>(component.get()))
         {
-            if (devicePanelWindow->getType() == childWhichHasBeenRemoved.getType())
+            if (connectionPanelWindow->getType() == childWhichHasBeenRemoved.getType())
             {
                 componentToRemove = component.get();
                 break;
@@ -216,7 +216,7 @@ void WindowContainer::valueTreeChildRemoved(juce::ValueTree& parentTree, juce::V
 
     removeChildComponent(componentToRemove);
 
-    devicePanel.cleanupWindows();
+    connectionPanel.cleanupWindows();
 
     for (int i = 0; i < (int) childComponents.size(); i++)
     {

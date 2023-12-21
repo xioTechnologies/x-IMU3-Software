@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<DevicePanel*>& devicePanels)
+SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
         : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
 {
     addAndMakeVisible(table);
@@ -17,9 +17,9 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     table.updateContent();
     table.setWantsKeyboardFocus(false);
 
-    for (auto* const devicePanel : devicePanels)
+    for (auto* const connectionPanel : connectionPanels)
     {
-        rows.push_back({ *devicePanel });
+        rows.push_back({ *connectionPanel });
     }
 
     closeWhenCompleteButton.setClickingTogglesState(true);
@@ -40,7 +40,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
             row.state = Row::State::inProgress;
 
-            row.devicePanel.sendCommands({ command }, this, [&, row = &row](const auto&, const auto& failedCommands)
+            row.connectionPanel.sendCommands({ command }, this, [&, row = &row](const auto&, const auto& failedCommands)
             {
                 row->state = (failedCommands.empty() == false) ? Row::State::failed : Row::State::complete;
                 table.updateContent();
@@ -85,7 +85,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     okCallback();
 
-    setSize(600, calculateHeight(0) + margin + (int) devicePanels.size() * table.getRowHeight());
+    setSize(600, calculateHeight(0) + margin + (int) connectionPanels.size() * table.getRowHeight());
 }
 
 void SendingCommandDialog::resized()
@@ -107,7 +107,7 @@ void SendingCommandDialog::paintRowBackground(juce::Graphics& g, int rowNumber, 
         return; // index may exceed size on Windows if display scaling >100%
     }
 
-    g.setColour(rows[(size_t) rowNumber].devicePanel.getTag());
+    g.setColour(rows[(size_t) rowNumber].connectionPanel.getTag());
     g.fillRect(0, 0, UILayout::tagWidth, height);
 }
 
@@ -126,7 +126,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return nullptr;
 
         case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].devicePanel.getTitle());
+            return new SimpleLabel(rows[(size_t) rowNumber].connectionPanel.getTitle());
 
         case ColumnIDs::complete:
             switch (rows[(size_t) rowNumber].state)

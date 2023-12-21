@@ -9,7 +9,7 @@
 class SerialAccessoryCsvsGraphWindow : public GraphWindow
 {
 public:
-    SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, DevicePanel& devicePanel_, GLRenderer& glRenderer);
+    SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~SerialAccessoryCsvsGraphWindow() override;
 

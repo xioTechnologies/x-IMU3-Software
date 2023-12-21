@@ -8,11 +8,11 @@
 #include "Widgets/StatusIcon.h"
 #include "Ximu3.hpp"
 
-class DevicePanel;
+class ConnectionPanel;
 
-class DevicePanelContainer;
+class ConnectionPanelContainer;
 
-class DevicePanelHeader : public juce::Component
+class ConnectionPanelHeader : public juce::Component
 {
 public:
     enum class State
@@ -22,9 +22,9 @@ public:
         connectionFailed,
     };
 
-    DevicePanelHeader(DevicePanel& devicePanel_, DevicePanelContainer& devicePanelContainer_);
+    ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_);
 
-    ~DevicePanelHeader() override;
+    ~ConnectionPanelHeader() override;
 
     void paint(juce::Graphics& g) override;
 
@@ -47,8 +47,8 @@ public:
     std::function<void()> onRetry;
 
 private:
-    DevicePanel& devicePanel;
-    DevicePanelContainer& devicePanelContainer;
+    ConnectionPanel& connectionPanel;
+    ConnectionPanelContainer& connectionPanelContainer;
     const std::shared_ptr<ximu3::Connection> connection;
 
     std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
@@ -77,5 +77,5 @@ private:
 
     void updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DevicePanelHeader)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelHeader)
 };

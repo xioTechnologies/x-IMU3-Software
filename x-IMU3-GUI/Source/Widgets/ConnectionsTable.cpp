@@ -7,6 +7,7 @@ ConnectionsTable::ConnectionsTable()
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(connectionLabel);
     addAndMakeVisible(table);
+    addAndMakeVisible(noConnectionsFoundLabel);
 
     selectAllButton.setToggleState(true, juce::dontSendNotification);
     selectAllButton.onClick = [&]
@@ -39,6 +40,7 @@ void ConnectionsTable::resized()
     deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
     connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
     table.setBounds(bounds);
+    noConnectionsFoundLabel.setBounds(bounds);
 }
 
 void ConnectionsTable::setRows(std::vector<Row> rows_)
@@ -72,6 +74,8 @@ void ConnectionsTable::setRows(std::vector<Row> rows_)
     }
 
     table.updateContent();
+
+    noConnectionsFoundLabel.setVisible(rows.empty());
 }
 
 const std::vector<ConnectionsTable::Row>& ConnectionsTable::getRows() const

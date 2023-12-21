@@ -1,10 +1,10 @@
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Convert.h"
-#include "DevicePanel/DevicePanel.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "SerialAccessoryTerminalWindow.h"
 
-SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, DevicePanel& devicePanel_)
-        : Window(windowLayout_, type_, devicePanel_, "Serial Accessory Terminal Menu", std::bind(&SerialAccessoryTerminalWindow::getMenu, this))
+SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
+        : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
 {
     addAndMakeVisible(serialAccessoryTerminal);
     serialAccessoryTerminal.addMouseListener(this, true);
@@ -17,7 +17,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())), std::vector<DevicePanel*> { &devicePanel }));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())), std::vector<ConnectionPanel*> { &connectionPanel }));
 
         serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
 
@@ -41,7 +41,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         loadRecents();
     };
 
-    callbackID = devicePanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
+    callbackID = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
                                         {
@@ -57,7 +57,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
 SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
 {
-    devicePanel.getConnection()->removeCallback(callbackID);
+    connectionPanel.getConnection()->removeCallback(callbackID);
 }
 
 void SerialAccessoryTerminalWindow::paint(juce::Graphics& g)
@@ -164,7 +164,7 @@ void SerialAccessoryTerminalWindow::loadRecents()
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
-    juce::PopupMenu menu;
+    juce::PopupMenu menu = Window::getMenu();
     menu.addItem("Copy To Clipboard", [&]
     {
         serialAccessoryTerminal.copyToClipboard();

@@ -46,6 +46,8 @@ private:
     SimpleLabel connectionLabel { "Connection" };
     juce::TableListBox table { "", this };
 
+    SimpleLabel noConnectionsFoundLabel { "No Connections Found", UIFonts::getDefaultFont(), juce::Justification::centred };
+
     int getNumRows() override;
 
     void paintRowBackground(juce::Graphics&, int, int, int, bool) override
