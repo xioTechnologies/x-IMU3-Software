@@ -2,7 +2,7 @@
 AppName=x-IMU3 GUI
 AppPublisher=x-io Technologies
 AppVerName=x-IMU3 GUI
-AppVersion=1.3.4
+AppVersion=1.3.5
 DefaultDirName={autopf64}\x-IMU3 GUI
 DefaultGroupName=x-IMU3 GUI
 DisableProgramGroupPage=yes
