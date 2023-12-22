@@ -457,7 +457,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     if (const auto layouts = WindowLayouts().load(); layouts.empty() == false)
     {
         arrangeMenu.addSeparator();
-        arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED LAYOUTS"), nullptr);
+        arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED"), nullptr);
 
         for (auto layout : layouts)
         {
