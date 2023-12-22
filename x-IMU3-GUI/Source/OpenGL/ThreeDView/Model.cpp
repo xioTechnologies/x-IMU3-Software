@@ -74,7 +74,7 @@ void Model::setModel(const juce::String& objFileContent, const juce::String& mtl
 
 void Model::setModel(const juce::File& objFile_)
 {
-    if (objFile == objFile_)
+    if (objFile_ == juce::File() || objFile == objFile_)
     {
         return;
     }
