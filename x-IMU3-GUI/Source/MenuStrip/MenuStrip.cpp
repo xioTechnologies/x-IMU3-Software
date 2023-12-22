@@ -1,6 +1,5 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanelContainer.h"
-#include "WindowLayouts.h"
 #include "CustomLookAndFeel.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
@@ -19,6 +18,7 @@
 #include "MenuStrip.h"
 #include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
+#include "WindowLayouts.h"
 #include "Windows/WindowIDs.h"
 
 MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),

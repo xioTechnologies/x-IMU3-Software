@@ -66,18 +66,18 @@ void Window::valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&)
         return;
     }
 
-    std::set<juce::Identifier> properties;
+    std::set<juce::Identifier> propertiesNames;
     for (auto index = 0; index < settingsTree.getNumProperties(); index++)
     {
-        properties.insert(settingsTree.getPropertyName(index));
+        propertiesNames.insert(settingsTree.getPropertyName(index));
     }
     for (auto index = 0; index < newSettingsTree.getNumProperties(); index++)
     {
-        properties.insert(newSettingsTree.getPropertyName(index));
+        propertiesNames.insert(newSettingsTree.getPropertyName(index));
     }
 
     settingsTree = newSettingsTree;
-    for (auto property : properties)
+    for (auto property : propertiesNames)
     {
         settingsTree.sendPropertyChangeMessage(property);
     }
