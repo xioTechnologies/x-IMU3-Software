@@ -9,13 +9,11 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
                          const juce::String& yAxis,
                          std::vector<juce::String> legendStrings_,
                          std::vector<juce::Colour> legendColours_,
-                         juce::ValueTree settingsTree_,
                          bool defaultHorizontalAutoscale_)
         : Window(windowLayout_, type_, connectionPanel_, ""),
           legendStrings(legendStrings_),
           legendColours(legendColours_),
           defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
-          settingsTree(settingsTree_),
           graph(glRenderer, legendColours_, labelHeight, rightMargin),
           xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
           yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
@@ -26,7 +24,6 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
     addAndMakeVisible(xLabel);
     addAndMakeVisible(yLabel);
 
-    settingsTree.addListener(this);
     graph.setSettings(readFromValueTree());
 }
 
@@ -348,6 +345,11 @@ juce::PopupMenu GraphWindow::getMenu()
 
 void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
 {
+    if (treeWhosePropertyHasChanged != settingsTree)
+    {
+        return;
+    }
+
     if (property.toString() == "scaleToFit")
     {
         graph.scaleToFit();

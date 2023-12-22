@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "AccelerometerGraphWindow.h"
 
-juce::ValueTree AccelerometerGraphWindow::settingsTree_("AccelerometerGraphSettings");
-
 AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Acceleration (g)",
                       { "X", "Y", "Z" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)

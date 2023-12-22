@@ -2,12 +2,15 @@
 #include "WindowIDs.h"
 
 Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, const juce::String& menuButtonTooltip)
-        : connectionPanel(connectionPanel_),
+        : settingsTree(findWindow(windowLayout_, type_)),
+          connectionPanel(connectionPanel_),
           windowLayout(windowLayout_),
           type(type_),
           header(connectionPanel_, windowLayout, type_, menuButtonTooltip, std::bind(&Window::getMenu, this))
 {
     addAndMakeVisible(header);
+
+    windowLayout.addListener(this);
 }
 
 void Window::resized()
@@ -52,5 +55,30 @@ void Window::closeWindow(const juce::Identifier& type_)
         auto parent = child.getParent();
         parent.removeChild(child, nullptr);
         child = parent;
+    }
+}
+
+void Window::valueTreeChildAdded(juce::ValueTree&, juce::ValueTree&)
+{
+    const auto newSettingsTree = findWindow(windowLayout, type);
+    if (newSettingsTree.isValid() == false)
+    {
+        return;
+    }
+
+    std::set<juce::Identifier> propertiesNames;
+    for (auto index = 0; index < settingsTree.getNumProperties(); index++)
+    {
+        propertiesNames.insert(settingsTree.getPropertyName(index));
+    }
+    for (auto index = 0; index < newSettingsTree.getNumProperties(); index++)
+    {
+        propertiesNames.insert(newSettingsTree.getPropertyName(index));
+    }
+
+    settingsTree = newSettingsTree;
+    for (auto property : propertiesNames)
+    {
+        settingsTree.sendPropertyChangeMessage(property);
     }
 }

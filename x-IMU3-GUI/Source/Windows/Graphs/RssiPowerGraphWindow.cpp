@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "RssiPowerGraphWindow.h"
 
-juce::ValueTree RssiPowerGraphWindow::settingsTree_("RssiPowerGraphSettings");
-
 RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Power (dBm)",
                       { "" },
                       { UIColours::graphChannel1 },
-                      settingsTree_,
                       true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)

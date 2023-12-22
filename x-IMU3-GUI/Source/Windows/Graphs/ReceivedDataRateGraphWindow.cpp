@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "ReceivedDataRateGraphWindow.h"
 
-juce::ValueTree ReceivedDataRateGraphWindow::settingsTree_("ReceivedDataRateGraphSettings");
-
 ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Throughput (kB/s)",
                       { "" },
                       { UIColours::graphChannel1 },
-                      settingsTree_,
                       true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)

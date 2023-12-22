@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "ReceivedMessageRateGraphWindow.h"
 
-juce::ValueTree ReceivedMessageRateGraphWindow::settingsTree_("ReceivedMessageRateGraphSettings");
-
 ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Throughput (messages/s)",
                       { "" },
                       { UIColours::graphChannel1 },
-                      settingsTree_,
                       true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)

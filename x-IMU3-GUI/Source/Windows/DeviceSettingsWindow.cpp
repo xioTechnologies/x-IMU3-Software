@@ -6,7 +6,7 @@
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
         : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
 {
-    addAndMakeVisible(settingsTree);
+    addAndMakeVisible(deviceSettings);
     addAndMakeVisible(readAllButton);
     addAndMakeVisible(writeAllButton);
     addAndMakeVisible(saveToFileButton);
@@ -15,19 +15,19 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     readAllButton.onClick = [this]
     {
-        enableInProgress(settingsTree.getReadCommands());
+        enableInProgress(deviceSettings.getReadCommands());
 
-        connectionPanel.sendCommands(settingsTree.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
+        connectionPanel.sendCommands(deviceSettings.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
         {
             for (const auto& response : responses)
             {
-                settingsTree.setValue(response);
-                settingsTree.setStatus(response.key, Setting::Status::normal);
+                deviceSettings.setValue(response);
+                deviceSettings.setStatus(response.key, Setting::Status::normal);
             }
 
             for (const auto& failedCommand : failedCommands)
             {
-                settingsTree.setStatus(failedCommand.key, Setting::Status::readFailed);
+                deviceSettings.setStatus(failedCommand.key, Setting::Status::readFailed);
             }
 
             readAllButton.setToggleState(failedCommands.empty() == false, juce::dontSendNotification);
@@ -43,19 +43,19 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     writeAllButton.onClick = [this]
     {
-        enableInProgress(settingsTree.getWriteCommands());
+        enableInProgress(deviceSettings.getWriteCommands());
 
-        connectionPanel.sendCommands(settingsTree.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
+        connectionPanel.sendCommands(deviceSettings.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
         {
             for (const auto& response : responses)
             {
-                settingsTree.setValue(response);
-                settingsTree.setStatus(response.key, Setting::Status::normal);
+                deviceSettings.setValue(response);
+                deviceSettings.setStatus(response.key, Setting::Status::normal);
             }
 
             for (const auto& failedCommand : writeFailedCommands)
             {
-                settingsTree.setStatus(failedCommand.key, Setting::Status::writeFailed);
+                deviceSettings.setStatus(failedCommand.key, Setting::Status::writeFailed);
             }
 
             writeAllButton.setToggleState(writeFailedCommands.empty() == false, juce::dontSendNotification);
@@ -79,12 +79,12 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     saveToFileButton.onClick = [&]
     {
-        auto fileName = settingsTree.getValue("deviceName").toString();
+        auto fileName = deviceSettings.getValue("deviceName").toString();
         if (fileName.isEmpty())
         {
             fileName = "Unknown Device";
         }
-        if (const auto serialNumber = settingsTree.getValue("serialNumber").toString(); serialNumber.isNotEmpty())
+        if (const auto serialNumber = deviceSettings.getValue("serialNumber").toString(); serialNumber.isNotEmpty())
         {
             fileName += " " + serialNumber;
         }
@@ -96,7 +96,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         }
 
         juce::DynamicObject object;
-        for (const auto& command : settingsTree.getWriteCommands(false))
+        for (const auto& command : deviceSettings.getWriteCommands(false))
         {
             object.setProperty(command.key, command.value);
         }
@@ -120,7 +120,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             for (const auto& command : object->getProperties())
             {
-                settingsTree.setValue({ command.name.toString(), command.value });
+                deviceSettings.setValue({ command.name.toString(), command.value });
             }
         }
     };
@@ -129,7 +129,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
         {
-            enableInProgress(settingsTree.getReadCommands());
+            enableInProgress(deviceSettings.getReadCommands());
 
             connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
             {
@@ -182,7 +182,7 @@ void DeviceSettingsWindow::resized()
     buttonBounds = bounds.removeFromBottom(25).toFloat();
     const auto buttonWidth = buttonBounds.getWidth() / buttons.size();
 
-    settingsTree.setBounds(bounds);
+    deviceSettings.setBounds(bounds);
     juce::ScopedValueSetter _(buttonBounds, buttonBounds);
     for (auto* const button : buttons)
     {
@@ -194,12 +194,12 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 {
     for (const auto& command : commands)
     {
-        settingsTree.setStatus(command.key, Setting::Status::normal);
+        deviceSettings.setStatus(command.key, Setting::Status::normal);
     }
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);
 
-    settingsTree.setEnabled(false);
+    deviceSettings.setEnabled(false);
     for (auto* const button : buttons)
     {
         button->setEnabled(false);
@@ -208,7 +208,7 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 
 void DeviceSettingsWindow::disableInProgress()
 {
-    settingsTree.setEnabled(true);
+    deviceSettings.setEnabled(true);
     for (auto* const button : buttons)
     {
         button->setEnabled(true);

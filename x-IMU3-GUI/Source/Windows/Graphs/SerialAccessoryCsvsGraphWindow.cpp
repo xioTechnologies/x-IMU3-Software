@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "SerialAccessoryCsvsGraphWindow.h"
 
-juce::ValueTree SerialAccessoryCsvsGraphWindow::settingsTree_("SerialAccessoryCsvsGraphSettings");
-
 SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "CSV",
                       { "1", "2", "3", "4", "5", "6", "7", "8" },
                       { UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)

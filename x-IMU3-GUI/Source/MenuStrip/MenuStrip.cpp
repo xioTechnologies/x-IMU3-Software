@@ -1,6 +1,5 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanelContainer.h"
-#include "WindowLayouts.h"
 #include "CustomLookAndFeel.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
@@ -19,12 +18,13 @@
 #include "MenuStrip.h"
 #include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
+#include "WindowLayouts.h"
 #include "Windows/WindowIDs.h"
 
 MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
                                                                                                             connectionPanelContainer(connectionPanelContainer_)
 {
-    setWindowLayout({});
+    setWindowLayout(juce::ValueTree::fromXml(previousWindowLayout.loadFileAsString()));
 
     for (const auto& buttonGroup : buttonGroups)
     {
@@ -205,6 +205,11 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         connectionLayoutButton.setEnabled(connectionPanelContainer.getConnectionPanels().size() > 1);
     };
     connectionPanelContainer.onConnectionPanelsSizeChanged();
+}
+
+MenuStrip::~MenuStrip()
+{
+    previousWindowLayout.replaceWithText(windowLayout.toXmlString());
 }
 
 void MenuStrip::paint(juce::Graphics& g)
@@ -457,7 +462,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     if (const auto layouts = WindowLayouts().load(); layouts.empty() == false)
     {
         arrangeMenu.addSeparator();
-        arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED LAYOUTS"), nullptr);
+        arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED"), nullptr);
 
         for (auto layout : layouts)
         {

@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "EarthAccelerationGraphWindow.h"
 
-juce::ValueTree EarthAccelerationGraphWindow::settingsTree_("EarthAccelerationGraphSettings");
-
 EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Acceleration (g)",
                       { "X", "Y", "Z" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)

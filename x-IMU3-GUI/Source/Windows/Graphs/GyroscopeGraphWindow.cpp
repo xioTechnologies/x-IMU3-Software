@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "GyroscopeGraphWindow.h"
 
-juce::ValueTree GyroscopeGraphWindow::settingsTree_("GyroscopeGraphSettings");
-
 GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Angular Rate (" + degreeSymbol + "/s)",
                       { "X", "Y", "Z" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)

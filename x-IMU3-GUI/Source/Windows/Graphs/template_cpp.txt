@@ -2,15 +2,12 @@
 #include "Convert.h"
 #include "$name$GraphWindow.h"
 
-juce::ValueTree $name$GraphWindow::settingsTree_("$name$GraphSettings");
-
 $name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "$y_axis$",
                       $legend_strings$,
                       $legend_colours$,
-                      settingsTree_,
                       $horizontal_autoscale$)
 {
 $callback_implementations$

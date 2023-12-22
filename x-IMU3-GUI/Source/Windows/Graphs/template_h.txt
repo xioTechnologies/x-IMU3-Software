@@ -12,8 +12,6 @@ public:
     ~$name$GraphWindow() override;
 
 private:
-    static juce::ValueTree settingsTree_;
-
     std::vector<uint64_t> callbackIDs;
 $callback_declarations$
 };

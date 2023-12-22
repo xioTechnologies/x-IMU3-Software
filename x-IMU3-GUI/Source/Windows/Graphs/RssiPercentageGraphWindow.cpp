@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "RssiPercentageGraphWindow.h"
 
-juce::ValueTree RssiPercentageGraphWindow::settingsTree_("RssiPercentageGraphSettings");
-
 RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Percentage (%)",
                       { "" },
                       { UIColours::graphChannel1 },
-                      settingsTree_,
                       true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
