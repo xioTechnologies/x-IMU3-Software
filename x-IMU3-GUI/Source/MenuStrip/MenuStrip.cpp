@@ -24,7 +24,7 @@
 MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
                                                                                                             connectionPanelContainer(connectionPanelContainer_)
 {
-    setWindowLayout({});
+    setWindowLayout(juce::ValueTree::fromXml(previousWindowLayout.loadFileAsString()));
 
     for (const auto& buttonGroup : buttonGroups)
     {
@@ -205,6 +205,11 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         connectionLayoutButton.setEnabled(connectionPanelContainer.getConnectionPanels().size() > 1);
     };
     connectionPanelContainer.onConnectionPanelsSizeChanged();
+}
+
+MenuStrip::~MenuStrip()
+{
+    previousWindowLayout.replaceWithText(windowLayout.toXmlString());
 }
 
 void MenuStrip::paint(juce::Graphics& g)

@@ -17,6 +17,8 @@ class MenuStrip : public juce::Component,
 public:
     MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_);
 
+    ~MenuStrip() override;
+
     void paint(juce::Graphics& g) override;
 
     void resized() override;
@@ -64,6 +66,8 @@ private:
     juce::Time dataLoggerStartTime;
 
     juce::String latestVersion;
+
+    juce::File previousWindowLayout = ApplicationSettings::getDirectory().getChildFile("Previous Windows Layout.xml");
 
     void addDevices(juce::PopupMenu& menu, std::function<void(ConnectionPanel&)> action);
 
