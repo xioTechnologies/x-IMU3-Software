@@ -19,7 +19,7 @@ public:
     void resized() override;
 
 private:
-    DeviceSettings settingsTree;
+    DeviceSettings deviceSettings;
 
     IconButton readAllButton { BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)" };
     IconButton writeAllButton { BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)" };
