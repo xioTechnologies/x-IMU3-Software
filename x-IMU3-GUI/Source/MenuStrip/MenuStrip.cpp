@@ -1,6 +1,6 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanelContainer.h"
-#include "CustomLayouts.h"
+#include "WindowLayouts.h"
 #include "CustomLookAndFeel.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
@@ -437,11 +437,11 @@ juce::PopupMenu MenuStrip::getWindowMenu()
 
                 const auto save = [this, layoutName]
                 {
-                    CustomLayouts().save(layoutName, windowLayout);
+                    WindowLayouts().save(layoutName, windowLayout);
                     return true;
                 };
 
-                if (CustomLayouts().exists(layoutName))
+                if (WindowLayouts().exists(layoutName))
                 {
                     DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
                 }
@@ -454,7 +454,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
         });
     });
 
-    if (const auto layouts = CustomLayouts().load(); layouts.empty() == false)
+    if (const auto layouts = WindowLayouts().load(); layouts.empty() == false)
     {
         arrangeMenu.addSeparator();
         arrangeMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SAVED LAYOUTS"), nullptr);
