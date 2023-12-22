@@ -11,11 +11,10 @@
 #include "Ximu3.hpp"
 
 class ThreeDViewWindow : public Window,
-                         private juce::Timer,
-                         private juce::ValueTree::Listener
+                         private juce::Timer
 {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer, juce::ValueTree settingsTree_);
+    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~ThreeDViewWindow() override;
 
@@ -31,7 +30,6 @@ public:
 
 private:
     ThreeDView threeDView;
-    juce::ValueTree settingsTree;
 
     SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
             rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },

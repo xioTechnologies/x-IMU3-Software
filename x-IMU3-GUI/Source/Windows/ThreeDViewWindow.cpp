@@ -2,10 +2,9 @@
 #include "Convert.h"
 #include "ThreeDViewWindow.h"
 
-ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer, juce::ValueTree settingsTree_)
+ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
-          threeDView(glRenderer),
-          settingsTree(settingsTree_)
+          threeDView(glRenderer)
 {
     addAndMakeVisible(threeDView);
 
@@ -69,7 +68,6 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         magneticRecoveryState = juce::exactlyEqual(message.magnetic_recovery, 0.0f) == false;
     });
 
-    settingsTree.addListener(this);
     threeDView.setSettings(readFromValueTree());
 
     startTimerHz(25);
@@ -391,8 +389,13 @@ void ThreeDViewWindow::timerCallback()
     magneticRecoveryIcon.setIcon(magneticRecoveryState.load() ? BinaryData::magnet_white_svg : BinaryData::magnet_grey_svg);
 }
 
-void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& property)
+void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
 {
+    if (treeWhosePropertyHasChanged != settingsTree)
+    {
+        return;
+    }
+
     if (property.toString() == "eulerAnglesEnabled")
     {
         updateEulerAnglesVisibilities();

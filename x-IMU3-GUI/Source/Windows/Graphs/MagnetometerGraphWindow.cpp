@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "MagnetometerGraphWindow.h"
 
-juce::ValueTree MagnetometerGraphWindow::settingsTree_("MagnetometerGraphSettings");
-
 MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Intensity (a.u.)",
                       { "X", "Y", "Z" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)

@@ -14,8 +14,6 @@ public:
     ~HighGAccelerometerGraphWindow() override;
 
 private:
-    static juce::ValueTree settingsTree_;
-
     std::vector<uint64_t> callbackIDs;
     std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;
 };

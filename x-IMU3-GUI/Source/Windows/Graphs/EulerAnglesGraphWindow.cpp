@@ -4,15 +4,12 @@
 #include "Convert.h"
 #include "EulerAnglesGraphWindow.h"
 
-juce::ValueTree EulerAnglesGraphWindow::settingsTree_("EulerAnglesGraphSettings");
-
 EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
         : GraphWindow(windowLayout, type_, connectionPanel_,
                       glRenderer,
                       "Angle (" + degreeSymbol + ")",
                       { "Roll", "Pitch", "Yaw" },
                       { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      settingsTree_,
                       false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)

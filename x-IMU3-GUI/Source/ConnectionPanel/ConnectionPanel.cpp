@@ -117,8 +117,7 @@ std::shared_ptr<Window> ConnectionPanel::getOrCreateWindow(const juce::ValueTree
     }
     if (type == WindowIDs::ThreeDView)
     {
-        static juce::ValueTree settingsTree("ThreeDViewSettings");
-        return window = std::make_shared<ThreeDViewWindow>(windowLayout, type, *this, glRenderer, settingsTree);
+        return window = std::make_shared<ThreeDViewWindow>(windowLayout, type, *this, glRenderer);
     }
     if (type == WindowIDs::SerialAccessoryTerminal)
     {
