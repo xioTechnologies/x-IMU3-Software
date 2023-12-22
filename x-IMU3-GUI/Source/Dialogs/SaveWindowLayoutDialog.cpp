@@ -11,7 +11,7 @@ SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, 
         setOkButton(nameValue.getText().isNotEmpty() && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText());
     };
 
-    nameValue.setText("Custom Layout", false);
+    nameValue.setText("Window Layout", false);
 
     setSize(dialogWidth, calculateHeight(1));
 }

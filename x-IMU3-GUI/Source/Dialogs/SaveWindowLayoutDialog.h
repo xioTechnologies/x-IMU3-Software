@@ -3,7 +3,7 @@
 #include "AreYouSureDialog.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "MenuStrip/CustomLayouts.h"
+#include "MenuStrip/WindowLayouts.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/SimpleLabel.h"
 
