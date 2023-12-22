@@ -4,7 +4,7 @@
 
 class ApplicationSettings : private juce::DeletedAtShutdown, private juce::ValueTree::Listener
 {
-    juce::ValueTree tree { "Settings" };
+    juce::ValueTree tree { "ApplicationSettings" };
 
 public:
     struct
@@ -56,7 +56,7 @@ public:
     }
 
 private:
-    const juce::File file = getDirectory().getChildFile("Settings.xml");
+    const juce::File file = getDirectory().getChildFile("Application Settings.xml");
 
     ApplicationSettings()
     {
