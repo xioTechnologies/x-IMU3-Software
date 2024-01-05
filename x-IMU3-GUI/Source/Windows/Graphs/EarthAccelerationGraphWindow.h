@@ -9,7 +9,7 @@
 class EarthAccelerationGraphWindow : public GraphWindow
 {
 public:
-    EarthAccelerationGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    EarthAccelerationGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~EarthAccelerationGraphWindow() override;
 

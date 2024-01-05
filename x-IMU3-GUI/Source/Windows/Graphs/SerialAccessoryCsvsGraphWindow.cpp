@@ -4,8 +4,8 @@
 #include "Convert.h"
 #include "SerialAccessoryCsvsGraphWindow.h"
 
-SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, connectionPanel_,
+SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout_, type_, connectionPanel_,
                       glRenderer,
                       "CSV",
                       { "1", "2", "3", "4", "5", "6", "7", "8" },

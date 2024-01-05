@@ -9,7 +9,7 @@
 class RssiPercentageGraphWindow : public GraphWindow
 {
 public:
-    RssiPercentageGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    RssiPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~RssiPercentageGraphWindow() override;
 

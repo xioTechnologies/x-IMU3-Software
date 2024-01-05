@@ -4,8 +4,8 @@
 #include "Convert.h"
 #include "EulerAnglesGraphWindow.h"
 
-EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, connectionPanel_,
+EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout_, type_, connectionPanel_,
                       glRenderer,
                       "Angle (" + degreeSymbol + ")",
                       { "Roll", "Pitch", "Yaw" },

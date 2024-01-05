@@ -4,8 +4,8 @@
 #include "Convert.h"
 #include "GyroscopeGraphWindow.h"
 
-GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, connectionPanel_,
+GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout_, type_, connectionPanel_,
                       glRenderer,
                       "Angular Rate (" + degreeSymbol + "/s)",
                       { "X", "Y", "Z" },
