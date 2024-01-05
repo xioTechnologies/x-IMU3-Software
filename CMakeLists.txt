@@ -1,10 +1,6 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "")
-project(x-IMU3-Software)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
-
-include(FetchContent)
+project(x-IMU3-Software VERSION 1.3.5)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS) # disable MSVC warnings for unsafe functions, e.g. strcpy
 
