@@ -82,7 +82,7 @@ std::vector<std::unique_ptr<ximu3::ConnectionInfo>> RecentConnections::get() con
         if (connectionInfo.hasType("SerialConnectionInfo"))
         {
             result.push_back(std::make_unique<ximu3::SerialConnectionInfo>(connectionInfo["portName"].toString().toStdString(),
-                                                                           (uint32_t)((int) connectionInfo["baudRate"]),
+                                                                           (uint32_t) ((int) connectionInfo["baudRate"]),
                                                                            connectionInfo["rtsCtsEnabled"]));
             continue;
         }
@@ -90,15 +90,15 @@ std::vector<std::unique_ptr<ximu3::ConnectionInfo>> RecentConnections::get() con
         if (connectionInfo.hasType("TcpConnectionInfo"))
         {
             result.push_back(std::make_unique<ximu3::TcpConnectionInfo>(connectionInfo["ipAddress"].toString().toStdString(),
-                                                                        (uint16_t)((int) connectionInfo["port"])));
+                                                                        (uint16_t) ((int) connectionInfo["port"])));
             continue;
         }
 
         if (connectionInfo.hasType("UdpConnectionInfo"))
         {
             result.push_back(std::make_unique<ximu3::UdpConnectionInfo>(connectionInfo["ipAddress"].toString().toStdString(),
-                                                                        (uint16_t)((int) connectionInfo["sendPort"]),
-                                                                        (uint16_t)((int) connectionInfo["receivePort"])));
+                                                                        (uint16_t) ((int) connectionInfo["sendPort"]),
+                                                                        (uint16_t) ((int) connectionInfo["receivePort"])));
             continue;
         }
 

@@ -15,22 +15,27 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     readAllButton.onClick = [this]
     {
-        enableInProgress(deviceSettings.getReadCommands());
+        const auto commands = deviceSettings.getReadCommands();
 
-        connectionPanel.sendCommands(deviceSettings.getReadCommands(), this, [&](const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)
+        enableInProgress(commands);
+
+        connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<CommandMessage>& responses)
         {
-            for (const auto& response : responses)
+            for (const auto& command : commands)
             {
-                deviceSettings.setValue(response);
-                deviceSettings.setStatus(response.key, Setting::Status::normal);
+                const auto response = std::ranges::find(responses, command);
+
+                if (response == responses.end())
+                {
+                    deviceSettings.setStatus(command.key, Setting::Status::readFailed);
+                    continue;
+                }
+
+                deviceSettings.setValue(*response);
+                deviceSettings.setStatus(response->key, Setting::Status::normal);
             }
 
-            for (const auto& failedCommand : failedCommands)
-            {
-                deviceSettings.setStatus(failedCommand.key, Setting::Status::readFailed);
-            }
-
-            readAllButton.setToggleState(failedCommands.empty() == false, juce::dontSendNotification);
+            readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
             disableInProgress();
         });
@@ -43,28 +48,33 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     writeAllButton.onClick = [this]
     {
-        enableInProgress(deviceSettings.getWriteCommands());
+        const auto commands = deviceSettings.getWriteCommands();
 
-        connectionPanel.sendCommands(deviceSettings.getWriteCommands(), this, [&](const auto& responses, const auto& writeFailedCommands)
+        enableInProgress(commands);
+
+        connectionPanel.sendCommands(commands, this, [&, commands](const auto& responses)
         {
-            for (const auto& response : responses)
+            for (const auto& command : commands)
             {
-                deviceSettings.setValue(response);
-                deviceSettings.setStatus(response.key, Setting::Status::normal);
+                const auto response = std::ranges::find(responses, command);
+
+                if (response == responses.end())
+                {
+                    deviceSettings.setStatus(command.key, Setting::Status::writeFailed);
+                    continue;
+                }
+
+                deviceSettings.setValue(*response);
+                deviceSettings.setStatus(response->key, Setting::Status::normal);
             }
 
-            for (const auto& failedCommand : writeFailedCommands)
-            {
-                deviceSettings.setStatus(failedCommand.key, Setting::Status::writeFailed);
-            }
-
-            writeAllButton.setToggleState(writeFailedCommands.empty() == false, juce::dontSendNotification);
+            writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
             disableInProgress();
 
-            connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto&, const auto& saveFailedCommands)
+            connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto& responses_)
             {
-                if (saveFailedCommands.empty() == false)
+                if (responses_.empty())
                 {
                     DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
                     return;
@@ -131,25 +141,25 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             enableInProgress(deviceSettings.getReadCommands());
 
-            connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto&, const auto& defaultFailedCommands)
+            connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto& responses)
             {
-                if (defaultFailedCommands.empty() == false)
+                if (responses.empty())
                 {
                     disableInProgress();
                     DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm default command."));
                     return;
                 }
 
-                connectionPanel.sendCommands({{ "save", {}}}, this, [this](const auto&, const auto& saveFailedCommands)
+                connectionPanel.sendCommands({{ "save", {}}}, this, [this](const auto& responses_)
                 {
-                    if (saveFailedCommands.empty() == false)
+                    if (responses_.empty())
                     {
                         disableInProgress();
                         DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
                         return;
                     }
 
-                    connectionPanel.sendCommands({{ "apply", {}}}, this, [this](const auto&, const auto&)
+                    connectionPanel.sendCommands({{ "apply", {}}}, this, [this](const auto&)
                     {
                         readAllButton.onClick();
                     });

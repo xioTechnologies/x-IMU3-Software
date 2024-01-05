@@ -9,8 +9,8 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::complete, 70, 70, 70);
+    table.getHeader().addColumn("", (int) ColumnIDs::text, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::icon, 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -39,29 +39,33 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             }
 
             row.state = Row::State::inProgress;
+            row.error.clear();
 
-            row.connectionPanel.sendCommands({ command }, this, [&, row = &row](const auto&, const auto& failedCommands)
+            row.connectionPanel.sendCommands({ command }, this, [&, row = &row](const auto& responses)
             {
-                row->state = (failedCommands.empty() == false) ? Row::State::failed : Row::State::complete;
+                if (responses.empty())
+                {
+                    row->error = "Unable to confirm command";
+                }
+                else if (auto* object = responses[0].value.getDynamicObject())
+                {
+                    row->error = object->getProperty("error");
+                }
+                row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
+
                 table.updateContent();
 
-                for (const auto& row_ : rows)
+                if (findRow(Row::State::inProgress))
                 {
-                    if (row_.state == Row::State::inProgress)
-                    {
-                        return;
-                    }
+                    return;
                 }
 
-                for (size_t index = 0; index < rows.size(); index++)
+                if (const auto index = findRow(Row::State::failed))
                 {
-                    if (rows[index].state == Row::State::failed)
-                    {
-                        setOkButton(true);
-                        setCancelButton(true);
-                        table.scrollToEnsureRowIsOnscreen((int) index);
-                        return;
-                    }
+                    setOkButton(true);
+                    setCancelButton(true);
+                    table.scrollToEnsureRowIsOnscreen(*index);
+                    return;
                 }
 
                 okCallback = [&]
@@ -95,6 +99,18 @@ void SendingCommandDialog::resized()
     table.setBounds(getContentBounds(true));
 }
 
+std::optional<int> SendingCommandDialog::findRow(const Row::State state) const
+{
+    for (const auto [index, row] : juce::enumerate(rows))
+    {
+        if (row.state == state)
+        {
+            return (int) index;
+        }
+    }
+    return {};
+}
+
 int SendingCommandDialog::getNumRows()
 {
     return (int) rows.size();
@@ -125,10 +141,36 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::tag:
             return nullptr;
 
-        case ColumnIDs::connection:
-            return new SimpleLabel(rows[(size_t) rowNumber].connectionPanel.getTitle());
+        case ColumnIDs::text:
+            struct Text : juce::Component
+            {
+                Text(const Row& row)
+                        : connectionLabel(row.connectionPanel.getTitle()),
+                          errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
+                {
+                    addAndMakeVisible(connectionLabel);
+                    addAndMakeVisible(errorLabel);
+                    errorLabel.setColour(juce::Label::textColourId, UIColours::warning);
+                }
 
-        case ColumnIDs::complete:
+                void resized() override
+                {
+                    auto bounds = getLocalBounds();
+                    if (errorLabel.getText().isNotEmpty())
+                    {
+                        errorLabel.setBounds(bounds.removeFromRight((int) std::ceil(errorLabel.getTextWidth())));
+                        bounds.removeFromRight(10);
+                    }
+                    connectionLabel.setBounds(bounds);
+                }
+
+                SimpleLabel connectionLabel;
+                SimpleLabel errorLabel;
+            };
+
+            return new Text(rows[(size_t) rowNumber]);
+
+        case ColumnIDs::icon:
             switch (rows[(size_t) rowNumber].state)
             {
                 case Row::State::inProgress:

@@ -89,7 +89,7 @@ struct juce::VariantConverter<uint32_t>
 {
     static uint32_t fromVar(const juce::var& value)
     {
-        return (uint32_t)((int) value);
+        return (uint32_t) ((int) value);
     }
 
     static juce::var toVar(uint32_t value)

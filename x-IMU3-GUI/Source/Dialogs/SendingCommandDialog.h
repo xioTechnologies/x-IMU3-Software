@@ -19,8 +19,8 @@ private:
     enum class ColumnIDs
     {
         tag = 1,
-        connection,
-        complete,
+        text,
+        icon,
     };
 
     struct Row
@@ -34,12 +34,15 @@ private:
 
         ConnectionPanel& connectionPanel;
         State state = State::inProgress;
+        juce::String error {};
     };
 
     juce::TableListBox table { "", this };
     std::vector<Row> rows;
 
     CustomToggleButton closeWhenCompleteButton { "Close When Complete" };
+
+    std::optional<int> findRow(const Row::State state) const;
 
     int getNumRows() override;
 
