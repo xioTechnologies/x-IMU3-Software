@@ -9,7 +9,7 @@
 class GyroscopeGraphWindow : public GraphWindow
 {
 public:
-    GyroscopeGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~GyroscopeGraphWindow() override;
 

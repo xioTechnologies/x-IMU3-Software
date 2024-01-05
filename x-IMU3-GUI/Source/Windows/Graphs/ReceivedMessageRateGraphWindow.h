@@ -9,7 +9,7 @@
 class ReceivedMessageRateGraphWindow : public GraphWindow
 {
 public:
-    ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
 
     ~ReceivedMessageRateGraphWindow() override;
 

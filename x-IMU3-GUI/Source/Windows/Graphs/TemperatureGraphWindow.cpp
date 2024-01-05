@@ -4,8 +4,8 @@
 #include "Convert.h"
 #include "TemperatureGraphWindow.h"
 
-TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, connectionPanel_,
+TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout_, type_, connectionPanel_,
                       glRenderer,
                       "Temperature (" + degreeSymbol + "C)",
                       { "" },

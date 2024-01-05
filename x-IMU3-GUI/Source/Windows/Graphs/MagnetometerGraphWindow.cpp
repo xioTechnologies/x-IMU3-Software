@@ -4,8 +4,8 @@
 #include "Convert.h"
 #include "MagnetometerGraphWindow.h"
 
-MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout, type_, connectionPanel_,
+MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+        : GraphWindow(windowLayout_, type_, connectionPanel_,
                       glRenderer,
                       "Intensity (a.u.)",
                       { "X", "Y", "Z" },
