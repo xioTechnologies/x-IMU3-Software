@@ -1,8 +1,8 @@
-[![Tags](https://img.shields.io/github/v/tag/xioTechnologies/x-IMU3-Software.svg)](https://github.com/xioTechnologies/x-IMU3-Software/tags/)
-[![Build](https://img.shields.io/github/actions/workflow/status/xioTechnologies/x-IMU3-Software/main.yml?branch=main)](https://github.com/xioTechnologies/x-IMU3-Software/actions/workflows/main.yml)
-[![Pypi](https://img.shields.io/pypi/v/ximu3.svg)](https://pypi.org/project/ximu3/)
-[![Python](https://img.shields.io/pypi/pyversions/ximu3.svg)](https://pypi.org/project/ximu3/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![tag](https://img.shields.io/github/v/tag/xioTechnologies/x-IMU3-Software.svg)](https://github.com/xioTechnologies/x-IMU3-Software/tags/)
+[![build](https://img.shields.io/github/actions/workflow/status/xioTechnologies/x-IMU3-Software/main.yml?branch=main)](https://github.com/xioTechnologies/x-IMU3-Software/actions/workflows/main.yml)
+[![pypi](https://img.shields.io/pypi/v/ximu3.svg)](https://pypi.org/project/ximu3/)
+[![python](https://img.shields.io/pypi/pyversions/ximu3.svg)](https://pypi.org/project/ximu3/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # x-IMU3 Software
 
