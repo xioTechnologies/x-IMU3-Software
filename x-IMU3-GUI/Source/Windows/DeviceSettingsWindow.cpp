@@ -2,7 +2,6 @@
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/AreYouSureDialog.h"
 #include "Dialogs/ErrorDialog.h"
-#include <ranges>
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
         : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
@@ -24,7 +23,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             for (const auto& command : commands)
             {
-                const auto response = std::ranges::find(responses, command);
+                const auto response = std::find(responses.begin(), responses.end(), command);
 
                 if (response == responses.end())
                 {
@@ -57,7 +56,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             for (const auto& command : commands)
             {
-                const auto response = std::ranges::find(responses, command);
+                const auto response = std::find(responses.begin(), responses.end(), command);
 
                 if (response == responses.end())
                 {
