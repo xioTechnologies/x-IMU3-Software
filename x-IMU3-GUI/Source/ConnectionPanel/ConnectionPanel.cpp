@@ -71,28 +71,17 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
     return connection;
 }
 
-void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses, const std::vector<CommandMessage>& failedCommands)> callback)
+void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses)> callback)
 {
-    connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [this, commands = commands, callbackOwner, callback](auto responses_)
+    connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [&, callbackOwner, callback](auto responses)
     {
-        const std::vector<CommandMessage> responses(responses_.begin(), responses_.end());
-
-        std::vector<CommandMessage> failedCommands;
-        for (const auto& command : commands)
-        {
-            if (std::find(responses.begin(), responses.end(), command) == responses.end())
-            {
-                failedCommands.push_back(command);
-            }
-        }
-
-        juce::MessageManager::callAsync([&, callbackOwner, callback, responses, failedCommands]
+        juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
                                         {
-                                            header.updateTitle(responses);
+                                            header.updateTitle({ responses.begin(), responses.end() });
 
                                             if (callbackOwner != nullptr && callback != nullptr)
                                             {
-                                                callback(responses, failedCommands);
+                                                callback({ responses.begin(), responses.end() });
                                             }
                                         });
     });
