@@ -158,7 +158,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: python
-          path: wheelhouse/*.whl
+          path: wheelhouse/*
 
   python-publish:
     runs-on: ubuntu-latest
