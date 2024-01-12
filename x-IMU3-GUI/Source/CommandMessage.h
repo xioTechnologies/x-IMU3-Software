@@ -41,7 +41,7 @@ public:
     {
         if (const auto* const object = value.getDynamicObject(); object != nullptr && object->hasProperty("error"))
         {
-            return object->getProperty("error");
+            return object->getProperty("error").toString();
         }
         return {};
     }
