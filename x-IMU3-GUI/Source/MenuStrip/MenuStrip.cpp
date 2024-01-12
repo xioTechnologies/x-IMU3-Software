@@ -47,14 +47,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         {
             if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                const auto connectionInfos = dialog->getConnectionInfos();
-                for (const auto& connectionInfo : connectionInfos)
+                for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
                     connectionPanelContainer.connectToDevice(*connectionInfo);
-                }
-                if (connectionInfos.size() > 1)
-                {
-                    setWindowLayout(juce::ValueTree { WindowIDs::Row, {}, {{ WindowIDs::ThreeDView, {}}, }});
                 }
             }
             return true;
