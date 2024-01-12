@@ -42,6 +42,8 @@ private:
 
     CustomToggleButton closeWhenCompleteButton { "Close When Complete" };
 
+    int sendDelay = 0;
+
     std::optional<int> findRow(const Row::State state) const;
 
     int getNumRows() override;

@@ -176,11 +176,16 @@ void ConnectionPanelHeader::updateTitle(const std::vector<CommandMessage>& respo
 {
     for (const auto& response : responses)
     {
-        if ((CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("deviceName")) && response.value.isString())
+        if (response.getError())
+        {
+            continue;
+        }
+
+        if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("deviceName"))
         {
             updateTitle(response.value, serialNumber);
         }
-        else if ((CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serialNumber")) && response.value.isString())
+        else if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serialNumber"))
         {
             updateTitle(deviceName, response.value);
         }
