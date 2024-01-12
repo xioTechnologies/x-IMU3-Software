@@ -87,7 +87,7 @@ void ConnectionPanelContainer::updateSize()
     {
         case Layout::rows:
         {
-            static constexpr int minimumRowHeight = 100;
+            static constexpr int minimumRowHeight = 175;
             bounds.setHeight(std::max(bounds.getHeight(), (int) connectionPanels.size() * minimumRowHeight + (int) connectionPanels.size() * UILayout::panelMargin));
             break;
         }
