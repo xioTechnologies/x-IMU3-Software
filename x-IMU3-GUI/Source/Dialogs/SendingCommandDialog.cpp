@@ -41,43 +41,48 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             row.state = Row::State::inProgress;
             row.error.clear();
 
-            row.connectionPanel.sendCommands({ command }, this, [&, row = &row](const auto& responses)
+            juce::Timer::callAfterDelay(sendDelay, [&, row = &row]
             {
-                if (responses.empty())
+                row->connectionPanel.sendCommands({ command }, this, [&, row](const auto& responses)
                 {
-                    row->error = "Unable to confirm command";
-                }
-                else if (const auto error = responses[0].getError())
-                {
-                    row->error = *error;
-                }
-                row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
+                    if (responses.empty())
+                    {
+                        row->error = "Unable to confirm command";
+                    }
+                    else if (const auto error = responses[0].getError())
+                    {
+                        row->error = *error;
+                    }
+                    row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
 
-                table.updateContent();
+                    table.updateContent();
 
-                if (findRow(Row::State::inProgress))
-                {
-                    return;
-                }
+                    if (findRow(Row::State::inProgress))
+                    {
+                        return;
+                    }
 
-                if (const auto index = findRow(Row::State::failed))
-                {
-                    setOkButton(true);
-                    setCancelButton(true);
-                    table.scrollToEnsureRowIsOnscreen(*index);
-                    return;
-                }
+                    if (const auto index = findRow(Row::State::failed))
+                    {
+                        setOkButton(true);
+                        setCancelButton(true);
+                        table.scrollToEnsureRowIsOnscreen(*index);
+                        return;
+                    }
 
-                okCallback = [&]
-                {
-                    return true;
-                };
-                setOkButton(true, "Close");
-                setCancelButton(false);
+                    okCallback = [&]
+                    {
+                        return true;
+                    };
+                    setOkButton(true, "Close");
+                    setCancelButton(false);
 
-                startTimer(1000);
+                    startTimer(1000);
+                });
             });
         }
+
+        sendDelay = 250; // delay retry sends to improve UX
 
         setOkButton(false);
         setCancelButton(false);
