@@ -25,7 +25,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 const auto response = std::find(responses.begin(), responses.end(), command);
 
-                if (response == responses.end())
+                if (response == responses.end() || response->getError())
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::readFailed);
                     continue;
@@ -58,7 +58,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 const auto response = std::find(responses.begin(), responses.end(), command);
 
-                if (response == responses.end())
+                if (response == responses.end() || response->getError())
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::writeFailed);
                     continue;

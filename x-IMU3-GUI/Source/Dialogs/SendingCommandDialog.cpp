@@ -47,9 +47,9 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                 {
                     row->error = "Unable to confirm command";
                 }
-                else if (auto* object = responses[0].value.getDynamicObject())
+                else if (const auto error = responses[0].getError())
                 {
-                    row->error = object->getProperty("error");
+                    row->error = *error;
                 }
                 row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
 
