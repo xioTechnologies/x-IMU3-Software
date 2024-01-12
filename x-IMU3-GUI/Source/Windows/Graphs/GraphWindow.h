@@ -5,7 +5,7 @@
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
 
-class GraphWindow : public Window
+class GraphWindow : public Window, private juce::AsyncUpdater
 {
 public:
     GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_,
@@ -66,4 +66,6 @@ private:
     juce::PopupMenu getMenu() override;
 
     void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
+
+    void handleAsyncUpdate() override;
 };

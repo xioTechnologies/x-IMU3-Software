@@ -168,10 +168,6 @@ void GraphWindow::writeToValueTree(const Graph::Settings& settings)
     settingsTree.setProperty("axesLimitsYMax", settings.axesLimits.y.max, nullptr);
     settingsTree.setProperty("horizontalAutoscale", settings.horizontalAutoscale, nullptr);
     settingsTree.setProperty("verticalAutoscale", settings.verticalAutoscale, nullptr);
-    for (int index = 0; index < numberOfChannels; index++)
-    {
-        settingsTree.setProperty("enabledChannels" + juce::String(index), false, nullptr);
-    }
     for (size_t index = 0; index < settings.enabledChannels.size(); index++)
     {
         settingsTree.setProperty("enabledChannels" + juce::String(index), (bool) settings.enabledChannels[index], nullptr);
@@ -373,5 +369,10 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHas
         repaint();
     }
 
+    triggerAsyncUpdate();
+}
+
+void GraphWindow::handleAsyncUpdate()
+{
     graph.setSettings(readFromValueTree());
 }
