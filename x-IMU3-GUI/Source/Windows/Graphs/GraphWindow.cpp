@@ -373,5 +373,10 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHas
         repaint();
     }
 
+    triggerAsyncUpdate();
+}
+
+void GraphWindow::handleAsyncUpdate()
+{
     graph.setSettings(readFromValueTree());
 }
