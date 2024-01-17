@@ -4,25 +4,26 @@
 
 namespace UIColours
 {
-    static const juce::Colour backgroundDarkest = juce::Colour::fromRGB(30, 30, 30);
-    static const juce::Colour backgroundDark = juce::Colour::fromRGB(37, 37, 38);
-    static const juce::Colour backgroundLight = juce::Colour::fromRGB(45, 45, 48);
-    static const juce::Colour backgroundLightest = juce::Colour::fromRGB(62, 62, 66);
-    static const juce::Colour foreground = juce::Colour::fromRGB(228, 228, 228);
-    static const juce::Colour highlight = juce::Colour::fromRGB(61, 138, 154);
-    static const juce::Colour warning = juce::Colour::fromRGB(247, 181, 0);
+    static const juce::Colour backgroundDarkest = juce::Colour(0xFF1E1E1E);
+    static const juce::Colour backgroundDark = juce::Colour(0xFF252526);
+    static const juce::Colour backgroundLight = juce::Colour(0xFF2D2D30);
+    static const juce::Colour backgroundLightest = juce::Colour(0xFF3E3E42);
+    static const juce::Colour foreground = juce::Colour(0xFFE4E4E4);
+    static const juce::Colour highlight = juce::Colour(0xFF3D8A9A);
+    static const juce::Colour warning = juce::Colour(0xFFF7B500);
+    static const juce::Colour error = juce::Colour(0xFFEF5350);
 
-    static const juce::Colour graphX = juce::Colour::fromRGB(224, 32, 32);
-    static const juce::Colour graphY = juce::Colour::fromRGB(109, 212, 0);
-    static const juce::Colour graphZ = juce::Colour::fromRGB(50, 197, 255);
-    static const juce::Colour graphChannel1 = juce::Colour::fromRGB(255, 255, 0);
-    static const juce::Colour graphChannel2 = juce::Colour::fromRGB(254, 106, 188);
-    static const juce::Colour graphChannel3 = juce::Colour::fromRGB(215, 255, 217);
-    static const juce::Colour graphChannel4 = juce::Colour::fromRGB(132, 129, 255);
-    static const juce::Colour graphChannel5 = juce::Colour::fromRGB(2, 255, 255);
-    static const juce::Colour graphChannel6 = juce::Colour::fromRGB(2, 193, 0);
-    static const juce::Colour graphChannel7 = juce::Colour::fromRGB(254, 0, 0);
-    static const juce::Colour graphChannel8 = juce::Colour::fromRGB(255, 128, 0);
+    static const juce::Colour graphX = juce::Colour(0xFFE02020);
+    static const juce::Colour graphY = juce::Colour(0xFF6DD400);
+    static const juce::Colour graphZ = juce::Colour(0xFF32C5FF);
+    static const juce::Colour graphChannel1 = juce::Colour(0xFFFFFF00);
+    static const juce::Colour graphChannel2 = juce::Colour(0xFFFE6ABC);
+    static const juce::Colour graphChannel3 = juce::Colour(0xFFD7FFD9);
+    static const juce::Colour graphChannel4 = juce::Colour(0xFF8481FF);
+    static const juce::Colour graphChannel5 = juce::Colour(0xFF02FFFF);
+    static const juce::Colour graphChannel6 = juce::Colour(0xFF02C100);
+    static const juce::Colour graphChannel7 = juce::Colour(0xFFFE0000);
+    static const juce::Colour graphChannel8 = juce::Colour(0xFFFF8000);
 
     static const std::vector<juce::Colour> tags =
             {

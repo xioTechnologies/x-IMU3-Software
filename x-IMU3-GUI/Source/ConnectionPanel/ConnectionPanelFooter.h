@@ -27,7 +27,7 @@ private:
     SimpleLabel latestMessageLabel { "", UIFonts::getSmallFont(), juce::Justification::centredRight };
 
     IconButton notificationsButton { BinaryData::speech_grey_svg, "Notification Messages", nullptr, false, BinaryData::speech_white_svg };
-    IconButton errorsButton { BinaryData::warning_grey_svg, "Error Messages", nullptr, false, BinaryData::warning_orange_svg };
+    IconButton errorsButton { BinaryData::error_grey_svg, "Error Messages", nullptr, false, BinaryData::error_red_svg };
     SimpleLabel numberOfNotificationsLabel { "0", UIFonts::getSmallFont(), juce::Justification::right };
     SimpleLabel numberOfErrorsLabel { "0", UIFonts::getSmallFont(), juce::Justification::right };
 
