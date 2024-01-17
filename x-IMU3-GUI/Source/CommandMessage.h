@@ -50,4 +50,7 @@ public:
     {
         return std::regex_replace(key.toLowerCase().toStdString(), std::regex("[^0-9a-z]"), "");
     }
+
+private:
+    JUCE_LEAK_DETECTOR(CommandMessage)
 };

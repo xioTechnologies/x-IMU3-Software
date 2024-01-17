@@ -57,6 +57,7 @@ private:
 
     private:
         FT_Library freetypeLibrary = nullptr;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FreeTypeLibrary)
     };
 

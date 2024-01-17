@@ -147,8 +147,9 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             return nullptr;
 
         case ColumnIDs::text:
-            struct Text : juce::Component
+            class Text : public juce::Component
             {
+            public:
                 Text(const Row& row)
                         : connectionLabel(row.connectionPanel.getTitle()),
                           errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
@@ -171,6 +172,9 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
                 SimpleLabel connectionLabel;
                 SimpleLabel errorLabel;
+
+            private:
+                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Text)
             };
 
             return new Text(rows[(size_t) rowNumber]);

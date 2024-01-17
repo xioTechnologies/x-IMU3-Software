@@ -32,4 +32,6 @@ private:
 
     juce::Rectangle<float> imageBounds;
     juce::Rectangle<float> popupArrowBounds;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IconButton)
 };

@@ -31,4 +31,6 @@ private:
     SimpleLabel expectedFirmwareVersionValue { Firmware::version };
 
     IconButton sourceCodeButton { BinaryData::github_svg, "Source Code" };
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AboutDialog)
 };
