@@ -43,12 +43,12 @@ void Graph::render()
         static constexpr auto xTickMargin = 2;
         static constexpr auto yTickMargin = 5;
 
-        auto xTicksBounds = bounds.removeFromBottom(resources->getGraphTickText().getFontSizeJucePixels() + 1); // font height
+        auto xTicksBounds = bounds.removeFromBottom(renderer.getResources().getGraphTickText().getFontSizeJucePixels() + 1); // font height
         bounds.removeFromBottom(xTickMargin);
 
         const auto yTicks = createTicks(bounds.getHeight(), settings.axesLimits.y);
 
-        const auto yTicksWidth = getMaximumStringWidth(yTicks, resources->getGraphTickText());
+        const auto yTicksWidth = getMaximumStringWidth(yTicks, renderer.getResources().getGraphTickText());
         const auto yTicksBounds = bounds.removeFromLeft(yTicksWidth);
         bounds.removeFromLeft(yTickMargin);
 
@@ -188,8 +188,8 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
     // Draw lines
     GLHelpers::ScopedCapability _(juce::gl::GL_LINE_SMOOTH, false); // provides sharper horizontal/vertical lines
 
-    resources->graphGridShader.use();
-    auto& gridBuffer = resources->graphGridBuffer;
+    renderer.getResources().graphGridShader.use();
+    auto& gridBuffer = renderer.getResources().graphGridBuffer;
     gridBuffer.fillBuffers(lines);
     gridBuffer.draw(juce::gl::GL_LINES);
 }
@@ -202,8 +202,8 @@ void Graph::drawData(const AxesLimits& limits, const std::vector<std::span<const
         return;
     }
 
-    const auto& graphDataShader = resources->graphDataShader;
-    auto& graphDataBuffer = resources->graphDataBuffer;
+    const auto& graphDataShader = renderer.getResources().graphDataShader;
+    auto& graphDataBuffer = renderer.getResources().graphDataBuffer;
     graphDataShader.use();
     graphDataShader.axisLimitsRange.set({ limits.x.getRange(), limits.y.getRange() });
     graphDataShader.axisLimitsMin.set({ limits.x.min, limits.y.min });
@@ -243,7 +243,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
     GLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
     GLHelpers::viewportAndScissor(glDrawBounds);
 
-    const auto& text = resources->getGraphTickText();
+    const auto& text = renderer.getResources().getGraphTickText();
     const int distanceOfPlotAxis = isXTicks ? glPlotBounds.getWidth() : glPlotBounds.getHeight();
     const int plotStartOffset = isXTicks ? (glPlotBounds.getX() - glDrawBounds.getX()) : (glPlotBounds.getY() - glDrawBounds.getY());
 
@@ -311,6 +311,6 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
         const auto offsetTowardsAxis = isXTicks ? (float) (glDrawBounds.getHeight() - (int) text.getFontSizeGLPixels()) : (float) glDrawBounds.getWidth();
         const auto positionRelative = isXTicks ? glm::vec2(offsetAlongAxis, offsetTowardsAxis) : glm::vec2(offsetTowardsAxis, offsetAlongAxis);
         const auto screenPosition = positionRelative + glm::vec2(glDrawBounds.getX(), glDrawBounds.getY());
-        text.draw(resources, tick.label, juce::Colours::grey, isXTicks ? juce::Justification::horizontallyCentred : juce::Justification::centredRight, screenPosition, glDrawBounds);
+        text.draw(renderer.getResources(), tick.label, juce::Colours::grey, isXTicks ? juce::Justification::horizontallyCentred : juce::Justification::centredRight, screenPosition, glDrawBounds);
     }
 }
