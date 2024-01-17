@@ -11,6 +11,7 @@ namespace UIColours
     static const juce::Colour foreground = juce::Colour::fromRGB(228, 228, 228);
     static const juce::Colour highlight = juce::Colour::fromRGB(61, 138, 154);
     static const juce::Colour warning = juce::Colour::fromRGB(247, 181, 0);
+    static const juce::Colour error = juce::Colour::fromRGB(239, 83, 80);
 
     static const juce::Colour graphX = juce::Colour::fromRGB(224, 32, 32);
     static const juce::Colour graphY = juce::Colour::fromRGB(109, 212, 0);

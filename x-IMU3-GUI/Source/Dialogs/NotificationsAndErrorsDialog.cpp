@@ -10,7 +10,7 @@ juce::String NotificationsAndErrorsDialog::Message::getIcon() const
         case Message::Type::notification:
             return unread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg;
         case Message::Type::error:
-            return unread ? BinaryData::warning_orange_svg : BinaryData::warning_grey_svg;
+            return unread ? BinaryData::error_red_svg : BinaryData::error_grey_svg;
     }
     return {}; // avoid compiler warning
 }
@@ -34,7 +34,7 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
         case Message::Type::notification:
             return UIColours::foreground;
         case Message::Type::error:
-            return UIColours::warning;
+            return UIColours::error;
     }
     return {}; // avoid compiler warning
 }
