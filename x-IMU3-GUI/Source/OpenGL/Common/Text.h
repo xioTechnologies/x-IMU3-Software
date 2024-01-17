@@ -29,9 +29,9 @@ public:
 
     float getStringWidthJucePixels(const juce::String& string) const;
 
-    void draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
+    void draw(GLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
 
-    void drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const;
+    void drawChar3D(GLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const;
 
     static int toGLPixels(int jucePixels);
 

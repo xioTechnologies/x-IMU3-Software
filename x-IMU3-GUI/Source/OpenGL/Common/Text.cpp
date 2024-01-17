@@ -116,7 +116,7 @@ float Text::getStringWidthJucePixels(const juce::String& string) const
     return (float) ((double) getStringWidthGLPixels(string) / (context ? context->getRenderingScale() : 1.0));
 }
 
-void Text::draw(GLResources* const resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
+void Text::draw(GLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
 {
     if (justification.testFlags(juce::Justification::horizontallyCentred))
     {
@@ -135,7 +135,7 @@ void Text::draw(GLResources* const resources, const juce::String& text, const ju
 
     const auto projection = glm::ortho((float) viewport.getX(), (float) viewport.getRight(), (float) viewport.getY(), (float) viewport.getY() + (float) viewport.getHeight());
 
-    const auto& textShader = resources->textShader;
+    const auto& textShader = resources.textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
     auto textOrigin = screenPosition;
@@ -154,13 +154,13 @@ void Text::draw(GLResources* const resources, const juce::String& text, const ju
         const auto transform = projection * translation * scale;
         textShader.transform.set(transform);
         textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
-        resources->textQuad.draw();
+        resources.textQuad.draw();
 
         textOrigin.x += glyph.advance; // move origin to next character
     }
 }
 
-void Text::drawChar3D(GLResources* const resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
+void Text::drawChar3D(GLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
 {
     auto glyphSearch = glyphs.find(character);
     if (glyphSearch == glyphs.end())
@@ -174,7 +174,7 @@ void Text::drawChar3D(GLResources* const resources, unsigned char character, con
     const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
     const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
-    const auto& textShader = resources->textShader;
+    const auto& textShader = resources.textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
 
@@ -183,7 +183,7 @@ void Text::drawChar3D(GLResources* const resources, unsigned char character, con
     const auto ndcTransform = ndcMatrix * scale;
     textShader.transform.set(ndcTransform);
     textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
-    resources->textQuad.draw();
+    resources.textQuad.draw();
 }
 
 int Text::toGLPixels(int jucePixels)
