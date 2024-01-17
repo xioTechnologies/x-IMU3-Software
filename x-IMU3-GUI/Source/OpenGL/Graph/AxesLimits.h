@@ -2,9 +2,8 @@
 
 #include <span>
 
-class AxisLimits
+struct AxisLimits
 {
-public:
     static constexpr auto maxValue = 1e15f;
     static constexpr auto minValue = -maxValue;
 
@@ -37,25 +36,19 @@ public:
     }
 };
 
-class AxesLimits
+struct AxesLimits
 {
-public:
-    AxisLimits x;
-    AxisLimits y;
+    AxisLimits x
+            {
+                    -5.0f,
+                    0.0f
+            };
 
-    AxesLimits()
-    {
-        setDefault();
-    }
-
-    void setDefault()
-    {
-        x.min = -5.0f;
-        x.max = 0.0f;
-
-        y.min = -1.0f;
-        y.max = 1.0f;
-    }
+    AxisLimits y
+            {
+                    -1.0f,
+                    1.0f
+            };
 
     void autoscale(const bool horizontal, const bool vertical, const std::vector<std::span<const juce::Point<GLfloat>>>& channels, const std::vector<bool>& enabledChannels)
     {

@@ -216,6 +216,9 @@ namespace GLHelpers
 
         GLenum capability;
         GLboolean wasEnabled;
+
+    private:
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScopedCapability)
     };
 
     static inline void viewport(const juce::Rectangle<int>& bounds)

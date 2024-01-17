@@ -64,6 +64,8 @@ public:
         return *singleton;
     }
 
+    DialogQueue() = default;
+
     Dialog* getActive();
 
     void pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
@@ -75,4 +77,6 @@ public:
 private:
     std::unique_ptr<juce::DialogWindow> active;
     std::list<std::unique_ptr<Dialog>> queue;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogQueue)
 };

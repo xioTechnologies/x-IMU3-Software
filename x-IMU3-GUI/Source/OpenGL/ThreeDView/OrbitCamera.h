@@ -83,7 +83,6 @@ public:
     float farClip = 1000.0f;
 
 private:
-
     void setViewportAndAspectRatio(const juce::Rectangle<GLint> viewport_)
     {
         viewport = viewport_;
