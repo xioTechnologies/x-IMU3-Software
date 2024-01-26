@@ -22,9 +22,9 @@ public:
         text.setBounds(bounds);
     }
 
-    void update(const juce::String& icon_, const juce::String& text_)
+    void update(const juce::String& icon_, const juce::String& text_, const juce::String& textVerbose)
     {
-        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), icon_, text_]
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), icon_, text_, textVerbose]
                                         {
                                             if (self == nullptr)
                                             {
@@ -32,7 +32,7 @@ public:
                                             }
 
                                             icon.setIcon(icon_);
-                                            setText(text_);
+                                            setText(text_, textVerbose);
                                             startTimer(3000);
                                         });
     }
@@ -50,10 +50,10 @@ private:
     Icon icon;
     SimpleLabel text;
 
-    void setText(const juce::String& text_)
+    void setText(const juce::String& text_, const juce::String& textVerbose)
     {
         const auto resizeParent = text.getText().isEmpty() || text_.isEmpty();
-        icon.setTooltip(tooltip + " (" + (text_.isEmpty() ? "Unavailable" : text_) + ")");
+        icon.setTooltip(tooltip + " (" + (textVerbose.isEmpty() ? "Unavailable" : textVerbose) + ")");
         text.setText(text_);
         if (resizeParent && getParentComponent() != nullptr)
         {
@@ -64,7 +64,7 @@ private:
     void timerCallback() override
     {
         icon.setIcon(unknownIcon);
-        setText("");
+        setText("", "");
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StatusIcon)
