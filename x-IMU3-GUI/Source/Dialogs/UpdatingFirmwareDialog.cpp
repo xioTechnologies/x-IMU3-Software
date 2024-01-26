@@ -2,6 +2,7 @@
 #include "CommandMessage.h"
 #include "ErrorDialog.h"
 #include "Firmware/Firmware.h"
+#include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
@@ -18,12 +19,16 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
 
     juce::Thread::launch([&]
                          {
-                             const auto showError = [&](const auto error)
+                             const auto showError = [&](const juce::String& error, const bool tryAgain = true)
                              {
-                                 juce::MessageManager::callAsync([&, error]
+                                 juce::MessageManager::callAsync([&, error, tryAgain]
                                                                  {
-                                                                     DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>(error));
+                                                                     DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>(error + (tryAgain ? " Please try again." : "")));
                                                                      DialogQueue::getSingleton().pop();
+                                                                     if (tryAgain)
+                                                                     {
+                                                                         UpdateFirmwareDialog::launch();
+                                                                     }
                                                                  });
                              };
 
@@ -59,7 +64,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                              const auto hardwareIsV2 = hardwareVersion.startsWith("v2.");
                              if (firmwareIsV2 != hardwareIsV2)
                              {
-                                 showError("The detected " + hardwareVersion + " hardware is " + (firmwareIsV2 ? "not" : "only") + " compatible with v2.x.x firmware.");
+                                 showError("The detected " + hardwareVersion + " hardware is " + (firmwareIsV2 ? "not" : "only") + " compatible with v2.x.x firmware.", false);
                                  return;
                              }
 
