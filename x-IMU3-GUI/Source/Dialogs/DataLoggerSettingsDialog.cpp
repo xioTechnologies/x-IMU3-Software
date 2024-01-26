@@ -8,7 +8,6 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     addAndMakeVisible(directoryButton);
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
-    addAndMakeVisible(appendDateAndTimeToggle);
     addAndMakeVisible(timeLabel);
     addAndMakeVisible(timeValue);
     addAndMakeVisible(timeUnit);
@@ -23,15 +22,15 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     };
 
     directoryValue.setText(settings.directory, false);
-    nameValue.setText(settings.name, false);
-    appendDateAndTimeToggle.setToggleState(settings.appendDateAndTime, juce::dontSendNotification);
+    nameValue.setTextToShowWhenEmpty("Logged Data " + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S"), juce::Colours::grey);
+    nameValue.setText(settings.nameEmpty ? "" : settings.name, false);
     timeValue.setText(juce::String(settings.timeValue), false);
     timeUnit.addItemList({ "Unlimited", "Hours", "Minutes", "Seconds" }, 1);
     timeUnit.setSelectedItemIndex(static_cast<int>(settings.timeUnit), juce::dontSendNotification);
 
     directoryValue.onTextChange = nameValue.onTextChange = [&]
     {
-        setOkButton(std::filesystem::exists(directoryValue.getText().toStdString()) && nameValue.getText().isNotEmpty());
+        setOkButton(std::filesystem::exists(directoryValue.getText().toStdString()));
     };
     directoryValue.onTextChange();
 
@@ -60,8 +59,6 @@ void DataLoggerSettingsDialog::resized()
     auto nameRow = bounds.removeFromTop(UILayout::textComponentHeight);
     nameLabel.setBounds(nameRow.removeFromLeft(columnWidth));
     nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth + margin));
-    nameRow.removeFromLeft(margin);
-    appendDateAndTimeToggle.setBounds(nameRow);
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -76,8 +73,8 @@ DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
 {
     Settings settings;
     settings.directory = directoryValue.getText();
-    settings.name = nameValue.getText();
-    settings.appendDateAndTime = appendDateAndTimeToggle.getToggleState();
+    settings.name = nameValue.getText().isNotEmpty() ? nameValue.getText() : nameValue.getTextToShowWhenEmpty();
+    settings.nameEmpty = nameValue.getText().isEmpty();
     settings.timeValue = timeValue.getText().getFloatValue();
     settings.timeUnit = static_cast<Settings::TimeUnit>(timeUnit.getSelectedItemIndex());
     return settings;

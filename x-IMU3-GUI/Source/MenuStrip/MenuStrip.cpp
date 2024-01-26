@@ -107,10 +107,6 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
                 dataLoggerSettings = dialog->getSettings();
 
                 dataLoggerName = dataLoggerSettings.name;
-                if (dataLoggerSettings.appendDateAndTime)
-                {
-                    dataLoggerName += juce::Time::getCurrentTime().formatted(" %Y-%m-%d %H-%M-%S");
-                }
 
                 const auto startDataLogger = [&]
                 {

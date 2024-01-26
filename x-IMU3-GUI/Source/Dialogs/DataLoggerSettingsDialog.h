@@ -16,8 +16,8 @@ public:
     struct Settings
     {
         juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
-        juce::String name = "Logged Data";
-        bool appendDateAndTime = true;
+        juce::String name;
+        bool nameEmpty = true;
         float timeValue = 10.0f;
         enum class TimeUnit
         {
@@ -57,7 +57,6 @@ private:
     IconButton directoryButton { BinaryData::open_svg, "Select Directory" };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
-    CustomToggleButton appendDateAndTimeToggle { "Append Date and Time" };
     SimpleLabel timeLabel { "Time:" };
     CustomTextEditor timeValue;
     CustomComboBox timeUnit;
