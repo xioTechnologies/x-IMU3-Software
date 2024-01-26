@@ -587,30 +587,18 @@ juce::PopupMenu MenuStrip::getToolsMenu()
     });
     menu.addItem("Update Firmware", [&]
     {
-        const auto launchUpdateFirmwareDialog = []
-        {
-            DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), []
-            {
-                if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
-                {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile()));
-                }
-                return true;
-            });
-        };
-
         if (connectionPanelContainer.getConnectionPanels().size() > 0)
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&, launchUpdateFirmwareDialog]
+            DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&]
             {
                 disconnect(nullptr);
-                launchUpdateFirmwareDialog();
+                UpdateFirmwareDialog::launch();
                 return true;
             });
             return;
         }
 
-        launchUpdateFirmwareDialog();
+        UpdateFirmwareDialog::launch();
     });
     return menu;
 }

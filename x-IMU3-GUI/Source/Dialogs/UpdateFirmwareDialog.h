@@ -18,6 +18,8 @@ public:
 
     juce::File getHexFile() const;
 
+    static void launch();
+
 private:
     std::vector<ximu3::XIMU3_Device> devices;
     ximu3::PortScanner portScanner {

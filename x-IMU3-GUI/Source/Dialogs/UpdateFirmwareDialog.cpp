@@ -2,6 +2,7 @@
 #include <filesystem>
 #include "Firmware/Firmware.h"
 #include "UpdateFirmwareDialog.h"
+#include "UpdatingFirmwareDialog.h"
 
 UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update")
 {
@@ -78,4 +79,16 @@ std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo()
 juce::File UpdateFirmwareDialog::getHexFile() const
 {
     return hexFileValue.getText();
+}
+
+void UpdateFirmwareDialog::launch()
+{
+    DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), []
+    {
+        if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
+        {
+            DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile()));
+        }
+        return true;
+    });
 }
