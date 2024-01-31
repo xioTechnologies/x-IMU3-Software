@@ -12,13 +12,13 @@ build = "build.rs"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-crossbeam = "0.8.2"
-libc = "0.2.150"
+crossbeam = "0.8.3"
+libc = "0.2.151"
 regex = "1.10.2"
 scan_fmt = "0.2.6"
-serde = { version = "1.0.193", features = ["derive"] } # derive required by flutter_rust_bridge
-serde_json = "1.0.108"
-serialport = "4.2.2"
+serde = "1.0.194"
+serde_json = "1.0.111"
+serialport = "4.3.0"
 
 [build-dependencies]
 cbindgen = "0.26.0"
