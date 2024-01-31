@@ -165,11 +165,11 @@ void SerialAccessoryTerminalWindow::loadRecents()
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
     juce::PopupMenu menu = Window::getMenu();
-    menu.addItem("Copy To Clipboard", [&]
+    menu.addItem("Copy to Clipboard", [&]
     {
         serialAccessoryTerminal.copyToClipboard();
     });
-    menu.addItem("Clear All", [&]
+    menu.addItem("Clear", [&]
     {
         serialAccessoryTerminal.clearAll();
     });

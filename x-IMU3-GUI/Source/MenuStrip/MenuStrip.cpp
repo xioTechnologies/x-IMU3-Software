@@ -411,7 +411,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     };
 
     juce::PopupMenu arrangeMenu;
-    arrangeMenu.addItem("Default", [&]
+    arrangeMenu.addItem("Default Layout", [&]
     {
         setWindowLayout({});
     });

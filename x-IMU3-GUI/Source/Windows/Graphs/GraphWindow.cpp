@@ -220,12 +220,12 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [this]
     {
-        settingsTree.removeProperty("paused", nullptr);
-
-        Graph::Settings settings;
-        settings.horizontalAutoscale = defaultHorizontalAutoscale;
-        settings.enabledChannels.resize((size_t) numberOfChannels, true);
-        writeToValueTree(settings);
+        const auto size = settingsTree.getProperty(WindowIDs::size);
+        settingsTree.removeAllProperties(nullptr);
+        if (size.isVoid() == false)
+        {
+            settingsTree.setProperty(WindowIDs::size, size, nullptr);
+        }
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
     {

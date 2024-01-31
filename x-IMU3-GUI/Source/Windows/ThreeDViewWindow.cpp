@@ -242,7 +242,12 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [&]
     {
+        const auto size = settingsTree.getProperty(WindowIDs::size);
         settingsTree.removeAllProperties(nullptr);
+        if (size.isVoid() == false)
+        {
+            settingsTree.setProperty(WindowIDs::size, size, nullptr);
+        }
     });
 
     menu.addSeparator();
