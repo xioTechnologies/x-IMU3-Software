@@ -42,6 +42,7 @@ private:
         connection,
         rssi,
         battery,
+        margin,
     };
 
     std::vector<Row> rows;

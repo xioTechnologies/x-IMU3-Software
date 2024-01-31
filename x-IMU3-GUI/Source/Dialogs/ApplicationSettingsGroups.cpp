@@ -11,7 +11,7 @@ juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const
     return getLocalBounds().reduced(10, verticalMargin).withTrimmedTop(topExtraMargin);
 }
 
-SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGroup("Search for Connections", 2)
+AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 2)
 {
     addAndMakeVisible(showOnStartupToggle);
     addAndMakeVisible(usbToggle);
@@ -22,43 +22,43 @@ SearchForConnectionsGroup::SearchForConnectionsGroup() : ApplicationSettingsGrou
 
     showOnStartupToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.showOnStartup = showOnStartupToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.showOnStartup = showOnStartupToggle.getToggleState();
     };
 
     usbToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.usb = usbToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.usb = usbToggle.getToggleState();
     };
 
     serialToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.serial = serialToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.serial = serialToggle.getToggleState();
     };
 
     tcpToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.tcp = tcpToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.tcp = tcpToggle.getToggleState();
     };
 
     udpToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.udp = udpToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.udp = udpToggle.getToggleState();
     };
 
     bluetoothToggle.onClick = [this]
     {
-        ApplicationSettings::getSingleton().searchForConnections.bluetooth = bluetoothToggle.getToggleState();
+        ApplicationSettings::getSingleton().availableConnections.bluetooth = bluetoothToggle.getToggleState();
     };
 
-    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.showOnStartup, juce::dontSendNotification);
-    usbToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.usb, juce::dontSendNotification);
-    serialToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.serial, juce::dontSendNotification);
-    tcpToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.tcp, juce::dontSendNotification);
-    udpToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.udp, juce::dontSendNotification);
-    bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().searchForConnections.bluetooth, juce::dontSendNotification);
+    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.showOnStartup, juce::dontSendNotification);
+    usbToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.usb, juce::dontSendNotification);
+    serialToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.serial, juce::dontSendNotification);
+    tcpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.tcp, juce::dontSendNotification);
+    udpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.udp, juce::dontSendNotification);
+    bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.bluetooth, juce::dontSendNotification);
 }
 
-void SearchForConnectionsGroup::resized()
+void AvailableConnectionsGroup::resized()
 {
     auto bounds = getContentBounds();
 
