@@ -22,7 +22,7 @@ void IconButton::paint(juce::Graphics& g)
 {
     juce::DrawableButton::paint(g);
 
-    if (popupArrow != nullptr)
+    if (popupArrow != nullptr && popupArrowBounds.isEmpty() == false)
     {
         popupArrow->drawWithin(g, popupArrowBounds, juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.4f);
     }

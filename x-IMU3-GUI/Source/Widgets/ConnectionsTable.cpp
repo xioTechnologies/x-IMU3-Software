@@ -1,11 +1,11 @@
 #include "ConnectionsTable.h"
 #include "CustomLookAndFeel.h"
+#include "Widgets/Icon.h"
 
 ConnectionsTable::ConnectionsTable()
 {
     addAndMakeVisible(selectAllButton);
-    addAndMakeVisible(deviceLabel);
-    addAndMakeVisible(connectionLabel);
+    addAndMakeVisible(selectAllLabel);
     addAndMakeVisible(table);
     addAndMakeVisible(noConnectionsFoundLabel);
 
@@ -25,6 +25,8 @@ ConnectionsTable::ConnectionsTable()
     table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
     table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 140);
+    table.getHeader().addColumn("", (int) ColumnIDs::rssi, 25, 25, 25);
+    table.getHeader().addColumn("", (int) ColumnIDs::battery, 25,25, 25);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -37,8 +39,7 @@ void ConnectionsTable::resized()
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    deviceLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
-    connectionLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::connection - 1).withHeight(headerHeight));
+    selectAllLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
     table.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
 }
@@ -130,6 +131,38 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             }
 
             static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].connectionInfo->toString());
+            break;
+
+        case ColumnIDs::rssi:
+            if (existingComponentToUpdate == nullptr)
+            {
+                existingComponentToUpdate = new RssiIcon(0.65f);
+            }
+
+            if (const auto percentage = rows[(size_t) rowNumber].rssiPercentage)
+            {
+                static_cast<RssiIcon*>(existingComponentToUpdate)->update(*percentage);
+            }
+            else
+            {
+                static_cast<RssiIcon*>(existingComponentToUpdate)->unavailable();
+            }
+            break;
+
+        case ColumnIDs::battery:
+            if (existingComponentToUpdate == nullptr)
+            {
+                existingComponentToUpdate = new BatteryIcon(0.65f);
+            }
+
+            if (const auto percentage = rows[(size_t) rowNumber].batteryPercentage)
+            {
+                static_cast<BatteryIcon*>(existingComponentToUpdate)->update(*percentage, *rows[(size_t) rowNumber].batteryStatus);
+            }
+            else
+            {
+                static_cast<BatteryIcon*>(existingComponentToUpdate)->unavailable();
+            }
             break;
 
         default:

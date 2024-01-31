@@ -16,6 +16,9 @@ public:
         juce::String serialNumber;
         std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
         ximu3::XIMU3_ConnectionType connectionType;
+        std::optional<int> rssiPercentage;
+        std::optional<int> batteryPercentage;
+        std::optional<ximu3::XIMU3_ChargingStatus> batteryStatus;
 
         bool operator==(const Row& row) const
         {
@@ -37,13 +40,14 @@ private:
         selected = 1,
         device,
         connection,
+        rssi,
+        battery,
     };
 
     std::vector<Row> rows;
 
     CustomToggleButton selectAllButton { "" };
-    SimpleLabel deviceLabel { "Device" };
-    SimpleLabel connectionLabel { "Connection" };
+    SimpleLabel selectAllLabel { "Select All" };
     juce::TableListBox table { "", this };
 
     SimpleLabel noConnectionsFoundLabel { "No Connections Found", UIFonts::getDefaultFont(), juce::Justification::centred };

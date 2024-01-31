@@ -60,7 +60,7 @@ void SearchingForConnectionsDialog::timerCallback()
     std::vector<ConnectionsTable::Row> rows;
     std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
 
-    const auto addConnection = [&](const auto& deviceName, const auto& serialNumber, const auto& connectionInfo, const auto& connectionType)
+    const auto addConnection = [&](const auto& deviceName, const auto& serialNumber, const auto& connectionInfo, const auto& connectionType, const std::optional<int>& rssiPercentage, const std::optional<int>& batteryPercentage, const std::optional<ximu3::XIMU3_ChargingStatus>& batteryStatus)
     {
         for (const auto& existingConnection : existingConnections)
         {
@@ -70,7 +70,7 @@ void SearchingForConnectionsDialog::timerCallback()
             }
         }
 
-        rows.push_back({ false, deviceName, serialNumber, std::move(connectionInfo), connectionType });
+        rows.push_back({ false, deviceName, serialNumber, std::move(connectionInfo), connectionType, rssiPercentage, batteryPercentage, batteryStatus });
         numberOfConnections[connectionType]++;
     };
 
@@ -78,15 +78,15 @@ void SearchingForConnectionsDialog::timerCallback()
     {
         if (device.connection_type == ximu3::XIMU3_ConnectionTypeUsb && ApplicationSettings::getSingleton().searchForConnections.usb)
         {
-            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::UsbConnectionInfo>(device.usb_connection_info), device.connection_type);
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::UsbConnectionInfo>(device.usb_connection_info), device.connection_type, {}, {}, {});
         }
         else if (device.connection_type == ximu3::XIMU3_ConnectionTypeSerial && ApplicationSettings::getSingleton().searchForConnections.serial)
         {
-            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::SerialConnectionInfo>(device.serial_connection_info), device.connection_type);
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::SerialConnectionInfo>(device.serial_connection_info), device.connection_type, {}, {}, {});
         }
         else if (device.connection_type == ximu3::XIMU3_ConnectionTypeBluetooth && ApplicationSettings::getSingleton().searchForConnections.bluetooth)
         {
-            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info), device.connection_type);
+            addConnection(device.device_name, device.serial_number, std::make_shared<ximu3::BluetoothConnectionInfo>(device.bluetooth_connection_info), device.connection_type, {}, {}, {});
         }
     }
 
@@ -94,11 +94,11 @@ void SearchingForConnectionsDialog::timerCallback()
     {
         if (ApplicationSettings::getSingleton().searchForConnections.udp)
         {
-            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(message)), ximu3::XIMU3_ConnectionTypeUdp);
+            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(message)), ximu3::XIMU3_ConnectionTypeUdp, message.rssi, message.battery, message.charging_status);
         }
         if (ApplicationSettings::getSingleton().searchForConnections.tcp)
         {
-            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message)), ximu3::XIMU3_ConnectionTypeTcp);
+            addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message)), ximu3::XIMU3_ConnectionTypeTcp, message.rssi, message.battery, message.charging_status);
         }
     }
 
