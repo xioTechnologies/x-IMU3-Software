@@ -40,21 +40,21 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 }
 
 NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel)
-        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearAllButton, 80, true, connectionPanel.getTag()),
+        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
           messages(messages_)
 {
-    addAndMakeVisible(clearAllButton);
-    clearAllButton.onClick = [&, onClear = onClear]
+    addAndMakeVisible(clearButton);
+    addAndMakeVisible(typeLabel);
+    addAndMakeVisible(timestampLabel);
+    addAndMakeVisible(messageLabel);
+    addAndMakeVisible(table);
+
+    clearButton.onClick = [&, onClear = onClear]
     {
         messages.clear();
         onClear();
     };
 
-    addAndMakeVisible(typeLabel);
-    addAndMakeVisible(timestampLabel);
-    addAndMakeVisible(messageLabel);
-
-    addAndMakeVisible(table);
     table.getHeader().addColumn("", (int) ColumnID::type, 70, 70, 70);
     table.getHeader().addColumn("", (int) ColumnID::timestamp, 100, 100, 100);
     table.getHeader().addColumn("", (int) ColumnID::message, 1);

@@ -9,7 +9,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::connectionAndError, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::titleAndError, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::icon, 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
@@ -146,15 +146,15 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::tag:
             return nullptr;
 
-        case ColumnIDs::connectionAndError:
-            class ConnectionAndError : public juce::Component
+        case ColumnIDs::titleAndError:
+            class TitleAndError : public juce::Component
             {
             public:
-                ConnectionAndError(const Row& row)
-                        : connectionLabel(row.connectionPanel.getTitle()),
+                TitleAndError(const Row& row)
+                        : titleLabel(row.connectionPanel.getTitle()),
                           errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
                 {
-                    addAndMakeVisible(connectionLabel);
+                    addAndMakeVisible(titleLabel);
                     addAndMakeVisible(errorLabel);
                     errorLabel.setColour(juce::Label::textColourId, UIColours::warning);
                 }
@@ -167,17 +167,17 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
                         errorLabel.setBounds(bounds.removeFromRight((int) std::ceil(errorLabel.getTextWidth())));
                         bounds.removeFromRight(10);
                     }
-                    connectionLabel.setBounds(bounds);
+                    titleLabel.setBounds(bounds);
                 }
 
-                SimpleLabel connectionLabel;
+                SimpleLabel titleLabel;
                 SimpleLabel errorLabel;
 
             private:
-                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionAndError)
+                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TitleAndError)
             };
 
-            return new ConnectionAndError(rows[(size_t) rowNumber]);
+            return new TitleAndError(rows[(size_t) rowNumber]);
 
         case ColumnIDs::icon:
             switch (rows[(size_t) rowNumber].state)
