@@ -4,17 +4,16 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AreYouSureDialog.h"
+#include "Dialogs/AvailableConnectionsDialog.h"
 #include "Dialogs/ConvertFilesDialog.h"
 #include "Dialogs/ConvertingFileDialog.h"
 #include "Dialogs/ErrorDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
-#include "Dialogs/SearchingForConnectionsDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "Dialogs/SendNoteCommandDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
-#include "Dialogs/UpdatingFirmwareDialog.h"
 #include "MenuStrip.h"
 #include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
@@ -34,7 +33,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         }
     }
 
-    searchForConnectionsButton.onClick = [this]
+    availableConnectionsButton.onClick = [this]
     {
         std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
 
@@ -43,9 +42,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
             existingConnections.push_back(connectionPanel->getConnection()->getInfo());
         }
 
-        DialogQueue::getSingleton().pushFront(std::make_unique<SearchingForConnectionsDialog>(std::move(existingConnections)), [this]
+        DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this]
         {
-            if (auto* dialog = dynamic_cast<SearchingForConnectionsDialog*>(DialogQueue::getSingleton().getActive()))
+            if (auto* dialog = dynamic_cast<AvailableConnectionsDialog*>(DialogQueue::getSingleton().getActive()))
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
@@ -56,9 +55,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         });
     };
 
-    if (ApplicationSettings::getSingleton().searchForConnections.showOnStartup)
+    if (ApplicationSettings::getSingleton().availableConnections.showOnStartup)
     {
-        searchForConnectionsButton.triggerClick();
+        availableConnectionsButton.triggerClick();
     }
 
     shutdownButton.onClick = [this]

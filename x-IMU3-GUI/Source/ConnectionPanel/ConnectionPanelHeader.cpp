@@ -31,19 +31,22 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     {
         if (juce::String(message.serial_number) == serialNumber)
         {
-            updateRssi(message.rssi);
-            updateBattery(message.battery, message.charging_status);
+            if (message.rssi != -1)
+            {
+                rssiIcon.update(message.rssi);
+            }
+            batteryIcon.update(message.battery, message.charging_status);
         }
     });
 
     rssiCallbackID = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
-        updateRssi((int) message.percentage);
+        rssiIcon.update((int) message.percentage);
     });
 
     batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
-        updateBattery((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
+        batteryIcon.update((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
@@ -202,34 +205,4 @@ void ConnectionPanelHeader::updateTitle(const juce::String& deviceName_, const j
 void ConnectionPanelHeader::updateTitle(const juce::String& status)
 {
     title.setText(status + "    " + connection->getInfo()->toString());
-}
-
-void ConnectionPanelHeader::updateRssi(const int percentage)
-{
-    if (percentage < 0)
-    {
-        return;
-    }
-
-    const auto icon = percentage <= 25 ? BinaryData::wifi_25_svg :
-                      percentage <= 50 ? BinaryData::wifi_50_svg :
-                      percentage <= 75 ? BinaryData::wifi_75_svg :
-                      BinaryData::wifi_100_svg;
-    const auto text = juce::String(percentage) + "%";
-
-    rssiIcon.update(icon, text, text);
-}
-
-void ConnectionPanelHeader::updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status)
-{
-    const auto icon = status == ximu3::XIMU3_ChargingStatusCharging ? BinaryData::battery_charging_svg :
-                      status == ximu3::XIMU3_ChargingStatusChargingComplete ? BinaryData::battery_charging_complete_svg :
-                      percentage <= 25 ? BinaryData::battery_25_svg :
-                      percentage <= 50 ? BinaryData::battery_50_svg :
-                      percentage <= 75 ? BinaryData::battery_75_svg :
-                      BinaryData::battery_100_svg;
-    const auto text = status != ximu3::XIMU3_ChargingStatusNotConnected ? "USB" : juce::String(percentage) + "%";
-    const auto textVerbose = status == ximu3::XIMU3_ChargingStatusCharging ? "Charging" : (status == ximu3::XIMU3_ChargingStatusChargingComplete ? "Charging Complete" : text);
-
-    batteryIcon.update(icon, text, textVerbose);
 }

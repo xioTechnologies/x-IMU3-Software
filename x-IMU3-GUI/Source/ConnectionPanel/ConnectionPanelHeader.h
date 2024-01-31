@@ -3,9 +3,9 @@
 #include "CommandMessage.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
+#include "Widgets/IconAndText.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
-#include "Widgets/StatusIcon.h"
 #include "Ximu3.hpp"
 
 class ConnectionPanel;
@@ -58,8 +58,8 @@ private:
     IconButton retryButton { BinaryData::refresh_svg, "Retry" };
     IconButton strobeButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };
     SimpleLabel title;
-    StatusIcon rssiIcon { BinaryData::wifi_unknown_svg, "Wi-Fi RSSI" };
-    StatusIcon batteryIcon { BinaryData::battery_unknown_svg, "Battery Level" };
+    RssiIconAndText rssiIcon;
+    BatteryIconAndText batteryIcon;
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
     std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
@@ -72,10 +72,6 @@ private:
     uint64_t batteryCallbackID;
 
     void updateTitle(const juce::String& status);
-
-    void updateRssi(const int percentage);
-
-    void updateBattery(const int percentage, const ximu3::XIMU3_ChargingStatus status);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelHeader)
 };

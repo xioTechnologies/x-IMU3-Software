@@ -29,7 +29,7 @@ private:
     juce::ValueTree& windowLayout;
     ConnectionPanelContainer& connectionPanelContainer;
 
-    IconButton searchForConnectionsButton { BinaryData::search_svg, "Search for Connections" };
+    IconButton availableConnectionsButton { BinaryData::search_svg, "Available Connections" };
     IconButton manualConnectionButton { BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectionMenu, this) };
     IconButton disconnectButton { BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
     IconButton connectionLayoutButton { BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this) };
@@ -45,7 +45,7 @@ private:
     juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
 
     const std::vector<std::vector<juce::Button*>> buttonGroups {
-            { &searchForConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
+            { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
             { &windowsButton },
             { &shutdownButton,             &zeroHeadingButton,      &noteButton,       &sendCommandButton },
             { &dataLoggerStartStopButton,  &dataLoggerTime },
