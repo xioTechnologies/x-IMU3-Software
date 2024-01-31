@@ -12,6 +12,8 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     addAndMakeVisible(timeValue);
     addAndMakeVisible(timeUnit);
 
+    juce::File(settings.directory).createDirectory();
+
     directoryButton.onClick = [&]
     {
         juce::FileChooser fileChooser(directoryButton.getTooltip(), std::filesystem::exists(directoryValue.getText().toStdString()) ? directoryValue.getText() : "");
