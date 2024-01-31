@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Create release
@@ -38,7 +38,7 @@ jobs:
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - if: matrix.target[0] == 'ubuntu-latest'
         name: Install ubuntu dependency
@@ -52,7 +52,7 @@ jobs:
           rustup target add ${{ matrix.target[1] }}
           cargo build --release --target ${{ matrix.target[1] }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload to artifacts
         with:
           name: rust-${{ matrix.target[1] }}
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Dry run
         working-directory: x-IMU3-API/Rust/
@@ -96,16 +96,16 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rust-x86_64-pc-windows-msvc
           path: x-IMU3-API/Rust/target/release
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Run examples
         working-directory: Examples/CSharp/x-IMU3-Examples/
@@ -129,10 +129,10 @@ jobs:
         python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-" ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/release
@@ -144,20 +144,20 @@ jobs:
 
       - if: matrix.target[0] == 'ubuntu-latest'
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.16.2
+        uses: pypa/cibuildwheel@v2.16.5
         env:
           CIBW_ARCHS: all
           CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
           CIBW_BEFORE_BUILD_LINUX: yum install -y libudev-devel
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: python
+          name: python-${{ matrix.python-version }}${{ matrix.target[2] }}
           path: wheelhouse/*
 
   python-publish:
@@ -166,10 +166,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: python
+          name: python-*
           path: wheelhouse
+          merge-multiple: true
 
       - name: Install dependencies
         run: |
@@ -196,7 +197,7 @@ jobs:
           - [ windows-latest, x86_64-pc-windows-msvc, "", "-Setup.exe" ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - if: matrix.target[0] == 'macos-latest'
         name: Install Apple certificate # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
@@ -222,7 +223,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/release
