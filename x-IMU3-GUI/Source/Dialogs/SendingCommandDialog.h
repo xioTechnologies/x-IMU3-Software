@@ -19,7 +19,7 @@ private:
     enum class ColumnIDs
     {
         tag = 1,
-        connectionAndError,
+        titleAndError,
         icon,
     };
 
