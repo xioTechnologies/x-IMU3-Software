@@ -4,12 +4,14 @@
 
 juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
 {
-    return juce::Typeface::createSystemTypefaceFor(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize);
+    static const auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize);
+    return typeface;
 }
 
 juce::Typeface::Ptr UIFonts::Typefaces::getRobotoMonoRegular()
 {
-    return juce::Typeface::createSystemTypefaceFor(BinaryData::RobotoMonoRegular_ttf, BinaryData::RobotoMonoRegular_ttfSize);
+    static const auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::RobotoMonoRegular_ttf, BinaryData::RobotoMonoRegular_ttfSize);
+    return typeface;
 }
 
 juce::Font UIFonts::getDefaultFont()
