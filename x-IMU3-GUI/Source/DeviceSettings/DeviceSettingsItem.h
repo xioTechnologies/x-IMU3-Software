@@ -41,6 +41,11 @@ public:
 
     int getItemHeight() const override
     {
+        if (tree.getType() == DeviceSettingsIDs::Margin)
+        {
+            return Setting::rowMargin / 2;
+        }
+
         if (ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings && (isStatusSet(tree) == false))
         {
             if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
@@ -62,6 +67,11 @@ public:
         if (tree.getType() == DeviceSettingsIDs::Group)
         {
             return std::make_unique<Setting>(tree, this);
+        }
+
+        if (tree.getType() == DeviceSettingsIDs::Margin)
+        {
+            return nullptr;
         }
 
         const auto type = tree[DeviceSettingsIDs::type];

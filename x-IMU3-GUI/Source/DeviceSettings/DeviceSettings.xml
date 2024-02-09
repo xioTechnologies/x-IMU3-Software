@@ -104,4 +104,5 @@
             <Setting key="rssiMessageRateDivisor" name="RSSI" type="number"/>
         </Group>
     </Group>
+    <Margin/>
 </DeviceSettings>

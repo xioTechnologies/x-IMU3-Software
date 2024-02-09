@@ -35,6 +35,7 @@ with open("DeviceSettings.xml", "w") as file:
                    "type=\"" + json_type + "\" " +
                    ("readOnly=\"" + "true" + "\"" if setting.get("read only") else "") + "/>\n")
 
+    file.write("    <Margin/>\n")
     file.write("</DeviceSettings>\n")
 
 enum_types = list(set(enum_types))  # remove duplicates
