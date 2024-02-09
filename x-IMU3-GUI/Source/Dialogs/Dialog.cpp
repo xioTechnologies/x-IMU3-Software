@@ -58,22 +58,26 @@ Dialog::~Dialog()
 void Dialog::resized()
 {
     auto bounds = getLocalBounds().removeFromBottom(UILayout::textComponentHeight + margin).reduced(margin, 0).withTrimmedBottom(margin);
+    minimumWidth = 2 * margin;
 
     okButton.changeWidthToFitText();
     cancelButton.changeWidthToFitText();
 
     okButton.setBounds(bounds.removeFromRight(okButton.getWidth()));
+    minimumWidth += okButton.getWidth();
 
     if (cancelButton.isVisible())
     {
         bounds.removeFromRight(margin);
         cancelButton.setBounds(bounds.removeFromRight(cancelButton.getWidth()));
+        minimumWidth += margin + cancelButton.getWidth();
     }
 
     if (bottomLeftComponent)
     {
         bounds.removeFromRight(margin);
         bottomLeftComponent->setBounds(bounds.removeFromLeft(bottomLeftComponentWidth));
+        minimumWidth += margin + bottomLeftComponentWidth;
     }
 }
 
@@ -90,6 +94,11 @@ juce::Rectangle<int> Dialog::getContentBounds(bool noMargins) const noexcept
 bool Dialog::isResizable() const
 {
     return resizable;
+}
+
+int Dialog::getMinimumWidth() const
+{
+    return minimumWidth;
 }
 
 int Dialog::calculateHeight(const int numberOfRows) const
@@ -167,6 +176,7 @@ void DialogQueue::pop()
     active->setTitleBarButtonsRequired(0, false);
     active->enterModalState(true);
     active->setResizable(queue.front()->isResizable(), queue.front()->isResizable());
+    active->setResizeLimits(active->getBorderThickness().getLeftAndRight() + queue.front().get()->getMinimumWidth(), active->getConstrainer()->getMinimumHeight(), active->getConstrainer()->getMaximumWidth(), active->getConstrainer()->getMaximumHeight());
 
     juce::Image iconImage(juce::Image::ARGB, 2 * 50, 2 * Dialog::titleBarHeight, true);
     juce::Graphics g(iconImage);

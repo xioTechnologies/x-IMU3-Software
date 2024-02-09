@@ -25,6 +25,8 @@ public:
 
     bool isResizable() const;
 
+    int getMinimumWidth() const;
+
     const juce::String icon;
 
     const std::optional<juce::Colour> tag;
@@ -51,6 +53,8 @@ private:
     const int bottomLeftComponentWidth;
 
     const bool resizable;
+
+    int minimumWidth = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };

@@ -2,7 +2,7 @@
 #include "SendingCommandDialog.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
-        : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, std::numeric_limits<int>::max(), true)
+        : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
