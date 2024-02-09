@@ -166,7 +166,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             }
             break;
 
-        default:
+        case ColumnIDs::margin:
             break;
     }
 
