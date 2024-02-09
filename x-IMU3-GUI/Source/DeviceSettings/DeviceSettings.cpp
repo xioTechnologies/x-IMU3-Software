@@ -91,7 +91,7 @@ std::map<juce::String, juce::ValueTree> DeviceSettings::flatten(const juce::Valu
         {
             map[flattened.first] = flattened.second;
         }
-        if (child.getNumChildren() == 0)
+        if (child.getType() == DeviceSettingsIDs::Setting)
         {
             map[CommandMessage::normaliseKey(child["key"])] = child;
         }
