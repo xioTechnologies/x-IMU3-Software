@@ -12,6 +12,7 @@ namespace UIColours
     static const juce::Colour highlight { 0xFF3D8A9A };
     static const juce::Colour warning { 0xFFF7B500 };
     static const juce::Colour error { 0xFFEF5350 };
+    static const juce::Colour update { 0xFF32C5FF };
 
     static const juce::Colour graphX { 0xFFE02020 };
     static const juce::Colour graphY { 0xFF6DD400 };

@@ -18,19 +18,17 @@ public:
 
 private:
     const juce::String logoUrl { "https://x-io.co.uk" };
-    const juce::String updateUrl { "https://x-io.co.uk/x-imu3/#downloads" };
 
     Icon logo { BinaryData::xio_logo_svg, logoUrl };
 
-    SimpleLabel applicationNameLabel { "Application Name:" };
-    SimpleLabel applicationVersionLabel { "Application Version:" };
-    SimpleLabel expectedFirmwareVersionLabel { "Expected Firmware Version:" };
-    SimpleLabel applicationNameValue { juce::JUCEApplication::getInstance()->getApplicationName() };
-    SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion() };
-    SimpleLabel applicationVersionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredRight };
-    SimpleLabel expectedFirmwareVersionValue { Firmware::version };
+    SimpleLabel applicationVersionLabel { "x-IMU3 GUI Version:" };
+    SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion(), UIFonts::getDefaultFont(), juce::Justification::centredRight };
+    SimpleLabel expectedFirmwareVersionLabel { "Expected Firmware:" };
+    SimpleLabel expectedFirmwareVersionValue { Firmware::version, UIFonts::getDefaultFont(), juce::Justification::centredRight };
 
-    IconButton sourceCodeButton { BinaryData::github_svg, "Source Code" };
+    SimpleLabel applicationVersionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+
+    IconButton downloadsButton { BinaryData::download_svg, "x-IMU3 Downloads" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AboutDialog)
 };

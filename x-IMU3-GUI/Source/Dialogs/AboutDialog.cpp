@@ -1,36 +1,38 @@
 #include "AboutDialog.h"
 
-AboutDialog::AboutDialog(const juce::String& latestVersion) : Dialog(BinaryData::xio_icon_svg, "About", "Close", "", &sourceCodeButton, iconButtonWidth)
+AboutDialog::AboutDialog(const juce::String& latestVersion) : Dialog(BinaryData::xio_icon_svg, "About", "Close", "", &downloadsButton, iconButtonWidth)
 {
     addAndMakeVisible(logo);
-    addAndMakeVisible(applicationNameLabel);
     addAndMakeVisible(applicationVersionLabel);
-    addAndMakeVisible(expectedFirmwareVersionLabel);
-    addAndMakeVisible(applicationNameValue);
     addAndMakeVisible(applicationVersionValue);
+    addAndMakeVisible(expectedFirmwareVersionLabel);
     addAndMakeVisible(expectedFirmwareVersionValue);
-    addAndMakeVisible(sourceCodeButton);
+    addAndMakeVisible(downloadsButton);
 
     logo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     logo.addMouseListener(this, true);
 
-    addAndMakeVisible(applicationVersionUpdateLabel);
-    applicationVersionUpdateLabel.setInterceptsMouseClicks(true, false);
-    applicationVersionUpdateLabel.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    applicationVersionUpdateLabel.setTooltip(updateUrl);
-    applicationVersionUpdateLabel.addMouseListener(this, true);
-    applicationVersionUpdateLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
     if (latestVersion.isNotEmpty())
     {
-        applicationVersionUpdateLabel.setText(" (" + ((latestVersion == "v" + juce::JUCEApplication::getInstance()->getApplicationVersion()) ? "latest" : (latestVersion + " available")) + ")");
+        addAndMakeVisible(applicationVersionUpdateLabel);
+        if (latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()))
+        {
+            applicationVersionUpdateLabel.setText("x-IMU3 GUI " + latestVersion + " available");
+            applicationVersionUpdateLabel.setColour(juce::Label::textColourId, UIColours::update);
+        }
+        else
+        {
+            applicationVersionUpdateLabel.setText("No updates available");
+            applicationVersionUpdateLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+        }
     }
 
-    sourceCodeButton.onClick = [&]
+    downloadsButton.onClick = [&]
     {
-        juce::URL("https://github.com/xioTechnologies/x-IMU3-Software").launchInDefaultBrowser();
+        juce::URL("https://x-io.co.uk/x-imu3/#downloads").launchInDefaultBrowser();
     };
 
-    setSize(400, calculateHeight(5));
+    setSize(375, 235);
 }
 
 void AboutDialog::resized()
@@ -38,27 +40,18 @@ void AboutDialog::resized()
     Dialog::resized();
 
     auto bounds = getContentBounds();
+
+    expectedFirmwareVersionLabel.setBounds(bounds.removeFromBottom(UILayout::textComponentHeight).reduced(75, 0));
+    expectedFirmwareVersionValue.setBounds(expectedFirmwareVersionLabel.getBounds());
+    applicationVersionLabel.setBounds(bounds.removeFromBottom(UILayout::textComponentHeight).reduced(75, 0));
+    applicationVersionValue.setBounds(applicationVersionLabel.getBounds());
+
+    bounds.removeFromBottom(margin);
     bounds.removeFromTop(10);
-    logo.setBounds(bounds.removeFromTop(3 * UILayout::textComponentHeight));
+    logo.setBounds(bounds);
     bounds.removeFromTop(margin);
 
-    const auto rowHeight = bounds.getHeight() / 3;
-
-    auto rowBounds = bounds.removeFromTop(rowHeight);
-    applicationNameLabel.setBounds(rowBounds.removeFromLeft(200));
-    applicationNameValue.setBounds(rowBounds);
-
-    rowBounds = bounds.removeFromTop(rowHeight);
-    applicationVersionLabel.setBounds(rowBounds.removeFromLeft(200));
-    applicationVersionValue.setBounds(rowBounds.removeFromLeft((int) std::ceil(applicationVersionValue.getTextWidth())));
-    if (applicationVersionUpdateLabel.isVisible())
-    {
-        applicationVersionUpdateLabel.setBounds(rowBounds.removeFromLeft((int) std::ceil(applicationVersionUpdateLabel.getTextWidth())));
-    }
-
-    rowBounds = bounds.removeFromTop(rowHeight);
-    expectedFirmwareVersionLabel.setBounds(rowBounds.removeFromLeft(200));
-    expectedFirmwareVersionValue.setBounds(rowBounds);
+    applicationVersionUpdateLabel.setBounds(downloadsButton.getRight(), downloadsButton.getY(), 200, downloadsButton.getHeight());
 }
 
 void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -66,9 +59,5 @@ void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
     if (mouseEvent.eventComponent == &logo)
     {
         juce::URL(logoUrl).launchInDefaultBrowser();
-    }
-    else if (mouseEvent.eventComponent == &applicationVersionUpdateLabel)
-    {
-        juce::URL(updateUrl).launchInDefaultBrowser();
     }
 }

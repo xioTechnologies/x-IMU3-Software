@@ -154,12 +154,10 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         DialogQueue::getSingleton().pushFront(std::make_unique<ApplicationSettingsDialog>());
     };
 
-    versionButton.onClick = [&]
+    aboutButton.onClick = [&]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AboutDialog>(latestVersion));
     };
-    versionButton.setColour(juce::TextButton::buttonColourId, {});
-    versionButton.setColour(juce::TextButton::buttonOnColourId, {});
 
     juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
                          {
@@ -175,11 +173,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
                                                                  if (const auto* const object = parsed.getDynamicObject())
                                                                  {
                                                                      latestVersion = object->getProperty("tag_name");
-                                                                     if (latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()))
-                                                                     {
-                                                                         versionButton.setButtonText(versionButton.getButtonText() + "*");
-                                                                         versionButton.setTooltip(versionButton.getTooltip() + " (" + latestVersion + " available)");
-                                                                     }
+                                                                     aboutButton.setToggleState(latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()), juce::dontSendNotification);
                                                                      resized();
                                                                  }
                                                              });
@@ -222,10 +216,6 @@ void MenuStrip::resized()
                 if (button == &dataLoggerTime)
                 {
                     return 112;
-                }
-                if (button == &versionButton)
-                {
-                    return versionButton.getBestWidthForHeight(buttonHeight);
                 }
                 return 35;
             }();
