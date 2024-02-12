@@ -1,7 +1,7 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
 #include <BinaryData.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
 class Icon : public juce::Component,

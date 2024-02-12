@@ -42,7 +42,7 @@ private:
     Stopwatch dataLoggerTime;
     IconButton toolsButton { BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
     IconButton mainSettingsButton { BinaryData::settings_svg, "Application Settings" };
-    juce::TextButton versionButton { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion().upToLastOccurrenceOf(".", false, false), "About" };
+    IconButton aboutButton { BinaryData::xio_icon_svg, "About", nullptr, false, BinaryData::xio_icon_update_svg, "About (Update Available)" };
 
     const std::vector<std::vector<juce::Button*>> buttonGroups {
             { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
@@ -50,7 +50,7 @@ private:
             { &shutdownButton,             &zeroHeadingButton,      &noteButton,       &sendCommandButton },
             { &dataLoggerStartStopButton,  &dataLoggerTime },
             { &toolsButton },
-            { &mainSettingsButton,         &versionButton },
+            { &mainSettingsButton,         &aboutButton },
     };
 
     const std::map<ConnectionPanelContainer::Layout, juce::String> layoutIcons {
