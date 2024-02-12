@@ -7,11 +7,14 @@ ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout
         : windowLayout(windowLayout_),
           glRenderer(glRenderer_)
 {
+    addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
 }
 
 void ConnectionPanelContainer::resized()
 {
+    noConnectionsLabel.setBounds(getLocalBounds());
+
     int numberOfRows = 0, numberOfColumns = 0; // initialisation to avoid compiler warning
 
     switch (getLayoutInternal())
@@ -314,6 +317,7 @@ ConnectionPanelContainer::Layout ConnectionPanelContainer::getLayoutInternal() c
 
 void ConnectionPanelContainer::connectionPanelsSizeChanged()
 {
+    noConnectionsLabel.setVisible(connectionPanels.empty());
     setExpandedConnectionPanel(expandedConnectionPanel);
     onConnectionPanelsSizeChanged();
 }
