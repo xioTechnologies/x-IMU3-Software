@@ -53,6 +53,8 @@ private:
     juce::ValueTree& windowLayout;
     GLRenderer& glRenderer;
 
+    SimpleLabel noConnectionsLabel { "No Connections", UIFonts::getDefaultFont(), juce::Justification::centred };
+
     std::vector<std::unique_ptr<ConnectionPanel>> connectionPanels;
     std::unique_ptr<DragOverlay> dragOverlay;
 
