@@ -40,7 +40,7 @@ void ConnectionsTable::resized()
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    selectAllLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnIDs::device - 1).withHeight(headerHeight));
+    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIDs::device - 1)).getX()));
     table.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
 }
