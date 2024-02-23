@@ -10,7 +10,7 @@ namespace DeviceSettingsIDs
     DECLARE_ID(Group)
     DECLARE_ID(Margin)
     DECLARE_ID(Enum)
-    DECLARE_ID(Option)
+    DECLARE_ID(Enumerator)
 
     DECLARE_ID(key)
     DECLARE_ID(name)

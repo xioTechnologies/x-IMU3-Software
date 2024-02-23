@@ -47,8 +47,8 @@ with open("DeviceSettingsEnums.xml", "w") as file:
     for enum_type in enum_types:
         file.write("\
     <Enum name=\"" + enum_type + "\">\n\
-        <Option name=\"Zero\" value=\"0\"/>\n\
-        <Option name=\"One\" value=\"1\"/>\n\
+        <Enumerator name=\"Zero\" value=\"0\"/>\n\
+        <Enumerator name=\"One\" value=\"1\"/>\n\
     </Enum>\n")
 
     file.write("</DeviceSettingsEnums>\n")
