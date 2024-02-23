@@ -114,7 +114,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         juce::FileOutputStream stream(fileChooser.getResult());
         stream.setPosition(0);
         stream.truncate();
-        object.writeAsJSON(stream, 0, false, 15);
+        object.writeAsJSON(stream, {});
     };
 
     loadFromFileButton.onClick = [&]
