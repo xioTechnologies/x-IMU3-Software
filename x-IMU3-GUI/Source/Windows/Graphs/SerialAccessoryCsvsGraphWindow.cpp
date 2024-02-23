@@ -15,7 +15,7 @@ SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::Value
     callbackIDs.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)
     {
         std::vector<float> values;
-        for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, message.number_of_bytes), ",", ""))
+        for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", ""))
         {
             values.push_back(string.getFloatValue());
         }

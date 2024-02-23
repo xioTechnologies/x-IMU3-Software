@@ -57,7 +57,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
                                                 return;
                                             }
 
-                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, message.number_of_bytes) });
+                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
 
                                             messagesChanged();
                                         });
@@ -73,7 +73,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
                                                 return;
                                             }
 
-                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, message.number_of_bytes) });
+                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
 
                                             messagesChanged();
                                         });
