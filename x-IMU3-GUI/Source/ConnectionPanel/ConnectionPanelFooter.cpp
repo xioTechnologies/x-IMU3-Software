@@ -99,17 +99,19 @@ void ConnectionPanelFooter::resized()
 
     const auto iconWidth = bounds.getHeight();
     static constexpr int iconMargin = 2;
-    static const int maxTextWidth = UIFonts::getSmallFont().getStringWidth("000");
+
+    const auto numberOfNotificationsMaxWidth = 5 + numberOfNotificationsLabel.getText().length() * UIFonts::getSmallFont().getStringWidth("0");
+    const auto numberOfErrorsMaxWidth = 5 + numberOfErrorsLabel.getText().length() * UIFonts::getSmallFont().getStringWidth("0");
 
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;
-    flexBox.items.add(juce::FlexItem(numberOfNotificationsLabel).withFlex(1.0f).withMaxWidth((float) maxTextWidth));
+    flexBox.items.add(juce::FlexItem(numberOfNotificationsLabel).withFlex(1.0f).withMaxWidth((float) numberOfNotificationsMaxWidth));
     flexBox.items.add(juce::FlexItem(notificationsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
-    flexBox.items.add(juce::FlexItem(numberOfErrorsLabel).withFlex(1.0f).withMaxWidth((float) maxTextWidth));
+    flexBox.items.add(juce::FlexItem(numberOfErrorsLabel).withFlex(1.0f).withMaxWidth((float) numberOfErrorsMaxWidth));
     flexBox.items.add(juce::FlexItem(errorsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
 
     const auto minWidth = 2 * iconWidth + 4 * iconMargin;
-    const auto maxWidth = minWidth + 2 * maxTextWidth;
+    const auto maxWidth = minWidth + numberOfNotificationsMaxWidth + numberOfErrorsMaxWidth;
     const auto width = bounds.getWidth() - (int) std::ceil(statisticsLabel.getTextWidth());
     flexBox.performLayout(bounds.removeFromRight(juce::jlimit(minWidth, maxWidth, width)));
 
@@ -153,6 +155,8 @@ void ConnectionPanelFooter::messagesChanged()
     {
         dialog->messagesChanged();
     }
+
+    resized();
 }
 
 void ConnectionPanelFooter::timerCallback()
