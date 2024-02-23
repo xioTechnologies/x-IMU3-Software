@@ -14,7 +14,7 @@ public:
 
     void resized() override;
 
-    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+    void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
 private:
     const juce::String logoUrl { "https://x-io.co.uk" };
