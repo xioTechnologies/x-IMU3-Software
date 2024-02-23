@@ -206,7 +206,7 @@ windows = [
     callbackIDs.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)\n\
     {\n\
         std::vector<float> values;\n\
-        for (const auto& string : juce::StringArray::fromTokens(message.char_array, \",\", \"\"))\n\
+        for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), \",\", \"\"))\n\
         {\n\
             values.push_back(string.getFloatValue());\n\
         }\n\
