@@ -58,9 +58,8 @@ jobs:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
 
-      - if: startsWith(github.ref, 'refs/tags/v')
-        name: Zip
-        uses: vimtor/action-zip@v1.1
+      - name: Zip
+        uses: vimtor/action-zip@v1.2
         with:
           files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
           dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
