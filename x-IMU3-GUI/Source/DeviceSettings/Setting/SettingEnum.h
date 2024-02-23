@@ -8,17 +8,7 @@
 class SettingEnum : public Setting
 {
 public:
-    SettingEnum(const juce::ValueTree& settingTree, const juce::ValueTree& typeTree) : SettingEnum(settingTree, [typeTree]
-    {
-        std::map<int, juce::String> choices;
-        for (auto child : typeTree)
-            choices[child.getProperty(DeviceSettingsIDs::value)] = child[DeviceSettingsIDs::name];
-        return choices;
-    }())
-    {
-    }
-
-    SettingEnum(const juce::ValueTree& settingTree, const std::map<int, juce::String>& choices) : Setting(settingTree)
+    SettingEnum(const juce::ValueTree& settingTree, const juce::ValueTree& typeTree) : Setting(settingTree)
     {
         addAndMakeVisible(value);
 
@@ -29,9 +19,9 @@ public:
 
         value.setEnabled(!isReadOnly());
 
-        for (auto& choice : choices)
+        for (auto child : typeTree)
         {
-            value.addItem(choice.second, choice.first + 1);
+            value.addItem(child[DeviceSettingsIDs::name], (int) child.getProperty(DeviceSettingsIDs::value) + 1);
         }
 
         valueChanged();
