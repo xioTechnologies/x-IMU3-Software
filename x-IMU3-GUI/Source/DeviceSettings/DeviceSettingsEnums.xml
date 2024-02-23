@@ -42,6 +42,89 @@
         <Enumerator name="Linear Acceleration" value="3"/>
         <Enumerator name="Earth Acceleration" value="4"/>
     </Enum>
+    <Enum name="SendMessageRateDivisorAhrs">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="400"/>
+        <Enumerator name="2 Hz" value="200"/>
+        <Enumerator name="4 Hz" value="100"/>
+        <Enumerator name="5 Hz" value="80"/>
+        <Enumerator name="8 Hz" value="50"/>
+        <Enumerator name="10 Hz" value="40"/>
+        <Enumerator name="16 Hz" value="25"/>
+        <Enumerator name="20 Hz" value="20"/>
+        <Enumerator name="25 Hz" value="16"/>
+        <Enumerator name="40 Hz" value="10"/>
+        <Enumerator name="50 Hz" value="8"/>
+        <Enumerator name="80 Hz" value="5"/>
+        <Enumerator name="100 Hz" value="4"/>
+        <Enumerator name="200 Hz" value="2"/>
+        <Enumerator name="400 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorBattery">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="5"/>
+        <Enumerator name="5 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorHighGAccelerometer">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="1600"/>
+        <Enumerator name="2 Hz" value="800"/>
+        <Enumerator name="4 Hz" value="400"/>
+        <Enumerator name="5 Hz" value="320"/>
+        <Enumerator name="8 Hz" value="200"/>
+        <Enumerator name="10 Hz" value="160"/>
+        <Enumerator name="16 Hz" value="100"/>
+        <Enumerator name="20 Hz" value="80"/>
+        <Enumerator name="25 Hz" value="64"/>
+        <Enumerator name="32 Hz" value="50"/>
+        <Enumerator name="40 Hz" value="40"/>
+        <Enumerator name="50 Hz" value="32"/>
+        <Enumerator name="64 Hz" value="25"/>
+        <Enumerator name="80 Hz" value="20"/>
+        <Enumerator name="100 Hz" value="16"/>
+        <Enumerator name="160 Hz" value="10"/>
+        <Enumerator name="200 Hz" value="8"/>
+        <Enumerator name="320 Hz" value="5"/>
+        <Enumerator name="400 Hz" value="4"/>
+        <Enumerator name="800 Hz" value="2"/>
+        <Enumerator name="1600 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorInertial">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="400"/>
+        <Enumerator name="2 Hz" value="200"/>
+        <Enumerator name="4 Hz" value="100"/>
+        <Enumerator name="5 Hz" value="80"/>
+        <Enumerator name="8 Hz" value="50"/>
+        <Enumerator name="10 Hz" value="40"/>
+        <Enumerator name="16 Hz" value="25"/>
+        <Enumerator name="20 Hz" value="20"/>
+        <Enumerator name="25 Hz" value="16"/>
+        <Enumerator name="40 Hz" value="10"/>
+        <Enumerator name="50 Hz" value="8"/>
+        <Enumerator name="80 Hz" value="5"/>
+        <Enumerator name="100 Hz" value="4"/>
+        <Enumerator name="200 Hz" value="2"/>
+        <Enumerator name="400 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorMagnetometer">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="20"/>
+        <Enumerator name="2 Hz" value="10"/>
+        <Enumerator name="4 Hz" value="5"/>
+        <Enumerator name="5 Hz" value="4"/>
+        <Enumerator name="10 Hz" value="2"/>
+        <Enumerator name="20 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorRssi">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="1"/>
+    </Enum>
+    <Enum name="SendMessageRateDivisorTemperature">
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="1 Hz" value="5"/>
+        <Enumerator name="5 Hz" value="1"/>
+    </Enum>
     <Enum name="SerialMode">
         <Enumerator name="Disabled" value="0"/>
         <Enumerator name="Normal" value="1"/>

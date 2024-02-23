@@ -287,7 +287,7 @@
         "read only": true
     },
     {
-        "name": "Data logger enabled",
+        "name": "Data logger automatic start stop enabled",
         "declaration": "bool name",
         "default": "{false}"
     },
@@ -295,11 +295,6 @@
         "name": "Data logger file name prefix",
         "declaration": "char name[32]",
         "default": "{\"\"}"
-    },
-    {
-        "name": "Data logger file name time enabled",
-        "declaration": "bool name",
-        "default": "{true}"
     },
     {
         "name": "Data logger file name counter enabled",
@@ -393,37 +388,47 @@
     },
     {
         "name": "Inertial message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorInertial name",
         "default": "{8}"
     },
     {
         "name": "Magnetometer message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorMagnetometer name",
         "default": "{1}"
     },
     {
         "name": "AHRS message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorAhrs name",
         "default": "{8}"
     },
     {
         "name": "High-g accelerometer message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorHighGAccelerometer name",
         "default": "{32}"
     },
     {
         "name": "Temperature message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorTemperature name",
         "default": "{5}"
     },
     {
         "name": "Battery message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorBattery name",
         "default": "{5}"
     },
     {
         "name": "RSSI message rate divisor",
-        "declaration": "uint32_t name",
+        "declaration": "SendMessageRateDivisorRssi name",
         "default": "{1}"
+    },
+    {
+        "name": "USB power on enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "Shipping mode enabled",
+        "declaration": "bool name",
+        "default": "{false}"
     }
 ]
