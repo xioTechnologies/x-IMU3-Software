@@ -1,127 +1,127 @@
 <DeviceSettingsEnums>
     <Enum name="FusionAxesAlignment">
-        <Option name="+X+Y+Z" value="0"/>
-        <Option name="+X-Z+Y" value="1"/>
-        <Option name="+X-Y-Z" value="2"/>
-        <Option name="+X+Z-Y" value="3"/>
-        <Option name="-X+Y-Z" value="4"/>
-        <Option name="-X+Z+Y" value="5"/>
-        <Option name="-X-Y+Z" value="6"/>
-        <Option name="-X-Z-Y" value="7"/>
-        <Option name="+Y-X+Z" value="8"/>
-        <Option name="+Y-Z-X" value="9"/>
-        <Option name="+Y+X-Z" value="10"/>
-        <Option name="+Y+Z+X" value="11"/>
-        <Option name="-Y+X+Z" value="12"/>
-        <Option name="-Y-Z+X" value="13"/>
-        <Option name="-Y-X-Z" value="14"/>
-        <Option name="-Y+Z-X" value="15"/>
-        <Option name="+Z+Y-X" value="16"/>
-        <Option name="+Z+X+Y" value="17"/>
-        <Option name="+Z-Y+X" value="18"/>
-        <Option name="+Z-X-Y" value="19"/>
-        <Option name="-Z+Y+X" value="20"/>
-        <Option name="-Z-X+Y" value="21"/>
-        <Option name="-Z-Y-X" value="22"/>
-        <Option name="-Z+X-Y" value="23"/>
+        <Enumerator name="+X+Y+Z" value="0"/>
+        <Enumerator name="+X-Z+Y" value="1"/>
+        <Enumerator name="+X-Y-Z" value="2"/>
+        <Enumerator name="+X+Z-Y" value="3"/>
+        <Enumerator name="-X+Y-Z" value="4"/>
+        <Enumerator name="-X+Z+Y" value="5"/>
+        <Enumerator name="-X-Y+Z" value="6"/>
+        <Enumerator name="-X-Z-Y" value="7"/>
+        <Enumerator name="+Y-X+Z" value="8"/>
+        <Enumerator name="+Y-Z-X" value="9"/>
+        <Enumerator name="+Y+X-Z" value="10"/>
+        <Enumerator name="+Y+Z+X" value="11"/>
+        <Enumerator name="-Y+X+Z" value="12"/>
+        <Enumerator name="-Y-Z+X" value="13"/>
+        <Enumerator name="-Y-X-Z" value="14"/>
+        <Enumerator name="-Y+Z-X" value="15"/>
+        <Enumerator name="+Z+Y-X" value="16"/>
+        <Enumerator name="+Z+X+Y" value="17"/>
+        <Enumerator name="+Z-Y+X" value="18"/>
+        <Enumerator name="+Z-X-Y" value="19"/>
+        <Enumerator name="-Z+Y+X" value="20"/>
+        <Enumerator name="-Z-X+Y" value="21"/>
+        <Enumerator name="-Z-Y-X" value="22"/>
+        <Enumerator name="-Z+X-Y" value="23"/>
     </Enum>
     <Enum name="FusionConvention">
-        <Option name="North-West-Up (NWU)" value="0"/>
-        <Option name="East-North-Up (ENU)" value="1"/>
-        <Option name="North-East-Down (NED)" value="2"/>
+        <Enumerator name="North-West-Up (NWU)" value="0"/>
+        <Enumerator name="East-North-Up (ENU)" value="1"/>
+        <Enumerator name="North-East-Down (NED)" value="2"/>
     </Enum>
     <Enum name="RS9116WlanCommandRegion">
-        <Option name="United States (US)" value="1"/>
-        <Option name="Europe (EU)" value="2"/>
-        <Option name="Japan (JP)" value="3"/>
+        <Enumerator name="United States (US)" value="1"/>
+        <Enumerator name="Europe (EU)" value="2"/>
+        <Enumerator name="Japan (JP)" value="3"/>
     </Enum>
     <Enum name="SendAhrsMessageType">
-        <Option name="Quaternion" value="0"/>
-        <Option name="Rotation Matrix" value="1"/>
-        <Option name="Euler Angles" value="2"/>
-        <Option name="Linear Acceleration" value="3"/>
-        <Option name="Earth Acceleration" value="4"/>
+        <Enumerator name="Quaternion" value="0"/>
+        <Enumerator name="Rotation Matrix" value="1"/>
+        <Enumerator name="Euler Angles" value="2"/>
+        <Enumerator name="Linear Acceleration" value="3"/>
+        <Enumerator name="Earth Acceleration" value="4"/>
     </Enum>
     <Enum name="SerialMode">
-        <Option name="Disabled" value="0"/>
-        <Option name="Normal" value="1"/>
-        <Option name="Accessory" value="2"/>
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="Normal" value="1"/>
+        <Enumerator name="Accessory" value="2"/>
     </Enum>
     <Enum name="WirelessBTDiscoveryMode">
-        <Option name="Disabled" value="0"/>
-        <Option name="Enabled" value="1"/>
-        <Option name="Limited" value="2"/>
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="Enabled" value="1"/>
+        <Enumerator name="Limited" value="2"/>
     </Enum>
     <Enum name="WirelessMode">
-        <Option name="Disabled" value="0"/>
-        <Option name="Wi-Fi Client" value="1"/>
-        <Option name="Wi-Fi AP" value="2"/>
-        <Option name="Bluetooth" value="3"/>
+        <Enumerator name="Disabled" value="0"/>
+        <Enumerator name="Wi-Fi Client" value="1"/>
+        <Enumerator name="Wi-Fi AP" value="2"/>
+        <Enumerator name="Bluetooth" value="3"/>
     </Enum>
     <Enum name="WirelessWlanAPChannel">
-        <Option name="1 (2.4 GHz)" value="1"/>
-        <Option name="2 (2.4 GHz)" value="2"/>
-        <Option name="3 (2.4 GHz)" value="3"/>
-        <Option name="4 (2.4 GHz)" value="4"/>
-        <Option name="5 (2.4 GHz)" value="5"/>
-        <Option name="6 (2.4 GHz)" value="6"/>
-        <Option name="7 (2.4 GHz)" value="7"/>
-        <Option name="8 (2.4 GHz)" value="8"/>
-        <Option name="9 (2.4 GHz)" value="9"/>
-        <Option name="10 (2.4 GHz)" value="10"/>
-        <Option name="11 (2.4 GHz)" value="11"/>
-        <Option name="12 (2.4 GHz, Invalid for US)" value="12"/>
-        <Option name="13 (2.4 GHz, Invalid for US)" value="13"/>
-        <Option name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
-        <Option name="36 (5 GHz)" value="36"/>
-        <Option name="40 (5 GHz)" value="40"/>
-        <Option name="44 (5 GHz)" value="44"/>
-        <Option name="48 (5 GHz)" value="48"/>
-        <Option name="149 (5 GHz)" value="149"/>
-        <Option name="153 (5 GHz)" value="153"/>
-        <Option name="157 (5 GHz)" value="157"/>
-        <Option name="161 (5 GHz)" value="161"/>
-        <Option name="165 (5 GHz)" value="165"/>
+        <Enumerator name="1 (2.4 GHz)" value="1"/>
+        <Enumerator name="2 (2.4 GHz)" value="2"/>
+        <Enumerator name="3 (2.4 GHz)" value="3"/>
+        <Enumerator name="4 (2.4 GHz)" value="4"/>
+        <Enumerator name="5 (2.4 GHz)" value="5"/>
+        <Enumerator name="6 (2.4 GHz)" value="6"/>
+        <Enumerator name="7 (2.4 GHz)" value="7"/>
+        <Enumerator name="8 (2.4 GHz)" value="8"/>
+        <Enumerator name="9 (2.4 GHz)" value="9"/>
+        <Enumerator name="10 (2.4 GHz)" value="10"/>
+        <Enumerator name="11 (2.4 GHz)" value="11"/>
+        <Enumerator name="12 (2.4 GHz, Invalid for US)" value="12"/>
+        <Enumerator name="13 (2.4 GHz, Invalid for US)" value="13"/>
+        <Enumerator name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+        <Enumerator name="36 (5 GHz)" value="36"/>
+        <Enumerator name="40 (5 GHz)" value="40"/>
+        <Enumerator name="44 (5 GHz)" value="44"/>
+        <Enumerator name="48 (5 GHz)" value="48"/>
+        <Enumerator name="149 (5 GHz)" value="149"/>
+        <Enumerator name="153 (5 GHz)" value="153"/>
+        <Enumerator name="157 (5 GHz)" value="157"/>
+        <Enumerator name="161 (5 GHz)" value="161"/>
+        <Enumerator name="165 (5 GHz)" value="165"/>
     </Enum>
     <Enum name="WirelessWlanClientChannel">
-        <Option name="All" value="0"/>
-        <Option name="1 (2.4 GHz)" value="1"/>
-        <Option name="2 (2.4 GHz)" value="2"/>
-        <Option name="3 (2.4 GHz)" value="3"/>
-        <Option name="4 (2.4 GHz)" value="4"/>
-        <Option name="5 (2.4 GHz)" value="5"/>
-        <Option name="6 (2.4 GHz)" value="6"/>
-        <Option name="7 (2.4 GHz)" value="7"/>
-        <Option name="8 (2.4 GHz)" value="8"/>
-        <Option name="9 (2.4 GHz)" value="9"/>
-        <Option name="10 (2.4 GHz)" value="10"/>
-        <Option name="11 (2.4 GHz)" value="11"/>
-        <Option name="12 (2.4 GHz, Invalid for US)" value="12"/>
-        <Option name="13 (2.4 GHz, Invalid for US)" value="13"/>
-        <Option name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
-        <Option name="36 (5 GHz)" value="36"/>
-        <Option name="40 (5 GHz)" value="40"/>
-        <Option name="44 (5 GHz)" value="44"/>
-        <Option name="48 (5 GHz)" value="48"/>
-        <Option name="52 (5 GHz, DFS)" value="52"/>
-        <Option name="56 (5 GHz, DFS)" value="56"/>
-        <Option name="60 (5 GHz, DFS)" value="60"/>
-        <Option name="64 (5 GHz, DFS)" value="64"/>
-        <Option name="100 (5 GHz, DFS)" value="100"/>
-        <Option name="104 (5 GHz, DFS)" value="104"/>
-        <Option name="108 (5 GHz, DFS)" value="108"/>
-        <Option name="112 (5 GHz, DFS)" value="112"/>
-        <Option name="116 (5 GHz, DFS)" value="116"/>
-        <Option name="120 (5 GHz, DFS, Invalid for US)" value="120"/>
-        <Option name="124 (5 GHz, DFS, Invalid for US)" value="124"/>
-        <Option name="128 (5 GHz, DFS, Invalid for US)" value="128"/>
-        <Option name="132 (5 GHz, DFS)" value="132"/>
-        <Option name="136 (5 GHz, DFS)" value="136"/>
-        <Option name="140 (5 GHz, DFS)" value="140"/>
-        <Option name="149 (5 GHz, Invalid for EU and JP)" value="149"/>
-        <Option name="153 (5 GHz, Invalid for EU and JP)" value="153"/>
-        <Option name="157 (5 GHz, Invalid for EU and JP)" value="157"/>
-        <Option name="161 (5 GHz, Invalid for EU and JP)" value="161"/>
-        <Option name="165 (5 GHz, Invalid for EU and JP)" value="165"/>
+        <Enumerator name="All" value="0"/>
+        <Enumerator name="1 (2.4 GHz)" value="1"/>
+        <Enumerator name="2 (2.4 GHz)" value="2"/>
+        <Enumerator name="3 (2.4 GHz)" value="3"/>
+        <Enumerator name="4 (2.4 GHz)" value="4"/>
+        <Enumerator name="5 (2.4 GHz)" value="5"/>
+        <Enumerator name="6 (2.4 GHz)" value="6"/>
+        <Enumerator name="7 (2.4 GHz)" value="7"/>
+        <Enumerator name="8 (2.4 GHz)" value="8"/>
+        <Enumerator name="9 (2.4 GHz)" value="9"/>
+        <Enumerator name="10 (2.4 GHz)" value="10"/>
+        <Enumerator name="11 (2.4 GHz)" value="11"/>
+        <Enumerator name="12 (2.4 GHz, Invalid for US)" value="12"/>
+        <Enumerator name="13 (2.4 GHz, Invalid for US)" value="13"/>
+        <Enumerator name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+        <Enumerator name="36 (5 GHz)" value="36"/>
+        <Enumerator name="40 (5 GHz)" value="40"/>
+        <Enumerator name="44 (5 GHz)" value="44"/>
+        <Enumerator name="48 (5 GHz)" value="48"/>
+        <Enumerator name="52 (5 GHz, DFS)" value="52"/>
+        <Enumerator name="56 (5 GHz, DFS)" value="56"/>
+        <Enumerator name="60 (5 GHz, DFS)" value="60"/>
+        <Enumerator name="64 (5 GHz, DFS)" value="64"/>
+        <Enumerator name="100 (5 GHz, DFS)" value="100"/>
+        <Enumerator name="104 (5 GHz, DFS)" value="104"/>
+        <Enumerator name="108 (5 GHz, DFS)" value="108"/>
+        <Enumerator name="112 (5 GHz, DFS)" value="112"/>
+        <Enumerator name="116 (5 GHz, DFS)" value="116"/>
+        <Enumerator name="120 (5 GHz, DFS, Invalid for US)" value="120"/>
+        <Enumerator name="124 (5 GHz, DFS, Invalid for US)" value="124"/>
+        <Enumerator name="128 (5 GHz, DFS, Invalid for US)" value="128"/>
+        <Enumerator name="132 (5 GHz, DFS)" value="132"/>
+        <Enumerator name="136 (5 GHz, DFS)" value="136"/>
+        <Enumerator name="140 (5 GHz, DFS)" value="140"/>
+        <Enumerator name="149 (5 GHz, Invalid for EU and JP)" value="149"/>
+        <Enumerator name="153 (5 GHz, Invalid for EU and JP)" value="153"/>
+        <Enumerator name="157 (5 GHz, Invalid for EU and JP)" value="157"/>
+        <Enumerator name="161 (5 GHz, Invalid for EU and JP)" value="161"/>
+        <Enumerator name="165 (5 GHz, Invalid for EU and JP)" value="165"/>
     </Enum>
 </DeviceSettingsEnums>
