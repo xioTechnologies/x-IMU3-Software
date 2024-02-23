@@ -50,7 +50,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                                                 return;
                                             }
 
-                                            serialAccessoryTerminal.add(message.timestamp, message.char_array);
+                                            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
                                         });
     });
 }
