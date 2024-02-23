@@ -17,6 +17,9 @@ AboutDialog::AboutDialog(const juce::String& latestVersion) : Dialog(BinaryData:
         addAndMakeVisible(applicationVersionUpdateLabel);
         if (latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()))
         {
+            applicationVersionUpdateLabel.setInterceptsMouseClicks(true, true);
+            applicationVersionUpdateLabel.addMouseListener(this, true);
+            applicationVersionUpdateLabel.setMouseCursor(juce::MouseCursor::PointingHandCursor);
             applicationVersionUpdateLabel.setText("x-IMU3 GUI " + latestVersion + " available");
             applicationVersionUpdateLabel.setColour(juce::Label::textColourId, UIColours::update);
         }
@@ -54,10 +57,14 @@ void AboutDialog::resized()
     applicationVersionUpdateLabel.setBounds(downloadsButton.getRight(), downloadsButton.getY(), 200, downloadsButton.getHeight());
 }
 
-void AboutDialog::mouseDown(const juce::MouseEvent& mouseEvent)
+void AboutDialog::mouseUp(const juce::MouseEvent& mouseEvent)
 {
     if (mouseEvent.eventComponent == &logo)
     {
         juce::URL(logoUrl).launchInDefaultBrowser();
+    }
+    else if (mouseEvent.eventComponent == &applicationVersionUpdateLabel)
+    {
+        downloadsButton.triggerClick();
     }
 }
