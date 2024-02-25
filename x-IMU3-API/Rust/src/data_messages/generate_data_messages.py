@@ -272,34 +272,34 @@ for message in messages:
             template = file.read()
 
         # Get functions
+        argument_names = ["Timestamp"] + message.argument_names
+
         get_functions = ""
 
-        for type, name in zip(["K"] + ["f" for _ in message.argument_names], ["timestamp"] + message.argument_names):
+        for argument_type, argument_name in zip(["K"] + ["f" for _ in message.argument_names], argument_names):
             get_function = "\
-static PyObject* $name_snake_case$_message_get_$Argument$($name_pascal_case$Message* self)\n\
+static PyObject* $name_snake_case$_message_get_$ArgumentName$($name_pascal_case$Message* self)\n\
 {\n\
-    return Py_BuildValue(\"" + type + "\", self->message.$Argument$);\n\
+    return Py_BuildValue(\"$ArgumentType$\", self->message.$ArgumentName$);\n\
 }\n\n"
-            get_functions += get_function.replace("$Argument$", helpers.snake_case(name))
+            get_function = get_function.replace("$ArgumentType$", argument_type)
+            get_function = get_function.replace("$ArgumentName$", helpers.snake_case(argument_name))
+            get_functions += get_function
 
-        get_functions = get_functions.rstrip("\n")
-
-        template = template.replace("$GetFunctions$", get_functions)
+        template = template.replace("$GetFunctions$", get_functions.rstrip("\n"))
 
         # Get set members
-        width = max([len("timestamp")] + [len(n) for n in message.argument_names], default=0)
+        width = max([len(n) for n in argument_names], default=0)
 
         get_set_members = ""
 
-        for name in ["timestamp"] + message.argument_names:
+        for argument_name in argument_names:
             get_set_member = "{ \"$Argument$\", $WhiteSpace$(getter) $name_snake_case$_message_get_$Argument$, $WhiteSpace$NULL, \"\", NULL },\n        "
-            get_set_member = get_set_member.replace("$Argument$", helpers.snake_case(name))
-            get_set_member = get_set_member.replace("$WhiteSpace$", "".ljust(width - len(helpers.snake_case(name))))
+            get_set_member = get_set_member.replace("$Argument$", helpers.snake_case(argument_name))
+            get_set_member = get_set_member.replace("$WhiteSpace$", "".ljust(width - len(helpers.snake_case(argument_name))))
             get_set_members += get_set_member
 
-        get_set_members = get_set_members.rstrip("\n        ")
-
-        template = template.replace("$GetSetMembers$", get_set_members)
+        template = template.replace("$GetSetMembers$", get_set_members.rstrip("\n        "))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
@@ -389,9 +389,7 @@ for message in messages:
         }\n\n"
             get_methods += get_function.replace("$ArgumentPascalCase$", helpers.pascal_case(name)).replace("$ArgumentSnakeCase$", helpers.snake_case(name))
 
-        get_methods = get_methods.rstrip("\n")
-
-        template = template.replace("$GetMethods$", get_methods)
+        template = template.replace("$GetMethods$", get_methods.rstrip("\n"))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
