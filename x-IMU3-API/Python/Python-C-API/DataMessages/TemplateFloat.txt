@@ -30,7 +30,7 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
 static PyGetSetDef $name_snake_case$_message_get_set[] = {
         { "timestamp", $WhiteSpace$(getter) $name_snake_case$_message_get_timestamp, $WhiteSpace$NULL, "", NULL },
         $GetSetMembers$
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef $name_snake_case$_message_methods[] = {

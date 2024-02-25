@@ -35,7 +35,7 @@ static PyObject* temperature_message_to_string(TemperatureMessage* self, PyObjec
 static PyGetSetDef temperature_message_get_set[] = {
         { "timestamp",   (getter) temperature_message_get_timestamp,   NULL, "", NULL },
         { "temperature", (getter) temperature_message_get_temperature, NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef temperature_message_methods[] = {

@@ -41,7 +41,7 @@ static PyGetSetDef rssi_message_get_set[] = {
         { "timestamp",  (getter) rssi_message_get_timestamp,  NULL, "", NULL },
         { "percentage", (getter) rssi_message_get_percentage, NULL, "", NULL },
         { "power",      (getter) rssi_message_get_power,      NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef rssi_message_methods[] = {
