@@ -110,50 +110,21 @@ messages = [
 
 # Generate *_message.rs
 for message in messages:
-    if not message.argument_names:
-        with open("template_char_array.txt") as file:
-            template = file.read()
-    else:
+    if message.argument_names:
         with open("template_float.txt") as file:
             template = file.read()
 
-        arguments_struct = ""
-        arguments_scan_format = ""
-        arguments_types = ""
-        arguments_list = ""
-        arguments_packed_struct = ""
-        arguments_assign_struct = ""
-        arguments_csv_heading = ""
-        arguments_csv_format = ""
-        arguments_ascii_format = ""
-        arguments_self_list = ""
-        arguments_string_format = ""
-
-        for argument_name, argument_unit in zip(message.argument_names, message.argument_units):
-            argument_name_snake_case = helpers.snake_case(argument_name)
-
-            arguments_struct += "pub " + argument_name_snake_case + ": f32,\n    "
-            arguments_scan_format += "{f},"
-            arguments_types += "f32, "
-            arguments_list += argument_name_snake_case + ", "
-            arguments_packed_struct += argument_name_snake_case + ": f32,\n            "
-            arguments_assign_struct += argument_name_snake_case + ": binary_message." + argument_name_snake_case + ", "
-            arguments_csv_heading += argument_name + ("," if argument_unit == "" else " (" + argument_unit + "),")
-            arguments_csv_format += "{:.6},"
-            arguments_ascii_format += "{:.4},"
-            arguments_self_list += "self." + argument_name_snake_case + ", "
-            arguments_string_format += " {:>8.3}" + ("" if argument_unit == "" else " " + argument_unit)
-
-        arguments_struct = arguments_struct[:-5]  # remove trailing new line and indentation
-        arguments_scan_format = arguments_scan_format[:-1]  # remove trailing comma
-        arguments_types = arguments_types[:-2]  # remove trailing comma and space
-        arguments_list = arguments_list[:-2]  # remove trailing comma and space
-        arguments_packed_struct = arguments_packed_struct[:-13]  # remove trailing new line and indentation
-        arguments_assign_struct = arguments_assign_struct[:-2]  # remove trailing comma and space
-        arguments_csv_heading = arguments_csv_heading[:-1]  # remove trailing comma
-        arguments_csv_format = arguments_csv_format[:-1]  # remove trailing comma
-        arguments_ascii_format = arguments_ascii_format[:-1]  # remove trailing comma
-        arguments_self_list = arguments_self_list[:-2]  # remove trailing comma and space
+        arguments_struct = "".join(["pub " + helpers.snake_case(n) + ": f32,\n    " for n in message.argument_names]).rstrip("\n    ")
+        arguments_scan_format = "".join(["{f}," for _ in message.argument_names]).rstrip(",")
+        arguments_types = "".join(["f32, " for _ in message.argument_names]).rstrip(", ")
+        arguments_list = "".join([helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
+        arguments_packed_struct = "".join([helpers.snake_case(n) + ": f32,\n            " for n in message.argument_names]).rstrip("\n            ")
+        arguments_assign_struct = "".join([helpers.snake_case(n) + ": binary_message." + helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
+        arguments_csv_heading = "".join([n + ("," if u == "" else " (" + u + "),") for n, u in zip(message.argument_names, message.argument_units)]).rstrip(",")
+        arguments_csv_format = "".join(["{:.6}," for _ in message.argument_names]).rstrip(",")
+        arguments_ascii_format = "".join(["{:.4},"for n in message.argument_names]).rstrip(",")
+        arguments_self_list = "".join(["self." + helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
+        arguments_string_format = "".join([" {:>8.3}" + ("" if u == "" else " " + u) for u in message.argument_units]).rstrip(", ")
 
         template = template.replace("$arguments_struct$", arguments_struct)
         template = template.replace("$arguments_scan_format$", arguments_scan_format)
@@ -166,6 +137,9 @@ for message in messages:
         template = template.replace("$arguments_ascii_format$", arguments_ascii_format)
         template = template.replace("$arguments_self_list$", arguments_self_list)
         template = template.replace("$arguments_string_format$", arguments_string_format)
+    else:
+        with open("template_char_array.txt") as file:
+            template = file.read()
 
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
@@ -180,13 +154,13 @@ def insert(file_path, template, id):
     code = ""
 
     for message in messages:
-        modifed = template
+        modified = template
 
-        modifed = modifed.replace("$name_camel_case$", helpers.camel_case(message.name))
-        modifed = modifed.replace("$name_pascal_case$", helpers.pascal_case(message.name))
-        modifed = modifed.replace("$name_snake_case$", helpers.snake_case(message.name))
+        modified = modified.replace("$name_camel_case$", helpers.camel_case(message.name))
+        modified = modified.replace("$name_pascal_case$", helpers.pascal_case(message.name))
+        modified = modified.replace("$name_snake_case$", helpers.snake_case(message.name))
 
-        code += modifed
+        code += modified
 
     helpers.insert(file_path, code, id)
 
@@ -280,7 +254,8 @@ pub extern \"C\" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pas
 insert("../ffi/data_messages.rs", template, 0)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
-template = "\n\
+template = "\
+\n\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)\n\
         {\n\
             return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);\n\
@@ -292,41 +267,42 @@ insert("../../../Cpp/Connection.hpp", template, 0)
 directory = "../../../Python/Python-C-API/DataMessages/"
 
 for message in messages:
-    width = len("timestamp")
-
-    for name in message.argument_names:
-        width = max(width, len(name))
-
-    if not message.argument_names:
-        with open(directory + "TemplateCharArray.txt") as file:
-            template = file.read()
-    else:
+    if message.argument_names:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
+        # Get functions
         get_functions = ""
-        get_set_members = ""
 
-        for name in message.argument_names:
+        for type, name in zip(["K"] + ["f" for _ in message.argument_names], ["timestamp"] + message.argument_names):
             get_function = "\
 static PyObject* $name_snake_case$_message_get_$Argument$($name_pascal_case$Message* self)\n\
 {\n\
-    return Py_BuildValue(\"f\", self->message.$Argument$);\n\
+    return Py_BuildValue(\"" + type + "\", self->message.$Argument$);\n\
 }\n\n"
             get_functions += get_function.replace("$Argument$", helpers.snake_case(name))
 
+        get_functions = get_functions.rstrip("\n")
+
+        template = template.replace("$GetFunctions$", get_functions)
+
+        # Get set members
+        width = max([len("timestamp")] + [len(n) for n in message.argument_names], default=0)
+
+        get_set_members = ""
+
+        for name in ["timestamp"] + message.argument_names:
             get_set_member = "{ \"$Argument$\", $WhiteSpace$(getter) $name_snake_case$_message_get_$Argument$, $WhiteSpace$NULL, \"\", NULL },\n        "
             get_set_member = get_set_member.replace("$Argument$", helpers.snake_case(name))
             get_set_member = get_set_member.replace("$WhiteSpace$", "".ljust(width - len(helpers.snake_case(name))))
-
             get_set_members += get_set_member
 
-        get_functions = get_functions[:-2]  # remove trailing new line
-        get_set_members = get_set_members[:-9]  # remove trailing new line and indentation
+        get_set_members = get_set_members.rstrip("\n        ")
 
-        template = template.replace("$GetFunctions$", get_functions)
         template = template.replace("$GetSetMembers$", get_set_members)
-        template = template.replace("$WhiteSpace$", "".ljust(width - len("timestamp")))
+    else:
+        with open(directory + "TemplateCharArray.txt") as file:
+            template = file.read()
 
     template = template.replace("$NameMacroCase$", helpers.macro_case(message.name))
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
@@ -351,7 +327,8 @@ insert("../../../Python/Python-C-API/ximu3.c", template, 0)
 # Insert code into x-IMU3-API/Python/Python-C-API/Connection.h
 file_path = "../../../Python/Python-C-API/Connection.h"
 
-template = "\n\
+template = "\
+\n\
 static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)\n\
 {\n\
     PyObject* callable;\n\
@@ -395,10 +372,7 @@ helpers.insert(file_path, code, 1)
 directory = "../../../CSharp/x-IMU3/DataMessages/"
 
 for message in messages:
-    if not message.argument_names:
-        with open(directory + "TemplateCharArray.txt") as file:
-            template = file.read()
-    else:
+    if message.argument_names:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
@@ -415,9 +389,12 @@ for message in messages:
         }\n\n"
             get_methods += get_function.replace("$ArgumentPascalCase$", helpers.pascal_case(name)).replace("$ArgumentSnakeCase$", helpers.snake_case(name))
 
-        get_methods = get_methods[:-2]  # remove trailing new line
+        get_methods = get_methods.rstrip("\n")
 
         template = template.replace("$GetMethods$", get_methods)
+    else:
+        with open(directory + "TemplateCharArray.txt") as file:
+            template = file.read()
 
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
@@ -434,7 +411,8 @@ with open("../../../CSharp/x-IMU3/DataMessages/DataMessages.h", "w") as file:
         file.write("#include \"" + helpers.pascal_case(message.name) + "Message.h\"\n")
 
 # Insert code into x-IMU3-API/CSharp/x-IMU3/EventArgs.h
-template = "\n\
+template = "\
+\n\
     public ref class $name_pascal_case$EventArgs : public EventArgs\n\
     {\n\
     public:\n\
@@ -459,7 +437,8 @@ template = "            ximu3::XIMU3_connection_add_$name_snake_case$_callback(c
 
 insert(file_path, template, 1)
 
-template = "\n\
+template = "\
+\n\
         delegate void $name_pascal_case$Delegate(ximu3::XIMU3_$name_pascal_case$Message data, void* context);\n\
 \n\
         static void $name_pascal_case$Callback(ximu3::XIMU3_$name_pascal_case$Message data, void* context)\n\
