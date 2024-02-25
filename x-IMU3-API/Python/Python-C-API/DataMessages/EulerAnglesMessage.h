@@ -47,7 +47,7 @@ static PyGetSetDef euler_angles_message_get_set[] = {
         { "roll",      (getter) euler_angles_message_get_roll,      NULL, "", NULL },
         { "pitch",     (getter) euler_angles_message_get_pitch,     NULL, "", NULL },
         { "yaw",       (getter) euler_angles_message_get_yaw,       NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef euler_angles_message_methods[] = {

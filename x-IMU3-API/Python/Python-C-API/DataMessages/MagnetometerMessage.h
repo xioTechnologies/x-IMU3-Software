@@ -47,7 +47,7 @@ static PyGetSetDef magnetometer_message_get_set[] = {
         { "x",         (getter) magnetometer_message_get_x,         NULL, "", NULL },
         { "y",         (getter) magnetometer_message_get_y,         NULL, "", NULL },
         { "z",         (getter) magnetometer_message_get_z,         NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef magnetometer_message_methods[] = {

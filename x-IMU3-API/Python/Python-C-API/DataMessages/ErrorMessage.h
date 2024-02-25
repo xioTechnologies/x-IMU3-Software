@@ -41,7 +41,7 @@ static PyGetSetDef error_message_get_set[] = {
         { "timestamp", (getter) error_message_get_timestamp, NULL, "", NULL },
         { "string",    (getter) error_message_get_string,    NULL, "", NULL },
         { "bytes",     (getter) error_message_get_bytes,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef error_message_methods[] = {
