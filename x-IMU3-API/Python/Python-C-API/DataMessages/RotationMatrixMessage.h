@@ -83,7 +83,7 @@ static PyGetSetDef rotation_matrix_message_get_set[] = {
         { "zx",        (getter) rotation_matrix_message_get_zx,        NULL, "", NULL },
         { "zy",        (getter) rotation_matrix_message_get_zy,        NULL, "", NULL },
         { "zz",        (getter) rotation_matrix_message_get_zz,        NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef rotation_matrix_message_methods[] = {

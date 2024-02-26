@@ -47,7 +47,7 @@ static PyGetSetDef high_g_accelerometer_message_get_set[] = {
         { "x",         (getter) high_g_accelerometer_message_get_x,         NULL, "", NULL },
         { "y",         (getter) high_g_accelerometer_message_get_y,         NULL, "", NULL },
         { "z",         (getter) high_g_accelerometer_message_get_z,         NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef high_g_accelerometer_message_methods[] = {

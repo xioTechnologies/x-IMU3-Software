@@ -71,7 +71,7 @@ static PyGetSetDef earth_acceleration_message_get_set[] = {
         { "acceleration_x", (getter) earth_acceleration_message_get_acceleration_x, NULL, "", NULL },
         { "acceleration_y", (getter) earth_acceleration_message_get_acceleration_y, NULL, "", NULL },
         { "acceleration_z", (getter) earth_acceleration_message_get_acceleration_z, NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef earth_acceleration_message_methods[] = {

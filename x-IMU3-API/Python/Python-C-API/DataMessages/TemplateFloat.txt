@@ -1,5 +1,5 @@
-#ifndef $NameMacroCase$_MESSAGE_H
-#define $NameMacroCase$_MESSAGE_H
+#ifndef $name_macro_case$_MESSAGE_H
+#define $name_macro_case$_MESSAGE_H
 
 #include "../../../C/Ximu3.h"
 #include <Python.h>
@@ -15,12 +15,7 @@ static void $name_snake_case$_message_free($name_pascal_case$Message* self)
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* $name_snake_case$_message_get_timestamp($name_pascal_case$Message* self)
-{
-    return Py_BuildValue("K", self->message.timestamp);
-}
-
-$GetFunctions$
+$get_functions$
 
 static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)
 {
@@ -28,9 +23,8 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
 }
 
 static PyGetSetDef $name_snake_case$_message_get_set[] = {
-        { "timestamp", $WhiteSpace$(getter) $name_snake_case$_message_get_timestamp, $WhiteSpace$NULL, "", NULL },
-        $GetSetMembers$
-        { NULL }  /* sentinel */
+        $get_set_members$
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef $name_snake_case$_message_methods[] = {

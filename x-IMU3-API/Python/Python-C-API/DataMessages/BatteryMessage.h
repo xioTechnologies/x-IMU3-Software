@@ -47,7 +47,7 @@ static PyGetSetDef battery_message_get_set[] = {
         { "percentage",      (getter) battery_message_get_percentage,      NULL, "", NULL },
         { "voltage",         (getter) battery_message_get_voltage,         NULL, "", NULL },
         { "charging_status", (getter) battery_message_get_charging_status, NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef battery_message_methods[] = {

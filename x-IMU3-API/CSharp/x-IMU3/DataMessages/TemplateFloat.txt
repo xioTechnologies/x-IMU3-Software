@@ -27,7 +27,7 @@ namespace Ximu3
             }
         }
 
-$GetMethods$
+$properties$
 
         String^ ToString() override
         {
