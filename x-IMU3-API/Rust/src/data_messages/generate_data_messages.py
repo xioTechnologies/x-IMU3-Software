@@ -278,15 +278,15 @@ for message in messages:
 
         for argument_type, argument_name in zip(["K"] + ["f" for _ in message.argument_names], argument_names):
             get_function = "\
-static PyObject* $name_snake_case$_message_get_$ArgumentName$($name_pascal_case$Message* self)\n\
+static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case$Message* self)\n\
 {\n\
-    return Py_BuildValue(\"$ArgumentType$\", self->message.$ArgumentName$);\n\
+    return Py_BuildValue(\"$argument_type$\", self->message.$argument_name$);\n\
 }\n\n"
-            get_function = get_function.replace("$ArgumentType$", argument_type)
-            get_function = get_function.replace("$ArgumentName$", helpers.snake_case(argument_name))
+            get_function = get_function.replace("$argument_type$", argument_type)
+            get_function = get_function.replace("$argument_name$", helpers.snake_case(argument_name))
             get_functions += get_function
 
-        template = template.replace("$GetFunctions$", get_functions.rstrip("\n"))
+        template = template.replace("$get_functions$", get_functions.rstrip("\n"))
 
         # Get set members
         width = max([len(n) for n in argument_names], default=0)
@@ -294,17 +294,17 @@ static PyObject* $name_snake_case$_message_get_$ArgumentName$($name_pascal_case$
         get_set_members = ""
 
         for argument_name in argument_names:
-            get_set_member = "{ \"$Argument$\", $WhiteSpace$(getter) $name_snake_case$_message_get_$Argument$, $WhiteSpace$NULL, \"\", NULL },\n        "
-            get_set_member = get_set_member.replace("$Argument$", helpers.snake_case(argument_name))
-            get_set_member = get_set_member.replace("$WhiteSpace$", "".ljust(width - len(helpers.snake_case(argument_name))))
+            get_set_member = "{ \"$argument_name$\", $whitespace$(getter) $name_snake_case$_message_get_$argument_name$, $whitespace$NULL, \"\", NULL },\n        "
+            get_set_member = get_set_member.replace("$argument_name$", helpers.snake_case(argument_name))
+            get_set_member = get_set_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(argument_name))))
             get_set_members += get_set_member
 
-        template = template.replace("$GetSetMembers$", get_set_members.rstrip("\n        "))
+        template = template.replace("$get_set_members$", get_set_members.rstrip("\n        "))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
 
-    template = template.replace("$NameMacroCase$", helpers.macro_case(message.name))
+    template = template.replace("$name_macro_case$", helpers.macro_case(message.name))
     template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
 
@@ -359,10 +359,10 @@ insert(file_path, template, 0)
 code = ""
 
 for message in messages:
-    template = "        { \"add_$name_snake_case$_callback\", $WhiteSpace$(PyCFunction) connection_add_$name_snake_case$_callback, $WhiteSpace$METH_VARARGS, \"\" },\n"
+    template = "        { \"add_$name_snake_case$_callback\", $whitespace$(PyCFunction) connection_add_$name_snake_case$_callback, $whitespace$METH_VARARGS, \"\" },\n"
 
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
-    template = template.replace("$WhiteSpace$", "".ljust(20 - len(message.name)))
+    template = template.replace("$whitespace$", "".ljust(20 - len(message.name)))
 
     code += template
 
@@ -380,14 +380,14 @@ for message in messages:
 
         for name in message.argument_names:
             get_function = "\
-        property float $ArgumentPascalCase$\n\
+        property float $argument_pascal_case$\n\
         {\n\
             float get()\n\
             {\n\
-                return message->$ArgumentSnakeCase$;\n\
+                return message->$argument_snake_case$;\n\
             }\n\
         }\n\n"
-            get_methods += get_function.replace("$ArgumentPascalCase$", helpers.pascal_case(name)).replace("$ArgumentSnakeCase$", helpers.snake_case(name))
+            get_methods += get_function.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
 
         template = template.replace("$GetMethods$", get_methods.rstrip("\n"))
     else:
