@@ -53,7 +53,7 @@ static PyGetSetDef ahrs_status_message_get_set[] = {
         { "angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL },
         { "acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL },
         { "magnetic_recovery",     (getter) ahrs_status_message_get_magnetic_recovery,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef ahrs_status_message_methods[] = {

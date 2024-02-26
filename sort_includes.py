@@ -26,7 +26,7 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
         waiting_for_includes = True
 
         for line in all_lines:
-            line = line.rstrip() + "\n"  # remove trailing witespace
+            line = line.rstrip() + "\n"  # remove trailing whitespace
             if line.lstrip().startswith("#include"):
                 include_lines.append(str(line.lstrip()).replace("<", "\"").replace(">", "\""))
                 waiting_for_includes = False

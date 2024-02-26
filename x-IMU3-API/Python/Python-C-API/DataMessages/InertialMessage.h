@@ -65,7 +65,7 @@ static PyGetSetDef inertial_message_get_set[] = {
         { "accelerometer_x", (getter) inertial_message_get_accelerometer_x, NULL, "", NULL },
         { "accelerometer_y", (getter) inertial_message_get_accelerometer_y, NULL, "", NULL },
         { "accelerometer_z", (getter) inertial_message_get_accelerometer_z, NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef inertial_message_methods[] = {

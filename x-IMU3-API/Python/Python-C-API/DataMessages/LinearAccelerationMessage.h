@@ -71,7 +71,7 @@ static PyGetSetDef linear_acceleration_message_get_set[] = {
         { "acceleration_x", (getter) linear_acceleration_message_get_acceleration_x, NULL, "", NULL },
         { "acceleration_y", (getter) linear_acceleration_message_get_acceleration_y, NULL, "", NULL },
         { "acceleration_z", (getter) linear_acceleration_message_get_acceleration_z, NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef linear_acceleration_message_methods[] = {

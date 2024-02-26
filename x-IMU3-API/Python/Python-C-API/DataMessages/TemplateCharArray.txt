@@ -1,5 +1,5 @@
-#ifndef $NameMacroCase$_MESSAGE_H
-#define $NameMacroCase$_MESSAGE_H
+#ifndef $name_macro_case$_MESSAGE_H
+#define $name_macro_case$_MESSAGE_H
 
 #include "../../../C/Ximu3.h"
 #include <Python.h>
@@ -39,7 +39,7 @@ static PyGetSetDef $name_snake_case$_message_get_set[] = {
         { "timestamp", (getter) $name_snake_case$_message_get_timestamp, NULL, "", NULL },
         { "string",    (getter) $name_snake_case$_message_get_string,    NULL, "", NULL },
         { "bytes",     (getter) $name_snake_case$_message_get_bytes,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef $name_snake_case$_message_methods[] = {

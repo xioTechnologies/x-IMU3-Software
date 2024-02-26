@@ -41,7 +41,7 @@ static PyGetSetDef serial_accessory_message_get_set[] = {
         { "timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL },
         { "string",    (getter) serial_accessory_message_get_string,    NULL, "", NULL },
         { "bytes",     (getter) serial_accessory_message_get_bytes,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef serial_accessory_message_methods[] = {

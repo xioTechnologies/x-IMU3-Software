@@ -41,7 +41,7 @@ static PyGetSetDef notification_message_get_set[] = {
         { "timestamp", (getter) notification_message_get_timestamp, NULL, "", NULL },
         { "string",    (getter) notification_message_get_string,    NULL, "", NULL },
         { "bytes",     (getter) notification_message_get_bytes,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+        { NULL } /* sentinel */
 };
 
 static PyMethodDef notification_message_methods[] = {
