@@ -1,5 +1,5 @@
-#ifndef $NameMacroCase$_MESSAGE_H
-#define $NameMacroCase$_MESSAGE_H
+#ifndef $name_macro_case$_MESSAGE_H
+#define $name_macro_case$_MESSAGE_H
 
 #include "../../../C/Ximu3.h"
 #include <Python.h>
