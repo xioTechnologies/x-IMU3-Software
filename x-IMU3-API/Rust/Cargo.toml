@@ -12,12 +12,12 @@ build = "build.rs"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-crossbeam = "0.8.3"
-libc = "0.2.151"
-regex = "1.10.2"
+crossbeam = "0.8.4"
+libc = "0.2.153"
+regex = "1.10.3"
 scan_fmt = "0.2.6"
 serde = "1.0.194"
-serde_json = "1.0.111"
+serde_json = "1.0.114"
 serialport = "4.3.0"
 
 [build-dependencies]
