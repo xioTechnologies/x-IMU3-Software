@@ -376,10 +376,10 @@ for message in messages:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
-        get_methods = ""
+        properties = ""
 
         for name in message.argument_names:
-            get_function = "\
+            property = "\
         property float $argument_pascal_case$\n\
         {\n\
             float get()\n\
@@ -387,9 +387,9 @@ for message in messages:
                 return message->$argument_snake_case$;\n\
             }\n\
         }\n\n"
-            get_methods += get_function.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
+            properties += property.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
 
-        template = template.replace("$GetMethods$", get_methods.rstrip("\n"))
+        template = template.replace("$properties$", properties.rstrip("\n"))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
