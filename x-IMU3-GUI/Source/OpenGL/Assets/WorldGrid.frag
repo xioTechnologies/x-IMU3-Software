@@ -58,4 +58,4 @@ vec4 grid(vec2 uvPos, float scale)
 void main()
 {
     fragColor = grid(textureCoord_frag, gridTilingFactor);
-} 
+}
