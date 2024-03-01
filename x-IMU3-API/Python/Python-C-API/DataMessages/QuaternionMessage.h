@@ -47,6 +47,8 @@ static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject*
     return Py_BuildValue("s", XIMU3_quaternion_message_to_string(self->message));
 }
 
+PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
+
 static PyGetSetDef quaternion_message_get_set[] = {
         { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },
         { "w",         (getter) quaternion_message_get_w,         NULL, "", NULL },
@@ -57,7 +59,8 @@ static PyGetSetDef quaternion_message_get_set[] = {
 };
 
 static PyMethodDef quaternion_message_methods[] = {
-        { "to_string", (PyCFunction) quaternion_message_to_string, METH_NOARGS, "" },
+        { "to_string",               (PyCFunction) quaternion_message_to_string,               METH_NOARGS, "" },
+        { "to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 

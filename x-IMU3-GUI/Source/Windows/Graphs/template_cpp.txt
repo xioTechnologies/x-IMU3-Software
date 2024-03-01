@@ -1,5 +1,4 @@
 #include "ConnectionPanel/ConnectionPanel.h"
-#include "Convert.h"
 #include "$name$GraphWindow.h"
 
 $name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)

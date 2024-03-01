@@ -288,6 +288,25 @@ static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case
 
         template = template.replace("$get_functions$", get_functions.rstrip("\n"))
 
+        # Method functions
+        method_names = ["to_string"]
+
+        method_functions = "\
+static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)\n\
+{\n\
+    return Py_BuildValue(\"s\", XIMU3_$name_snake_case$_message_to_string(self->message));\n\
+}\n\n"
+
+        if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
+            method_names = method_names + ["to_euler_angles_message"]
+            method_functions += "PyObject* $name_snake_case$_message_to_euler_angles_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+
+        if message.name == "Euler Angles":
+            method_names = method_names + ["to_quaternion_message"]
+            method_functions += "PyObject* $name_snake_case$_message_to_quaternion_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+
+        template = template.replace("$method_functions$", method_functions.rstrip("\n"))
+
         # Get set members
         width = max([len(n) for n in argument_names], default=0)
 
@@ -300,6 +319,19 @@ static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case
             get_set_members += get_set_member
 
         template = template.replace("$get_set_members$", get_set_members.rstrip("\n        "))
+
+        # Get method members
+        width = max([len(n) for n in method_names])
+
+        method_members = ""
+
+        for method_name in method_names:
+            method_member = "{ \"$method_name$\", $whitespace$(PyCFunction) $name_snake_case$_message_$method_name$, $whitespace$METH_NOARGS, \"\" },\n        "
+            method_member = method_member.replace("$method_name$", method_name)
+            method_member = method_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(method_name))))
+            method_members += method_member
+
+        template = template.replace("$method_members$", method_members.rstrip("\n        "))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
@@ -313,11 +345,7 @@ static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case
         file.write(template)
 
 # Generate x-IMU3-API/Python/Python-C-API/DataMessages/DataMessages.h
-with open("../../../Python/Python-C-API/DataMessages/DataMessages.h", "w") as file:
-    file.write(helpers.preamble())
-
-    for message in messages:
-        file.write("#include \"" + helpers.pascal_case(message.name) + "Message.h\"\n")
+insert("../../../Python/Python-C-API/DataMessages/DataMessages.h", "#include \"$name_pascal_case$Message.h\"\n", 0)
 
 # Insert code into x-IMU3-API/Python/Python-C-API/ximu3.c
 template = "        add_object(module, &$name_snake_case$_message_object, \"$name_pascal_case$Message\") &&\n"
@@ -376,6 +404,21 @@ for message in messages:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
+        to_quaternion = message.name == "Euler Angles"
+        to_euler = message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]
+
+        # Includes
+        includes = "#include \"../../../C/Ximu3.h\"\n"
+
+        if to_quaternion:
+            includes += "//#include \"QuaternionMessage.h\"\n"
+
+        if to_euler:
+            includes += "#include \"EulerAnglesMessage.h\"\n"
+
+        template = template.replace("$includes$", includes.rstrip("\n"))
+
+        # Properties
         properties = ""
 
         for name in message.argument_names:
@@ -390,6 +433,29 @@ for message in messages:
             properties += property.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
 
         template = template.replace("$properties$", properties.rstrip("\n"))
+
+        # Methods
+        methods = "\
+        String^ ToString() override\n\
+        {\n\
+            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));\n\
+        }\n\n"
+
+        if to_quaternion:
+            methods += "\
+        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference\n\
+        //{\n\
+        //    return gcnew QuaternionMessage(XIMU3_$name_snake_case$_message_to_quaternion_message(*message));\n\
+        //}\n\n"
+
+        if to_euler:
+            methods += "\
+        EulerAnglesMessage^ ToEulerAnglesMessage()\n\
+        {\n\
+            return gcnew EulerAnglesMessage(XIMU3_$name_snake_case$_message_to_euler_angles_message(*message));\n\
+        }\n\n"
+
+        template = template.replace("$methods$", methods.rstrip("\n"))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()

@@ -119,6 +119,7 @@ namespace Ximu3Examples
                 FloatFormat(args.message.Y) +
                 FloatFormat(args.message.Z));
             // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
         }
 
         private void RotationMatrixEvent(Object sender, Ximu3.RotationMatrixEventArgs args)
@@ -134,6 +135,7 @@ namespace Ximu3Examples
                 FloatFormat(args.message.ZY) +
                 FloatFormat(args.message.ZZ));
             // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
         }
 
         private void EulerAnglesEvent(Object sender, Ximu3.EulerAnglesEventArgs args)
@@ -156,6 +158,7 @@ namespace Ximu3Examples
                 FloatFormat(args.message.AccelerationY) + " g" +
                 FloatFormat(args.message.AccelerationZ) + " g");
             // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
         }
 
         private void EarthAccelerationEvent(Object sender, Ximu3.EarthAccelerationEventArgs args)
@@ -169,6 +172,7 @@ namespace Ximu3Examples
                 FloatFormat(args.message.AccelerationY) + " g" +
                 FloatFormat(args.message.AccelerationZ) + " g");
             // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
         }
 
         private void AhrsStatusEvent(Object sender, Ximu3.AhrsStatusEventArgs args)

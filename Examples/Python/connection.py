@@ -60,6 +60,7 @@ def quaternion_callback(message):
           float_format(message.y) +
           float_format(message.z))
     # print(message.to_string())  # alternative to above
+    print(message.to_euler_angles_message().to_string())
 
 
 def rotation_matrix_callback(message):
@@ -74,6 +75,7 @@ def rotation_matrix_callback(message):
           float_format(message.zy) +
           float_format(message.zz))
     # print(message.to_string())  # alternative to above
+    print(message.to_euler_angles_message().to_string())
 
 
 def euler_angles_callback(message):
@@ -82,6 +84,7 @@ def euler_angles_callback(message):
           float_format(message.pitch) + " deg",
           float_format(message.yaw) + " deg")
     # print(message.to_string())  # alternative to above
+    print(message.to_quaternion_message().to_string())
 
 
 def linear_acceleration_callback(message):
@@ -94,6 +97,7 @@ def linear_acceleration_callback(message):
           float_format(message.acceleration_y) + " g" +
           float_format(message.acceleration_z) + " g")
     # print(message.to_string())  # alternative to above
+    print(message.to_euler_angles_message().to_string())
 
 
 def earth_acceleration_callback(message):
@@ -106,6 +110,7 @@ def earth_acceleration_callback(message):
           float_format(message.acceleration_y) + " g" +
           float_format(message.acceleration_z) + " g")
     # print(message.to_string())  # alternative to above
+    print(message.to_euler_angles_message().to_string())
 
 
 def ahrs_status_callback(message):

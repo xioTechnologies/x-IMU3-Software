@@ -1,5 +1,4 @@
 #include "ConnectionPanel/ConnectionPanel.h"
-#include "Convert.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "SerialAccessoryTerminalWindow.h"
 

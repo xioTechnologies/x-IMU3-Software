@@ -146,6 +146,7 @@ void QuaternionCallback(const XIMU3_QuaternionMessage message, void* context)
            message.y,
            message.z);
     // printf("%s\n", XIMU3_quaternion_message_to_string(message)); // alternative to above
+    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_quaternion_message_to_euler_angles_message(message)));
 }
 
 void RotationMatrixCallback(const XIMU3_RotationMatrixMessage message, void* context)
@@ -162,6 +163,7 @@ void RotationMatrixCallback(const XIMU3_RotationMatrixMessage message, void* con
            message.zy,
            message.zz);
     // printf("%s\n", XIMU3_rotation_matrix_message_to_string(message)); // alternative to above
+    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
 }
 
 void EulerAnglesCallback(const XIMU3_EulerAnglesMessage message, void* context)
@@ -172,6 +174,7 @@ void EulerAnglesCallback(const XIMU3_EulerAnglesMessage message, void* context)
            message.pitch,
            message.yaw);
     // printf("%s\n", XIMU3_euler_angles_message_to_string(message)); // alternative to above
+    printf("%s\n", XIMU3_quaternion_message_to_string(XIMU3_euler_angles_message_to_quaternion_message(message)));
 }
 
 void LinearAccelerationCallback(const XIMU3_LinearAccelerationMessage message, void* context)
@@ -186,6 +189,7 @@ void LinearAccelerationCallback(const XIMU3_LinearAccelerationMessage message, v
            message.acceleration_y,
            message.acceleration_z);
     // printf("%s\n", XIMU3_linear_acceleration_message_to_string(message)); // alternative to above
+    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_linear_acceleration_message_to_euler_angles_message(message)));
 }
 
 void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, void* context)
@@ -200,6 +204,7 @@ void EarthAccelerationCallback(const XIMU3_EarthAccelerationMessage message, voi
            message.acceleration_y,
            message.acceleration_z);
     // printf("%s\n", XIMU3_earth_acceleration_message_to_string(message)); // alternative to above
+    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_earth_acceleration_message_to_euler_angles_message(message)));
 }
 
 void AhrsStatusCallback(const XIMU3_AhrsStatusMessage message, void* context)
