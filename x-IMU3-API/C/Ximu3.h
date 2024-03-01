@@ -498,6 +498,16 @@ const char *XIMU3_notification_message_to_string(struct XIMU3_NotificationMessag
 
 const char *XIMU3_error_message_to_string(struct XIMU3_ErrorMessage message);
 
+struct XIMU3_EulerAnglesMessage XIMU3_quaternion_message_to_euler_angles_message(struct XIMU3_QuaternionMessage message);
+
+struct XIMU3_EulerAnglesMessage XIMU3_rotation_matrix_message_to_euler_angles_message(struct XIMU3_RotationMatrixMessage message);
+
+struct XIMU3_QuaternionMessage XIMU3_euler_angles_message_to_quaternion_message(struct XIMU3_EulerAnglesMessage message);
+
+struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angles_message(struct XIMU3_LinearAccelerationMessage message);
+
+struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
+
 const char *XIMU3_decode_error_to_string(enum XIMU3_DecodeError decode_error);
 
 const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus status);

@@ -18,7 +18,7 @@ namespace Convert
                                            (yx - xy) / s,
                                            0.25f * s);
         }
-        else if ((xx > yy) & (xx > zz))
+        else if ((xx > yy) && (xx > zz))
         {
             const auto s = std::sqrt(1.0f + xx - yy - zz) * 2.0f; // s=4*x
             return juce::Quaternion<float>(0.25f * s,
