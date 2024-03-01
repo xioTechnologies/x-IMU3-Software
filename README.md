@@ -2,7 +2,7 @@
 [![build](https://img.shields.io/github/actions/workflow/status/xioTechnologies/x-IMU3-Software/main.yml?branch=main)](https://github.com/xioTechnologies/x-IMU3-Software/actions/workflows/main.yml)
 [![pypi](https://img.shields.io/pypi/v/ximu3.svg)](https://pypi.org/project/ximu3/)
 [![python](https://img.shields.io/pypi/pyversions/ximu3.svg)](https://pypi.org/project/ximu3/)
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 # x-IMU3 Software
 
@@ -22,6 +22,7 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 
 ## Distributions
 
+- [C API for Windows, macOS, Linux, iOS, Android](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest)
 - [Rust crate](https://crates.io/crates/ximu3/)
 - [Python package](https://pypi.org/project/ximu3/)
 - [x-IMU3 GUI for Windows](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Setup.exe)
@@ -29,10 +30,6 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 - [x-IMU3 GUI for macOS (Apple Silicon)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
 - [x-IMU3 GUI for Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
 
-## Branch Protection
+## Licence
 
-The GitHub repository applies the following branch protection rules to the main branch. All commits must be made to a non-protected branch and submitted via a pull request before they can be merged into the the main branch.
-
-- *Require a pull request before merging*
-- *Require linear history*
-- *Include administrators*
+The x-IMU3 Software is covered by the [MIT Licence](https://opensource.org/licenses/MIT) with the exception of the x-IMU3 GUI which uses [JUCE](https://juce.com/) and so is covered by the [GNU GPLv3 License](https://www.gnu.org/licenses/gpl-3.0) as per the [JUCE 7 EULA](https://juce.com/legal/juce-7-license/).
