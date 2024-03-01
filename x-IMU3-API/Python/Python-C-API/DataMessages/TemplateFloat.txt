@@ -17,10 +17,7 @@ static void $name_snake_case$_message_free($name_pascal_case$Message* self)
 
 $get_functions$
 
-static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)
-{
-    return Py_BuildValue("s", XIMU3_$name_snake_case$_message_to_string(self->message));
-}
+$method_functions$
 
 static PyGetSetDef $name_snake_case$_message_get_set[] = {
         $get_set_members$
@@ -28,7 +25,7 @@ static PyGetSetDef $name_snake_case$_message_get_set[] = {
 };
 
 static PyMethodDef $name_snake_case$_message_methods[] = {
-        { "to_string", (PyCFunction) $name_snake_case$_message_to_string, METH_NOARGS, "" },
+        $method_members$
         { NULL } /* sentinel */
 };
 

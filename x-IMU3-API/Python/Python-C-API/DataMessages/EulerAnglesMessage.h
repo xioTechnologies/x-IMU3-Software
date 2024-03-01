@@ -42,6 +42,8 @@ static PyObject* euler_angles_message_to_string(EulerAnglesMessage* self, PyObje
     return Py_BuildValue("s", XIMU3_euler_angles_message_to_string(self->message));
 }
 
+PyObject* euler_angles_message_to_quaternion_message(EulerAnglesMessage* self, PyObject* args);
+
 static PyGetSetDef euler_angles_message_get_set[] = {
         { "timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL },
         { "roll",      (getter) euler_angles_message_get_roll,      NULL, "", NULL },
@@ -51,7 +53,8 @@ static PyGetSetDef euler_angles_message_get_set[] = {
 };
 
 static PyMethodDef euler_angles_message_methods[] = {
-        { "to_string", (PyCFunction) euler_angles_message_to_string, METH_NOARGS, "" },
+        { "to_string",             (PyCFunction) euler_angles_message_to_string,             METH_NOARGS, "" },
+        { "to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 
