@@ -9,7 +9,7 @@ license = "MIT"
 build = "build.rs"
 
 [lib]
-crate-type = ["rlib", "staticlib"]
+crate-type = ["rlib", "staticlib", "dylib"]
 
 [dependencies]
 crossbeam = "0.8.4"
