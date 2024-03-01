@@ -1,4 +1,3 @@
-#include "Convert.h"
 #include "CustomLookAndFeel.h"
 #include "ThreeDView.h"
 

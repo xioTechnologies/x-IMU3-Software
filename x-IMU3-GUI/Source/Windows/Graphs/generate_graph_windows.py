@@ -70,17 +70,14 @@ windows = [
            callback_implementations="\
     callbackIDs.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);\n\
-        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);\n\
+        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });\n\
     }));\n\
 \n\
     callbackIDs.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)\n\
     {\n\
-        const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,\n\
-                                                      message.yx, message.yy, message.yz,\n\
-                                                      message.zx, message.zy, message.zz);\n\
-        const auto eulerAngles = Convert::toEulerAngles(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);\n\
-        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        const auto eulerAngles = ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message);\n\
+        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });\n\
     }));\n\
 \n\
     callbackIDs.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)\n\
@@ -90,14 +87,14 @@ windows = [
 \n\
     callbackIDs.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
-        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        const auto eulerAngles = ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message);\n\
+        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });\n\
     }));\n\
 \n\
     callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)\n\
     {\n\
-        const auto eulerAngles = Convert::toEulerAngles(message.quaternion_x, message.quaternion_y, message.quaternion_z, message.quaternion_w);\n\
-        update(message.timestamp, { eulerAngles.x, eulerAngles.y, eulerAngles.z });\n\
+        const auto eulerAngles = ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message);\n\
+        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });\n\
     }));",
            ),
     Window(name="LinearAcceleration",

@@ -101,6 +101,7 @@ pub fn quaternion_closure(message: QuaternionMessage) {
              message.y,
              message.z);
     // println!("{}", message); // alternative to above
+    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn rotation_matrix_closure(message: RotationMatrixMessage) {
@@ -116,6 +117,7 @@ pub fn rotation_matrix_closure(message: RotationMatrixMessage) {
              message.zy,
              message.zz);
     // println!("{}", message); // alternative to above
+    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn euler_angles_closure(message: EulerAnglesMessage) {
@@ -125,6 +127,7 @@ pub fn euler_angles_closure(message: EulerAnglesMessage) {
              message.pitch,
              message.yaw);
     // println!("{}", message); // alternative to above
+    println!("{}", QuaternionMessage::from(message));
 }
 
 pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
@@ -138,6 +141,7 @@ pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
              message.acceleration_y,
              message.acceleration_z);
     // println!("{}", message); // alternative to above
+    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
@@ -151,6 +155,7 @@ pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
              message.acceleration_y,
              message.acceleration_z);
     // println!("{}", message); // alternative to above
+    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn ahrs_status_closure(message: AhrsStatusMessage) {

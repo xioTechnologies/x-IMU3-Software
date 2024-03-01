@@ -72,6 +72,8 @@ static PyObject* rotation_matrix_message_to_string(RotationMatrixMessage* self, 
     return Py_BuildValue("s", XIMU3_rotation_matrix_message_to_string(self->message));
 }
 
+PyObject* rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage* self, PyObject* args);
+
 static PyGetSetDef rotation_matrix_message_get_set[] = {
         { "timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL },
         { "xx",        (getter) rotation_matrix_message_get_xx,        NULL, "", NULL },
@@ -87,7 +89,8 @@ static PyGetSetDef rotation_matrix_message_get_set[] = {
 };
 
 static PyMethodDef rotation_matrix_message_methods[] = {
-        { "to_string", (PyCFunction) rotation_matrix_message_to_string, METH_NOARGS, "" },
+        { "to_string",               (PyCFunction) rotation_matrix_message_to_string,               METH_NOARGS, "" },
+        { "to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 

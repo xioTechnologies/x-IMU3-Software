@@ -1,5 +1,4 @@
 #include "./ConnectionPanelContainer.h"
-#include "Convert.h"
 #include "ThreeDViewWindow.h"
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
@@ -24,27 +23,23 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
     {
         threeDView.update(message.x, message.y, message.z, message.w);
 
-        const auto eulerAngles = Convert::toEulerAngles(message.x, message.y, message.z, message.w);
+        const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
 
-        roll = eulerAngles.x;
-        pitch = eulerAngles.y;
-        yaw = eulerAngles.z;
+        roll = eulerAngles.roll;
+        pitch = eulerAngles.pitch;
+        yaw = eulerAngles.yaw;
     });
 
     rotationMatrixCallbackID = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
-        const auto quaternion = Convert::toQuaternion(message.xx, message.xy, message.xz,
-                                                      message.yx, message.yy, message.yz,
-                                                      message.zx, message.zy, message.zz);
-
-        quaternionCallback({ message.timestamp, quaternion.scalar, quaternion.vector.x, quaternion.vector.y, quaternion.vector.z });
+        quaternionCallback(ximu3::XIMU3_euler_angles_message_to_quaternion_message(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
     });
 
     eulerAnglesCallbackID = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
-        const auto quaternion = Convert::toQuaternion(message.roll, message.pitch, message.yaw);
+        const auto quaternion = ximu3::XIMU3_euler_angles_message_to_quaternion_message(message);
 
-        threeDView.update(quaternion.vector.x, quaternion.vector.y, quaternion.vector.z, quaternion.scalar);
+        threeDView.update(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 
         roll = message.roll;
         pitch = message.pitch;

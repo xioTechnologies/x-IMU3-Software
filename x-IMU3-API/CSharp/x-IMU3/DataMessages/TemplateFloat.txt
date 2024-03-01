@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../C/Ximu3.h"
+$includes$
 
 using namespace System;
 
@@ -29,10 +29,7 @@ namespace Ximu3
 
 $properties$
 
-        String^ ToString() override
-        {
-            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));
-        }
+$methods$
 
     private:
         ximu3::XIMU3_$name_pascal_case$Message* message;

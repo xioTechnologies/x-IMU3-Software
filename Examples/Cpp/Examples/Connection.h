@@ -111,6 +111,7 @@ private:
                message.y,
                message.z);
         // std::cout << XIMU3_quaternion_message_to_string(message) << std::endl; // alternative to above
+        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_quaternion_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_RotationMatrixMessage message)> rotationMatrixCallback = [](auto message)
@@ -127,6 +128,7 @@ private:
                message.zy,
                message.zz);
         // std::cout << XIMU3_rotation_matrix_message_to_string(message) << std::endl; // alternative to above
+        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_rotation_matrix_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_EulerAnglesMessage message)> eulerAnglesCallback = [](auto message)
@@ -137,6 +139,7 @@ private:
                message.pitch,
                message.yaw);
         // std::cout << XIMU3_euler_angles_message_to_string(message) << std::endl; // alternative to above
+        std::cout << XIMU3_quaternion_message_to_string(XIMU3_euler_angles_message_to_quaternion_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage message)> linearAccelerationCallback = [](auto message)
@@ -151,6 +154,7 @@ private:
                message.acceleration_y,
                message.acceleration_z);
         // std::cout << XIMU3_linear_acceleration_message_to_string(message) << std::endl; // alternative to above
+        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_linear_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage message)> earthAccelerationCallback = [](auto message)
@@ -165,6 +169,7 @@ private:
                message.acceleration_y,
                message.acceleration_z);
         // std::cout << XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
+        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_earth_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message)

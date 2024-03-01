@@ -62,6 +62,8 @@ static PyObject* earth_acceleration_message_to_string(EarthAccelerationMessage* 
     return Py_BuildValue("s", XIMU3_earth_acceleration_message_to_string(self->message));
 }
 
+PyObject* earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage* self, PyObject* args);
+
 static PyGetSetDef earth_acceleration_message_get_set[] = {
         { "timestamp",      (getter) earth_acceleration_message_get_timestamp,      NULL, "", NULL },
         { "quaternion_w",   (getter) earth_acceleration_message_get_quaternion_w,   NULL, "", NULL },
@@ -75,7 +77,8 @@ static PyGetSetDef earth_acceleration_message_get_set[] = {
 };
 
 static PyMethodDef earth_acceleration_message_methods[] = {
-        { "to_string", (PyCFunction) earth_acceleration_message_to_string, METH_NOARGS, "" },
+        { "to_string",               (PyCFunction) earth_acceleration_message_to_string,               METH_NOARGS, "" },
+        { "to_euler_angles_message", (PyCFunction) earth_acceleration_message_to_euler_angles_message, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 

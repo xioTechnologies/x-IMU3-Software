@@ -62,6 +62,8 @@ static PyObject* linear_acceleration_message_to_string(LinearAccelerationMessage
     return Py_BuildValue("s", XIMU3_linear_acceleration_message_to_string(self->message));
 }
 
+PyObject* linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage* self, PyObject* args);
+
 static PyGetSetDef linear_acceleration_message_get_set[] = {
         { "timestamp",      (getter) linear_acceleration_message_get_timestamp,      NULL, "", NULL },
         { "quaternion_w",   (getter) linear_acceleration_message_get_quaternion_w,   NULL, "", NULL },
@@ -75,7 +77,8 @@ static PyGetSetDef linear_acceleration_message_get_set[] = {
 };
 
 static PyMethodDef linear_acceleration_message_methods[] = {
-        { "to_string", (PyCFunction) linear_acceleration_message_to_string, METH_NOARGS, "" },
+        { "to_string",               (PyCFunction) linear_acceleration_message_to_string,               METH_NOARGS, "" },
+        { "to_euler_angles_message", (PyCFunction) linear_acceleration_message_to_euler_angles_message, METH_NOARGS, "" },
         { NULL } /* sentinel */
 };
 
