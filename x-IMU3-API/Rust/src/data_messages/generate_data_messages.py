@@ -404,6 +404,21 @@ for message in messages:
         with open(directory + "TemplateFloat.txt") as file:
             template = file.read()
 
+        to_quaternion = message.name == "Euler Angles"
+        to_euler = message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]
+
+        # Includes
+        includes = "#include \"../../../C/Ximu3.h\"\n"
+
+        if to_quaternion:
+            includes += "//#include \"QuaternionMessage.h\"\n"
+
+        if to_euler:
+            includes += "#include \"EulerAnglesMessage.h\"\n"
+
+        template = template.replace("$includes$", includes.rstrip("\n"))
+
+        # Properties
         properties = ""
 
         for name in message.argument_names:
@@ -418,6 +433,29 @@ for message in messages:
             properties += property.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
 
         template = template.replace("$properties$", properties.rstrip("\n"))
+
+        # Methods
+        methods = "\
+        String^ ToString() override\n\
+        {\n\
+            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));\n\
+        }\n\n"
+
+        if to_quaternion:
+            methods += "\
+        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference\n\
+        //{\n\
+        //    return gcnew QuaternionMessage(XIMU3_$name_snake_case$_message_to_quaternion_message(*message));\n\
+        //}\n\n"
+
+        if to_euler:
+            methods += "\
+        EulerAnglesMessage^ ToEulerAnglesMessage()\n\
+        {\n\
+            return gcnew EulerAnglesMessage(XIMU3_$name_snake_case$_message_to_euler_angles_message(*message));\n\
+        }\n\n"
+
+        template = template.replace("$methods$", methods.rstrip("\n"))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()

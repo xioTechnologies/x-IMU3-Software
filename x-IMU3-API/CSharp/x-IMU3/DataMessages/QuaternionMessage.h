@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../../../C/Ximu3.h"
+#include "EulerAnglesMessage.h"
 
 using namespace System;
 
@@ -64,6 +65,11 @@ namespace Ximu3
         String^ ToString() override
         {
             return gcnew String(ximu3::XIMU3_quaternion_message_to_string(*message));
+        }
+
+        EulerAnglesMessage^ ToEulerAnglesMessage()
+        {
+            return gcnew EulerAnglesMessage(XIMU3_quaternion_message_to_euler_angles_message(*message));
         }
 
     private:

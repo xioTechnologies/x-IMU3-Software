@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../../../C/Ximu3.h"
+//#include "QuaternionMessage.h"
 
 using namespace System;
 
@@ -57,6 +58,11 @@ namespace Ximu3
         {
             return gcnew String(ximu3::XIMU3_euler_angles_message_to_string(*message));
         }
+
+        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference
+        //{
+        //    return gcnew QuaternionMessage(XIMU3_euler_angles_message_to_quaternion_message(*message));
+        //}
 
     private:
         ximu3::XIMU3_EulerAnglesMessage* message;
