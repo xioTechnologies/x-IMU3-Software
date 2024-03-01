@@ -28,29 +28,61 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: # [ os, rust-target, library-file-name, library-file-extension ]
-          - [ macos-latest, x86_64-apple-darwin, libximu3, a ]
-          - [ macos-latest, aarch64-apple-darwin, libximu3, a ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a ]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a ]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a ]
-          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a ]
-          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib ]
+        target: # [ os, rust-target, file-name, static-file-extension, dynamic-file-extension ]
+          - [ macos-latest, x86_64-apple-darwin, libximu3, a, dylib ]
+          - [ macos-latest, aarch64-apple-darwin, libximu3, a, dylib ]
+          - [ macos-latest, aarch64-apple-ios, libximu3, a, dylib ]
+          - [ macos-latest, aarch64-apple-ios-sim, libximu3, a, dylib ]
+          - [ macos-latest, x86_64-apple-ios, libximu3, a, dylib ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so]
+          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so]
+          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, dll ]
+          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib, dll ]
 
     steps:
       - uses: actions/checkout@v4
 
       - if: matrix.target[0] == 'ubuntu-latest'
         name: Install ubuntu dependency
-        run: sudo apt-get install -y libudev-dev
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install gcc-multilib
+          sudo apt-get install -y libudev-dev libudev-dev:i386
+          sudo apt-get install -y gcc-aarch64-linux-gnu
 
-      - name: Build
+      - name: Add rustup target
+        run: rustup target add ${{ matrix.target[1] }}
+
+      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu' && matrix.target[1] != 'aarch64-linux-android'
+        name: Build (excluding Ubuntu ARM64 and Android)
         working-directory: x-IMU3-API/Rust/
         env:
           PKG_CONFIG_SYSROOT_DIR: /
+          PKG_CONFIG_PATH_i686-unknown-linux-gnu: /usr/lib/i386-linux-gnu/pkgconfig
+          PKG_CONFIG_SYSROOT_DIR_i686-unknown-linux-gnu: /
+          PKG_CONFIG_ALLOW_CROSS: 1
+        run: cargo build --release --target ${{ matrix.target[1] }}
+
+      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu'
+        name: Build for Ubuntu ARM64
+        working-directory: x-IMU3-API/Rust/
+        env:
+          PKG_CONFIG_SYSROOT_DIR: /
+          PKG_CONFIG_ALLOW_CROSS: 1
+        run: cargo rustc --release --target ${{ matrix.target[1] }} --crate-type staticlib
+
+      - if: matrix.target[1] == 'aarch64-linux-android'
+        name: Build for Android
+        working-directory: x-IMU3-API/Rust/
+        env:
+          PKG_CONFIG_SYSROOT_DIR: /
+          PKG_CONFIG_ALLOW_CROSS: 1
         run: |
-          rustup target add ${{ matrix.target[1] }}
-          cargo build --release --target ${{ matrix.target[1] }}
+          cargo install cargo-ndk
+          cargo ndk -t ${{ matrix.target[1] }} build --release          
 
       - uses: actions/upload-artifact@v4
         name: Upload to artifacts
@@ -58,7 +90,15 @@ jobs:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
 
-      - name: Zip
+      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu'
+        name: Zip (excluding Ubuntu ARM64)
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[4] }}
+          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
+
+      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu'
+        name: Zip for Ubuntu ARM64
         uses: vimtor/action-zip@v1.2
         with:
           files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
