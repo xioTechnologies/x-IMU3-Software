@@ -1,4 +1,3 @@
-#include "Convert.h"
 #include "SerialAccessoryTerminal.h"
 
 SerialAccessoryTerminal::SerialAccessoryTerminal()
