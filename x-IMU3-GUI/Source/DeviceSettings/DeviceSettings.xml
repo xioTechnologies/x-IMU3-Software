@@ -63,14 +63,11 @@
         </Group>
     </Group>
     <Group name="Data Logger">
-        <Setting key="dataLoggerEnabled" name="Enabled" type="bool"/>
-        <Group name="File Name" hideKey="dataLoggerEnabled" hideValues="0">
-            <Setting key="dataLoggerFileNamePrefix" name="Prefix" type="string" emptyValue="Disabled"/>
-            <Setting key="dataLoggerFileNameTimeEnabled" name="Time" type="bool"/>
-            <Setting key="dataLoggerFileNameCounterEnabled" name="Counter" type="bool"/>
-        </Group>
-        <Setting key="dataLoggerMaxFileSize" name="Max File Size (MB)" type="number" hideKey="dataLoggerEnabled" hideValues="0"/>
-        <Setting key="dataLoggerMaxFilePeriod" name="Max File Period (s)" type="number" hideKey="dataLoggerEnabled" hideValues="0"/>
+        <Setting key="dataLoggerAutomaticStartStopEnabled" name="Automatic Start Stop" type="bool"/>
+        <Setting key="dataLoggerFileNamePrefix" name="File Name Prefix" type="string" emptyValue="Disabled" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
+        <Setting key="dataLoggerFileNameCounterEnabled" name="File Name Counter" type="bool" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaxFileSize" name="Max File Size (MB)" type="number" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
+        <Setting key="dataLoggerMaxFilePeriod" name="Max File Period (s)" type="number" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
     </Group>
     <Group name="Sensor Processing">
         <Setting key="axesAlignment" name="Axes Alignment" type="FusionAxesAlignment"/>
@@ -94,15 +91,19 @@
             <Setting key="dataLoggerDataMessagesEnabled" name="Data Logger" type="bool"/>
         </Group>
         <Setting key="ahrsMessageType" name="AHRS Message Type" type="SendAhrsMessageType"/>
-        <Group name="Message Rates Divisor">
-            <Setting key="inertialMessageRateDivisor" name="Inertial" type="number"/>
-            <Setting key="magnetometerMessageRateDivisor" name="Magnetometer" type="number"/>
-            <Setting key="ahrsMessageRateDivisor" name="AHRS" type="number"/>
-            <Setting key="highGAccelerometerMessageRateDivisor" name="High-g Accelerometer" type="number"/>
-            <Setting key="temperatureMessageRateDivisor" name="Temperature" type="number"/>
-            <Setting key="batteryMessageRateDivisor" name="Battery" type="number"/>
-            <Setting key="rssiMessageRateDivisor" name="RSSI" type="number"/>
+        <Group name="Message Rates">
+            <Setting key="inertialMessageRateDivisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
+            <Setting key="magnetometerMessageRateDivisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
+            <Setting key="ahrsMessageRateDivisor" name="AHRS" type="SendMessageRateDivisorAhrs"/>
+            <Setting key="highGAccelerometerMessageRateDivisor" name="High-g Accelerometer" type="SendMessageRateDivisorHighGAccelerometer"/>
+            <Setting key="temperatureMessageRateDivisor" name="Temperature" type="SendMessageRateDivisorTemperature"/>
+            <Setting key="batteryMessageRateDivisor" name="Battery" type="SendMessageRateDivisorBattery"/>
+            <Setting key="rssiMessageRateDivisor" name="RSSI" type="SendMessageRateDivisorRssi"/>
         </Group>
+    </Group>
+    <Group name="Power">
+        <Setting key="usbPowerOnEnabled" name="USB Power On" type="bool"/>
+        <Setting key="shippingModeEnabled" name="Shipping Mode" type="bool"/>
     </Group>
     <Margin/>
 </DeviceSettings>

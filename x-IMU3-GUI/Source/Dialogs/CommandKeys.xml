@@ -8,6 +8,9 @@
     <Command key="shutdown" type="4"/>
     <Command key="strobe" type="4"/>
     <Command key="colour" type="0"/>
+    <Command key="start" type="0"/>
+    <Command key="stop" type="4"/>
+    <Command key="delete" type="0"/>
     <Command key="initialise" type="4"/>
     <Command key="heading" type="1"/>
     <Command key="accessory" type="0"/>
@@ -57,9 +60,8 @@
     <Command key="bluetoothDiscoveryMode" type="1"/>
     <Command key="bluetoothPairedAddress" type="0"/>
     <Command key="bluetoothPairedLinkKey" type="0"/>
-    <Command key="dataLoggerEnabled" type="2"/>
+    <Command key="dataLoggerAutomaticStartStopEnabled" type="2"/>
     <Command key="dataLoggerFileNamePrefix" type="0"/>
-    <Command key="dataLoggerFileNameTimeEnabled" type="2"/>
     <Command key="dataLoggerFileNameCounterEnabled" type="2"/>
     <Command key="dataLoggerMaxFileSize" type="1"/>
     <Command key="dataLoggerMaxFilePeriod" type="1"/>
@@ -85,4 +87,6 @@
     <Command key="temperatureMessageRateDivisor" type="1"/>
     <Command key="batteryMessageRateDivisor" type="1"/>
     <Command key="rssiMessageRateDivisor" type="1"/>
+    <Command key="usbPowerOnEnabled" type="2"/>
+    <Command key="shippingModeEnabled" type="2"/>
 </CommandKeys>
