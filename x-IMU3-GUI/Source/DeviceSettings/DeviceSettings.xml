@@ -82,6 +82,7 @@
     </Group>
     <Group name="Data Messages">
         <Setting key="binaryModeEnabled" name="Binary Mode" type="bool"/>
+        <Setting key="ahrsMessageType" name="AHRS Message Type" type="SendAhrsMessageType"/>
         <Group name="Communication Interface">
             <Setting key="usbDataMessagesEnabled" name="USB" type="bool"/>
             <Setting key="serialDataMessagesEnabled" name="Serial" type="bool"/>
@@ -90,7 +91,6 @@
             <Setting key="bluetoothDataMessagesEnabled" name="Bluetooth" type="bool"/>
             <Setting key="dataLoggerDataMessagesEnabled" name="Data Logger" type="bool"/>
         </Group>
-        <Setting key="ahrsMessageType" name="AHRS Message Type" type="SendAhrsMessageType"/>
         <Group name="Message Rates">
             <Setting key="inertialMessageRateDivisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
             <Setting key="magnetometerMessageRateDivisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
