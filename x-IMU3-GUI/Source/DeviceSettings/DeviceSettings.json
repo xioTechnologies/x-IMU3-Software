@@ -160,7 +160,7 @@
     {
         "name": "Wi-Fi IP address",
         "declaration": "RS9116IPAddress name",
-        "default": "{0}",
+        "default": "{0x00000000}",
         "read only": true
     },
     {
@@ -226,7 +226,7 @@
     {
         "name": "UDP IP address",
         "declaration": "RS9116IPAddress name",
-        "default": "{0}"
+        "default": "{0x00000000}"
     },
     {
         "name": "UDP send port",
@@ -352,6 +352,11 @@
         "default": "{true}"
     },
     {
+        "name": "AHRS message type",
+        "declaration": "SendAhrsMessageType name",
+        "default": "{SendAhrsMessageTypeQuaternion}"
+    },
+    {
         "name": "USB data messages enabled",
         "declaration": "bool name",
         "default": "{true}"
@@ -380,11 +385,6 @@
         "name": "Data logger data messages enabled",
         "declaration": "bool name",
         "default": "{true}"
-    },
-    {
-        "name": "AHRS message type",
-        "declaration": "SendAhrsMessageType name",
-        "default": "{SendAhrsMessageTypeQuaternion}"
     },
     {
         "name": "Inertial message rate divisor",
