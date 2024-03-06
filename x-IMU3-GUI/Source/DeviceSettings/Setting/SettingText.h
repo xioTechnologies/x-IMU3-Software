@@ -10,24 +10,31 @@ public:
     explicit SettingText(const juce::ValueTree& settingTree) : Setting(settingTree)
     {
         addAndMakeVisible(value);
-        value.onTextChange = [&]
+        value.onReturnKey = value.onEscapeKey = value.onFocusLost = [&]
         {
+            juce::var newValue; // will be interpreted as null in json
+
             if (tree[DeviceSettingsIDs::type] == "number")
             {
                 try
                 {
-                    setValue(std::stof(value.getText().toStdString()));
+                    newValue = std::stof(value.getText().toStdString());
                 }
                 catch (...)
                 {
-                    setValue({}); // will be interpreted as null in json
                 }
             }
             else
             {
-                setValue(value.getText());
+                newValue = value.getText();
             }
 
+            if (newValue == tree[DeviceSettingsIDs::value])
+            {
+                return;
+            }
+
+            setValue(newValue);
             updateTextToShowWhenEmpty();
         };
         value.setReadOnly(isReadOnly());
