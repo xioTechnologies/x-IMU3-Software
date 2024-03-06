@@ -28,18 +28,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: # [ os, rust-target, file-name, static-file-extension, dynamic-file-extension ]
-          - [ macos-latest, x86_64-apple-darwin, libximu3, a, dylib ]
-          - [ macos-latest, aarch64-apple-darwin, libximu3, a, dylib ]
-          - [ macos-latest, aarch64-apple-ios, libximu3, a, dylib ]
-          - [ macos-latest, aarch64-apple-ios-sim, libximu3, a, dylib ]
-          - [ macos-latest, x86_64-apple-ios, libximu3, a, dylib ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so]
-          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, dll ]
-          - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib, dll ]
+        target: # [ os, rust-target, file-name, static-file-name, dynamic-file-name ]
+          - [ macos-latest, x86_64-apple-darwin, libximu3.a, libximu3.dylib ]
+          - [ macos-latest, aarch64-apple-darwin, libximu3.a, libximu3.dylib ]
+          - [ macos-latest, aarch64-apple-ios, libximu3.a, libximu3.dylib ]
+          - [ macos-latest, aarch64-apple-ios-sim, libximu3.a, libximu3.dylib ]
+          - [ macos-latest, x86_64-apple-ios, libximu3.a, libximu3.dylib ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-latest, aarch64-linux-android, libximu3.a, libximu3.so ]
+          - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
+          - [ windows-latest, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
 
     steps:
       - uses: actions/checkout@v4
@@ -88,27 +88,19 @@ jobs:
         name: Upload to artifacts
         with:
           name: rust-${{ matrix.target[1] }}
-          path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
+          path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}
 
-      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu'
-        name: Zip (excluding Ubuntu ARM64)
+      - name: Zip
         uses: vimtor/action-zip@v1.2
         with:
-          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[4] }}
-          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
-
-      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu'
-        name: Zip for Ubuntu ARM64
-        uses: vimtor/action-zip@v1.2
-        with:
-          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
-          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
+          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[3] }}
+          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/x-IMU3-API-${{ matrix.target[1] }}.zip
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} "x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip"
+        run: gh release upload ${{ github.ref_name }} "x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/x-IMU3-API-${{ matrix.target[1] }}.zip"
 
   rust-publish:
     runs-on: ubuntu-latest
