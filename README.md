@@ -22,7 +22,7 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 
 ## Distributions
 
-- [C API for Windows, macOS, Linux, iOS, Android](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest)
+- [C API for Windows, macOS, Linux, iOS, and Android](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest)
 - [Rust crate](https://crates.io/crates/ximu3/)
 - [Python package](https://pypi.org/project/ximu3/)
 - [x-IMU3 GUI for Windows](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Setup.exe)
