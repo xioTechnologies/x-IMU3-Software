@@ -54,6 +54,7 @@ void DeviceSettings::setValue(const CommandMessage& response)
         return;
     }
 
+    juce::ScopedValueSetter _ (ignoreCallback, true);
     if (setting[DeviceSettingsIDs::value] != response.value)
     {
         setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
@@ -79,6 +80,7 @@ void DeviceSettings::setStatus(const juce::String& key, const Setting::Status st
         return;
     }
 
+    juce::ScopedValueSetter _ (ignoreCallback, true);
     setting.setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
 }
 
@@ -99,7 +101,12 @@ std::map<juce::String, juce::ValueTree> DeviceSettings::flatten(const juce::Valu
     return map;
 }
 
-void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&)
+void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& identifier)
 {
     rootItem.treeHasChanged();
+
+    if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value) && ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+    {
+        juce::NullCheckedInvocation::invoke(onChange);
+    }
 }

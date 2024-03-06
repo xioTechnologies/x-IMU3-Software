@@ -22,10 +22,14 @@ public:
 
     void setStatus(const juce::String& key, const Setting::Status status);
 
+    std::function<void()> onChange;
+
 private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
     std::map<juce::String, juce::ValueTree> settingsMap = flatten(settingsTree);
     DeviceSettingsItem rootItem { settingsTree, settingsMap };
+
+    bool ignoreCallback = false;
 
     static std::map<juce::String, juce::ValueTree> flatten(const juce::ValueTree& parent);
 
