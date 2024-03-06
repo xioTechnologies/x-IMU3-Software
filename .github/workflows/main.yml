@@ -34,11 +34,11 @@ jobs:
           - [ macos-latest, aarch64-apple-ios, libximu3, a, dylib ]
           - [ macos-latest, aarch64-apple-ios-sim, libximu3, a, dylib ]
           - [ macos-latest, x86_64-apple-ios, libximu3, a, dylib ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so]
-          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, dll ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so ]
+          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, so ]
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib, dll ]
 
     steps:
@@ -90,15 +90,13 @@ jobs:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
 
-      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu'
-        name: Zip (excluding Ubuntu ARM64)
+      - name: Zip (excluding Ubuntu ARM64)
         uses: vimtor/action-zip@v1.2
         with:
           files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[4] }}
           dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}-${{ matrix.target[1] }}.zip
 
-      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu'
-        name: Zip for Ubuntu ARM64
+      - name: Zip for Ubuntu ARM64
         uses: vimtor/action-zip@v1.2
         with:
           files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}.${{ matrix.target[3] }}
