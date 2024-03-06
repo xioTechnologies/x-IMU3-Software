@@ -3,7 +3,7 @@
 #include "ConnectionPanelContainer.h"
 #include "CustomLookAndFeel.h"
 #include "Dialogs/Dialog.h"
-#include "Dialogs/ErrorDialog.h"
+#include "Dialogs/MessageDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/GLRenderer.h"
@@ -26,7 +26,7 @@ public:
 
         if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to open network announcement socket."));
+            DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to access the network announcement socket. Please close all other x-IMU3 applications and restart the x-IMU3 GUI."));
         }
     }
 

@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "ConnectionPanelContainer.h"
-#include "Dialogs/ErrorDialog.h"
+#include "Dialogs/MessageDialog.h"
 
 ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_)
         : windowLayout(windowLayout_),

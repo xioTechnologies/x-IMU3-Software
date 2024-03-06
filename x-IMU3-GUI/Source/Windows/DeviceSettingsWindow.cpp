@@ -1,7 +1,6 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsWindow.h"
-#include "Dialogs/AreYouSureDialog.h"
-#include "Dialogs/ErrorDialog.h"
+#include "Dialogs/MessageDialog.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
         : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")

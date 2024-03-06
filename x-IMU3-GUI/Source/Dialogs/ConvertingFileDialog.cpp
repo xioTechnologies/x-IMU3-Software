@@ -1,7 +1,6 @@
-#include "AreYouSureDialog.h"
 #include <BinaryData.h>
 #include "ConvertingFileDialog.h"
-#include "ErrorDialog.h"
+#include "MessageDialog.h"
 
 void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juce::File& destination_)
 {

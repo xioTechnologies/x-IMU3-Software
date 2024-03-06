@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AreYouSureDialog.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/WindowLayouts.h"
