@@ -228,6 +228,10 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
 {
     juce::PopupMenu menu = Window::getMenu();
 
+    menu.addItem("Hide Unused Settings", true, ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings, [&]
+    {
+        ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings = !ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings;
+    });
     menu.addItem("Read Settings When Window Opens", true, ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, [&]
     {
         ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;

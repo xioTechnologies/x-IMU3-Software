@@ -67,8 +67,8 @@ public:
     void resized() override;
 
 private:
-    CustomToggleButton readSettingsWhenWindowOpens { "Read Settings When Window Opens" };
     CustomToggleButton hideUnusedSettingsButton { "Hide Unused Settings" };
+    CustomToggleButton readSettingsWhenWindowOpens { "Read Settings When Window Opens" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsGroup)
 };
