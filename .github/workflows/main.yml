@@ -93,14 +93,14 @@ jobs:
       - name: Zip
         uses: vimtor/action-zip@v1.2
         with:
-          files: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[3] }}
-          dest: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/x-IMU3-API-${{ matrix.target[1] }}.zip
+          files: x-IMU3-API/C/Ximu3.h x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[3] }}
+          dest: x-IMU3-API-${{ matrix.target[1] }}.zip
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} "x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/x-IMU3-API-${{ matrix.target[1] }}.zip"
+        run: gh release upload ${{ github.ref_name }} "x-IMU3-API-${{ matrix.target[1] }}.zip"
 
   rust-publish:
     runs-on: ubuntu-latest
