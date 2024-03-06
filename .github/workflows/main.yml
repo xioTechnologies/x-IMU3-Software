@@ -34,11 +34,11 @@ jobs:
           - [ macos-latest, aarch64-apple-ios, libximu3, a, dylib ]
           - [ macos-latest, aarch64-apple-ios-sim, libximu3, a, dylib ]
           - [ macos-latest, x86_64-apple-ios, libximu3, a, dylib ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so]
-          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so]
-          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, dll ]
+          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3, a, so ]
+          - [ ubuntu-latest, aarch64-linux-android, libximu3, a, so ]
+          - [ windows-latest, x86_64-pc-windows-gnu, libximu3, a, so ]
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3, lib, dll ]
 
     steps:
