@@ -143,7 +143,7 @@ void DeviceSettingsGroup::resized()
 {
     auto bounds = getContentBounds();
 
-    readSettingsWhenWindowOpens.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
-    bounds.removeFromTop(rowMargin);
     hideUnusedSettingsButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    bounds.removeFromTop(rowMargin);
+    readSettingsWhenWindowOpens.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }
