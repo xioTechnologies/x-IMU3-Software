@@ -22,7 +22,7 @@ public:
         connectionFailed,
     };
 
-    ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_);
+    ConnectionPanelHeader(ConnectionPanel& connectionPanel_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_);
 
     ~ConnectionPanelHeader() override;
 
@@ -48,6 +48,7 @@ public:
 
 private:
     ConnectionPanel& connectionPanel;
+    juce::ThreadPool& threadPool;
     ConnectionPanelContainer& connectionPanelContainer;
     const std::shared_ptr<ximu3::Connection> connection;
 

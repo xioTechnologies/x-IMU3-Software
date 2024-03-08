@@ -8,7 +8,7 @@
 class GLRenderer : private juce::OpenGLRenderer
 {
 public:
-    explicit GLRenderer(juce::Component& attachTo);
+    GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_);
 
     ~GLRenderer() override;
 
@@ -21,6 +21,8 @@ public:
     GLResources& getResources();
 
 private:
+    juce::ThreadPool& threadPool;
+
     juce::OpenGLContext context;
 
     // Synchronize access to data shared between the JUCE Message thread and the OpenGL thread such as the components list.

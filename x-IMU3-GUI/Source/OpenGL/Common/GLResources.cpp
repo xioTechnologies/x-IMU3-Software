@@ -1,6 +1,11 @@
 #include "GLResources.h"
 
-GLResources::GLResources(juce::OpenGLContext& context_) : context(context_)
+GLResources::GLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool) :
+        context(context_),
+        arrow(context, threadPool),
+        board(context, threadPool),
+        housing(context, threadPool),
+        user(context, threadPool)
 {
     auto unzipObjAndMtl = [](const char* data, const int size, const juce::String& internalFileName)
     {

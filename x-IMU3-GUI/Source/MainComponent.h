@@ -64,10 +64,11 @@ private:
 
     const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
     juce::ValueTree windowLayout { WindowIDs::Row };
-    GLRenderer glRenderer { *this };
-    ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer };
+    juce::ThreadPool threadPool;
+    GLRenderer glRenderer { *this, threadPool };
+    ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer, threadPool };
     juce::Viewport connectionPanelViewport;
-    MenuStrip menuStrip { windowLayout, connectionPanelContainer };
+    MenuStrip menuStrip { windowLayout, threadPool, connectionPanelContainer };
     juce::TooltipWindow tooltipWindow { nullptr, 1200 };
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 

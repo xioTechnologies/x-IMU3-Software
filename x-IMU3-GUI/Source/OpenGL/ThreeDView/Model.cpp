@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "OpenGL/Common/GLResources.h"
 
-Model::Model(juce::OpenGLContext& context_) : context(context_)
+Model::Model(juce::OpenGLContext& context_, juce::ThreadPool& threadPool_) : context(context_), threadPool(threadPool_)
 {
 }
 
@@ -52,24 +52,24 @@ void Model::renderWithMaterials(const LitShader& shader)
 void Model::setModel(const juce::String& objFileContent, const juce::String& mtlFileContent)
 {
     loading = true;
-    juce::Thread::launch([&, self = juce::WeakReference(this), objFileContent, mtlFileContent]
-                         {
-                             auto newObject = std::make_shared<WavefrontObjFile>();
-                             newObject->load(objFileContent, mtlFileContent);
+    threadPool.addJob([&, self = juce::WeakReference(this), objFileContent, mtlFileContent]
+                      {
+                          auto newObject = std::make_shared<WavefrontObjFile>();
+                          newObject->load(objFileContent, mtlFileContent);
 
-                             juce::MessageManager::callAsync([&, self, newObject]() mutable
-                                                             {
-                                                                 if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
+                          juce::MessageManager::callAsync([&, self, newObject]() mutable
+                                                          {
+                                                              if (self == nullptr)
+                                                              {
+                                                                  return;
+                                                              }
 
-                                                                 std::lock_guard _(objectLock);
-                                                                 std::swap(object, newObject);
-                                                                 fillBuffersPending = true;
-                                                                 loading = false;
-                                                             });
-                         });
+                                                              std::lock_guard _(objectLock);
+                                                              std::swap(object, newObject);
+                                                              fillBuffersPending = true;
+                                                              loading = false;
+                                                          });
+                      });
 }
 
 void Model::setModel(const juce::File& objFile_)
@@ -81,24 +81,24 @@ void Model::setModel(const juce::File& objFile_)
     objFile = objFile_;
 
     loading = true;
-    juce::Thread::launch([&, self = juce::WeakReference(this), objFile_]
-                         {
-                             auto newObject = std::make_shared<WavefrontObjFile>();
-                             newObject->load(objFile_);
+    threadPool.addJob([&, self = juce::WeakReference(this), objFile_]
+                      {
+                          auto newObject = std::make_shared<WavefrontObjFile>();
+                          newObject->load(objFile_);
 
-                             juce::MessageManager::callAsync([&, self, newObject]() mutable
-                                                             {
-                                                                 if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
+                          juce::MessageManager::callAsync([&, self, newObject]() mutable
+                                                          {
+                                                              if (self == nullptr)
+                                                              {
+                                                                  return;
+                                                              }
 
-                                                                 std::lock_guard _(objectLock);
-                                                                 std::swap(object, newObject);
-                                                                 fillBuffersPending = true;
-                                                                 loading = false;
-                                                             });
-                         });
+                                                              std::lock_guard _(objectLock);
+                                                              std::swap(object, newObject);
+                                                              fillBuffersPending = true;
+                                                              loading = false;
+                                                          });
+                      });
 }
 
 bool Model::isLoading() const

@@ -24,6 +24,7 @@ public:
     ConnectionPanel(const juce::ValueTree& windowLayout_,
                     std::shared_ptr<ximu3::Connection> connection_,
                     GLRenderer& glRenderer_,
+                    juce::ThreadPool& threadPool_,
                     ConnectionPanelContainer& connectionPanelContainer_,
                     const juce::Colour& tag_);
 
@@ -49,10 +50,11 @@ private:
     const juce::ValueTree& windowLayout;
     std::shared_ptr<ximu3::Connection> connection;
     GLRenderer& glRenderer;
+    juce::ThreadPool& threadPool;
     ConnectionPanelContainer& connectionPanelContainer;
     const juce::Colour tag;
 
-    ConnectionPanelHeader header { *this, connectionPanelContainer };
+    ConnectionPanelHeader header { *this, threadPool, connectionPanelContainer };
     ConnectionPanelFooter footer { *this };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;

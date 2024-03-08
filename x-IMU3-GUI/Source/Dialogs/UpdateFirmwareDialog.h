@@ -18,7 +18,7 @@ public:
 
     juce::File getHexFile() const;
 
-    static void launch();
+    static void launch(juce::ThreadPool& threadPool);
 
 private:
     std::vector<ximu3::XIMU3_Device> devices;

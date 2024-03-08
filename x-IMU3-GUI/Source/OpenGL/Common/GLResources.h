@@ -25,7 +25,7 @@ class GLResources
 public:
     static constexpr int graphBufferSize = 1 << 16;
 
-    explicit GLResources(juce::OpenGLContext& context_);
+    GLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool);
 
     // Text
     Text& getGraphTickText();
@@ -33,10 +33,10 @@ public:
     Text& get3DViewAxesText();
 
     // Geometry
-    Model arrow { context };
-    Model board { context };
-    Model housing { context };
-    Model user { context };
+    Model arrow;
+    Model board;
+    Model housing;
+    Model user;
     PlaneModel plane;
     TextQuad textQuad;
     LineBuffer graphGridBuffer { true };

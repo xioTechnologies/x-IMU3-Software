@@ -19,8 +19,9 @@
 #include "WindowLayouts.h"
 #include "Windows/WindowIDs.h"
 
-MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
-                                                                                                            connectionPanelContainer(connectionPanelContainer_)
+MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
+                                                                                                                                           threadPool(threadPool_),
+                                                                                                                                           connectionPanelContainer(connectionPanelContainer_)
 {
     setWindowLayout(juce::ValueTree::fromXml(previousWindowLayout.loadFileAsString()));
 
@@ -158,25 +159,25 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& c
         DialogQueue::getSingleton().pushFront(std::make_unique<AboutDialog>(latestVersion));
     };
 
-    juce::Thread::launch([&, self = SafePointer<juce::Component>(this)]
-                         {
-                             const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
+    threadPool.addJob([&, self = SafePointer<juce::Component>(this)]
+                      {
+                          const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
 
-                             juce::MessageManager::callAsync([&, self, parsed]
-                                                             {
-                                                                 if (self == nullptr)
-                                                                 {
-                                                                     return;
-                                                                 }
+                          juce::MessageManager::callAsync([&, self, parsed]
+                                                          {
+                                                              if (self == nullptr)
+                                                              {
+                                                                  return;
+                                                              }
 
-                                                                 if (const auto* const object = parsed.getDynamicObject())
-                                                                 {
-                                                                     latestVersion = object->getProperty("tag_name");
-                                                                     aboutButton.setToggleState(latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()), juce::dontSendNotification);
-                                                                     resized();
-                                                                 }
-                                                             });
-                         });
+                                                              if (const auto* const object = parsed.getDynamicObject())
+                                                              {
+                                                                  latestVersion = object->getProperty("tag_name");
+                                                                  aboutButton.setToggleState(latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()), juce::dontSendNotification);
+                                                                  resized();
+                                                              }
+                                                          });
+                      });
 
     connectionPanelContainer.onConnectionPanelsSizeChanged = [&]
     {
@@ -576,13 +577,13 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&]
             {
                 disconnect(nullptr);
-                UpdateFirmwareDialog::launch();
+                UpdateFirmwareDialog::launch(threadPool);
                 return true;
             });
             return;
         }
 
-        UpdateFirmwareDialog::launch();
+        UpdateFirmwareDialog::launch(threadPool);
     });
     return menu;
 }

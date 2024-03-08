@@ -54,7 +54,7 @@ void DeviceSettings::setValue(const CommandMessage& response)
         return;
     }
 
-    juce::ScopedValueSetter _ (ignoreCallback, true);
+    juce::ScopedValueSetter _(ignoreCallback, true);
     if (setting[DeviceSettingsIDs::value] != response.value)
     {
         setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
@@ -80,7 +80,7 @@ void DeviceSettings::setStatus(const juce::String& key, const Setting::Status st
         return;
     }
 
-    juce::ScopedValueSetter _ (ignoreCallback, true);
+    juce::ScopedValueSetter _(ignoreCallback, true);
     setting.setProperty(DeviceSettingsIDs::status, (int) status, nullptr);
 }
 

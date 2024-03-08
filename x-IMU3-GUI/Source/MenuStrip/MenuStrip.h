@@ -15,7 +15,7 @@ class MenuStrip : public juce::Component,
                   private juce::Timer
 {
 public:
-    MenuStrip(juce::ValueTree& windowLayout_, ConnectionPanelContainer& connectionPanelContainer_);
+    MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_);
 
     ~MenuStrip() override;
 
@@ -27,6 +27,7 @@ public:
 
 private:
     juce::ValueTree& windowLayout;
+    juce::ThreadPool& threadPool;
     ConnectionPanelContainer& connectionPanelContainer;
 
     IconButton availableConnectionsButton { BinaryData::search_svg, "Available Connections" };
