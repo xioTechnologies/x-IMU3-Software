@@ -1,15 +1,15 @@
-# maxOS
+# macOS
 **/.DS_Store
 
 # CLion
-.idea/**
-!.idea/codeStyles
-!.idea/codeStyles/**
-!.idea/runConfigurations
-!.idea/runConfigurations/**
-!.idea/misc.xml
-cmake-build-debug
-cmake-build-release
+/.idea/**
+!/.idea/codeStyles
+!/.idea/codeStyles/**
+!/.idea/runConfigurations
+!/.idea/runConfigurations/**
+!/.idea/misc.xml
+/cmake-build-debug
+/cmake-build-release
 
 # Rust
 **/Cargo.lock
@@ -28,7 +28,7 @@ cmake-build-release
 **/x64
 **/Debug
 **/CSharp/**/Release
-**/*.vcxproj.user
+**/*/.vcxproj.user
 
 # Misc
 **/token.txt
