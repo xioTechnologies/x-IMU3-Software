@@ -81,13 +81,13 @@ juce::File UpdateFirmwareDialog::getHexFile() const
     return hexFileValue.getText();
 }
 
-void UpdateFirmwareDialog::launch()
+void UpdateFirmwareDialog::launch(juce::ThreadPool& threadPool)
 {
-    DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), []
+    DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), [&threadPool]
     {
         if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile(), threadPool));
         }
         return true;
     });

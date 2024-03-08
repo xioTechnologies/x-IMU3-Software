@@ -7,7 +7,7 @@
 class UpdatingFirmwareDialog : public Dialog
 {
 public:
-    UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_);
+    UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool);
 
     void resized() override;
 

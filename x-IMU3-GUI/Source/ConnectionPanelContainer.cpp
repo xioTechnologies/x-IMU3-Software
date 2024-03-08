@@ -3,9 +3,10 @@
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
-ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_)
+ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_, juce::ThreadPool& threadPool_)
         : windowLayout(windowLayout_),
-          glRenderer(glRenderer_)
+          glRenderer(glRenderer_),
+          threadPool(threadPool_)
 {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
@@ -145,7 +146,7 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
     }
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
-    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, glRenderer, *this, [&]
+    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, glRenderer, threadPool, *this, [&]
     {
         static unsigned int counter;
 

@@ -9,7 +9,7 @@ class ConnectionPanel;
 class WindowHeader : public juce::Component
 {
 public:
-    explicit WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
+    WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
 
     void paint(juce::Graphics& g) override;
 

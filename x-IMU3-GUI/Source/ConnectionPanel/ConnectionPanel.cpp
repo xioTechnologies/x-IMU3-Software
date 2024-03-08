@@ -26,11 +26,13 @@
 ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
                                  std::shared_ptr<ximu3::Connection> connection_,
                                  GLRenderer& glRenderer_,
+                                 juce::ThreadPool& threadPool_,
                                  ConnectionPanelContainer& connectionPanelContainer_,
                                  const juce::Colour& tag_)
         : windowLayout(windowLayout_),
           connection(connection_),
           glRenderer(glRenderer_),
+          threadPool(threadPool_),
           connectionPanelContainer(connectionPanelContainer_),
           tag(tag_)
 {

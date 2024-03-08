@@ -9,7 +9,7 @@ class GLResources;
 class Model
 {
 public:
-    explicit Model(juce::OpenGLContext& context_);
+    Model(juce::OpenGLContext& context_, juce::ThreadPool& threadPool_);
 
     void render();
 
@@ -23,6 +23,7 @@ public:
 
 private:
     juce::OpenGLContext& context;
+    juce::ThreadPool& threadPool;
 
     juce::File objFile;
 

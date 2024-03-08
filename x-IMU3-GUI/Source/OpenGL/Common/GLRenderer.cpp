@@ -1,7 +1,7 @@
 #include "CustomLookAndFeel.h"
 #include "GLRenderer.h"
 
-GLRenderer::GLRenderer(juce::Component& attachTo)
+GLRenderer::GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
 {
     context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
     context.setRenderer(this);
@@ -61,7 +61,7 @@ void GLRenderer::newOpenGLContextCreated()
     std::lock_guard<std::mutex> _(sharedGLDataLock);
 
     // All texture, shader, model and buffer resources are created here
-    resources = std::make_unique<GLResources>(context);
+    resources = std::make_unique<GLResources>(context, threadPool);
 }
 
 void GLRenderer::renderOpenGL()

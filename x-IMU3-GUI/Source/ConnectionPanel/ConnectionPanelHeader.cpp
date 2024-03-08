@@ -3,8 +3,9 @@
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
 
-ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
+ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_)
         : connectionPanel(connectionPanel_),
+          threadPool(threadPool_),
           connectionPanelContainer(connectionPanelContainer_),
           connection(connectionPanel.getConnection())
 {
@@ -137,31 +138,39 @@ void ConnectionPanelHeader::setState(const State state)
             break;
 
         case State::connected:
+        {
             updateTitle("Pinging");
             retryButton.setVisible(false);
             strobeButton.setVisible(true);
-            juce::Thread::launch([&, connection = connection, destroyed = destroyed]
-                                 {
-                                     while (*destroyed == false)
-                                     {
-                                         auto response = connection->ping();
 
-                                         if (response.result == ximu3::XIMU3_ResultOk)
-                                         {
-                                             juce::MessageManager::callAsync([&, connection, destroyed, response]
-                                                                             {
-                                                                                 if (*destroyed)
-                                                                                 {
-                                                                                     return;
-                                                                                 }
+            const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection = connection, destroyed = destroyed]
+            {
+                if (*destroyed)
+                {
+                    return juce::ThreadPoolJob::jobHasFinished;
+                }
 
-                                                                                 updateTitle(response.device_name, response.serial_number);
-                                                                             });
-                                             return;
-                                         }
-                                     }
-                                 });
+                auto response = connection->ping();
+
+                if (response.result == ximu3::XIMU3_ResultOk)
+                {
+                    juce::MessageManager::callAsync([&, connection, destroyed, response]
+                                                    {
+                                                        if (*destroyed)
+                                                        {
+                                                            return;
+                                                        }
+
+                                                        updateTitle(response.device_name, response.serial_number);
+                                                    });
+                    return juce::ThreadPoolJob::jobHasFinished;
+                }
+
+                return juce::ThreadPoolJob::jobNeedsRunningAgain;
+            };
+            threadPool.addJob(job);
             break;
+        }
 
         case State::connectionFailed:
             updateTitle("Connection Failed");
