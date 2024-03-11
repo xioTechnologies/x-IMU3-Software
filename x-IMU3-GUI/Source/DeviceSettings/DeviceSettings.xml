@@ -1,6 +1,6 @@
 <DeviceSettings>
     <Group name="Device Information">
-        <Setting key="deviceName" name="Device Name" type="string" emptyValue="None"/>
+        <Setting key="deviceName" name="Device Name" type="string"/>
         <Setting key="serialNumber" name="Serial Number" type="string" readOnly="true"/>
         <Setting key="firmwareVersion" name="Firmware Version" type="string" readOnly="true"/>
         <Setting key="bootloaderVersion" name="Bootloader Version" type="string" readOnly="true"/>
@@ -64,7 +64,7 @@
     </Group>
     <Group name="Data Logger">
         <Setting key="dataLoggerAutomaticStartStopEnabled" name="Automatic Start Stop" type="bool"/>
-        <Setting key="dataLoggerFileNamePrefix" name="File Name Prefix" type="string" emptyValue="Disabled" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
+        <Setting key="dataLoggerFileNamePrefix" name="File Name Prefix" type="string" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
         <Setting key="dataLoggerFileNameCounterEnabled" name="File Name Counter" type="bool" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
         <Setting key="dataLoggerMaxFileSize" name="Max File Size (MB)" type="number" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
         <Setting key="dataLoggerMaxFilePeriod" name="Max File Period (s)" type="number" hideKey="dataLoggerAutomaticStartStopEnabled" hideValues="0"/>
@@ -83,14 +83,6 @@
     <Group name="Data Messages">
         <Setting key="binaryModeEnabled" name="Binary Mode" type="bool"/>
         <Setting key="ahrsMessageType" name="AHRS Message Type" type="SendAhrsMessageType"/>
-        <Group name="Communication Interface">
-            <Setting key="usbDataMessagesEnabled" name="USB" type="bool"/>
-            <Setting key="serialDataMessagesEnabled" name="Serial" type="bool"/>
-            <Setting key="tcpDataMessagesEnabled" name="TCP" type="bool"/>
-            <Setting key="udpDataMessagesEnabled" name="UDP" type="bool"/>
-            <Setting key="bluetoothDataMessagesEnabled" name="Bluetooth" type="bool"/>
-            <Setting key="dataLoggerDataMessagesEnabled" name="Data Logger" type="bool"/>
-        </Group>
         <Group name="Message Rates">
             <Setting key="inertialMessageRateDivisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
             <Setting key="magnetometerMessageRateDivisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
@@ -99,6 +91,14 @@
             <Setting key="temperatureMessageRateDivisor" name="Temperature" type="SendMessageRateDivisorTemperature"/>
             <Setting key="batteryMessageRateDivisor" name="Battery" type="SendMessageRateDivisorBattery"/>
             <Setting key="rssiMessageRateDivisor" name="RSSI" type="SendMessageRateDivisorRssi"/>
+        </Group>
+        <Group name="Sending">
+            <Setting key="usbDataMessagesEnabled" name="USB" type="bool"/>
+            <Setting key="serialDataMessagesEnabled" name="Serial" type="bool"/>
+            <Setting key="tcpDataMessagesEnabled" name="TCP" type="bool"/>
+            <Setting key="udpDataMessagesEnabled" name="UDP" type="bool"/>
+            <Setting key="bluetoothDataMessagesEnabled" name="Bluetooth" type="bool"/>
+            <Setting key="dataLoggerDataMessagesEnabled" name="Data Logger" type="bool"/>
         </Group>
     </Group>
     <Group name="Power">

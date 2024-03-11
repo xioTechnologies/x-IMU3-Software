@@ -357,36 +357,6 @@
         "default": "{SendAhrsMessageTypeQuaternion}"
     },
     {
-        "name": "USB data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
-        "name": "Serial data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
-        "name": "TCP data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
-        "name": "UDP data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
-        "name": "Bluetooth data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
-        "name": "Data logger data messages enabled",
-        "declaration": "bool name",
-        "default": "{true}"
-    },
-    {
         "name": "Inertial message rate divisor",
         "declaration": "SendMessageRateDivisorInertial name",
         "default": "{8}"
@@ -420,6 +390,36 @@
         "name": "RSSI message rate divisor",
         "declaration": "SendMessageRateDivisorRssi name",
         "default": "{1}"
+    },
+    {
+        "name": "USB data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "Serial data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "TCP data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "UDP data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "Bluetooth data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
+    },
+    {
+        "name": "Data logger data messages enabled",
+        "declaration": "bool name",
+        "default": "{true}"
     },
     {
         "name": "USB power on enabled",
