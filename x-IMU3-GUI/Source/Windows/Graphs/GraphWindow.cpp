@@ -25,6 +25,9 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
     addAndMakeVisible(yLabel);
 
     graph.setSettings(readFromValueTree());
+
+    settingsTree.setProperty("scaleToFit", false, nullptr);
+    settingsTree.setProperty("clear", false, nullptr);
 }
 
 void GraphWindow::paint(juce::Graphics& g)
@@ -148,7 +151,8 @@ void GraphWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 
 void GraphWindow::mouseDoubleClick([[maybe_unused]] const juce::MouseEvent& mouseEvent)
 {
-    settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
+    settingsTree.setProperty("scaleToFit", true, nullptr);
+    settingsTree.setProperty("scaleToFit", false, nullptr);
 }
 
 void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
@@ -229,11 +233,13 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
     {
-        settingsTree.setProperty("scaleToFit", (bool) settingsTree["scaleToFit"] == false, nullptr);
+        settingsTree.setProperty("scaleToFit", true, nullptr);
+        settingsTree.setProperty("scaleToFit", false, nullptr);
     });
     menu.addItem("Clear", true, false, [this]
     {
-        settingsTree.setProperty("clear", (bool) settingsTree["clear"] == false, nullptr);
+        settingsTree.setProperty("clear", true, nullptr);
+        settingsTree.setProperty("clear", false, nullptr);
     });
     menu.addItem("Pause", true, paused, [this]
     {
@@ -350,13 +356,13 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHas
         return;
     }
 
-    if (property.toString() == "scaleToFit")
+    if (treeWhosePropertyHasChanged["scaleToFit"])
     {
         graph.scaleToFit();
         return;
     }
 
-    if (property.toString() == "clear")
+    if (treeWhosePropertyHasChanged["clear"])
     {
         graph.clear();
         return;
