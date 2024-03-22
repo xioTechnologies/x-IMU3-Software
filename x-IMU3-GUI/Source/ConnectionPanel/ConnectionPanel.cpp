@@ -39,8 +39,9 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
     addChildComponent(disabledOverlay);
+    addAndMakeVisible(retryButton);
 
-    header.onRetry = [&]
+    retryButton.onClick = [&]
     {
         connect();
     };
@@ -68,6 +69,8 @@ void ConnectionPanel::resized()
         bounds.removeFromTop(UILayout::panelMargin);
         windowContainer->setBounds(bounds);
     }
+
+    retryButton.setBounds(getLocalBounds().withSizeKeepingCentre(50, 50));
 }
 
 std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
@@ -205,7 +208,7 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
 
 void ConnectionPanel::connect()
 {
-    header.setState(ConnectionPanelHeader::State::connecting);
+    retryButton.setEnabled(false);
 
     connection->openAsync([&, destroyed_ = destroyed](auto result)
     {
@@ -218,15 +221,42 @@ void ConnectionPanel::connect()
 
             if (result != ximu3::XIMU3_ResultOk)
             {
-                header.setState(ConnectionPanelHeader::State::connectionFailed);
+                retryButton.setEnabled(true);
                 return;
             }
+
+            retryButton.setVisible(false);
 
             windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
             addAndMakeVisible(*windowContainer);
             resized();
 
-            header.setState(ConnectionPanelHeader::State::connected);
+            const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection_ = connection, destroyed_]
+            {
+                if (*destroyed_)
+                {
+                    return juce::ThreadPoolJob::jobHasFinished;
+                }
+
+                auto response = connection_->ping();
+
+                if (response.result == ximu3::XIMU3_ResultOk)
+                {
+                    juce::MessageManager::callAsync([&, connection_, destroyed_, response]
+                    {
+                        if (*destroyed_)
+                        {
+                            return;
+                        }
+
+                        header.updateTitle(response.device_name, response.serial_number);
+                    });
+                    return juce::ThreadPoolJob::jobHasFinished;
+                }
+
+                return juce::ThreadPoolJob::jobNeedsRunningAgain;
+            };
+            threadPool.addJob(job);
         });
     });
 }
