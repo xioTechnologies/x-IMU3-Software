@@ -56,8 +56,10 @@ private:
     ConnectionPanelContainer& connectionPanelContainer;
     const juce::Colour tag;
 
-    ConnectionPanelHeader header { *this, threadPool, connectionPanelContainer };
+    ConnectionPanelHeader header { *this, connectionPanelContainer };
     ConnectionPanelFooter footer { *this };
+
+    IconButton retryButton { BinaryData::refresh_svg, "Retry" };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
     std::unique_ptr<WindowContainer> windowContainer;

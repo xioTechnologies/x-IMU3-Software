@@ -5,7 +5,41 @@
 
 ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) : connectionPanel(connectionPanel_)
 {
+    addAndMakeVisible(connectionStatusIcon);
+    addAndMakeVisible(latestMessageLabel);
     addAndMakeVisible(statisticsLabel);
+    addAndMakeVisible(notificationsButton);
+    addAndMakeVisible(errorsButton);
+    addAndMakeVisible(numberOfNotificationsLabel);
+    addAndMakeVisible(numberOfErrorsLabel);
+
+    connectionStatusCallback = [&, self = SafePointer<juce::Component>(this)](auto status)
+    {
+        juce::MessageManager::callAsync([&, self, status]
+                                        {
+                                            if (self == nullptr)
+                                            {
+                                                return;
+                                            }
+
+                                            switch (status)
+                                            {
+                                                case ximu3::XIMU3_ConnectionStatusConnecting:
+                                                    connectionStatusIcon.setIcon(BinaryData::progress_svg);
+                                                    break;
+                                                case ximu3::XIMU3_ConnectionStatusConnected:
+                                                    connectionStatusIcon.setIcon(BinaryData::tick_green_svg);
+                                                    break;
+                                                case ximu3::XIMU3_ConnectionStatusDisconnected:
+                                                case ximu3::XIMU3_ConnectionStatusReconnecting:
+                                                    connectionStatusIcon.setIcon(BinaryData::cross_svg);
+                                                    break;
+                                            }
+
+                                            connectionStatusIcon.setTooltip(ximu3::XIMU3_connection_status_to_string(status));
+                                        });
+    };
+    connectionStatusCallbackID = connectionPanel.getConnection()->addConnectionStatusCallback(connectionStatusCallback);
 
     statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
@@ -24,13 +58,6 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
                                         });
     };
     statisticsCallbackID = connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback);
-
-    addAndMakeVisible(latestMessageLabel);
-
-    addAndMakeVisible(notificationsButton);
-    addAndMakeVisible(errorsButton);
-    addAndMakeVisible(numberOfNotificationsLabel);
-    addAndMakeVisible(numberOfErrorsLabel);
 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
@@ -83,6 +110,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
 
 ConnectionPanelFooter::~ConnectionPanelFooter()
 {
+    connectionPanel.getConnection()->removeCallback(connectionStatusCallbackID);
     connectionPanel.getConnection()->removeCallback(statisticsCallbackID);
     connectionPanel.getConnection()->removeCallback(notificationCallbackID);
     connectionPanel.getConnection()->removeCallback(errorCallbackID);
@@ -115,6 +143,7 @@ void ConnectionPanelFooter::resized()
     const auto width = bounds.getWidth() - (int) std::ceil(statisticsLabel.getTextWidth());
     flexBox.performLayout(bounds.removeFromRight(juce::jlimit(minWidth, maxWidth, width)));
 
+    connectionStatusIcon.setBounds(bounds.removeFromLeft(iconWidth).reduced(iconMargin));
     statisticsLabel.setBounds(bounds.removeFromLeft((int) std::ceil(statisticsLabel.getTextWidth())));
     latestMessageLabel.setBounds(bounds);
 }
