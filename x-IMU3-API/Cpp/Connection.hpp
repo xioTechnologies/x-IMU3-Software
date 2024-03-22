@@ -134,9 +134,19 @@ namespace ximu3
             return nullptr;
         }
 
+        XIMU3_ConnectionStatus getStatus()
+        {
+            return XIMU3_connection_get_status(connection);
+        }
+
         XIMU3_Statistics getStatistics()
         {
             return XIMU3_connection_get_statistics(connection);
+        }
+
+        uint64_t addConnectionStatusCallback(std::function<void(XIMU3_ConnectionStatus)>& callback)
+        {
+            return XIMU3_connection_add_connection_status_callback(connection, Helpers::wrapCallable<XIMU3_ConnectionStatus>(callback), &callback);
         }
 
         uint64_t addDecodeErrorCallback(std::function<void(XIMU3_DecodeError)>& callback)
