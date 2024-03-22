@@ -2,6 +2,7 @@
 
 #include "Dialogs/NotificationsAndErrorsDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
@@ -22,6 +23,8 @@ public:
 private:
     ConnectionPanel& connectionPanel;
 
+    Icon connectionStatusIcon { BinaryData::progress_svg, ximu3::XIMU3_connection_status_to_string(ximu3::XIMU3_ConnectionStatus::XIMU3_ConnectionStatusConnecting), 0.7f };
+
     SimpleLabel statisticsLabel { "", UIFonts::getSmallFont() };
 
     SimpleLabel latestMessageLabel { "", UIFonts::getSmallFont(), juce::Justification::centredRight };
@@ -31,6 +34,8 @@ private:
     SimpleLabel numberOfNotificationsLabel { "0", UIFonts::getSmallFont(), juce::Justification::right };
     SimpleLabel numberOfErrorsLabel { "0", UIFonts::getSmallFont(), juce::Justification::right };
 
+    std::function<void(ximu3::XIMU3_ConnectionStatus)> connectionStatusCallback;
+    uint64_t connectionStatusCallbackID;
     std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;
     uint64_t statisticsCallbackID;
     std::function<void(ximu3::XIMU3_NotificationMessage)> notificationCallback;
