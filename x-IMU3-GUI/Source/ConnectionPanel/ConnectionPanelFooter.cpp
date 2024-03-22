@@ -39,9 +39,9 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
             messagesChanged();
         }, connectionPanel), [this]
                                               {
-                                                  for (auto& notificationMessage : messages)
+                                                  for (auto& message : messages)
                                                   {
-                                                      notificationMessage.unread = false;
+                                                      message.unread = false;
                                                   }
                                                   messagesChanged();
                                                   return true;

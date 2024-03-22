@@ -7,9 +7,9 @@ juce::String NotificationsAndErrorsDialog::Message::getIcon() const
 {
     switch (type)
     {
-        case Message::Type::notification:
+        case Type::notification:
             return unread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg;
-        case Message::Type::error:
+        case Type::error:
             return unread ? BinaryData::error_red_svg : BinaryData::error_grey_svg;
     }
     return {}; // avoid compiler warning
@@ -19,9 +19,9 @@ juce::String NotificationsAndErrorsDialog::Message::getTooltip() const
 {
     switch (type)
     {
-        case Message::Type::notification:
+        case Type::notification:
             return "Notification";
-        case Message::Type::error:
+        case Type::error:
             return "Error";
     }
     return {}; // avoid compiler warning
@@ -31,9 +31,9 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 {
     switch (type)
     {
-        case Message::Type::notification:
+        case Type::notification:
             return UIColours::foreground;
-        case Message::Type::error:
+        case Type::error:
             return UIColours::error;
     }
     return {}; // avoid compiler warning
@@ -100,17 +100,17 @@ juce::Component* NotificationsAndErrorsDialog::refreshComponentForCell(int rowNu
 
     delete existingComponentToUpdate;
 
-    const auto& notificationMessage = messages[messages.size() - 1 - (size_t) rowNumber];
+    const auto& message = messages[messages.size() - 1 - (size_t) rowNumber];
 
     switch ((ColumnID) columnID)
     {
         case ColumnID::type:
-            return new Icon(notificationMessage.getIcon(), notificationMessage.getTooltip(), 0.6f);
+            return new Icon(message.getIcon(), message.getTooltip(), 0.6f);
 
         case ColumnID::timestamp:
         {
-            auto* label = new SimpleLabel(juce::String(1E-6f * (float) notificationMessage.timestamp, 3));
-            if (notificationMessage.unread == false)
+            auto* label = new SimpleLabel(juce::String(1E-6f * (float) message.timestamp, 3));
+            if (message.unread == false)
             {
                 label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
@@ -119,8 +119,8 @@ juce::Component* NotificationsAndErrorsDialog::refreshComponentForCell(int rowNu
 
         case ColumnID::message:
         {
-            auto* label = new SimpleLabel(notificationMessage.message);
-            if (notificationMessage.unread == false)
+            auto* label = new SimpleLabel(message.message);
+            if (message.unread == false)
             {
                 label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
