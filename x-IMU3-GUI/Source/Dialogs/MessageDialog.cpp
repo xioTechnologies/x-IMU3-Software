@@ -8,7 +8,7 @@ MessageDialog::MessageDialog(const juce::String& icon_, const juce::String& dial
     string.setLineSpacing(3.0f);
     textLayout.createLayout(string, dialogWidth - margin);
 
-    setSize(dialogWidth, calculateHeight(0) + textLayout.getHeight());
+    setSize(dialogWidth, calculateHeight(0) + (int) std::ceil(textLayout.getHeight()));
 }
 
 void MessageDialog::paint(juce::Graphics& g)
