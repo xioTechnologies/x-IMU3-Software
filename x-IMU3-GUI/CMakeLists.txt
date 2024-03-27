@@ -32,7 +32,7 @@ find_package(Freetype REQUIRED CONFIGS "freetype-config-version.cmake" PATHS "${
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm
-        GIT_TAG 0.9.9.8
+        GIT_TAG 1.0.1
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
 )
