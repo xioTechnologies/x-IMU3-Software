@@ -32,4 +32,4 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 
 ## Licence
 
-The x-IMU3 Software is covered by the [MIT Licence](https://opensource.org/licenses/MIT) with the exception of the x-IMU3 GUI which uses [JUCE](https://juce.com/) and so is covered by the [GNU GPLv3 License](https://www.gnu.org/licenses/gpl-3.0) as per the [JUCE 7 EULA](https://juce.com/legal/juce-7-license/).
+The x-IMU3 Software is covered by the [MIT Licence](https://opensource.org/licenses/MIT) except for the x-IMU3 GUI which uses [JUCE](https://juce.com/) and so is covered by the [GNU GPLv3 License](https://www.gnu.org/licenses/gpl-3.0) as per the [JUCE 7 EULA](https://juce.com/legal/juce-7-license/).
