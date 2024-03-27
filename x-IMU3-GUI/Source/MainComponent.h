@@ -4,10 +4,10 @@
 #include "CustomLookAndFeel.h"
 #include "Dialogs/Dialog.h"
 #include "Dialogs/MessageDialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/GLRenderer.h"
 #include "Windows/WindowIDs.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class MainComponent : public juce::Component
 {

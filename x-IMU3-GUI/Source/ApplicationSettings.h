@@ -85,7 +85,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ApplicationSettings)
 };
 
-template<>
+template <>
 struct juce::VariantConverter<uint32_t>
 {
     static uint32_t fromVar(const juce::var& value)

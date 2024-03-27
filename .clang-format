@@ -1,0 +1,12 @@
+ColumnLimit: 0
+BreakBeforeBraces: Allman
+IndentWidth: 4
+NamespaceIndentation: All
+IndentCaseLabels: true
+AccessModifierOffset: -4
+SpaceBeforeCpp11BracedList: true
+Cpp11BracedListStyle: false
+PointerAlignment: Left
+AllowShortLambdasOnASingleLine: false
+FixNamespaceComments: false
+SpaceAfterCStyleCast: true

@@ -27,9 +27,9 @@ void SerialConnection()
     else
     {
         const XIMU3_SerialConnectionInfo connectionInfo = (XIMU3_SerialConnectionInfo) {
-                .port_name = "COM1",
-                .baud_rate = 115200,
-                .rts_cts_enabled = false,
+            .port_name = "COM1",
+            .baud_rate = 115200,
+            .rts_cts_enabled = false,
         };
         Run(XIMU3_connection_new_serial(connectionInfo), XIMU3_serial_connection_info_to_string(connectionInfo));
     }

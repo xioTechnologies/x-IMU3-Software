@@ -84,7 +84,7 @@ public:
             setContentOwned(new MainComponent(), true);
 
 #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
+            setFullScreen(true);
 #else
             setResizable(true, true);
             setResizeLimits(static_cast<MainComponent*>(getContentComponent())->getMinimumWidth(), static_cast<MainComponent*>(getContentComponent())->getMinimumHeight(), getConstrainer()->getMaximumWidth(), getConstrainer()->getMaximumHeight());
@@ -121,4 +121,4 @@ private:
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (xIMU3GUIApplication)
+START_JUCE_APPLICATION(xIMU3GUIApplication)

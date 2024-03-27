@@ -1,15 +1,15 @@
+#include "WindowContainer.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "CustomLookAndFeel.h"
-#include <numeric>
-#include "WindowContainer.h"
 #include "Windows/Window.h"
+#include <numeric>
 
 class WindowContainer::ResizeBar : public juce::Component
 {
 public:
     ResizeBar(WindowContainer& parent_, size_t index_)
-            : parent(parent_),
-              index(index_)
+        : parent(parent_),
+          index(index_)
     {
         setMouseCursor({ parent.isVertical ? juce::MouseCursor::UpDownResizeCursor : juce::MouseCursor::LeftRightResizeCursor });
     }
@@ -68,8 +68,8 @@ private:
 };
 
 WindowContainer::WindowContainer(ConnectionPanel& connectionPanel_, juce::ValueTree layoutTree_)
-        : connectionPanel(connectionPanel_),
-          layoutTree(layoutTree_)
+    : connectionPanel(connectionPanel_),
+      layoutTree(layoutTree_)
 {
     layoutTree.addListener(this);
 
@@ -93,9 +93,9 @@ void WindowContainer::resized()
     totalWindowSize = juce::jmax(1, (isVertical ? getHeight() : getWidth()) - (int) (UILayout::panelMargin * resizeBars.size()));
 
     const auto sizeProportionsSum = std::accumulate(layoutTree.begin(), layoutTree.end(), 0.0f, [](float sum, auto child)
-    {
-        return sum + (float) child.getProperty(WindowIDs::size, 1.0f);
-    });
+                                                    {
+                                                        return sum + (float) child.getProperty(WindowIDs::size, 1.0f);
+                                                    });
 
     int position = 0;
     for (int i = 0; i < (int) (childComponents.size() + resizeBars.size()) - 1; i++)

@@ -2,10 +2,10 @@
 
 #include "ApplicationSettings.h"
 #include "DeviceSettings/DeviceSettings.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/IconButton.h"
 #include "Window.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class DeviceSettingsWindow : public Window
 {

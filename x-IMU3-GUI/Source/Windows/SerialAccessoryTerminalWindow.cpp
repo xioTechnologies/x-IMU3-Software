@@ -1,9 +1,9 @@
+#include "SerialAccessoryTerminalWindow.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialogs/SendingCommandDialog.h"
-#include "SerialAccessoryTerminalWindow.h"
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
-        : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
+    : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
 {
     addAndMakeVisible(serialAccessoryTerminal);
     serialAccessoryTerminal.addMouseListener(this, true);
@@ -34,24 +34,24 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
             recentSerialAccessoryData.removeChild(recentSerialAccessoryData.getChild(recentSerialAccessoryData.getNumChildren() - 1), nullptr);
         }
 
-        recentSerialAccessoryData.addChild({ "Data", {{ "data", sendValue.getText() }}}, 0, nullptr);
+        recentSerialAccessoryData.addChild({ "Data", { { "data", sendValue.getText() } } }, 0, nullptr);
         file.replaceWithText(recentSerialAccessoryData.toXmlString());
 
         loadRecents();
     };
 
     callbackID = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
-    {
-        juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+                                                                             {
+                                                                                 juce::MessageManager::callAsync([&, self, message]
+                                                                                                                 {
+                                                                                                                     if (self == nullptr)
+                                                                                                                     {
+                                                                                                                         return;
+                                                                                                                     }
 
-                                            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
-                                        });
-    });
+                                                                                                                     serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+                                                                                                                 });
+                                                                             });
 }
 
 SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
@@ -124,8 +124,8 @@ juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::S
                     return output; // invalid escape sequence
                 }
 
-                const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-                const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
+                const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar)(juce::uint8) input[++index]);
+                const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar)(juce::uint8) input[++index]);
 
                 if (upperNibble == -1 || lowerNibble == -1)
                 {
@@ -165,12 +165,12 @@ juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
     juce::PopupMenu menu = Window::getMenu();
     menu.addItem("Copy to Clipboard", [&]
-    {
-        serialAccessoryTerminal.copyToClipboard();
-    });
+                 {
+                     serialAccessoryTerminal.copyToClipboard();
+                 });
     menu.addItem("Clear", [&]
-    {
-        serialAccessoryTerminal.clearAll();
-    });
+                 {
+                     serialAccessoryTerminal.clearAll();
+                 });
     return menu;
 }

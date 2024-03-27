@@ -20,7 +20,7 @@ namespace ximu3
 
         friend class PortScanner;
 
-        template<typename... T, typename Callable>
+        template <typename... T, typename Callable>
         static auto wrapCallable(Callable const&) -> void (*)(T..., void*)
         {
             return +[](T... data, void* context)
@@ -29,7 +29,7 @@ namespace ximu3
             };
         }
 
-        template<typename VectorType, typename ArgumentType>
+        template <typename VectorType, typename ArgumentType>
         static auto toVector(const ArgumentType& argument)
         {
             std::vector<VectorType> vector;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "DeviceSettings/DeviceSettingsIDs.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting.h"
 #include "Widgets/CustomComboBox.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class SettingEnum : public Setting
 {

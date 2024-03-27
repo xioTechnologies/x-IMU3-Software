@@ -1,5 +1,5 @@
-#include "CustomLookAndFeel.h"
 #include "GLRenderer.h"
+#include "CustomLookAndFeel.h"
 
 GLRenderer::GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
 {

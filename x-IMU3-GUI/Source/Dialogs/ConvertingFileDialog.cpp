@@ -1,6 +1,6 @@
-#include <BinaryData.h>
 #include "ConvertingFileDialog.h"
 #include "MessageDialog.h"
+#include <BinaryData.h>
 
 void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juce::File& destination_)
 {
@@ -9,11 +9,11 @@ void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juc
     if (directory.exists())
     {
         DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(files_[0].getFileNameWithoutExtension()), [directory, files_, destination_]
-        {
-            directory.deleteRecursively();
-            DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(files_, destination_));
-            return true;
-        });
+                                             {
+                                                 directory.deleteRecursively();
+                                                 DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFileDialog>(files_, destination_));
+                                                 return true;
+                                             });
     }
     else
     {
@@ -22,10 +22,10 @@ void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juc
 }
 
 ConvertingFileDialog::ConvertingFileDialog(const std::vector<juce::File>& files_, const juce::File& destination_)
-        : Dialog(BinaryData::tools_svg, "Converting " + files_[0].getFileName(), "Cancel", ""),
-          files(files_),
-          destination(destination_),
-          fileConverter(destination.getFullPathName().toStdString(), files[0].getFullPathName().toStdString(), std::bind(&ConvertingFileDialog::progressCallback, this, std::placeholders::_1))
+    : Dialog(BinaryData::tools_svg, "Converting " + files_[0].getFileName(), "Cancel", ""),
+      files(files_),
+      destination(destination_),
+      fileConverter(destination.getFullPathName().toStdString(), files[0].getFullPathName().toStdString(), std::bind(&ConvertingFileDialog::progressCallback, this, std::placeholders::_1))
 {
     addAndMakeVisible(progressBar);
 

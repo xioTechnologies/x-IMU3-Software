@@ -1,11 +1,7 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
-#include <memory>
 #include "OpenGL/Graph/LineBuffer.h"
 #include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/Shaders/ScreenSpaceLitShader.h"
@@ -17,6 +13,8 @@
 #include "OpenGL/ThreeDView/PlaneModel.h"
 #include "Text.h"
 #include "TextQuad.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <memory>
 
 class GLResources
 {

@@ -1,6 +1,6 @@
-#include <BinaryData.h>
 #include "CustomLookAndFeel.h"
 #include "Dialogs/Dialog.h"
+#include <BinaryData.h>
 
 juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
 {
@@ -107,7 +107,7 @@ void CustomLookAndFeel::drawButtonBackground(juce::Graphics& g,
     auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 
     auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
-                                      .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.1f);
+                          .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.1f);
 
     if (shouldDrawButtonAsDown && button.isEnabled())
     {
@@ -156,7 +156,7 @@ void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics& g, int width, i
         backgroundColour = backgroundColour.withAlpha(0.5f);
     }
 
-    if (dynamic_cast<juce::AlertWindow*> (textEditor.getParentComponent()) != nullptr)
+    if (dynamic_cast<juce::AlertWindow*>(textEditor.getParentComponent()) != nullptr)
     {
         g.setColour(backgroundColour);
         g.fillRect(0, 0, width, height);
@@ -270,7 +270,9 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
 
             // Adjustment: Change tick target bounds
             g.fillPath(tick, tick.getTransformToScaleToFit(iconArea.reduced(
-                    std::min(getPopupMenuFont().getHeight(), maxFontHeight) / 10).toFloat(), true));
+                                                                       std::min(getPopupMenuFont().getHeight(), maxFontHeight) / 10)
+                                                               .toFloat(),
+                                                           true));
         }
 
         if (hasSubMenu)
@@ -399,7 +401,7 @@ juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String& tip
     return juce::Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 6) : screenPos.x + 12,
                                 screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 12) : screenPos.y + 12,
                                 w, h)
-            .constrainedWithin(parentArea);
+        .constrainedWithin(parentArea);
 }
 
 void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text, int width, int height)
@@ -414,7 +416,7 @@ void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text,
     g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 
     layoutTooltipText(text, findColour(juce::TooltipWindow::textColourId))
-            .draw(g, { (float) width, (float) height });
+        .draw(g, { (float) width, (float) height });
 }
 
 void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, int height, const juce::String& text, const juce::Justification& position, juce::GroupComponent& group)
@@ -467,17 +469,17 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     auto alpha = group.isEnabled() ? 1.0f : 0.5f;
 
     g.setColour(group.findColour(juce::GroupComponent::outlineColourId)
-                     .withMultipliedAlpha(alpha));
+                    .withMultipliedAlpha(alpha));
 
     g.strokePath(p, juce::PathStrokeType(2.0f));
 
     g.setColour(group.findColour(juce::GroupComponent::textColourId)
-                     .withMultipliedAlpha(alpha));
+                    .withMultipliedAlpha(alpha));
     g.setFont(font);
     g.drawText(text,
                juce::roundToInt(x + textX), 0,
                juce::roundToInt(textW),
-            // Adjustment
+               // Adjustment
                juce::roundToInt(font.getHeight()),
                juce::Justification::centred, true);
 }

@@ -74,10 +74,10 @@ private:
     void drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, const juce::Rectangle<int>& drawBounds, const AxisLimits& limits, const std::vector<Tick>& ticks);
 
     // Copy of juce::jmap with assertion for exactlyEqual instead of approximatelyEqual
-    template<typename Type>
+    template <typename Type>
     Type mapRange(Type sourceValue, Type sourceRangeMin, Type sourceRangeMax, Type targetRangeMin, Type targetRangeMax)
     {
-        jassert (!juce::exactlyEqual(sourceRangeMax, sourceRangeMin)); // mapping from a range of zero will produce NaN!
+        jassert(!juce::exactlyEqual(sourceRangeMax, sourceRangeMin)); // mapping from a range of zero will produce NaN!
         return targetRangeMin + ((targetRangeMax - targetRangeMin) * (sourceValue - sourceRangeMin)) / (sourceRangeMax - sourceRangeMin);
     }
 

@@ -1,5 +1,5 @@
-#include "ApplicationSettings.h"
 #include "ApplicationSettingsGroups.h"
+#include "ApplicationSettings.h"
 
 ApplicationSettingsGroup::ApplicationSettingsGroup(const juce::String& name, const int numberOfRows) : juce::GroupComponent("", name)
 {

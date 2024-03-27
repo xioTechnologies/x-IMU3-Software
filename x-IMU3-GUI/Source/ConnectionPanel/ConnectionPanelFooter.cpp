@@ -1,6 +1,6 @@
+#include "ConnectionPanelFooter.h"
 #include "ApplicationSettings.h"
 #include "ConnectionPanel.h"
-#include "ConnectionPanelFooter.h"
 #include "CustomLookAndFeel.h"
 
 ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) : connectionPanel(connectionPanel_)
@@ -35,9 +35,11 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
     notificationsButton.onClick = errorsButton.onClick = [&]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
-        {
-            messagesChanged();
-        }, connectionPanel), [this]
+                                                                                             {
+                                                                                                 messagesChanged();
+                                                                                             },
+                                                                                             connectionPanel),
+                                              [this]
                                               {
                                                   for (auto& message : messages)
                                                   {

@@ -1,11 +1,11 @@
 #include "Graph.h"
 
 Graph::Graph(GLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_)
-        : OpenGLComponent(renderer_.getContext()),
-          renderer(renderer_),
-          colours(colours_),
-          legendHeight(legendHeight_),
-          rightMargin(rightMargin_)
+    : OpenGLComponent(renderer_.getContext()),
+      renderer(renderer_),
+      colours(colours_),
+      legendHeight(legendHeight_),
+      rightMargin(rightMargin_)
 {
     renderer.addComponent(*this);
 
@@ -171,18 +171,18 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
 
     // Compute line vertices for LineBuffer
     std::vector<GLfloat> lines;
-    addGridLines(lines, true, xTicks, limits.x); // vertical x ticks
+    addGridLines(lines, true, xTicks, limits.x);  // vertical x ticks
     addGridLines(lines, false, yTicks, limits.y); // horizontal y ticks
 
     if (ticksEnabled)
     {
         // Border lines
         lines.insert(lines.end(), {
-                -1.0f, -1.0f, borderBrightness, -1.0f, 1.0f, borderBrightness, // left edge
-                1.0f, -1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // right edge
-                -1.0f, 1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // top edge
-                -1.0f, -1.0f, borderBrightness, 1.0f, -1.0f, borderBrightness // bottom edge
-        });
+                                      -1.0f, -1.0f, borderBrightness, -1.0f, 1.0f, borderBrightness, // left edge
+                                      1.0f, -1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness,   // right edge
+                                      -1.0f, 1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness,   // top edge
+                                      -1.0f, -1.0f, borderBrightness, 1.0f, -1.0f, borderBrightness  // bottom edge
+                                  });
     }
 
     // Draw lines
@@ -250,9 +250,10 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
     // Collect only text labels from std::vector<Tick>
     auto labelsToDraw = ticks;
     labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto& tick)
-    {
-        return tick.label.isEmpty();
-    }), labelsToDraw.end());
+                                      {
+                                          return tick.label.isEmpty();
+                                      }),
+                       labelsToDraw.end());
 
     // For X-axis, hide tick labels that extend out of bounds or overlap
     if (isXTicks)
@@ -267,10 +268,11 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
 
         // Remove any tick text which would extend past the edges of the drawing bounds
         labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto& tick)
-        {
-            const auto [leftEdgeX, rightEdgeX] = getLabelEdges(tick);
-            return leftEdgeX < (float) glDrawBounds.getX() || rightEdgeX > (float) glDrawBounds.getRight();
-        }), labelsToDraw.end());
+                                          {
+                                              const auto [leftEdgeX, rightEdgeX] = getLabelEdges(tick);
+                                              return leftEdgeX < (float) glDrawBounds.getX() || rightEdgeX > (float) glDrawBounds.getRight();
+                                          }),
+                           labelsToDraw.end());
 
         auto areAnyLabelsTooClose = [&]
         {
@@ -292,14 +294,15 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
         if (labelsToDraw.size() > 1)
         {
             // If labels are too close, remove every other label (halve the number of labels) until there are no overlaps
-            const auto halvingCount = static_cast<int> (std::ceil(std::log2(labelsToDraw.size())));
+            const auto halvingCount = static_cast<int>(std::ceil(std::log2(labelsToDraw.size())));
             for (int i = 0; (i < halvingCount) && areAnyLabelsTooClose(); i++)
             {
                 // Erase every other element (odd indices), except for "0" if it is displayed
                 labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto& tick)
-                {
-                    return ((&tick - &*labelsToDraw.begin()) % 2) && tick.label != "0";
-                }), labelsToDraw.end());
+                                                  {
+                                                      return ((&tick - &*labelsToDraw.begin()) % 2) && tick.label != "0";
+                                                  }),
+                                   labelsToDraw.end());
             }
         }
     }

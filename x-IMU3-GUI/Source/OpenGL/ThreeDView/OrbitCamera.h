@@ -112,7 +112,7 @@ private:
     glm::mat4 rotationMatrix { 1.0f }; // only rotation part of viewMatrix
 
     float distanceFromOrigin = 2.5f;
-    float azimuthDegrees = 45.0f; // horizontal movement
+    float azimuthDegrees = 45.0f;  // horizontal movement
     float altitudeDegrees = 20.0f; // vertical movement
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OrbitCamera)

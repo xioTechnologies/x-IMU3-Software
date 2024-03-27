@@ -20,7 +20,7 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     std::vector<CommandMessage> commands;
     for (auto setting : settingsMap)
     {
-        commands.push_back({ setting.first, {}});
+        commands.push_back({ setting.first, {} });
     }
     return commands;
 }

@@ -178,7 +178,7 @@ void Model::GLBuffer::fillBuffers()
     glEnableVertexAttribArray(textureCoordinateIndex);
 
     // Unbind buffers
-    glBindVertexArray(0); // unbind VAO first since it remembers last bound VBO & EBO
-    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind VBO
+    glBindVertexArray(0);                     // unbind VAO first since it remembers last bound VBO & EBO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);         // unbind VBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // unbind EBO
 }

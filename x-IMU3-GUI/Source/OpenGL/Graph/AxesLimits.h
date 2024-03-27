@@ -38,17 +38,8 @@ struct AxisLimits
 
 struct AxesLimits
 {
-    AxisLimits x
-            {
-                    -5.0f,
-                    0.0f
-            };
-
-    AxisLimits y
-            {
-                    -1.0f,
-                    1.0f
-            };
+    AxisLimits x { -5.0f, 0.0f };
+    AxisLimits y { -1.0f, 1.0f };
 
     void autoscale(const bool horizontal, const bool vertical, const std::vector<std::span<const juce::Point<GLfloat>>>& channels, const std::vector<bool>& enabledChannels)
     {

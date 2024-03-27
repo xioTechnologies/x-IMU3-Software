@@ -1,15 +1,15 @@
 #pragma once
 
-#include <cassert>
 #include "CommandMessage.h"
 #include "ConnectionPanelFooter.h"
 #include "ConnectionPanelHeader.h"
-#include <juce_gui_basics/juce_gui_basics.h>
-#include <list>
 #include "OpenGL/Common/GLRenderer.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
+#include <cassert>
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <list>
 
 class ConnectionPanelContainer;
 
@@ -34,7 +34,7 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
+    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
 
     const juce::Colour& getTag() const;
 

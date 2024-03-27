@@ -1,15 +1,15 @@
+#include "WindowHeader.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "ConnectionPanelContainer.h"
 #include "DragOverlay.h"
-#include "WindowHeader.h"
 #include "WindowIDs.h"
 
 WindowHeader::WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
-        : connectionPanel(connectionPanel_),
-          windowLayout(windowLayout_),
-          type(type_),
-          menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
-          title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred)
+    : connectionPanel(connectionPanel_),
+      windowLayout(windowLayout_),
+      type(type_),
+      menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
+      title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred)
 {
     addAndMakeVisible(menuButton);
     addAndMakeVisible(title);
@@ -41,43 +41,43 @@ void WindowHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
     if (auto* const component = connectionPanel.getComponentAt(mouseEvent.getScreenPosition() - connectionPanel.getScreenPosition()))
     {
         if (auto* const targetWindow = [&]
-        {
-            if (auto* const casted = dynamic_cast<Window*>(component))
             {
-                return casted;
-            }
+                if (auto* const casted = dynamic_cast<Window*>(component))
+                {
+                    return casted;
+                }
 
-            return component->findParentComponentOfClass<Window>();
-        }())
+                return component->findParentComponentOfClass<Window>();
+            }())
         {
             connectionPanel.getConnectionPanelContainer().showDragOverlayAtComponent(*targetWindow, [&]
-            {
-                if (targetWindow == getParentComponent())
-                {
-                    return DragOverlay::Side::all;
-                }
+                                                                                     {
+                                                                                         if (targetWindow == getParentComponent())
+                                                                                         {
+                                                                                             return DragOverlay::Side::all;
+                                                                                         }
 
-                const auto positionRelative = mouseEvent.getScreenPosition() - targetWindow->getScreenPosition();
-                const auto proportionToTop = positionRelative.y / (float) targetWindow->getHeight();
-                const auto proportionToRight = 1.0f - positionRelative.x / (float) targetWindow->getWidth();
-                const auto proportionToBottom = 1.0f - positionRelative.y / (float) targetWindow->getHeight();
-                const auto proportionToLeft = positionRelative.x / (float) targetWindow->getWidth();
+                                                                                         const auto positionRelative = mouseEvent.getScreenPosition() - targetWindow->getScreenPosition();
+                                                                                         const auto proportionToTop = positionRelative.y / (float) targetWindow->getHeight();
+                                                                                         const auto proportionToRight = 1.0f - positionRelative.x / (float) targetWindow->getWidth();
+                                                                                         const auto proportionToBottom = 1.0f - positionRelative.y / (float) targetWindow->getHeight();
+                                                                                         const auto proportionToLeft = positionRelative.x / (float) targetWindow->getWidth();
 
-                const auto min = juce::jmin(proportionToTop, proportionToRight, proportionToBottom, proportionToLeft);
-                if (juce::exactlyEqual(proportionToTop, min))
-                {
-                    return DragOverlay::Side::top;
-                }
-                if (juce::exactlyEqual(proportionToRight, min))
-                {
-                    return DragOverlay::Side::right;
-                }
-                if (juce::exactlyEqual(proportionToBottom, min))
-                {
-                    return DragOverlay::Side::bottom;
-                }
-                return DragOverlay::Side::left;
-            }());
+                                                                                         const auto min = juce::jmin(proportionToTop, proportionToRight, proportionToBottom, proportionToLeft);
+                                                                                         if (juce::exactlyEqual(proportionToTop, min))
+                                                                                         {
+                                                                                             return DragOverlay::Side::top;
+                                                                                         }
+                                                                                         if (juce::exactlyEqual(proportionToRight, min))
+                                                                                         {
+                                                                                             return DragOverlay::Side::right;
+                                                                                         }
+                                                                                         if (juce::exactlyEqual(proportionToBottom, min))
+                                                                                         {
+                                                                                             return DragOverlay::Side::bottom;
+                                                                                         }
+                                                                                         return DragOverlay::Side::left;
+                                                                                     }());
         }
         else
         {

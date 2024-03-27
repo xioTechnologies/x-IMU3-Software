@@ -1,8 +1,8 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting.h"
 #include "Widgets/CustomTextEditor.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class SettingText : public Setting
 {

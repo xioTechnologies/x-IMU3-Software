@@ -4,7 +4,7 @@
 
 namespace DeviceSettingsIDs
 {
-#define DECLARE_ID(name) static const juce::Identifier name (#name);
+#define DECLARE_ID(name) static const juce::Identifier name(#name);
 
     DECLARE_ID(Setting)
     DECLARE_ID(Group)

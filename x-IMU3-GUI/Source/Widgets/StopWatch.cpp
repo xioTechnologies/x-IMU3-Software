@@ -1,5 +1,5 @@
-#include "CustomLookAndFeel.h"
 #include "Stopwatch.h"
+#include "CustomLookAndFeel.h"
 
 class Stopwatch::LookAndFeel : public CustomLookAndFeel
 {
@@ -13,7 +13,7 @@ public:
         g.setFont(font);
         g.setColour(button.findColour(button.getToggleState() ? juce::TextButton::textColourOnId
                                                               : juce::TextButton::textColourOffId)
-                          .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+                        .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
         g.drawText(button.getButtonText(), button.getLocalBounds().withSizeKeepingCentre(font.getStringWidth("00:00:00.000"), (int) std::ceil(font.getHeight())), juce::Justification::centredLeft);
     }

@@ -2,10 +2,10 @@
 
 #include "Dialog.h"
 #include "Firmware/Firmware.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class AboutDialog : public Dialog
 {

@@ -27,7 +27,7 @@ void UsbConnection()
     else
     {
         const XIMU3_UsbConnectionInfo connectionInfo = (XIMU3_UsbConnectionInfo) {
-                .port_name = "COM1",
+            .port_name = "COM1",
         };
         Run(XIMU3_connection_new_usb(connectionInfo), XIMU3_usb_connection_info_to_string(connectionInfo));
     }

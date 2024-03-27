@@ -1,10 +1,10 @@
+#include "AvailableConnectionsDialog.h"
 #include "ApplicationSettings.h"
 #include "ApplicationSettingsDialog.h"
-#include "AvailableConnectionsDialog.h"
 
 AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
-        : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
-          existingConnections(std::move(existingConnections_))
+    : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
+      existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);
@@ -43,9 +43,9 @@ juce::PopupMenu AvailableConnectionsDialog::getFilterMenu()
     const auto addFilterItem = [&](const auto& name, juce::CachedValue<bool>& value)
     {
         menu.addItem(name, true, value, [&value]
-        {
-            value = !value;
-        });
+                     {
+                         value = !value;
+                     });
     };
     addFilterItem("USB", ApplicationSettings::getSingleton().availableConnections.usb);
     addFilterItem("Serial", ApplicationSettings::getSingleton().availableConnections.serial);

@@ -54,8 +54,7 @@ public:
         float shininess = 0.6f * 128.0f;
         float refractiveIndex = 0.0f;
 
-        juce::String ambientTextureName, diffuseTextureName,
-                specularTextureName, normalTextureName;
+        juce::String ambientTextureName, diffuseTextureName, specularTextureName, normalTextureName;
 
         juce::StringPairArray parameters;
     };

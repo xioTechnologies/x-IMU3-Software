@@ -1,8 +1,8 @@
 #pragma once
 
-#include <BinaryData.h>
 #include "OpenGL/Common/GLHelpers.h"
 #include "OpenGL/Common/Shader.h"
+#include <BinaryData.h>
 
 class TextShader : public Shader
 {

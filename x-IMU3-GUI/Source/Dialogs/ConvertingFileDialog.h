@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Dialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class ConvertingFileDialog : public Dialog, private juce::Timer
 {

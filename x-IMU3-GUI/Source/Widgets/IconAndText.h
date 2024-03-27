@@ -2,7 +2,7 @@
 
 #include "Icon.h"
 
-template<typename IconType>
+template <typename IconType>
 class IconAndText : public juce::Component, protected juce::Timer
 {
 public:

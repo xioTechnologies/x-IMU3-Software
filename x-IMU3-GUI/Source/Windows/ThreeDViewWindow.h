@@ -2,13 +2,13 @@
 
 #include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
 #include "OpenGL/ThreeDView.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Widgets/SimpleLabel.h"
 #include "Window.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class ThreeDViewWindow : public Window,
                          private juce::Timer
@@ -31,12 +31,12 @@ public:
 private:
     ThreeDView threeDView;
 
-    SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
 
     std::atomic<float> roll { 0.0f }, pitch { 0.0f }, yaw { 0.0f };
 

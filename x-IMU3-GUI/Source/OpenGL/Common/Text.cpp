@@ -1,5 +1,5 @@
-#include "OpenGL/Common/GLResources.h"
 #include "Text.h"
+#include "OpenGL/Common/GLResources.h"
 
 Text::Text(const std::unordered_set<unsigned char>& charactersToLoad_) : charactersToLoad(charactersToLoad_)
 {
@@ -31,7 +31,7 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
 
     // Create OpenGL Textures for every font character that will be used
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable OpenGL default 4-byte alignment restriction since we store grayscale data with 1 byte per pixel
-    glActiveTexture(GL_TEXTURE0); // use first texture unit for all textures bound below because shader only uses 1 texture at a time
+    glActiveTexture(GL_TEXTURE0);          // use first texture unit for all textures bound below because shader only uses 1 texture at a time
     for (const auto& character : charactersToLoad)
     {
         if (FT_Load_Char(face, (FT_ULong) character, FT_LOAD_RENDER)) // if freetype fails to load the current glyph index
@@ -171,7 +171,7 @@ void Text::drawChar3D(GLResources& resources, unsigned char character, const juc
 
     // Calculate Normalized Device Coordinates (NDC) transformation to place text at position on screen with a constant size
     const auto ndcCoord = glm::vec2(transform[3][0], transform[3][1]) / transform[3][3]; // get x, y of matrix translation then divide by w of translation for constant size in pixels
-    const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
+    const auto zTranslation = transform[3][2];                                           // use z of matrix translation so 2D elements have proper layering
     const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
     const auto& textShader = resources.textShader;

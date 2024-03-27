@@ -1,9 +1,9 @@
-#include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsWindow.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialogs/MessageDialog.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
-        : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
+    : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
 {
     addAndMakeVisible(deviceSettings);
     addAndMakeVisible(readAllButton);
@@ -19,25 +19,25 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         enableInProgress(commands);
 
         connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<CommandMessage>& responses)
-        {
-            for (const auto& command : commands)
-            {
-                const auto response = std::find(responses.begin(), responses.end(), command);
+                                     {
+                                         for (const auto& command : commands)
+                                         {
+                                             const auto response = std::find(responses.begin(), responses.end(), command);
 
-                if (response == responses.end() || response->getError())
-                {
-                    deviceSettings.setStatus(command.key, Setting::Status::readFailed);
-                    continue;
-                }
+                                             if (response == responses.end() || response->getError())
+                                             {
+                                                 deviceSettings.setStatus(command.key, Setting::Status::readFailed);
+                                                 continue;
+                                             }
 
-                deviceSettings.setValue(*response);
-                deviceSettings.setStatus(response->key, Setting::Status::normal);
-            }
+                                             deviceSettings.setValue(*response);
+                                             deviceSettings.setStatus(response->key, Setting::Status::normal);
+                                         }
 
-            readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
+                                         readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
-            disableInProgress();
-        });
+                                         disableInProgress();
+                                     });
     };
 
     if (ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens)
@@ -52,36 +52,36 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         enableInProgress(commands);
 
         connectionPanel.sendCommands(commands, this, [&, commands](const auto& responses)
-        {
-            for (const auto& command : commands)
-            {
-                const auto response = std::find(responses.begin(), responses.end(), command);
+                                     {
+                                         for (const auto& command : commands)
+                                         {
+                                             const auto response = std::find(responses.begin(), responses.end(), command);
 
-                if (response == responses.end() || response->getError())
-                {
-                    deviceSettings.setStatus(command.key, Setting::Status::writeFailed);
-                    continue;
-                }
+                                             if (response == responses.end() || response->getError())
+                                             {
+                                                 deviceSettings.setStatus(command.key, Setting::Status::writeFailed);
+                                                 continue;
+                                             }
 
-                deviceSettings.setValue(*response);
-                deviceSettings.setStatus(response->key, Setting::Status::normal);
-            }
+                                             deviceSettings.setValue(*response);
+                                             deviceSettings.setStatus(response->key, Setting::Status::normal);
+                                         }
 
-            writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
+                                         writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
-            connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto& responses_)
-            {
-                disableInProgress();
+                                         connectionPanel.sendCommands({ { "save", {} } }, this, [&](const auto& responses_)
+                                                                      {
+                                                                          disableInProgress();
 
-                if (responses_.empty())
-                {
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                    return;
-                }
+                                                                          if (responses_.empty())
+                                                                          {
+                                                                              DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
+                                                                              return;
+                                                                          }
 
-                connectionPanel.sendCommands({{ "apply", {}}});
-            });
-        });
+                                                                          connectionPanel.sendCommands({ { "apply", {} } });
+                                                                      });
+                                     });
     };
 
     directory.createDirectory();
@@ -137,35 +137,35 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     defaultsButton.onClick = [this]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
-        {
-            enableInProgress(deviceSettings.getReadCommands());
+                                              {
+                                                  enableInProgress(deviceSettings.getReadCommands());
 
-            connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto& responses)
-            {
-                if (responses.empty())
-                {
-                    disableInProgress();
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm default command."));
-                    return;
-                }
+                                                  connectionPanel.sendCommands({ { "default", {} } }, this, [this](const auto& responses)
+                                                                               {
+                                                                                   if (responses.empty())
+                                                                                   {
+                                                                                       disableInProgress();
+                                                                                       DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm default command."));
+                                                                                       return;
+                                                                                   }
 
-                connectionPanel.sendCommands({{ "save", {}}}, this, [this](const auto& responses_)
-                {
-                    if (responses_.empty())
-                    {
-                        disableInProgress();
-                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                        return;
-                    }
+                                                                                   connectionPanel.sendCommands({ { "save", {} } }, this, [this](const auto& responses_)
+                                                                                                                {
+                                                                                                                    if (responses_.empty())
+                                                                                                                    {
+                                                                                                                        disableInProgress();
+                                                                                                                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
+                                                                                                                        return;
+                                                                                                                    }
 
-                    connectionPanel.sendCommands({{ "apply", {}}}, this, [this](const auto&)
-                    {
-                        readAllButton.onClick();
-                    });
-                });
-            });
-            return true;
-        });
+                                                                                                                    connectionPanel.sendCommands({ { "apply", {} } }, this, [this](const auto&)
+                                                                                                                                                 {
+                                                                                                                                                     readAllButton.onClick();
+                                                                                                                                                 });
+                                                                                                                });
+                                                                               });
+                                                  return true;
+                                              });
     };
 }
 
@@ -229,17 +229,17 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
     juce::PopupMenu menu = Window::getMenu();
 
     menu.addItem("Hide Unused Settings", true, ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings, [&]
-    {
-        ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings = !ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings;
-    });
+                 {
+                     ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings = !ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings;
+                 });
     menu.addItem("Read Settings When Window Opens", true, ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, [&]
-    {
-        ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
-    });
+                 {
+                     ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
+                 });
     menu.addItem("Write Settings When Value Is Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified, [&]
-    {
-        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified;
-    });
+                 {
+                     ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified;
+                 });
 
     return menu;
 }

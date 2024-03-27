@@ -2,13 +2,13 @@
 
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
 #include "Widgets/PortNameComboBox.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class ManualConnectionDialog : public Dialog
 {

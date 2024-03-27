@@ -6,8 +6,8 @@ class PopupMenuHeader : public juce::PopupMenu::CustomComponent
 {
 public:
     explicit PopupMenuHeader(const juce::String& title_)
-            : juce::PopupMenu::CustomComponent(false),
-              title(title_)
+        : juce::PopupMenu::CustomComponent(false),
+          title(title_)
     {
     }
 

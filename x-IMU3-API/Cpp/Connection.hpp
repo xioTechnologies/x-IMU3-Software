@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../C/Ximu3.h"
-#include <cassert>
 #include "ConnectionInfo.hpp"
-#include <functional>
 #include "Helpers.hpp"
+#include <cassert>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,32 +20,32 @@ namespace ximu3
 
         explicit Connection(const ConnectionInfo& connectionInfo)
         {
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UsbConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UsbConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_usb(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_SerialConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_SerialConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_serial(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_TcpConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_TcpConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_tcp(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UdpConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UdpConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_udp(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_BluetoothConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_BluetoothConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_bluetooth(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_FileConnectionInfo*> (&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_FileConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_file(*castConnectionInfo);
                 return;

@@ -1,15 +1,15 @@
+#include "UpdatingFirmwareDialog.h"
 #include "ApplicationSettings.h"
 #include "CommandMessage.h"
 #include "Firmware/Firmware.h"
 #include "MessageDialog.h"
 #include "UpdateFirmwareDialog.h"
-#include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
 UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool)
-        : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
-          connectionInfo(std::move(connectionInfo_)),
-          hexFile(hexFile_)
+    : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
+      connectionInfo(std::move(connectionInfo_)),
+      hexFile(hexFile_)
 {
     addAndMakeVisible(progressBar);
 
@@ -91,9 +91,9 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                               {
                                   updateProgress("Update Complete", true);
                                   juce::Timer::callAfterDelay(1000, [&]
-                                  {
-                                      DialogQueue::getSingleton().pop();
-                                  });
+                                                              {
+                                                                  DialogQueue::getSingleton().pop();
+                                                              });
                                   return;
                               }
                           }

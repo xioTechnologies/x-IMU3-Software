@@ -1,5 +1,5 @@
-#include <BinaryData.h>
 #include "MessageDialog.h"
+#include <BinaryData.h>
 
 MessageDialog::MessageDialog(const juce::String& icon_, const juce::String& dialogTitle, const juce::String& message, const juce::String& okButtonText, const juce::String& cancelButtonText) : Dialog(icon_, dialogTitle, okButtonText, cancelButtonText)
 {

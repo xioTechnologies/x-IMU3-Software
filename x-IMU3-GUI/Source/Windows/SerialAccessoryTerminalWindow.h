@@ -1,12 +1,12 @@
 #pragma once
 
 #include "ApplicationSettings.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SerialAccessoryTerminal.h"
 #include "Window.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class SerialAccessoryTerminalWindow : public Window
 {

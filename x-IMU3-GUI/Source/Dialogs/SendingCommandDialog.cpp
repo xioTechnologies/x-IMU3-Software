@@ -1,8 +1,8 @@
-#include "ApplicationSettings.h"
 #include "SendingCommandDialog.h"
+#include "ApplicationSettings.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
-        : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
+    : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
@@ -42,44 +42,44 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             row.error.clear();
 
             juce::Timer::callAfterDelay(sendDelay, [&, row = &row]
-            {
-                row->connectionPanel.sendCommands({ command }, this, [&, row](const auto& responses)
-                {
-                    if (responses.empty())
-                    {
-                        row->error = "Unable to confirm command";
-                    }
-                    else if (const auto error = responses[0].getError())
-                    {
-                        row->error = *error;
-                    }
-                    row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
+                                        {
+                                            row->connectionPanel.sendCommands({ command }, this, [&, row](const auto& responses)
+                                                                              {
+                                                                                  if (responses.empty())
+                                                                                  {
+                                                                                      row->error = "Unable to confirm command";
+                                                                                  }
+                                                                                  else if (const auto error = responses[0].getError())
+                                                                                  {
+                                                                                      row->error = *error;
+                                                                                  }
+                                                                                  row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
 
-                    table.updateContent();
+                                                                                  table.updateContent();
 
-                    if (findRow(Row::State::inProgress))
-                    {
-                        return;
-                    }
+                                                                                  if (findRow(Row::State::inProgress))
+                                                                                  {
+                                                                                      return;
+                                                                                  }
 
-                    if (const auto index = findRow(Row::State::failed))
-                    {
-                        setOkButton(true);
-                        setCancelButton(true);
-                        table.scrollToEnsureRowIsOnscreen(*index);
-                        return;
-                    }
+                                                                                  if (const auto index = findRow(Row::State::failed))
+                                                                                  {
+                                                                                      setOkButton(true);
+                                                                                      setCancelButton(true);
+                                                                                      table.scrollToEnsureRowIsOnscreen(*index);
+                                                                                      return;
+                                                                                  }
 
-                    okCallback = [&]
-                    {
-                        return true;
-                    };
-                    setOkButton(true, "Close");
-                    setCancelButton(false);
+                                                                                  okCallback = [&]
+                                                                                  {
+                                                                                      return true;
+                                                                                  };
+                                                                                  setOkButton(true, "Close");
+                                                                                  setCancelButton(false);
 
-                    startTimer(1000);
-                });
-            });
+                                                                                  startTimer(1000);
+                                                                              });
+                                        });
         }
 
         sendDelay = 250; // delay retry sends to improve UX
@@ -151,8 +151,8 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             {
             public:
                 TitleAndError(const Row& row)
-                        : titleLabel(row.connectionPanel.getTitle()),
-                          errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
+                    : titleLabel(row.connectionPanel.getTitle()),
+                      errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
                 {
                     addAndMakeVisible(titleLabel);
                     addAndMakeVisible(errorLabel);

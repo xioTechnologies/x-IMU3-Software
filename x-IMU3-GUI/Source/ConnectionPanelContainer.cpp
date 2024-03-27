@@ -1,12 +1,12 @@
+#include "ConnectionPanelContainer.h"
 #include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
-#include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
 ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_, juce::ThreadPool& threadPool_)
-        : windowLayout(windowLayout_),
-          glRenderer(glRenderer_),
-          threadPool(threadPool_)
+    : windowLayout(windowLayout_),
+      glRenderer(glRenderer_),
+      threadPool(threadPool_)
 {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
@@ -147,16 +147,16 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
     addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, glRenderer, threadPool, *this, [&]
-    {
-        static unsigned int counter;
+                                                                                       {
+                                                                                           static unsigned int counter;
 
-        if (connectionPanels.empty() || (++counter >= UIColours::tags.size()))
-        {
-            counter = 0;
-        }
+                                                                                           if (connectionPanels.empty() || (++counter >= UIColours::tags.size()))
+                                                                                           {
+                                                                                               counter = 0;
+                                                                                           }
 
-        return UIColours::tags[counter];
-    }())));
+                                                                                           return UIColours::tags[counter];
+                                                                                       }())));
 
     connectionPanelsSizeChanged();
 }

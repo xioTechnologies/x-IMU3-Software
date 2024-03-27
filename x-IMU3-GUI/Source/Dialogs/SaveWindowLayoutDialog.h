@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Dialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/WindowLayouts.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/SimpleLabel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class SaveWindowLayoutDialog : public Dialog
 {

@@ -2,13 +2,13 @@
 
 #include "ApplicationSettings.h"
 #include "Dialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
 #include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class DataLoggerSettingsDialog : public Dialog
 {

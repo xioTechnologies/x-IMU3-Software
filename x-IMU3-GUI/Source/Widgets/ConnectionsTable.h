@@ -1,9 +1,9 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomToggleButton.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class ConnectionsTable : public juce::Component,
                          private juce::TableListBoxModel

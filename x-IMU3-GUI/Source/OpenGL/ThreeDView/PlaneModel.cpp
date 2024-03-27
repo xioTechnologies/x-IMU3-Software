@@ -53,8 +53,8 @@ void PlaneModel::initGLData()
     glEnableVertexAttribArray(textureCoordinateIndex);
 
     // Unbind buffers
-    glBindVertexArray(0); // unbind VAO first since it remembers last bound VBO & EBO buffers for next time we bind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind VBO
+    glBindVertexArray(0);                     // unbind VAO first since it remembers last bound VBO & EBO buffers for next time we bind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);         // unbind VBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // unbind EBO
 }
 
@@ -83,26 +83,26 @@ void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat>& ver
     // +z direction (out of the screen), and "far" means -z direction (into the screen).
     const auto numberOfVertices = 4;
     std::array<glm::vec3, numberOfVertices> positions = {
-            glm::vec3(extent, 0.0f, -extent), // far right
-            glm::vec3(extent, 0.0f, extent), // near right
-            glm::vec3(-extent, 0.0f, extent), // near left
-            glm::vec3(-extent, 0.0f, -extent), // far left
+        glm::vec3(extent, 0.0f, -extent),  // far right
+        glm::vec3(extent, 0.0f, extent),   // near right
+        glm::vec3(-extent, 0.0f, extent),  // near left
+        glm::vec3(-extent, 0.0f, -extent), // far left
     };
 
     // All vertices have the same normal vector pointing up
     const glm::vec3 normal = { 0.0f, 1.0f, 0.0f };
 
     std::array<glm::vec2, numberOfVertices> textureCoordinates = {
-            glm::vec2(1.0f, 1.0f), // far right
-            glm::vec2(1.0f, 0.0f), // near right
-            glm::vec2(0.0f, 0.0f), // near left
-            glm::vec2(0.0f, 1.0f), // far left
+        glm::vec2(1.0f, 1.0f), // far right
+        glm::vec2(1.0f, 0.0f), // near right
+        glm::vec2(0.0f, 0.0f), // near left
+        glm::vec2(0.0f, 1.0f), // far left
     };
 
     // All triangles have counter-clockwise winding order, so they are front-facing when viewed from above
     indicesOut = {
-            0, 3, 1, // first triangle
-            1, 3, 2, // second triangle
+        0, 3, 1, // first triangle
+        1, 3, 2, // second triangle
     };
 
     // Consolidate data into a GLfloat array for use by OpenGL

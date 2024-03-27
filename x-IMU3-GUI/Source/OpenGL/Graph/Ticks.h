@@ -72,7 +72,7 @@ static inline std::vector<Tick> createTicks(const int numberOfPixels, const Axis
     };
 
     const float firstMajorPosition = roundUpToNearestMultiple(limits.min, majorDistance);
-    const auto maxPossibleMajorTickCount = static_cast<unsigned int> (std::floor(limits.getRange() / majorDistance)) + 1;
+    const auto maxPossibleMajorTickCount = static_cast<unsigned int>(std::floor(limits.getRange() / majorDistance)) + 1;
     for (unsigned int majorTickIndex = 0; majorTickIndex < maxPossibleMajorTickCount; majorTickIndex++)
     {
         const float majorPosition = firstMajorPosition + (float) majorTickIndex * majorDistance;
@@ -105,7 +105,7 @@ static inline std::vector<Tick> createTicks(const int numberOfPixels, const Axis
             {
                 break;
             }
-            ticks.push_back({ false, minorPosition, {}});
+            ticks.push_back({ false, minorPosition, {} });
         }
     }
 
@@ -117,7 +117,7 @@ static inline std::vector<Tick> createTicks(const int numberOfPixels, const Axis
         {
             break;
         }
-        ticks.insert(ticks.begin(), { false, minorPosition, {}});
+        ticks.insert(ticks.begin(), { false, minorPosition, {} });
     }
 
     return ticks;

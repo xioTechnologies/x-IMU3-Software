@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ApplicationSettings.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class RecentConnections
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/ThreeDView/WavefrontObjFile.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class GLResources;
 

@@ -27,7 +27,8 @@ namespace GLHelpers
         */
         Uniform(const juce::OpenGLShaderProgram& program, const char* uniformName_) : uniformID(juce::gl::glGetUniformLocation(program.getProgramID(), uniformName_))
 #if JUCE_DEBUG
-                , uniformName(uniformName_)
+                                                                                      ,
+                                                                                      uniformName(uniformName_)
 #endif
         {
             assertUniformExistsInShaderProgram();

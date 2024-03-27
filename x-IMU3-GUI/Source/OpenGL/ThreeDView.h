@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Common/GLRenderer.h"
+#include "OpenGLComponent.h"
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "OpenGLComponent.h"
 
 class ThreeDView : public OpenGLComponent
 {

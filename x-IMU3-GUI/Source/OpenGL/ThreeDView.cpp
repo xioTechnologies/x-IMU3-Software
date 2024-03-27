@@ -1,5 +1,5 @@
-#include "CustomLookAndFeel.h"
 #include "ThreeDView.h"
+#include "CustomLookAndFeel.h"
 
 ThreeDView::ThreeDView(GLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_)
 {
@@ -169,14 +169,14 @@ void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat
 {
     // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
     GLHelpers::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
-    GLHelpers::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
+    GLHelpers::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false);   // allow front and back face of compass to be seen
 
     const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     const auto compassModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight, 0.0f)) * compassRotateScale;
     auto& unlitShader = renderer.getResources().unlitShader;
     unlitShader.use();
     const auto brightness = 0.8f;
-    unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
+    unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f));                                // tint color to decrease brightness
     unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassModelMatrix); // top compass layer above grid
     unlitShader.setTextureImage(renderer.getResources().compassTexture);
     renderer.getResources().plane.render();
@@ -186,7 +186,7 @@ void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat
 void ThreeDView::renderAxes(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
 {
     renderAxesForDeviceOrientation(deviceRotation, axesConventionRotation); // attached to model
-    renderAxesForWorldOrientation(axesConventionRotation); // in HUD top right
+    renderAxesForWorldOrientation(axesConventionRotation);                  // in HUD top right
 }
 
 void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const
@@ -251,9 +251,9 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
     const auto paddingOffset = 0.06f; // account for distance of glyph from render square edge
     const auto textDistanceFromOriginXY = (textDistanceFromOrigin - paddingOffset) * inverseScreenScale;
 
-    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f)); // Earth x-axis aligns with OpenGL +x-axis
+    const auto xTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(textDistanceFromOriginXY, 0.0f, 0.0f));  // Earth x-axis aligns with OpenGL +x-axis
     const auto yTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -textDistanceFromOriginXY)); // Earth y-axis aligns with OpenGL -z-axis
-    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f)); // Earth z-axis aligns with OpenGL +y-axis
+    const auto zTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, textDistanceFromOriginZ, 0.0f));   // Earth z-axis aligns with OpenGL +y-axis
 
     const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 

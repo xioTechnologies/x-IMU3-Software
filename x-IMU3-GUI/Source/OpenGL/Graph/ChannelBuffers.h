@@ -7,7 +7,6 @@ class ChannelBuffers
 public:
     ChannelBuffers(const int numberOfChannels) : channelBuffers((size_t) numberOfChannels)
     {
-
     }
 
     void clear()

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Dialog.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/ConnectionsTable.h"
 #include "Widgets/IconButton.h"
 #include "Ximu3.hpp"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class AvailableConnectionsDialog : public Dialog,
                                    private juce::Timer
@@ -23,7 +23,7 @@ private:
 
     ximu3::PortScanner portScanner { [](const auto&)
                                      {
-                                     }};
+                                     } };
 
     ConnectionsTable table;
 

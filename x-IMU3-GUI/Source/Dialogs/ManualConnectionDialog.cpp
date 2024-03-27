@@ -1,5 +1,5 @@
-#include "CustomLookAndFeel.h"
 #include "ManualConnectionDialog.h"
+#include "CustomLookAndFeel.h"
 
 ManualConnectionDialog::ManualConnectionDialog(const juce::String& dialogTitle) : Dialog(BinaryData::manual_svg, dialogTitle, "Connect")
 {

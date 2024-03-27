@@ -1,5 +1,5 @@
-#include "../Helpers.h"
 #include "Connection.h"
+#include "../Helpers.h"
 #include <inttypes.h> // PRIu64
 #include <stdio.h>
 

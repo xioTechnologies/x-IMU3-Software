@@ -1,5 +1,5 @@
-#include "CustomLookAndFeel.h"
 #include "CustomToggleButton.h"
+#include "CustomLookAndFeel.h"
 
 class CustomToggleButton::LookAndFeel : public CustomLookAndFeel
 {

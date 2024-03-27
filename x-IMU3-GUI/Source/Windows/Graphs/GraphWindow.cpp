@@ -1,5 +1,5 @@
-#include "ConnectionPanel/ConnectionPanel.h"
 #include "GraphWindow.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Widgets/PopupMenuHeader.h"
 
 const juce::String GraphWindow::degreeSymbol = (juce::CharPointer_UTF8("\xc2\xba"));
@@ -10,13 +10,13 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
                          std::vector<juce::String> legendStrings_,
                          std::vector<juce::Colour> legendColours_,
                          bool defaultHorizontalAutoscale_)
-        : Window(windowLayout_, type_, connectionPanel_, ""),
-          legendStrings(legendStrings_),
-          legendColours(legendColours_),
-          defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
-          graph(glRenderer, legendColours_, labelHeight, rightMargin),
-          xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
-          yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
+    : Window(windowLayout_, type_, connectionPanel_, ""),
+      legendStrings(legendStrings_),
+      legendColours(legendColours_),
+      defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
+      graph(glRenderer, legendColours_, labelHeight, rightMargin),
+      xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
+      yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
 {
     jassert(legendStrings.size() == legendColours.size());
 
@@ -76,7 +76,7 @@ void GraphWindow::resized()
 
         // Rotate Y label vertical
         const auto yLabelBounds = graphArea.removeFromLeft(labelHeight);
-        yLabel.setTransform({}); // prevent glitch on subsequent resize
+        yLabel.setTransform({});                                           // prevent glitch on subsequent resize
         yLabel.setSize(yLabelBounds.getHeight(), yLabelBounds.getWidth()); // invert width/height
         yLabel.setCentrePosition(0, 0);
         yLabel.setTransform(juce::AffineTransform::rotation(-juce::MathConstants<float>::halfPi).translated((float) yLabelBounds.getCentreX(), (float) yLabelBounds.getCentreY()));
@@ -223,94 +223,94 @@ juce::PopupMenu GraphWindow::getMenu()
     juce::PopupMenu menu = Window::getMenu();
 
     menu.addItem("Restore Defaults", true, false, [this]
-    {
-        const auto size = settingsTree.getProperty(WindowIDs::size);
-        settingsTree.removeAllProperties(nullptr);
-        if (size.isVoid() == false)
-        {
-            settingsTree.setProperty(WindowIDs::size, size, nullptr);
-        }
-    });
+                 {
+                     const auto size = settingsTree.getProperty(WindowIDs::size);
+                     settingsTree.removeAllProperties(nullptr);
+                     if (size.isVoid() == false)
+                     {
+                         settingsTree.setProperty(WindowIDs::size, size, nullptr);
+                     }
+                 });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
-    {
-        settingsTree.setProperty("scaleToFit", true, nullptr);
-        settingsTree.setProperty("scaleToFit", false, nullptr);
-    });
+                 {
+                     settingsTree.setProperty("scaleToFit", true, nullptr);
+                     settingsTree.setProperty("scaleToFit", false, nullptr);
+                 });
     menu.addItem("Clear", true, false, [this]
-    {
-        settingsTree.setProperty("clear", true, nullptr);
-        settingsTree.setProperty("clear", false, nullptr);
-    });
+                 {
+                     settingsTree.setProperty("clear", true, nullptr);
+                     settingsTree.setProperty("clear", false, nullptr);
+                 });
     menu.addItem("Pause", true, paused, [this]
-    {
-        settingsTree.setProperty("paused", (bool) settingsTree["paused"] == false, nullptr);
-    });
+                 {
+                     settingsTree.setProperty("paused", (bool) settingsTree["paused"] == false, nullptr);
+                 });
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("HORIZONTAL"), nullptr);
     menu.addItem("Autoscale", true, graph.getSettings().horizontalAutoscale, [this]
-    {
-        auto settings = graph.getSettings();
-        settings.horizontalAutoscale = !settings.horizontalAutoscale;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     settings.horizontalAutoscale = !settings.horizontalAutoscale;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Move Left (Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
-    {
-        auto settings = graph.getSettings();
-        const auto offset = settings.axesLimits.x.getRange() / 2;
-        settings.axesLimits.x.min -= offset;
-        settings.axesLimits.x.max -= offset;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     const auto offset = settings.axesLimits.x.getRange() / 2;
+                     settings.axesLimits.x.min -= offset;
+                     settings.axesLimits.x.max -= offset;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Move Right (Drag)", graph.getSettings().horizontalAutoscale == false, false, [this]
-    {
-        auto settings = graph.getSettings();
-        const auto offset = settings.axesLimits.x.getRange() / 2;
-        settings.axesLimits.x.min += offset;
-        settings.axesLimits.x.max += offset;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     const auto offset = settings.axesLimits.x.getRange() / 2;
+                     settings.axesLimits.x.min += offset;
+                     settings.axesLimits.x.max += offset;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Zoom In (Scroll)", graph.getSettings().horizontalAutoscale == false, false, [this]
-    {
-        zoomHorizontal(0.5f);
-    });
+                 {
+                     zoomHorizontal(0.5f);
+                 });
     menu.addItem("Zoom Out (Scroll)", graph.getSettings().horizontalAutoscale == false, false, [this]
-    {
-        zoomHorizontal(2.0f);
-    });
+                 {
+                     zoomHorizontal(2.0f);
+                 });
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VERTICAL"), nullptr);
     menu.addItem("Autoscale", true, graph.getSettings().verticalAutoscale, [this]
-    {
-        auto settings = graph.getSettings();
-        settings.verticalAutoscale = !settings.verticalAutoscale;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     settings.verticalAutoscale = !settings.verticalAutoscale;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Move Up (Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
-    {
-        auto settings = graph.getSettings();
-        const auto offset = settings.axesLimits.y.getRange() / 2;
-        settings.axesLimits.y.min += offset;
-        settings.axesLimits.y.max += offset;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     const auto offset = settings.axesLimits.y.getRange() / 2;
+                     settings.axesLimits.y.min += offset;
+                     settings.axesLimits.y.max += offset;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Move Down (Drag)", graph.getSettings().verticalAutoscale == false, false, [this]
-    {
-        auto settings = graph.getSettings();
-        const auto offset = settings.axesLimits.y.getRange() / 2;
-        settings.axesLimits.y.min -= offset;
-        settings.axesLimits.y.max -= offset;
-        writeToValueTree(settings);
-    });
+                 {
+                     auto settings = graph.getSettings();
+                     const auto offset = settings.axesLimits.y.getRange() / 2;
+                     settings.axesLimits.y.min -= offset;
+                     settings.axesLimits.y.max -= offset;
+                     writeToValueTree(settings);
+                 });
     menu.addItem("Zoom In (Alt+Scroll)", graph.getSettings().verticalAutoscale == false, false, [this]
-    {
-        zoomVertical(0.5f);
-    });
+                 {
+                     zoomVertical(0.5f);
+                 });
     menu.addItem("Zoom Out (Alt+Scroll)", graph.getSettings().verticalAutoscale == false, false, [this]
-    {
-        zoomVertical(2.0f);
-    });
+                 {
+                     zoomVertical(2.0f);
+                 });
 
     if (numberOfChannels > 1)
     {
@@ -325,24 +325,24 @@ juce::PopupMenu GraphWindow::getMenu()
             allTicked = allTicked && line;
         }
         menu.addItem("All", true, allTicked, [this, allTicked]
-        {
-            auto settings_ = graph.getSettings();
-            for (auto&& line : settings_.enabledChannels)
-            {
-                line = !allTicked;
-            }
-            writeToValueTree(settings_);
-            repaint(); // refresh legend text color
-        });
+                     {
+                         auto settings_ = graph.getSettings();
+                         for (auto&& line : settings_.enabledChannels)
+                         {
+                             line = !allTicked;
+                         }
+                         writeToValueTree(settings_);
+                         repaint(); // refresh legend text color
+                     });
 
         for (size_t index = 0; index < (size_t) numberOfChannels; index++)
         {
             menu.addItem(legendStrings[index], true, settings.enabledChannels[index], [this, index]
-            {
-                auto settings_ = graph.getSettings();
-                settings_.enabledChannels[index] = settings_.enabledChannels[index] == false;
-                writeToValueTree(settings_);
-            });
+                         {
+                             auto settings_ = graph.getSettings();
+                             settings_.enabledChannels[index] = settings_.enabledChannels[index] == false;
+                             writeToValueTree(settings_);
+                         });
         }
     }
 

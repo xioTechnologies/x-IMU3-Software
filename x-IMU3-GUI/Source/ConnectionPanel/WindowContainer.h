@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Windows/WindowIDs.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <vector>
-#include "Windows/WindowIDs.h"
 
 class WindowContainer : public juce::Component,
                         private juce::ValueTree::Listener

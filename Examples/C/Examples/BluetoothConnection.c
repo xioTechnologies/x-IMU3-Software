@@ -27,7 +27,7 @@ void BluetoothConnection()
     else
     {
         const XIMU3_BluetoothConnectionInfo connectionInfo = (XIMU3_BluetoothConnectionInfo) {
-                .port_name = "COM1",
+            .port_name = "COM1",
         };
         Run(XIMU3_connection_new_bluetooth(connectionInfo), XIMU3_bluetooth_connection_info_to_string(connectionInfo));
     }

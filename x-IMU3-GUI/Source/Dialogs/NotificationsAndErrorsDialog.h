@@ -1,8 +1,8 @@
 #pragma once
 
-#include <BinaryData.h>
 #include "Dialog.h"
 #include "Widgets/SimpleLabel.h"
+#include <BinaryData.h>
 
 class ConnectionPanel;
 

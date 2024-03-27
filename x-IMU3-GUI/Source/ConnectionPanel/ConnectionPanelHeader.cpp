@@ -1,13 +1,13 @@
+#include "ConnectionPanelHeader.h"
 #include "ConnectionPanel.h"
 #include "ConnectionPanelContainer.h"
-#include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
 
 ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_)
-        : connectionPanel(connectionPanel_),
-          threadPool(threadPool_),
-          connectionPanelContainer(connectionPanelContainer_),
-          connection(connectionPanel.getConnection())
+    : connectionPanel(connectionPanel_),
+      threadPool(threadPool_),
+      connectionPanelContainer(connectionPanelContainer_),
+      connection(connectionPanel.getConnection())
 {
     addAndMakeVisible(retryButton);
     addChildComponent(strobeButton);
@@ -29,26 +29,26 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     };
 
     networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&](auto message)
-    {
-        if (juce::String(message.serial_number) == serialNumber)
-        {
-            if (message.rssi != -1)
-            {
-                rssiIcon.update(message.rssi);
-            }
-            batteryIcon.update(message.battery, message.charging_status);
-        }
-    });
+                                                                     {
+                                                                         if (juce::String(message.serial_number) == serialNumber)
+                                                                         {
+                                                                             if (message.rssi != -1)
+                                                                             {
+                                                                                 rssiIcon.update(message.rssi);
+                                                                             }
+                                                                             batteryIcon.update(message.battery, message.charging_status);
+                                                                         }
+                                                                     });
 
     rssiCallbackID = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
-        rssiIcon.update((int) message.percentage);
-    });
+                                                                      {
+                                                                          rssiIcon.update((int) message.percentage);
+                                                                      });
 
     batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
-    {
-        batteryIcon.update((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
-    });
+                                                                            {
+                                                                                batteryIcon.update((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
+                                                                            });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
 

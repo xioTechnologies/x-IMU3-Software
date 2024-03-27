@@ -1,7 +1,7 @@
-#include <BinaryData.h>
-#include "ConnectionPanel/ConnectionPanel.h"
 #include "NotificationsAndErrorsDialog.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Widgets/Icon.h"
+#include <BinaryData.h>
 
 juce::String NotificationsAndErrorsDialog::Message::getIcon() const
 {
@@ -40,8 +40,8 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 }
 
 NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel)
-        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
-          messages(messages_)
+    : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
+      messages(messages_)
 {
     addAndMakeVisible(clearButton);
     addAndMakeVisible(typeLabel);

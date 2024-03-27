@@ -2,11 +2,11 @@
 #include "WindowIDs.h"
 
 Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, const juce::String& menuButtonTooltip)
-        : settingsTree(findWindow(windowLayout_, type_)),
-          connectionPanel(connectionPanel_),
-          windowLayout(windowLayout_),
-          type(type_),
-          header(connectionPanel_, windowLayout, type_, menuButtonTooltip, std::bind(&Window::getMenu, this))
+    : settingsTree(findWindow(windowLayout_, type_)),
+      connectionPanel(connectionPanel_),
+      windowLayout(windowLayout_),
+      type(type_),
+      header(connectionPanel_, windowLayout, type_, menuButtonTooltip, std::bind(&Window::getMenu, this))
 {
     addAndMakeVisible(header);
 
@@ -32,19 +32,19 @@ juce::PopupMenu Window::getMenu()
 {
     juce::PopupMenu menu;
     menu.addItem("Close", [&]
-    {
-        closeWindow(type);
-    });
+                 {
+                     closeWindow(type);
+                 });
     menu.addItem("Close Other Windows", [&]
-    {
-        for (const auto& [windowType, _] : windowTitles)
-        {
-            if (windowType != type)
-            {
-                closeWindow(windowType);
-            }
-        }
-    });
+                 {
+                     for (const auto& [windowType, _] : windowTitles)
+                     {
+                         if (windowType != type)
+                         {
+                             closeWindow(windowType);
+                         }
+                     }
+                 });
     return menu;
 }
 
