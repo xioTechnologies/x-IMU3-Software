@@ -5,11 +5,12 @@
 /.idea/**
 !/.idea/codeStyles
 !/.idea/codeStyles/**
-!/.idea/runConfigurations
-!/.idea/runConfigurations/**
 !/.idea/misc.xml
 /cmake-build-debug
 /cmake-build-release
+
+# RustRover
+**/.idea/**
 
 # Rust
 **/Cargo.lock
