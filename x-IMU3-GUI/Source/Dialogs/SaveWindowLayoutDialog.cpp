@@ -8,7 +8,7 @@ SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, 
 
     nameValue.onTextChange = [this]
     {
-        setOkButton(nameValue.getText().isNotEmpty() && juce::File::createLegalFileName(nameValue.getText()) == nameValue.getText());
+        setOkButton(getLayoutName().isNotEmpty() && juce::File::createLegalFileName(getLayoutName()) == getLayoutName());
     };
 
     nameValue.setText("Window Layout", false);
@@ -28,5 +28,5 @@ void SaveWindowLayoutDialog::resized()
 
 juce::String SaveWindowLayoutDialog::getLayoutName() const
 {
-    return nameValue.getText();
+    return nameValue.getText().trim();
 }
