@@ -75,7 +75,7 @@ DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
 {
     Settings settings;
     settings.directory = directoryValue.getText();
-    settings.name = nameValue.getText().isNotEmpty() ? nameValue.getText() : nameValue.getTextToShowWhenEmpty();
+    settings.name = nameValue.getText().isNotEmpty() ? nameValue.getText().trim() : nameValue.getTextToShowWhenEmpty();
     settings.nameEmpty = nameValue.getText().isEmpty();
     settings.timeValue = timeValue.getText().getFloatValue();
     settings.timeUnit = static_cast<Settings::TimeUnit>(timeUnit.getSelectedItemIndex());
