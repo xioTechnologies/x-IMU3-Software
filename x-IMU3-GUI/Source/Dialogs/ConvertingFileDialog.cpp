@@ -75,7 +75,7 @@ void ConvertingFileDialog::timerCallback()
     }
     else
     {
-        destination.revealToUser();
+        destination.startAsProcess();
     }
 
     DialogQueue::getSingleton().pop();
