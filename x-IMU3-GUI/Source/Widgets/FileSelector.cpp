@@ -1,6 +1,6 @@
+#include "Dialogs/Dialog.h"
 #include "FileSelector.h"
 #include <filesystem>
-#include "Dialogs/Dialog.h"
 
 FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce::String>& extension_) : extension(extension_), button(BinaryData::open_svg, tooltip)
 {
