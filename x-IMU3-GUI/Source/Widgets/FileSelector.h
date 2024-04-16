@@ -25,7 +25,7 @@ public:
 private:
     const std::optional<juce::String> extension;
 
-    CustomTextEditor value;
+    CustomTextEditor textEditor;
     IconButton button;
 
     static juce::Array<juce::File> toFileArray(const juce::StringArray& strings);
