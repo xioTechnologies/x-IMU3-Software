@@ -95,7 +95,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
             dataLogger.reset();
             stopTimer();
             dataLoggerStartStopButton.setToggleState(false, juce::dontSendNotification);
-            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName).revealToUser();
+            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName).startAsProcess();
             return;
         }
 
