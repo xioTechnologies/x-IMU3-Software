@@ -80,10 +80,10 @@
             <Setting key="ahrsMagneticRejectionEnabled" name="Magnetic Rejection" type="bool" hideKey="ahrsIgnoreMagnetometer" hideValues="1"/>
         </Group>
     </Group>
-    <Group name="Data Messages">
+    <Group name="Data Messages" open="true">
         <Setting key="binaryModeEnabled" name="Binary Mode" type="bool"/>
         <Setting key="ahrsMessageType" name="AHRS Message Type" type="SendAhrsMessageType"/>
-        <Group name="Message Rates">
+        <Group name="Message Rates" open="true">
             <Setting key="inertialMessageRateDivisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
             <Setting key="magnetometerMessageRateDivisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
             <Setting key="ahrsMessageRateDivisor" name="AHRS" type="SendMessageRateDivisorAhrs"/>

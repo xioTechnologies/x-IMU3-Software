@@ -4,7 +4,6 @@ DeviceSettings::DeviceSettings()
 {
     setRootItem(&rootItem);
     setRootItemVisible(false);
-    setDefaultOpenness(true);
 
     settingsTree.addListener(this);
     ApplicationSettings::getSingleton().getTree().addListener(this);
