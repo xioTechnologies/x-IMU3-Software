@@ -1,6 +1,7 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/MessageDialog.h"
+#include "Firmware/Firmware.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
         : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
@@ -26,12 +27,19 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 if (response == responses.end() || response->getError())
                 {
-                    deviceSettings.setStatus(command.key, Setting::Status::readFailed);
+                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Read from Device");
                     continue;
                 }
 
                 deviceSettings.setValue(*response);
-                deviceSettings.setStatus(response->key, Setting::Status::normal);
+
+                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmwareVersion") && response->value != Firmware::version)
+                {
+                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
+                    continue;
+                }
+
+                deviceSettings.setStatus(response->key, Setting::Status::normal, {});
             }
 
             readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
@@ -59,12 +67,12 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 if (response == responses.end() || response->getError())
                 {
-                    deviceSettings.setStatus(command.key, Setting::Status::writeFailed);
+                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
                     continue;
                 }
 
                 deviceSettings.setValue(*response);
-                deviceSettings.setStatus(response->key, Setting::Status::normal);
+                deviceSettings.setStatus(response->key, Setting::Status::normal, {});
             }
 
             writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
@@ -203,7 +211,7 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 {
     for (const auto& command : commands)
     {
-        deviceSettings.setStatus(command.key, Setting::Status::normal);
+        deviceSettings.setStatus(command.key, Setting::Status::normal, {});
     }
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);

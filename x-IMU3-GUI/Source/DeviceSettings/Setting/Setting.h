@@ -17,8 +17,7 @@ public:
     {
         normal,
         modified,
-        readFailed,
-        writeFailed,
+        warning,
     };
 
     static constexpr int rowMargin = 4;
@@ -46,9 +45,8 @@ protected:
 
 private:
     SimpleLabel name;
-    Icon modifiedIcon { BinaryData::modify_svg, "Modified but Not Written to Device" };
-    Icon readFailedIcon { BinaryData::warning_orange_svg, "Unable to Read from Device" };
-    Icon writeFailedIcon { BinaryData::warning_orange_svg, "Unable to Write to Device" };
+    Icon modifiedIcon { BinaryData::modify_svg, {}};
+    Icon warningIcon { BinaryData::warning_orange_svg, {}};
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
 

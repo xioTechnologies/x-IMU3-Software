@@ -22,6 +22,7 @@ namespace DeviceSettingsIDs
 
     DECLARE_ID(value)
     DECLARE_ID(status)
+    DECLARE_ID(statusTooltip)
 
 #undef DECLARE_ID
 }
