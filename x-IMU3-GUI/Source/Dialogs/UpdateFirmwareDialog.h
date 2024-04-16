@@ -78,7 +78,7 @@ private:
     CustomComboBox deviceValue;
 
     SimpleLabel hexFileLabel { "Hex File:" };
-    FileSelector hexFileSelector { "Open Firmware File", ".hex" };
+    FileSelector hexFileSelector { "Select Firmware File", ".hex" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdateFirmwareDialog)
 };
