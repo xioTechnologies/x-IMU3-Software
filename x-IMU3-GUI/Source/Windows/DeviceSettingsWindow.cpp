@@ -33,7 +33,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 deviceSettings.setValue(*response);
 
-                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmwareVersion") && command.value != Firmware::version)
+                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmwareVersion") && response->value != Firmware::version)
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
                     continue;
