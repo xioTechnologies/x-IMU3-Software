@@ -31,6 +31,8 @@ public:
                 }
             }
         }
+
+        setOpen(tree[DeviceSettingsIDs::open]);
     }
 
     bool mightContainSubItems() override
