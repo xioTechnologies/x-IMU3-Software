@@ -3,6 +3,7 @@
 #include "Dialog.h"
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
+#include "Widgets/FileSelector.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
@@ -77,8 +78,7 @@ private:
     CustomComboBox deviceValue;
 
     SimpleLabel hexFileLabel { "Hex File:" };
-    CustomTextEditor hexFileValue;
-    IconButton hexFileButton { BinaryData::open_svg, "Select Firmware File" };
+    FileSelector hexFileSelector { "Select Firmware File", ".hex" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdateFirmwareDialog)
 };

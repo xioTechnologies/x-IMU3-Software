@@ -6,6 +6,7 @@
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/CustomToggleButton.h"
+#include "Widgets/FileSelector.h"
 #include "Widgets/Icon.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
@@ -53,8 +54,7 @@ public:
 
 private:
     SimpleLabel directoryLabel { "Directory:" };
-    CustomTextEditor directoryValue;
-    IconButton directoryButton { BinaryData::open_svg, "Select Directory" };
+    FileSelector directorySelector { "Select Directory", {} };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
     SimpleLabel timeLabel { "Time:" };

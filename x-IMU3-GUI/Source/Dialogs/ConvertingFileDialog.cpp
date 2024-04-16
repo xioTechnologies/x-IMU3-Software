@@ -2,7 +2,7 @@
 #include "ConvertingFileDialog.h"
 #include "MessageDialog.h"
 
-void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juce::File& destination_)
+void ConvertingFileDialog::show(const juce::Array<juce::File>& files_, const juce::File& destination_)
 {
     const auto directory = destination_.getChildFile(files_[0].getFileNameWithoutExtension());
 
@@ -21,7 +21,7 @@ void ConvertingFileDialog::show(const std::vector<juce::File>& files_, const juc
     }
 }
 
-ConvertingFileDialog::ConvertingFileDialog(const std::vector<juce::File>& files_, const juce::File& destination_)
+ConvertingFileDialog::ConvertingFileDialog(const juce::Array<juce::File>& files_, const juce::File& destination_)
         : Dialog(BinaryData::tools_svg, "Converting " + files_[0].getFileName(), "Cancel", ""),
           files(files_),
           destination(destination_),
@@ -70,7 +70,7 @@ void ConvertingFileDialog::timerCallback()
 {
     if (files.size() > 1)
     {
-        files.erase(files.begin());
+        files.remove(0);
         show(files, destination);
     }
     else
