@@ -1,11 +1,9 @@
 #include "DataLoggerSettingsDialog.h"
-#include <filesystem>
 
 DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start")
 {
     addAndMakeVisible(directoryLabel);
-    addAndMakeVisible(directoryValue);
-    addAndMakeVisible(directoryButton);
+    addAndMakeVisible(directorySelector);
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
     addAndMakeVisible(timeLabel);
@@ -14,27 +12,18 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     juce::File(settings.directory).createDirectory();
 
-    directoryButton.onClick = [&]
-    {
-        juce::FileChooser fileChooser(directoryButton.getTooltip(), std::filesystem::exists(directoryValue.getText().toStdString()) ? directoryValue.getText() : "");
-        if (fileChooser.browseForDirectory())
-        {
-            directoryValue.setText(fileChooser.getResult().getFullPathName(), true);
-        }
-    };
-
-    directoryValue.setText(settings.directory, false);
+    directorySelector.setFiles({settings.directory});
     nameValue.setTextToShowWhenEmpty("Logged Data " + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S"), juce::Colours::grey);
     nameValue.setText(settings.nameEmpty ? "" : settings.name, false);
     timeValue.setText(juce::String(settings.timeValue), false);
     timeUnit.addItemList({ "Unlimited", "Hours", "Minutes", "Seconds" }, 1);
     timeUnit.setSelectedItemIndex(static_cast<int>(settings.timeUnit), juce::dontSendNotification);
 
-    directoryValue.onTextChange = nameValue.onTextChange = [&]
+    directorySelector.onChange = nameValue.onTextChange = [&]
     {
-        setOkButton(std::filesystem::exists(directoryValue.getText().toStdString()));
+        setOkButton(directorySelector.isValid());
     };
-    directoryValue.onTextChange();
+    directorySelector.onChange();
 
     timeUnit.onChange = [&]
     {
@@ -53,8 +42,7 @@ void DataLoggerSettingsDialog::resized()
 
     auto directoryRow = bounds.removeFromTop(UILayout::textComponentHeight);
     directoryLabel.setBounds(directoryRow.removeFromLeft(columnWidth));
-    directoryButton.setBounds(directoryRow.removeFromRight(iconButtonWidth));
-    directoryValue.setBounds(directoryRow.withTrimmedRight(margin));
+    directorySelector.setBounds(directoryRow);
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -74,7 +62,7 @@ void DataLoggerSettingsDialog::resized()
 DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
 {
     Settings settings;
-    settings.directory = directoryValue.getText();
+    settings.directory = directorySelector.getFiles()[0].getFullPathName();
     settings.name = nameValue.getText().isNotEmpty() ? nameValue.getText().trim() : nameValue.getTextToShowWhenEmpty();
     settings.nameEmpty = nameValue.getText().isEmpty();
     settings.timeValue = timeValue.getText().getFloatValue();

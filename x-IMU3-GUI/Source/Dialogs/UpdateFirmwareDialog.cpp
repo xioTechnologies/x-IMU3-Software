@@ -1,5 +1,4 @@
 #include "ApplicationSettings.h"
-#include <filesystem>
 #include "Firmware/Firmware.h"
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
@@ -9,25 +8,15 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(deviceValue);
     addAndMakeVisible(hexFileLabel);
-    addAndMakeVisible(hexFileValue);
-    addAndMakeVisible(hexFileButton);
+    addAndMakeVisible(hexFileSelector);
 
     const auto hexFile = ApplicationSettings::getDirectory().getChildFile(Firmware::hexFile);
     hexFile.replaceWithData(Firmware::memoryBlock.getData(), Firmware::memoryBlock.getSize());
-    hexFileValue.setText(hexFile.getFullPathName());
+    hexFileSelector.setFiles({hexFile});
 
-    hexFileButton.onClick = [&]
+    deviceValue.onChange = hexFileSelector.onChange = [&]
     {
-        juce::FileChooser fileChooser(hexFileButton.getTooltip(), std::filesystem::exists(hexFileValue.getText().toStdString()) ? hexFileValue.getText() : "", "*.hex");
-        if (fileChooser.browseForFileToOpen())
-        {
-            hexFileValue.setText(fileChooser.getResult().getFullPathName());
-        }
-    };
-
-    deviceValue.onChange = hexFileValue.onTextChange = [&]
-    {
-        setOkButton(getConnectionInfo() != nullptr && std::filesystem::is_regular_file(hexFileValue.getText().toStdString()));
+        setOkButton(getConnectionInfo() != nullptr && hexFileSelector.isValid());
     };
     setOkButton(false);
 
@@ -48,8 +37,7 @@ void UpdateFirmwareDialog::resized()
 
     auto hexFileRow = bounds.removeFromTop(UILayout::textComponentHeight);
     hexFileLabel.setBounds(hexFileRow.removeFromLeft(columnWidth));
-    hexFileButton.setBounds(hexFileRow.removeFromRight(iconButtonWidth));
-    hexFileValue.setBounds(hexFileRow.withTrimmedRight(margin));
+    hexFileSelector.setBounds(hexFileRow);
 }
 
 std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const
@@ -78,7 +66,7 @@ std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo()
 
 juce::File UpdateFirmwareDialog::getHexFile() const
 {
-    return hexFileValue.getText();
+    return hexFileSelector.getFiles()[0];
 }
 
 void UpdateFirmwareDialog::launch(juce::ThreadPool& threadPool)
