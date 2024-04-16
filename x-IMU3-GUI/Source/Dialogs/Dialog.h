@@ -6,6 +6,8 @@
 class Dialog : public juce::Component
 {
 public:
+    static constexpr int iconButtonWidth = 40;
+    static constexpr int margin = 15;
     static constexpr int titleBarHeight = 38;
 
     Dialog(const juce::String& icon_,
@@ -34,10 +36,8 @@ public:
     std::function<bool()> okCallback;
 
 protected:
-    static constexpr int margin = 15;
     static constexpr int dialogWidth = 520;
     static constexpr int columnWidth = 115;
-    static constexpr int iconButtonWidth = 40;
 
     int calculateHeight(const int numberOfRows) const;
 

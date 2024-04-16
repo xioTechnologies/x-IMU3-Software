@@ -1,5 +1,6 @@
 #include "FileSelector.h"
 #include <filesystem>
+#include "Dialogs/Dialog.h"
 
 FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce::String>& extension_) : extension(extension_), button(BinaryData::open_svg, tooltip)
 {
@@ -22,8 +23,8 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
 void FileSelector::resized()
 {
     auto r = getLocalBounds();
-    button.setBounds(r.removeFromRight(40)); // TODO: Use constant
-    value.setBounds(r.withTrimmedRight(15)); // TODO: Use constant
+    button.setBounds(r.removeFromRight(Dialog::iconButtonWidth));
+    value.setBounds(r.withTrimmedRight(Dialog::margin));
 }
 
 bool FileSelector::isInterestedInFileDrag(const juce::StringArray&)
