@@ -69,7 +69,7 @@ private:
     ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer, threadPool };
     juce::Viewport connectionPanelViewport;
     MenuStrip menuStrip { windowLayout, threadPool, connectionPanelContainer };
-    juce::TooltipWindow tooltipWindow { nullptr, 1200 };
+    juce::TooltipWindow tooltipWindow { nullptr, 300 };
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
