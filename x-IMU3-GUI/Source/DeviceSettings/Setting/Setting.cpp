@@ -7,8 +7,7 @@ Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentI
 {
     addAndMakeVisible(name);
     addChildComponent(modifiedIcon);
-    addChildComponent(readFailedIcon);
-    addChildComponent(writeFailedIcon);
+    addChildComponent(warningIcon);
 
     name.setText(tree[DeviceSettingsIDs::name]);
 
@@ -38,8 +37,7 @@ void Setting::resized()
     auto bounds = getLocalBounds();
 
     modifiedIcon.setBounds(bounds.removeFromRight(25).reduced(5));
-    readFailedIcon.setBounds(modifiedIcon.getBounds());
-    writeFailedIcon.setBounds(modifiedIcon.getBounds());
+    warningIcon.setBounds(modifiedIcon.getBounds());
 
     if (auto* treeview = findParentComponentOfClass<juce::TreeView>())
     {
@@ -75,39 +73,45 @@ void Setting::setValue(const juce::var& value)
 {
     tree.setPropertyExcludingListener(this, DeviceSettingsIDs::value, value, nullptr);
     tree.setProperty(DeviceSettingsIDs::status, (int) Status::modified, nullptr);
+    tree.setProperty(DeviceSettingsIDs::statusTooltip, "Modified but Not Written to Device", nullptr);
 }
 
 void Setting::updateIcon()
 {
+    auto updateIcons = [&](auto status, auto tooltip)
+    {
+        modifiedIcon.setVisible(status == Status::modified);
+        warningIcon.setVisible(status == Status::warning);
+        modifiedIcon.setTooltip(tooltip);
+        warningIcon.setTooltip(tooltip);
+    };
+
     if (parentIfExpandable == nullptr)
     {
-        modifiedIcon.setVisible((Status) (int) tree.getProperty(DeviceSettingsIDs::status) == Status::modified);
-        readFailedIcon.setVisible((Status) (int) tree.getProperty(DeviceSettingsIDs::status) == Status::readFailed);
-        writeFailedIcon.setVisible((Status) (int) tree.getProperty(DeviceSettingsIDs::status) == Status::writeFailed);
+        updateIcons((Status) (int) tree[DeviceSettingsIDs::status], tree[DeviceSettingsIDs::statusTooltip]);
         return;
     }
 
     if (parentIfExpandable->isOpen())
     {
         modifiedIcon.setVisible(false);
-        readFailedIcon.setVisible(false);
-        writeFailedIcon.setVisible(false);
+        warningIcon.setVisible(false);
         return;
     }
 
-    const std::function<Status(juce::ValueTree)> getStatus = [&](auto settings)
+    const std::function<juce::ValueTree(juce::ValueTree)> getStatus = [&](auto settings)
     {
-        auto status = Status::normal;
+        juce::ValueTree status = settings;
         for (const auto setting : settings)
         {
-            status = juce::jmax(status, (Status) (int) setting.getProperty(DeviceSettingsIDs::status), getStatus(setting));
+            if (getStatus(setting)[DeviceSettingsIDs::status] > status[DeviceSettingsIDs::status])
+            {
+                status = getStatus(setting);
+            }
         }
         return status;
     };
-    const auto status = getStatus(tree);
-    modifiedIcon.setVisible(status == Status::modified);
-    readFailedIcon.setVisible(status == Status::readFailed);
-    writeFailedIcon.setVisible(status == Status::writeFailed);
+    updateIcons((Status) (int) getStatus(tree)[DeviceSettingsIDs::status], getStatus(tree)[DeviceSettingsIDs::statusTooltip]);
 }
 
 void Setting::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
@@ -127,7 +131,7 @@ void Setting::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChan
         {
             valueChanged();
         }
-        else if (property == DeviceSettingsIDs::status)
+        else if (property == DeviceSettingsIDs::status || property == DeviceSettingsIDs::statusTooltip)
         {
             updateIcon();
         }

@@ -20,7 +20,7 @@ public:
 
     juce::var getValue(const juce::String& key) const;
 
-    void setStatus(const juce::String& key, const Setting::Status status);
+    void setStatus(const juce::String& key, const Setting::Status status, const juce::String& statusTooltip);
 
     std::function<void()> onChange;
 
