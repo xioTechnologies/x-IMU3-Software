@@ -13,7 +13,7 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
     button.onClick = [&]
     {
         juce::FileChooser fileChooser(button.getTooltip(), std::filesystem::exists(textEditor.getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
-        if (fileChooser.browseForMultipleFilesOrDirectories())
+        if (extension ? fileChooser.browseForMultipleFilesToOpen() : fileChooser.browseForDirectory())
         {
             setFiles(fileChooser.getResults());
         }
