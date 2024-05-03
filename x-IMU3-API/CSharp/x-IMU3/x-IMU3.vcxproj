@@ -96,6 +96,12 @@
       <AdditionalDependencies>ximu3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Rust\target\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent />
+    <PreBuildEvent>
+      <Command>if NOT EXIST "$(ProjectDir)\..\..\..\x-IMU3-API\Rust\target\release\ximu3.lib" (
+    Echo Error: Please provide the missing library file. https://github.com/xioTechnologies/x-IMU3-Software/blob/main/x-IMU3-API/Rust/target/release/README.md
+)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
