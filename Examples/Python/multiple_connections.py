@@ -23,6 +23,7 @@ class Connection:
         self.__connection.add_euler_angles_callback(self.__euler_angles_callback)
         self.__connection.add_linear_acceleration_callback(self.__linear_acceleration_callback)
         self.__connection.add_earth_acceleration_callback(self.__earth_acceleration_callback)
+        self.__connection.add_ahrs_status_callback(self.__ahrs_status_callback)
         self.__connection.add_high_g_accelerometer_callback(self.__high_g_accelerometer_callback)
         self.__connection.add_temperature_callback(self.__temperature_callback)
         self.__connection.add_battery_callback(self.__battery_callback)
@@ -72,6 +73,9 @@ class Connection:
         print(self.__prefix + " " + message.to_string())
 
     def __earth_acceleration_callback(self, message):
+        print(self.__prefix + " " + message.to_string())
+
+    def __ahrs_status_callback(self, message):
         print(self.__prefix + " " + message.to_string())
 
     def __high_g_accelerometer_callback(self, message):
