@@ -1,6 +1,6 @@
 [package]
 name = "ximu3"
-version = "1.4.4"
+version = "1.4.5"
 authors = ["x-io Technologies Limited <info@x-io.co.uk>"]
 edition = "2018"
 description = "x-IMU3 API"
