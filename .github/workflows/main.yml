@@ -36,6 +36,7 @@ jobs:
           - [ macos-latest, x86_64-apple-ios, libximu3.a, libximu3.dylib ]
           - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3.a, libximu3.so ]
           - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-latest, armv7-unknown-linux-gnueabihf, libximu3.a, libximu3.so ]
           - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3.a, libximu3.so ]
           - [ ubuntu-latest, aarch64-linux-android, libximu3.a, libximu3.so ]
           - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
@@ -52,12 +53,13 @@ jobs:
           sudo apt-get install gcc-multilib
           sudo apt-get install -y libudev-dev libudev-dev:i386
           sudo apt-get install -y gcc-aarch64-linux-gnu
+          sudo apt-get install -y gcc-arm-linux-gnueabihf
 
       - name: Add rustup target
         run: rustup target add ${{ matrix.target[1] }}
 
-      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu' && matrix.target[1] != 'aarch64-linux-android'
-        name: Build (excluding Ubuntu ARM64 and Android)
+      - if: matrix.target[1] != 'aarch64-unknown-linux-gnu' && matrix.target[1] != 'armv7-unknown-linux-gnueabihf' && matrix.target[1] != 'aarch64-linux-android'
+        name: Build (excluding Ubuntu ARM64, ARMV7 and Android)
         working-directory: x-IMU3-API/Rust/
         env:
           PKG_CONFIG_SYSROOT_DIR: /
@@ -67,8 +69,8 @@ jobs:
           IPHONEOS_DEPLOYMENT_TARGET: 12.0
         run: cargo build --release --target ${{ matrix.target[1] }}
 
-      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu'
-        name: Build for Ubuntu ARM64
+      - if: matrix.target[1] == 'aarch64-unknown-linux-gnu' || matrix.target[1] == 'armv7-unknown-linux-gnueabihf'
+        name: Build for Ubuntu ARM64 and ARMV7
         working-directory: x-IMU3-API/Rust/
         env:
           PKG_CONFIG_SYSROOT_DIR: /
