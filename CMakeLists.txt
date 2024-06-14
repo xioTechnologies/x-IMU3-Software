@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "")
-project(x-IMU3-Software VERSION 1.4.5)
+project(x-IMU3-Software VERSION 1.4.6)
 
 add_custom_target(Rust-API COMMAND cargo build --manifest-path=${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/Cargo.toml --release)
 
