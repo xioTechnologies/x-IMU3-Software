@@ -29,7 +29,7 @@ ext_modules = Extension("ximu3",
                         define_macros=[("_CRT_SECURE_NO_WARNINGS", "")])
 
 setup(name="ximu3",
-      version="1.4.5",
+      version="1.4.6",
       description="x-IMU3 API",
       long_description="See [github](" + github_url + ") for documentation and examples.",
       long_description_content_type='text/markdown',
