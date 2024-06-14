@@ -6,6 +6,7 @@
     <Command key="ping" type="4"/>
     <Command key="reset" type="4"/>
     <Command key="shutdown" type="4"/>
+    <Command key="blink" type="4"/>
     <Command key="strobe" type="4"/>
     <Command key="colour" type="0"/>
     <Command key="start" type="0"/>
@@ -73,12 +74,6 @@
     <Command key="ahrsAccelerationRejectionEnabled" type="2"/>
     <Command key="ahrsMagneticRejectionEnabled" type="2"/>
     <Command key="binaryModeEnabled" type="2"/>
-    <Command key="usbDataMessagesEnabled" type="2"/>
-    <Command key="serialDataMessagesEnabled" type="2"/>
-    <Command key="tcpDataMessagesEnabled" type="2"/>
-    <Command key="udpDataMessagesEnabled" type="2"/>
-    <Command key="bluetoothDataMessagesEnabled" type="2"/>
-    <Command key="dataLoggerDataMessagesEnabled" type="2"/>
     <Command key="ahrsMessageType" type="1"/>
     <Command key="inertialMessageRateDivisor" type="1"/>
     <Command key="magnetometerMessageRateDivisor" type="1"/>
@@ -87,6 +82,12 @@
     <Command key="temperatureMessageRateDivisor" type="1"/>
     <Command key="batteryMessageRateDivisor" type="1"/>
     <Command key="rssiMessageRateDivisor" type="1"/>
+    <Command key="usbDataMessagesEnabled" type="2"/>
+    <Command key="serialDataMessagesEnabled" type="2"/>
+    <Command key="tcpDataMessagesEnabled" type="2"/>
+    <Command key="udpDataMessagesEnabled" type="2"/>
+    <Command key="bluetoothDataMessagesEnabled" type="2"/>
+    <Command key="dataLoggerDataMessagesEnabled" type="2"/>
     <Command key="usbPowerOnEnabled" type="2"/>
     <Command key="shippingModeEnabled" type="2"/>
 </CommandKeys>

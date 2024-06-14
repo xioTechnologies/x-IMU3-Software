@@ -41,6 +41,7 @@ with open("CommandKeys.xml", "w") as file:
     file.write("    <Command key=\"ping\" type=\"" + NULL + "\"/>\n")
     file.write("    <Command key=\"reset\" type=\"" + NULL + "\"/>\n")
     file.write("    <Command key=\"shutdown\" type=\"" + NULL + "\"/>\n")
+    file.write("    <Command key=\"blink\" type=\"" + NULL + "\"/>\n")
     file.write("    <Command key=\"strobe\" type=\"" + NULL + "\"/>\n")
     file.write("    <Command key=\"colour\" type=\"" + STRING + "\"/>\n")
     file.write("    <Command key=\"start\" type=\"" + STRING + "\"/>\n")
