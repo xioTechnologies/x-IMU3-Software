@@ -374,7 +374,7 @@
     {
         "name": "High-g accelerometer message rate divisor",
         "declaration": "SendMessageRateDivisorHighGAccelerometer name",
-        "default": "{32}"
+        "default": "{64}"
     },
     {
         "name": "Temperature message rate divisor",
