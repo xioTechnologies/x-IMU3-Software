@@ -39,7 +39,8 @@ private:
     IconButton shutdownButton { BinaryData::shutdown_svg, "Send Shutdown Command to All" };
     IconButton zeroHeadingButton { BinaryData::north_svg, "Send Zero Heading Command to All" };
     IconButton noteButton { BinaryData::note_svg, "Send Note Command to All" };
-    IconButton sendCommandButton { BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this) };
+    IconButton startStopButton { BinaryData::microSD_svg, "Send Start or Stop Command to All", std::bind(&MenuStrip::getStartStopMenu, this) };
+    IconButton customCommandButton { BinaryData::json_svg, "Send Custom Command", std::bind(&MenuStrip::getCustomCommandMenu, this) };
     IconButton dataLoggerStartStopButton { BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger" };
     Stopwatch dataLoggerTime;
     IconButton toolsButton { BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
@@ -49,7 +50,7 @@ private:
     const std::vector<std::vector<juce::Button*>> buttonGroups {
         { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
         { &windowsButton },
-        { &shutdownButton, &zeroHeadingButton, &noteButton, &sendCommandButton },
+        { &shutdownButton, &zeroHeadingButton, &noteButton, &startStopButton, &customCommandButton },
         { &dataLoggerStartStopButton, &dataLoggerTime },
         { &toolsButton },
         { &mainSettingsButton, &aboutButton },
@@ -87,7 +88,9 @@ private:
 
     juce::PopupMenu getWindowMenu();
 
-    juce::PopupMenu getSendCommandMenu();
+    juce::PopupMenu getStartStopMenu();
+
+    juce::PopupMenu getCustomCommandMenu();
 
     juce::PopupMenu getToolsMenu();
 
