@@ -5,7 +5,7 @@
 
 namespace Firmware
 {
-    static const juce::String hexFile = "x-IMU3-Firmware-v2.2.1.hex";
-    static const juce::String version = "v2.2.1";
-    static const juce::MemoryBlock memoryBlock { BinaryData::xIMU3Firmwarev2_2_1_hex, BinaryData::xIMU3Firmwarev2_2_1_hexSize };
+    static const juce::String hexFile = "x-IMU3-Firmware-v2.3.0.hex";
+    static const juce::String version = "v2.3.0";
+    static const juce::MemoryBlock memoryBlock { BinaryData::xIMU3Firmwarev2_3_0_hex, BinaryData::xIMU3Firmwarev2_3_0_hexSize };
 }
