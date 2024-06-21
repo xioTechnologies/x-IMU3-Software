@@ -10,6 +10,7 @@ namespace UIColours
     static const juce::Colour backgroundLightest { 0xFF3E3E42 };
     static const juce::Colour foreground { 0xFFE4E4E4 };
     static const juce::Colour highlight { 0xFF3D8A9A };
+    static const juce::Colour success { 0xFF66BB6A };
     static const juce::Colour warning { 0xFFF7B500 };
     static const juce::Colour error { 0xFFEF5350 };
     static const juce::Colour update { 0xFF32C5FF };
