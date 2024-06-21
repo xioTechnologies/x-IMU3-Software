@@ -1,5 +1,6 @@
 #include "ApplicationSettings.h"
 #include "SendingCommandDialog.h"
+#include "Widgets/SimpleLabel.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
         : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
@@ -9,7 +10,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::titleAndError, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::titleAndResponse, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::icon, 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
@@ -39,7 +40,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             }
 
             row.state = Row::State::inProgress;
-            row.error.clear();
+            row.response.clear();
 
             juce::Timer::callAfterDelay(sendDelay, [&, row = &row]
             {
@@ -47,13 +48,19 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                 {
                     if (responses.empty())
                     {
-                        row->error = "Unable to confirm command";
+                        row->state = Row::State::failed;
+                        row->response = "Unable to confirm command";
                     }
                     else if (const auto error = responses[0].getError())
                     {
-                        row->error = *error;
+                        row->state = Row::State::failed;
+                        row->response = *error;
                     }
-                    row->state = row->error.isEmpty() ? Row::State::complete : Row::State::failed;
+                    else
+                    {
+                        row->state = Row::State::complete;
+                        row->response = responses[0].value.isVoid() ? "" : juce::JSON::toString(responses[0].value, true);
+                    }
 
                     table.updateContent();
 
@@ -146,38 +153,48 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIDs::tag:
             return nullptr;
 
-        case ColumnIDs::titleAndError:
-            class TitleAndError : public juce::Component
+        case ColumnIDs::titleAndResponse:
+            class TitleAndResponse : public juce::Component
             {
             public:
-                TitleAndError(const Row& row)
+                TitleAndResponse(const Row& row)
                         : titleLabel(row.connectionPanel.getTitle()),
-                          errorLabel(row.error, UIFonts::getDefaultFont(), juce::Justification::centredRight)
+                          responseLabel(row.response, UIFonts::getDefaultFont(), juce::Justification::centredRight)
                 {
                     addAndMakeVisible(titleLabel);
-                    addAndMakeVisible(errorLabel);
-                    errorLabel.setColour(juce::Label::textColourId, UIColours::warning);
+                    addAndMakeVisible(responseLabel);
+                    switch (row.state)
+                    {
+                        case Row::State::inProgress:
+                            break;
+                        case Row::State::failed:
+                            responseLabel.setColour(juce::Label::textColourId, UIColours::warning);
+                            break;
+                        case Row::State::complete:
+                            responseLabel.setColour(juce::Label::textColourId, UIColours::success);
+                            break;
+                    }
                 }
 
                 void resized() override
                 {
                     auto bounds = getLocalBounds();
-                    if (errorLabel.getText().isNotEmpty())
+                    if (responseLabel.getText().isNotEmpty())
                     {
-                        errorLabel.setBounds(bounds.removeFromRight((int) std::ceil(errorLabel.getTextWidth())));
+                        responseLabel.setBounds(bounds.removeFromRight((int) std::ceil(responseLabel.getTextWidth())));
                         bounds.removeFromRight(10);
                     }
                     titleLabel.setBounds(bounds);
                 }
 
                 SimpleLabel titleLabel;
-                SimpleLabel errorLabel;
+                SimpleLabel responseLabel;
 
             private:
-                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TitleAndError)
+                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TitleAndResponse)
             };
 
-            return new TitleAndError(rows[(size_t) rowNumber]);
+            return new TitleAndResponse(rows[(size_t) rowNumber]);
 
         case ColumnIDs::icon:
             switch (rows[(size_t) rowNumber].state)

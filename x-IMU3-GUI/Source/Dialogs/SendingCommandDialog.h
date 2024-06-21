@@ -4,7 +4,6 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialog.h"
 #include "Widgets/CustomToggleButton.h"
-#include "Widgets/SimpleLabel.h"
 
 class SendingCommandDialog : public Dialog,
                              private juce::TableListBoxModel,
@@ -19,7 +18,7 @@ private:
     enum class ColumnIDs
     {
         tag = 1,
-        titleAndError,
+        titleAndResponse,
         icon,
     };
 
@@ -34,7 +33,7 @@ private:
 
         ConnectionPanel& connectionPanel;
         State state = State::inProgress;
-        juce::String error {};
+        juce::String response {};
     };
 
     juce::TableListBox table { "", this };
