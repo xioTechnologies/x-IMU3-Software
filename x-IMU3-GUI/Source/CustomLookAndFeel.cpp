@@ -16,17 +16,17 @@ juce::Typeface::Ptr UIFonts::Typefaces::getRobotoMonoRegular()
 
 juce::Font UIFonts::getDefaultFont()
 {
-    return juce::Font(Typefaces::getMontserratMedium()).withHeight(15.0f + montserratAdjustment);
+    return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(15.0f + montserratAdjustment);
 }
 
 juce::Font UIFonts::getSmallFont()
 {
-    return juce::Font(Typefaces::getMontserratMedium()).withHeight(13.0f + montserratAdjustment);
+    return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(13.0f + montserratAdjustment);
 }
 
 juce::Font UIFonts::getTerminalFeedFont()
 {
-    return juce::Font(Typefaces::getRobotoMonoRegular()).withHeight(15.0f);
+    return juce::FontOptions(Typefaces::getRobotoMonoRegular()).withHeight(15.0f);
 }
 
 CustomLookAndFeel::CustomLookAndFeel()
