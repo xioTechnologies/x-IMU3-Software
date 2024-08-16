@@ -1,6 +1,6 @@
 [Setup]
 AppName=x-IMU3 GUI
-AppPublisher=x-io Technologies
+AppPublisher=x-io Technologies Limited
 AppVerName=x-IMU3 GUI
 AppVersion=1.4.7
 DefaultDirName={autopf64}\x-IMU3 GUI
