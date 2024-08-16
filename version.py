@@ -20,8 +20,8 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
         if file == "Cargo.toml":
             replace(file_path, "version = \".*\"\n")
 
-        if file == "setup.py":
-            replace(file_path, "version=\".*\"")
+        if file == "pyproject.toml":
+            replace(file_path, "version = \".*\"")
 
         if file == "CMakeLists.txt":
             replace(file_path, "project\(x-IMU3-Software VERSION .*\)")
