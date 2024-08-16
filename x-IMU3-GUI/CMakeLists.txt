@@ -40,9 +40,12 @@ FetchContent_MakeAvailable(glm)
 
 juce_add_gui_app(x-IMU3-GUI
         ICON_BIG "Images/xio_icon.png"
-        ICON_SMALL "Images/xio_icon.png"
         PRODUCT_NAME "x-IMU3 GUI" # The name of the final executable, which can differ from the target name
-        BUNDLE_ID "uk.co.x-io.x-IMU3-GUI")
+        BUNDLE_ID "uk.co.x-io.x-IMU3-GUI"
+        COMPANY_COPYRIGHT "Copyright (c) 2024 x-io Technologies Limited"
+        COMPANY_NAME "x-io Technologies Limited"
+        COMPANY_WEBSITE "www.x-io.co.uk"
+        COMPANY_EMAIL "info@x-io.co.uk")
 
 FILE(GLOB_RECURSE CPP_FILES "Source/*.cpp")
 target_sources(x-IMU3-GUI PRIVATE ${CPP_FILES})
