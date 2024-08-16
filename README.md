@@ -15,10 +15,7 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
     - Install [Xcode](https://developer.apple.com/xcode/) (macOS)
 2. Install Rust toolchain using [rustup](https://rustup.rs/)
 3. Install [Clion](https://www.jetbrains.com/clion/), including Rust plugin
-4. Configure Clion toolchain (Windows)
-    - Settings > Build, Execution, Deployment > Toolchains > Add > Visual Studio, Architecture: x86_amd64
-5. Select Ninja to improve compile time (Windows)
-    - Settings > Build, Execution, Deployment > CMake > Generator: Ninja
+4. Select Visual Studio as Toolchain (Windows)
 
 ## Distributions
 

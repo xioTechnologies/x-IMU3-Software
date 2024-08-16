@@ -5,7 +5,7 @@ project(x-IMU3-Software VERSION 1.4.7)
 
 add_custom_target(Rust-API COMMAND cargo build --manifest-path=${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/Cargo.toml --release)
 
-find_library(XIMU3 NAMES ximu3 PATHS "${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/target/release" NO_DEFAULT_PATH)
+find_library(XIMU3 NAMES libximu3.a ximu3.lib PATHS "${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/target/release" NO_DEFAULT_PATH)
 
 if (NOT XIMU3)
     message(WARNING "Please provide the missing library file and then reload the CMake project. https://github.com/xioTechnologies/x-IMU3-Software/blob/main/x-IMU3-API/Rust/target/release/README.md")
