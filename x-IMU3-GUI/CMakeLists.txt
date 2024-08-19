@@ -18,7 +18,7 @@ Set(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz TRUE)
 FetchContent_Declare(
         freetype
         GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-        GIT_TAG VER-2-13-2
+        GIT_TAG VER-2-13-3
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
 )
