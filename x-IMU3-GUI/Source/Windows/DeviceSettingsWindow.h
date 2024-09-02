@@ -4,6 +4,7 @@
 #include "DeviceSettings/DeviceSettings.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/IconButton.h"
+#include "Widgets/Overlay.h"
 #include "Window.h"
 #include "Ximu3.hpp"
 
@@ -32,6 +33,8 @@ private:
     juce::Rectangle<float> buttonBounds;
 
     const juce::File directory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
+
+    Overlay overlay;
 
     void enableInProgress(const std::vector<CommandMessage>& commands);
 
