@@ -7,7 +7,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/GLRenderer.h"
-#include "Widgets/Overlay.h"
+#include "Widgets/DisabledOverlay.h"
 #include "Windows/WindowIDs.h"
 
 class MainComponent : public juce::Component, private juce::ChangeListener
@@ -17,7 +17,7 @@ public:
     {
         addAndMakeVisible(menuStrip);
         addAndMakeVisible(connectionPanelViewport);
-        addChildComponent(overlay);
+        addChildComponent(disabledOverlay);
 
         connectionPanelViewport.setViewedComponent(&connectionPanelContainer, false);
         connectionPanelViewport.setScrollBarsShown(true, true);
@@ -36,7 +36,7 @@ public:
     void resized() override
     {
         auto bounds = getLocalBounds();
-        overlay.setBounds(bounds);
+        disabledOverlay.setBounds(bounds);
 
         menuStrip.setBounds(bounds.removeFromTop(40));
         bounds.removeFromTop(UILayout::panelMargin);
@@ -76,11 +76,11 @@ private:
     juce::TooltipWindow tooltipWindow { nullptr, 300 };
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    Overlay overlay;
+    DisabledOverlay disabledOverlay;
 
     void changeListenerCallback(juce::ChangeBroadcaster*) override
     {
-        overlay.setVisible(DialogQueue::getSingleton().getActive() != nullptr);
+        disabledOverlay.setVisible(DialogQueue::getSingleton().getActive() != nullptr);
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)

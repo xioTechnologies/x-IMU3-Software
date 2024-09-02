@@ -38,7 +38,7 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
 {
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
-    addChildComponent(overlay);
+    addChildComponent(disabledOverlay);
 
     header.onRetry = [&]
     {
@@ -58,7 +58,7 @@ ConnectionPanel::~ConnectionPanel()
 void ConnectionPanel::resized()
 {
     auto bounds = getLocalBounds();
-    overlay.setBounds(bounds);
+    disabledOverlay.setBounds(bounds);
 
     header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
     footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
@@ -200,7 +200,7 @@ ConnectionPanelContainer& ConnectionPanel::getConnectionPanelContainer()
 
 void ConnectionPanel::setOverlayVisible(const bool visible)
 {
-    overlay.setVisible(visible);
+    disabledOverlay.setVisible(visible);
 }
 
 void ConnectionPanel::connect()

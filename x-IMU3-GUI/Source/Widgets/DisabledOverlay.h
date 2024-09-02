@@ -2,9 +2,9 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-struct Overlay : juce::Component
+struct DisabledOverlay : juce::Component
 {
-    Overlay(const bool shouldInterceptMouseClicks = true)
+    DisabledOverlay(const bool shouldInterceptMouseClicks = true)
     {
         setInterceptsMouseClicks(shouldInterceptMouseClicks, shouldInterceptMouseClicks);
     }

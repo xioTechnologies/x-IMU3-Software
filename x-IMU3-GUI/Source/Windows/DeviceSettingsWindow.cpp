@@ -12,7 +12,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     addAndMakeVisible(saveToFileButton);
     addAndMakeVisible(loadFromFileButton);
     addAndMakeVisible(defaultsButton);
-    addChildComponent(overlay);
+    addChildComponent(disabledOverlay);
 
     readAllButton.onClick = [this]
     {
@@ -197,7 +197,7 @@ void DeviceSettingsWindow::resized()
     Window::resized();
 
     auto bounds = getContentBounds();
-    overlay.setBounds(bounds);
+    disabledOverlay.setBounds(bounds);
 
     buttonBounds = bounds.removeFromBottom(25).toFloat();
     const auto buttonWidth = buttonBounds.getWidth() / buttons.size();
@@ -219,12 +219,12 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);
 
-    overlay.setVisible(true);
+    disabledOverlay.setVisible(true);
 }
 
 void DeviceSettingsWindow::disableInProgress()
 {
-    overlay.setVisible(false);
+    disabledOverlay.setVisible(false);
 }
 
 juce::PopupMenu DeviceSettingsWindow::getMenu()

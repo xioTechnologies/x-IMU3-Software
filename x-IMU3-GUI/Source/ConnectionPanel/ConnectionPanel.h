@@ -6,7 +6,7 @@
 #include "ConnectionPanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
-#include "Widgets/Overlay.h"
+#include "Widgets/DisabledOverlay.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
@@ -64,7 +64,7 @@ private:
 
     std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
 
-    Overlay overlay { false };
+    DisabledOverlay disabledOverlay { false };
 
     void connect();
 

@@ -2,9 +2,9 @@
 
 #include "CommandMessage.h"
 #include "ConnectionPanel/ConnectionPanel.h"
-#include "DragOverlay.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/GLRenderer.h"
+#include "Widgets/DragOverlay.h"
 
 class ConnectionPanelContainer : public juce::Component
 {

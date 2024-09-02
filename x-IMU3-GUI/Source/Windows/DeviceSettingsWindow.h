@@ -4,7 +4,7 @@
 #include "DeviceSettings/DeviceSettings.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/IconButton.h"
-#include "Widgets/Overlay.h"
+#include "Widgets/DisabledOverlay.h"
 #include "Window.h"
 #include "Ximu3.hpp"
 
@@ -34,7 +34,7 @@ private:
 
     const juce::File directory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 
-    Overlay overlay;
+    DisabledOverlay disabledOverlay;
 
     void enableInProgress(const std::vector<CommandMessage>& commands);
 
