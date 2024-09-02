@@ -1,5 +1,4 @@
 #include "ApplicationSettings.h"
-#include "ApplicationSettingsDialog.h"
 #include "AvailableConnectionsDialog.h"
 
 AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
@@ -14,6 +13,7 @@ AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_p
     setSize(600, calculateHeight(6));
 
     startTimerHz(10);
+    timerCallback();
 }
 
 void AvailableConnectionsDialog::resized()
