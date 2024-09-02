@@ -5,8 +5,8 @@
 #include "ConnectionPanelFooter.h"
 #include "ConnectionPanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <list>
 #include "OpenGL/Common/GLRenderer.h"
+#include "Widgets/DisabledOverlay.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
@@ -46,6 +46,8 @@ public:
 
     ConnectionPanelContainer& getConnectionPanelContainer();
 
+    void setOverlayVisible(const bool visible);
+
 private:
     const juce::ValueTree& windowLayout;
     std::shared_ptr<ximu3::Connection> connection;
@@ -61,6 +63,8 @@ private:
     std::unique_ptr<WindowContainer> windowContainer;
 
     std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
+
+    DisabledOverlay disabledOverlay { false };
 
     void connect();
 

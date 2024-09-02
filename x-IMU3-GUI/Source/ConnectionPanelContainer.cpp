@@ -270,20 +270,9 @@ void ConnectionPanelContainer::setExpandedConnectionPanel(ConnectionPanel* const
 {
     expandedConnectionPanel = connectionPanel;
 
-    if (expandedConnectionPanel == nullptr || getLayoutInternal() != Layout::accordion)
+    for (auto& panel : connectionPanels)
     {
-        for (auto& panel : connectionPanels)
-        {
-            panel->setAlpha(1.0f);
-        }
-    }
-    else
-    {
-        for (auto& panel : connectionPanels)
-        {
-            panel->setAlpha(0.5f);
-        }
-        expandedConnectionPanel->setAlpha(1.0f);
+        panel->setOverlayVisible(getLayoutInternal() == Layout::accordion && expandedConnectionPanel != nullptr && panel.get() != expandedConnectionPanel);
     }
 
     updateSize();

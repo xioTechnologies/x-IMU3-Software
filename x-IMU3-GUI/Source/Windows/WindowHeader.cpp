@@ -1,6 +1,6 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "ConnectionPanelContainer.h"
-#include "DragOverlay.h"
+#include "Widgets/DragOverlay.h"
 #include "WindowHeader.h"
 #include "WindowIDs.h"
 

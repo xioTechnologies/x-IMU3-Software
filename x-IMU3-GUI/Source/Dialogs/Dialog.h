@@ -59,7 +59,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };
 
-class DialogQueue : private juce::DeletedAtShutdown
+class DialogQueue : public juce::ChangeBroadcaster, private juce::DeletedAtShutdown
 {
 public:
     static DialogQueue& getSingleton()
