@@ -156,14 +156,20 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
 {
     addAndMakeVisible(ipAddressLabel);
     addAndMakeVisible(ipAddressValue);
+    addAndMakeVisible(ipAddressBroadcastValue);
     addAndMakeVisible(sendPortLabel);
     addAndMakeVisible(sendPortValue);
     addAndMakeVisible(receivePortLabel);
     addAndMakeVisible(receivePortValue);
+    addAndMakeVisible(receivePortFromIPValue);
     addAndMakeVisible(broadcastToggle);
+    addAndMakeVisible(fromIpAddressToggle);
 
-    ipAddressValue.onTextChange = [this]
+    ipAddressValue.onTextChange = broadcastToggle.onClick = [this]
     {
+        ipAddressValue.setVisible(broadcastToggle.getToggleState() == false);
+        ipAddressBroadcastValue.setVisible(broadcastToggle.getToggleState());
+        receivePortFromIPValue.setText(juce::String(8000 + (broadcastToggle.getToggleState() ? 0 : juce::IPAddress(getIpAddressValue()).address[3])));
         validateDialog();
     };
 
@@ -177,24 +183,20 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
         validateDialog();
     };
 
-    broadcastToggle.onClick = [this]
+    fromIpAddressToggle.onClick = [this]
     {
-        if (broadcastToggle.getToggleState())
-        {
-            ipAddressWhenBroadcastDisabled = ipAddressValue.getText();
-            ipAddressValue.setText("255.255.255.255", false);
-        }
-        else
-        {
-            ipAddressValue.setText(ipAddressWhenBroadcastDisabled, false);
-        }
-
-        ipAddressValue.setEnabled(!broadcastToggle.getToggleState());
+        receivePortValue.setVisible(fromIpAddressToggle.getToggleState() == false);
+        receivePortFromIPValue.setVisible(fromIpAddressToggle.getToggleState());
+        validateDialog();
     };
 
-    ipAddressValue.setText("192.168.1.1", false);
-    sendPortValue.setText("9000", false);
-    receivePortValue.setText("8000", false);
+    ipAddressValue.setText("192.168.1.1");
+    ipAddressBroadcastValue.setText("255.255.255.255");
+    ipAddressBroadcastValue.setEnabled(false);
+    sendPortValue.setText("9000");
+    receivePortValue.setText("8000");
+    receivePortFromIPValue.setEnabled(false);
+    fromIpAddressToggle.setToggleState(true, juce::sendNotificationSync);
 
     validateDialog();
 
@@ -213,7 +215,7 @@ void ManualUdpConnectionDialog::resized()
     auto ipAddressRow = bounds.removeFromTop(UILayout::textComponentHeight);
     ipAddressLabel.setBounds(ipAddressRow.removeFromLeft(columnWidth));
     ipAddressValue.setBounds(ipAddressRow.removeFromLeft(2 * columnWidth));
-
+    ipAddressBroadcastValue.setBounds(ipAddressValue.getBounds());
     ipAddressRow.removeFromLeft(margin);
     broadcastToggle.setBounds(ipAddressRow);
 
@@ -228,18 +230,31 @@ void ManualUdpConnectionDialog::resized()
     auto receivePortRow = bounds.removeFromTop(UILayout::textComponentHeight);
     receivePortLabel.setBounds(receivePortRow.removeFromLeft(columnWidth));
     receivePortValue.setBounds(receivePortRow.removeFromLeft(columnWidth));
+    receivePortFromIPValue.setBounds(receivePortValue.getBounds());
+    receivePortRow.removeFromLeft(margin);
+    fromIpAddressToggle.setBounds(receivePortRow);
 }
 
 std::unique_ptr<ximu3::ConnectionInfo> ManualUdpConnectionDialog::getConnectionInfo() const
 {
-    return std::make_unique<ximu3::UdpConnectionInfo>(ipAddressValue.getText().toStdString(),
+    return std::make_unique<ximu3::UdpConnectionInfo>(getIpAddressValue().toStdString(),
                                                       (uint16_t) sendPortValue.getText().getIntValue(),
-                                                      (uint16_t) receivePortValue.getText().getIntValue());
+                                                      (uint16_t) getReceivePortValue().getIntValue());
+}
+
+juce::String ManualUdpConnectionDialog::getIpAddressValue() const
+{
+    return (broadcastToggle.getToggleState() ? ipAddressBroadcastValue : ipAddressValue).getText();
+}
+
+juce::String ManualUdpConnectionDialog::getReceivePortValue() const
+{
+    return (fromIpAddressToggle.getToggleState() ? receivePortFromIPValue : receivePortValue).getText();
 }
 
 void ManualUdpConnectionDialog::validateDialog()
 {
-    setOkButton((ipAddressValue.isEmpty() || sendPortValue.isEmpty() || receivePortValue.isEmpty()) == false);
+    setOkButton((getIpAddressValue().isEmpty() || sendPortValue.isEmpty() || getReceivePortValue().isEmpty()) == false);
 }
 
 ManualBluetoothConnectionDialog::ManualBluetoothConnectionDialog() : ManualConnectionDialog("Manual Bluetooth Connection")

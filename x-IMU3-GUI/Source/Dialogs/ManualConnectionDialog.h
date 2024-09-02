@@ -106,11 +106,16 @@ private:
     SimpleLabel receivePortLabel { "Receive Port:" };
 
     CustomTextEditor ipAddressValue;
+    CustomTextEditor ipAddressBroadcastValue;
     CustomTextEditor sendPortValue;
     CustomTextEditor receivePortValue;
+    CustomTextEditor receivePortFromIPValue;
     CustomToggleButton broadcastToggle { "Broadcast" };
+    CustomToggleButton fromIpAddressToggle { "From IP Address" };
 
-    juce::String ipAddressWhenBroadcastDisabled;
+    juce::String getIpAddressValue() const;
+
+    juce::String getReceivePortValue() const;
 
     void validateDialog();
 
