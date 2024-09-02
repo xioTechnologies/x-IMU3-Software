@@ -14,10 +14,8 @@ def print_ping_response(ping_response):
         print("Ping failed")
         return
 
-    print(ping_response.interface + ", " +
-          ping_response.device_name + ", " +
-          ping_response.serial_number)
-    # print(ping_response.to_string()) # alternative to above
+    print(", ".join([ping_response.interface, ping_response.device_name, ping_response.serial_number]))
+    # print(ping_response.to_string())  # alternative to above
 
 
 def callback(result):
