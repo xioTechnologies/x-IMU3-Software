@@ -29,11 +29,11 @@ with open("Program.cs", "w") as file:
     file.write("    {\n")
     file.write("        static int Main(string[] args)\n")
     file.write("        {\n")
-    file.write("            Console.WriteLine(\"Select example\");\n")
+    file.write('            Console.WriteLine("Select example");\n')
 
     key = "A"
     for example in examples:
-        file.write("            Console.WriteLine(\"" + key + ". " + example + "\");\n")
+        file.write(f'            Console.WriteLine("{key}. {example}");\n')
         key = chr(ord(key) + 1)
 
     file.write("            switch (Helpers.GetKey())\n")
@@ -41,13 +41,13 @@ with open("Program.cs", "w") as file:
 
     key = "A"
     for example in examples:
-        file.write("                case '" + key + "':\n")
-        file.write("                    new " + example + "();\n")
+        file.write(f"                case '{key}':\n")
+        file.write(f"                    new {example}();\n")
         file.write("                    break;\n")
         key = chr(ord(key) + 1)
 
     file.write("            }\n")
-    file.write("            Console.WriteLine(\"Press any key to exit\");\n")
+    file.write('            Console.WriteLine("Press any key to exit");\n')
     file.write("            Helpers.GetKey();\n")
     file.write("            return 0;\n")
     file.write("        }\n")

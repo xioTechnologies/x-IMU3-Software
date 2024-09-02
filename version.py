@@ -18,22 +18,22 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
         file_path = os.path.join(root, file)
 
         if file == "Cargo.toml":
-            replace(file_path, "version = \".*\"\n")
+            replace(file_path, 'version = ".*"\n')
 
         if file == "pyproject.toml":
-            replace(file_path, "version = \".*\"")
+            replace(file_path, 'version = ".*"')
 
         if file == "CMakeLists.txt":
             replace(file_path, "project\(x-IMU3-Software VERSION .*\)")
 
         if file == "AssemblyInfo.cpp":
-            replace(file_path, "AssemblyVersionAttribute\(\".*\"\)")
+            replace(file_path, 'AssemblyVersionAttribute\(".*"\)')
 
         if file == "AssemblyInfo.cs":
-            replace(file_path, "AssemblyVersion\(\".*\"\)")
+            replace(file_path, 'AssemblyVersion\(".*"\)')
 
         if file == "AssemblyInfo.cs":
-            replace(file_path, "AssemblyFileVersion\(\".*\"\)")
+            replace(file_path, 'AssemblyFileVersion\(".*"\)')
 
         if file == "WindowsInstaller.iss":
             replace(file_path, "AppVersion=.*\n")

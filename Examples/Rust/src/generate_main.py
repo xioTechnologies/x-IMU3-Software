@@ -25,7 +25,7 @@ with open("examples/mod.rs", "w") as file:
     file.write("mod connection;\n")
 
     for example in examples:
-        file.write("pub mod " + example + ";\n")
+        file.write(f"pub mod {example};\n")
 
 with open("main.rs", "w") as file:
     file.write(helpers.preamble())
@@ -34,11 +34,11 @@ with open("main.rs", "w") as file:
     file.write("mod examples;\n")
     file.write("mod helpers;\n\n")
     file.write("fn main() {\n")
-    file.write("    println!(\"Select example\");\n")
+    file.write('    println!("Select example");\n')
 
     key = "A"
     for example in examples:
-        file.write("    println!(\"" + key + ". " + example + ".rs\");\n")
+        file.write(f'    println!("{key}. {example}.rs");\n')
         key = chr(ord(key) + 1)
 
     file.write("\n")
@@ -46,7 +46,7 @@ with open("main.rs", "w") as file:
 
     key = "A"
     for example in examples:
-        file.write("        \'" + str(key) + "\' => " + example + "::run(),\n")
+        file.write(f"        '{key}' => {example}::run(),\n")
         key = chr(ord(key) + 1)
 
     file.write("        _ => {}\n")

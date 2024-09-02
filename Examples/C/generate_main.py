@@ -21,18 +21,18 @@ examples = sorted(examples)
 with open("main.c", "w") as file:
     file.write(helpers.preamble())
 
-    file.write("#include \"Helpers.h\"\n")
+    file.write('#include "Helpers.h"\n')
     file.write("#include <stdio.h>\n\n")
 
     for declaration in examples:
-        file.write("void " + declaration + "();\n\n")
+        file.write(f"void {declaration}();\n\n")
 
     file.write("int main(int argc, const char* argv[])\n{\n")
-    file.write("    printf(\"Select example\\n\");\n")
+    file.write('    printf("Select example\\n");\n')
 
     key = "A"
     for declaration in examples:
-        file.write("    printf(\"" + key + ". " + declaration + ".c\\n\");\n")
+        file.write(f'    printf("{key}. {declaration}.c\\n");\n')
         key = chr(ord(key) + 1)
 
     file.write("    switch (GetKey())\n")
@@ -40,8 +40,8 @@ with open("main.c", "w") as file:
 
     key = "A"
     for declaration in examples:
-        file.write("        case \'" + str(key) + "\':\n")
-        file.write("            " + declaration + "();\n")
+        file.write(f"        case '{key}':\n")
+        file.write(f"            {declaration}();\n")
         file.write("            break;\n")
         key = chr(ord(key) + 1)
 

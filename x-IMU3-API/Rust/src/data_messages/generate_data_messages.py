@@ -20,91 +20,91 @@ messages = [
         name="Inertial",
         ascii_id="I",
         argument_names=["Gyroscope X", "Gyroscope Y", "Gyroscope Z", "Accelerometer X", "Accelerometer Y", "Accelerometer Z"],
-        argument_units=["deg/s", "deg/s", "deg/s", "g", "g", "g"]
+        argument_units=["deg/s", "deg/s", "deg/s", "g", "g", "g"],
     ),
     Message(
         name="Magnetometer",
         ascii_id="M",
         argument_names=["X", "Y", "Z"],
-        argument_units=["a.u.", "a.u.", "a.u."]
+        argument_units=["a.u.", "a.u.", "a.u."],
     ),
     Message(
         name="Quaternion",
         ascii_id="Q",
         argument_names=["W", "X", "Y", "Z"],
-        argument_units=["", "", "", ""]
+        argument_units=["", "", "", ""],
     ),
     Message(
         name="Rotation Matrix",
         ascii_id="R",
         argument_names=["XX", "XY", "XZ", "YX", "YY", "YZ", "ZX", "ZY", "ZZ"],
-        argument_units=["", "", "", "", "", "", "", "", ""]
+        argument_units=["", "", "", "", "", "", "", "", ""],
     ),
     Message(
         name="Euler Angles",
         ascii_id="A",
         argument_names=["Roll", "Pitch", "Yaw"],
-        argument_units=["deg", "deg", "deg"]
+        argument_units=["deg", "deg", "deg"],
     ),
     Message(
         name="Linear Acceleration",
         ascii_id="L",
         argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
-        argument_units=["", "", "", "", "g", "g", "g"]
+        argument_units=["", "", "", "", "g", "g", "g"],
     ),
     Message(
         name="Earth Acceleration",
         ascii_id="E",
         argument_names=["Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"],
-        argument_units=["", "", "", "", "g", "g", "g"]
+        argument_units=["", "", "", "", "g", "g", "g"],
     ),
     Message(
         name="AHRS status",
         ascii_id="U",
         argument_names=["Initialising", "Angular Rate Recovery", "Acceleration Recovery", "Magnetic Recovery"],
-        argument_units=["", "", "", ""]
+        argument_units=["", "", "", ""],
     ),
     Message(
         name="High-g accelerometer",
         ascii_id="H",
         argument_names=["X", "Y", "Z"],
-        argument_units=["g", "g", "g"]
+        argument_units=["g", "g", "g"],
     ),
     Message(
         name="Temperature",
         ascii_id="T",
         argument_names=["Temperature"],
-        argument_units=["degC"]
+        argument_units=["degC"],
     ),
     Message(
         name="Battery",
         ascii_id="B",
         argument_names=["Percentage", "Voltage", "Charging Status"],
-        argument_units=["%", "V", ""]
+        argument_units=["%", "V", ""],
     ),
     Message(
         name="RSSI",
         ascii_id="W",
         argument_names=["Percentage", "Power"],
-        argument_units=["%", "dBm"]
+        argument_units=["%", "dBm"],
     ),
     Message(
         name="Serial accessory",
         ascii_id="S",
         argument_names=[],
-        argument_units=[]
+        argument_units=[],
     ),
     Message(
         name="Notification",
         ascii_id="N",
         argument_names=[],
-        argument_units=[]
+        argument_units=[],
     ),
     Message(
         name="Error",
         ascii_id="F",
         argument_names=[],
-        argument_units=[]
+        argument_units=[],
     ),
 ]
 
@@ -122,7 +122,7 @@ for message in messages:
         arguments_assign_struct = "".join([helpers.snake_case(n) + ": binary_message." + helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
         arguments_csv_heading = "".join([n + ("," if u == "" else " (" + u + "),") for n, u in zip(message.argument_names, message.argument_units)]).rstrip(",")
         arguments_csv_format = "".join(["{:.6}," for _ in message.argument_names]).rstrip(",")
-        arguments_ascii_format = "".join(["{:.4},"for n in message.argument_names]).rstrip(",")
+        arguments_ascii_format = "".join(["{:.4}," for _ in message.argument_names]).rstrip(",")
         arguments_self_list = "".join(["self." + helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
         arguments_string_format = "".join([" {:>8.3}" + ("" if u == "" else " " + u) for u in message.argument_units]).rstrip(", ")
 
@@ -177,23 +177,21 @@ template = "pub mod $name_snake_case$_message;\n"
 insert(file_path, template, 1)
 
 # Insert code into x-IMU3-API/Rust/src/connection.rs
-template = "\
-\n\
-    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)\n\
-    }\n"
+template = """
+    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)
+    }\n"""
 
 insert("../connection.rs", template, 0)
 
 # Insert code into x-IMU3-API/Rust/src/ffi/connection.rs
-template = "\
-\n\
-#[no_mangle]\n\
-pub extern \"C\" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {\n\
-    let connection: &Connection = unsafe { &*connection };\n\
-    let void_ptr = VoidPtr(context);\n\
-    connection.add_$name_snake_case$_closure(Box::new(move |message: $name_pascal_case$Message| callback(message, void_ptr.0)))\n\
-}\n"
+template = """
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {
+    let connection: &Connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_$name_snake_case$_closure(Box::new(move |message: $name_pascal_case$Message| callback(message, void_ptr.0)))
+}\n"""
 
 insert("../ffi/connection.rs", template, 0)
 
@@ -221,21 +219,20 @@ template = "        let $name_snake_case$_closures = dispatcher.$name_snake_case
 
 insert(file_path, template, 3)
 
-template = "\
-                        DispatcherData::$name_pascal_case$(message) => {\n\
-                            data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));\n\
-                            $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));\n\
-                        }\n"
+template = """\
+                        DispatcherData::$name_pascal_case$(message) => {
+                            data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
+                            $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
+                        }\n"""
 
 insert(file_path, template, 4)
 
-template = "\
-\n\
-    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {\n\
-        let id = self.get_closure_id();\n\
-        self.$name_snake_case$_closures.lock().unwrap().push((closure, id));\n\
-        id\n\
-    }\n"
+template = """
+    pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
+        let id = self.get_closure_id();
+        self.$name_snake_case$_closures.lock().unwrap().push((closure, id));
+        id
+    }\n"""
 
 insert(file_path, template, 5)
 
@@ -244,22 +241,20 @@ template = "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, 
 insert(file_path, template, 6)
 
 # Insert code into x-IMU3-API/Rust/src/ffi/data_messages.rs
-template = "\
-\n\
-#[no_mangle]\n\
-pub extern \"C\" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pascal_case$Message) -> *const c_char {\n\
-    str_to_char_ptr!(&message.to_string())\n\
-}\n"
+template = """
+#[no_mangle]
+pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pascal_case$Message) -> *const c_char {
+    str_to_char_ptr!(&message.to_string())
+}\n"""
 
 insert("../ffi/data_messages.rs", template, 0)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
-template = "\
-\n\
-        uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)\n\
-        {\n\
-            return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);\n\
-        }\n"
+template = """
+        uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)
+        {
+            return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
+        }\n"""
 
 insert("../../../Cpp/Connection.hpp", template, 0)
 
@@ -277,11 +272,11 @@ for message in messages:
         get_functions = ""
 
         for argument_type, argument_name in zip(["K"] + ["f" for _ in message.argument_names], argument_names):
-            get_function = "\
-static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case$Message* self)\n\
-{\n\
-    return Py_BuildValue(\"$argument_type$\", self->message.$argument_name$);\n\
-}\n\n"
+            get_function = """\
+static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case$Message* self)
+{
+    return Py_BuildValue("$argument_type$", self->message.$argument_name$);
+}\n\n"""
             get_function = get_function.replace("$argument_type$", argument_type)
             get_function = get_function.replace("$argument_name$", helpers.snake_case(argument_name))
             get_functions += get_function
@@ -291,11 +286,11 @@ static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case
         # Method functions
         method_names = ["to_string"]
 
-        method_functions = "\
-static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)\n\
-{\n\
-    return Py_BuildValue(\"s\", XIMU3_$name_snake_case$_message_to_string(self->message));\n\
-}\n\n"
+        method_functions = """\
+static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)
+{
+    return Py_BuildValue("s", XIMU3_$name_snake_case$_message_to_string(self->message));
+}\n\n"""
 
         if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
             method_names = method_names + ["to_euler_angles_message"]
@@ -313,7 +308,7 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         get_set_members = ""
 
         for argument_name in argument_names:
-            get_set_member = "{ \"$argument_name$\", $whitespace$(getter) $name_snake_case$_message_get_$argument_name$, $whitespace$NULL, \"\", NULL },\n        "
+            get_set_member = '{ "$argument_name$", $whitespace$(getter) $name_snake_case$_message_get_$argument_name$, $whitespace$NULL, "", NULL },\n        '
             get_set_member = get_set_member.replace("$argument_name$", helpers.snake_case(argument_name))
             get_set_member = get_set_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(argument_name))))
             get_set_members += get_set_member
@@ -326,7 +321,7 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         method_members = ""
 
         for method_name in method_names:
-            method_member = "{ \"$method_name$\", $whitespace$(PyCFunction) $name_snake_case$_message_$method_name$, $whitespace$METH_NOARGS, \"\" },\n        "
+            method_member = '{ "$method_name$", $whitespace$(PyCFunction) $name_snake_case$_message_$method_name$, $whitespace$METH_NOARGS, "" },\n        '
             method_member = method_member.replace("$method_name$", method_name)
             method_member = method_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(method_name))))
             method_members += method_member
@@ -345,49 +340,48 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         file.write(template)
 
 # Generate x-IMU3-API/Python/Python-C-API/DataMessages/DataMessages.h
-insert("../../../Python/Python-C-API/DataMessages/DataMessages.h", "#include \"$name_pascal_case$Message.h\"\n", 0)
+insert("../../../Python/Python-C-API/DataMessages/DataMessages.h", '#include "$name_pascal_case$Message.h"\n', 0)
 
 # Insert code into x-IMU3-API/Python/Python-C-API/ximu3.c
-template = "        add_object(module, &$name_snake_case$_message_object, \"$name_pascal_case$Message\") &&\n"
+template = '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n'
 
 insert("../../../Python/Python-C-API/ximu3.c", template, 0)
 
 # Insert code into x-IMU3-API/Python/Python-C-API/Connection.h
 file_path = "../../../Python/Python-C-API/Connection.h"
 
-template = "\
-\n\
-static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)\n\
-{\n\
-    PyObject* callable;\n\
-\n\
-    if (PyArg_ParseTuple(args, \"O:set_callback\", &callable) == 0)\n\
-    {\n\
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);\n\
-        return NULL;\n\
-    }\n\
-\n\
-    if (PyCallable_Check(callable) == 0)\n\
-    {\n\
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);\n\
-        return NULL;\n\
-    }\n\
-\n\
-    Py_INCREF(callable); // this will never be destroyed (memory leak)\n\
-\n\
-    uint64_t id;\n\
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks\n\
-        id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, callable);\n\
-    Py_END_ALLOW_THREADS\n\
-    return Py_BuildValue(\"K\", id);\n\
-}\n"
+template = """
+static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)
+{
+    PyObject* callable;
+
+    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PyCallable_Check(callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    Py_INCREF(callable); // this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, callable);
+    Py_END_ALLOW_THREADS
+    return Py_BuildValue("K", id);
+}\n"""
 
 insert(file_path, template, 0)
 
 code = ""
 
 for message in messages:
-    template = "        { \"add_$name_snake_case$_callback\", $whitespace$(PyCFunction) connection_add_$name_snake_case$_callback, $whitespace$METH_VARARGS, \"\" },\n"
+    template = '        { "add_$name_snake_case$_callback", $whitespace$(PyCFunction) connection_add_$name_snake_case$_callback, $whitespace$METH_VARARGS, "" },\n'
 
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
     template = template.replace("$whitespace$", "".ljust(20 - len(message.name)))
@@ -408,13 +402,13 @@ for message in messages:
         to_euler = message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]
 
         # Includes
-        includes = "#include \"../../../C/Ximu3.h\"\n"
+        includes = '#include "../../../C/Ximu3.h"\n'
 
         if to_quaternion:
-            includes += "//#include \"QuaternionMessage.h\"\n"
+            includes += '//#include "QuaternionMessage.h"\n'
 
         if to_euler:
-            includes += "#include \"EulerAnglesMessage.h\"\n"
+            includes += '#include "EulerAnglesMessage.h"\n'
 
         template = template.replace("$includes$", includes.rstrip("\n"))
 
@@ -422,38 +416,38 @@ for message in messages:
         properties = ""
 
         for name in message.argument_names:
-            property = "\
-        property float $argument_pascal_case$\n\
-        {\n\
-            float get()\n\
-            {\n\
-                return message->$argument_snake_case$;\n\
-            }\n\
-        }\n\n"
+            property = """\
+        property float $argument_pascal_case$
+        {
+            float get()
+            {
+                return message->$argument_snake_case$;
+            }
+        }\n\n"""
             properties += property.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
 
         template = template.replace("$properties$", properties.rstrip("\n"))
 
         # Methods
-        methods = "\
-        String^ ToString() override\n\
-        {\n\
-            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));\n\
-        }\n\n"
+        methods = """\
+        String^ ToString() override
+        {
+            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));
+        }\n\n"""
 
         if to_quaternion:
-            methods += "\
-        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference\n\
-        //{\n\
-        //    return gcnew QuaternionMessage(XIMU3_$name_snake_case$_message_to_quaternion_message(*message));\n\
-        //}\n\n"
+            methods += """\
+        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference
+        //{
+        //    return gcnew QuaternionMessage(XIMU3_$name_snake_case$_message_to_quaternion_message(*message));
+        //}\n\n"""
 
         if to_euler:
-            methods += "\
-        EulerAnglesMessage^ ToEulerAnglesMessage()\n\
-        {\n\
-            return gcnew EulerAnglesMessage(XIMU3_$name_snake_case$_message_to_euler_angles_message(*message));\n\
-        }\n\n"
+            methods += """\
+        EulerAnglesMessage^ ToEulerAnglesMessage()
+        {
+            return gcnew EulerAnglesMessage(XIMU3_$name_snake_case$_message_to_euler_angles_message(*message));
+        }\n\n"""
 
         template = template.replace("$methods$", methods.rstrip("\n"))
     else:
@@ -472,21 +466,21 @@ with open("../../../CSharp/x-IMU3/DataMessages/DataMessages.h", "w") as file:
     file.write(helpers.preamble())
 
     for message in messages:
-        file.write("#include \"" + helpers.pascal_case(message.name) + "Message.h\"\n")
+        file.write('#include "' + helpers.pascal_case(message.name) + 'Message.h"\n')
 
 # Insert code into x-IMU3-API/CSharp/x-IMU3/EventArgs.h
-template = "\
-\n\
-    public ref class $name_pascal_case$EventArgs : public EventArgs\n\
-    {\n\
-    public:\n\
-        $name_pascal_case$Message^ message;\n\
-\n\
-    internal:\n\
-        $name_pascal_case$EventArgs($name_pascal_case$Message^ message) : message(message)\n\
-        {\n\
-        }\n\
-    };\n"
+template = """\
+
+    public ref class $name_pascal_case$EventArgs : public EventArgs
+    {
+    public:
+        $name_pascal_case$Message^ message;
+
+    internal:
+        $name_pascal_case$EventArgs($name_pascal_case$Message^ message) : message(message)
+        {
+        }
+    };\n"""
 
 insert("../../../CSharp/x-IMU3/EventArgs.h", template, 0)
 
@@ -501,16 +495,15 @@ template = "            ximu3::XIMU3_connection_add_$name_snake_case$_callback(c
 
 insert(file_path, template, 1)
 
-template = "\
-\n\
-        delegate void $name_pascal_case$Delegate(ximu3::XIMU3_$name_pascal_case$Message data, void* context);\n\
-\n\
-        static void $name_pascal_case$Callback(ximu3::XIMU3_$name_pascal_case$Message data, void* context)\n\
-        {\n\
-            auto sender = GCHandle::FromIntPtr(IntPtr(context)).Target;\n\
-            static_cast<Connection^>(sender)->$name_pascal_case$Event(sender, gcnew $name_pascal_case$EventArgs(gcnew $name_pascal_case$Message(data)));\n\
-        }\n\
-\n\
-        const $name_pascal_case$Delegate^ $name_camel_case$Delegate = gcnew $name_pascal_case$Delegate($name_pascal_case$Callback);\n"
+template = """
+        delegate void $name_pascal_case$Delegate(ximu3::XIMU3_$name_pascal_case$Message data, void* context);
+
+        static void $name_pascal_case$Callback(ximu3::XIMU3_$name_pascal_case$Message data, void* context)
+        {
+            auto sender = GCHandle::FromIntPtr(IntPtr(context)).Target;
+            static_cast<Connection^>(sender)->$name_pascal_case$Event(sender, gcnew $name_pascal_case$EventArgs(gcnew $name_pascal_case$Message(data)));
+        }
+
+        const $name_pascal_case$Delegate^ $name_camel_case$Delegate = gcnew $name_pascal_case$Delegate($name_pascal_case$Callback);\n"""
 
 insert(file_path, template, 2)

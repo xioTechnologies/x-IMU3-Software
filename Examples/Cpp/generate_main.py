@@ -22,18 +22,18 @@ with open("main.cpp", "w") as file:
     file.write(helpers.preamble())
 
     for declaration in examples:
-        file.write("#include \"Examples/" + declaration + ".h\"\n")
+        file.write(f'#include "Examples/{declaration}.h"\n')
 
-    file.write("#include \"Helpers.hpp\"\n")
+    file.write('#include "Helpers.hpp"\n')
     file.write("#include <iostream>\n\n")
 
     file.write("int main(int argc, const char* argv[])\n{\n")
     file.write("    setbuf(stdout, NULL);\n")
-    file.write("    std::cout << \"Select example \" << std::endl;\n")
+    file.write('    std::cout << "Select example " << std::endl;\n')
 
     key = "A"
     for declaration in examples:
-        file.write("    std::cout << \"" + key + ". " + declaration + ".h\" << std::endl;\n")
+        file.write(f'    std::cout << "{key}. {declaration}.h" << std::endl;\n')
         key = chr(ord(key) + 1)
 
     file.write("    switch (helpers::getKey())\n")
@@ -41,8 +41,8 @@ with open("main.cpp", "w") as file:
 
     key = "A"
     for declaration in examples:
-        file.write("        case \'" + str(key) + "\':\n")
-        file.write("            " + declaration + "();\n")
+        file.write(f"        case '{key}':\n")
+        file.write(f"            {declaration}();\n")
         file.write("            break;\n")
         key = chr(ord(key) + 1)
 
