@@ -10,7 +10,7 @@ devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
 if not devices:
     raise Exception("No USB connections available")
 
-print("Found " + devices[0].device_name + " " + devices[0].serial_number)
+print(f"Found {devices[0].device_name} {devices[0].serial_number}")
 
 # Open connection
 connection = ximu3.Connection(devices[0].connection_info)
@@ -21,16 +21,18 @@ if connection.open() != ximu3.RESULT_OK:
 print("Connection successful")
 
 # Define read/write setting commands
-commands = ["{\"deviceName\":null}",  # change null to a value to write setting
-            "{\"serialNumber\":null}",
-            "{\"firmwareVersion\":null}",
-            "{\"bootloaderVersion\":null}",
-            "{\"hardwareVersion\":null}",
-            "{\"invalidSettingKey\":null}"]  # this command is deliberately invalid to demonstrate a failed command
+commands = [
+    '{"deviceName":null}',  # change null to a value to write setting
+    '{"serialNumber":null}',
+    '{"firmwareVersion":null}',
+    '{"bootloaderVersion":null}',
+    '{"hardwareVersion":null}',
+    '{"invalidSettingKey":null}',  # this command is deliberately invalid to demonstrate a failed command
+]
 
 
 def print_responses(responses):
-    print(str(len(responses)) + " commands confirmed")
+    print(f"{str(len(responses))} commands confirmed")
 
     for response in responses:
         print(response)

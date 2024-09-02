@@ -5,14 +5,12 @@ import ximu3
 
 def print_devices(devices):
     for device in devices:
-        print(device.device_name + ", " +
-              device.serial_number + ", " +
-              device.connection_info.to_string())
+        print(", ".join([device.device_name, device.serial_number, device.connection_info.to_string()]))
         # print(device.to_string())  # alternative to above
 
 
 def callback(devices):
-    print("Devices updated (" + str(len(devices)) + " devices available)")
+    print(f"Devices updated ({len(devices)}) devices available)")
     print_devices(devices)
 
 
