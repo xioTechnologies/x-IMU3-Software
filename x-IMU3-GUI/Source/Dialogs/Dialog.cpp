@@ -177,6 +177,7 @@ void DialogQueue::pop()
     active->enterModalState(true);
     active->setResizable(queue.front()->isResizable(), queue.front()->isResizable());
     active->setResizeLimits(active->getBorderThickness().getLeftAndRight() + queue.front().get()->getMinimumWidth(), active->getConstrainer()->getMinimumHeight(), active->getConstrainer()->getMaximumWidth(), active->getConstrainer()->getMaximumHeight());
+    active->setAlwaysOnTop(true);
 
     juce::Image iconImage(juce::Image::ARGB, 2 * 50, 2 * Dialog::titleBarHeight, true);
     juce::Graphics g(iconImage);
