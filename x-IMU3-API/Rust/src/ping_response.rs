@@ -16,19 +16,20 @@ impl PingResponse {
         }
 
         #[derive(Deserialize)]
-        #[allow(non_snake_case)]
         struct ChildObject {
             interface: String,
-            deviceName: String,
-            serialNumber: String,
+            #[serde(alias = "deviceName")]
+            name: String,
+            #[serde(alias = "serialNumber")]
+            sn: String,
         }
 
         match serde_json::from_str::<ParentObject>(json) {
             Ok(object) => {
                 Ok(PingResponse {
                     interface: object.ping.interface,
-                    device_name: object.ping.deviceName,
-                    serial_number: object.ping.serialNumber,
+                    device_name: object.ping.name,
+                    serial_number: object.ping.sn,
                 })
             }
             Err(_) => Err(()),
