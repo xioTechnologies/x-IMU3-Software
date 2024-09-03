@@ -29,11 +29,7 @@ with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")
 
     for setting, json_type in zip(settings, json_types):
-        file.write("    <Setting " +
-                   "key=\"" + helpers.camel_case(setting["name"]) + "\" " +
-                   "name=\"" + helpers.title_case(setting["name"]) + "\" " +
-                   "type=\"" + json_type + "\" " +
-                   ("readOnly=\"" + "true" + "\"" if setting.get("read only") else "") + "/>\n")
+        file.write(f'    <Setting key="{helpers.camel_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get('read only') else "")}/>\n')
 
     file.write("    <Margin/>\n")
     file.write("</DeviceSettings>\n")
@@ -45,10 +41,10 @@ with open("DeviceSettingsEnums.xml", "w") as file:
     file.write("<DeviceSettingsEnums>\n")
 
     for enum_type in enum_types:
-        file.write("\
-    <Enum name=\"" + enum_type + "\">\n\
-        <Enumerator name=\"Zero\" value=\"0\"/>\n\
-        <Enumerator name=\"One\" value=\"1\"/>\n\
-    </Enum>\n")
+        file.write(f"""\
+    <Enum name="{enum_type}">
+        <Enumerator name="Zero" value="0"/>
+        <Enumerator name="One" value="1"/>
+    </Enum>\n""")
 
     file.write("</DeviceSettingsEnums>\n")
