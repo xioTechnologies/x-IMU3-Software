@@ -19,7 +19,7 @@ with open("../DeviceSettings/DeviceSettings.json") as file:
         if bool(setting.get("calibration")):
             continue
 
-        device_settings_keys.append(helpers.camel_case(setting["name"]))
+        device_settings_keys.append(helpers.snake_case(setting["name"]))
 
         if any([d in setting["declaration"] for d in ["char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"]]):
             device_settings_types.append(STRING)

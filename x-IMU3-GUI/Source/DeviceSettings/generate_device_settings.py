@@ -29,7 +29,7 @@ with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")
 
     for setting, json_type in zip(settings, json_types):
-        file.write(f'    <Setting key="{helpers.camel_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get('read only') else "")}/>\n')
+        file.write(f'    <Setting key="{helpers.snake_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get('read only') else "")}/>\n')
 
     file.write("    <Margin/>\n")
     file.write("</DeviceSettings>\n")
