@@ -249,7 +249,13 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 
 void DeviceSettingsWindow::disableInProgress()
 {
-    disabledOverlay.setVisible(false);
+    juce::Timer::callAfterDelay(100, [&,  self = SafePointer<juce::Component>(this)]
+    {
+        if (self != nullptr)
+        {
+            disabledOverlay.setVisible(false);
+        }
+    });
 }
 
 juce::PopupMenu DeviceSettingsWindow::getMenu()
