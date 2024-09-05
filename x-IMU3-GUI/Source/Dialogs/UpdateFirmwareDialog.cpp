@@ -3,12 +3,14 @@
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
 
-UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update")
+UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update", "Cancel", &warningIcon, iconButtonWidth)
 {
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(deviceValue);
     addAndMakeVisible(hexFileLabel);
     addAndMakeVisible(hexFileSelector);
+    addAndMakeVisible(warningIcon);
+    addAndMakeVisible(warningLabel);
 
     const auto hexFile = ApplicationSettings::getDirectory().getChildFile(Firmware::hexFile);
     hexFile.replaceWithData(Firmware::memoryBlock.getData(), Firmware::memoryBlock.getSize());
@@ -38,6 +40,8 @@ void UpdateFirmwareDialog::resized()
     auto hexFileRow = bounds.removeFromTop(UILayout::textComponentHeight);
     hexFileLabel.setBounds(hexFileRow.removeFromLeft(columnWidth));
     hexFileSelector.setBounds(hexFileRow);
+
+    warningLabel.setBounds(juce::Rectangle<int>::leftTopRightBottom(warningIcon.getRight(), warningIcon.getY(), bounds.getRight(), warningIcon.getBottom()));
 }
 
 std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const

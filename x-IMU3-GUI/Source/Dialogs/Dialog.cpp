@@ -104,8 +104,8 @@ int Dialog::getMinimumWidth() const
 int Dialog::calculateHeight(const int numberOfRows) const
 {
     // This "adjust" fixes a bug that the dialog height doesn't adjust after changing the title bar height
-    static constexpr int adjust = titleBarHeight - 26; // 26 is juce default title bar height,
-    return margin + (numberOfRows + 1) * (UILayout::textComponentHeight + margin) + adjust;
+    static constexpr int adjust = + titleBarHeight - 26; // 26 is juce default title bar height,
+    return margin + (numberOfRows + 1) * (UILayout::textComponentHeight + margin) + adjust + margin;
 }
 
 void Dialog::setOkButton(const bool valid, const juce::String& buttonText)
