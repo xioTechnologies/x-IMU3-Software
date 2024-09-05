@@ -30,7 +30,7 @@ void SendNoteCommandDialog::resized()
 {
     Dialog::resized();
 
-    auto bounds = getContentBounds();
+    auto bounds = getContentBounds().removeFromTop(UILayout::textComponentHeight);
     label.setBounds(bounds.removeFromLeft(columnWidth));
     value.setBounds(bounds);
 }
