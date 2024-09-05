@@ -56,7 +56,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     writeAllButton.onClick = [this]
     {
-        const auto commands = deviceSettings.getWriteCommands();
+        const auto commands = deviceSettings.getWriteCommands(true);
 
         enableInProgress(commands);
 
