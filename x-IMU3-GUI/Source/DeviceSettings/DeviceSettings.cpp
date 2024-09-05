@@ -40,8 +40,7 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool replaceR
             continue;
         }
 
-        const auto value = setting.second[DeviceSettingsIDs::value];
-        commands.push_back({ setting.first, (setting.second[DeviceSettingsIDs::type] == "bool") ? juce::var((bool) value) : value });
+        commands.push_back(getWriteCommand(setting.second));
     }
     return commands;
 }
@@ -103,12 +102,18 @@ std::map<juce::String, juce::ValueTree> DeviceSettings::flatten(const juce::Valu
     return map;
 }
 
-void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& identifier)
+CommandMessage DeviceSettings::getWriteCommand(juce::ValueTree setting)
+{
+    const auto value = setting[DeviceSettingsIDs::value];
+    return { setting[DeviceSettingsIDs::key], (setting[DeviceSettingsIDs::type] == "bool") ? juce::var((bool) value) : value };
+}
+
+void DeviceSettings::valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& identifier)
 {
     rootItem.treeHasChanged();
 
     if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value))
     {
-        juce::NullCheckedInvocation::invoke(onChange);
+        juce::NullCheckedInvocation::invoke(onSettingModified, getWriteCommand(tree));
     }
 }

@@ -56,48 +56,14 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     writeAllButton.onClick = [this]
     {
-        const auto commands = deviceSettings.getWriteCommands(true);
-
-        enableInProgress(commands);
-
-        connectionPanel.sendCommands(commands, this, [&, commands](const auto& responses)
-        {
-            for (const auto& command : commands)
-            {
-                const auto response = std::find(responses.begin(), responses.end(), command);
-
-                if (response == responses.end() || response->getError())
-                {
-                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
-                    continue;
-                }
-
-                deviceSettings.setValue(*response);
-                deviceSettings.setStatus(response->key, Setting::Status::normal, {});
-            }
-
-            writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
-
-            connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto& responses_)
-            {
-                disableInProgress();
-
-                if (responses_.empty())
-                {
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                    return;
-                }
-
-                connectionPanel.sendCommands({{ "apply", {}}});
-            });
-        });
+        writeCommands(deviceSettings.getWriteCommands(true));
     };
 
-    deviceSettings.onChange = [this]
+    deviceSettings.onSettingModified = [this] (const CommandMessage& command)
     {
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
         {
-            writeAllButton.onClick();
+            writeCommands({command});
         }
     };
 
@@ -159,9 +125,9 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             }
         }
 
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
         {
-            writeAllButton.onClick();
+            writeCommands(deviceSettings.getWriteCommands(true));
         }
     };
 
@@ -232,6 +198,43 @@ void DeviceSettingsWindow::resized()
     }
 }
 
+void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& commands)
+{
+    enableInProgress(commands);
+
+    connectionPanel.sendCommands(commands, this, [&, commands](const auto& responses)
+    {
+        for (const auto& command : commands)
+        {
+            const auto response = std::find(responses.begin(), responses.end(), command);
+
+            if (response == responses.end() || response->getError())
+            {
+                deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
+                continue;
+            }
+
+            deviceSettings.setValue(*response);
+            deviceSettings.setStatus(response->key, Setting::Status::normal, {});
+        }
+
+        writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
+
+        connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto& responses_)
+        {
+            disableInProgress();
+
+            if (responses_.empty())
+            {
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
+                return;
+            }
+
+            connectionPanel.sendCommands({{ "apply", {}}});
+        });
+    });
+}
+
 void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& commands)
 {
     for (const auto& command : commands)
@@ -246,7 +249,13 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 
 void DeviceSettingsWindow::disableInProgress()
 {
-    disabledOverlay.setVisible(false);
+    juce::Timer::callAfterDelay(100, [&,  self = SafePointer<juce::Component>(this)]
+    {
+        if (self != nullptr)
+        {
+            disabledOverlay.setVisible(false);
+        }
+    });
 }
 
 juce::PopupMenu DeviceSettingsWindow::getMenu()
@@ -261,9 +270,9 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
     {
         ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
     });
-    menu.addItem("Write Settings When Value Is Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified, [&]
+    menu.addItem("Write Settings When Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified, [&]
     {
-        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified;
+        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified;
     });
 
     return menu;
