@@ -135,7 +135,16 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     loadFromFileButton.onClick = [&]
     {
-        juce::FileChooser fileChooser("Load Device Settings", directory, "*.json");
+        std::optional<juce::File> defaultFile;
+        for (auto file : directory.findChildFiles(juce::File::findFiles, false, "*.json"))
+        {
+            if (file.getFileName().contains(deviceSettings.getValue("serial_number").toString()) && (file.getLastModificationTime() > defaultFile.value_or(juce::File()).getLastModificationTime()))
+            {
+                defaultFile = file;
+            }
+        }
+
+        juce::FileChooser fileChooser("Load Device Settings", defaultFile.value_or(directory), "*.json");
         if (fileChooser.browseForFileToOpen() == false)
         {
             return;
