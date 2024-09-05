@@ -22,7 +22,7 @@ public:
 
     void setStatus(const juce::String& key, const Setting::Status status, const juce::String& statusTooltip);
 
-    std::function<void()> onChange;
+    std::function<void(const CommandMessage&)> onSettingModified;
 
 private:
     juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
@@ -33,7 +33,9 @@ private:
 
     static std::map<juce::String, juce::ValueTree> flatten(const juce::ValueTree& parent);
 
-    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override;
+    static CommandMessage getWriteCommand(juce::ValueTree setting);
+
+    void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettings)
 };

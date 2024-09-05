@@ -36,6 +36,8 @@ private:
 
     DisabledOverlay disabledOverlay;
 
+    void writeCommands(const std::vector<CommandMessage>& commands);
+
     void enableInProgress(const std::vector<CommandMessage>& commands);
 
     void disableInProgress();
