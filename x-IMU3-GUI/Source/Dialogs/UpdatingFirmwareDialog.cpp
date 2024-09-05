@@ -51,7 +51,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                           }
 
                           // Read hardware version
-                          const auto responses = connection->sendCommands({ "{\"hardwareVersion\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
+                          const auto responses = connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
                           if (responses.empty())
                           {
                               showError("Unable to read hardware version.");
