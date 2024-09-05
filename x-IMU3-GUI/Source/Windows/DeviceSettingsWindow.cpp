@@ -54,7 +54,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         readAllButton.onClick();
     }
 
-    writeAllButton.onClick = deviceSettings.onChange = [this]
+    writeAllButton.onClick = [this]
     {
         const auto commands = deviceSettings.getWriteCommands();
 
@@ -91,6 +91,14 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                 connectionPanel.sendCommands({{ "apply", {}}});
             });
         });
+    };
+
+    deviceSettings.onChange = [this]
+    {
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        {
+            writeAllButton.onClick();
+        }
     };
 
     directory.createDirectory();
@@ -140,6 +148,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 deviceSettings.setValue({ command.name.toString(), command.value });
             }
+        }
+
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        {
+            writeAllButton.onClick();
         }
     };
 

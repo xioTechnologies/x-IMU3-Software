@@ -106,7 +106,7 @@ void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Iden
 {
     rootItem.treeHasChanged();
 
-    if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value) && ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+    if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value))
     {
         juce::NullCheckedInvocation::invoke(onChange);
     }
