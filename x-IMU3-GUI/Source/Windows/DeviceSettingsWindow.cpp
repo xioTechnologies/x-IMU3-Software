@@ -34,7 +34,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 deviceSettings.setValue(*response);
 
-                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmwareVersion") && response->value != Firmware::version)
+                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmware_version") && response->value != Firmware::version)
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
                     continue;
@@ -97,12 +97,12 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     saveToFileButton.onClick = [&]
     {
-        auto fileName = deviceSettings.getValue("deviceName").toString();
+        auto fileName = deviceSettings.getValue("device_name").toString();
         if (fileName.isEmpty())
         {
             fileName = "Unknown Device";
         }
-        if (const auto serialNumber = deviceSettings.getValue("serialNumber").toString(); serialNumber.isNotEmpty())
+        if (const auto serialNumber = deviceSettings.getValue("serial_number").toString(); serialNumber.isNotEmpty())
         {
             fileName += " " + serialNumber;
         }
