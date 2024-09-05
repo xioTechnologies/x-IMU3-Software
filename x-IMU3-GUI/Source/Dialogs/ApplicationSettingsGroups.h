@@ -69,7 +69,7 @@ public:
 private:
     CustomToggleButton hideUnusedSettingsButton { "Hide Unused Settings" };
     CustomToggleButton readSettingsWhenWindowOpensButton { "Read Settings When Window Opens" };
-    CustomToggleButton writeSettingsWhenValueIsModifiedButton { "Write Settings When Value Is Modified" };
+    CustomToggleButton writeSettingsWhenModifiedButton { "Write Settings When Modified" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsGroup)
 };

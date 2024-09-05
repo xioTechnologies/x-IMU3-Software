@@ -124,7 +124,7 @@ DeviceSettingsGroup::DeviceSettingsGroup() : ApplicationSettingsGroup("Device Se
 {
     addAndMakeVisible(hideUnusedSettingsButton);
     addAndMakeVisible(readSettingsWhenWindowOpensButton);
-    addAndMakeVisible(writeSettingsWhenValueIsModifiedButton);
+    addAndMakeVisible(writeSettingsWhenModifiedButton);
 
     hideUnusedSettingsButton.onClick = [this]
     {
@@ -136,14 +136,14 @@ DeviceSettingsGroup::DeviceSettingsGroup() : ApplicationSettingsGroup("Device Se
         ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = readSettingsWhenWindowOpensButton.getToggleState();
     };
 
-    writeSettingsWhenValueIsModifiedButton.onClick = [this]
+    writeSettingsWhenModifiedButton.onClick = [this]
     {
-        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified = writeSettingsWhenValueIsModifiedButton.getToggleState();
+        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified = writeSettingsWhenModifiedButton.getToggleState();
     };
 
     hideUnusedSettingsButton.setToggleState(ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings, juce::dontSendNotification);
     readSettingsWhenWindowOpensButton.setToggleState(ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, juce::dontSendNotification);
-    writeSettingsWhenValueIsModifiedButton.setToggleState(ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified, juce::dontSendNotification);
+    writeSettingsWhenModifiedButton.setToggleState(ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified, juce::dontSendNotification);
 }
 
 void DeviceSettingsGroup::resized()
@@ -154,5 +154,5 @@ void DeviceSettingsGroup::resized()
     bounds.removeFromTop(rowMargin);
     readSettingsWhenWindowOpensButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
     bounds.removeFromTop(rowMargin);
-    writeSettingsWhenValueIsModifiedButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    writeSettingsWhenModifiedButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }

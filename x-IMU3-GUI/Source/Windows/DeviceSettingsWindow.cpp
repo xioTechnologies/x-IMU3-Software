@@ -61,7 +61,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     deviceSettings.onSettingModified = [this] (const CommandMessage& command)
     {
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
         {
             writeCommands({command});
         }
@@ -125,7 +125,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             }
         }
 
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
         {
             writeCommands(deviceSettings.getWriteCommands(true));
         }
@@ -270,9 +270,9 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
     {
         ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
     });
-    menu.addItem("Write Settings When Value Is Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified, [&]
+    menu.addItem("Write Settings When Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified, [&]
     {
-        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified;
+        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified;
     });
 
     return menu;
