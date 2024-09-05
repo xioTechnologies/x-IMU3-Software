@@ -54,9 +54,9 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         readAllButton.onClick();
     }
 
-    writeAllButton.onClick = deviceSettings.onChange = [this]
+    writeAllButton.onClick = [this]
     {
-        const auto commands = deviceSettings.getWriteCommands();
+        const auto commands = deviceSettings.getWriteCommands(true);
 
         enableInProgress(commands);
 
@@ -93,6 +93,14 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         });
     };
 
+    deviceSettings.onChange = [this]
+    {
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        {
+            writeAllButton.onClick();
+        }
+    };
+
     directory.createDirectory();
 
     saveToFileButton.onClick = [&]
@@ -127,7 +135,16 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     loadFromFileButton.onClick = [&]
     {
-        juce::FileChooser fileChooser("Load Device Settings", directory, "*.json");
+        std::optional<juce::File> defaultFile;
+        for (auto file : directory.findChildFiles(juce::File::findFiles, false, "*.json"))
+        {
+            if (file.getFileName().contains(deviceSettings.getValue("serial_number").toString()) && (file.getLastModificationTime() > defaultFile.value_or(juce::File()).getLastModificationTime()))
+            {
+                defaultFile = file;
+            }
+        }
+
+        juce::FileChooser fileChooser("Load Device Settings", defaultFile.value_or(directory), "*.json");
         if (fileChooser.browseForFileToOpen() == false)
         {
             return;
@@ -140,6 +157,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 deviceSettings.setValue({ command.name.toString(), command.value });
             }
+        }
+
+        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+        {
+            writeAllButton.onClick();
         }
     };
 

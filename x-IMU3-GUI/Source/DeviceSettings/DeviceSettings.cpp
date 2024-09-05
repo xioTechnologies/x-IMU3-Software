@@ -24,7 +24,7 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     return commands;
 }
 
-std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipReadOnly) const
+std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool replaceReadOnlyValuesWithNull) const
 {
     std::vector<CommandMessage> commands;
     for (auto setting : settingsMap)
@@ -34,8 +34,9 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool skipRead
             continue;
         }
 
-        if (setting.second[DeviceSettingsIDs::readOnly] && skipReadOnly)
+        if (setting.second[DeviceSettingsIDs::readOnly] && replaceReadOnlyValuesWithNull)
         {
+            commands.push_back({ setting.first, {}});
             continue;
         }
 
@@ -106,7 +107,7 @@ void DeviceSettings::valueTreePropertyChanged(juce::ValueTree&, const juce::Iden
 {
     rootItem.treeHasChanged();
 
-    if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value) && ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenValueIsModified)
+    if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value))
     {
         juce::NullCheckedInvocation::invoke(onChange);
     }
