@@ -28,6 +28,7 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(x-IMU3-GUI PRIVATE pthread dl m udev)
     target_link_libraries(C-Examples PRIVATE pthread dl m udev)
     target_link_libraries(Cpp-Examples PRIVATE pthread dl m udev)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto=auto") # suppress serial compilation warning
 endif ()
 
 target_link_libraries(x-IMU3-GUI PRIVATE x-IMU3-Bootloader)
