@@ -43,13 +43,11 @@ protected:
         }
 
         // Open connection
-        std::cout << "Connecting to " << connectionInfo.toString() << std::endl;
         if (connection.open() != ximu3::XIMU3_ResultOk)
         {
-            std::cout << "Unable to open connection" << std::endl;
+            std::cout << "Unable to open " << connectionInfo.toString() << std::endl;
             return;
         }
-        std::cout << "Connection successful" << std::endl;
 
         // Send command to strobe LED
         const std::vector<std::string> commands { "{\"strobe\":null}" };

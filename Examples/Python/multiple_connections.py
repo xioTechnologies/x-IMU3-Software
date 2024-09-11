@@ -7,7 +7,7 @@ class Connection:
         self.__connection = ximu3.Connection(connection_info)
 
         if self.__connection.open() != ximu3.RESULT_OK:
-            raise Exception(f"Unable to open connection {connection_info.to_string()}")
+            raise Exception(f"Unable to open {connection_info.to_string()}")
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
@@ -50,7 +50,7 @@ class Connection:
         responses = self.__connection.send_commands([command], 2, 500)
 
         if not responses:
-            raise Exception(f"Unable to confirm command {command} for {self.__connection.get_info().to_string()}")
+            raise Exception(f"No response to {command} for {self.__connection.get_info().to_string()}")
         else:
             print(self.__prefix + responses[0])
 

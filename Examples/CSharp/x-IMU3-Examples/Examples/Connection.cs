@@ -31,13 +31,11 @@ namespace Ximu3Examples
             }
 
             // Open connection
-            Console.WriteLine("Connecting to " + connectionInfo);
             if (connection.Open() != Ximu3.Result.Ok)
             {
-                Console.WriteLine("Unable to open connection");
+                Console.WriteLine("Unable to open " + connectionInfo);
                 return;
             }
-            Console.WriteLine("Connection successful");
 
             // Send command to strobe LED
             String[] commands = { "{\"strobe\":null}" };

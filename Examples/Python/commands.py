@@ -18,8 +18,6 @@ connection = ximu3.Connection(devices[0].connection_info)
 if connection.open() != ximu3.RESULT_OK:
     raise Exception("Unable to open connection")
 
-print("Connection successful")
-
 # Define read/write setting commands
 commands = [
     '{"device_name":null}',  # change null to a value to write setting
@@ -27,7 +25,7 @@ commands = [
     '{"firmware_version":null}',
     '{"bootloader_version":null}',
     '{"hardware_version":null}',
-    '{"invalid_setting_key":null}',  # this command is deliberately invalid to demonstrate a failed command
+    '{"invalid_setting_key":null}',  # invalid key to demonstrate an error response
 ]
 
 

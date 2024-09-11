@@ -31,7 +31,6 @@ void Commands()
         XIMU3_connection_free(connection);
         return;
     }
-    printf("Connection successful\n");
 
     // Define read/write setting commands
     const char* const commands[] = {
@@ -40,7 +39,7 @@ void Commands()
             "{\"firmware_version\":null}",
             "{\"bootloader_version\":null}",
             "{\"hardware_version\":null}",
-            "{\"invalid_setting_key\":null}", /* this command is deliberately invalid to demonstrate a failed command */
+            "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
     };
     const int numberOfCommands = sizeof(commands) / sizeof(commands[0]);
 

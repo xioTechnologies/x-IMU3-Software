@@ -49,7 +49,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     if (responses.empty())
                     {
                         row->state = Row::State::failed;
-                        row->response = "Unable to confirm command";
+                        row->response = "No response";
                     }
                     else if (const auto error = responses[0].getError())
                     {
