@@ -267,12 +267,8 @@ def run(connection_info):
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
 
-    print(f"Connecting to {connection.get_info().to_string()}")
-
     if connection.open() != ximu3.RESULT_OK:
-        raise Exception("Unable to open connection")
-
-    print("Connection successful")
+        raise Exception(f"Unable to open {connection_info.to_string()}")
 
     connection.send_commands(['{"strobe":null}'], 2, 500)  # send command to strobe LED
 

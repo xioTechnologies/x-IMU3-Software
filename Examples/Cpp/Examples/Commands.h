@@ -27,7 +27,6 @@ public:
             std::cout << "Unable to open connection" << std::endl;
             return;
         }
-        std::cout << "Connection successful" << std::endl;
 
         // Define read/write setting commands
         const std::vector<std::string> commands {
@@ -36,7 +35,7 @@ public:
                 "{\"firmware_version\":null}",
                 "{\"bootloader_version\":null}",
                 "{\"hardware_version\":null}",
-                "{\"invalid_setting_key\":null}", /* this command is deliberately invalid to demonstrate a failed command */
+                "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
         };
 
         // Send commands

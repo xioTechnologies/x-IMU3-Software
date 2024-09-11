@@ -26,7 +26,6 @@ pub fn run() {
         println!("Unable to open connection");
         return;
     }
-    println!("Connection successful");
 
     // Define read/write setting commands
     let commands = vec![
@@ -35,7 +34,7 @@ pub fn run() {
         "{\"firmware_version\":null}",
         "{\"bootloader_version\":null}",
         "{\"hardware_version\":null}",
-        "{\"invalid_setting_key\":null}"];/* this command is deliberately invalid to demonstrate a failed command */
+        "{\"invalid_setting_key\":null}"];/* invalid key to demonstrate an error response */
 
     // Send commands
     if helpers::ask_question("Use async implementation?") {

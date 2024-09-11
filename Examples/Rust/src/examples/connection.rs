@@ -32,13 +32,10 @@ pub fn run(connection_info: ConnectionInfo) {
     }
 
     // Open connection
-    println!("Connecting to {}", connection.get_info().to_string());
-
     if connection.open().is_err() {
-        println!("Unable to open connection");
+        println!("Unable to open {}", connection_info.to_string());
         return;
     }
-    println!("Connection successful");
 
     // Send command to strobe LED
     connection.send_commands(vec!["{\"strobe\":null}"], 2, 500);

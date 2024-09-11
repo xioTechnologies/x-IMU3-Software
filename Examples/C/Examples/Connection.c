@@ -69,15 +69,12 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     }
 
     // Open connection
-    printf("Connecting to %s\n", connectionInfoString);
-
     if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
     {
-        printf("Unable to open connection\n");
+        printf("Unable to open %s\n", connectionInfoString);
         XIMU3_connection_free(connection);
         return;
     }
-    printf("Connection successful\n");
 
     // Send command to strobe LED
     const char* const commands[] = { "{\"strobe\":null}" };
