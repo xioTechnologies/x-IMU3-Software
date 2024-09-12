@@ -169,9 +169,7 @@ void DialogQueue::pop()
         active->setContentOwned(queue.front().get(), true);
         active->setTitleBarHeight(Dialog::titleBarHeight);
         active->centreAroundComponent(nullptr, active->getWidth(), active->getHeight());
-        active->setVisible(true);
         active->setTitleBarButtonsRequired(0, false);
-        active->enterModalState(true);
         active->setResizable(queue.front()->isResizable(), queue.front()->isResizable());
         active->setResizeLimits(active->getBorderThickness().getLeftAndRight() + queue.front().get()->getMinimumWidth(), active->getConstrainer()->getMinimumHeight(), active->getConstrainer()->getMaximumWidth(), active->getConstrainer()->getMaximumHeight());
         active->setAlwaysOnTop(true);
@@ -181,6 +179,8 @@ void DialogQueue::pop()
         const auto bounds = juce::Rectangle<float>((float) iconImage.getWidth(), (float) iconImage.getHeight()).withCentre(iconImage.getBounds().getCentre().toFloat());
         juce::Drawable::createFromSVG(*juce::XmlDocument::parse(queue.front()->icon))->drawWithin(g, bounds, juce::RectanglePlacement::centred, 1.0f);
         active->setIcon(iconImage);
+
+        active->enterModalState(true);
 
         queue.front()->grabKeyboardFocus();
         queue.front().release();
