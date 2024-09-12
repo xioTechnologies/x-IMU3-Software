@@ -74,6 +74,8 @@ private:
 
     const juce::File userModelsDirectory = ApplicationSettings::getDirectory().getChildFile("User Models");
 
+    std::unique_ptr<juce::FileChooser> fileChooser;
+
     static float wrapAngle(float angle);
 
     void writeToValueTree(const ThreeDView::Settings& settings);

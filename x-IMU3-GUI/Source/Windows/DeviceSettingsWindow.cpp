@@ -81,22 +81,25 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             fileName += " " + serialNumber;
         }
 
-        juce::FileChooser fileChooser("Save Device Settings", directory.getChildFile(fileName), "*.json");
-        if (fileChooser.browseForFileToSave(true) == false)
+        fileChooser = std::make_unique<juce::FileChooser>("Save Device Settings", directory.getChildFile(fileName), "*.json");
+        fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&] (const auto&)
         {
-            return;
-        }
+            if (fileChooser->getResult() == juce::File())
+            {
+                return;
+            }
 
-        juce::DynamicObject object;
-        for (const auto& command : deviceSettings.getWriteCommands(false))
-        {
-            object.setProperty(command.key, command.value);
-        }
+            juce::DynamicObject object;
+            for (const auto& command : deviceSettings.getWriteCommands(false))
+            {
+                object.setProperty(command.key, command.value);
+            }
 
-        juce::FileOutputStream stream(fileChooser.getResult());
-        stream.setPosition(0);
-        stream.truncate();
-        object.writeAsJSON(stream, {});
+            juce::FileOutputStream stream(fileChooser->getResult());
+            stream.setPosition(0);
+            stream.truncate();
+            object.writeAsJSON(stream, {});
+        });
     };
 
     loadFromFileButton.onClick = [&]
@@ -110,25 +113,28 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             }
         }
 
-        juce::FileChooser fileChooser("Load Device Settings", defaultFile.value_or(directory), "*.json");
-        if (fileChooser.browseForFileToOpen() == false)
+        fileChooser = std::make_unique<juce::FileChooser>("Load Device Settings", defaultFile.value_or(directory), "*.json");
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&] (const auto&)
         {
-            return;
-        }
-
-        const auto parsed = juce::JSON::parse(fileChooser.getResult().loadFileAsString());
-        if (auto* const object = parsed.getDynamicObject())
-        {
-            for (const auto& command : object->getProperties())
+            if (fileChooser->getResult() == juce::File())
             {
-                deviceSettings.setValue({ command.name.toString(), command.value });
+                return;
             }
-        }
 
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
-        {
-            writeCommands(deviceSettings.getWriteCommands(true));
-        }
+            const auto parsed = juce::JSON::parse(fileChooser->getResult().loadFileAsString());
+            if (auto* const object = parsed.getDynamicObject())
+            {
+                for (const auto& command : object->getProperties())
+                {
+                    deviceSettings.setValue({ command.name.toString(), command.value });
+                }
+            }
+
+            if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
+            {
+                writeCommands(deviceSettings.getWriteCommands(true));
+            }
+        });
     };
 
     defaultsButton.onClick = [this]

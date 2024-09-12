@@ -12,11 +12,25 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
     };
     button.onClick = [&]
     {
-        juce::FileChooser fileChooser(button.getTooltip(), std::filesystem::exists(textEditor.getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
-        if (extension ? fileChooser.browseForMultipleFilesToOpen() : fileChooser.browseForDirectory())
+        const auto flags = [&]
         {
-            setFiles(fileChooser.getResults());
-        }
+            if (extension)
+            {
+                return juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectMultipleItems;
+            }
+            return juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectDirectories;
+        }();
+
+        fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(textEditor.getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
+        fileChooser->launchAsync(flags, [&] (const auto&)
+        {
+            if (fileChooser->getResults().isEmpty())
+            {
+                return;
+            }
+
+            setFiles(fileChooser->getResults());
+        });
     };
 }
 

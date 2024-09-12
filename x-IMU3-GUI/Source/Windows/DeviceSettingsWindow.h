@@ -36,6 +36,8 @@ private:
 
     DisabledOverlay disabledOverlay;
 
+    std::unique_ptr<juce::FileChooser> fileChooser;
+
     void writeCommands(const std::vector<CommandMessage>& commands);
 
     void enableInProgress(const std::vector<CommandMessage>& commands);
