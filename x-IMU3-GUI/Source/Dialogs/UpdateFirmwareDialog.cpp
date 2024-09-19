@@ -41,7 +41,7 @@ void UpdateFirmwareDialog::resized()
     hexFileLabel.setBounds(hexFileRow.removeFromLeft(columnWidth));
     hexFileSelector.setBounds(hexFileRow);
 
-    warningLabel.setBounds(juce::Rectangle<int>::leftTopRightBottom(warningIcon.getRight(), warningIcon.getY(), bounds.getRight(), warningIcon.getBottom()));
+    warningLabel.setBounds(warningIcon.getRight(), warningIcon.getY(), (int) std::ceil(warningLabel.getTextWidth()), warningIcon.getHeight());
 }
 
 std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const
