@@ -54,7 +54,7 @@ void AboutDialog::resized()
     logo.setBounds(bounds);
     bounds.removeFromTop(margin);
 
-    applicationVersionUpdateLabel.setBounds(juce::Rectangle<int>::leftTopRightBottom(downloadsButton.getRight(), downloadsButton.getY(), bounds.getRight(), downloadsButton.getBottom()));
+    applicationVersionUpdateLabel.setBounds(downloadsButton.getRight(), downloadsButton.getY(), (int) std::ceil(applicationVersionUpdateLabel.getTextWidth()), downloadsButton.getHeight());
 }
 
 void AboutDialog::mouseUp(const juce::MouseEvent& mouseEvent)
