@@ -16,7 +16,7 @@ def float_format(value):
 
 
 def string_format(string):
-    return f'"{string}"'
+    return f' "{string}"'
 
 
 def decode_error_callback(decode_error):
