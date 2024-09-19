@@ -61,7 +61,6 @@ target_compile_definitions(x-IMU3-GUI
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_VERSION>"
         JUCE_OPENGL3=1
         JUCE_DISPLAY_SPLASH_SCREEN=0
-        JUCE_MODAL_LOOPS_PERMITTED=1
         GLM_FORCE_SILENT_WARNINGS
         GLM_FORCE_SIZE_T_LENGTH) # Resolves signed conversion warning on Ubuntu
 

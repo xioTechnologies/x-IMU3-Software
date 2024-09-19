@@ -55,7 +55,7 @@ void IconButton::clicked()
 {
     if (getPopup != nullptr)
     {
-        getPopup().showAt(getScreenBounds());
+        getPopup().showMenuAsync(juce::PopupMenu::Options().withTargetScreenArea(getScreenBounds()));
     }
 }
 

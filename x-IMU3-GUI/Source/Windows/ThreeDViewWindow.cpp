@@ -128,7 +128,7 @@ void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
 
     if (mouseEvent.mods.isPopupMenu())
     {
-        getMenu().show();
+        getMenu().showMenuAsync({});
     }
 }
 
