@@ -28,5 +28,7 @@ private:
     CustomTextEditor textEditor;
     IconButton button;
 
+    std::unique_ptr<juce::FileChooser> fileChooser;
+
     static juce::Array<juce::File> toFileArray(const juce::StringArray& strings);
 };

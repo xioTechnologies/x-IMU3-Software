@@ -298,11 +298,15 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     juce::PopupMenu userModelsMenu;
     userModelsMenu.addItem("Load", [&]
     {
-        juce::FileChooser fileChooser("Select Model", juce::File(), "*.obj");
-
-        if (fileChooser.browseForFileToOpen())
+        fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&] (const auto&)
         {
-            const auto objFileOriginal = fileChooser.getResult();
+            if (fileChooser->getResult() == juce::File())
+            {
+                return;
+            }
+
+            const auto objFileOriginal = fileChooser->getResult();
             const auto mtlFileOriginal = objFileOriginal.withFileExtension(".mtl");
 
             const auto objFileCopy = userModelsDirectory.getChildFile(objFileOriginal.getFileName());
@@ -317,7 +321,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
             settings.model = ThreeDView::Model::user;
             settings.userModel = objFileCopy;
             writeToValueTree(settings);
-        }
+        });
     });
     if (const auto userModels = userModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); userModels.isEmpty() == false)
     {
