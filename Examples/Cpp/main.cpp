@@ -3,6 +3,7 @@
 #include "Examples/BluetoothConnection.h"
 #include "Examples/Commands.h"
 #include "Examples/DataLogger.h"
+#include "Examples/FileConnection.h"
 #include "Examples/FileConverter.h"
 #include "Examples/GetPortNames.h"
 #include "Examples/NetworkAnnouncement.h"
@@ -22,15 +23,16 @@ int main(int argc, const char* argv[])
     std::cout << "A. BluetoothConnection.h" << std::endl;
     std::cout << "B. Commands.h" << std::endl;
     std::cout << "C. DataLogger.h" << std::endl;
-    std::cout << "D. FileConverter.h" << std::endl;
-    std::cout << "E. GetPortNames.h" << std::endl;
-    std::cout << "F. NetworkAnnouncement.h" << std::endl;
-    std::cout << "G. Ping.h" << std::endl;
-    std::cout << "H. PortScanner.h" << std::endl;
-    std::cout << "I. SerialConnection.h" << std::endl;
-    std::cout << "J. TcpConnection.h" << std::endl;
-    std::cout << "K. UdpConnection.h" << std::endl;
-    std::cout << "L. UsbConnection.h" << std::endl;
+    std::cout << "D. FileConnection.h" << std::endl;
+    std::cout << "E. FileConverter.h" << std::endl;
+    std::cout << "F. GetPortNames.h" << std::endl;
+    std::cout << "G. NetworkAnnouncement.h" << std::endl;
+    std::cout << "H. Ping.h" << std::endl;
+    std::cout << "I. PortScanner.h" << std::endl;
+    std::cout << "J. SerialConnection.h" << std::endl;
+    std::cout << "K. TcpConnection.h" << std::endl;
+    std::cout << "L. UdpConnection.h" << std::endl;
+    std::cout << "M. UsbConnection.h" << std::endl;
     switch (helpers::getKey())
     {
         case 'A':
@@ -43,30 +45,33 @@ int main(int argc, const char* argv[])
             DataLogger();
             break;
         case 'D':
-            FileConverter();
+            FileConnection();
             break;
         case 'E':
-            GetPortNames();
+            FileConverter();
             break;
         case 'F':
-            NetworkAnnouncement();
+            GetPortNames();
             break;
         case 'G':
-            Ping();
+            NetworkAnnouncement();
             break;
         case 'H':
-            PortScanner();
+            Ping();
             break;
         case 'I':
-            SerialConnection();
+            PortScanner();
             break;
         case 'J':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'K':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'L':
+            UdpConnection();
+            break;
+        case 'M':
             UsbConnection();
             break;
     }
