@@ -15,9 +15,7 @@ def print_message(message):
                 str(message.udp_receive),
                 str(message.rssi) + "%",
                 str(message.battery) + "%",
-                ximu3.charging_status_to_string(
-                    message.charging_status,
-                ),
+                ximu3.charging_status_to_string(message.charging_status),
             ]
         )
     )
