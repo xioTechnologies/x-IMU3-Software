@@ -9,6 +9,8 @@ void Commands();
 
 void DataLogger();
 
+void FileConnection();
+
 void FileConverter();
 
 void GetPortNames();
@@ -33,15 +35,16 @@ int main(int argc, const char* argv[])
     printf("A. BluetoothConnection.c\n");
     printf("B. Commands.c\n");
     printf("C. DataLogger.c\n");
-    printf("D. FileConverter.c\n");
-    printf("E. GetPortNames.c\n");
-    printf("F. NetworkAnnouncement.c\n");
-    printf("G. Ping.c\n");
-    printf("H. PortScanner.c\n");
-    printf("I. SerialConnection.c\n");
-    printf("J. TcpConnection.c\n");
-    printf("K. UdpConnection.c\n");
-    printf("L. UsbConnection.c\n");
+    printf("D. FileConnection.c\n");
+    printf("E. FileConverter.c\n");
+    printf("F. GetPortNames.c\n");
+    printf("G. NetworkAnnouncement.c\n");
+    printf("H. Ping.c\n");
+    printf("I. PortScanner.c\n");
+    printf("J. SerialConnection.c\n");
+    printf("K. TcpConnection.c\n");
+    printf("L. UdpConnection.c\n");
+    printf("M. UsbConnection.c\n");
     switch (GetKey())
     {
         case 'A':
@@ -54,30 +57,33 @@ int main(int argc, const char* argv[])
             DataLogger();
             break;
         case 'D':
-            FileConverter();
+            FileConnection();
             break;
         case 'E':
-            GetPortNames();
+            FileConverter();
             break;
         case 'F':
-            NetworkAnnouncement();
+            GetPortNames();
             break;
         case 'G':
-            Ping();
+            NetworkAnnouncement();
             break;
         case 'H':
-            PortScanner();
+            Ping();
             break;
         case 'I':
-            SerialConnection();
+            PortScanner();
             break;
         case 'J':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'K':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'L':
+            UdpConnection();
+            break;
+        case 'M':
             UsbConnection();
             break;
     }
