@@ -335,9 +335,9 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
         for (auto& connectionInfo : connectionInfos)
         {
             const auto connectionInfoString = connectionInfo->toString();
-            menu.addItem(connectionInfoString, [this, connectionInfo = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
+            menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
             {
-                connectionPanelContainer.connectToDevice(*connectionInfo);
+                connectionPanelContainer.connectToDevice(*connectionInfo_);
             });
         }
     }
@@ -458,11 +458,11 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     const auto addWindowItem = [&](const auto& id)
     {
         const auto toggled = findWindow(windowLayout, id).isValid();
-        menu.addItem(windowTitles.at(id), true, toggled, [this, id = id, toggled]
+        menu.addItem(windowTitles.at(id), true, toggled, [this, id_ = id, toggled]
         {
             if (toggled)
             {
-                for (auto child = findWindow(windowLayout, id); child.isValid() && child.getNumChildren() == 0;)
+                for (auto child = findWindow(windowLayout, id_); child.isValid() && child.getNumChildren() == 0;)
                 {
                     auto parent = child.getParent();
                     parent.removeChild(child, nullptr);
@@ -478,7 +478,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
             }
 
             const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
-            windowLayout.getRoot().appendChild({ id, {{ WindowIDs::size, newSize }}}, nullptr);
+            windowLayout.getRoot().appendChild({ id_, {{ WindowIDs::size, newSize }}}, nullptr);
         });
     };
 
@@ -535,11 +535,11 @@ juce::PopupMenu MenuStrip::getSendCommandMenu()
 
     addDevices(menu, [&](auto& connectionPanel)
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getTitle(), connectionPanel.getTag()), [&, connectionPanel = &connectionPanel]
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getTitle(), connectionPanel.getTag()), [&, connectionPanel_ = &connectionPanel]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<ConnectionPanel*>({ connectionPanel })));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<ConnectionPanel*>({ connectionPanel_ })));
             }
             return true;
         });
