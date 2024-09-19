@@ -107,7 +107,7 @@ void GraphWindow::mouseDown([[maybe_unused]] const juce::MouseEvent& mouseEvent)
 
     if (mouseEvent.mods.isPopupMenu())
     {
-        getMenu().show();
+        getMenu().showMenuAsync({});
     }
 }
 
