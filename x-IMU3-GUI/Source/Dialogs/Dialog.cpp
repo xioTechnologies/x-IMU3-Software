@@ -165,7 +165,7 @@ void DialogQueue::pop()
 
     if (queue.empty() == false)
     {
-        active = std::make_unique<juce::DialogWindow>(queue.front()->getName(), UIColours::backgroundLight, true, true);
+        active = std::make_unique<juce::DialogWindow>(queue.front()->getName(), UIColours::backgroundLight, false, true);
         active->setContentOwned(queue.front().get(), true);
         active->setTitleBarHeight(Dialog::titleBarHeight);
         active->centreAroundComponent(nullptr, active->getWidth(), active->getHeight());
