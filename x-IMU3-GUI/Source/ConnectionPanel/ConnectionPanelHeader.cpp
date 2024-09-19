@@ -143,20 +143,20 @@ void ConnectionPanelHeader::setState(const State state)
             retryButton.setVisible(false);
             strobeButton.setVisible(true);
 
-            const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection = connection, destroyed = destroyed]
+            const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection_ = connection, destroyed_ = destroyed]
             {
-                if (*destroyed)
+                if (*destroyed_)
                 {
                     return juce::ThreadPoolJob::jobHasFinished;
                 }
 
-                auto response = connection->ping();
+                auto response = connection_->ping();
 
                 if (response.result == ximu3::XIMU3_ResultOk)
                 {
-                    juce::MessageManager::callAsync([&, connection, destroyed, response]
+                    juce::MessageManager::callAsync([&, connection_, destroyed_, response]
                                                     {
-                                                        if (*destroyed)
+                                                        if (*destroyed_)
                                                         {
                                                             return;
                                                         }

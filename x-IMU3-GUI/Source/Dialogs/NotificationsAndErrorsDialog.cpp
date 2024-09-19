@@ -49,10 +49,10 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>&
     addAndMakeVisible(messageLabel);
     addAndMakeVisible(table);
 
-    clearButton.onClick = [&, onClear = onClear]
+    clearButton.onClick = [&, onClear_ = onClear]
     {
         messages.clear();
-        onClear();
+        onClear_();
     };
 
     table.getHeader().addColumn("", (int) ColumnID::type, 70, 70, 70);

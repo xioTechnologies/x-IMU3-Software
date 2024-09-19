@@ -17,7 +17,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
 
     setSize(dialogWidth, calculateHeight(1));
 
-    threadPool.addJob([&, &threadPool = threadPool]
+    threadPool.addJob([&, &threadPool_ = threadPool]
                       {
                           const auto showError = [&](const juce::String& error, const bool tryAgain = true)
                           {
@@ -27,7 +27,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
                                                                   DialogQueue::getSingleton().pop();
                                                                   if (tryAgain)
                                                                   {
-                                                                      UpdateFirmwareDialog::launch(threadPool);
+                                                                      UpdateFirmwareDialog::launch(threadPool_);
                                                                   }
                                                               });
                           };

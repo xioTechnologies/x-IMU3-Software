@@ -42,24 +42,24 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             row.state = Row::State::inProgress;
             row.response.clear();
 
-            juce::Timer::callAfterDelay(sendDelay, [&, row = &row]
+            juce::Timer::callAfterDelay(sendDelay, [&, row_ = &row]
             {
-                row->connectionPanel.sendCommands({ command }, this, [&, row](const auto& responses)
+                row_->connectionPanel.sendCommands({ command }, this, [&, row_](const auto& responses)
                 {
                     if (responses.empty())
                     {
-                        row->state = Row::State::failed;
-                        row->response = "No response";
+                        row_->state = Row::State::failed;
+                        row_->response = "No response";
                     }
                     else if (const auto error = responses[0].getError())
                     {
-                        row->state = Row::State::failed;
-                        row->response = *error;
+                        row_->state = Row::State::failed;
+                        row_->response = *error;
                     }
                     else
                     {
-                        row->state = Row::State::complete;
-                        row->response = responses[0].value.isVoid() ? "" : juce::JSON::toString(responses[0].value, true);
+                        row_->state = Row::State::complete;
+                        row_->response = responses[0].value.isVoid() ? "" : juce::JSON::toString(responses[0].value, true);
                     }
 
                     table.updateContent();

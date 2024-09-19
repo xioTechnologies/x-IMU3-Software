@@ -207,11 +207,11 @@ void ConnectionPanel::connect()
 {
     header.setState(ConnectionPanelHeader::State::connecting);
 
-    connection->openAsync([&, destroyed = destroyed](auto result)
+    connection->openAsync([&, destroyed_ = destroyed](auto result)
                           {
-                              juce::MessageManager::callAsync([&, destroyed, result]
+                              juce::MessageManager::callAsync([&, destroyed_, result]
                                                               {
-                                                                  if (*destroyed)
+                                                                  if (*destroyed_)
                                                                   {
                                                                       return;
                                                                   }
