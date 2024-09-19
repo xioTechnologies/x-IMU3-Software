@@ -54,6 +54,14 @@ void Setting::resized()
     name.setBounds(bounds.reduced(1, 2));
 }
 
+void Setting::mouseDown (const juce::MouseEvent&)
+{
+    if (parentIfExpandable != nullptr)
+    {
+        parentIfExpandable->setOpen(parentIfExpandable->isOpen() == false);
+    }
+}
+
 bool Setting::isReadOnly() const
 {
     return tree[DeviceSettingsIDs::readOnly];

@@ -28,6 +28,8 @@ public:
 
     void resized() override;
 
+    void mouseDown (const juce::MouseEvent&) override;
+
 protected:
     juce::ValueTree tree;
 
