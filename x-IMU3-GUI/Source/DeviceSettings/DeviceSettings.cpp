@@ -5,7 +5,7 @@ DeviceSettings::DeviceSettings()
     setRootItem(&rootItem);
     setRootItemVisible(false);
 
-    settingsTree.addListener(this);
+    tree.addListener(this);
     ApplicationSettings::getSingleton().getTree().addListener(this);
 }
 
@@ -17,9 +17,9 @@ DeviceSettings::~DeviceSettings()
 std::vector<CommandMessage> DeviceSettings::getReadCommands() const
 {
     std::vector<CommandMessage> commands;
-    for (auto setting : settingsMap)
+    for (auto setting : settings)
     {
-        commands.push_back({ setting.first, {}});
+        commands.push_back({ setting[DeviceSettingsIDs::key], {}});
     }
     return commands;
 }
@@ -27,27 +27,27 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
 std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool replaceReadOnlyValuesWithNull) const
 {
     std::vector<CommandMessage> commands;
-    for (auto setting : settingsMap)
+    for (auto setting : settings)
     {
-        if (setting.second.hasProperty(DeviceSettingsIDs::value) == false)
+        if (setting.hasProperty(DeviceSettingsIDs::value) == false)
         {
             continue;
         }
 
-        if (setting.second[DeviceSettingsIDs::readOnly] && replaceReadOnlyValuesWithNull)
+        if (setting[DeviceSettingsIDs::readOnly] && replaceReadOnlyValuesWithNull)
         {
-            commands.push_back({ setting.first, {}});
+            commands.push_back({ setting[DeviceSettingsIDs::key], {}});
             continue;
         }
 
-        commands.push_back(getWriteCommand(setting.second));
+        commands.push_back(getWriteCommand(setting));
     }
     return commands;
 }
 
 void DeviceSettings::setValue(const CommandMessage& response)
 {
-    auto setting = settingsMap[CommandMessage::normaliseKey(response.key)];
+    auto setting = getSetting(response.key);
     if (setting.isValid() == false)
     {
         return;
@@ -65,16 +65,17 @@ void DeviceSettings::setValue(const CommandMessage& response)
 
 juce::var DeviceSettings::getValue(const juce::String& key) const
 {
-    if (auto it = settingsMap.find(CommandMessage::normaliseKey(key)); it != settingsMap.end())
+    auto setting = getSetting(key);
+    if (setting.isValid() == false)
     {
-        return it->second[DeviceSettingsIDs::value];
+        return {};
     }
-    return {};
+    return setting[DeviceSettingsIDs::value];
 }
 
 void DeviceSettings::setStatus(const juce::String& key, const Setting::Status status, const juce::String& statusTooltip)
 {
-    auto setting = settingsMap[CommandMessage::normaliseKey(key)];
+    auto setting = getSetting(key);
     if (setting.isValid() == false)
     {
         return;
@@ -85,21 +86,21 @@ void DeviceSettings::setStatus(const juce::String& key, const Setting::Status st
     setting.setProperty(DeviceSettingsIDs::statusTooltip, statusTooltip, nullptr);
 }
 
-std::map<juce::String, juce::ValueTree> DeviceSettings::flatten(const juce::ValueTree& parent)
+std::vector<juce::ValueTree> DeviceSettings::flatten(const juce::ValueTree& parent)
 {
-    std::map<juce::String, juce::ValueTree> map;
+    std::vector<juce::ValueTree> vector;
     for (const auto& child : parent)
     {
         for (const auto& flattened : flatten(child))
         {
-            map[flattened.first] = flattened.second;
+            vector.push_back(flattened);
         }
         if (child.getType() == DeviceSettingsIDs::Setting)
         {
-            map[CommandMessage::normaliseKey(child["key"])] = child;
+            vector.push_back(child);
         }
     }
-    return map;
+    return vector;
 }
 
 CommandMessage DeviceSettings::getWriteCommand(juce::ValueTree setting)
@@ -108,12 +109,24 @@ CommandMessage DeviceSettings::getWriteCommand(juce::ValueTree setting)
     return { setting[DeviceSettingsIDs::key], (setting[DeviceSettingsIDs::type] == "bool") ? juce::var((bool) value) : value };
 }
 
-void DeviceSettings::valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& identifier)
+juce::ValueTree DeviceSettings::getSetting(const juce::String& key) const
+{
+    for (auto setting : settings)
+    {
+        if (CommandMessage::normaliseKey(setting[DeviceSettingsIDs::key]) == CommandMessage::normaliseKey(key))
+        {
+            return setting;
+        }
+    }
+    return {};
+}
+
+void DeviceSettings::valueTreePropertyChanged(juce::ValueTree& tree_, const juce::Identifier& identifier)
 {
     rootItem.treeHasChanged();
 
     if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value))
     {
-        juce::NullCheckedInvocation::invoke(onSettingModified, getWriteCommand(tree));
+        juce::NullCheckedInvocation::invoke(onSettingModified, getWriteCommand(tree_));
     }
 }

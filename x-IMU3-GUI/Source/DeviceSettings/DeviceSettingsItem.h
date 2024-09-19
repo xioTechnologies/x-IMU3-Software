@@ -11,7 +11,7 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    DeviceSettingsItem(const juce::ValueTree& tree_, const std::map<juce::String, juce::ValueTree>& settings) : tree(tree_)
+    DeviceSettingsItem(const juce::ValueTree& tree_, const std::vector<juce::ValueTree>& settings) : tree(tree_)
     {
         setLinesDrawnForSubItems(false);
 
@@ -24,9 +24,9 @@ public:
         {
             for (const auto& setting : settings)
             {
-                if (setting.second[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
+                if (setting[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
                 {
-                    hideSetting = setting.second;
+                    hideSetting = setting;
                     break;
                 }
             }

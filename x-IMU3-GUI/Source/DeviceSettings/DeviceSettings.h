@@ -25,17 +25,19 @@ public:
     std::function<void(const CommandMessage&)> onSettingModified;
 
 private:
-    juce::ValueTree settingsTree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
-    std::map<juce::String, juce::ValueTree> settingsMap = flatten(settingsTree);
-    DeviceSettingsItem rootItem { settingsTree, settingsMap };
+    juce::ValueTree tree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
+    const std::vector<juce::ValueTree> settings = flatten(tree);
+    DeviceSettingsItem rootItem { tree, settings };
 
     bool ignoreCallback = false;
 
-    static std::map<juce::String, juce::ValueTree> flatten(const juce::ValueTree& parent);
+    static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 
     static CommandMessage getWriteCommand(juce::ValueTree setting);
 
-    void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier&) override;
+    juce::ValueTree getSetting(const juce::String& key) const;
+
+    void valueTreePropertyChanged(juce::ValueTree& tree_, const juce::Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettings)
 };
