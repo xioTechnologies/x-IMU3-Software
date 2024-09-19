@@ -76,15 +76,15 @@ static PyObject* device_from(const XIMU3_Device* const device)
 
 static PyObject* devices_to_list_and_free(const XIMU3_Devices devices)
 {
-    PyObject* const device_list = PyList_New(devices.length);
+    PyObject* const devices_list = PyList_New(devices.length);
 
     for (uint32_t index = 0; index < devices.length; index++)
     {
-        PyList_SetItem(device_list, index, device_from(&devices.array[index]));
+        PyList_SetItem(devices_list, index, device_from(&devices.array[index]));
     }
 
     XIMU3_devices_free(devices);
-    return device_list;
+    return devices_list;
 }
 
 static void devices_callback(XIMU3_Devices data, void* context)

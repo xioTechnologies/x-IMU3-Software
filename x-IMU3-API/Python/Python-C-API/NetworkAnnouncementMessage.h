@@ -116,15 +116,15 @@ static PyObject* network_announcement_message_from(const XIMU3_NetworkAnnounceme
 
 static PyObject* network_announcement_messages_to_list_and_free(const XIMU3_NetworkAnnouncementMessages messages)
 {
-    PyObject* const message_list = PyList_New(messages.length);
+    PyObject* const messages_list = PyList_New(messages.length);
 
     for (uint32_t index = 0; index < messages.length; index++)
     {
-        PyList_SetItem(message_list, index, network_announcement_message_from(&messages.array[index]));
+        PyList_SetItem(messages_list, index, network_announcement_message_from(&messages.array[index]));
     }
 
     XIMU3_network_announcement_messages_free(messages);
-    return message_list;
+    return messages_list;
 }
 
 static void network_announcement_message_callback(XIMU3_NetworkAnnouncementMessage data, void* context)
