@@ -38,7 +38,7 @@ namespace Ximu3Examples
             }
 
             // Send command to strobe LED
-            String[] commands = { "{\"strobe\":null}" };
+            string[] commands = { "{\"strobe\":null}" };
             connection.SendCommands(commands, 2, 500);
 
             // Close connection
@@ -46,27 +46,27 @@ namespace Ximu3Examples
             connection.Close();
         }
 
-        private static String TimestampFormat(UInt64 timestamp)
+        private static string TimestampFormat(UInt64 timestamp)
         {
-            return String.Format("{0,8}", timestamp) + " us";
+            return string.Format("{0,8}", timestamp) + " us";
         }
 
-        private static String IntFormat(uint value)
+        private static string IntFormat(uint value)
         {
-            return " " + String.Format("{0,8}", value);
+            return " " + string.Format("{0,8}", value);
         }
 
-        private static String IntFormat(ulong value)
+        private static string IntFormat(ulong value)
         {
-            return " " + String.Format("{0,8}", value);
+            return " " + string.Format("{0,8}", value);
         }
 
-        private static String FloatFormat(float value)
+        private static string FloatFormat(float value)
         {
-            return " " + String.Format("{0,8:###0.000}", value).Replace(",", ".");
+            return " " + string.Format("{0,8:###0.000}", value).Replace(",", ".");
         }
 
-        private static String StringFormat(String value)
+        private static string StringFormat(string value)
         {
             return " \"" + value + "\"";
         }

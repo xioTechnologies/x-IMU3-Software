@@ -25,7 +25,7 @@ namespace Ximu3Examples
             }
 
             // Define read/write setting commands
-            String[] commands = {
+            string[] commands = {
                 "{\"device_name\":null}", /* change null to a value to write setting */
                 "{\"serial_number\":null}",
                 "{\"firmware_version\":null}",
@@ -54,10 +54,10 @@ namespace Ximu3Examples
             PrintResponses(args.responses);
         }
 
-        private void PrintResponses(String[] responses)
+        private void PrintResponses(string[] responses)
         {
             Console.WriteLine(responses.Length + " commands confirmed");
-            foreach (String response in responses)
+            foreach (string response in responses)
             {
                 Console.WriteLine(response);
             }
