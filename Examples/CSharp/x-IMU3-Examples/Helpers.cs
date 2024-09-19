@@ -7,7 +7,7 @@ namespace Ximu3Examples
         public static Char GetKey()
         {
             Char key = Char.ToUpper(Console.ReadKey().KeyChar);
-            Console.WriteLine();
+            Console.ReadLine();
             return key;
         }
 
