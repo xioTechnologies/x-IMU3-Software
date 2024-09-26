@@ -3,11 +3,14 @@ use serialport::FlowControl;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use crate::connection_info::*;
+use crate::connection_status::*;
 use crate::connections::*;
 use crate::decoder::*;
+use crate::dispatcher::*;
 
 pub struct SerialConnection {
     connection_info: SerialConnectionInfo,
+    connection_status: Arc<Mutex<ConnectionStatus>>,
     decoder: Arc<Mutex<Decoder>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<String>>,
@@ -17,6 +20,7 @@ impl SerialConnection {
     pub fn new(connection_info: &SerialConnectionInfo) -> SerialConnection {
         SerialConnection {
             connection_info: connection_info.clone(),
+            connection_status: Arc::new(Mutex::new(ConnectionStatus::Disconnected)),
             decoder: Arc::new(Mutex::new(Decoder::new())),
             close_sender: None,
             write_sender: None,
@@ -32,6 +36,11 @@ impl GenericConnection for SerialConnection {
             .open()?;
 
         serial_port.write_data_terminal_ready(true).ok();
+
+        *self.connection_status.lock().unwrap() = ConnectionStatus::Connected;
+        self.decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::ConnectionStatus(ConnectionStatus::Connected)).ok();
+
+        let connection_status = self.connection_status.clone();
 
         let decoder = self.decoder.clone();
 
@@ -52,6 +61,9 @@ impl GenericConnection for SerialConnection {
                     serial_port.write(terminated_json.as_bytes()).ok();
                 }
             }
+
+            *connection_status.lock().unwrap() = ConnectionStatus::Disconnected;
+            decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::ConnectionStatus(ConnectionStatus::Disconnected)).ok();
         });
 
         Ok(())
@@ -65,6 +77,10 @@ impl GenericConnection for SerialConnection {
 
     fn get_info(&self) -> ConnectionInfo {
         ConnectionInfo::SerialConnectionInfo(self.connection_info.clone())
+    }
+
+    fn get_status(&self) -> ConnectionStatus {
+        *self.connection_status.lock().unwrap()
     }
 
     fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
