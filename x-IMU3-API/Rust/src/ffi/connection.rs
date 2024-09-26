@@ -1,6 +1,7 @@
 use std::os::raw::{c_char, c_void};
 use crate::connection::*;
 use crate::connection_info::*;
+use crate::connection_status::*;
 use crate::connection_type::*;
 use crate::data_messages::*;
 use crate::decode_error::*;
@@ -165,9 +166,22 @@ pub extern "C" fn XIMU3_connection_get_info_file(connection: *mut Connection) ->
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_get_status(connection: *mut Connection) -> ConnectionStatus {
+    let connection: &Connection = unsafe { &*connection };
+    connection.get_status()
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_get_statistics(connection: *mut Connection) -> Statistics {
     let connection: &Connection = unsafe { &*connection };
     connection.get_statistics()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_connection_status_callback(connection: *mut Connection, callback: Callback<ConnectionStatus>, context: *mut c_void) -> u64 {
+    let connection: &Connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_connection_status_closure(Box::new(move |connection_status: ConnectionStatus| callback(connection_status, void_ptr.0)))
 }
 
 #[no_mangle]

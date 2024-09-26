@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 use crate::command_message::*;
 use crate::connection_info::*;
+use crate::connection_status::*;
 use crate::connections::*;
 use crate::data_messages::*;
 use crate::decode_error::*;
@@ -190,8 +191,16 @@ impl Connection {
         self.internal.lock().unwrap().get_info()
     }
 
+    pub fn get_status(&self) -> ConnectionStatus {
+        self.internal.lock().unwrap().get_status()
+    }
+
     pub fn get_statistics(&self) -> Statistics {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().statistics
+    }
+
+    pub fn add_connection_status_closure(&self, closure: Box<dyn Fn(ConnectionStatus) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_connection_status_closure(closure)
     }
 
     pub fn add_decode_error_closure(&self, closure: Box<dyn Fn(DecodeError) + Send>) -> u64 {
