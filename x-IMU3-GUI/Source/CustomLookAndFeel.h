@@ -68,12 +68,6 @@ namespace UIFonts
         juce::Typeface::Ptr getRobotoMonoRegular();
     }
 
-#if JUCE_WINDOWS
-    static constexpr auto montserratAdjustment = 2.0f;
-#else
-    static constexpr auto montserratAdjustment = 0.0f;
-#endif
-
     juce::Font getDefaultFont();
 
     juce::Font getSmallFont();
