@@ -43,6 +43,8 @@ void NotificationCallback(const XIMU3_NotificationMessage message, void* context
 
 void ErrorCallback(const XIMU3_ErrorMessage message, void* context);
 
+void EndOfFileCallback(void* context);
+
 void Run(XIMU3_Connection* const connection, const char* const connectionInfoString)
 {
     // Add callbacks
@@ -66,6 +68,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
         XIMU3_connection_add_serial_accessory_callback(connection, SerialAccessoryCallback, NULL);
         XIMU3_connection_add_notification_callback(connection, NotificationCallback, NULL);
         XIMU3_connection_add_error_callback(connection, ErrorCallback, NULL);
+        XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallback, NULL);
     }
 
     // Open connection
@@ -274,4 +277,9 @@ void ErrorCallback(const XIMU3_ErrorMessage message, void* context)
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_error_message_to_string(message)); // alternative to above
+}
+
+void EndOfFileCallback(void* context)
+{
+    printf("End of file\n");
 }

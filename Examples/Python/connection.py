@@ -244,6 +244,10 @@ def error_callback(message):
     # print(message.to_string())  # alternative to above
 
 
+def end_of_file_callback(message):
+    print("End of file")
+    
+
 def run(connection_info):
     connection = ximu3.Connection(connection_info)
 
@@ -266,6 +270,7 @@ def run(connection_info):
         connection.add_serial_accessory_callback(serial_accessory_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
+        connection.add_end_of_file_callback(end_of_file_callback)
 
     if connection.open() != ximu3.RESULT_OK:
         raise Exception(f"Unable to open {connection_info.to_string()}")
