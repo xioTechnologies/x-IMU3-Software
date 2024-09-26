@@ -31,6 +31,12 @@ typedef enum XIMU3_ChargingStatus
     XIMU3_ChargingStatusChargingComplete,
 } XIMU3_ChargingStatus;
 
+typedef enum XIMU3_ConnectionStatus
+{
+    XIMU3_ConnectionStatusDisconnected,
+    XIMU3_ConnectionStatusConnected,
+} XIMU3_ConnectionStatus;
+
 typedef enum XIMU3_ConnectionType
 {
     XIMU3_ConnectionTypeUsb,
@@ -149,6 +155,8 @@ typedef struct XIMU3_Statistics
     uint64_t error_total;
     uint32_t error_rate;
 } XIMU3_Statistics;
+
+typedef void (*XIMU3_CallbackConnectionStatus)(enum XIMU3_ConnectionStatus data, void *context);
 
 typedef void (*XIMU3_CallbackDecodeError)(enum XIMU3_DecodeError data, void *context);
 
@@ -418,7 +426,11 @@ struct XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(struct 
 
 struct XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(struct XIMU3_Connection *connection);
 
+enum XIMU3_ConnectionStatus XIMU3_connection_get_status(struct XIMU3_Connection *connection);
+
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
+
+uint64_t XIMU3_connection_add_connection_status_callback(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
 
 uint64_t XIMU3_connection_add_decode_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackDecodeError callback, void *context);
 
@@ -469,6 +481,8 @@ const char *XIMU3_udp_connection_info_to_string(struct XIMU3_UdpConnectionInfo c
 const char *XIMU3_bluetooth_connection_info_to_string(struct XIMU3_BluetoothConnectionInfo connection_info);
 
 const char *XIMU3_file_connection_info_to_string(struct XIMU3_FileConnectionInfo connection_info);
+
+const char *XIMU3_connection_status_to_string(enum XIMU3_ConnectionStatus connection_status);
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 
