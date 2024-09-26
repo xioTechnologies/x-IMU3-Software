@@ -4,11 +4,14 @@ use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use crate::connection_info::*;
+use crate::connection_status::*;
 use crate::connections::*;
 use crate::decoder::*;
+use crate::dispatcher::*;
 
 pub struct TcpConnection {
     connection_info: TcpConnectionInfo,
+    connection_status: Arc<Mutex<ConnectionStatus>>,
     decoder: Arc<Mutex<Decoder>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<String>>,
@@ -18,6 +21,7 @@ impl TcpConnection {
     pub fn new(connection_info: &TcpConnectionInfo) -> TcpConnection {
         TcpConnection {
             connection_info: connection_info.clone(),
+            connection_status: Arc::new(Mutex::new(ConnectionStatus::Disconnected)),
             decoder: Arc::new(Mutex::new(Decoder::new())),
             close_sender: None,
             write_sender: None,
@@ -30,6 +34,11 @@ impl GenericConnection for TcpConnection {
         let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port), Duration::new(3, 0))?;
 
         stream.set_read_timeout(Some(std::time::Duration::from_millis(1))).ok();
+
+        *self.connection_status.lock().unwrap() = ConnectionStatus::Connected;
+        self.decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::ConnectionStatus(ConnectionStatus::Connected)).ok();
+
+        let connection_status = self.connection_status.clone();
 
         let decoder = self.decoder.clone();
 
@@ -50,6 +59,9 @@ impl GenericConnection for TcpConnection {
                     stream.write(terminated_json.as_bytes()).ok();
                 }
             }
+
+            *connection_status.lock().unwrap() = ConnectionStatus::Disconnected;
+            decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::ConnectionStatus(ConnectionStatus::Disconnected)).ok();
         });
 
         Ok(())
@@ -63,6 +75,10 @@ impl GenericConnection for TcpConnection {
 
     fn get_info(&self) -> ConnectionInfo {
         ConnectionInfo::TcpConnectionInfo(self.connection_info.clone())
+    }
+
+    fn get_status(&self) -> ConnectionStatus {
+        *self.connection_status.lock().unwrap()
     }
 
     fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
