@@ -17,11 +17,11 @@ for device in devices:
         raise Exception("Unable to open connection")
 
 # Log data
-directory = "C:/"
+destination = "C:/"
 name = "Data Logger Example"
 
 if helpers.ask_question("Use async implementation?"):
-    data_logger = ximu3.DataLogger(directory, name, connections)
+    data_logger = ximu3.DataLogger(destination, name, connections)
 
     result = data_logger.get_result()
 
@@ -32,7 +32,7 @@ if helpers.ask_question("Use async implementation?"):
 
     del data_logger
 else:
-    print(ximu3.result_to_string(ximu3.DataLogger.log(directory, name, connections, 3)))
+    print(ximu3.result_to_string(ximu3.DataLogger.log(destination, name, connections, 3)))
 
 # Close all connections
 for connection in connections:

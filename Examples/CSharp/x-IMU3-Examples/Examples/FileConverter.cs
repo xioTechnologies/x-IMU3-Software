@@ -7,16 +7,17 @@ namespace Ximu3Examples
         public FileConverter()
         {
             string destination = "C:/";
-            string source = "C:/file.ximu3";
+            string name = "File Conversion Example";
+            string[] file_paths = { "C:/file.ximu3" };
 
             if (Helpers.AskQuestion("Use async implementation?"))
             {
-                using Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, source, FileConverterEvent);
+                using Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, name, file_paths, FileConverterEvent);
                 System.Threading.Thread.Sleep(60000);
             }
             else
             {
-                PrintProgress(Ximu3.FileConverter.Convert(destination, source));
+                PrintProgress(Ximu3.FileConverter.Convert(destination, name, file_paths));
             }
         }
 
@@ -30,7 +31,7 @@ namespace Ximu3Examples
             Console.WriteLine(progress.Status + ", " +
                   progress.Percentage.ToString("0.0") + "%, " +
                   progress.BytesProcessed + " of " +
-                  progress.FileSize + " bytes");
+                  progress.BytesTotal + " bytes");
             // Console.WriteLine(progress); // alternative to above
         }
     }

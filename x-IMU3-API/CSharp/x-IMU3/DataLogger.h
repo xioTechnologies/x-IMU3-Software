@@ -14,10 +14,10 @@ namespace Ximu3
     public ref class DataLogger
     {
     public:
-        DataLogger(String^ directory, String^ name, array<Connection^>^ connections)
+        DataLogger(String^ destination, String^ name, array<Connection^>^ connections)
         {
             const auto connectionsC = toConnectionsC(connections);
-            dataLogger = ximu3::XIMU3_data_logger_new(Helpers::ToCharPtr(directory), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size());
+            dataLogger = ximu3::XIMU3_data_logger_new(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size());
         }
 
         ~DataLogger() {
@@ -29,10 +29,10 @@ namespace Ximu3
             return (Result)ximu3::XIMU3_data_logger_get_result(dataLogger);
         }
 
-        static Result Log(String^ directory, String^ name, array<Connection^>^ connections, int seconds)
+        static Result Log(String^ destination, String^ name, array<Connection^>^ connections, int seconds)
         {
             const auto connectionsC = toConnectionsC(connections);
-            return (Result)ximu3::XIMU3_data_logger_log(Helpers::ToCharPtr(directory), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size(), seconds);
+            return (Result)ximu3::XIMU3_data_logger_log(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(name), connectionsC.data(), (uint32_t)connectionsC.size(), seconds);
         }
 
     private:

@@ -4,8 +4,7 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/AvailableConnectionsDialog.h"
-#include "Dialogs/ConvertFilesDialog.h"
-#include "Dialogs/ConvertingFileDialog.h"
+#include "Dialogs/ConvertingFilesDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/MessageDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
@@ -86,7 +85,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
         });
     };
 
-    juce::File(dataLoggerSettings.directory).createDirectory();
+    juce::File(dataLoggerSettings.destination).createDirectory();
 
     dataLoggerStartStopButton.onClick = [&]
     {
@@ -95,7 +94,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
             dataLogger.reset();
             stopTimer();
             dataLoggerStartStopButton.setToggleState(false, juce::dontSendNotification);
-            juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName).startAsProcess();
+            dataLoggerSettings.destination.getChildFile(dataLoggerName).startAsProcess();
             return;
         }
 
@@ -115,7 +114,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
                         connections.push_back(connectionPanel->getConnection().get());
                     }
 
-                    dataLogger = std::make_unique<ximu3::DataLogger>(dataLoggerSettings.directory.toStdString(),
+                    dataLogger = std::make_unique<ximu3::DataLogger>(juce::File::addTrailingSeparator(dataLoggerSettings.destination.getFullPathName()).toStdString(),
                                                                      dataLoggerName.toStdString(),
                                                                      connections);
 
@@ -130,7 +129,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
                     dataLoggerStartStopButton.setToggleState(true, juce::dontSendNotification);
                 };
 
-                const auto directory = juce::File(dataLoggerSettings.directory).getChildFile(dataLoggerName);
+                const auto directory = juce::File(dataLoggerSettings.destination).getChildFile(dataLoggerName);
                 if (directory.exists())
                 {
                     DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerName), [directory, startDataLogger]
@@ -559,13 +558,27 @@ juce::PopupMenu MenuStrip::getToolsMenu()
             return true;
         });
     });
-    menu.addItem("Convert .ximu3 Files", []
+    menu.addItem("Convert .ximu3 Files", [&]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(), []
+        DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&]
         {
             if (const auto* const convertFileDialog = dynamic_cast<ConvertFilesDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                ConvertingFileDialog::show(convertFileDialog->getFiles(), convertFileDialog->getDestination());
+                convertFilesSettings = convertFileDialog->getSettings();
+
+                if (const auto directory = convertFilesSettings.destination.getChildFile(convertFilesSettings.name); directory.exists())
+                {
+                    DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(convertFilesSettings.name), [&, directory]
+                    {
+                        directory.deleteRecursively();
+                        DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFilesDialog>(convertFilesSettings.files, convertFilesSettings.destination, convertFilesSettings.name));
+                        return true;
+                    });
+                }
+                else
+                {
+                    DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFilesDialog>(convertFilesSettings.files, convertFilesSettings.destination, convertFilesSettings.name));
+                }
             }
             return true;
         });

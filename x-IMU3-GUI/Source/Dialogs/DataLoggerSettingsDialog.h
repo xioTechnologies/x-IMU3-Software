@@ -5,10 +5,8 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
-#include "Widgets/CustomToggleButton.h"
 #include "Widgets/FileSelector.h"
 #include "Widgets/Icon.h"
-#include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
 class DataLoggerSettingsDialog : public Dialog
@@ -16,7 +14,7 @@ class DataLoggerSettingsDialog : public Dialog
 public:
     struct Settings
     {
-        juce::String directory = ApplicationSettings::getDirectory().getChildFile("Data Logger").getFullPathName();
+        juce::File destination = ApplicationSettings::getDirectory().getChildFile("Data Logger");
         juce::String name;
         bool nameEmpty = true;
         float timeValue = 10.0f;
@@ -53,8 +51,8 @@ public:
     Settings getSettings() const;
 
 private:
-    SimpleLabel directoryLabel { "Directory:" };
-    FileSelector directorySelector { "Select Directory", {} };
+    SimpleLabel destinationLabel { "Destination:" };
+    FileSelector destinationSelector { "Select Destination", {} };
     SimpleLabel nameLabel { "Name:" };
     CustomTextEditor nameValue;
     SimpleLabel timeLabel { "Time:" };

@@ -28,11 +28,11 @@ public:
         }
 
         // Log data
-        const auto directory = "C:/";
+        const auto destination = "C:/";
         const auto name = "Data Logger Example";
         if (helpers::askQuestion("Use async implementation?"))
         {
-            ximu3::DataLogger dataLogger(directory, name, toRawPointers(connections));
+            ximu3::DataLogger dataLogger(destination, name, toRawPointers(connections));
 
             const auto result = dataLogger.getResult();
 
@@ -45,7 +45,7 @@ public:
         }
         else
         {
-            printResult(ximu3::DataLogger::log(directory, name, toRawPointers(connections), 3));
+            printResult(ximu3::DataLogger::log(destination, name, toRawPointers(connections), 3));
         }
 
         // Close all connections

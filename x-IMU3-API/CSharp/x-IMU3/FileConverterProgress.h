@@ -44,11 +44,11 @@ namespace Ximu3
             }
         }
 
-        property int64_t FileSize
+        property int64_t BytesTotal
         {
             int64_t get()
             {
-                return progress->file_size;
+                return progress->bytes_total;
             }
         }
 

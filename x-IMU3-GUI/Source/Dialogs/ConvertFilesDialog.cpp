@@ -1,28 +1,36 @@
 #include "ConvertFilesDialog.h"
 
-ConvertFilesDialog::ConvertFilesDialog() : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert")
+ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert")
 {
     addAndMakeVisible(filesLabel);
     addAndMakeVisible(filesSelector);
     addAndMakeVisible(destinationLabel);
     addAndMakeVisible(destinationSelector);
+    addAndMakeVisible(nameLabel);
+    addAndMakeVisible(nameValue);
 
-    destinationSelector.onChange = [&]
+    filesSelector.setFiles(settings.files);
+    if (settings.destinationEmpty == false)
     {
-        setOkButton(filesSelector.isValid() && destinationSelector.isValid());
-    };
-    filesSelector.onChange = [&]
+        destinationSelector.setFiles({settings.destination});
+    }
+    if (settings.nameEmpty == false)
     {
-        setOkButton(filesSelector.isValid() && destinationSelector.isValid());
+        nameValue.setText(settings.name);
+    }
 
-        if (filesSelector.isValid() && destinationSelector.getFiles().isEmpty())
-        {
-            destinationSelector.setFiles({filesSelector.getFiles()[0].getParentDirectory().getFullPathName()});
-        }
+    filesSelector.onChange = destinationSelector.onChange = nameValue.onTextChange = [&]
+    {
+        const auto files = filesSelector.getFiles();
+        destinationSelector.setFilesWhenEmpty({files[0].getParentDirectory()});
+        nameValue.setDefaultText((files.size() == 1) ? files[0].getFileNameWithoutExtension() : "");
+
+        setOkButton(filesSelector.isValid() && destinationSelector.isValid() && nameValue.getTextOrDefault().isNotEmpty());
     };
-    setOkButton(false);
 
-    setSize(600, calculateHeight(2));
+    filesSelector.onChange();
+
+    setSize(600, calculateHeight(3));
 }
 
 void ConvertFilesDialog::resized()
@@ -39,14 +47,21 @@ void ConvertFilesDialog::resized()
     auto destinationRow = bounds.removeFromTop(UILayout::textComponentHeight);
     destinationLabel.setBounds(destinationRow.removeFromLeft(columnWidth));
     destinationSelector.setBounds(destinationRow);
+
+    bounds.removeFromTop(Dialog::margin);
+
+    auto nameRow = bounds.removeFromTop(UILayout::textComponentHeight);
+    nameLabel.setBounds(nameRow.removeFromLeft(columnWidth));
+    nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth));
 }
 
-juce::Array<juce::File> ConvertFilesDialog::getFiles() const
+ConvertFilesDialog::Settings ConvertFilesDialog::getSettings() const
 {
-    return filesSelector.getFiles();
-}
-
-juce::File ConvertFilesDialog::getDestination() const
-{
-    return destinationSelector.getFiles()[0];
+    Settings settings;
+    settings.files = filesSelector.getFiles();
+    settings.destination = destinationSelector.getFiles()[0];
+    settings.destinationEmpty = destinationSelector.isEmpty();
+    settings.name = nameValue.getTextOrDefault();
+    settings.nameEmpty = nameValue.isEmpty();
+    return settings;
 }

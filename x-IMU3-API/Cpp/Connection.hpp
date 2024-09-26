@@ -92,7 +92,7 @@ namespace ximu3
 
         std::vector<std::string> sendCommands(const std::vector<std::string>& commands, const uint32_t retries, const uint32_t timeout)
         {
-            const auto charPtrVector = toCharPtrVector(commands);
+            const auto charPtrVector = Helpers::toCharPtrVector(commands);
             return Helpers::toVectorAndFree(XIMU3_connection_send_commands(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout));
         }
 
@@ -110,7 +110,7 @@ namespace ximu3
             };
             auto* const wrappedCallback = new WrappedCallback({ callback });
 
-            const auto charPtrVector = toCharPtrVector(commands);
+            const auto charPtrVector = Helpers::toCharPtrVector(commands);
             XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout, Helpers::wrapCallable<XIMU3_CharArrays>(*wrappedCallback), wrappedCallback);
         }
 
@@ -236,15 +236,5 @@ namespace ximu3
         friend class DataLogger;
 
         XIMU3_Connection* connection;
-
-        static std::vector<const char*> toCharPtrVector(const std::vector<std::string>& stringVector)
-        {
-            std::vector<const char*> charPtrVector(stringVector.size());
-            for (size_t index = 0; index < charPtrVector.size(); index++)
-            {
-                charPtrVector[index] = stringVector[index].c_str();
-            }
-            return charPtrVector;
-        }
     };
 } // namespace ximu3

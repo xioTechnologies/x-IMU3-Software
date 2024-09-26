@@ -5,18 +5,16 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class ConvertingFileDialog : public Dialog, private juce::Timer
+class ConvertingFilesDialog : public Dialog, private juce::Timer
 {
 public:
-    static void show(const juce::Array<juce::File>& files_, const juce::File& destination_);
-
-    ConvertingFileDialog(const juce::Array<juce::File>& files_, const juce::File& destination_);
+    ConvertingFilesDialog(const juce::Array<juce::File>& files, const juce::File& destination_, const juce::String& name_);
 
     void resized() override;
 
 private:
-    juce::Array<juce::File> files;
     const juce::File destination;
+    const juce::String name;
 
     double progressBarValue = 0.0;
     juce::ProgressBar progressBar { progressBarValue };
@@ -27,5 +25,5 @@ private:
 
     void timerCallback() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConvertingFileDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConvertingFilesDialog)
 };

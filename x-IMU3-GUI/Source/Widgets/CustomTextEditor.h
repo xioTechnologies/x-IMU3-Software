@@ -19,6 +19,17 @@ public:
         setHighlightedRegion({});
     }
 
+    void setDefaultText(const juce::String& defaultText)
+    {
+        setTextToShowWhenEmpty(defaultText, juce::Colours::grey);
+        repaint();
+    }
+
+    juce::String getTextOrDefault() const
+    {
+        return getText().isEmpty() ? getTextToShowWhenEmpty() : getText();
+    }
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CustomTextEditor)
 };

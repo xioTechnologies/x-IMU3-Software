@@ -9,7 +9,6 @@
 #include "PingResponse.h"
 #include "Result.h"
 #include "Statistics.h"
-#include <vector>
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -91,13 +90,13 @@ namespace Ximu3
 
         array<String^>^ SendCommands(array<String^>^ commands, int retries, int timeout)
         {
-            const auto charPtrVector = ToCharPtrVector(commands);
+            const auto charPtrVector = Helpers::ToCharPtrVector(commands);
             return Helpers::ToArrayAndFree(ximu3::XIMU3_connection_send_commands(connection, charPtrVector.data(), (uint32_t)charPtrVector.size(), retries, timeout));
         }
 
         void SendCommandsAsync(array<String^>^ commands, int retries, int timeout, EventHandler<SendCommandsEventArgs^>^ sendCommandsEvent)
         {
-            const auto charPtrVector = ToCharPtrVector(commands);
+            const auto charPtrVector = Helpers::ToCharPtrVector(commands);
             const auto callback = static_cast<ximu3::XIMU3_CallbackCharArrays>(Marshal::GetFunctionPointerForDelegate(sendCommandsDelegate).ToPointer());
             const auto context = GCHandle::ToIntPtr(GCHandle::Alloc(gcnew WrappedSendCommandsEvent(this, sendCommandsEvent))).ToPointer();
             ximu3::XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t)charPtrVector.size(), retries, timeout, callback, context);
@@ -154,15 +153,6 @@ namespace Ximu3
                 return ximu3::XIMU3_connection_new_file(*castConnectionInfo->connectionInfo);
             }
             return nullptr;
-        }
-
-        static std::vector<const char*> ToCharPtrVector(array<String^>^ stringArray) {
-            std::vector<const char*> charPtrVector(stringArray->Length);
-            for (size_t index = 0; index < charPtrVector.size(); index++)
-            {
-                charPtrVector[index] = Helpers::ToCharPtr(stringArray[(int)index]);
-            }
-            return charPtrVector;
         }
 
         ref class WrappedOpenEvent

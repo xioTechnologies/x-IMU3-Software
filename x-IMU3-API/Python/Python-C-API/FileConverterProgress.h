@@ -30,9 +30,9 @@ static PyObject* file_converter_progress_get_bytes_processed(FileConverterProgre
     return Py_BuildValue("K", self->progress.bytes_processed);
 }
 
-static PyObject* file_converter_progress_get_file_size(FileConverterProgress* self)
+static PyObject* file_converter_progress_get_bytes_total(FileConverterProgress* self)
 {
-    return Py_BuildValue("K", self->progress.file_size);
+    return Py_BuildValue("K", self->progress.bytes_total);
 }
 
 static PyObject* file_converter_progress_to_string(FileConverterProgress* self, PyObject* args)
@@ -44,7 +44,7 @@ static PyGetSetDef file_converter_progress_get_set[] = {
         { "status",          (getter) file_converter_progress_get_status,          NULL, "", NULL },
         { "percentage",      (getter) file_converter_progress_get_percentage,      NULL, "", NULL },
         { "bytes_processed", (getter) file_converter_progress_get_bytes_processed, NULL, "", NULL },
-        { "file_size",       (getter) file_converter_progress_get_file_size,       NULL, "", NULL },
+        { "bytes_total",     (getter) file_converter_progress_get_bytes_total,     NULL, "", NULL },
         { NULL }  /* sentinel */
 };
 

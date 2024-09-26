@@ -22,11 +22,11 @@ pub fn run() {
     }
 
     // Log data
-    let directory = "C:/";
+    let destination = "C:/";
     let name = "Data Logger Example";
 
     if helpers::ask_question("Use async implementation?") {
-        let data_logger = DataLogger::new(directory, name, connections.iter().collect());
+        let data_logger = DataLogger::new(destination, name, connections.iter().collect());
 
         if data_logger.is_ok() {
             std::thread::sleep(std::time::Duration::from_secs(3));
@@ -36,7 +36,7 @@ pub fn run() {
 
         drop(data_logger);
     } else {
-        print_result(&DataLogger::log(directory, name, connections.iter().collect(), 3));
+        print_result(&DataLogger::log(destination, name, connections.iter().collect(), 3));
     }
 
     // Close all connections

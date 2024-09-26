@@ -37,12 +37,12 @@ void DataLogger()
     XIMU3_devices_free(devices);
 
     // Log data
-    const char* directory = "C:/";
+    const char* destination = "C:/";
     const char* name = "Data Logger Example";
 
     if (AskQuestion("Use async implementation?"))
     {
-        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(directory, name, connections, numberOfConnections);
+        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(destination, name, connections, numberOfConnections);
 
         const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
 
@@ -57,7 +57,7 @@ void DataLogger()
     }
     else
     {
-        PrintResult(XIMU3_data_logger_log(directory, name, connections, numberOfConnections, 3));
+        PrintResult(XIMU3_data_logger_log(destination, name, connections, numberOfConnections, 3));
     }
 
     // Close all connections
