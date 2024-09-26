@@ -15,7 +15,7 @@ public:
                                                               : juce::TextButton::textColourOffId)
                           .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
-        g.drawText(button.getButtonText(), button.getLocalBounds().withSizeKeepingCentre(font.getStringWidth("00:00:00.000"), (int) std::ceil(font.getHeight())), juce::Justification::centredLeft);
+        g.drawText(button.getButtonText(), button.getLocalBounds().withSizeKeepingCentre(juce::GlyphArrangement::getStringWidthInt (font, "00:00:00.000"), (int) std::ceil(font.getHeight())), juce::Justification::centredLeft);
     }
 
 private:

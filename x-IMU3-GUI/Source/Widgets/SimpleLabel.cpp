@@ -25,7 +25,7 @@ const juce::String& SimpleLabel::getText() const
 
 float SimpleLabel::getTextWidth() const
 {
-    return font.getStringWidthFloat(text);
+    return juce::GlyphArrangement::getStringWidth (font, text);
 }
 
 void SimpleLabel::paint(juce::Graphics& g)

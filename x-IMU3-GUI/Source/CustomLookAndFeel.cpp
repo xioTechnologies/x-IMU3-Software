@@ -16,17 +16,17 @@ juce::Typeface::Ptr UIFonts::Typefaces::getRobotoMonoRegular()
 
 juce::Font UIFonts::getDefaultFont()
 {
-    return juce::Font(Typefaces::getMontserratMedium()).withHeight(15.0f + montserratAdjustment);
+    return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(15.0f);
 }
 
 juce::Font UIFonts::getSmallFont()
 {
-    return juce::Font(Typefaces::getMontserratMedium()).withHeight(13.0f + montserratAdjustment);
+    return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(13.0f);
 }
 
 juce::Font UIFonts::getTerminalFeedFont()
 {
-    return juce::Font(Typefaces::getRobotoMonoRegular()).withHeight(15.0f);
+    return juce::FontOptions(Typefaces::getRobotoMonoRegular()).withHeight(15.0f);
 }
 
 CustomLookAndFeel::CustomLookAndFeel()
@@ -334,7 +334,7 @@ void CustomLookAndFeel::getIdealPopupMenuItemSize(const juce::String& text, cons
         }
 
         idealHeight = standardMenuItemHeight > 0 ? standardMenuItemHeight : (juce::roundToInt(font.getHeight() * 1.3f) + 2);
-        idealWidth = font.getStringWidth(text) + idealHeight * 2;
+        idealWidth = juce::GlyphArrangement::getStringWidthInt (font, text) + idealHeight * 2;
     }
 }
 
@@ -437,7 +437,7 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     auto textW = text.isEmpty() ? 0
                                 : juce::jlimit(0.0f,
                                                juce::jmax(0.0f, w - cs2 - textEdgeGap * 2),
-                                               (float) font.getStringWidth(text) + textEdgeGap * 2.0f);
+                                               juce::GlyphArrangement::getStringWidth (font, text) + textEdgeGap * 2.0f);
     auto textX = cs + textEdgeGap;
 
     if (position.testFlags(juce::Justification::horizontallyCentred))

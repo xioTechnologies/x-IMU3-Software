@@ -100,8 +100,8 @@ void ConnectionPanelFooter::resized()
     const auto iconWidth = bounds.getHeight();
     static constexpr int iconMargin = 2;
 
-    const auto numberOfNotificationsMaxWidth = 5 + numberOfNotificationsLabel.getText().length() * UIFonts::getSmallFont().getStringWidth("0");
-    const auto numberOfErrorsMaxWidth = 5 + numberOfErrorsLabel.getText().length() * UIFonts::getSmallFont().getStringWidth("0");
+    const auto numberOfNotificationsMaxWidth = 5 + numberOfNotificationsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt (UIFonts::getSmallFont(), "0");
+    const auto numberOfErrorsMaxWidth = 5 + numberOfErrorsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt (UIFonts::getSmallFont(), "0");
 
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;

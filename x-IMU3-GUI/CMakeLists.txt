@@ -4,7 +4,7 @@ Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
         JUCE
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 7.0.12
+        GIT_TAG 8.0.2
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
 )
@@ -60,7 +60,6 @@ target_compile_definitions(x-IMU3-GUI
         JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_PRODUCT_NAME>"
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_VERSION>"
         JUCE_OPENGL3=1
-        JUCE_DISPLAY_SPLASH_SCREEN=0
         GLM_FORCE_SILENT_WARNINGS
         GLM_FORCE_SIZE_T_LENGTH) # Resolves signed conversion warning on Ubuntu
 

@@ -26,7 +26,3 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
 - [x-IMU3 GUI for macOS (Intel)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Intel.dmg)
 - [x-IMU3 GUI for macOS (Apple Silicon)](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI-Apple-Silicon.dmg)
 - [x-IMU3 GUI for Ubuntu ](https://github.com/xioTechnologies/x-IMU3-Software/releases/latest/download/x-IMU3-GUI)
-
-## Licence
-
-The x-IMU3 Software is covered by the [MIT Licence](https://opensource.org/licenses/MIT) except for the x-IMU3 GUI which uses [JUCE](https://juce.com/) and so is covered by the [GNU GPLv3 License](https://www.gnu.org/licenses/gpl-3.0) as per the [JUCE 7 EULA](https://juce.com/legal/juce-7-license/).

@@ -55,7 +55,7 @@ void GraphWindow::paint(juce::Graphics& g)
     {
         const auto legendString = legendStrings[(size_t) index];
         g.setColour(settings.enabledChannels[(size_t) index] ? legendColours[(size_t) index] : juce::Colours::grey);
-        g.drawText(legendString, legendBounds.removeFromRight(font.getStringWidth(legendString) + margin), juce::Justification::centredRight);
+        g.drawText(legendString, legendBounds.removeFromRight(juce::GlyphArrangement::getStringWidthInt (font, legendString) + margin), juce::Justification::centredRight);
     }
 }
 
