@@ -1,5 +1,6 @@
 use ximu3::connection::*;
 use ximu3::connection_info::*;
+use ximu3::connection_status::*;
 use ximu3::data_messages::*;
 use ximu3::decode_error::*;
 use ximu3::statistics::*;
@@ -10,6 +11,7 @@ pub fn run(connection_info: ConnectionInfo) {
     // Create connection
     let connection = Connection::new(&connection_info);
 
+    connection.add_connection_status_closure(Box::new(connection_status_closure));
     connection.add_decode_error_closure(Box::new(decode_error_closure));
     connection.add_statistics_closure(Box::new(statistics_closure));
 
@@ -53,6 +55,10 @@ macro_rules! int_format {() => { " {:>8}" }}
 macro_rules! float_format {() => { " {:>8.3}" }}
 
 macro_rules! string_format {() => { " \"{}\"" }}
+
+pub fn connection_status_closure(connection_status: ConnectionStatus) {
+    println!("{}", connection_status);
+}
 
 pub fn decode_error_closure(decode_error: DecodeError) {
     println!("{}", decode_error);
