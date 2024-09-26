@@ -1,6 +1,7 @@
 use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 use crate::connection_info::*;
+use crate::connection_status::*;
 use crate::connections::*;
 use crate::decoder::*;
 
@@ -32,6 +33,10 @@ impl GenericConnection for BluetoothConnection {
 
     fn get_info(&self) -> ConnectionInfo {
         ConnectionInfo::BluetoothConnectionInfo(self.connection_info.clone())
+    }
+
+    fn get_status(&self) -> ConnectionStatus {
+        self.serial_connection.get_status()
     }
 
     fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
