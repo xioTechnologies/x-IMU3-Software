@@ -27,11 +27,11 @@ namespace Ximu3Examples
             }
 
             // Log data
-            string directory = "C:/";
+            string destination = "C:/";
             string name = "Data Logger Example";
             if (Helpers.AskQuestion("Use async implementation?"))
             {
-                using Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(directory, name, connections.ToArray());
+                using Ximu3.DataLogger dataLogger = new Ximu3.DataLogger(destination, name, connections.ToArray());
 
                 Ximu3.Result result = dataLogger.GetResult();
 
@@ -44,7 +44,7 @@ namespace Ximu3Examples
             }
             else
             {
-                PrintResult(Ximu3.DataLogger.Log(directory, name, connections.ToArray(), 3));
+                PrintResult(Ximu3.DataLogger.Log(destination, name, connections.ToArray(), 3));
             }
 
             // Close all connections

@@ -13,18 +13,20 @@ namespace Ximu3
     public ref class FileConverter
     {
     public:
-        FileConverter(String^ destination, String^ source, EventHandler<FileConverterEventArgs^>^ fileConverterProgressEvent) : fileConverterProgressEvent{ fileConverterProgressEvent }
+        FileConverter(String^ destination, String^ name, array<String^>^ files, EventHandler<FileConverterEventArgs^>^ fileConverterProgressEvent) : fileConverterProgressEvent{ fileConverterProgressEvent }
         {
-            fileConverter = ximu3::XIMU3_file_converter_new(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(source), static_cast<ximu3::XIMU3_CallbackFileConverterProgress>(Marshal::GetFunctionPointerForDelegate(fileConverterProgressDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
+            const auto charPtrVector = Helpers::ToCharPtrVector(files);
+            fileConverter = ximu3::XIMU3_file_converter_new(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(name), charPtrVector.data(), (uint32_t)charPtrVector.size(), static_cast<ximu3::XIMU3_CallbackFileConverterProgress>(Marshal::GetFunctionPointerForDelegate(fileConverterProgressDelegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());
         }
 
         ~FileConverter() {
             ximu3::XIMU3_file_converter_free(fileConverter);
         }
 
-        static FileConverterProgress^ Convert(String^ destination, String^ source)
+        static FileConverterProgress^ Convert(String^ destination, String^ name, array<String^>^ files)
         {
-            return gcnew FileConverterProgress(ximu3::XIMU3_file_converter_convert(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(source)));
+            const auto charPtrVector = Helpers::ToCharPtrVector(files);
+            return gcnew FileConverterProgress(ximu3::XIMU3_file_converter_convert(Helpers::ToCharPtr(destination), Helpers::ToCharPtr(name), charPtrVector.data(), (uint32_t)charPtrVector.size()));
         }
 
     private:

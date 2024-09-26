@@ -15,13 +15,36 @@ typedef struct
 static PyObject* file_converter_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
     const char* destination;
-    const char* source;
+    const char* name;
+    PyObject* files_list;
     PyObject* callable;
 
-    if (PyArg_ParseTuple(args, "ssO:set_callback", &destination, &source, &callable) == 0)
+    if (PyArg_ParseTuple(args, "ssO!O:set_callback", &destination, &name, &PyList_Type, &files_list, &callable) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
+    }
+
+    const char* files_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
+    const uint32_t length = (uint32_t) PyList_Size(files_list);
+
+    for (uint32_t index = 0; index < length; index++)
+    {
+        if (index >= CHAR_PTR_ARRAY_LENGTH)
+        {
+            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+            return NULL;
+        }
+
+        PyObject* file = PyList_GetItem(files_list, index);
+
+        if (PyUnicode_Check(file) == 0)
+        {
+            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+            return NULL;
+        }
+
+        files_char_ptr_array[index] = (char*) PyUnicode_AsUTF8(file);
     }
 
     if (PyCallable_Check(callable) == 0)
@@ -33,7 +56,7 @@ static PyObject* file_converter_new(PyTypeObject* subtype, PyObject* args, PyObj
     Py_INCREF(callable); // this will never be destroyed (memory leak)
 
     FileConverter* const self = (FileConverter*) subtype->tp_alloc(subtype, 0);
-    self->file_converter = XIMU3_file_converter_new(destination, source, file_converter_progress_callback, callable);
+    self->file_converter = XIMU3_file_converter_new(destination, name, files_char_ptr_array, length, file_converter_progress_callback, callable);
     return (PyObject*) self;
 }
 
@@ -48,15 +71,38 @@ static void file_converter_free(FileConverter* self)
 static PyObject* file_converter_convert(PyObject* null, PyObject* args)
 {
     const char* destination;
-    const char* source;
+    const char* name;
+    PyObject* files_list;
 
-    if (PyArg_ParseTuple(args, "ss", &destination, &source) == 0)
+    if (PyArg_ParseTuple(args, "ssO!", &destination, &name, &PyList_Type, &files_list) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, source);
+    const char* files_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
+    const uint32_t length = (uint32_t) PyList_Size(files_list);
+
+    for (uint32_t index = 0; index < length; index++)
+    {
+        if (index >= CHAR_PTR_ARRAY_LENGTH)
+        {
+            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+            return NULL;
+        }
+
+        PyObject* file = PyList_GetItem(files_list, index);
+
+        if (PyUnicode_Check(file) == 0)
+        {
+            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+            return NULL;
+        }
+
+        files_char_ptr_array[index] = (char*) PyUnicode_AsUTF8(file);
+    }
+
+    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, name, files_char_ptr_array, length);
     return file_converter_progress_from(&progress);
 }
 

@@ -14,9 +14,9 @@ pub extern "C" fn XIMU3_file_converter_progress_to_string(progress: FileConverte
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_file_converter_new(destination: *const c_char, source: *const c_char, callback: Callback<FileConverterProgress>, context: *mut c_void) -> *mut FileConverter {
+pub extern "C" fn XIMU3_file_converter_new(destination: *const c_char, name: *const c_char, files: *const *const c_char, length: u32, callback: Callback<FileConverterProgress>, context: *mut c_void) -> *mut FileConverter {
     let void_ptr = VoidPtr(context);
-    Box::into_raw(Box::new(FileConverter::new(char_ptr_to_str(destination), char_ptr_to_str(source), Box::new(move |progress| callback(progress, void_ptr.0)))))
+    Box::into_raw(Box::new(FileConverter::new(char_ptr_to_str(destination), char_ptr_to_str(name), char_ptr_array_to_vec_str(files, length), Box::new(move |progress| callback(progress, void_ptr.0)))))
 }
 
 #[no_mangle]
@@ -25,6 +25,6 @@ pub extern "C" fn XIMU3_file_converter_free(file_converter: *mut FileConverter) 
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_file_converter_convert(destination: *const c_char, source: *const c_char) -> FileConverterProgress {
-    FileConverter::convert(char_ptr_to_str(destination), char_ptr_to_str(source))
+pub extern "C" fn XIMU3_file_converter_convert(destination: *const c_char, name: *const c_char, file_paths: *const *const c_char, length: u32) -> FileConverterProgress {
+    FileConverter::convert(char_ptr_to_str(destination), char_ptr_to_str(name), char_ptr_array_to_vec_str(file_paths, length))
 }

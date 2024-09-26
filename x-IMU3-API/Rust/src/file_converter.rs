@@ -1,7 +1,7 @@
 use std::fmt;
 use std::ops::Drop;
-use std::path::Path;
 use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use crate::connection::*;
 use crate::connection_info::*;
 use crate::data_logger::*;
@@ -30,7 +30,7 @@ pub struct FileConverterProgress {
     pub status: FileConverterStatus,
     pub percentage: f32,
     pub bytes_processed: u64,
-    pub file_size: u64,
+    pub bytes_total: u64,
 }
 
 impl fmt::Display for FileConverterProgress {
@@ -39,7 +39,7 @@ impl fmt::Display for FileConverterProgress {
                self.status,
                self.percentage,
                self.bytes_processed,
-               self.file_size)
+               self.bytes_total)
     }
 }
 
@@ -48,7 +48,7 @@ pub struct FileConverter {
 }
 
 impl FileConverter {
-    pub fn new(destination: &str, source: &str, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> FileConverter {
+    pub fn new<'a>(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> FileConverter {
         let file_converter = FileConverter {
             dropped: Arc::new(Mutex::new(false)),
         };
@@ -57,32 +57,29 @@ impl FileConverter {
             status: FileConverterStatus::Failed,
             percentage: 0.0,
             bytes_processed: 0,
-            file_size: 0,
+            bytes_total: 0,
         };
 
-        match std::fs::metadata(source) {
-            Ok(metadata) => progress.file_size = metadata.len(),
-            Err(_) => {
-                closure(progress);
-                return file_converter;
+        for file_path in &file_paths {
+            match std::fs::metadata(file_path) {
+                Ok(metadata) => progress.bytes_total += metadata.len(),
+                Err(_) => {
+                    closure(progress);
+                    return file_converter;
+                }
             }
         }
 
-        let name = Path::new(source).file_stem();
-
-        if name.is_none() {
-            closure(progress);
-            return file_converter;
-        }
-
-        let directory = destination.to_owned();
-        let name = name.unwrap().to_str().unwrap().to_owned();
-        let connection = Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: source.to_owned() }));
-
         let dropped = file_converter.dropped.clone();
+        let destination = destination.to_owned();
+        let name = name.to_owned();
+
+        let connections: Vec<Connection> = file_paths.iter().map(|&file_path| {
+            Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: file_path.to_owned() }))
+        }).collect();
 
         std::thread::spawn(move || {
-            let data_logger = DataLogger::new(&directory, &name, vec!(&connection));
+            let data_logger = DataLogger::new(&destination, &name, connections.iter().collect());
 
             if data_logger.is_err() {
                 if let Ok(dropped) = dropped.lock() {
@@ -93,24 +90,32 @@ impl FileConverter {
                 return;
             }
 
-            let data_logger = data_logger.unwrap();
+            let end_of_file_counter = Arc::new(AtomicUsize::new(0));
 
-            if connection.open().is_err() {
-                if let Ok(dropped) = dropped.lock() {
-                    if *dropped == false {
-                        closure(progress.clone());
+            for connection in connections.iter() {
+                let end_of_file_counter = end_of_file_counter.clone();
+
+                connection.add_end_of_file_closure(Box::new(move || {
+                    end_of_file_counter.fetch_add(1, Ordering::SeqCst);
+                }));
+
+                if connection.open().is_err() {
+                    if let Ok(dropped) = dropped.lock() {
+                        if *dropped == false {
+                            closure(progress.clone());
+                        }
                     }
+                    return;
                 }
-                return;
             }
 
             progress.status = FileConverterStatus::InProgress;
 
             loop {
-                progress.bytes_processed = connection.get_statistics().data_total;
-                progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.file_size as f64)) as f32;
+                progress.bytes_processed = connections.iter().map(|connection| connection.get_statistics().data_total).sum();
+                progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.bytes_total as f64)) as f32;
 
-                if *data_logger.end_of_file.lock().unwrap() {
+                if end_of_file_counter.load(Ordering::SeqCst) == connections.len() {
                     break;
                 }
 
@@ -124,9 +129,7 @@ impl FileConverter {
                 std::thread::sleep(std::time::Duration::from_millis(100));
             }
 
-            drop(data_logger);
-
-            connection.close();
+            drop(data_logger.unwrap());
 
             progress.status = FileConverterStatus::Complete;
             if let Ok(dropped) = dropped.lock() {
@@ -139,10 +142,10 @@ impl FileConverter {
         file_converter
     }
 
-    pub fn convert(destination: &str, source: &str) -> FileConverterProgress {
+    pub fn convert(destination: &str, name: &str, files: Vec<&str>) -> FileConverterProgress {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
-        let _file_converter = FileConverter::new(destination, source, Box::new(move |progress| {
+        let _file_converter = FileConverter::new(destination, name, files, Box::new(move |progress| {
             sender.send(progress).ok();
         }));
 

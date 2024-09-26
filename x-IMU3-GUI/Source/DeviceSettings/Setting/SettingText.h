@@ -53,7 +53,7 @@ protected:
 
     void updateTextToShowWhenEmpty()
     {
-        value.setTextToShowWhenEmpty(tree.getProperty(DeviceSettingsIDs::emptyValue, "Empty"), juce::Colours::grey);
+        value.setDefaultText(tree.getProperty(DeviceSettingsIDs::emptyValue, "Empty"));
     }
 
     void valueChanged() override

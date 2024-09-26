@@ -2,6 +2,7 @@
 
 #include "../../C/Ximu3.h"
 #include <string>
+#include <vector>
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -31,6 +32,15 @@ namespace Ximu3
         static void StringCopy(char* destination, String^ string, const size_t destinationSize)
         {
             strncpy_s(destination, destinationSize, ToCharPtr(string), destinationSize - 1);
+        }
+
+        static std::vector<const char*> ToCharPtrVector(array<String^>^ stringArray) {
+            std::vector<const char*> charPtrVector(stringArray->Length);
+            for (size_t index = 0; index < charPtrVector.size(); index++)
+            {
+                charPtrVector[index] = Helpers::ToCharPtr(stringArray[(int)index]);
+            }
+            return charPtrVector;
         }
     };
 }

@@ -9,7 +9,7 @@ def print_progress(progress):
             [
                 ximu3.file_converter_status_to_string(progress.status),
                 "{:.1f}%".format(progress.percentage),
-                f"{progress.bytes_processed} of {progress.file_size} bytes",
+                f"{progress.bytes_processed} of {progress.bytes_total} bytes",
             ]
         )
     )
@@ -21,10 +21,11 @@ def callback(progress):
 
 
 destination = "C:/"
-source = "C:/file.ximu3"
+name = "File Conversion Example"
+file_paths = ["C:/file.ximu3"]
 
 if helpers.ask_question("Use async implementation?"):
-    _ = ximu3.FileConverter(destination, source, callback)
+    _ = ximu3.FileConverter(destination, name, file_paths, callback)
     time.sleep(60)
 else:
-    print_progress(ximu3.FileConverter.convert(destination, source))
+    print_progress(ximu3.FileConverter.convert(destination, name, file_paths))

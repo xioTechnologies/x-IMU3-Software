@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Dialogs/ConvertFilesDialog.h"
 #include "Dialogs/DataLoggerSettingsDialog.h"
 #include "Firmware/Firmware.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -65,6 +66,8 @@ private:
     juce::String dataLoggerName;
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
+
+    ConvertFilesDialog::Settings convertFilesSettings;
 
     juce::String latestVersion;
 

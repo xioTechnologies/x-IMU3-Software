@@ -46,5 +46,15 @@ namespace ximu3
             XIMU3_char_arrays_free(charArrays);
             return vector;
         }
+
+        static auto toCharPtrVector(const std::vector<std::string>& stringVector)
+        {
+            std::vector<const char*> charPtrVector(stringVector.size());
+            for (size_t index = 0; index < charPtrVector.size(); index++)
+            {
+                charPtrVector[index] = stringVector[index].c_str();
+            }
+            return charPtrVector;
+        }
     };
 } // namespace ximu3

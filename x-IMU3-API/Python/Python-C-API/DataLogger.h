@@ -15,11 +15,11 @@ typedef struct
 
 static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    const char* directory;
+    const char* destination;
     const char* name;
     PyObject* connections_list;
 
-    if (PyArg_ParseTuple(args, "ssO!", &directory, &name, &PyList_Type, &connections_list) == 0)
+    if (PyArg_ParseTuple(args, "ssO!", &destination, &name, &PyList_Type, &connections_list) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
@@ -48,7 +48,7 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
     }
 
     DataLogger* const self = (DataLogger*) subtype->tp_alloc(subtype, 0);
-    self->data_logger = XIMU3_data_logger_new(directory, name, connections_array, length);
+    self->data_logger = XIMU3_data_logger_new(destination, name, connections_array, length);
     return (PyObject*) self;
 }
 
@@ -67,12 +67,12 @@ static PyObject* data_logger_get_result(DataLogger* self, PyObject* args)
 
 static PyObject* data_logger_log(PyObject* null, PyObject* args)
 {
-    const char* directory;
+    const char* destination;
     const char* name;
     PyObject* connections_list;
     unsigned long seconds;
 
-    if (PyArg_ParseTuple(args, "ssO!k", &directory, &name, &PyList_Type, &connections_list, &seconds) == 0)
+    if (PyArg_ParseTuple(args, "ssO!k", &destination, &name, &PyList_Type, &connections_list, &seconds) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
@@ -100,7 +100,7 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
         connections_array[index] = ((Connection*) connection)->connection;
     }
 
-    return Py_BuildValue("i", XIMU3_data_logger_log(directory, name, connections_array, length, (uint32_t) seconds));
+    return Py_BuildValue("i", XIMU3_data_logger_log(destination, name, connections_array, length, (uint32_t) seconds));
 }
 
 static PyMethodDef data_logger_methods[] = {

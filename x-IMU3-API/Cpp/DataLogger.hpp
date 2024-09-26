@@ -9,10 +9,10 @@ namespace ximu3
     class DataLogger
     {
     public:
-        DataLogger(const std::string& directory, const std::string& name, const std::vector<ximu3::Connection*>& connections)
+        DataLogger(const std::string& destination, const std::string& name, const std::vector<ximu3::Connection*>& connections)
         {
             const auto connectionsC = toConnectionsC(connections);
-            dataLogger = XIMU3_data_logger_new(directory.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size());
+            dataLogger = XIMU3_data_logger_new(destination.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size());
         }
 
         ~DataLogger()
@@ -25,10 +25,10 @@ namespace ximu3
             return XIMU3_data_logger_get_result(dataLogger);
         }
 
-        static XIMU3_Result log(const std::string& directory, const std::string& name, const std::vector<ximu3::Connection*>& connections, const uint32_t seconds)
+        static XIMU3_Result log(const std::string& destination, const std::string& name, const std::vector<ximu3::Connection*>& connections, const uint32_t seconds)
         {
             const auto connectionsC = toConnectionsC(connections);
-            return XIMU3_data_logger_log(directory.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size(), seconds);
+            return XIMU3_data_logger_log(destination.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size(), seconds);
         }
 
     private:

@@ -21,7 +21,7 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
             return juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectDirectories;
         }();
 
-        fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(textEditor.getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
+        fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
         fileChooser->launchAsync(flags, [&] (const auto&)
         {
             if (fileChooser->getResults().isEmpty())
@@ -53,32 +53,27 @@ void FileSelector::filesDropped(const juce::StringArray& files, int, int)
 
 juce::Array<juce::File> FileSelector::getFiles() const
 {
-    return toFileArray(juce::StringArray::fromTokens(textEditor.getText(), ";", ""));
+    return toFileArray(juce::StringArray::fromTokens(getText(), ";", ""));
 }
 
 void FileSelector::setFiles(const juce::Array<juce::File>& files)
 {
-    juce::StringArray strings;
-    for (auto file : files)
-    {
-        if (extension.has_value() == false && file.isDirectory() == false)
-        {
-            file = file.getParentDirectory();
-        }
+    textEditor.setText(toStringArray(files).joinIntoString(";"));
+}
 
-        strings.add(file.getFullPathName());
-    }
-    textEditor.setText(strings.joinIntoString(";"));
+void FileSelector::setFilesWhenEmpty(const juce::Array<juce::File>& files)
+{
+    textEditor.setDefaultText(toStringArray(files).joinIntoString(";"));
 }
 
 bool FileSelector::isValid() const
 {
-    if (textEditor.getText().isEmpty())
+    if (getText().isEmpty())
     {
         return false;
     }
 
-    for (auto string : juce::StringArray::fromTokens(textEditor.getText(), ";", ""))
+    for (auto string : juce::StringArray::fromTokens(getText(), ";", ""))
     {
         if (std::filesystem::exists(string.toStdString()) == false)
         {
@@ -92,12 +87,40 @@ bool FileSelector::isValid() const
     return true;
 }
 
+bool FileSelector::isEmpty() const
+{
+    return textEditor.isEmpty();
+}
+
+juce::String FileSelector::getText() const
+{
+    return textEditor.getTextOrDefault();
+}
+
+juce::StringArray FileSelector::toStringArray(const juce::Array<juce::File>& files) const
+{
+    juce::StringArray strings;
+    for (auto file : files)
+    {
+        if (extension.has_value() == false && file.isDirectory() == false)
+        {
+            file = file.getParentDirectory();
+        }
+
+        strings.add(file.getFullPathName());
+    }
+    return strings;
+}
+
 juce::Array<juce::File> FileSelector::toFileArray(const juce::StringArray& strings)
 {
     juce::Array<juce::File> files;
     for (auto file : strings)
     {
-        files.add(file);
+        if (std::filesystem::exists(file.toStdString()))
+        {
+            files.add(file);
+        }
     }
     return files;
 }
