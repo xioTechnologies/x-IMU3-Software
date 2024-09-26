@@ -40,6 +40,7 @@ protected:
             connection.addSerialAccessoryCallback(serialAccessoryCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
+            connection.addEndOfFileCallback(endOfFileCallback);
         }
 
         // Open connection
@@ -240,5 +241,10 @@ private:
                message.timestamp,
                message.char_array);
         // std::cout << XIMU3_error_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void()> endOfFileCallback = []
+    {
+        std::cout << "End of file" << std::endl;
     };
 };

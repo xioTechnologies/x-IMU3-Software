@@ -29,6 +29,7 @@ pub fn run(connection_info: ConnectionInfo) {
         connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
+        connection.add_end_of_file_closure(Box::new(end_of_file_closure));
     }
 
     // Open connection
@@ -217,4 +218,8 @@ pub fn error_closure(message: ErrorMessage) {
              message.timestamp,
              message.char_array_as_string());
     // println!("{}", message); // alternative to above
+}
+
+pub fn end_of_file_closure() {
+    println!("End of file");
 }
