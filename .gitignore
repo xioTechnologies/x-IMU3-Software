@@ -30,6 +30,3 @@
 **/Debug
 **/CSharp/**/Release
 **/*/.vcxproj.user
-
-# Misc
-**/token.txt
