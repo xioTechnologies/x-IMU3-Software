@@ -6,17 +6,19 @@ pub struct CommandMessage {
     pub json: String,
     pub terminated_json: String,
     pub key: String,
+    pub value: String,
+    pub error_response: Option<String>,
 }
 
 impl CommandMessage {
-    pub fn parse_bytes(bytes: &[u8]) -> Result<CommandMessage, DecodeError> {
+    pub(crate) fn parse_bytes(bytes: &[u8]) -> Result<CommandMessage, DecodeError> {
         match std::str::from_utf8(bytes) {
             Ok(json) => Self::parse_json(json),
             Err(_) => Err(DecodeError::InvalidUtf8),
         }
     }
 
-    pub fn parse_json(json: &str) -> Result<CommandMessage, DecodeError> {
+    pub(crate) fn parse_json(json: &str) -> Result<CommandMessage, DecodeError> {
         match serde_json::from_str::<serde_json::Value>(json) {
             Ok(value) => {
                 match value.as_object() {
@@ -30,11 +32,21 @@ impl CommandMessage {
                         let terminated_json = format!("{}\n", json);
                         let key = object.keys().nth(0).unwrap().to_owned();
 
-                        Ok(CommandMessage { json, terminated_json, key })
+                        Ok(CommandMessage { json, terminated_json, key, value: "".to_owned(), error_response: None })
                     }
                 }
             }
             Err(_) => Err(DecodeError::InvalidJson)
         }
+    }
+
+    pub fn parse(json: &str) -> CommandMessage {
+        CommandMessage::parse_json(json).unwrap_or(CommandMessage {
+            json: "".to_owned(),
+            terminated_json: "".to_owned(),
+            key: "".to_owned(),
+            value: "".to_owned(),
+            error_response: None,
+        })
     }
 }
