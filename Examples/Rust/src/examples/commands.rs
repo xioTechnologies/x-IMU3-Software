@@ -1,3 +1,4 @@
+use ximu3::command_message::*;
 use ximu3::connection::*;
 use ximu3::connection_type::*;
 use ximu3::port_scanner::*;
@@ -55,6 +56,10 @@ fn print_responses(responses: Vec<String>) {
     println!("{} commands confirmed", responses.len());
 
     for response in responses {
+        let response = CommandMessage::from_json(&response);
+
+
+
         println!("{}", response);
     }
 }
