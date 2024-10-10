@@ -3,7 +3,7 @@
 #include "Widgets/SimpleLabel.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
-        : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
+    : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
@@ -158,8 +158,8 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
             {
             public:
                 TitleAndResponse(const Row& row)
-                        : titleLabel(row.connectionPanel.getTitle()),
-                          responseLabel(row.response, UIFonts::getDefaultFont(), juce::Justification::centredRight)
+                    : titleLabel(row.connectionPanel.getTitle()),
+                      responseLabel(row.response, UIFonts::getDefaultFont(), juce::Justification::centredRight)
                 {
                     addAndMakeVisible(titleLabel);
                     addAndMakeVisible(responseLabel);

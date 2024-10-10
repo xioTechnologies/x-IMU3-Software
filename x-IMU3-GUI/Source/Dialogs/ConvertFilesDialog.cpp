@@ -12,7 +12,7 @@ ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(Binary
     filesSelector.setFiles(settings.files);
     if (settings.destinationEmpty == false)
     {
-        destinationSelector.setFiles({settings.destination});
+        destinationSelector.setFiles({ settings.destination });
     }
     if (settings.nameEmpty == false)
     {
@@ -22,7 +22,7 @@ ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(Binary
     filesSelector.onChange = destinationSelector.onChange = nameValue.onTextChange = [&]
     {
         const auto files = filesSelector.getFiles();
-        destinationSelector.setFilesWhenEmpty({files[0].getParentDirectory()});
+        destinationSelector.setFilesWhenEmpty({ files[0].getParentDirectory() });
         nameValue.setDefaultText((files.size() == 1) ? files[0].getFileNameWithoutExtension() : "");
 
         setOkButton(filesSelector.isValid() && destinationSelector.isValid() && nameValue.getTextOrDefault().isNotEmpty());

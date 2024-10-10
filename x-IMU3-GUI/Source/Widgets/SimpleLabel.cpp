@@ -1,9 +1,9 @@
 #include "SimpleLabel.h"
 
 SimpleLabel::SimpleLabel(const juce::String& text_, const juce::Font& font_, juce::Justification justification_)
-        : text(text_),
-          font(font_),
-          justification(justification_)
+    : text(text_),
+      font(font_),
+      justification(justification_)
 {
     setSize((int) std::ceil(getTextWidth()), 30);
     setInterceptsMouseClicks(false, false);
@@ -25,7 +25,7 @@ const juce::String& SimpleLabel::getText() const
 
 float SimpleLabel::getTextWidth() const
 {
-    return juce::GlyphArrangement::getStringWidth (font, text);
+    return juce::GlyphArrangement::getStringWidth(font, text);
 }
 
 void SimpleLabel::paint(juce::Graphics& g)

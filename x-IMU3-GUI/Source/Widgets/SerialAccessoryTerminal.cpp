@@ -28,7 +28,7 @@ void SerialAccessoryTerminal::resized()
 {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
     numberOfLinesOnScreen = getHeight() / font.getHeight();
-    numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / juce::GlyphArrangement::getStringWidth (font, "0")));
+    numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / juce::GlyphArrangement::getStringWidth(font, "0")));
 
     wrappedMessages.clear();
     for (const auto& message : messages)

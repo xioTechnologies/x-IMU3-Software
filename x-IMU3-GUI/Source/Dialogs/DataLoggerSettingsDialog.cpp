@@ -13,7 +13,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     settings.destination.createDirectory();
 
-    destinationSelector.setFiles({settings.destination});
+    destinationSelector.setFiles({ settings.destination });
     nameValue.setDefaultText("Logged Data " + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S"));
     nameValue.setText(settings.nameEmpty ? "" : settings.name, false);
     timeValue.setText(juce::String(settings.timeValue), false);

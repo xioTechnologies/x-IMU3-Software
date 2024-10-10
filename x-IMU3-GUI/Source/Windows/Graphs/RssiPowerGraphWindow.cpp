@@ -4,12 +4,12 @@
 #include "RssiPowerGraphWindow.h"
 
 RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout_, type_, connectionPanel_,
-                      glRenderer,
-                      "Power (dBm)",
-                      { "" },
-                      { UIColours::graphChannel1 },
-                      true)
+    : GraphWindow(windowLayout_, type_, connectionPanel_,
+                  glRenderer,
+                  "Power (dBm)",
+                  { "" },
+                  { UIColours::graphChannel1 },
+                  true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {

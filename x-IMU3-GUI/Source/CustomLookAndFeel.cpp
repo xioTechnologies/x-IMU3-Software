@@ -156,7 +156,7 @@ void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics& g, int width, i
         backgroundColour = backgroundColour.withAlpha(0.5f);
     }
 
-    if (dynamic_cast<juce::AlertWindow*> (textEditor.getParentComponent()) != nullptr)
+    if (dynamic_cast<juce::AlertWindow*>(textEditor.getParentComponent()) != nullptr)
     {
         g.setColour(backgroundColour);
         g.fillRect(0, 0, width, height);
@@ -222,8 +222,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
     }
     else
     {
-        auto textColour = (textColourToUse == nullptr ? findColour(juce::PopupMenu::textColourId)
-                                                      : *textColourToUse);
+        auto textColour = (textColourToUse == nullptr ? findColour(juce::PopupMenu::textColourId) : *textColourToUse);
 
         auto r = area.reduced(1);
 
@@ -270,7 +269,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
 
             // Adjustment: Change tick target bounds
             g.fillPath(tick, tick.getTransformToScaleToFit(iconArea.reduced(
-                    std::min(getPopupMenuFont().getHeight(), maxFontHeight) / 10).toFloat(), true));
+                                                               std::min(getPopupMenuFont().getHeight(), maxFontHeight) / 10).toFloat(), true));
         }
 
         if (hasSubMenu)
@@ -334,7 +333,7 @@ void CustomLookAndFeel::getIdealPopupMenuItemSize(const juce::String& text, cons
         }
 
         idealHeight = standardMenuItemHeight > 0 ? standardMenuItemHeight : (juce::roundToInt(font.getHeight() * 1.3f) + 2);
-        idealWidth = juce::GlyphArrangement::getStringWidthInt (font, text) + idealHeight * 2;
+        idealWidth = juce::GlyphArrangement::getStringWidthInt(font, text) + idealHeight * 2;
     }
 }
 
@@ -399,7 +398,7 @@ juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String& tip
     return juce::Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 6) : screenPos.x + 12,
                                 screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 12) : screenPos.y + 12,
                                 w, h)
-            .constrainedWithin(parentArea);
+        .constrainedWithin(parentArea);
 }
 
 void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text, int width, int height)
@@ -414,7 +413,7 @@ void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text,
     g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 
     layoutTooltipText(text, findColour(juce::TooltipWindow::textColourId))
-            .draw(g, { (float) width, (float) height });
+        .draw(g, { (float) width, (float) height });
 }
 
 void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, int height, const juce::String& text, const juce::Justification& position, juce::GroupComponent& group)
@@ -434,10 +433,11 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     cs = juce::jmin(cs, w * 0.5f, h * 0.5f);
     auto cs2 = 2.0f * cs;
 
-    auto textW = text.isEmpty() ? 0
-                                : juce::jlimit(0.0f,
-                                               juce::jmax(0.0f, w - cs2 - textEdgeGap * 2),
-                                               juce::GlyphArrangement::getStringWidth (font, text) + textEdgeGap * 2.0f);
+    auto textW = text.isEmpty() ?
+                     0 :
+                     juce::jlimit(0.0f,
+                                  juce::jmax(0.0f, w - cs2 - textEdgeGap * 2),
+                                  juce::GlyphArrangement::getStringWidth(font, text) + textEdgeGap * 2.0f);
     auto textX = cs + textEdgeGap;
 
     if (position.testFlags(juce::Justification::horizontallyCentred))
@@ -477,7 +477,7 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     g.drawText(text,
                juce::roundToInt(x + textX), 0,
                juce::roundToInt(textW),
-            // Adjustment
+               // Adjustment
                juce::roundToInt(font.getHeight()),
                juce::Justification::centred, true);
 }

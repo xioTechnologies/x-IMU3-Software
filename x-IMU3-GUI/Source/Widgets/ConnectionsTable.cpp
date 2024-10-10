@@ -100,21 +100,21 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
     switch ((ColumnIDs) columnID)
     {
         case ColumnIDs::selected:
-        {
-            if (existingComponentToUpdate == nullptr)
             {
-                existingComponentToUpdate = new CustomToggleButton("");
-            }
+                if (existingComponentToUpdate == nullptr)
+                {
+                    existingComponentToUpdate = new CustomToggleButton("");
+                }
 
-            auto* toggle = static_cast<CustomToggleButton*>(existingComponentToUpdate);
-            toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
-            toggle->onClick = [this, rowNumber, toggle]
-            {
-                rows[(size_t) rowNumber].selected = toggle->getToggleState();
-                selectAllButton.setToggleState(selectAllButton.getToggleState() && toggle->getToggleState(), juce::dontSendNotification);
-            };
-            break;
-        }
+                auto* toggle = static_cast<CustomToggleButton*>(existingComponentToUpdate);
+                toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
+                toggle->onClick = [this, rowNumber, toggle]
+                {
+                    rows[(size_t) rowNumber].selected = toggle->getToggleState();
+                    selectAllButton.setToggleState(selectAllButton.getToggleState() && toggle->getToggleState(), juce::dontSendNotification);
+                };
+                break;
+            }
 
         case ColumnIDs::device:
             if (existingComponentToUpdate == nullptr)

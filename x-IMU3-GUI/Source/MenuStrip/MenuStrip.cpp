@@ -159,24 +159,24 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
     };
 
     threadPool.addJob([&, self = SafePointer<juce::Component>(this)]
-                      {
-                          const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
+    {
+        const auto parsed = juce::JSON::parse(juce::URL("https://api.github.com/repos/xioTechnologies/x-IMU3-Software/releases/latest").readEntireTextStream());
 
-                          juce::MessageManager::callAsync([&, self, parsed]
-                                                          {
-                                                              if (self == nullptr)
-                                                              {
-                                                                  return;
-                                                              }
+        juce::MessageManager::callAsync([&, self, parsed]
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                                              if (const auto* const object = parsed.getDynamicObject())
-                                                              {
-                                                                  latestVersion = object->getProperty("tag_name");
-                                                                  aboutButton.setToggleState(latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()), juce::dontSendNotification);
-                                                                  resized();
-                                                              }
-                                                          });
-                      });
+            if (const auto* const object = parsed.getDynamicObject())
+            {
+                latestVersion = object->getProperty("tag_name");
+                aboutButton.setToggleState(latestVersion != ("v" + juce::JUCEApplication::getInstance()->getApplicationVersion()), juce::dontSendNotification);
+                resized();
+            }
+        });
+    });
 
     connectionPanelContainer.onConnectionPanelsSizeChanged = [&]
     {
@@ -392,10 +392,10 @@ juce::PopupMenu MenuStrip::getWindowMenu()
         {
             if (findWindow(windowLayout, windowType).isValid())
             {
-                (horizontally ? windowLayout_.getOrCreateChildWithName(WindowIDs::Column, nullptr) : windowLayout_).appendChild({ windowType, {}}, nullptr);
+                (horizontally ? windowLayout_.getOrCreateChildWithName(WindowIDs::Column, nullptr) : windowLayout_).appendChild({ windowType, {} }, nullptr);
             }
         }
-        setWindowLayout({ WindowIDs::Row, {}, { windowLayout_ }});
+        setWindowLayout({ WindowIDs::Row, {}, { windowLayout_ } });
     };
 
     juce::PopupMenu arrangeMenu;
@@ -477,7 +477,7 @@ juce::PopupMenu MenuStrip::getWindowMenu()
             }
 
             const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
-            windowLayout.getRoot().appendChild({ id_, {{ WindowIDs::size, newSize }}}, nullptr);
+            windowLayout.getRoot().appendChild({ id_, { { WindowIDs::size, newSize } } }, nullptr);
         });
     };
 
@@ -605,22 +605,30 @@ void MenuStrip::setWindowLayout(juce::ValueTree windowLayout_)
 {
     if (windowLayout_.isValid() == false)
     {
-        windowLayout_ = { WindowIDs::Row, {},
-                          {
-                                  { WindowIDs::DeviceSettings, {{ WindowIDs::size, 0.4 }}},
-                                  { WindowIDs::Column, {}, {
-                                          { WindowIDs::Row, {}, {
-                                                  { WindowIDs::Gyroscope, {}},
-                                                  { WindowIDs::Accelerometer, {}},
-                                                  { WindowIDs::Magnetometer, {}},
-                                                  { WindowIDs::HighGAccelerometer, {}},
-                                          }},
-                                          { WindowIDs::Row, {}, {
-                                                  { WindowIDs::EulerAngles, {{ WindowIDs::size, 1 }}},
-                                                  { WindowIDs::ThreeDView, {{ WindowIDs::size, 3 }}},
-                                          }}
-                                  }}
-                          }};
+        windowLayout_ = {
+            WindowIDs::Row, {},
+            {
+                { WindowIDs::DeviceSettings, { { WindowIDs::size, 0.4 } } },
+                {
+                    WindowIDs::Column, {}, {
+                        {
+                            WindowIDs::Row, {}, {
+                                { WindowIDs::Gyroscope, {} },
+                                { WindowIDs::Accelerometer, {} },
+                                { WindowIDs::Magnetometer, {} },
+                                { WindowIDs::HighGAccelerometer, {} },
+                            }
+                        },
+                        {
+                            WindowIDs::Row, {}, {
+                                { WindowIDs::EulerAngles, { { WindowIDs::size, 1 } } },
+                                { WindowIDs::ThreeDView, { { WindowIDs::size, 3 } } },
+                            }
+                        }
+                    }
+                }
+            }
+        };
     }
 
     windowLayout.copyPropertiesAndChildrenFrom(windowLayout_, nullptr);

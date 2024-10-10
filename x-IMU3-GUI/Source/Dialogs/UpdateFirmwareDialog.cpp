@@ -14,7 +14,7 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
 
     const auto hexFile = ApplicationSettings::getDirectory().getChildFile(Firmware::hexFile);
     hexFile.replaceWithData(Firmware::memoryBlock.getData(), Firmware::memoryBlock.getSize());
-    hexFileSelector.setFiles({hexFile});
+    hexFileSelector.setFiles({ hexFile });
 
     deviceValue.onChange = hexFileSelector.onChange = [&]
     {

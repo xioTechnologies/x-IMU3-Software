@@ -2,8 +2,8 @@
 #include "ThreeDViewWindow.h"
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
-          threeDView(glRenderer)
+    : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
+      threeDView(glRenderer)
 {
     addAndMakeVisible(threeDView);
 
@@ -299,7 +299,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     userModelsMenu.addItem("Load", [&]
     {
         fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&] (const auto&)
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
         {
             if (fileChooser->getResult() == juce::File())
             {

@@ -11,7 +11,7 @@ SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog
     if (!recentNotes.isValid())
     {
         recentNotes = juce::ValueTree("RecentNotes");
-        recentNotes.appendChild({ "Note", {{ "note", "Hello World!" }}}, nullptr);
+        recentNotes.appendChild({ "Note", { { "note", "Hello World!" } } }, nullptr);
     }
 
     value.onTextChange = [&]
@@ -37,7 +37,7 @@ void SendNoteCommandDialog::resized()
 
 juce::String SendNoteCommandDialog::getNote()
 {
-    juce::ValueTree newNote { "Note", {{ "note", value.getText() }}};
+    juce::ValueTree newNote { "Note", { { "note", value.getText() } } };
 
     for (const auto note : recentNotes)
     {

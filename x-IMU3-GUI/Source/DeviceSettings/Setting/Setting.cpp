@@ -54,7 +54,7 @@ void Setting::resized()
     name.setBounds(bounds.reduced(1, 2));
 }
 
-void Setting::mouseDown (const juce::MouseEvent&)
+void Setting::mouseDown(const juce::MouseEvent&)
 {
     if (parentIfExpandable != nullptr)
     {

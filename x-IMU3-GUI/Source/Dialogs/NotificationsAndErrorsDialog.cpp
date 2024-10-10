@@ -40,8 +40,8 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
 }
 
 NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel)
-        : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
-          messages(messages_)
+    : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getTitle(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
+      messages(messages_)
 {
     addAndMakeVisible(clearButton);
     addAndMakeVisible(typeLabel);
@@ -108,24 +108,24 @@ juce::Component* NotificationsAndErrorsDialog::refreshComponentForCell(int rowNu
             return new Icon(message.getIcon(), message.getTooltip(), 0.6f);
 
         case ColumnID::timestamp:
-        {
-            auto* label = new SimpleLabel(juce::String(1E-6f * (float) message.timestamp, 3));
-            if (message.unread == false)
             {
-                label->setColour(juce::Label::textColourId, juce::Colours::grey);
+                auto* label = new SimpleLabel(juce::String(1E-6f * (float) message.timestamp, 3));
+                if (message.unread == false)
+                {
+                    label->setColour(juce::Label::textColourId, juce::Colours::grey);
+                }
+                return label;
             }
-            return label;
-        }
 
         case ColumnID::message:
-        {
-            auto* label = new SimpleLabel(message.message);
-            if (message.unread == false)
             {
-                label->setColour(juce::Label::textColourId, juce::Colours::grey);
+                auto* label = new SimpleLabel(message.message);
+                if (message.unread == false)
+                {
+                    label->setColour(juce::Label::textColourId, juce::Colours::grey);
+                }
+                return label;
             }
-            return label;
-        }
 
         default:
             return nullptr;

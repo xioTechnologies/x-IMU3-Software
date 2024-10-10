@@ -29,12 +29,12 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
                                  juce::ThreadPool& threadPool_,
                                  ConnectionPanelContainer& connectionPanelContainer_,
                                  const juce::Colour& tag_)
-        : windowLayout(windowLayout_),
-          connection(connection_),
-          glRenderer(glRenderer_),
-          threadPool(threadPool_),
-          connectionPanelContainer(connectionPanelContainer_),
-          tag(tag_)
+    : windowLayout(windowLayout_),
+      connection(connection_),
+      glRenderer(glRenderer_),
+      threadPool(threadPool_),
+      connectionPanelContainer(connectionPanelContainer_),
+      tag(tag_)
 {
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
@@ -75,19 +75,19 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
     return connection;
 }
 
-void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses)> callback)
+void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses)> callback)
 {
     connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [&, callbackOwner, callback](auto responses)
     {
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
-                                        {
-                                            header.updateTitle({ responses.begin(), responses.end() });
+        {
+            header.updateTitle({ responses.begin(), responses.end() });
 
-                                            if (callbackOwner != nullptr && callback != nullptr)
-                                            {
-                                                callback({ responses.begin(), responses.end() });
-                                            }
-                                        });
+            if (callbackOwner != nullptr && callback != nullptr)
+            {
+                callback({ responses.begin(), responses.end() });
+            }
+        });
     });
 }
 
@@ -208,27 +208,27 @@ void ConnectionPanel::connect()
     header.setState(ConnectionPanelHeader::State::connecting);
 
     connection->openAsync([&, destroyed_ = destroyed](auto result)
-                          {
-                              juce::MessageManager::callAsync([&, destroyed_, result]
-                                                              {
-                                                                  if (*destroyed_)
-                                                                  {
-                                                                      return;
-                                                                  }
+    {
+        juce::MessageManager::callAsync([&, destroyed_, result]
+        {
+            if (*destroyed_)
+            {
+                return;
+            }
 
-                                                                  if (result != ximu3::XIMU3_ResultOk)
-                                                                  {
-                                                                      header.setState(ConnectionPanelHeader::State::connectionFailed);
-                                                                      return;
-                                                                  }
+            if (result != ximu3::XIMU3_ResultOk)
+            {
+                header.setState(ConnectionPanelHeader::State::connectionFailed);
+                return;
+            }
 
-                                                                  windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
-                                                                  addAndMakeVisible(*windowContainer);
-                                                                  resized();
+            windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
+            addAndMakeVisible(*windowContainer);
+            resized();
 
-                                                                  header.setState(ConnectionPanelHeader::State::connected);
-                                                              });
-                          });
+            header.setState(ConnectionPanelHeader::State::connected);
+        });
+    });
 }
 
 void ConnectionPanel::handleAsyncUpdate()

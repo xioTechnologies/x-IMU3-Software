@@ -3,7 +3,7 @@
 #include "SerialAccessoryTerminalWindow.h"
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
-        : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
+    : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
 {
     addAndMakeVisible(serialAccessoryTerminal);
     serialAccessoryTerminal.addMouseListener(this, true);
@@ -34,7 +34,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
             recentSerialAccessoryData.removeChild(recentSerialAccessoryData.getChild(recentSerialAccessoryData.getNumChildren() - 1), nullptr);
         }
 
-        recentSerialAccessoryData.addChild({ "Data", {{ "data", sendValue.getText() }}}, 0, nullptr);
+        recentSerialAccessoryData.addChild({ "Data", { { "data", sendValue.getText() } } }, 0, nullptr);
         file.replaceWithText(recentSerialAccessoryData.toXmlString());
 
         loadRecents();
@@ -43,14 +43,14 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     callbackID = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
-                                        });
+            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+        });
     });
 }
 
@@ -118,23 +118,23 @@ juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::S
                 break;
 
             case 'x':
-            {
-                if (index >= input.length() - 2)
                 {
-                    return output; // invalid escape sequence
+                    if (index >= input.length() - 2)
+                    {
+                        return output; // invalid escape sequence
+                    }
+
+                    const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
+                    const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
+
+                    if (upperNibble == -1 || lowerNibble == -1)
+                    {
+                        break; // invalid escape sequence
+                    }
+
+                    output += (char) ((upperNibble << 4) + lowerNibble);
+                    break;
                 }
-
-                const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-                const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-
-                if (upperNibble == -1 || lowerNibble == -1)
-                {
-                    break; // invalid escape sequence
-                }
-
-                output += (char) ((upperNibble << 4) + lowerNibble);
-                break;
-            }
 
             default:
                 break; // invalid escape sequence

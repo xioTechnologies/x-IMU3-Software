@@ -10,13 +10,13 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
                          std::vector<juce::String> legendStrings_,
                          std::vector<juce::Colour> legendColours_,
                          bool defaultHorizontalAutoscale_)
-        : Window(windowLayout_, type_, connectionPanel_, ""),
-          legendStrings(legendStrings_),
-          legendColours(legendColours_),
-          defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
-          graph(glRenderer, legendColours_, labelHeight, rightMargin),
-          xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
-          yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
+    : Window(windowLayout_, type_, connectionPanel_, ""),
+      legendStrings(legendStrings_),
+      legendColours(legendColours_),
+      defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
+      graph(glRenderer, legendColours_, labelHeight, rightMargin),
+      xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
+      yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
 {
     jassert(legendStrings.size() == legendColours.size());
 
@@ -55,7 +55,7 @@ void GraphWindow::paint(juce::Graphics& g)
     {
         const auto legendString = legendStrings[(size_t) index];
         g.setColour(settings.enabledChannels[(size_t) index] ? legendColours[(size_t) index] : juce::Colours::grey);
-        g.drawText(legendString, legendBounds.removeFromRight(juce::GlyphArrangement::getStringWidthInt (font, legendString) + margin), juce::Justification::centredRight);
+        g.drawText(legendString, legendBounds.removeFromRight(juce::GlyphArrangement::getStringWidthInt(font, legendString) + margin), juce::Justification::centredRight);
     }
 }
 

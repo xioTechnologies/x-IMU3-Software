@@ -1,11 +1,11 @@
 #include "Graph.h"
 
 Graph::Graph(GLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_)
-        : OpenGLComponent(renderer_.getContext()),
-          renderer(renderer_),
-          colours(colours_),
-          legendHeight(legendHeight_),
-          rightMargin(rightMargin_)
+    : OpenGLComponent(renderer_.getContext()),
+      renderer(renderer_),
+      colours(colours_),
+      legendHeight(legendHeight_),
+      rightMargin(rightMargin_)
 {
     renderer.addComponent(*this);
 
@@ -178,11 +178,11 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
     {
         // Border lines
         lines.insert(lines.end(), {
-                -1.0f, -1.0f, borderBrightness, -1.0f, 1.0f, borderBrightness, // left edge
-                1.0f, -1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // right edge
-                -1.0f, 1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // top edge
-                -1.0f, -1.0f, borderBrightness, 1.0f, -1.0f, borderBrightness // bottom edge
-        });
+                         -1.0f, -1.0f, borderBrightness, -1.0f, 1.0f, borderBrightness, // left edge
+                         1.0f, -1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // right edge
+                         -1.0f, 1.0f, borderBrightness, 1.0f, 1.0f, borderBrightness, // top edge
+                         -1.0f, -1.0f, borderBrightness, 1.0f, -1.0f, borderBrightness // bottom edge
+                     });
     }
 
     // Draw lines
@@ -292,7 +292,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
         if (labelsToDraw.size() > 1)
         {
             // If labels are too close, remove every other label (halve the number of labels) until there are no overlaps
-            const auto halvingCount = static_cast<int> (std::ceil(std::log2(labelsToDraw.size())));
+            const auto halvingCount = static_cast<int>(std::ceil(std::log2(labelsToDraw.size())));
             for (int i = 0; (i < halvingCount) && areAnyLabelsTooClose(); i++)
             {
                 // Erase every other element (odd indices), except for "0" if it is displayed

@@ -4,12 +4,12 @@
 #include "ReceivedDataRateGraphWindow.h"
 
 ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout_, type_, connectionPanel_,
-                      glRenderer,
-                      "Throughput (kB/s)",
-                      { "" },
-                      { UIColours::graphChannel1 },
-                      true)
+    : GraphWindow(windowLayout_, type_, connectionPanel_,
+                  glRenderer,
+                  "Throughput (kB/s)",
+                  { "" },
+                  { UIColours::graphChannel1 },
+                  true)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {

@@ -38,9 +38,9 @@ void UdpConnection()
     else
     {
         const XIMU3_UdpConnectionInfo connectionInfo = (XIMU3_UdpConnectionInfo) {
-                .ip_address = "192.168.1.1",
-                .send_port = 9000,
-                .receive_port = 8000,
+            .ip_address = "192.168.1.1",
+            .send_port = 9000,
+            .receive_port = 8000,
         };
         Run(XIMU3_connection_new_udp(connectionInfo), XIMU3_udp_connection_info_to_string(connectionInfo));
     }

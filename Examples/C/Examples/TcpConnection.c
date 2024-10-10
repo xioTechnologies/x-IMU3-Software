@@ -36,8 +36,8 @@ void TcpConnection()
     else
     {
         const XIMU3_TcpConnectionInfo connectionInfo = (XIMU3_TcpConnectionInfo) {
-                .ip_address = "192.168.1.1",
-                .port = 7000,
+            .ip_address = "192.168.1.1",
+            .port = 7000,
         };
         Run(XIMU3_connection_new_tcp(connectionInfo), XIMU3_tcp_connection_info_to_string(connectionInfo));
     }

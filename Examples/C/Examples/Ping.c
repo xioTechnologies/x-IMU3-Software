@@ -10,7 +10,7 @@ void Ping()
 {
     // Create connection info
     const XIMU3_UsbConnectionInfo connectionInfo = (XIMU3_UsbConnectionInfo) {
-            .port_name = "COM1",
+        .port_name = "COM1",
     };
 
     // Open and ping

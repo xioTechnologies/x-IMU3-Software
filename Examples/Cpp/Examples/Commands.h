@@ -30,12 +30,12 @@ public:
 
         // Define read/write setting commands
         const std::vector<std::string> commands {
-                "{\"device_name\":null}", /* change null to a value to write setting */
-                "{\"serial_number\":null}",
-                "{\"firmware_version\":null}",
-                "{\"bootloader_version\":null}",
-                "{\"hardware_version\":null}",
-                "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
+            "{\"device_name\":null}", /* change null to a value to write setting */
+            "{\"serial_number\":null}",
+            "{\"firmware_version\":null}",
+            "{\"bootloader_version\":null}",
+            "{\"hardware_version\":null}",
+            "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
         };
 
         // Send commands

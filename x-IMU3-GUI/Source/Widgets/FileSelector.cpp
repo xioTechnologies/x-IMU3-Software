@@ -22,7 +22,7 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
         }();
 
         fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
-        fileChooser->launchAsync(flags, [&] (const auto&)
+        fileChooser->launchAsync(flags, [&](const auto&)
         {
             if (fileChooser->getResults().isEmpty())
             {
