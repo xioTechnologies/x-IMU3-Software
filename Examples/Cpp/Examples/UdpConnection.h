@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Connection.h"
 
 class UdpConnection : public Connection

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Connection.h"
 
 class TcpConnection : public Connection
