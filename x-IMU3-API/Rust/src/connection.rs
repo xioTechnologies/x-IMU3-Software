@@ -137,14 +137,14 @@ impl Connection {
     fn send_commands_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<String>>, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
         struct Transaction {
             command: Option<CommandMessage>,
-            response: String,
+            response: Option<CommandMessage>,
         }
 
         let mut transactions: Vec<Transaction> = commands.iter().map(|&command| {
             if let Ok(command) = CommandMessage::parse_json(command) {
-                Transaction { command: Some(command), response: "".to_owned() }
+                Transaction { command: Some(command), response: None }
             } else {
-                Transaction { command: None, response: "".to_owned() }
+                Transaction { command: None, response: None }
             }
         }).collect();
 
@@ -167,15 +167,15 @@ impl Connection {
                 if let Ok(response) = response_receiver.try_recv() {
                     for index in 0..transactions.len() {
                         if transactions[index].command.is_some() && response.key == transactions[index].command.as_ref().unwrap().key {
-                            transactions[index] = Transaction { command: None, response: response.json.clone() };
+                            transactions[index] = Transaction { command: None, response: Some(response.clone()) };
                         }
                     }
                 }
 
-                if transactions.iter().all(|transaction| transaction.command.as_ref().is_none()) {
+                if transactions.iter().all(|transaction | transaction.command.as_ref().is_none()) {
                     decoder.lock().unwrap().dispatcher.remove_closure(closure_id);
-                    transactions.retain(|transaction| transaction.response.is_empty() == false);
-                    return transactions.iter().map(|transaction| transaction.response.clone()).collect();
+                    transactions.retain(|transaction| transaction.response.is_some());
+                    return transactions.iter().map(|transaction| transaction.response.clone().unwrap().json).collect();
                 }
 
                 std::thread::sleep(std::time::Duration::from_millis(1));
@@ -183,8 +183,8 @@ impl Connection {
         }
 
         decoder.lock().unwrap().dispatcher.remove_closure(closure_id);
-        transactions.retain(|transaction| transaction.response.is_empty() == false);
-        return transactions.iter().map(|transaction| transaction.response.clone()).collect();
+        transactions.retain(|transaction| transaction.response.is_some());
+        transactions.iter().map(|transaction| transaction.response.clone().unwrap().json).collect()
     }
 
     pub fn get_info(&self) -> ConnectionInfo {
