@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <chrono>
