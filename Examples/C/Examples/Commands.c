@@ -34,12 +34,12 @@ void Commands()
 
     // Define read/write setting commands
     const char* const commands[] = {
-            "{\"device_name\":null}", /* change null to a value to write setting */
-            "{\"serial_number\":null}",
-            "{\"firmware_version\":null}",
-            "{\"bootloader_version\":null}",
-            "{\"hardware_version\":null}",
-            "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
+        "{\"device_name\":null}", /* change null to a value to write setting */
+        "{\"serial_number\":null}",
+        "{\"firmware_version\":null}",
+        "{\"bootloader_version\":null}",
+        "{\"hardware_version\":null}",
+        "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
     };
     const int numberOfCommands = sizeof(commands) / sizeof(commands[0]);
 

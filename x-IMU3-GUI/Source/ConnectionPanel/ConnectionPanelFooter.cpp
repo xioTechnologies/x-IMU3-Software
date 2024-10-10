@@ -10,18 +10,18 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
     statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            std::ostringstream text;
-                                            text << " " << message.message_rate << " messages/s";
-                                            text << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
-                                            statisticsLabel.setText(text.str());
-                                            resized();
-                                        });
+            std::ostringstream text;
+            text << " " << message.message_rate << " messages/s";
+            text << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
+            statisticsLabel.setText(text.str());
+            resized();
+        });
     };
     statisticsCallbackID = connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback);
 
@@ -38,45 +38,45 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
         {
             messagesChanged();
         }, connectionPanel), [this]
-                                              {
-                                                  for (auto& message : messages)
-                                                  {
-                                                      message.unread = false;
-                                                  }
-                                                  messagesChanged();
-                                                  return true;
-                                              });
+        {
+            for (auto& message : messages)
+            {
+                message.unread = false;
+            }
+            messagesChanged();
+            return true;
+        });
     };
 
     notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
+            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
 
-                                            messagesChanged();
-                                        });
+            messagesChanged();
+        });
     };
     notificationCallbackID = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
 
     errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
+            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
 
-                                            messagesChanged();
-                                        });
+            messagesChanged();
+        });
     };
     errorCallbackID = connectionPanel.getConnection()->addErrorCallback(errorCallback);
 }
@@ -100,8 +100,8 @@ void ConnectionPanelFooter::resized()
     const auto iconWidth = bounds.getHeight();
     static constexpr int iconMargin = 2;
 
-    const auto numberOfNotificationsMaxWidth = 5 + numberOfNotificationsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt (UIFonts::getSmallFont(), "0");
-    const auto numberOfErrorsMaxWidth = 5 + numberOfErrorsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt (UIFonts::getSmallFont(), "0");
+    const auto numberOfNotificationsMaxWidth = 5 + numberOfNotificationsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt(UIFonts::getSmallFont(), "0");
+    const auto numberOfErrorsMaxWidth = 5 + numberOfErrorsLabel.getText().length() * juce::GlyphArrangement::getStringWidthInt(UIFonts::getSmallFont(), "0");
 
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;

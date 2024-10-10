@@ -2,8 +2,8 @@
 #include "AvailableConnectionsDialog.h"
 
 AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
-        : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
-          existingConnections(std::move(existingConnections_))
+    : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
+      existingConnections(std::move(existingConnections_))
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);

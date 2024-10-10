@@ -5,11 +5,11 @@
 #include "WindowIDs.h"
 
 WindowHeader::WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
-        : connectionPanel(connectionPanel_),
-          windowLayout(windowLayout_),
-          type(type_),
-          menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
-          title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred)
+    : connectionPanel(connectionPanel_),
+      windowLayout(windowLayout_),
+      type(type_),
+      menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
+      title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred)
 {
     addAndMakeVisible(menuButton);
     addAndMakeVisible(title);

@@ -18,7 +18,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
     if (!recentCommands.isValid())
     {
         recentCommands = juce::ValueTree("RecentCommands");
-        recentCommands.appendChild({ "Command", {{ "key", "note" }, { "type", static_cast<int>(Type::string) }, { "value", "Hello World!" }}}, nullptr);
+        recentCommands.appendChild({ "Command", { { "key", "note" }, { "type", static_cast<int>(Type::string) }, { "value", "Hello World!" } } }, nullptr);
     }
 
     typeValue.addItemList({ toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null) }, 1);
@@ -71,7 +71,7 @@ void SendCommandDialog::resized()
 
 CommandMessage SendCommandDialog::getCommand()
 {
-    juce::ValueTree newCommand { "Command", {{ "key", keyValue.getText() }, { "type", typeValue.getSelectedItemIndex() }}};
+    juce::ValueTree newCommand { "Command", { { "key", keyValue.getText() }, { "type", typeValue.getSelectedItemIndex() } } };
     switch (static_cast<Type>(typeValue.getSelectedItemIndex()))
     {
         case Type::string:

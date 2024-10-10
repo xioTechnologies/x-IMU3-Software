@@ -4,12 +4,12 @@
 #include "MagnetometerGraphWindow.h"
 
 MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout_, type_, connectionPanel_,
-                      glRenderer,
-                      "Intensity (a.u.)",
-                      { "X", "Y", "Z" },
-                      { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      false)
+    : GraphWindow(windowLayout_, type_, connectionPanel_,
+                  glRenderer,
+                  "Intensity (a.u.)",
+                  { "X", "Y", "Z" },
+                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
+                  false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)
     {

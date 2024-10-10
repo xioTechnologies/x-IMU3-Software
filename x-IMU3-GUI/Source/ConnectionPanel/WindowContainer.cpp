@@ -8,16 +8,15 @@ class WindowContainer::ResizeBar : public juce::Component
 {
 public:
     ResizeBar(WindowContainer& parent_, size_t index_)
-            : parent(parent_),
-              index(index_)
+        : parent(parent_),
+          index(index_)
     {
         setMouseCursor({ parent.isVertical ? juce::MouseCursor::UpDownResizeCursor : juce::MouseCursor::LeftRightResizeCursor });
     }
 
     void mouseDrag(const juce::MouseEvent& mouseEvent)
     {
-        const auto desiredPosition = parent.isVertical ? (getBounds().getCentreY() + mouseEvent.getMouseDownY() + mouseEvent.getDistanceFromDragStartY())
-                                                       : (getBounds().getCentreX() + mouseEvent.getMouseDownX() + mouseEvent.getDistanceFromDragStartX());
+        const auto desiredPosition = parent.isVertical ? (getBounds().getCentreY() + mouseEvent.getMouseDownY() + mouseEvent.getDistanceFromDragStartY()) : (getBounds().getCentreX() + mouseEvent.getMouseDownX() + mouseEvent.getDistanceFromDragStartX());
 
         auto& prevComponent = *parent.childComponents[index];
         auto& nextComponent = *parent.childComponents[index + 1];
@@ -68,8 +67,8 @@ private:
 };
 
 WindowContainer::WindowContainer(ConnectionPanel& connectionPanel_, juce::ValueTree layoutTree_)
-        : connectionPanel(connectionPanel_),
-          layoutTree(layoutTree_)
+    : connectionPanel(connectionPanel_),
+      layoutTree(layoutTree_)
 {
     layoutTree.addListener(this);
 

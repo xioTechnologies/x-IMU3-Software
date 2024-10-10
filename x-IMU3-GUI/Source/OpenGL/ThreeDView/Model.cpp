@@ -53,23 +53,23 @@ void Model::setModel(const juce::String& objFileContent, const juce::String& mtl
 {
     loading = true;
     threadPool.addJob([&, self = juce::WeakReference(this), objFileContent, mtlFileContent]
-                      {
-                          auto newObject = std::make_shared<WavefrontObjFile>();
-                          newObject->load(objFileContent, mtlFileContent);
+    {
+        auto newObject = std::make_shared<WavefrontObjFile>();
+        newObject->load(objFileContent, mtlFileContent);
 
-                          juce::MessageManager::callAsync([&, self, newObject]() mutable
-                                                          {
-                                                              if (self == nullptr)
-                                                              {
-                                                                  return;
-                                                              }
+        juce::MessageManager::callAsync([&, self, newObject]() mutable
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                                              std::lock_guard _(objectLock);
-                                                              std::swap(object, newObject);
-                                                              fillBuffersPending = true;
-                                                              loading = false;
-                                                          });
-                      });
+            std::lock_guard _(objectLock);
+            std::swap(object, newObject);
+            fillBuffersPending = true;
+            loading = false;
+        });
+    });
 }
 
 void Model::setModel(const juce::File& objFile_)
@@ -82,23 +82,23 @@ void Model::setModel(const juce::File& objFile_)
 
     loading = true;
     threadPool.addJob([&, self = juce::WeakReference(this), objFile_]
-                      {
-                          auto newObject = std::make_shared<WavefrontObjFile>();
-                          newObject->load(objFile_);
+    {
+        auto newObject = std::make_shared<WavefrontObjFile>();
+        newObject->load(objFile_);
 
-                          juce::MessageManager::callAsync([&, self, newObject]() mutable
-                                                          {
-                                                              if (self == nullptr)
-                                                              {
-                                                                  return;
-                                                              }
+        juce::MessageManager::callAsync([&, self, newObject]() mutable
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                                              std::lock_guard _(objectLock);
-                                                              std::swap(object, newObject);
-                                                              fillBuffersPending = true;
-                                                              loading = false;
-                                                          });
-                      });
+            std::lock_guard _(objectLock);
+            std::swap(object, newObject);
+            fillBuffersPending = true;
+            loading = false;
+        });
+    });
 }
 
 bool Model::isLoading() const

@@ -5,10 +5,10 @@ IconButton::IconButton(const juce::String& icon, const juce::String& tooltip_,
                        std::function<juce::PopupMenu()> getPopup_,
                        const bool showPopupArrow,
                        const juce::String& iconOn, const juce::String& tooltipOn_)
-        : juce::DrawableButton("", ImageOnButtonBackground),
-          tooltip(tooltip_), tooltipOn(tooltipOn_.isNotEmpty() ? tooltipOn_ : tooltip_),
-          getPopup(std::move(getPopup_)),
-          popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) : nullptr)
+    : juce::DrawableButton("", ImageOnButtonBackground),
+      tooltip(tooltip_), tooltipOn(tooltipOn_.isNotEmpty() ? tooltipOn_ : tooltip_),
+      getPopup(std::move(getPopup_)),
+      popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) : nullptr)
 {
     setWantsKeyboardFocus(false);
 

@@ -19,7 +19,7 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
     std::vector<CommandMessage> commands;
     for (auto setting : settings)
     {
-        commands.push_back({ setting[DeviceSettingsIDs::key], {}});
+        commands.push_back({ setting[DeviceSettingsIDs::key], {} });
     }
     return commands;
 }
@@ -36,7 +36,7 @@ std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool replaceR
 
         if (setting[DeviceSettingsIDs::readOnly] && replaceReadOnlyValuesWithNull)
         {
-            commands.push_back({ setting[DeviceSettingsIDs::key], {}});
+            commands.push_back({ setting[DeviceSettingsIDs::key], {} });
             continue;
         }
 

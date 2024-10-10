@@ -1,12 +1,12 @@
 #include "Dialog.h"
 
 Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const juce::String& okButtonText, const juce::String& cancelButtonText, juce::Component* const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_, const std::optional<juce::Colour>& tag_)
-        : juce::Component(dialogTitle),
-          icon(icon_),
-          tag(tag_),
-          bottomLeftComponent(bottomLeftComponent_),
-          bottomLeftComponentWidth(bottomLeftComponentWidth_),
-          resizable(resizable_)
+    : juce::Component(dialogTitle),
+      icon(icon_),
+      tag(tag_),
+      bottomLeftComponent(bottomLeftComponent_),
+      bottomLeftComponentWidth(bottomLeftComponentWidth_),
+      resizable(resizable_)
 {
     auto initButton = [this](auto& button, auto visible, const auto& buttonText, auto toggleState)
     {
@@ -104,7 +104,7 @@ int Dialog::getMinimumWidth() const
 int Dialog::calculateHeight(const int numberOfRows) const
 {
     // This "adjust" fixes a bug that the dialog height doesn't adjust after changing the title bar height
-    static constexpr int adjust = + titleBarHeight - 26; // 26 is juce default title bar height,
+    static constexpr int adjust = titleBarHeight - 26; // 26 is juce default title bar height,
     return margin + (numberOfRows + 1) * (UILayout::textComponentHeight + margin) + adjust + margin;
 }
 

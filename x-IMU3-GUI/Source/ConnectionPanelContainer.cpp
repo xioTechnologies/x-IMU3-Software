@@ -4,9 +4,9 @@
 #include "Dialogs/MessageDialog.h"
 
 ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_, juce::ThreadPool& threadPool_)
-        : windowLayout(windowLayout_),
-          glRenderer(glRenderer_),
-          threadPool(threadPool_)
+    : windowLayout(windowLayout_),
+      glRenderer(glRenderer_),
+      threadPool(threadPool_)
 {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
@@ -90,17 +90,17 @@ void ConnectionPanelContainer::updateSize()
     switch (getLayoutInternal())
     {
         case Layout::rows:
-        {
-            static constexpr int minimumRowHeight = 175;
-            bounds.setHeight(std::max(bounds.getHeight(), (int) connectionPanels.size() * minimumRowHeight + (int) connectionPanels.size() * UILayout::panelMargin));
-            break;
-        }
+            {
+                static constexpr int minimumRowHeight = 175;
+                bounds.setHeight(std::max(bounds.getHeight(), (int) connectionPanels.size() * minimumRowHeight + (int) connectionPanels.size() * UILayout::panelMargin));
+                break;
+            }
         case Layout::columns:
-        {
-            static constexpr int minimumColumnWidth = 100;
-            bounds.setWidth(std::max(bounds.getWidth(), (int) connectionPanels.size() * minimumColumnWidth + (int) connectionPanels.size() * UILayout::panelMargin));
-            break;
-        }
+            {
+                static constexpr int minimumColumnWidth = 100;
+                bounds.setWidth(std::max(bounds.getWidth(), (int) connectionPanels.size() * minimumColumnWidth + (int) connectionPanels.size() * UILayout::panelMargin));
+                break;
+            }
         case Layout::grid:
             break;
         case Layout::accordion:

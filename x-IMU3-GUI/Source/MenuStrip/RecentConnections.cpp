@@ -34,36 +34,48 @@ void RecentConnections::update(const ximu3::ConnectionInfo& connectionInfo)
 
     if (const auto* usbConnectionInfo = dynamic_cast<const ximu3::UsbConnectionInfo*>(&connectionInfo))
     {
-        prepend({ "UsbConnectionInfo", {{ "portName", usbConnectionInfo->port_name }}});
+        prepend({ "UsbConnectionInfo", { { "portName", usbConnectionInfo->port_name } } });
         return;
     }
 
     if (const auto* serialConnectionInfo = dynamic_cast<const ximu3::SerialConnectionInfo*>(&connectionInfo))
     {
-        prepend({ "SerialConnectionInfo", {{ "portName", serialConnectionInfo->port_name },
-                                           { "baudRate", (int) serialConnectionInfo->baud_rate },
-                                           { "rtsCtsEnabled", serialConnectionInfo->rts_cts_enabled ? 1 : 0 }}});
+        prepend({
+            "SerialConnectionInfo", {
+                { "portName", serialConnectionInfo->port_name },
+                { "baudRate", (int) serialConnectionInfo->baud_rate },
+                { "rtsCtsEnabled", serialConnectionInfo->rts_cts_enabled ? 1 : 0 }
+            }
+        });
         return;
     }
 
     if (const auto* tcpConnectionInfo = dynamic_cast<const ximu3::TcpConnectionInfo*>(&connectionInfo))
     {
-        prepend({ "TcpConnectionInfo", {{ "ipAddress", tcpConnectionInfo->ip_address },
-                                        { "port", (int) tcpConnectionInfo->port }}});
+        prepend({
+            "TcpConnectionInfo", {
+                { "ipAddress", tcpConnectionInfo->ip_address },
+                { "port", (int) tcpConnectionInfo->port }
+            }
+        });
         return;
     }
 
     if (const auto* udpConnectionInfo = dynamic_cast<const ximu3::UdpConnectionInfo*>(&connectionInfo))
     {
-        prepend({ "UdpConnectionInfo", {{ "ipAddress", udpConnectionInfo->ip_address },
-                                        { "sendPort", (int) udpConnectionInfo->send_port },
-                                        { "receivePort", (int) udpConnectionInfo->receive_port }}});
+        prepend({
+            "UdpConnectionInfo", {
+                { "ipAddress", udpConnectionInfo->ip_address },
+                { "sendPort", (int) udpConnectionInfo->send_port },
+                { "receivePort", (int) udpConnectionInfo->receive_port }
+            }
+        });
         return;
     }
 
     if (const auto* bluetoothConnectionInfo = dynamic_cast<const ximu3::BluetoothConnectionInfo*>(&connectionInfo))
     {
-        prepend({ "BluetoothConnectionInfo", {{ "portName", bluetoothConnectionInfo->port_name }}});
+        prepend({ "BluetoothConnectionInfo", { { "portName", bluetoothConnectionInfo->port_name } } });
     }
 }
 

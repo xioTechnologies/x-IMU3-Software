@@ -4,7 +4,7 @@
 #include "Firmware/Firmware.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
-        : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
+    : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
 {
     addAndMakeVisible(deviceSettings);
     addAndMakeVisible(readAllButton);
@@ -59,11 +59,11 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         writeCommands(deviceSettings.getWriteCommands(true));
     };
 
-    deviceSettings.onSettingModified = [this] (const CommandMessage& command)
+    deviceSettings.onSettingModified = [this](const CommandMessage& command)
     {
         if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
         {
-            writeCommands({command});
+            writeCommands({ command });
         }
     };
 
@@ -82,7 +82,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         }
 
         fileChooser = std::make_unique<juce::FileChooser>("Save Device Settings", directory.getChildFile(fileName), "*.json");
-        fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&] (const auto&)
+        fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&](const auto&)
         {
             if (fileChooser->getResult() == juce::File())
             {
@@ -114,7 +114,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         }
 
         fileChooser = std::make_unique<juce::FileChooser>("Load Device Settings", defaultFile.value_or(directory), "*.json");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&] (const auto&)
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
         {
             if (fileChooser->getResult() == juce::File())
             {
@@ -143,7 +143,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             enableInProgress(deviceSettings.getReadCommands());
 
-            connectionPanel.sendCommands({{ "default", {}}}, this, [this](const auto& responses)
+            connectionPanel.sendCommands({ { "default", {} } }, this, [this](const auto& responses)
             {
                 if (responses.empty())
                 {
@@ -152,7 +152,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                     return;
                 }
 
-                connectionPanel.sendCommands({{ "save", {}}}, this, [this](const auto& responses_)
+                connectionPanel.sendCommands({ { "save", {} } }, this, [this](const auto& responses_)
                 {
                     if (responses_.empty())
                     {
@@ -161,7 +161,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                         return;
                     }
 
-                    connectionPanel.sendCommands({{ "apply", {}}}, this, [this](const auto&)
+                    connectionPanel.sendCommands({ { "apply", {} } }, this, [this](const auto&)
                     {
                         readAllButton.onClick();
                     });
@@ -226,7 +226,7 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
 
         writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
-        connectionPanel.sendCommands({{ "save", {}}}, this, [&](const auto& responses_)
+        connectionPanel.sendCommands({ { "save", {} } }, this, [&](const auto& responses_)
         {
             disableInProgress();
 
@@ -236,7 +236,7 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
                 return;
             }
 
-            connectionPanel.sendCommands({{ "apply", {}}});
+            connectionPanel.sendCommands({ { "apply", {} } });
         });
     });
 }
@@ -255,7 +255,7 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 
 void DeviceSettingsWindow::disableInProgress()
 {
-    juce::Timer::callAfterDelay(100, [&,  self = SafePointer<juce::Component>(this)]
+    juce::Timer::callAfterDelay(100, [&, self = SafePointer<juce::Component>(this)]
     {
         if (self != nullptr)
         {

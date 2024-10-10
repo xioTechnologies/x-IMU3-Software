@@ -2,12 +2,12 @@
 #include "$name$GraphWindow.h"
 
 $name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout_, type_, connectionPanel_,
-                      glRenderer,
-                      "$y_axis$",
-                      $legend_strings$,
-                      $legend_colours$,
-                      $horizontal_autoscale$)
+    : GraphWindow(windowLayout_, type_, connectionPanel_,
+                  glRenderer,
+                  "$y_axis$",
+                  $legend_strings$,
+                  $legend_colours$,
+                  $horizontal_autoscale$)
 {
 $callback_implementations$
 }

@@ -4,12 +4,12 @@
 #include "HighGAccelerometerGraphWindow.h"
 
 HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
-        : GraphWindow(windowLayout_, type_, connectionPanel_,
-                      glRenderer,
-                      "Acceleration (g)",
-                      { "X", "Y", "Z" },
-                      { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                      false)
+    : GraphWindow(windowLayout_, type_, connectionPanel_,
+                  glRenderer,
+                  "Acceleration (g)",
+                  { "X", "Y", "Z" },
+                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
+                  false)
 {
     callbackIDs.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
     {
