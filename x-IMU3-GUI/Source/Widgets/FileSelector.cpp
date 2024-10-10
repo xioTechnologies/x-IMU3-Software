@@ -12,17 +12,8 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
     };
     button.onClick = [&]
     {
-        const auto flags = [&]
-        {
-            if (extension)
-            {
-                return juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectMultipleItems;
-            }
-            return juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectDirectories;
-        }();
-
         fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
-        fileChooser->launchAsync(flags, [&](const auto&)
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | (extension ? (juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectMultipleItems) : juce::FileBrowserComponent::canSelectDirectories), [&](const auto&)
         {
             if (fileChooser->getResults().isEmpty())
             {
