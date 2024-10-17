@@ -285,6 +285,12 @@ jobs:
           xcrun notarytool submit "x-IMU3-GUI${{ matrix.target[2] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
           xcrun stapler staple "x-IMU3-GUI${{ matrix.target[2] }}"
 
+      - uses: actions/upload-artifact@v4
+        name: Upload to artifacts
+        with:
+          name: x-IMU3-GUI${{ matrix.target[2] }}
+          path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI${{ matrix.target[2] }}
+
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
         env:
@@ -354,6 +360,12 @@ jobs:
           signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI-Setup.exe"
           signtool.exe verify /v /pa "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI-Setup.exe"
 
+      - uses: actions/upload-artifact@v4
+        name: Upload to artifacts
+        with:
+          name: x-IMU3-GUI-Setup.exe
+          path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI-Setup.exe
+
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
         env:
@@ -397,6 +409,12 @@ jobs:
 
       - name: Rename file
         run: mv "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI" "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI"
+
+      - uses: actions/upload-artifact@v4
+        name: Upload to artifacts
+        with:
+          name: x-IMU3-GUI
+          path: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Upload to release
