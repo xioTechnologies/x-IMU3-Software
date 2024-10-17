@@ -12,7 +12,7 @@ FileSelector::FileSelector(const juce::String& tooltip, const std::optional<juce
     };
     button.onClick = [&]
     {
-        fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), std::filesystem::exists(getText().toStdString()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
+        fileChooser = std::make_unique<juce::FileChooser>(button.getTooltip(), exists(getText()) ? textEditor.getText() : "", extension ? ("*" + *extension) : "");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | (extension ? (juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectMultipleItems) : juce::FileBrowserComponent::canSelectDirectories), [&](const auto&)
         {
             if (fileChooser->getResults().isEmpty())
@@ -66,7 +66,7 @@ bool FileSelector::isValid() const
 
     for (auto string : juce::StringArray::fromTokens(getText(), ";", ""))
     {
-        if (std::filesystem::exists(string.toStdString()) == false)
+        if (exists(string) == false)
         {
             return false;
         }
@@ -103,12 +103,24 @@ juce::StringArray FileSelector::toStringArray(const juce::Array<juce::File>& fil
     return strings;
 }
 
+bool FileSelector::exists(const juce::String& path)
+{
+    try
+    {
+        return std::filesystem::exists(path.toStdString());
+    }
+    catch (...)
+    {
+        return false;
+    }
+}
+
 juce::Array<juce::File> FileSelector::toFileArray(const juce::StringArray& strings)
 {
     juce::Array<juce::File> files;
     for (auto file : strings)
     {
-        if (std::filesystem::exists(file.toStdString()))
+        if (exists(file.toStdString()))
         {
             files.add(file);
         }

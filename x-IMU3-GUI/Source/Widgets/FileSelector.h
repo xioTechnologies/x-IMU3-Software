@@ -38,5 +38,7 @@ private:
 
     juce::StringArray toStringArray(const juce::Array<juce::File>& files) const;
 
+    static bool exists(const juce::String& path);
+
     static juce::Array<juce::File> toFileArray(const juce::StringArray& strings);
 };
