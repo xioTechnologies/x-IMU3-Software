@@ -54,7 +54,7 @@ if (APPLE)
 endif ()
 
 string(TIMESTAMP BUILD_DATE UTC)
-execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD OUTPUT_VARIABLE COMMIT_SHA)
+execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD OUTPUT_VARIABLE COMMIT_SHA OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 target_compile_definitions(x-IMU3-GUI
         PRIVATE
