@@ -70,7 +70,7 @@ bool FileSelector::isValid() const
         {
             return false;
         }
-        if (extension && std::filesystem::path(string.toStdString()).extension() != extension->toStdString())
+        if (extension && std::filesystem::path(string.toWideCharPointer()).extension() != extension->toStdString())
         {
             return false;
         }
@@ -107,7 +107,7 @@ bool FileSelector::exists(const juce::String& path)
 {
     try
     {
-        return std::filesystem::exists(path.toStdString());
+        return std::filesystem::exists(path.toWideCharPointer());
     }
     catch (...)
     {
@@ -120,7 +120,7 @@ juce::Array<juce::File> FileSelector::toFileArray(const juce::StringArray& strin
     juce::Array<juce::File> files;
     for (auto file : strings)
     {
-        if (exists(file.toStdString()))
+        if (exists(file))
         {
             files.add(file);
         }
