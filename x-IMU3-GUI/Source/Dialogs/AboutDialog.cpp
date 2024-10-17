@@ -49,8 +49,8 @@ void AboutDialog::resized()
     logo.setBounds(bounds.removeFromTop(100));
     bounds.removeFromTop(margin);
 
-    const auto labelWidth = std::reduce(rows.begin(), rows.end(), 0, [&] (int width, const auto& pair) { return std::max(width, juce::GlyphArrangement::getStringWidthInt(UIFonts::getDefaultFont(), pair.first->getText())); });
-    const auto valueWidth = std::reduce(rows.begin(), rows.end(), 0, [&] (int width, const auto& pair) { return std::max(width, juce::GlyphArrangement::getStringWidthInt(UIFonts::getDefaultFont(), pair.second->getText())); });
+    const auto labelWidth = std::accumulate(rows.begin(), rows.end(), 0, [&] (auto width, const auto& pair) { return std::max(width, juce::GlyphArrangement::getStringWidthInt(UIFonts::getDefaultFont(), pair.first->getText())); });
+    const auto valueWidth = std::accumulate(rows.begin(), rows.end(), 0, [&] (auto width, const auto& pair) { return std::max(width, juce::GlyphArrangement::getStringWidthInt(UIFonts::getDefaultFont(), pair.second->getText())); });
     bounds = bounds.withSizeKeepingCentre(labelWidth + 25 + valueWidth, bounds.getHeight());
     for (auto it = rows.rbegin(); it != rows.rend(); it++)
     {
