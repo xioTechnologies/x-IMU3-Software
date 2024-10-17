@@ -53,6 +53,9 @@ if (APPLE)
     target_sources(x-IMU3-GUI PRIVATE Source/UIUtilsMac.mm)
 endif ()
 
+string(TIMESTAMP BUILD_DATE UTC)
+execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD OUTPUT_VARIABLE COMMIT_SHA)
+
 target_compile_definitions(x-IMU3-GUI
         PRIVATE
         JUCE_WEB_BROWSER=0
@@ -61,7 +64,9 @@ target_compile_definitions(x-IMU3-GUI
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_VERSION>"
         JUCE_OPENGL3=1
         GLM_FORCE_SILENT_WARNINGS
-        GLM_FORCE_SIZE_T_LENGTH) # Resolves signed conversion warning on Ubuntu
+        GLM_FORCE_SIZE_T_LENGTH # Resolves signed conversion warning on Ubuntu
+        BUILD_DATE="${BUILD_DATE}"
+        COMMIT_SHA="${COMMIT_SHA}")
 
 FILE(GLOB_RECURSE FONT_FILES "Fonts/*.*")
 FILE(GLOB_RECURSE IMAGE_FILES "Images/*.*")
