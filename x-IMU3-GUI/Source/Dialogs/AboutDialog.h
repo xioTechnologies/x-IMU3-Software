@@ -21,12 +21,31 @@ private:
 
     Icon logo { BinaryData::xio_logo_svg, logoUrl };
 
-    SimpleLabel applicationVersionLabel { "x-IMU3 GUI Version:" };
-    SimpleLabel applicationVersionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion(), UIFonts::getDefaultFont(), juce::Justification::centredRight };
-    SimpleLabel expectedFirmwareVersionLabel { "Expected Firmware:" };
-    SimpleLabel expectedFirmwareVersionValue { Firmware::version, UIFonts::getDefaultFont(), juce::Justification::centredRight };
+    SimpleLabel versionLabel { "Version:" };
+    SimpleLabel versionValue { "v" + juce::JUCEApplication::getInstance()->getApplicationVersion(), UIFonts::getDefaultFont(), juce::Justification::centredLeft };
 
-    SimpleLabel applicationVersionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+    SimpleLabel buildDateLabel { "Build Date:" };
+    SimpleLabel buildDateValue { juce::String(BUILD_DATE), UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+
+    SimpleLabel configurationLabel { "Configuration:" };
+#if JUCE_DEBUG
+    SimpleLabel configurationValue { "Debug", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+#else
+    SimpleLabel configurationValue {  "Release", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+#endif
+
+    SimpleLabel commitShaLabel { "Commit SHA:" };
+    SimpleLabel commitShaValue { juce::String(COMMIT_SHA).isEmpty() ? "N/A" : juce::String(COMMIT_SHA), UIFonts::getDefaultFont(), juce::Justification::centredLeft };
+
+    const std::vector<std::pair<SimpleLabel*, SimpleLabel*>> rows
+    {
+        { &versionLabel, &versionValue },
+        { &buildDateLabel, &buildDateValue },
+        { &configurationLabel, &configurationValue },
+        { &commitShaLabel, &commitShaValue },
+    };
+
+    SimpleLabel versionUpdateLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredLeft };
 
     IconButton downloadsButton { BinaryData::download_svg, "x-IMU3 Downloads" };
 
