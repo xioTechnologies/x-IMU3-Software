@@ -37,10 +37,20 @@ static void usb_connection_info_free(UsbConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* usb_connection_info_get_port_name(UsbConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.port_name);
+}
+
 static PyObject* usb_connection_info_to_string(UsbConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_usb_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef usb_connection_info_get_set[] = {
+        { "port_name", (getter) usb_connection_info_get_port_name, NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef usb_connection_info_methods[] = {
         { "to_string", (PyCFunction) usb_connection_info_to_string, METH_NOARGS, "" },
@@ -53,6 +63,7 @@ static PyTypeObject usb_connection_info_object = {
         .tp_basicsize = sizeof(UsbConnectionInfo),
         .tp_dealloc = (destructor) usb_connection_info_free,
         .tp_new = usb_connection_info_new,
+        .tp_getset = usb_connection_info_get_set,
         .tp_methods = usb_connection_info_methods
 };
 
@@ -99,10 +110,32 @@ static void serial_connection_info_free(SerialConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* serial_connection_info_get_port_name(SerialConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.port_name);
+}
+
+static PyObject* serial_connection_info_get_baud_rate(SerialConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("k", self->connection_info.baud_rate);
+}
+
+static PyObject* serial_connection_info_get_rts_cts_enabled(SerialConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("p", self->connection_info.rts_cts_enabled);
+}
+
 static PyObject* serial_connection_info_to_string(SerialConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_serial_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef serial_connection_info_get_set[] = {
+        { "port_name",       (getter) serial_connection_info_get_port_name,       NULL, "", NULL },
+        { "baud_rate",       (getter) serial_connection_info_get_baud_rate,       NULL, "", NULL },
+        { "rts_cts_enabled", (getter) serial_connection_info_get_rts_cts_enabled, NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef serial_connection_info_methods[] = {
         { "to_string", (PyCFunction) serial_connection_info_to_string, METH_NOARGS, "" },
@@ -115,6 +148,7 @@ static PyTypeObject serial_connection_info_object = {
         .tp_basicsize = sizeof(SerialConnectionInfo),
         .tp_dealloc = (destructor) serial_connection_info_free,
         .tp_new = serial_connection_info_new,
+        .tp_getset = serial_connection_info_get_set,
         .tp_methods = serial_connection_info_methods
 };
 
@@ -159,10 +193,26 @@ static void tcp_connection_info_free(TcpConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* tcp_connection_info_get_ip_address(TcpConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.ip_address);
+}
+
+static PyObject* tcp_connection_info_get_port(TcpConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("H", self->connection_info.port);
+}
+
 static PyObject* tcp_connection_info_to_string(TcpConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_tcp_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef tcp_connection_info_get_set[] = {
+        { "ip_address", (getter) tcp_connection_info_get_ip_address, NULL, "", NULL },
+        { "port",       (getter) tcp_connection_info_get_port,       NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef tcp_connection_info_methods[] = {
         { "to_string", (PyCFunction) tcp_connection_info_to_string, METH_NOARGS, "" },
@@ -175,6 +225,7 @@ static PyTypeObject tcp_connection_info_object = {
         .tp_basicsize = sizeof(TcpConnectionInfo),
         .tp_dealloc = (destructor) tcp_connection_info_free,
         .tp_new =  tcp_connection_info_new,
+        .tp_getset = tcp_connection_info_get_set,
         .tp_methods = tcp_connection_info_methods
 };
 
@@ -221,10 +272,32 @@ static void udp_connection_info_free(UdpConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* udp_connection_info_get_ip_address(UdpConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.ip_address);
+}
+
+static PyObject* udp_connection_info_get_send_port(UdpConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("H", self->connection_info.send_port);
+}
+
+static PyObject* udp_connection_info_get_receive_port(UdpConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("H", self->connection_info.receive_port);
+}
+
 static PyObject* udp_connection_info_to_string(UdpConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_udp_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef udp_connection_info_get_set[] = {
+        { "ip_address",   (getter) udp_connection_info_get_ip_address,   NULL, "", NULL },
+        { "send_port",    (getter) udp_connection_info_get_send_port,    NULL, "", NULL },
+        { "receive_port", (getter) udp_connection_info_get_receive_port, NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef udp_connection_info_methods[] = {
         { "to_string", (PyCFunction) udp_connection_info_to_string, METH_NOARGS, "" },
@@ -237,6 +310,7 @@ static PyTypeObject udp_connection_info_object = {
         .tp_basicsize = sizeof(UdpConnectionInfo),
         .tp_dealloc = (destructor) udp_connection_info_free,
         .tp_new = udp_connection_info_new,
+        .tp_getset = udp_connection_info_get_set,
         .tp_methods = udp_connection_info_methods
 };
 
@@ -279,10 +353,20 @@ static void bluetooth_connection_info_free(BluetoothConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* bluetooth_connection_info_get_port_name(BluetoothConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.port_name);
+}
+
 static PyObject* bluetooth_connection_info_to_string(BluetoothConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_bluetooth_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef bluetooth_connection_info_get_set[] = {
+        { "port_name", (getter) bluetooth_connection_info_get_port_name, NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef bluetooth_connection_info_methods[] = {
         { "to_string", (PyCFunction) bluetooth_connection_info_to_string, METH_NOARGS, "" },
@@ -295,6 +379,7 @@ static PyTypeObject bluetooth_connection_info_object = {
         .tp_basicsize = sizeof(BluetoothConnectionInfo),
         .tp_dealloc = (destructor) bluetooth_connection_info_free,
         .tp_new = bluetooth_connection_info_new,
+        .tp_getset = bluetooth_connection_info_get_set,
         .tp_methods = bluetooth_connection_info_methods
 };
 
@@ -337,10 +422,20 @@ static void file_connection_info_free(FileConnectionInfo* self)
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject* file_connection_info_get_file_path(FileConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", self->connection_info.file_path);
+}
+
 static PyObject* file_connection_info_to_string(FileConnectionInfo* self, PyObject* args)
 {
     return Py_BuildValue("s", XIMU3_file_connection_info_to_string(self->connection_info));
 }
+
+static PyGetSetDef file_connection_info_get_set[] = {
+        { "file_path", (getter) file_connection_info_get_file_path, NULL, "", NULL },
+        { NULL } /* sentinel */
+};
 
 static PyMethodDef file_connection_info_methods[] = {
         { "to_string", (PyCFunction) file_connection_info_to_string, METH_NOARGS, "" },
@@ -353,6 +448,7 @@ static PyTypeObject file_connection_info_object = {
         .tp_basicsize = sizeof(FileConnectionInfo),
         .tp_dealloc = (destructor) file_connection_info_free,
         .tp_new = file_connection_info_new,
+        .tp_getset = file_connection_info_get_set,
         .tp_methods = file_connection_info_methods
 };
 

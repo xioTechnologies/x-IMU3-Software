@@ -30,6 +30,14 @@ namespace Ximu3
             delete connectionInfo;
         }
 
+        property String^ PortName
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->port_name);
+            }
+        }
+
         String^ ToString() override
         {
             return gcnew String(ximu3::XIMU3_usb_connection_info_to_string(*connectionInfo));
@@ -60,6 +68,30 @@ namespace Ximu3
             delete connectionInfo;
         }
 
+        property String^ PortName
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->port_name);
+            }
+        }
+
+        property uint32_t BaudRate
+        {
+            uint32_t get()
+            {
+                return connectionInfo->baud_rate;
+            }
+        }
+
+        property bool RtsCtsEnabled
+        {
+            bool get()
+            {
+                return connectionInfo->rts_cts_enabled;
+            }
+        }
+
         String^ ToString() override
         {
             return gcnew String(ximu3::XIMU3_serial_connection_info_to_string(*connectionInfo));
@@ -87,6 +119,22 @@ namespace Ximu3
         ~TcpConnectionInfo()
         {
             delete connectionInfo;
+        }
+
+        property String^ IPAddress
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->ip_address);
+            }
+        }
+
+        property uint16_t Port
+        {
+            uint16_t get()
+            {
+                return connectionInfo->port;
+            }
         }
 
         String^ ToString() override
@@ -119,6 +167,30 @@ namespace Ximu3
             delete connectionInfo;
         }
 
+        property String^ IPAddress
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->ip_address);
+            }
+        }
+
+        property uint16_t SendPort
+        {
+            uint16_t get()
+            {
+                return connectionInfo->send_port;
+            }
+        }
+
+        property uint16_t ReceivePort
+        {
+            uint16_t get()
+            {
+                return connectionInfo->receive_port;
+            }
+        }
+
         String^ ToString() override
         {
             return gcnew String(ximu3::XIMU3_udp_connection_info_to_string(*connectionInfo));
@@ -147,6 +219,14 @@ namespace Ximu3
             delete connectionInfo;
         }
 
+        property String^ PortName
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->port_name);
+            }
+        }
+
         String^ ToString() override
         {
             return gcnew String(ximu3::XIMU3_bluetooth_connection_info_to_string(*connectionInfo));
@@ -173,6 +253,14 @@ namespace Ximu3
         ~FileConnectionInfo()
         {
             delete connectionInfo;
+        }
+
+        property String^ FilePath
+        {
+            String^ get()
+            {
+                return gcnew String(connectionInfo->file_path);
+            }
         }
 
         String^ ToString() override
