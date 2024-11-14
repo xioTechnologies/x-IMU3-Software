@@ -83,7 +83,13 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
         updateProgress("Waiting For Bootloader Mode");
         juce::Thread::sleep(5000);
 
-        for (const auto& portName : ximu3::PortScanner::getPortNames())
+        auto portNames = ximu3::PortScanner::getPortNames();
+        std::stable_partition(portNames.begin(), portNames.end(), [](const auto& portName)
+        {
+            return juce::String(portName).containsIgnoreCase("usb");
+        }); // reorder for USB ports first
+
+        for (const auto& portName : portNames)
         {
             updateProgress("Attempting Upload on " + portName);
 
