@@ -163,11 +163,11 @@
         <Enumerator name="40 (5 GHz)" value="40"/>
         <Enumerator name="44 (5 GHz)" value="44"/>
         <Enumerator name="48 (5 GHz)" value="48"/>
-        <Enumerator name="149 (5 GHz)" value="149"/>
-        <Enumerator name="153 (5 GHz)" value="153"/>
-        <Enumerator name="157 (5 GHz)" value="157"/>
-        <Enumerator name="161 (5 GHz)" value="161"/>
-        <Enumerator name="165 (5 GHz)" value="165"/>
+        <Enumerator name="149 (5 GHz), Invalid for EU and JP)" value="149"/>
+        <Enumerator name="153 (5 GHz), Invalid for EU and JP)" value="153"/>
+        <Enumerator name="157 (5 GHz), Invalid for EU and JP)" value="157"/>
+        <Enumerator name="161 (5 GHz), Invalid for EU and JP)" value="161"/>
+        <Enumerator name="165 (5 GHz), Invalid for EU and JP)" value="165"/>
     </Enum>
     <Enum name="WirelessWlanClientChannel">
         <Enumerator name="All" value="0"/>
