@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Copyright 2011-2022 DigSol Sweden AB
 //------------------------------------------------------------------------------
 //  This code may only be used together with ds30 Loader boot loader firmwares
@@ -45,10 +45,10 @@
 	#pragma warning( disable : 4996 )   //secure functions are not available with gcc
     #pragma warning( disable : 5045 )   //compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
 
-	#define NEWLINE	                "\r\n"
+	#define NEWLINE "\r\n"
 
 #else
-    #define NEWLINE	                "\n"
+    #define NEWLINE "\n"
 #endif
 
 

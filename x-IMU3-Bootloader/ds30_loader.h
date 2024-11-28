@@ -39,6 +39,7 @@
 	typedef int DS30PORTFD;
 #endif
 
+
 typedef enum {
 	BL_NOT_SPECIFIED		= 0,
 	BL_DS30_LOADER,
@@ -110,10 +111,22 @@ typedef enum {
 } ds30_event_t;
 
 
+#if defined(BUILD_COCOA) && defined(__OBJC__)
+	#import <Foundation/Foundation.h>
+	@protocol ds30EventHandlerProt <NSObject>
+	- (void)ds30EventHandler:(const void* const) ds30_options : (const ds30_event_t)event :(const BOOL)success : (const void* const)data;
+	@end
+#endif
+
+
 // If ds30_main() is called from a separate thread, make sure the scope of the strings are sufficient
 typedef struct {
 	// Event callback
-	void (*event_callback)( const void* const ds30_options, const ds30_event_t, const bool, const void* const );
+	#if defined(BUILD_COCOA) && defined(__OBJC__)
+		id <ds30EventHandlerProt> event_callback_obj;
+	#else
+		void (*event_callback)( const void* const ds30_options, const ds30_event_t, const bool, const void* const );
+	#endif
 
 	// This flag can be used to distinguish between multiple instances of ds30 Loader in the event handler
 	uint32_t			user_flag;
