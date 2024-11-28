@@ -140,7 +140,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 existingComponentToUpdate = new RssiIcon(0.65f);
             }
 
-            if (const auto percentage = rows[(size_t) rowNumber].rssiPercentage)
+            if (const auto percentage = rows[(size_t) rowNumber].rssiPercentage; percentage.has_value() && (percentage != -1))
             {
                 static_cast<RssiIcon*>(existingComponentToUpdate)->update(*percentage);
             }
