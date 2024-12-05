@@ -1,6 +1,7 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
 #include "../Helpers.h"
 #include <stdio.h>
+#include <string.h>
 
 static void Callback(const XIMU3_CharArrays responses, void* context);
 
@@ -32,14 +33,12 @@ void Commands()
         return;
     }
 
-    // Define read/write setting commands
+    // Example commands
     const char* const commands[] = {
-        "{\"device_name\":null}", /* change null to a value to write setting */
-        "{\"serial_number\":null}",
-        "{\"firmware_version\":null}",
-        "{\"bootloader_version\":null}",
-        "{\"hardware_version\":null}",
-        "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
+        "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
+        "{\"serial_number\":null}", // read serial number
+        "{\"firmware_version\":null}", // read firmware version
+        "{\"invalid_key\":null}", // invalid key to demonstrate an error response
     };
     const int numberOfCommands = sizeof(commands) / sizeof(commands[0]);
 
@@ -69,10 +68,14 @@ static void Callback(const XIMU3_CharArrays responses, void* context)
 
 static void PrintResponses(const XIMU3_CharArrays responses)
 {
-    printf("%u commands confirmed\n", responses.length);
-
+    printf("%u responses received\n", responses.length);
     for (uint32_t index = 0; index < responses.length; index++)
     {
-        printf("%s\n", responses.array[index]);
+        const XIMU3_CommandMessage response = XIMU3_command_message_parse(responses.array[index]);
+        if (strlen(response.error) > 0) {
+            printf("%s\n", response.error);
+            return;
+        }
+        printf("%s : %s\n", response.key, response.value);
     }
 }

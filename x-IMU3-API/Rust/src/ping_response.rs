@@ -24,16 +24,13 @@ impl PingResponse {
             sn: String,
         }
 
-        match serde_json::from_str::<ParentObject>(json) {
-            Ok(object) => {
-                Ok(PingResponse {
-                    interface: object.ping.interface,
-                    device_name: object.ping.name,
-                    serial_number: object.ping.sn,
-                })
-            }
-            Err(_) => Err(()),
-        }
+        let object = serde_json::from_str::<ParentObject>(json).map_err(|_| ())?;
+
+        Ok(PingResponse {
+            interface: object.ping.interface,
+            device_name: object.ping.name,
+            serial_number: object.ping.sn,
+        })
     }
 }
 

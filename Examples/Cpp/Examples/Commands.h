@@ -30,14 +30,12 @@ public:
             return;
         }
 
-        // Define read/write setting commands
+        // Example commands
         const std::vector<std::string> commands {
-            "{\"device_name\":null}", /* change null to a value to write setting */
-            "{\"serial_number\":null}",
-            "{\"firmware_version\":null}",
-            "{\"bootloader_version\":null}",
-            "{\"hardware_version\":null}",
-            "{\"invalid_setting_key\":null}", /* invalid key to demonstrate an error response */
+            "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
+            "{\"serial_number\":null}", // read serial number
+            "{\"firmware_version\":null}", // read firmware version
+            "{\"invalid_key\":null}", // invalid key to demonstrate an error response
         };
 
         // Send commands
@@ -63,10 +61,16 @@ private:
 
     static void printResponses(const std::vector<std::string>& responses)
     {
-        std::cout << responses.size() << " commands confirmed" << std::endl;
-        for (const auto& response : responses)
+        std::cout << responses.size() << " responses received" << std::endl;
+        for (const auto& response_ : responses)
         {
-            std::cout << response.c_str() << std::endl;
+            const auto response = ximu3::XIMU3_command_message_parse(response_.c_str());
+            if (std::strlen(response.error) > 0)
+            {
+                std::cout << response.error << std::endl;
+                return;
+            }
+            std::cout << response.key << " : " << response.value << std::endl;
         }
     }
 };

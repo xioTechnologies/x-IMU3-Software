@@ -84,6 +84,14 @@ typedef struct XIMU3_CharArrays
     uint32_t capacity;
 } XIMU3_CharArrays;
 
+typedef struct XIMU3_CommandMessage
+{
+    char json[XIMU3_CHAR_ARRAY_SIZE];
+    char key[XIMU3_CHAR_ARRAY_SIZE];
+    char value[XIMU3_CHAR_ARRAY_SIZE];
+    char error[XIMU3_CHAR_ARRAY_SIZE];
+} XIMU3_CommandMessage;
+
 typedef struct XIMU3_UsbConnectionInfo
 {
     char port_name[XIMU3_CHAR_ARRAY_SIZE];
@@ -367,6 +375,8 @@ extern "C" {
 void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
 
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_status);
+
+struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
 
 struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionInfo connection_info);
 

@@ -51,7 +51,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                         row_->state = Row::State::failed;
                         row_->response = "No response";
                     }
-                    else if (const auto error = responses[0].getError())
+                    else if (const auto error = responses[0].error)
                     {
                         row_->state = Row::State::failed;
                         row_->response = *error;

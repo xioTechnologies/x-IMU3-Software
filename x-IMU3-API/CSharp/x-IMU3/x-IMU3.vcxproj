@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Connection.h" />
     <ClCompile Include="ChargingStatus.h" />
+    <ClCompile Include="CommandMessage.h" />
     <ClCompile Include="ConnectionInfo.h" />
     <ClCompile Include="ConnectionType.h" />
     <ClCompile Include="DataLogger.h" />
