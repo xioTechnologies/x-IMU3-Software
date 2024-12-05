@@ -3,6 +3,7 @@ mod helpers;
 
 mod callback;
 mod charging_status;
+mod command_message;
 mod connection;
 mod connection_info;
 mod connection_type;

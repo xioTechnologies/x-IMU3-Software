@@ -12,7 +12,7 @@ class Connection:
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if ping_response.result != ximu3.RESULT_OK:
-            raise Exception(f"Ping failed for {connection_info.to_string()}")
+            raise Exception(f"No ping response for {connection_info.to_string()}")
 
         self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
 
@@ -50,9 +50,14 @@ class Connection:
         responses = self.__connection.send_commands([command], 2, 500)
 
         if not responses:
-            raise Exception(f"No response to {command} for {self.__connection.get_info().to_string()}")
-        else:
-            print(self.__prefix + responses[0])
+            raise Exception(f"No response. {command} sent to {self.__connection.get_info().to_string()}")
+
+        response = ximu3.CommandMessage.parse(responses[0])
+
+        if response.error:
+            raise Exception(f"{response.error}. {command} sent to {self.__connection.get_info().to_string()}")
+
+        print(self.__prefix + f"{response.key} : {response.value}")
 
     def __inertial_callback(self, message):
         print(self.__prefix + message.to_string())
@@ -108,8 +113,8 @@ if not connections:
 for connection in connections:
     connection.send_command("strobe")  # example command with null value
     connection.send_command("note", "Hello World!")  # example command with string value
-    connection.send_command("udpDataMessagesEnabled", True)  # example command with true/false value
-    connection.send_command("inertialMessageRateDivisor", 8)  # example command with number value
+    connection.send_command("udp_data_messages_enabled", True)  # example command with true/false value
+    connection.send_command("inertial_message_rate_divisor", 8)  # example command with number value
 
 time.sleep(60)
 

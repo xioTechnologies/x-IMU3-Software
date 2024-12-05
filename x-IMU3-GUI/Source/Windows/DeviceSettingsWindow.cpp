@@ -26,7 +26,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 const auto response = std::find(responses.begin(), responses.end(), command);
 
-                if (response == responses.end() || response->getError())
+                if (response == responses.end() || response->error)
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Read from Device");
                     continue;
@@ -214,7 +214,7 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
         {
             const auto response = std::find(responses.begin(), responses.end(), command);
 
-            if (response == responses.end() || response->getError())
+            if (response == responses.end() || response->error)
             {
                 deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
                 continue;

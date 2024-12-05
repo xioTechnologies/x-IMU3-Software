@@ -18,22 +18,26 @@ connection = ximu3.Connection(devices[0].connection_info)
 if connection.open() != ximu3.RESULT_OK:
     raise Exception("Unable to open connection")
 
-# Define read/write setting commands
+# Example commands
 commands = [
-    '{"device_name":null}',  # change null to a value to write setting
-    '{"serial_number":null}',
-    '{"firmware_version":null}',
-    '{"bootloader_version":null}',
-    '{"hardware_version":null}',
-    '{"invalid_setting_key":null}',  # invalid key to demonstrate an error response
+    '{"device_name":"Foobar"}',  # write "Foobar" to device name
+    '{"serial_number":null}',  # read serial number
+    '{"firmware_version":null}',  # read firmware version
+    '{"invalid_key":null}',  # invalid key to demonstrate an error response
 ]
 
 
 def print_responses(responses):
-    print(f"{str(len(responses))} commands confirmed")
-
+    print(f"{str(len(responses))} responses received")
+    
     for response in responses:
-        print(response)
+        response = ximu3.CommandMessage.parse(response)
+
+        if response.error:
+            print(response.error)
+            return
+
+        print(f"{response.key} : {response.value}")
 
 
 def callback(responses):

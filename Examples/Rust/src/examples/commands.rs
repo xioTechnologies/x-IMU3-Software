@@ -1,3 +1,4 @@
+use ximu3::command_message::*;
 use ximu3::connection::*;
 use ximu3::connection_type::*;
 use ximu3::port_scanner::*;
@@ -27,14 +28,12 @@ pub fn run() {
         return;
     }
 
-    // Define read/write setting commands
+    // Example commands
     let commands = vec![
-        "{\"device_name\":null}", /* change null to a value to write setting */
-        "{\"serial_number\":null}",
-        "{\"firmware_version\":null}",
-        "{\"bootloader_version\":null}",
-        "{\"hardware_version\":null}",
-        "{\"invalid_setting_key\":null}"];/* invalid key to demonstrate an error response */
+        "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
+        "{\"serial_number\":null}", // read serial number
+        "{\"firmware_version\":null}", // read firmware version
+        "{\"invalid_key\":null}"]; // invalid key to demonstrate an error response
 
     // Send commands
     if helpers::ask_question("Use async implementation?") {
@@ -52,9 +51,16 @@ pub fn run() {
 }
 
 fn print_responses(responses: Vec<String>) {
-    println!("{} commands confirmed", responses.len());
+    println!("{} responses received", responses.len());
 
     for response in responses {
-        println!("{}", response);
+        let response = CommandMessage::parse(&response);
+
+        if let Some(error) = response.error {
+            println!("{}", error);
+            return;
+        }
+
+        println!("{} : {}", response.key, response.value);
     }
 }
