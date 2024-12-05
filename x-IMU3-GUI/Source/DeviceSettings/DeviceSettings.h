@@ -8,7 +8,7 @@ class DeviceSettings : public juce::TreeView,
                        private juce::ValueTree::Listener
 {
 public:
-    DeviceSettings();
+    DeviceSettings(juce::ValueTree tree, std::function<void(const CommandMessage&)> onSettingModified_);
 
     ~DeviceSettings() override;
 
@@ -22,12 +22,11 @@ public:
 
     void setStatus(const juce::String& key, const Setting::Status status, const juce::String& statusTooltip);
 
-    std::function<void(const CommandMessage&)> onSettingModified;
-
 private:
-    juce::ValueTree tree = juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
-    const std::vector<juce::ValueTree> settings = flatten(tree);
-    DeviceSettingsItem rootItem { tree, settings };
+    const std::function<void(const CommandMessage&)> onSettingModified;
+    juce::ValueTree settingsTree;
+    const std::vector<juce::ValueTree> settingsFlattened = flatten(settingsTree);
+    DeviceSettingsItem rootItem;
 
     bool ignoreCallback = false;
 
