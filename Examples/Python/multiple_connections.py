@@ -12,7 +12,7 @@ class Connection:
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if ping_response.result != ximu3.RESULT_OK:
-            raise Exception(f"Ping failed for {connection_info.to_string()}")
+            raise Exception(f"No ping response for {connection_info.to_string()}")
 
         self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
 
@@ -51,8 +51,13 @@ class Connection:
 
         if not responses:
             raise Exception(f"No response to {command} for {self.__connection.get_info().to_string()}")
-        else:
-            print(self.__prefix + responses[0])
+
+        response = ximu3.CommandMessage.parse(responses[0])
+
+        if response.error:
+            raise Exception(f"{response.error}") # TODO
+
+        print(self.__prefix + f"{response.key} : {response.value}")
 
     def __inertial_callback(self, message):
         print(self.__prefix + message.to_string())

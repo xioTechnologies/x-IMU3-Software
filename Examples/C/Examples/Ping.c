@@ -41,7 +41,7 @@ static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
 {
     if (pingResponse.result != XIMU3_ResultOk)
     {
-        printf("Ping failed\n");
+        printf("No response\n");
         return;
     }
     printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);

@@ -1,5 +1,6 @@
 #include "../../C/Ximu3.h"
 #include "ChargingStatus.h"
+#include "CommandMessage.h"
 #include "Connection.h"
 #include "ConnectionInfo.h"
 #include "ConnectionType.h"
@@ -74,6 +75,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddFunctions(module, decode_error_methods) == 0) &&
         (PyModule_AddFunctions(module, file_converter_status_methods) == 0) &&
         (PyModule_AddFunctions(module, result_methods) == 0) &&
+        add_object(module, &command_message_object, "CommandMessage") &&
         add_object(module, &connection_object, "Connection") &&
         add_object(module, &usb_connection_info_object, "UsbConnectionInfo") &&
         add_object(module, &serial_connection_info_object, "SerialConnectionInfo") &&
