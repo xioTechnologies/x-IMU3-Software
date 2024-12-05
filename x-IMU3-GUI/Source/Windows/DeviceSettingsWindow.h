@@ -13,14 +13,12 @@ class DeviceSettingsWindow : public Window
 public:
     DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_);
 
-    ~DeviceSettingsWindow() override;
-
     void paint(juce::Graphics& g) override;
 
     void resized() override;
 
 private:
-    DeviceSettings deviceSettings;
+    std::unique_ptr<DeviceSettings> deviceSettings;
 
     IconButton readAllButton { BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)" };
     IconButton writeAllButton { BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)" };
@@ -37,6 +35,10 @@ private:
     DisabledOverlay disabledOverlay;
 
     std::unique_ptr<juce::FileChooser> fileChooser;
+
+    const juce::File userDevicesDirectory = ApplicationSettings::getDirectory().getChildFile("User Devices");
+
+    void load();
 
     void writeCommands(const std::vector<CommandMessage>& commands);
 
