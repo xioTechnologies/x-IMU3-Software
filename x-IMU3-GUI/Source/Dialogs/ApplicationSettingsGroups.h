@@ -58,18 +58,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };
-
-class DeviceSettingsGroup : public ApplicationSettingsGroup
-{
-public:
-    DeviceSettingsGroup();
-
-    void resized() override;
-
-private:
-    CustomToggleButton hideUnusedSettingsButton { "Hide Unused Settings" };
-    CustomToggleButton readSettingsWhenWindowOpensButton { "Read Settings When Window Opens" };
-    CustomToggleButton writeSettingsWhenModifiedButton { "Write Settings When Modified" };
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsGroup)
-};

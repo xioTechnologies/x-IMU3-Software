@@ -73,7 +73,6 @@ FILE(GLOB_RECURSE IMAGE_FILES "Images/*.*")
 FILE(GLOB FIRMWARE_FILE "Source/Firmware/*.hex")
 FILE(GLOB_RECURSE OPEN_GL_FILES "Source/OpenGL/Assets/*.*")
 juce_add_binary_data(x-IMU3-GUI-AppData SOURCES
-        "Source/DeviceSettings/DeviceSettingsEnums.xml"
         "Source/DeviceSettings/DeviceSettings.xml"
         "Source/Dialogs/CommandKeys.xml"
         ${FONT_FILES}

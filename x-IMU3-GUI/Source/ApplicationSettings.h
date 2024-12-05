@@ -26,14 +26,6 @@ public:
         juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
     } commands { tree.getOrCreateChildWithName("Commands", nullptr) };
 
-    struct
-    {
-        juce::ValueTree tree;
-        juce::CachedValue<bool> hideUnusedSettings { tree, "hideUnusedSettings", nullptr, true };
-        juce::CachedValue<bool> readSettingsWhenWindowOpens { tree, "readSettingsWhenWindowOpens", nullptr, true };
-        juce::CachedValue<bool> writeSettingsWhenModified { tree, "writeSettingsWhenModified", nullptr, true };
-    } deviceSettings { tree.getOrCreateChildWithName("DeviceSettings", nullptr) };
-
     static ApplicationSettings& getSingleton()
     {
         static auto* singleton = new ApplicationSettings();
@@ -71,7 +63,6 @@ private:
         auto rootTree = juce::ValueTree::fromXml(file.loadFileAsString());
         availableConnections.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(availableConnections.tree.getType(), nullptr), nullptr);
         commands.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(commands.tree.getType(), nullptr), nullptr);
-        deviceSettings.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(deviceSettings.tree.getType(), nullptr), nullptr);
 
         tree.addListener(this);
     }
