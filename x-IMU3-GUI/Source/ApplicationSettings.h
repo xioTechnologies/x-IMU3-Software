@@ -32,6 +32,7 @@ public:
         juce::CachedValue<bool> hideUnusedSettings { tree, "hideUnusedSettings", nullptr, true };
         juce::CachedValue<bool> readSettingsWhenWindowOpens { tree, "readSettingsWhenWindowOpens", nullptr, true };
         juce::CachedValue<bool> writeSettingsWhenModified { tree, "writeSettingsWhenModified", nullptr, true };
+        juce::CachedValue<juce::String> userDevice { tree, "userDevice", nullptr, "" };
     } deviceSettings { tree.getOrCreateChildWithName("DeviceSettings", nullptr) };
 
     static ApplicationSettings& getSingleton()
