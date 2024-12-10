@@ -13,7 +13,7 @@ public:
     std::optional<juce::String> error;
 
     CommandMessage(const juce::String& key_, const juce::var& value_)
-            : json("{" + key_.quoted().toStdString() + ":" + juce::JSON::toString(value_).toStdString() + "}"),
+            : json("{\"" + key_.toStdString() + "\":" + juce::JSON::toString(value_).toStdString() + "}"),
               key(key_),
               value(value_)
     {
