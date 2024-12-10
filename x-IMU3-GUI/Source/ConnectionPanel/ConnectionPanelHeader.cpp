@@ -188,7 +188,7 @@ void ConnectionPanelHeader::updateTitle(const std::vector<CommandMessage>& respo
 {
     for (const auto& response : responses)
     {
-        if (response.getError())
+        if (response.error)
         {
             continue;
         }

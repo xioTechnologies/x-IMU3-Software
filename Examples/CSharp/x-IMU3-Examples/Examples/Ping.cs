@@ -44,7 +44,7 @@ namespace Ximu3Examples
         {
             if (pingResponse.Result != Ximu3.Result.Ok)
             {
-                Console.WriteLine("Ping failed");
+                Console.WriteLine("No response");
                 return;
             }
             Console.WriteLine(pingResponse.Interface + ", " + pingResponse.DeviceName + ", " + pingResponse.SerialNumber);

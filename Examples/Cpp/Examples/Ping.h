@@ -53,7 +53,7 @@ private:
     {
         if (pingResponse.result != ximu3::XIMU3_ResultOk)
         {
-            std::cout << "Ping failed" << std::endl;
+            std::cout << "No response" << std::endl;
             return;
         }
         std::cout << pingResponse.interface << ", " << pingResponse.device_name << ", " << pingResponse.serial_number << std::endl;

@@ -21,7 +21,7 @@ pub fn run() {
         println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
         // println!("{}", ping_response); // alternative to above
     } else {
-        println!("Ping failed");
+        println!("No response");
     }
 
     // Close connection

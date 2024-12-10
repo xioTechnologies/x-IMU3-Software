@@ -129,39 +129,36 @@ impl NetworkAnnouncement {
     }
 
     fn parse_json(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
-        if let Ok(json) = std::str::from_utf8(json) {
-            #[derive(Deserialize)]
-            struct Object {
-                name: String,
-                sn: String,
-                ip: String,
-                port: u16,
-                send: u16,
-                receive: u16,
-                rssi: i32,
-                battery: i32,
-                status: i32,
-            }
+        let json = std::str::from_utf8(json).ok()?;
 
-            if let Ok(object) = serde_json::from_str::<Object>(json) {
-                if let Ok(ip_address) = object.ip.parse::<Ipv4Addr>() {
-                    let device = NetworkAnnouncementMessage {
-                        device_name: object.name,
-                        serial_number: object.sn,
-                        ip_address,
-                        tcp_port: object.port,
-                        udp_send: object.receive,
-                        udp_receive: object.send,
-                        rssi: object.rssi,
-                        battery: object.battery,
-                        charging_status: ChargingStatus::from(object.status),
-                        expiry: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() + 2000, // expire after 2 seconds
-                    };
-                    return Some(device);
-                }
-            }
+        #[derive(Deserialize)]
+        struct Object {
+            name: String,
+            sn: String,
+            ip: String,
+            port: u16,
+            send: u16,
+            receive: u16,
+            rssi: i32,
+            battery: i32,
+            status: i32,
         }
-        None
+
+        let object: Object = serde_json::from_str(json).ok()?;
+        let ip_address = object.ip.parse::<Ipv4Addr>().ok()?;
+
+        Some(NetworkAnnouncementMessage {
+            device_name: object.name,
+            serial_number: object.sn,
+            ip_address,
+            tcp_port: object.port,
+            udp_send: object.receive,
+            udp_receive: object.send,
+            rssi: object.rssi,
+            battery: object.battery,
+            charging_status: ChargingStatus::from(object.status),
+            expiry: SystemTime::now().duration_since(UNIX_EPOCH).ok()?.as_millis() + 2000, // expire after 2 seconds
+        })
     }
 
     pub fn add_closure(&self, closure: Box<dyn Fn(NetworkAnnouncementMessage) + Send>) -> u64 {
