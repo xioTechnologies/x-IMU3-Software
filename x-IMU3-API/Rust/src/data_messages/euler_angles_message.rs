@@ -20,7 +20,7 @@ impl DataMessage for EulerAnglesMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f},{f},{f}\r\n",  char, u64, f32, f32, f32) {
+        match scan_fmt!( message, "{},{d},{f},{f},{f}\n",  char, u64, f32, f32, f32) {
             Ok((_, timestamp, roll, pitch, yaw)) => Ok(EulerAnglesMessage { timestamp, roll, pitch, yaw }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }

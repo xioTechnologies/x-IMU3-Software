@@ -19,7 +19,7 @@ impl DataMessage for RssiMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f},{f}\r\n",  char, u64, f32, f32) {
+        match scan_fmt!( message, "{},{d},{f},{f}\n",  char, u64, f32, f32) {
             Ok((_, timestamp, percentage, power)) => Ok(RssiMessage { timestamp, percentage, power }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }

@@ -20,7 +20,7 @@ impl DataMessage for BatteryMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f},{f},{f}\r\n",  char, u64, f32, f32, f32) {
+        match scan_fmt!( message, "{},{d},{f},{f},{f}\n",  char, u64, f32, f32, f32) {
             Ok((_, timestamp, percentage, voltage, charging_status)) => Ok(BatteryMessage { timestamp, percentage, voltage, charging_status }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
