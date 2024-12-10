@@ -20,7 +20,7 @@ impl DataMessage for MagnetometerMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f},{f},{f}\r\n",  char, u64, f32, f32, f32) {
+        match scan_fmt!( message, "{},{d},{f},{f},{f}\n",  char, u64, f32, f32, f32) {
             Ok((_, timestamp, x, y, z)) => Ok(MagnetometerMessage { timestamp, x, y, z }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }

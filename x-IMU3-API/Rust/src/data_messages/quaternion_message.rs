@@ -21,7 +21,7 @@ impl DataMessage for QuaternionMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f},{f},{f},{f}\r\n",  char, u64, f32, f32, f32, f32) {
+        match scan_fmt!( message, "{},{d},{f},{f},{f},{f}\n",  char, u64, f32, f32, f32, f32) {
             Ok((_, timestamp, w, x, y, z)) => Ok(QuaternionMessage { timestamp, w, x, y, z }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }

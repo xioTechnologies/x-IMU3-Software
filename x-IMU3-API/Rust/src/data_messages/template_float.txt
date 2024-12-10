@@ -16,7 +16,7 @@ impl DataMessage for $name_pascal_case$Message {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},$arguments_scan_format$\r\n",  char, u64, $arguments_types$) {
+        match scan_fmt!( message, "{},{d},$arguments_scan_format$\n",  char, u64, $arguments_types$) {
             Ok((_, timestamp, $arguments_list$)) => Ok($name_pascal_case$Message { timestamp, $arguments_list$ }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }

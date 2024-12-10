@@ -18,7 +18,7 @@ impl DataMessage for TemperatureMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},{f}\r\n",  char, u64, f32) {
+        match scan_fmt!( message, "{},{d},{f}\n",  char, u64, f32) {
             Ok((_, timestamp, temperature)) => Ok(TemperatureMessage { timestamp, temperature }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
