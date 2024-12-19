@@ -16,16 +16,16 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        const auto json = "{\"accessory\":\"" + sendValue.getText() + "\"}";
-        if (sendValue.getText().isEmpty() || CommandMessage(json.toStdString()).json.empty())
+        const auto json = "{\"accessory\":\"" + toUnquotedJsonString(sendValue.getText().toStdString()) + "\"}";
+        if (sendValue.getText().isEmpty() || CommandMessage(json).json.empty())
         {
             serialAccessoryTerminal.addError(sendValue.getText());
             return;
         }
 
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage{json.toStdString()}, std::vector<ConnectionPanel*> { &connectionPanel }));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage{json}, std::vector<ConnectionPanel*> { &connectionPanel }));
 
-        serialAccessoryTerminal.addTX(sendValue.getText());
+        serialAccessoryTerminal.addTX(fromUnquotedJsonString(ximu3::XIMU3_command_message_parse(json.data()).value));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -91,6 +91,59 @@ void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent
     {
         getMenu().showMenuAsync({});
     }
+}
+
+std::string SerialAccessoryTerminalWindow::toUnquotedJsonString(const std::string& input)
+{
+    std::string output;
+    std::string::const_iterator searchStart(input.begin());
+    std::smatch match;
+    while (std::regex_search(searchStart, input.end(), match, std::regex(R"(\\x([0-9A-Fa-f]{2}))"))) {
+        output.append(searchStart, match.prefix().second);
+
+        const auto value = std::stoi(match[1].str(), nullptr, 16);
+        if (value < 0x20)
+        {
+            std::ostringstream stream;
+            stream << "\\u00" << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << value;
+            output += stream.str();
+        }
+        else if (value == 0x22)
+        {
+            output += "\\\"";
+        }
+        else if (value == 0x5C)
+        {
+            output += "\\\\";
+        }
+        else
+        {
+            output += static_cast<char>(value);
+        }
+
+        searchStart = match.suffix().first;
+    }
+    output += {searchStart, input.end()};
+    return output;
+}
+
+std::string SerialAccessoryTerminalWindow::fromUnquotedJsonString(const std::string& input)
+{
+    std::string output;
+    for (unsigned char character : input)
+    {
+        if (character >= 0x7F)
+        {
+            std::ostringstream stream;
+            stream << "\\x" << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (int) character;
+            output += stream.str();
+        }
+        else
+        {
+            output += character;
+        }
+    }
+    return output;
 }
 
 void SerialAccessoryTerminalWindow::loadRecents()
