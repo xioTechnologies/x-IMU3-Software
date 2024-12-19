@@ -27,10 +27,12 @@ impl CommandMessage {
             return Err(DecodeError::JsonObjectIsNotASingleKeyValuePair);
         }
 
+        let json = serde_json::to_string(object).unwrap();
+
         let value = object.values().nth(0).unwrap();
 
         let mut command_message = CommandMessage {
-            json: serde_json::to_string(object).unwrap(),
+            json: json.clone(),
             terminated_json: format!("{}\n", json),
             key: object.keys().nth(0).unwrap().to_owned(),
             value: value.to_string(),

@@ -1,4 +1,3 @@
-use core::slice;
 use std::ffi::CStr;
 use std::mem;
 use std::os::raw::c_char;
@@ -23,7 +22,9 @@ impl From<Vec<String>> for CharArrays {
             length: vector.len() as u32,
             capacity: vector.capacity() as u32,
         };
+
         mem::forget(vector);
+
         char_arrays
     }
 }
@@ -38,6 +39,7 @@ pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
 macro_rules! str_to_char_ptr { // each invocation of this macro uses a different static variable
     ($string:expr) => {{
         static mut CHAR_ARRAY: [c_char; CHAR_ARRAY_SIZE] = EMPTY_CHAR_ARRAY;
+
         unsafe {
             CHAR_ARRAY = str_to_char_array($string);
             CHAR_ARRAY.as_ptr()
@@ -46,43 +48,37 @@ macro_rules! str_to_char_ptr { // each invocation of this macro uses a different
 }
 
 pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
+    let mut string = string.to_string();
     let mut char_array = EMPTY_CHAR_ARRAY;
 
-    let mut string = string.to_string();
     string.truncate(char_array.len() - 1); // last character must remain null
-    string.as_str().chars().enumerate().for_each(|(index, char)| char_array[index] = char as c_char);
+
+    string.as_bytes().iter().enumerate().for_each(|(index, &byte)| {
+        char_array[index] = byte as c_char;
+    });
+
     char_array
 }
 
-pub fn char_array_to_string(char_array: &[c_char]) -> String {
-    let bytes = unsafe { slice::from_raw_parts(char_array.as_ptr() as *const u8, char_array.len()) };
-
-    if let Some(length) = bytes.iter().position(|&byte| byte == '\0' as u8) {
-        String::from_utf8_lossy(&bytes[..length]).to_string()
-    } else {
-        "".to_owned() // return empty string if char array not null terminated
-    }
-}
-
-pub fn char_ptr_to_str(char_ptr: *const c_char) -> &'static str {
+pub fn char_ptr_to_string(char_ptr: *const c_char) -> String {
     let c_str = unsafe { CStr::from_ptr(char_ptr) };
+    let bytes = Vec::from(c_str.to_bytes());
+    let string = unsafe { String::from_utf8_unchecked(bytes) };
 
-    match c_str.to_str() {
-        Ok(str) => str,
-        Err(_) => "", // return empty string if invalid UTF-8 data
-    }
+    string
 }
 
-pub fn char_ptr_array_to_vec_str(char_ptr_array: *const *const c_char, length: u32) -> Vec<&'static str> {
-    let mut vec_str = Vec::new();
+pub fn char_array_to_string(char_array: &[c_char]) -> String {
+    char_ptr_to_string(char_array.as_ptr())
+}
+
+pub fn char_ptr_array_to_vec_string(char_ptr_array: *const *const c_char, length: u32) -> Vec<String> {
+    let mut vec_string = Vec::new();
 
     for index in 0..length {
-        let c_str = unsafe { CStr::from_ptr(*char_ptr_array.offset(index as isize)) };
-
-        match c_str.to_str() {
-            Ok(str) => vec_str.push(str),
-            Err(_) => vec_str.push(""), // set empty string if invalid UTF-8 data
-        }
+        let char_ptr = unsafe { *char_ptr_array.offset(index as isize) };
+        vec_string.push(char_ptr_to_string(char_ptr));
     }
-    vec_str
+
+    vec_string
 }

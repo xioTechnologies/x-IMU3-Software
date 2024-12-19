@@ -86,15 +86,19 @@ pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResp
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_send_commands(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32) -> CharArrays {
     let connection: &Connection = unsafe { &*connection };
-    connection.send_commands(char_ptr_array_to_vec_str(commands, length), retries, timeout).into()
+    let commands = char_ptr_array_to_vec_string(commands, length);
+    let commands = commands.iter().map(|s| s.as_str()).collect();
+    connection.send_commands(commands, retries, timeout).into()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32, callback: Callback<CharArrays>, context: *mut c_void) {
     let connection: &Connection = unsafe { &*connection };
+    let commands = char_ptr_array_to_vec_string(commands, length);
+    let commands = commands.iter().map(|s| s.as_str()).collect();
     let void_ptr = VoidPtr(context);
     let closure = Box::new(move |responses: Vec<String>| { callback(responses.into(), void_ptr.0) });
-    connection.send_commands_async(char_ptr_array_to_vec_str(commands, length), retries, timeout, closure);
+    connection.send_commands_async(commands, retries, timeout, closure);
 }
 
 #[no_mangle]
