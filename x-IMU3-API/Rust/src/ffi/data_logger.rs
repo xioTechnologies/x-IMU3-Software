@@ -11,7 +11,7 @@ pub struct DataLoggerC {
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_new(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32) -> *mut DataLoggerC {
     let connections = connection_array_to_vec(connections, length);
-    Box::into_raw(Box::new(DataLoggerC { internal: DataLogger::new(char_ptr_to_str(destination), char_ptr_to_str(name), connections) }))
+    Box::into_raw(Box::new(DataLoggerC { internal: DataLogger::new(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections) }))
 }
 
 #[no_mangle]
@@ -31,7 +31,7 @@ pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) ->
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> Result {
     let connections = connection_array_to_vec(connections, length);
-    match DataLogger::log(char_ptr_to_str(destination), char_ptr_to_str(name), connections, seconds) {
+    match DataLogger::log(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections, seconds) {
         Ok(_) => Result::Ok,
         Err(_) => Result::Error,
     }

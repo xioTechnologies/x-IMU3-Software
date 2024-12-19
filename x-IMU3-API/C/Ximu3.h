@@ -18,7 +18,7 @@
 
 #ifdef __cplusplus
 namespace ximu3 {
-#endif // __cplusplus
+#endif  // __cplusplus
 
 #define XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE 256
 
@@ -526,7 +526,7 @@ const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus
 
 const char *XIMU3_file_converter_progress_to_string(struct XIMU3_FileConverterProgress progress);
 
-struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, const char *name, const char *const *files, uint32_t length, XIMU3_CallbackFileConverterProgress callback, void *context);
+struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, const char *name, const char *const *file_paths, uint32_t length, XIMU3_CallbackFileConverterProgress callback, void *context);
 
 void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
@@ -577,11 +577,11 @@ const char *XIMU3_result_to_string(enum XIMU3_Result result);
 const char *XIMU3_statistics_to_string(struct XIMU3_Statistics statistics);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // __cplusplus
+}  // extern "C"
+#endif  // __cplusplus
 
 #ifdef __cplusplus
-} // namespace ximu3
-#endif // __cplusplus
+}  // namespace ximu3
+#endif  // __cplusplus
 
-#endif /* XIMU3_H */
+#endif  /* XIMU3_H */
