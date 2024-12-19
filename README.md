@@ -14,7 +14,7 @@ This is main software repository for the [x-IMU3](https://x-io.co.uk/x-imu3/). T
     - Install [Visual Studio](https://visualstudio.microsoft.com/), including MSVC (Windows)
     - Install [Xcode](https://developer.apple.com/xcode/) (macOS)
 2. Install Rust toolchain using [rustup](https://rustup.rs/)
-3. Install [Clion](https://www.jetbrains.com/clion/), including Rust plugin
+3. Install [Clion](https://www.jetbrains.com/clion/)
 4. Select Visual Studio as Toolchain (Windows)
 
 ## Distributions
