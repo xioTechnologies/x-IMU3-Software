@@ -16,9 +16,16 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())), std::vector<ConnectionPanel*> { &connectionPanel }));
+        CommandMessage commandMessage("{\"accessory\":\"" + toUnquotedJsonString(sendValue.getText().toStdString()) + "\"}");
+        if (sendValue.getText().isEmpty() || commandMessage.json.empty())
+        {
+            serialAccessoryTerminal.addError(sendValue.getText());
+            return;
+        }
 
-        serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
+
+        serialAccessoryTerminal.addTX(fromUnquotedJsonString(commandMessage.value));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -49,7 +56,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+            serialAccessoryTerminal.addRX(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
         });
     });
 }
@@ -86,61 +93,56 @@ void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent
     }
 }
 
-juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::String& input)
+std::string SerialAccessoryTerminalWindow::toUnquotedJsonString(const std::string& input)
 {
-    juce::String output;
+    std::string output;
+    std::string::const_iterator searchStart(input.begin());
+    std::smatch match;
+    while (std::regex_search(searchStart, input.end(), match, std::regex(R"(\\x([0-9A-Fa-f]{2}))"))) {
+        output.append(searchStart, match.prefix().second);
 
-    for (int index = 0; index < input.length(); index++)
+        const auto value = std::stoi(match[1].str(), nullptr, 16);
+        if (value < 0x20)
+        {
+            std::ostringstream stream;
+            stream << "\\u00" << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << value;
+            output += stream.str();
+        }
+        else if (value == 0x22)
+        {
+            output += "\\\"";
+        }
+        else if (value == 0x5C)
+        {
+            output += "\\\\";
+        }
+        else
+        {
+            output += static_cast<char>(value);
+        }
+
+        searchStart = match.suffix().first;
+    }
+    output += {searchStart, input.end()};
+    return output;
+}
+
+std::string SerialAccessoryTerminalWindow::fromUnquotedJsonString(const std::string& input)
+{
+    std::string output;
+    for (unsigned char character : input)
     {
-        if (input[index] != '\\')
+        if (character >= 0x7F)
         {
-            output += input[index];
-            continue;
+            std::ostringstream stream;
+            stream << "\\x" << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (int) character;
+            output += stream.str();
         }
-
-        if (++index >= input.length())
+        else
         {
-            return output; // invalid escape sequence
-        }
-
-        switch (input[index])
-        {
-            case '\\':
-                output += '\\';
-                break;
-
-            case 'n':
-                output += '\n';
-                break;
-
-            case 'r':
-                output += '\r';
-                break;
-
-            case 'x':
-                {
-                    if (index >= input.length() - 2)
-                    {
-                        return output; // invalid escape sequence
-                    }
-
-                    const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-                    const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-
-                    if (upperNibble == -1 || lowerNibble == -1)
-                    {
-                        break; // invalid escape sequence
-                    }
-
-                    output += (char) ((upperNibble << 4) + lowerNibble);
-                    break;
-                }
-
-            default:
-                break; // invalid escape sequence
+            output += character;
         }
     }
-
     return output;
 }
 
