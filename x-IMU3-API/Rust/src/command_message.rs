@@ -56,3 +56,14 @@ impl CommandMessage {
         })
     }
 }
+
+pub fn bytes_to_json_string(bytes: &[u8]) -> String {
+    let string = bytes.iter().map(|&byte| match byte {
+        0x00..=0x1F => "null".to_string(),
+        0x22 => "\\\"".to_string(),
+        0x5C => "\\\\".to_string(),
+        _ => byte.to_string(),
+    }).collect::<String>();
+
+    format!("{}", string)
+}
