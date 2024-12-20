@@ -59,7 +59,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     else
                     {
                         row_->state = Row::State::complete;
-                        row_->response = responses[0].value.isVoid() ? "" : juce::JSON::toString(responses[0].value, true);
+                        row_->response = responses[0].value;
                     }
 
                     table.updateContent();

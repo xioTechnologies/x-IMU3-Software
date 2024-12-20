@@ -8,14 +8,14 @@ class CommandMessage
 {
 public:
     std::string json;
-    juce::String key;
-    juce::var value;
-    std::optional<juce::String> error;
+    std::string key;
+    std::string value;
+    std::optional<std::string> error;
 
     CommandMessage(const juce::String& key_, const juce::var& value_)
-            : json("{" + key_.quoted().toStdString() + ":" + juce::JSON::toString(value_).toStdString() + "}"),
-              key(key_),
-              value(value_)
+            : json("{\"" + key_.toStdString() + "\":" + juce::JSON::toString(value_).toStdString() + "}"),
+              key(key_.toStdString()),
+              value(juce::JSON::toString(value_).toStdString())
     {
     }
 
@@ -24,7 +24,7 @@ public:
         const auto commandMessage = ximu3::XIMU3_command_message_parse(json.c_str());
         json = commandMessage.json;
         key = commandMessage.key;
-        value = juce::JSON::fromString(commandMessage.value);
+        value = commandMessage.value;
         if (std::strlen(commandMessage.error) > 0)
         {
             error = commandMessage.error;
@@ -33,12 +33,17 @@ public:
 
     bool operator==(const CommandMessage& other) const
     {
-        return key.isNotEmpty() && key == other.key; // empty key in response indicates no response
+        return key.empty() == false && key == other.key; // empty key in response indicates no response
     }
 
     operator const std::string&() const
     {
         return json;
+    }
+
+    juce::var getValue() const
+    {
+        return juce::JSON::fromString(value);
     }
 
     static juce::String normaliseKey(const juce::String& key)

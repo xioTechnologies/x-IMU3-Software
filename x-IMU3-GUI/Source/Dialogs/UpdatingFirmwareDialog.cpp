@@ -57,7 +57,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
             showError("Unable to read hardware version.");
             return;
         }
-        const auto hardwareVersion = CommandMessage(responses[0]).value.toString();
+        const auto hardwareVersion = CommandMessage(responses[0]).getValue().toString();
 
         // Check compatibility
         const auto firmwareIsV2 = hexFile.getFileName().startsWith("x-IMU3-Firmware-v2.");

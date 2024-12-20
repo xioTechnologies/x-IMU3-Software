@@ -54,12 +54,12 @@ void DeviceSettings::setValue(const CommandMessage& response)
     }
 
     juce::ScopedValueSetter _(ignoreCallback, true);
-    if (setting[DeviceSettingsIDs::value] != response.value)
+    if (setting[DeviceSettingsIDs::value] != response.getValue())
     {
         setting.setProperty(DeviceSettingsIDs::status, (int) Setting::Status::modified, nullptr);
         setting.setProperty(DeviceSettingsIDs::statusTooltip, "Modified but Not Written to Device", nullptr);
     }
-    setting.setProperty(DeviceSettingsIDs::value, response.value, nullptr);
+    setting.setProperty(DeviceSettingsIDs::value, response.getValue(), nullptr);
     setting.sendPropertyChangeMessage(DeviceSettingsIDs::value);
 }
 

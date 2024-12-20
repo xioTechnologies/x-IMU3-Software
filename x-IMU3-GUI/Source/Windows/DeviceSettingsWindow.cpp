@@ -34,7 +34,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 deviceSettings.setValue(*response);
 
-                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmware_version") && response->value != Firmware::version)
+                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmware_version") && response->getValue() != Firmware::version)
                 {
                     deviceSettings.setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
                     continue;
@@ -92,7 +92,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             juce::DynamicObject object;
             for (const auto& command : deviceSettings.getWriteCommands(false))
             {
-                object.setProperty(command.key, command.value);
+                object.setProperty(juce::String(command.key), command.getValue());
             }
 
             juce::FileOutputStream stream(fileChooser->getResult());

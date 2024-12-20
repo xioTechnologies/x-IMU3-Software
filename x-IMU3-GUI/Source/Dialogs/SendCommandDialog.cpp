@@ -30,7 +30,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
 
-        setOkButton((keyValue.isEmpty() == false) && (juce::JSON::parse(commandValue.getText()).isVoid() == false));
+        setOkButton((keyValue.isEmpty() == false) && (CommandMessage(commandValue.getText().toStdString()).json.empty() == false));
     };
 
     selectCommand(recentCommands.getChild(0));
@@ -128,11 +128,11 @@ juce::String SendCommandDialog::toString(const Type type)
 
 juce::String SendCommandDialog::createCommand(const juce::String& key, const Type type, const juce::String& string, const juce::String& number)
 {
-    juce::String text = "{" + key.quoted() + ":";
+    juce::String text = "{\"" + key + "\":";
     switch (type)
     {
         case Type::string:
-            text += string.quoted();
+            text += "\"" + string + "\"";
             break;
         case Type::number:
             text += number;
