@@ -32,7 +32,9 @@ private:
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackID;
 
-    static juce::String removeEscapeCharacters(const juce::String& input);
+    static std::string toUnquotedJsonString(const std::string& input);
+
+    static std::string fromUnquotedJsonString(const std::string& input);
 
     void loadRecents();
 
