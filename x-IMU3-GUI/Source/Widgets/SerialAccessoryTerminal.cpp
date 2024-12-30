@@ -93,7 +93,7 @@ std::vector<juce::String> SerialAccessoryTerminal::addEscapeCharacters(const juc
 {
     std::vector<juce::String> output(1);
 
-    for (const auto character : input)
+    for (const auto character : input) // TODO: Do not use JUCE string because the iterator ++ operator increments by characters not bytes
     {
         if (juce::CharacterFunctions::isPrintable(character))
         {
