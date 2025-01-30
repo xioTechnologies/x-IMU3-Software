@@ -209,7 +209,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install twine
+          python -m pip install twine==6.0.1
+        # use twine v6.0.1 because bug in latest version (v6.1.0)
 
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Publish package
