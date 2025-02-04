@@ -6,7 +6,7 @@ namespace Ximu3Examples
     {
         public UdpConnection()
         {
-            if (Helpers.AskQuestion("Search for connections?"))
+            if (Helpers.YesOrNo("Search for connections?"))
             {
                 Console.WriteLine("Searching for connections");
                 Ximu3.NetworkAnnouncementMessage[] messages = new Ximu3.NetworkAnnouncement().GetMessagesAfterShortDelay();

@@ -7,7 +7,7 @@ use super::connection;
 pub fn run() {
     let connection_info;
 
-    if helpers::ask_question("Search for connections?") {
+    if helpers::yes_or_no("Search for connections?") {
         println!("Searching for connections");
 
         let devices = PortScanner::scan_filter(ConnectionType::Bluetooth);

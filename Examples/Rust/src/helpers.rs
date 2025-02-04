@@ -8,7 +8,7 @@ pub fn get_key() -> char {
     buffer.chars().nth(0).unwrap().to_ascii_uppercase()
 }
 
-pub fn ask_question(question: &str) -> bool {
+pub fn yes_or_no(question: &str) -> bool {
     loop {
         println!("{} [Y/N]", question);
 

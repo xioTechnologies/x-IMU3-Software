@@ -31,7 +31,7 @@ network_announcement = ximu3.NetworkAnnouncement()
 if network_announcement.get_result() != ximu3.RESULT_OK:
     raise Exception("Unable to open network announcement socket")
 
-if helpers.ask_question("Use async implementation?"):
+if helpers.yes_or_no("Use async implementation?"):
     network_announcement.add_callback(callback)
     time.sleep(60)
 else:

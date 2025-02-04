@@ -14,7 +14,7 @@ void FileConverter()
     const char* file_paths[] = { "C:/file.ximu3" };
     const int numberOfFiles = sizeof(file_paths) / sizeof(file_paths[0]);
 
-    if (AskQuestion("Use async implementation?"))
+    if (YesOrNo("Use async implementation?"))
     {
         XIMU3_FileConverter* const file_converter = XIMU3_file_converter_new(destination, name, file_paths, numberOfFiles, Callback, NULL);
         Wait(60);

@@ -20,7 +20,7 @@ for device in devices:
 destination = "C:/"
 name = "Data Logger Example"
 
-if helpers.ask_question("Use async implementation?"):
+if helpers.yes_or_no("Use async implementation?"):
     data_logger = ximu3.DataLogger(destination, name, connections)
 
     result = data_logger.get_result()

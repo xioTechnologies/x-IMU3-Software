@@ -32,7 +32,7 @@ public:
         // Log data
         const auto destination = "C:/";
         const auto name = "Data Logger Example";
-        if (helpers::askQuestion("Use async implementation?"))
+        if (helpers::yesOrNo("Use async implementation?"))
         {
             ximu3::DataLogger dataLogger(destination, name, toRawPointers(connections));
 

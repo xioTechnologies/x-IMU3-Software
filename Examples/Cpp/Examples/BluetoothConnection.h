@@ -7,7 +7,7 @@ class BluetoothConnection : public Connection
 public:
     BluetoothConnection()
     {
-        if (helpers::askQuestion("Search for connections?"))
+        if (helpers::yesOrNo("Search for connections?"))
         {
             std::cout << "Searching for connections" << std::endl;
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);

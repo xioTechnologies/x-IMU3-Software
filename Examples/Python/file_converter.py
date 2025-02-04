@@ -24,7 +24,7 @@ destination = "C:/"
 name = "File Conversion Example"
 file_paths = ["C:/file.ximu3"]
 
-if helpers.ask_question("Use async implementation?"):
+if helpers.yes_or_no("Use async implementation?"):
     _ = ximu3.FileConverter(destination, name, file_paths, callback)
     time.sleep(60)
 else:
