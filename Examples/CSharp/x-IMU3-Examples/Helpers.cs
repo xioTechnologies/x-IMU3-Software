@@ -14,7 +14,7 @@ namespace Ximu3Examples
             return Char.ToUpper(buffer[0]);
         }
 
-        public static bool AskQuestion(string question)
+        public static bool YesOrNo(string question)
         {
             while (true)
             {

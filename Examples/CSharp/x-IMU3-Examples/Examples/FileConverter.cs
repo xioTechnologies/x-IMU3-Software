@@ -10,7 +10,7 @@ namespace Ximu3Examples
             string name = "File Conversion Example";
             string[] file_paths = { "C:/file.ximu3" };
 
-            if (Helpers.AskQuestion("Use async implementation?"))
+            if (Helpers.YesOrNo("Use async implementation?"))
             {
                 using Ximu3.FileConverter file_converter = new Ximu3.FileConverter(destination, name, file_paths, FileConverterEvent);
                 System.Threading.Thread.Sleep(60000);

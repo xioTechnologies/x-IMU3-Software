@@ -14,7 +14,7 @@ namespace Ximu3Examples
                 return;
             }
 
-            if (Helpers.AskQuestion("Use async implementation?"))
+            if (Helpers.YesOrNo("Use async implementation?"))
             {
                 networkAnnouncement.NetworkAnnouncementEvent += NetworkAnnouncementEvent;
                 System.Threading.Thread.Sleep(60000);

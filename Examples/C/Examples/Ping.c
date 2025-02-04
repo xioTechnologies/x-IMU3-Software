@@ -16,7 +16,7 @@ void Ping()
     // Open and ping
     XIMU3_Connection* const connection = XIMU3_connection_new_usb(connectionInfo);
 
-    if (AskQuestion("Use async implementation?"))
+    if (YesOrNo("Use async implementation?"))
     {
         XIMU3_connection_open_async(connection, Callback, connection);
         Wait(3);

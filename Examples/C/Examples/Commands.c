@@ -43,7 +43,7 @@ void Commands()
     const int numberOfCommands = sizeof(commands) / sizeof(commands[0]);
 
     // Send commands
-    if (AskQuestion("Use async implementation?"))
+    if (YesOrNo("Use async implementation?"))
     {
         XIMU3_connection_send_commands_async(connection, commands, numberOfCommands, 2, 500, Callback, NULL);
         Wait(3);

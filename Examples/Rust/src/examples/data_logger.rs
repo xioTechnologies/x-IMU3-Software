@@ -25,7 +25,7 @@ pub fn run() {
     let destination = "C:/";
     let name = "Data Logger Example";
 
-    if helpers::ask_question("Use async implementation?") {
+    if helpers::yes_or_no("Use async implementation?") {
         let data_logger = DataLogger::new(destination, name, connections.iter().collect());
 
         if data_logger.is_ok() {

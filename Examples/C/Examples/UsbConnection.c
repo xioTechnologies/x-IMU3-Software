@@ -5,7 +5,7 @@
 
 void UsbConnection()
 {
-    if (AskQuestion("Search for connections?"))
+    if (YesOrNo("Search for connections?"))
     {
         printf("Searching for connections\n");
 

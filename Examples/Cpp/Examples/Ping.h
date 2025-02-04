@@ -17,7 +17,7 @@ public:
 
         // Open and ping
         connection = std::make_unique<ximu3::Connection>(connectionInfo);
-        if (helpers::askQuestion("Use async implementation?"))
+        if (helpers::yesOrNo("Use async implementation?"))
         {
             connection->openAsync(callback);
             std::this_thread::sleep_for(std::chrono::seconds(3));

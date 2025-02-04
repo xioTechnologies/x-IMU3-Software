@@ -40,7 +40,7 @@ void DataLogger()
     const char* destination = "C:/";
     const char* name = "Data Logger Example";
 
-    if (AskQuestion("Use async implementation?"))
+    if (YesOrNo("Use async implementation?"))
     {
         XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(destination, name, connections, numberOfConnections);
 

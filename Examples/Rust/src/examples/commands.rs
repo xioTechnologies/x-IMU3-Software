@@ -36,7 +36,7 @@ pub fn run() {
         "{\"invalid_key\":null}"]; // invalid key to demonstrate an error response
 
     // Send commands
-    if helpers::ask_question("Use async implementation?") {
+    if helpers::yes_or_no("Use async implementation?") {
         connection.send_commands_async(commands, 2, 500, Box::new(|responses| {
             print_responses(responses);
         }));
