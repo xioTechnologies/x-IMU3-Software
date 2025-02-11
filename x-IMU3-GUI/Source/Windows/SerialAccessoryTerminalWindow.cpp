@@ -205,7 +205,7 @@ std::string SerialAccessoryTerminalWindow::bytesToEscaped(const std::string& byt
         if ((unsigned char) byte < 0x20 || (unsigned char) byte > 0x7E)
         {
             std::ostringstream stream;
-            stream << "\\x" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << byte;
+            stream << "\\x" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) (unsigned char) byte;
             escaped += stream.str();
             continue;
         }
@@ -334,7 +334,7 @@ std::string SerialAccessoryTerminalWindow::bytesToJson(const std::string& bytes)
         if ((unsigned char) byte < 0x20)
         {
             std::ostringstream stream;
-            stream << "\\u" << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << byte;
+            stream << "\\u" << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) (unsigned char) byte;
             json += stream.str();
             continue;
         }
