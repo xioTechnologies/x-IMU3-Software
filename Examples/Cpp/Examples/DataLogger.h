@@ -17,7 +17,7 @@ public:
         std::vector<std::unique_ptr<ximu3::Connection>> connections;
         for (auto device : devices)
         {
-            std::cout << XIMU3_device_to_string(device) << std::endl;
+            std::cout << ximu3::XIMU3_device_to_string(device) << std::endl;
             auto connection = std::make_unique<ximu3::Connection>(ximu3::UsbConnectionInfo(device.usb_connection_info));
             if (connection->open() == ximu3::XIMU3_ResultOk)
             {

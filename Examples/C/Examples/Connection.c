@@ -238,12 +238,13 @@ void TemperatureCallback(const XIMU3_TemperatureMessage message, void* context)
 
 void BatteryCallback(const XIMU3_BatteryMessage message, void* context)
 {
-    printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT "\n",
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT " (%s)\n",
            message.timestamp,
            message.percentage,
            message.voltage,
-           message.charging_status);
-    // printf("%s\n", XIMU3_battery_message_to_string(message)); // alternative to above
+           message.charging_status,
+           XIMU3_charging_status_to_string(XIMU3_charging_status_from_float(message.charging_status)));
+    // printf("%s (%s)\n", XIMU3_battery_message_to_string(message), XIMU3_charging_status_to_string(XIMU3_charging_status_from_float(message.charging_status))); // alternative to above
 }
 
 void RssiCallback(const XIMU3_RssiMessage message, void* context)

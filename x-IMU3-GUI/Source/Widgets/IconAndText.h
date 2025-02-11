@@ -94,6 +94,7 @@ public:
                                                     break;
                                                 case ximu3::XIMU3_ChargingStatusCharging:
                                                 case ximu3::XIMU3_ChargingStatusChargingComplete:
+                                                case ximu3::XIMU3_ChargingStatusChargingOnHold:
                                                     setText("USB");
                                                     break;
                                             }

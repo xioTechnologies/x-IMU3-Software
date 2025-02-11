@@ -1,3 +1,4 @@
+use ximu3::charging_status::*;
 use ximu3::connection::*;
 use ximu3::connection_info::*;
 use ximu3::data_messages::*;
@@ -183,12 +184,13 @@ pub fn temperature_closure(message: TemperatureMessage) {
 }
 
 pub fn battery_closure(message: BatteryMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " %", float_format!(), " V", float_format!()),
+    println!(concat!(timestamp_format!(), float_format!(), " %", float_format!(), " V", float_format!(), " ({})"),
              message.timestamp,
              message.percentage,
              message.voltage,
-             message.charging_status);
-    // println!("{}", message); // alternative to above
+             message.charging_status,
+             ChargingStatus::from(message.charging_status));
+    // println!("{} ({})", message, ChargingStatus::from(message.charging_status)); // alternative to above
 }
 
 pub fn rssi_closure(message: RssiMessage) {

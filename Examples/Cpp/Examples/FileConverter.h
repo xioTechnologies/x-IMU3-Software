@@ -37,10 +37,10 @@ private:
     static void printProgress(const ximu3::XIMU3_FileConverterProgress progress)
     {
         printf("%s, %0.1f%%, %" PRIu64 " of %" PRIu64 " bytes\n",
-               XIMU3_file_converter_status_to_string(progress.status),
+               ximu3::XIMU3_file_converter_status_to_string(progress.status),
                progress.percentage,
                progress.bytes_processed,
                progress.bytes_total);
-        // std::cout << XIMU3_file_converter_progress_to_string(progress) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_file_converter_progress_to_string(progress) << std::endl; // alternative to above
     }
 };
