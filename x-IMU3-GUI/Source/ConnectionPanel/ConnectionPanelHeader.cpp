@@ -47,7 +47,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
     batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
-        batteryIcon.update((int) message.percentage, (ximu3::XIMU3_ChargingStatus) message.charging_status);
+        batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float (message.charging_status));
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);

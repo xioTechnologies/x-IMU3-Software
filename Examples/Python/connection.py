@@ -209,11 +209,11 @@ def battery_callback(message):
                 timestamp_format(message.timestamp),
                 float_format(message.percentage) + " %",
                 float_format(message.voltage) + " V",
-                float_format(message.charging_status),
+                float_format(message.charging_status) + f" ({ximu3.charging_status_to_string(ximu3.charging_status_from_float(message.charging_status))})",
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message.to_string() + f" ({ximu3.charging_status_to_string(ximu3.charging_status_from_float(message.charging_status))})")  # alternative to above
 
 
 def rssi_callback(message):

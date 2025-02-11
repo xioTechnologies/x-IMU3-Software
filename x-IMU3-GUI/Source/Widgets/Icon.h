@@ -103,6 +103,11 @@ public:
                 setIcon(BinaryData::battery_charging_complete_svg);
                 setTooltip(title + " (Charging Complete)");
                 break;
+
+            case ximu3::XIMU3_ChargingStatusChargingOnHold:
+                setIcon(BinaryData::battery_charging_on_hold_svg);
+                setTooltip(title + " (Charging On Hold)");
+                break;
         }
     }
 };

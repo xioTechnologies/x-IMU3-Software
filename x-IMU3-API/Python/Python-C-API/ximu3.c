@@ -50,6 +50,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_NOT_CONNECTED", XIMU3_ChargingStatusNotConnected) == 0) &&
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING", XIMU3_ChargingStatusCharging) == 0) &&
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_COMPLETE", XIMU3_ChargingStatusChargingComplete) == 0) &&
+        (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_ON_HOLD", XIMU3_ChargingStatusChargingOnHold) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_TYPE_USB", XIMU3_ConnectionTypeUsb) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_TYPE_SERIAL", XIMU3_ConnectionTypeSerial) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_TYPE_TCP", XIMU3_ConnectionTypeTcp) == 0) &&

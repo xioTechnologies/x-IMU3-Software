@@ -204,8 +204,8 @@ namespace Ximu3Examples
             Console.WriteLine(TimestampFormat(args.message.Timestamp) +
                 FloatFormat(args.message.Percentage) + " %" +
                 FloatFormat(args.message.Voltage) + " V" +
-                FloatFormat(args.message.ChargingStatus));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+                FloatFormat(args.message.ChargingStatus) + $" ({(Ximu3.ChargingStatus)args.message.ChargingStatus})");
+            // Console.WriteLine(args.message.ToString() + $" ({(Ximu3.ChargingStatus)args.message.ChargingStatus})"); // alternative to above
         }
 
         private void RssiEvent(Object sender, Ximu3.RssiEventArgs args)

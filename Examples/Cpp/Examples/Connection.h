@@ -62,7 +62,7 @@ protected:
 private:
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback = [](auto decode_error)
     {
-        std::cout << XIMU3_decode_error_to_string(decode_error) << std::endl;
+        std::cout << ximu3::XIMU3_decode_error_to_string(decode_error) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics)
@@ -75,7 +75,7 @@ private:
                statistics.message_rate,
                statistics.error_total,
                statistics.error_rate);
-        // std::cout << XIMU3_statistics_to_string(statistics) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_statistics_to_string(statistics) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message)
@@ -88,7 +88,7 @@ private:
                message.accelerometer_x,
                message.accelerometer_y,
                message.accelerometer_z);
-        // std::cout << XIMU3_inertial_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_inertial_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback = [](auto message)
@@ -98,7 +98,7 @@ private:
                message.x,
                message.y,
                message.z);
-        // std::cout << XIMU3_magnetometer_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_magnetometer_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_QuaternionMessage message)> quaternionCallback = [](auto message)
@@ -109,8 +109,8 @@ private:
                message.x,
                message.y,
                message.z);
-        // std::cout << XIMU3_quaternion_message_to_string(message) << std::endl; // alternative to above
-        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_quaternion_message_to_euler_angles_message(message)) << std::endl;
+        // std::cout << ximu3::XIMU3_quaternion_message_to_string(message) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_quaternion_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_RotationMatrixMessage message)> rotationMatrixCallback = [](auto message)
@@ -126,8 +126,8 @@ private:
                message.zx,
                message.zy,
                message.zz);
-        // std::cout << XIMU3_rotation_matrix_message_to_string(message) << std::endl; // alternative to above
-        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_rotation_matrix_message_to_euler_angles_message(message)) << std::endl;
+        // std::cout << ximu3::XIMU3_rotation_matrix_message_to_string(message) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_EulerAnglesMessage message)> eulerAnglesCallback = [](auto message)
@@ -137,8 +137,8 @@ private:
                message.roll,
                message.pitch,
                message.yaw);
-        // std::cout << XIMU3_euler_angles_message_to_string(message) << std::endl; // alternative to above
-        std::cout << XIMU3_quaternion_message_to_string(XIMU3_euler_angles_message_to_quaternion_message(message)) << std::endl;
+        // std::cout << ximu3::XIMU3_euler_angles_message_to_string(message) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_quaternion_message_to_string(ximu3::XIMU3_euler_angles_message_to_quaternion_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage message)> linearAccelerationCallback = [](auto message)
@@ -152,8 +152,8 @@ private:
                message.acceleration_x,
                message.acceleration_y,
                message.acceleration_z);
-        // std::cout << XIMU3_linear_acceleration_message_to_string(message) << std::endl; // alternative to above
-        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_linear_acceleration_message_to_euler_angles_message(message)) << std::endl;
+        // std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(message) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage message)> earthAccelerationCallback = [](auto message)
@@ -167,8 +167,8 @@ private:
                message.acceleration_x,
                message.acceleration_y,
                message.acceleration_z);
-        // std::cout << XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
-        std::cout << XIMU3_euler_angles_message_to_string(XIMU3_earth_acceleration_message_to_euler_angles_message(message)) << std::endl;
+        // std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message)
@@ -179,7 +179,7 @@ private:
                message.angular_rate_recovery,
                message.acceleration_recovery,
                message.magnetic_recovery);
-        // std::cout << XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message)
@@ -189,7 +189,7 @@ private:
                message.x,
                message.y,
                message.z);
-        // std::cout << XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_TemperatureMessage message)> temperatureCallback = [](auto message)
@@ -197,17 +197,18 @@ private:
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " degC\n",
                message.timestamp,
                message.temperature);
-        // std::cout << XIMU3_temperature_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_temperature_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_BatteryMessage message)> batteryCallback = [](auto message)
     {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT "\n",
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT " (%s)\n",
                message.timestamp,
                message.percentage,
                message.voltage,
-               message.charging_status);
-        // std::cout << XIMU3_battery_message_to_string(message) << std::endl; // alternative to above
+               message.charging_status,
+               ximu3::XIMU3_charging_status_to_string(ximu3::XIMU3_charging_status_from_float(message.charging_status)));
+        // std::cout << ximu3::XIMU3_battery_message_to_string(message) << " (" << ximu3::XIMU3_charging_status_to_string(ximu3::XIMU3_charging_status_from_float(message.charging_status)) << ")" << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_RssiMessage message)> rssiCallback = [](auto message)
@@ -216,7 +217,7 @@ private:
                message.timestamp,
                message.percentage,
                message.power);
-        // std::cout << XIMU3_rssi_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_rssi_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](auto message)
@@ -224,7 +225,7 @@ private:
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
-        // std::cout << XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_NotificationMessage message)> notificationCallback = [](auto message)
@@ -232,7 +233,7 @@ private:
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
-        // std::cout << XIMU3_notification_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_notification_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_ErrorMessage message)> errorCallback = [](auto message)
@@ -240,7 +241,7 @@ private:
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
-        // std::cout << XIMU3_error_message_to_string(message) << std::endl; // alternative to above
+        // std::cout << ximu3::XIMU3_error_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void()> endOfFileCallback = []

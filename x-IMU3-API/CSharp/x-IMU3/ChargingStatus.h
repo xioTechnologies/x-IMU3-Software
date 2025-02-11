@@ -9,5 +9,6 @@ namespace Ximu3
         NotConnected = ximu3::XIMU3_ChargingStatusNotConnected,
         Charging = ximu3::XIMU3_ChargingStatusCharging,
         ChargingComplete = ximu3::XIMU3_ChargingStatusChargingComplete,
+        ChargingOnHold = ximu3::XIMU3_ChargingStatusChargingOnHold,
     };
 }

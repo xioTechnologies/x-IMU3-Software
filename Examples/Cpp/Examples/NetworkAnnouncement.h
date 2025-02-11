@@ -49,7 +49,7 @@ private:
             message.udp_receive << ", " <<
             message.rssi << "%, " <<
             message.battery << "%, " <<
-            XIMU3_charging_status_to_string(message.charging_status) << std::endl;
-        // std::cout << XIMU3_network_announcement_message_to_string(message) << std::endl; // alternative to above
+            ximu3::XIMU3_charging_status_to_string(message.charging_status) << std::endl;
+        // std::cout << ximu3::XIMU3_network_announcement_message_to_string(message) << std::endl; // alternative to above
     }
 };

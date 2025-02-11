@@ -29,6 +29,7 @@ typedef enum XIMU3_ChargingStatus
     XIMU3_ChargingStatusNotConnected,
     XIMU3_ChargingStatusCharging,
     XIMU3_ChargingStatusChargingComplete,
+    XIMU3_ChargingStatusChargingOnHold,
 } XIMU3_ChargingStatus;
 
 typedef enum XIMU3_ConnectionType
@@ -373,6 +374,8 @@ extern "C" {
 #endif // __cplusplus
 
 void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
+
+enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
 
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_status);
 
