@@ -59,7 +59,10 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     else
                     {
                         row_->state = Row::State::complete;
-                        row_->response = responses[0].value;
+                        if (responses[0].value != "null")
+                        {
+                            row_->response = responses[0].value;
+                        }
                     }
 
                     table.updateContent();
