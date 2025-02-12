@@ -112,20 +112,8 @@ std::string SerialAccessoryTerminalWindow::escapedToBytes(const std::string& esc
 
         switch (escaped[index])
         {
-            case '"':
-                bytes += '"';
-                continue;
-
             case '\\':
                 bytes += '\\';
-                continue;
-
-            case 'b':
-                bytes += '\b';
-                continue;
-
-            case 'f':
-                bytes += '\f';
                 continue;
 
             case 'n':
@@ -134,10 +122,6 @@ std::string SerialAccessoryTerminalWindow::escapedToBytes(const std::string& esc
 
             case 'r':
                 bytes += '\r';
-                continue;
-
-            case 't':
-                bytes += '\t';
                 continue;
 
             case 'x':
@@ -170,20 +154,8 @@ std::string SerialAccessoryTerminalWindow::bytesToEscaped(const std::string& byt
     {
         switch (byte)
         {
-            case '"':
-                escaped += "\\\"";
-                continue;
-
             case '\\':
                 escaped += "\\\\";
-                continue;
-
-            case '\b':
-                escaped += "\\b";
-                continue;
-
-            case '\f':
-                escaped += "\\f";
                 continue;
 
             case '\n':
@@ -192,10 +164,6 @@ std::string SerialAccessoryTerminalWindow::bytesToEscaped(const std::string& byt
 
             case '\r':
                 escaped += "\\r";
-                continue;
-
-            case '\t':
-                escaped += "\\t";
                 continue;
 
             default:
@@ -359,7 +327,7 @@ void SerialAccessoryTerminalWindow::loadRecents()
         sendValue.addItem(data["data"], sendValue.getNumItems() + 1);
     }
 
-    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello World!", juce::dontSendNotification);
+    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::dontSendNotification);
 }
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()

@@ -91,7 +91,7 @@ void SerialAccessoryTerminal::clearAll()
 
 juce::StringArray SerialAccessoryTerminal::splitEscapedString(const std::string& input)
 {
-    static const std::regex regex(R"((\\\"|\\\\|\\/|\\b|\\f|\\n|\\r|\\t|\\x[0-9A-Fa-f]{2}))");
+    static const std::regex regex(R"((\\\\|\\n|\\r|\\x[0-9A-Fa-f]{2}))");
 
     juce::StringArray output;
 
