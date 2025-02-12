@@ -16,9 +16,16 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())), std::vector<ConnectionPanel*> { &connectionPanel }));
+        CommandMessage commandMessage("{\"accessory\":" + bytesToJson(escapedToBytes(sendValue.getText().toStdString())) + "}");
+        if (sendValue.getText().isEmpty() || commandMessage.json.empty())
+        {
+            serialAccessoryTerminal.addError(sendValue.getText());
+            return;
+        }
 
-        serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
+
+        serialAccessoryTerminal.addTX(bytesToEscaped(jsonToBytes(commandMessage.value)));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -49,7 +56,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+            serialAccessoryTerminal.addRX(message.timestamp, bytesToEscaped({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
 }
@@ -86,62 +93,224 @@ void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent
     }
 }
 
-juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::String& input)
+std::string SerialAccessoryTerminalWindow::escapedToBytes(const std::string& escaped)
 {
-    juce::String output;
+    std::string bytes;
 
-    for (int index = 0; index < input.length(); index++)
+    for (size_t index = 0; index < escaped.length(); index++)
     {
-        if (input[index] != '\\')
+        if (escaped[index] != '\\')
         {
-            output += input[index];
+            bytes += escaped[index];
             continue;
         }
 
-        if (++index >= input.length())
+        if (++index == escaped.length())
         {
-            return output; // invalid escape sequence
+            break;
         }
 
-        switch (input[index])
+        switch (escaped[index])
         {
             case '\\':
-                output += '\\';
-                break;
+                bytes += '\\';
+                continue;
 
             case 'n':
-                output += '\n';
-                break;
+                bytes += '\n';
+                continue;
 
             case 'r':
-                output += '\r';
-                break;
+                bytes += '\r';
+                continue;
 
             case 'x':
+                if ((index + 2) < escaped.length())
                 {
-                    if (index >= input.length() - 2)
+                    try
                     {
-                        return output; // invalid escape sequence
+                        bytes += static_cast<char>(std::stoi(escaped.substr(index + 1, 2), nullptr, 16));
+                    }
+                    catch (...)
+                    {
                     }
 
-                    const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-                    const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-
-                    if (upperNibble == -1 || lowerNibble == -1)
-                    {
-                        break; // invalid escape sequence
-                    }
-
-                    output += (char) ((upperNibble << 4) + lowerNibble);
-                    break;
+                    index += 2;
                 }
 
             default:
-                break; // invalid escape sequence
+                break;
         }
     }
 
-    return output;
+    return bytes;
+}
+
+std::string SerialAccessoryTerminalWindow::bytesToEscaped(const std::string& bytes)
+{
+    std::string escaped;
+
+    for (char byte : bytes)
+    {
+        switch (byte)
+        {
+            case '\\':
+                escaped += "\\\\";
+                continue;
+
+            case '\n':
+                escaped += "\\n";
+                continue;
+
+            case '\r':
+                escaped += "\\r";
+                continue;
+
+            default:
+                break;
+        }
+
+        if ((unsigned char) byte < 0x20 || (unsigned char) byte > 0x7E)
+        {
+            std::ostringstream stream;
+            stream << "\\x" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) (unsigned char) byte;
+            escaped += stream.str();
+            continue;
+        }
+
+        escaped += byte;
+    }
+
+    return escaped;
+}
+
+std::string SerialAccessoryTerminalWindow::jsonToBytes(std::string json)
+{
+    if ((json.length()) < 2 || (json.front() != '"') || (json.back() != '"'))
+    {
+        return {};
+    }
+    json = json.substr(1, json.length() - 2);
+
+    std::string bytes;
+
+    for (size_t index = 0; index < json.length(); index++)
+    {
+        if (json[index] != '\\')
+        {
+            bytes += json[index];
+            continue;
+        }
+
+        if (++index == json.length())
+        {
+            break;
+        }
+
+        switch (json[index])
+        {
+            case '"':
+                bytes += '"';
+                continue;
+
+            case '\\':
+                bytes += '\\';
+                continue;
+
+            case 'b':
+                bytes += '\b';
+                continue;
+
+            case 'f':
+                bytes += '\f';
+                continue;
+
+            case 'n':
+                bytes += '\n';
+                continue;
+
+            case 'r':
+                bytes += '\r';
+                continue;
+
+            case 't':
+                bytes += '\t';
+                continue;
+
+            case 'u':
+                if ((index + 4) < json.length())
+                {
+                    try
+                    {
+                        bytes += static_cast<char>(std::stoi(json.substr(index + 1, 4), nullptr, 16) & 0xFF);
+                    }
+                    catch (...)
+                    {
+                    }
+
+                    index += 4;
+                }
+
+            default:
+                break;
+        }
+    }
+
+    return bytes;
+}
+
+std::string SerialAccessoryTerminalWindow::bytesToJson(const std::string& bytes)
+{
+    std::string json;
+
+    for (char byte : bytes)
+    {
+        switch (byte)
+        {
+            case '"':
+                json += "\\\"";
+                continue;
+
+            case '\\':
+                json += "\\\\";
+                continue;
+
+            case '\b':
+                json += "\\b";
+                continue;
+
+            case '\f':
+                json += "\\f";
+                continue;
+
+            case '\n':
+                json += "\\n";
+                continue;
+
+            case '\r':
+                json += "\\r";
+                continue;
+
+            case '\t':
+                json += "\\t";
+                continue;
+
+            default:
+                break;
+        }
+
+        if ((unsigned char) byte < 0x20)
+        {
+            std::ostringstream stream;
+            stream << "\\u" << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) (unsigned char) byte;
+            json += stream.str();
+            continue;
+        }
+
+        json += byte;
+    }
+
+    return "\"" + json + "\"";
 }
 
 void SerialAccessoryTerminalWindow::loadRecents()
@@ -158,7 +327,7 @@ void SerialAccessoryTerminalWindow::loadRecents()
         sendValue.addItem(data["data"], sendValue.getNumItems() + 1);
     }
 
-    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello World!", juce::dontSendNotification);
+    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::dontSendNotification);
 }
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
