@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 // Methods for converting between three string representations: bytes,
 // printable, and JSON.
