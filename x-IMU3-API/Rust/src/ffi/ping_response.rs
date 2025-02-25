@@ -45,5 +45,5 @@ impl From<PingResponseC> for PingResponse {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_ping_response_to_string(ping_response: PingResponseC) -> *const c_char {
-    str_to_char_ptr!(&PingResponse::from(ping_response).to_string())
+    str_to_char_ptr(&PingResponse::from(ping_response).to_string())
 }
