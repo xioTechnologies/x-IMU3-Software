@@ -69,6 +69,7 @@
     <Compile Include="Examples\Commands.cs" />
     <Compile Include="Examples\Connection.cs" />
     <Compile Include="Examples\DataLogger.cs" />
+    <Compile Include="Examples\FileConnection.cs" />
     <Compile Include="Examples\FileConverter.cs" />
     <Compile Include="Examples\GetPortNames.cs" />
     <Compile Include="Examples\NetworkAnnouncement.cs" />

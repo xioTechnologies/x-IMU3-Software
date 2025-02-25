@@ -12,15 +12,16 @@ namespace Ximu3Examples
             Console.WriteLine("A. BluetoothConnection");
             Console.WriteLine("B. Commands");
             Console.WriteLine("C. DataLogger");
-            Console.WriteLine("D. FileConverter");
-            Console.WriteLine("E. GetPortNames");
-            Console.WriteLine("F. NetworkAnnouncement");
-            Console.WriteLine("G. Ping");
-            Console.WriteLine("H. PortScanner");
-            Console.WriteLine("I. SerialConnection");
-            Console.WriteLine("J. TcpConnection");
-            Console.WriteLine("K. UdpConnection");
-            Console.WriteLine("L. UsbConnection");
+            Console.WriteLine("D. FileConnection");
+            Console.WriteLine("E. FileConverter");
+            Console.WriteLine("F. GetPortNames");
+            Console.WriteLine("G. NetworkAnnouncement");
+            Console.WriteLine("H. Ping");
+            Console.WriteLine("I. PortScanner");
+            Console.WriteLine("J. SerialConnection");
+            Console.WriteLine("K. TcpConnection");
+            Console.WriteLine("L. UdpConnection");
+            Console.WriteLine("M. UsbConnection");
             switch (Helpers.GetKey())
             {
                 case 'A':
@@ -33,30 +34,33 @@ namespace Ximu3Examples
                     new DataLogger();
                     break;
                 case 'D':
-                    new FileConverter();
+                    new FileConnection();
                     break;
                 case 'E':
-                    new GetPortNames();
+                    new FileConverter();
                     break;
                 case 'F':
-                    new NetworkAnnouncement();
+                    new GetPortNames();
                     break;
                 case 'G':
-                    new Ping();
+                    new NetworkAnnouncement();
                     break;
                 case 'H':
-                    new PortScanner();
+                    new Ping();
                     break;
                 case 'I':
-                    new SerialConnection();
+                    new PortScanner();
                     break;
                 case 'J':
-                    new TcpConnection();
+                    new SerialConnection();
                     break;
                 case 'K':
-                    new UdpConnection();
+                    new TcpConnection();
                     break;
                 case 'L':
+                    new UdpConnection();
+                    break;
+                case 'M':
                     new UsbConnection();
                     break;
             }
