@@ -73,7 +73,7 @@ impl From<DeviceC> for Device {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_device_to_string(device: DeviceC) -> *const c_char {
-    str_to_char_ptr!(&Device::from(device).to_string())
+    str_to_char_ptr(&Device::from(device).to_string())
 }
 
 #[repr(C)]

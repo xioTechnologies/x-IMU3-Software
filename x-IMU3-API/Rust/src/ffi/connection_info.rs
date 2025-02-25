@@ -34,7 +34,7 @@ impl From<UsbConnectionInfoC> for UsbConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_usb_connection_info_to_string(connection_info: UsbConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&UsbConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&UsbConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -76,7 +76,7 @@ impl From<SerialConnectionInfoC> for SerialConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_serial_connection_info_to_string(connection_info: SerialConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&SerialConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&SerialConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -115,7 +115,7 @@ impl From<TcpConnectionInfoC> for TcpConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_tcp_connection_info_to_string(connection_info: TcpConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&TcpConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&TcpConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -157,7 +157,7 @@ impl From<UdpConnectionInfoC> for UdpConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_udp_connection_info_to_string(connection_info: UdpConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&UdpConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&UdpConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -191,7 +191,7 @@ impl From<BluetoothConnectionInfoC> for BluetoothConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_bluetooth_connection_info_to_string(connection_info: BluetoothConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&BluetoothConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&BluetoothConnectionInfo::from(connection_info).to_string())
 }
 
 #[repr(C)]
@@ -225,5 +225,5 @@ impl From<FileConnectionInfoC> for FileConnectionInfo {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_connection_info_to_string(connection_info: FileConnectionInfoC) -> *const c_char {
-    str_to_char_ptr!(&FileConnectionInfo::from(connection_info).to_string())
+    str_to_char_ptr(&FileConnectionInfo::from(connection_info).to_string())
 }

@@ -1,6 +1,7 @@
 use std::ffi::CStr;
 use std::mem;
 use std::os::raw::c_char;
+use std::cell::RefCell;
 
 pub const CHAR_ARRAY_SIZE: usize = 256;
 
@@ -36,16 +37,18 @@ pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
     }
 }
 
-macro_rules! str_to_char_ptr { // each invocation of this macro uses a different static variable
-    ($string:expr) => {{
-        static mut CHAR_ARRAY: [c_char; CHAR_ARRAY_SIZE] = EMPTY_CHAR_ARRAY;
-
-        unsafe {
-            CHAR_ARRAY = str_to_char_array($string);
-            CHAR_ARRAY.as_ptr()
-        }
-    }}
+thread_local! {
+    static CHAR_ARRAY: RefCell<[c_char; CHAR_ARRAY_SIZE]> = RefCell::new(EMPTY_CHAR_ARRAY);
 }
+
+pub fn str_to_char_ptr(string: &str) -> *const c_char {
+    CHAR_ARRAY.with(|char_array| {
+        let mut array = char_array.borrow_mut();
+        *array = str_to_char_array(string);
+        array.as_ptr()
+    })
+}
+
 
 pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
     let mut string = string.to_string();

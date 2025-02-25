@@ -83,7 +83,7 @@ pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_info(mess
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_message_to_string(message: NetworkAnnouncementMessageC) -> *const c_char {
-    str_to_char_ptr!(&NetworkAnnouncementMessage::from(message).to_string())
+    str_to_char_ptr(&NetworkAnnouncementMessage::from(message).to_string())
 }
 
 #[repr(C)]

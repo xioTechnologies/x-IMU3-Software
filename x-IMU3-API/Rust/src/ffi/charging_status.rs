@@ -9,5 +9,5 @@ pub extern "C" fn XIMU3_charging_status_from_float(charging_status: f32) -> Char
 
 #[no_mangle]
 pub extern "C" fn XIMU3_charging_status_to_string(charging_status: ChargingStatus) -> *const c_char {
-    str_to_char_ptr!(&charging_status.to_string())
+    str_to_char_ptr(&charging_status.to_string())
 }
