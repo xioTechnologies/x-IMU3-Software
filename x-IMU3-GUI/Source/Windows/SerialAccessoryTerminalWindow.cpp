@@ -17,7 +17,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        CommandMessage commandMessage("{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::escapedToBytes(sendValue.getText().toStdString())) + "}");
+        CommandMessage commandMessage("{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(sendValue.getText().toStdString())) + "}");
         if (sendValue.getText().isEmpty() || commandMessage.json.empty())
         {
             serialAccessoryTerminal.addError(sendValue.getText());
@@ -26,7 +26,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
 
-        serialAccessoryTerminal.addTX(EscapedStrings::bytesToEscaped(EscapedStrings::jsonToBytes(commandMessage.value)));
+        serialAccessoryTerminal.addTX(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -57,7 +57,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.addRX(message.timestamp, EscapedStrings::bytesToEscaped({ message.char_array, (unsigned int) message.number_of_bytes }));
+            serialAccessoryTerminal.addRX(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
 }

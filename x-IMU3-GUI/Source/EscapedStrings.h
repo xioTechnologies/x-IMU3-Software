@@ -3,12 +3,12 @@
 #include <string>
 
 // Methods for converting between three string representations: bytes,
-// escaped, and JSON.
+// printable, and JSON.
 //
 // Bytes: Each character is stored as its raw byte between 0x00 and 0xFF.
 // Some characters may not be printable.
 //
-// Escaped: Strings used by the UI, either for display or user input.
+// Printable: Strings used by the UI, either for display or user input.
 // Printable ASCII characters 0x20 to 0x5B and 0x5D to 0x7F are stored as
 // their raw byte values. All other characters, except 0x0A, 0x0D, and
 // 0x5C, are stored as the 4-byte escape sequence "\\xHH" where HH is the
@@ -24,13 +24,13 @@
 
 namespace EscapedStrings
 {
-    std::string escapedToBytes(const std::string& escaped);
+    std::string printableToBytes(const std::string& printable);
 
-    std::string bytesToEscaped(const std::string& bytes);
+    std::string bytesToPrintable(const std::string& bytes);
 
     std::string jsonToBytes(std::string json);
 
     std::string bytesToJson(const std::string& bytes);
 
-    std::vector<std::string> splitEscaped(const std::string& escaped);
+    std::vector<std::string> splitPrintable(const std::string& printable);
 }

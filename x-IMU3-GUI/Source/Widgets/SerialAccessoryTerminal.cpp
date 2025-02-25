@@ -47,7 +47,7 @@ void SerialAccessoryTerminal::addRX(const uint64_t timestamp, const juce::String
 {
     juce::AttributedString line;
     line.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
-    for (const auto& string : EscapedStrings::splitEscaped(text.toStdString()))
+    for (const auto& string : EscapedStrings::splitPrintable(text.toStdString()))
     {
         line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }
@@ -58,7 +58,7 @@ void SerialAccessoryTerminal::addTX(const juce::String& text)
 {
     juce::AttributedString line;
     line.append("TX ", UIColours::success);
-    for (const auto& string : EscapedStrings::splitEscaped(text.toStdString()))
+    for (const auto& string : EscapedStrings::splitPrintable(text.toStdString()))
     {
         line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }

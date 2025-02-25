@@ -3,24 +3,24 @@
 #include <regex>
 #include <sstream>
 
-std::string EscapedStrings::escapedToBytes(const std::string& escaped)
+std::string EscapedStrings::printableToBytes(const std::string& printable)
 {
     std::string bytes;
 
-    for (size_t index = 0; index < escaped.length(); index++)
+    for (size_t index = 0; index < printable.length(); index++)
     {
-        if (escaped[index] != '\\')
+        if (printable[index] != '\\')
         {
-            bytes += escaped[index];
+            bytes += printable[index];
             continue;
         }
 
-        if (++index == escaped.length())
+        if (++index == printable.length())
         {
             break;
         }
 
-        switch (escaped[index])
+        switch (printable[index])
         {
             case '\\':
                 bytes += '\\';
@@ -35,11 +35,11 @@ std::string EscapedStrings::escapedToBytes(const std::string& escaped)
                 continue;
 
             case 'x':
-                if ((index + 2) < escaped.length())
+                if ((index + 2) < printable.length())
                 {
                     try
                     {
-                        bytes += static_cast<char>(std::stoi(escaped.substr(index + 1, 2), nullptr, 16));
+                        bytes += static_cast<char>(std::stoi(printable.substr(index + 1, 2), nullptr, 16));
                     }
                     catch (...)
                     {
@@ -56,24 +56,24 @@ std::string EscapedStrings::escapedToBytes(const std::string& escaped)
     return bytes;
 }
 
-std::string EscapedStrings::bytesToEscaped(const std::string& bytes)
+std::string EscapedStrings::bytesToPrintable(const std::string& bytes)
 {
-    std::string escaped;
+    std::string printable;
 
     for (char byte : bytes)
     {
         switch (byte)
         {
             case '\\':
-                escaped += "\\\\";
+                printable += "\\\\";
                 continue;
 
             case '\n':
-                escaped += "\\n";
+                printable += "\\n";
                 continue;
 
             case '\r':
-                escaped += "\\r";
+                printable += "\\r";
                 continue;
 
             default:
@@ -85,14 +85,14 @@ std::string EscapedStrings::bytesToEscaped(const std::string& bytes)
         {
             std::ostringstream stream;
             stream << "\\x" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) byteUnsigned;
-            escaped += stream.str();
+            printable += stream.str();
             continue;
         }
 
-        escaped += byte;
+        printable += byte;
     }
 
-    return escaped;
+    return printable;
 }
 
 std::string EscapedStrings::jsonToBytes(std::string json)
@@ -225,26 +225,26 @@ std::string EscapedStrings::bytesToJson(const std::string& bytes)
     return "\"" + json + "\"";
 }
 
-std::vector<std::string> EscapedStrings::splitEscaped(const std::string& escaped)
+std::vector<std::string> EscapedStrings::splitPrintable(const std::string& printable)
 {
     static const std::regex regex(R"((\\\\|\\n|\\r|\\x[0-9A-Fa-f]{2}))");
 
     std::vector<std::string> output;
 
     size_t position = 0;
-    for (std::sregex_iterator it(escaped.cbegin(), escaped.cend(), regex); it != std::sregex_iterator(); ++it)
+    for (std::sregex_iterator it(printable.cbegin(), printable.cend(), regex); it != std::sregex_iterator(); ++it)
     {
         if (it->position() != 0)
         {
-            output.push_back(escaped.substr(position, (size_t) it->position() - position));
+            output.push_back(printable.substr(position, (size_t) it->position() - position));
         }
         output.push_back(it->str());
         position = size_t(it->position() + it->length());
     }
 
-    if (position < escaped.length())
+    if (position < printable.length())
     {
-        output.push_back(escaped.substr(position));
+        output.push_back(printable.substr(position));
     }
 
     return output;
