@@ -1,5 +1,5 @@
-#include <regex>
 #include "SerialAccessoryTerminal.h"
+#include "EscapedStrings.h"
 
 SerialAccessoryTerminal::SerialAccessoryTerminal()
 {
@@ -47,9 +47,9 @@ void SerialAccessoryTerminal::addRX(const uint64_t timestamp, const juce::String
 {
     juce::AttributedString line;
     line.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
-    for (const auto& string : splitEscapedString(text.toStdString()))
+    for (const auto& string : EscapedStrings::splitEscaped(text.toStdString()))
     {
-        line.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
+        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }
     addLine(line);
 }
@@ -58,9 +58,9 @@ void SerialAccessoryTerminal::addTX(const juce::String& text)
 {
     juce::AttributedString line;
     line.append("TX ", UIColours::success);
-    for (const auto& string : splitEscapedString(text.toStdString()))
+    for (const auto& string : EscapedStrings::splitEscaped(text.toStdString()))
     {
-        line.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
+        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }
     addLine(line);
 }
@@ -87,31 +87,6 @@ void SerialAccessoryTerminal::clearAll()
     lines.clear();
     wrappedLines.clear();
     updateScrollbarRange();
-}
-
-juce::StringArray SerialAccessoryTerminal::splitEscapedString(const std::string& input)
-{
-    static const std::regex regex(R"((\\\\|\\n|\\r|\\x[0-9A-Fa-f]{2}))");
-
-    juce::StringArray output;
-
-    size_t position = 0;
-    for (std::sregex_iterator it(input.cbegin(), input.cend(), regex); it != std::sregex_iterator(); ++it)
-    {
-        if (it->position() != 0)
-        {
-            output.add(input.substr(position, (size_t) it->position() - position));
-        }
-        output.add(it->str());
-        position = size_t(it->position() + it->length());
-    }
-
-    if (position < input.length())
-    {
-        output.add(input.substr(position));
-    }
-
-    return output;
 }
 
 void SerialAccessoryTerminal::addLine(const juce::AttributedString& line)

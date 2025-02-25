@@ -31,4 +31,6 @@ namespace EscapedStrings
     std::string jsonToBytes(std::string json);
 
     std::string bytesToJson(const std::string& bytes);
+
+    std::vector<std::string> splitEscaped(const std::string& escaped);
 }

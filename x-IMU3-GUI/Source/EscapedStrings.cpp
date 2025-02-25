@@ -1,6 +1,7 @@
 #include "EscapedStrings.h"
-#include "iomanip"
-#include "sstream"
+#include <iomanip>
+#include <regex>
+#include <sstream>
 
 std::string EscapedStrings::escapedToBytes(const std::string& escaped)
 {
@@ -222,4 +223,29 @@ std::string EscapedStrings::bytesToJson(const std::string& bytes)
     }
 
     return "\"" + json + "\"";
+}
+
+std::vector<std::string> EscapedStrings::splitEscaped(const std::string& escaped)
+{
+    static const std::regex regex(R"((\\\\|\\n|\\r|\\x[0-9A-Fa-f]{2}))");
+
+    std::vector<std::string> output;
+
+    size_t position = 0;
+    for (std::sregex_iterator it(escaped.cbegin(), escaped.cend(), regex); it != std::sregex_iterator(); ++it)
+    {
+        if (it->position() != 0)
+        {
+            output.push_back(escaped.substr(position, (size_t) it->position() - position));
+        }
+        output.push_back(it->str());
+        position = size_t(it->position() + it->length());
+    }
+
+    if (position < escaped.length())
+    {
+        output.push_back(escaped.substr(position));
+    }
+
+    return output;
 }

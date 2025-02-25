@@ -36,8 +36,6 @@ private:
     float numberOfLinesOnScreen = 0.0f;
     int numberOfCharactersPerLine = 1;
 
-    static juce::StringArray splitEscapedString(const std::string& input);
-
     void addLine(const juce::AttributedString& line);
 
     void updateScrollbarRange();
