@@ -3,7 +3,7 @@
 #include "Widgets/SimpleLabel.h"
 
 SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
-    : Dialog(BinaryData::progress_svg, "Sending Command " + command.json, "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
+    : Dialog(BinaryData::progress_svg, "Sending Command " + replaceInvalidCharacters(command.json), "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
@@ -61,7 +61,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                         row_->state = Row::State::complete;
                         if (responses[0].value != "null")
                         {
-                            row_->response = responses[0].value;
+                            row_->response = replaceInvalidCharacters(responses[0].value);
                         }
                     }
 
@@ -124,6 +124,23 @@ std::optional<int> SendingCommandDialog::findRow(const Row::State state) const
         }
     }
     return {};
+}
+
+std::string SendingCommandDialog::replaceInvalidCharacters(const std::string& input)
+{
+    std::string output;
+
+    for (char character : input)
+    {
+        if ((unsigned char) character > 0x7E)
+        {
+            output += "?";
+            continue;
+        }
+        output += character;
+    }
+
+    return output;
 }
 
 int SendingCommandDialog::getNumRows()

@@ -1,5 +1,5 @@
-#include "DataLoggerSettingsDialog.h"
 #include "CustomLookAndFeel.h"
+#include "DataLoggerSettingsDialog.h"
 
 DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start")
 {

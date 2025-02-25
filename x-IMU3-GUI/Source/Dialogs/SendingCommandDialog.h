@@ -45,6 +45,8 @@ private:
 
     std::optional<int> findRow(const Row::State state) const;
 
+    static std::string replaceInvalidCharacters(const std::string& input);
+
     int getNumRows() override;
 
     void paintRowBackground(juce::Graphics&, int, int, int, bool) override;

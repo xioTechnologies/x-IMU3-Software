@@ -3,7 +3,6 @@
 #include "ApplicationSettings.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
-#include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"
 #include "Widgets/SerialAccessoryTerminal.h"
 #include "Window.h"
@@ -31,8 +30,6 @@ private:
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackID;
-
-    static juce::String removeEscapeCharacters(const juce::String& input);
 
     void loadRecents();
 
