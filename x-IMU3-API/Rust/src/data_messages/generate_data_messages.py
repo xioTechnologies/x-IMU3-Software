@@ -390,120 +390,20 @@ for message in messages:
 
 helpers.insert(file_path, code, 1)
 
-# Generate x-IMU3-API/CSharp/x-IMU3/DataMessages/*Message.h
-directory = "../../../CSharp/x-IMU3/DataMessages/"
-
-for message in messages:
-    if message.argument_names:
-        with open(directory + "TemplateFloat.txt") as file:
-            template = file.read()
-
-        to_quaternion = message.name == "Euler Angles"
-        to_euler = message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]
-
-        # Includes
-        includes = '#include "../../../C/Ximu3.h"\n'
-
-        if to_quaternion:
-            includes += '//#include "QuaternionMessage.h"\n'
-
-        if to_euler:
-            includes += '#include "EulerAnglesMessage.h"\n'
-
-        template = template.replace("$includes$", includes.rstrip("\n"))
-
-        # Properties
-        properties = ""
-
-        for name in message.argument_names:
-            property = """\
-        property float $argument_pascal_case$
-        {
-            float get()
-            {
-                return message->$argument_snake_case$;
-            }
-        }\n\n"""
-            properties += property.replace("$argument_pascal_case$", helpers.pascal_case(name)).replace("$argument_snake_case$", helpers.snake_case(name))
-
-        template = template.replace("$properties$", properties.rstrip("\n"))
-
-        # Methods
-        methods = """\
-        String^ ToString() override
-        {
-            return gcnew String(ximu3::XIMU3_$name_snake_case$_message_to_string(*message));
-        }\n\n"""
-
-        if to_quaternion:
-            methods += """\
-        //QuaternionMessage^ ToQuaternionMessage() // TODO: Fix circular reference
-        //{
-        //    return gcnew QuaternionMessage(XIMU3_$name_snake_case$_message_to_quaternion_message(*message));
-        //}\n\n"""
-
-        if to_euler:
-            methods += """\
-        EulerAnglesMessage^ ToEulerAnglesMessage()
-        {
-            return gcnew EulerAnglesMessage(XIMU3_$name_snake_case$_message_to_euler_angles_message(*message));
-        }\n\n"""
-
-        template = template.replace("$methods$", methods.rstrip("\n"))
-    else:
-        with open(directory + "TemplateCharArray.txt") as file:
-            template = file.read()
-
-    template = template.replace("$name_pascal_case$", helpers.pascal_case(message.name))
-    template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
-
-    with open(directory + helpers.pascal_case(message.name) + "Message.h", "w") as file:
-        file.write(helpers.preamble())
-        file.write(template)
-
-# Generate x-IMU3-API/CSharp/x-IMU3/DataMessages/DataMessages.h
-with open("../../../CSharp/x-IMU3/DataMessages/DataMessages.h", "w") as file:
-    file.write(helpers.preamble())
-
-    for message in messages:
-        file.write('#include "' + helpers.pascal_case(message.name) + 'Message.h"\n')
-
-# Insert code into x-IMU3-API/CSharp/x-IMU3/EventArgs.h
-template = """\
-
-    public ref class $name_pascal_case$EventArgs : public EventArgs
-    {
-    public:
-        $name_pascal_case$Message^ message;
-
-    internal:
-        $name_pascal_case$EventArgs($name_pascal_case$Message^ message) : message(message)
-        {
-        }
-    };\n"""
-
-insert("../../../CSharp/x-IMU3/EventArgs.h", template, 0)
-
 # Insert code into x-IMU3-API/CSharp/x-IMU3/Connection.h
-file_path = "../../../CSharp/x-IMU3/Connection.h"
+file_path = "../../../CSharp/x-IMU3/Connection.cs"
 
-template = "        event EventHandler<$name_pascal_case$EventArgs^>^ $name_pascal_case$Event;\n"
+template = """\
+        public delegate void $name_pascal_case$Callback(CApi.XIMU3_$name_pascal_case$Message message);
+
+        private static void $name_pascal_case$CallbackInternal(CApi.XIMU3_$name_pascal_case$Message message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<$name_pascal_case$Callback>(context)(message);
+        }
+
+        public UInt64 Add$name_pascal_case$Callback($name_pascal_case$Callback callback)
+        {
+            return CApi.XIMU3_connection_add_$name_snake_case$_callback(connection, $name_pascal_case$CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }\n"""
 
 insert(file_path, template, 0)
-
-template = "            ximu3::XIMU3_connection_add_$name_snake_case$_callback(connection, static_cast<ximu3::XIMU3_Callback$name_pascal_case$Message>(Marshal::GetFunctionPointerForDelegate($name_camel_case$Delegate).ToPointer()), GCHandle::ToIntPtr(thisHandle).ToPointer());\n"
-
-insert(file_path, template, 1)
-
-template = """
-        delegate void $name_pascal_case$Delegate(ximu3::XIMU3_$name_pascal_case$Message data, void* context);
-
-        static void $name_pascal_case$Callback(ximu3::XIMU3_$name_pascal_case$Message data, void* context)
-        {
-            auto sender = GCHandle::FromIntPtr(IntPtr(context)).Target;
-            static_cast<Connection^>(sender)->$name_pascal_case$Event(sender, gcnew $name_pascal_case$EventArgs(gcnew $name_pascal_case$Message(data)));
-        }
-
-        const $name_pascal_case$Delegate^ $name_camel_case$Delegate = gcnew $name_pascal_case$Delegate($name_pascal_case$Callback);\n"""
-
-insert(file_path, template, 2)

@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Ximu3Examples
+﻿namespace Ximu3Examples
 {
     class Helpers
     {
         public static Char? GetKey()
         {
-            string buffer = Console.ReadLine();
+            string? buffer = Console.ReadLine();
             if (string.IsNullOrEmpty(buffer))
             {
                 return null;

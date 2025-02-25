@@ -1,12 +1,14 @@
-﻿using System;
-
-namespace Ximu3Examples
+﻿namespace Ximu3Examples
 {
     class FileConnection : Connection
     {
         public FileConnection()
         {
-            Run(new Ximu3.FileConnectionInfo("C:/file.ximu3"));
+            Ximu3.CApi.XIMU3_FileConnectionInfo connectionInfo = new()
+            {
+                file_path = Ximu3.Helpers.ToBytes("C:/file.ximu3")
+            };
+            Run(connectionInfo);
         }
     }
 }

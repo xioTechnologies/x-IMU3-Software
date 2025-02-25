@@ -1,44 +1,43 @@
-using System;
-
 namespace Ximu3Examples
 {
     class Connection
     {
-        protected void Run(Ximu3.ConnectionInfo connectionInfo)
+        protected static void Run(object connectionInfo)
         {
             // Create connection
-            Ximu3.Connection connection = new Ximu3.Connection(connectionInfo);
+            Ximu3.Connection connection = new(connectionInfo);
 
-            connection.DecodeErrorEvent += this.DecodeErrorEvent;
-            connection.StatisticsEvent += this.StatisticsEvent;
+            connection.AddDecodeErrorCallback(DecodeErrorCallback);
+            connection.AddStatisticsCallback(StatisticsCallback);
             if (Helpers.YesOrNo("Print data messages?"))
             {
-                connection.InertialEvent += this.InertialEvent;
-                connection.MagnetometerEvent += this.MagnetometerEvent;
-                connection.QuaternionEvent += this.QuaternionEvent;
-                connection.RotationMatrixEvent += this.RotationMatrixEvent;
-                connection.EulerAnglesEvent += this.EulerAnglesEvent;
-                connection.LinearAccelerationEvent += this.LinearAccelerationEvent;
-                connection.EarthAccelerationEvent += this.EarthAccelerationEvent;
-                connection.AhrsStatusEvent += this.AhrsStatusEvent;
-                connection.HighGAccelerometerEvent += this.HighGAccelerometerEvent;
-                connection.TemperatureEvent += this.TemperatureEvent;
-                connection.BatteryEvent += this.BatteryEvent;
-                connection.RssiEvent += this.RssiEvent;
-                connection.SerialAccessoryEvent += this.SerialAccessoryEvent;
-                connection.NotificationEvent += this.NotificationEvent;
-                connection.ErrorEvent += this.ErrorEvent;
+                connection.AddInertialCallback(InertialCallback);
+                connection.AddMagnetometerCallback(MagnetometerCallback);
+                connection.AddQuaternionCallback(QuaternionCallback);
+                connection.AddRotationMatrixCallback(RotationMatrixCallback);
+                connection.AddEulerAnglesCallback(EulerAnglesCallback);
+                connection.AddLinearAccelerationCallback(LinearAccelerationCallback);
+                connection.AddEarthAccelerationCallback(EarthAccelerationCallback);
+                connection.AddAhrsStatusCallback(AhrsStatusCallback);
+                connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
+                connection.AddTemperatureCallback(TemperatureCallback);
+                connection.AddBatteryCallback(BatteryCallback);
+                connection.AddRssiCallback(RssiCallback);
+                connection.AddSerialAccessoryCallback(SerialAccessoryCallback);
+                connection.AddNotificationCallback(NotificationCallback);
+                connection.AddErrorCallback(ErrorCallback);
             }
+            connection.AddEndOfFileCallback(EndOfFileCallback);
 
             // Open connection
-            if (connection.Open() != Ximu3.Result.Ok)
+            if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
                 Console.WriteLine("Unable to open " + connectionInfo);
                 return;
             }
 
             // Send command to strobe LED
-            string[] commands = { "{\"strobe\":null}" };
+            string[] commands = ["{\"strobe\":null}"];
             connection.SendCommands(commands, 2, 500);
 
             // Close connection
@@ -71,167 +70,170 @@ namespace Ximu3Examples
             return " \"" + value + "\"";
         }
 
-        private void DecodeErrorEvent(Object sender, Ximu3.DecodeErrorEventArgs args)
+        private static void DecodeErrorCallback(Ximu3.CApi.XIMU3_DecodeError decodeError)
         {
-            Console.WriteLine(args.decodeError.ToString());
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_decode_error_to_string(decodeError)));
         }
 
-        private void StatisticsEvent(Object sender, Ximu3.StatisticsEventArgs args)
+        private static void StatisticsCallback(Ximu3.CApi.XIMU3_Statistics statistics)
         {
-            Console.WriteLine(TimestampFormat(args.statistics.Timestamp) +
-                IntFormat(args.statistics.DataTotal) + " bytes" +
-                IntFormat(args.statistics.DataRate) + " bytes/s" +
-                IntFormat(args.statistics.MessageTotal) + " messages" +
-                IntFormat(args.statistics.MessageRate) + " messages/s" +
-                IntFormat(args.statistics.ErrorTotal) + " errors" +
-                IntFormat(args.statistics.ErrorRate) + " errors/s");
-            // Console.WriteLine(args.statistics.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(statistics.timestamp) +
+                IntFormat(statistics.data_total) + " bytes" +
+                IntFormat(statistics.data_rate) + " bytes/s" +
+                IntFormat(statistics.message_total) + " messages" +
+                IntFormat(statistics.message_rate) + " messages/s" +
+                IntFormat(statistics.error_total) + " errors" +
+                IntFormat(statistics.error_rate) + " errors/s");
+            // Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_statistics_to_string(statistics))); // alternative to above
+        }
+        private static void InertialCallback(Ximu3.CApi.XIMU3_InertialMessage message)
+        {
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                 FloatFormat(message.gyroscope_x) + " deg/s" +
+                 FloatFormat(message.gyroscope_y) + " deg/s" +
+                 FloatFormat(message.gyroscope_z) + " deg/s" +
+                 FloatFormat(message.accelerometer_x) + " g" +
+                 FloatFormat(message.accelerometer_y) + " g" +
+                 FloatFormat(message.accelerometer_z) + " g");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_inertial_message_to_string(message))); // alternative to above
         }
 
-        private void InertialEvent(Object sender, Ximu3.InertialEventArgs args)
+        private static void MagnetometerCallback(Ximu3.CApi.XIMU3_MagnetometerMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                 FloatFormat(args.message.GyroscopeX) + " deg/s" +
-                 FloatFormat(args.message.GyroscopeY) + " deg/s" +
-                 FloatFormat(args.message.GyroscopeZ) + " deg/s" +
-                 FloatFormat(args.message.AccelerometerX) + " g" +
-                 FloatFormat(args.message.AccelerometerY) + " g" +
-                 FloatFormat(args.message.AccelerometerZ) + " g");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                 FloatFormat(message.x) + " a.u." +
+                 FloatFormat(message.y) + " a.u." +
+                 FloatFormat(message.z) + " a.u.");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_magnetometer_message_to_string(message))); // alternative to above
         }
 
-        private void MagnetometerEvent(Object sender, Ximu3.MagnetometerEventArgs args)
+        private static void QuaternionCallback(Ximu3.CApi.XIMU3_QuaternionMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                 FloatFormat(args.message.X) + " a.u." +
-                 FloatFormat(args.message.Y) + " a.u." +
-                 FloatFormat(args.message.Z) + " a.u.");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.w) +
+                FloatFormat(message.x) +
+                FloatFormat(message.y) +
+                FloatFormat(message.z));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_quaternion_message_to_string(message))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_quaternion_message_to_euler_angles_message(message))));
         }
 
-        private void QuaternionEvent(Object sender, Ximu3.QuaternionEventArgs args)
+        private static void RotationMatrixCallback(Ximu3.CApi.XIMU3_RotationMatrixMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.W) +
-                FloatFormat(args.message.X) +
-                FloatFormat(args.message.Y) +
-                FloatFormat(args.message.Z));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
-            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.xx) +
+                FloatFormat(message.xy) +
+                FloatFormat(message.xz) +
+                FloatFormat(message.yx) +
+                FloatFormat(message.yy) +
+                FloatFormat(message.yz) +
+                FloatFormat(message.zx) +
+                FloatFormat(message.zy) +
+                FloatFormat(message.zz));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rotation_matrix_message_to_string(message))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_rotation_matrix_message_to_euler_angles_message(message))));
         }
 
-        private void RotationMatrixEvent(Object sender, Ximu3.RotationMatrixEventArgs args)
+        private static void EulerAnglesCallback(Ximu3.CApi.XIMU3_EulerAnglesMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.XX) +
-                FloatFormat(args.message.XY) +
-                FloatFormat(args.message.XZ) +
-                FloatFormat(args.message.YX) +
-                FloatFormat(args.message.YY) +
-                FloatFormat(args.message.YZ) +
-                FloatFormat(args.message.ZX) +
-                FloatFormat(args.message.ZY) +
-                FloatFormat(args.message.ZZ));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
-            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.roll) + " deg" +
+                FloatFormat(message.pitch) + " deg" +
+                FloatFormat(message.yaw) + " deg");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(message))); // alternative to above
         }
 
-        private void EulerAnglesEvent(Object sender, Ximu3.EulerAnglesEventArgs args)
+        private static void LinearAccelerationCallback(Ximu3.CApi.XIMU3_LinearAccelerationMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.Roll) + " deg" +
-                FloatFormat(args.message.Pitch) + " deg" +
-                FloatFormat(args.message.Yaw) + " deg");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.quaternion_w) +
+                FloatFormat(message.quaternion_x) +
+                FloatFormat(message.quaternion_y) +
+                FloatFormat(message.quaternion_z) +
+                FloatFormat(message.acceleration_x) + " g" +
+                FloatFormat(message.acceleration_y) + " g" +
+                FloatFormat(message.acceleration_z) + " g");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_linear_acceleration_message_to_string(message))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_linear_acceleration_message_to_euler_angles_message(message))));
         }
 
-        private void LinearAccelerationEvent(Object sender, Ximu3.LinearAccelerationEventArgs args)
+        private static void EarthAccelerationCallback(Ximu3.CApi.XIMU3_EarthAccelerationMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.QuaternionW) +
-                FloatFormat(args.message.QuaternionX) +
-                FloatFormat(args.message.QuaternionY) +
-                FloatFormat(args.message.QuaternionZ) +
-                FloatFormat(args.message.AccelerationX) + " g" +
-                FloatFormat(args.message.AccelerationY) + " g" +
-                FloatFormat(args.message.AccelerationZ) + " g");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
-            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.quaternion_w) +
+                FloatFormat(message.quaternion_x) +
+                FloatFormat(message.quaternion_y) +
+                FloatFormat(message.quaternion_z) +
+                FloatFormat(message.acceleration_x) + " g" +
+                FloatFormat(message.acceleration_y) + " g" +
+                FloatFormat(message.acceleration_z) + " g");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_earth_acceleration_message_to_string(message))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_earth_acceleration_message_to_euler_angles_message(message))));
         }
 
-        private void EarthAccelerationEvent(Object sender, Ximu3.EarthAccelerationEventArgs args)
+        private static void AhrsStatusCallback(Ximu3.CApi.XIMU3_AhrsStatusMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.QuaternionW) +
-                FloatFormat(args.message.QuaternionX) +
-                FloatFormat(args.message.QuaternionY) +
-                FloatFormat(args.message.QuaternionZ) +
-                FloatFormat(args.message.AccelerationX) + " g" +
-                FloatFormat(args.message.AccelerationY) + " g" +
-                FloatFormat(args.message.AccelerationZ) + " g");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
-            Console.WriteLine(args.message.ToEulerAnglesMessage().ToString());
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.initialising) +
+                FloatFormat(message.angular_rate_recovery) +
+                FloatFormat(message.acceleration_recovery) +
+                FloatFormat(message.magnetic_recovery));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ahrs_status_message_to_string(message))); // alternative to above
         }
 
-        private void AhrsStatusEvent(Object sender, Ximu3.AhrsStatusEventArgs args)
+        private static void HighGAccelerometerCallback(Ximu3.CApi.XIMU3_HighGAccelerometerMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.Initialising) +
-                FloatFormat(args.message.AngularRateRecovery) +
-                FloatFormat(args.message.AccelerationRecovery) +
-                FloatFormat(args.message.MagneticRecovery));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.x) + " g" +
+                FloatFormat(message.y) + " g" +
+                FloatFormat(message.z) + " g");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(message))); // alternative to above
         }
 
-        private void HighGAccelerometerEvent(Object sender, Ximu3.HighGAccelerometerEventArgs args)
+        private static void TemperatureCallback(Ximu3.CApi.XIMU3_TemperatureMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.X) + " g" +
-                FloatFormat(args.message.Y) + " g" +
-                FloatFormat(args.message.Z) + " g");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.temperature) + " degC");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_temperature_message_to_string(message))); // alternative to above
         }
 
-        private void TemperatureEvent(Object sender, Ximu3.TemperatureEventArgs args)
+        private static void BatteryCallback(Ximu3.CApi.XIMU3_BatteryMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.Temperature) + " degC");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.percentage) + " %" +
+                FloatFormat(message.voltage) + " V" +
+                FloatFormat(message.charging_status) + $" ({Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_charging_status_to_string(Ximu3.CApi.XIMU3_charging_status_from_float(message.charging_status)))})");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_battery_message_to_string(message)) + $" ({Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_charging_status_to_string(Ximu3.CApi.XIMU3_charging_status_from_float(message.charging_status)))})"); // alternative to above
         }
 
-        private void BatteryEvent(Object sender, Ximu3.BatteryEventArgs args)
+        private static void RssiCallback(Ximu3.CApi.XIMU3_RssiMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.Percentage) + " %" +
-                FloatFormat(args.message.Voltage) + " V" +
-                FloatFormat(args.message.ChargingStatus) + $" ({(Ximu3.ChargingStatus)args.message.ChargingStatus})");
-            // Console.WriteLine(args.message.ToString() + $" ({(Ximu3.ChargingStatus)args.message.ChargingStatus})"); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) +
+                FloatFormat(message.percentage) + " %" +
+                FloatFormat(message.power) + " dBm");
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(message))); // alternative to above
         }
 
-        private void RssiEvent(Object sender, Ximu3.RssiEventArgs args)
+        private static void SerialAccessoryCallback(Ximu3.CApi.XIMU3_SerialAccessoryMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) +
-                FloatFormat(args.message.Percentage) + " %" +
-                FloatFormat(args.message.Power) + " dBm");
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) + StringFormat(Ximu3.Helpers.ToString(message.char_array)));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(message))); // alternative to above
         }
 
-        private void SerialAccessoryEvent(Object sender, Ximu3.SerialAccessoryEventArgs args)
+        private static void NotificationCallback(Ximu3.CApi.XIMU3_NotificationMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) + StringFormat(args.message.BytesAsString));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) + StringFormat(Ximu3.Helpers.ToString(message.char_array)));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_notification_message_to_string(message))); // alternative to above
         }
 
-        private void NotificationEvent(Object sender, Ximu3.NotificationEventArgs args)
+        private static void ErrorCallback(Ximu3.CApi.XIMU3_ErrorMessage message)
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) + StringFormat(args.message.BytesAsString));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine(TimestampFormat(message.timestamp) + StringFormat(Ximu3.Helpers.ToString(message.char_array)));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_error_message_to_string(message))); // alternative to above
         }
-
-        private void ErrorEvent(Object sender, Ximu3.ErrorEventArgs args)
+        private static void EndOfFileCallback()
         {
-            Console.WriteLine(TimestampFormat(args.message.Timestamp) + StringFormat(args.message.BytesAsString));
-            // Console.WriteLine(args.message.ToString()); // alternative to above
+            Console.WriteLine("End of file");
         }
     }
 }

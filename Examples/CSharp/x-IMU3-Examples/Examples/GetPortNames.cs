@@ -1,5 +1,3 @@
-using System;
-
 namespace Ximu3Examples
 {
     class GetPortNames
