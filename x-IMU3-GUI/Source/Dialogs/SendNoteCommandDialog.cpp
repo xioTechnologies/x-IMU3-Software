@@ -11,7 +11,7 @@ SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog
     if (!recentNotes.isValid())
     {
         recentNotes = juce::ValueTree("RecentNotes");
-        recentNotes.appendChild({ "Note", { { "note", "Hello World!" } } }, nullptr);
+        recentNotes.appendChild({ "Note", { { "note", "This message will be echoed as a timestamped notification" } } }, nullptr);
     }
 
     value.onTextChange = [&]

@@ -7,7 +7,7 @@ class SerialAccessoryTerminal : public juce::Component,
                                 private juce::ScrollBar::Listener
 {
 public:
-    static constexpr int maxNumberOfMessages = 1024;
+    static constexpr int maxNumberOfLines = 1024;
 
     SerialAccessoryTerminal();
 
@@ -17,7 +17,11 @@ public:
 
     void resized() override;
 
-    void add(const uint64_t timestamp, const juce::String& text);
+    void addRX(const uint64_t timestamp, const juce::String& text);
+
+    void addTX(const juce::String& text);
+
+    void addError(const juce::String& text);
 
     void copyToClipboard() const;
 
@@ -28,15 +32,15 @@ private:
 
     juce::ScrollBar scrollbar { true };
 
-    std::vector<juce::AttributedString> messages, wrappedMessages;
+    std::vector<juce::AttributedString> lines, wrappedLines;
     float numberOfLinesOnScreen = 0.0f;
     int numberOfCharactersPerLine = 1;
 
-    static std::vector<juce::String> addEscapeCharacters(const juce::String& input);
+    void addLine(const juce::AttributedString& line);
 
     void updateScrollbarRange();
 
-    std::vector<juce::AttributedString> wrapped(const juce::AttributedString& item) const;
+    std::vector<juce::AttributedString> wrapped(const juce::AttributedString& line) const;
 
     void scrollBarMoved(juce::ScrollBar*, double) override;
 

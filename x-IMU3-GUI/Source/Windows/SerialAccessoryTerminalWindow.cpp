@@ -1,5 +1,6 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialogs/SendingCommandDialog.h"
+#include "EscapedStrings.h"
 #include "SerialAccessoryTerminalWindow.h"
 
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
@@ -16,9 +17,16 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     addAndMakeVisible(sendButton);
     sendButton.onClick = [this]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("accessory", removeEscapeCharacters(sendValue.getText())), std::vector<ConnectionPanel*> { &connectionPanel }));
+        CommandMessage commandMessage("{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(sendValue.getText().toStdString())) + "}");
+        if (sendValue.getText().isEmpty() || commandMessage.json.empty())
+        {
+            serialAccessoryTerminal.addError(sendValue.getText());
+            return;
+        }
 
-        serialAccessoryTerminal.add(uint64_t(-1), removeEscapeCharacters(sendValue.getText()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
+
+        serialAccessoryTerminal.addTX(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -49,7 +57,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.add(message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+            serialAccessoryTerminal.addRX(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
 }
@@ -86,64 +94,6 @@ void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent
     }
 }
 
-juce::String SerialAccessoryTerminalWindow::removeEscapeCharacters(const juce::String& input)
-{
-    juce::String output;
-
-    for (int index = 0; index < input.length(); index++)
-    {
-        if (input[index] != '\\')
-        {
-            output += input[index];
-            continue;
-        }
-
-        if (++index >= input.length())
-        {
-            return output; // invalid escape sequence
-        }
-
-        switch (input[index])
-        {
-            case '\\':
-                output += '\\';
-                break;
-
-            case 'n':
-                output += '\n';
-                break;
-
-            case 'r':
-                output += '\r';
-                break;
-
-            case 'x':
-                {
-                    if (index >= input.length() - 2)
-                    {
-                        return output; // invalid escape sequence
-                    }
-
-                    const auto upperNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-                    const auto lowerNibble = juce::CharacterFunctions::getHexDigitValue((juce::juce_wchar) (juce::uint8) input[++index]);
-
-                    if (upperNibble == -1 || lowerNibble == -1)
-                    {
-                        break; // invalid escape sequence
-                    }
-
-                    output += (char) ((upperNibble << 4) + lowerNibble);
-                    break;
-                }
-
-            default:
-                break; // invalid escape sequence
-        }
-    }
-
-    return output;
-}
-
 void SerialAccessoryTerminalWindow::loadRecents()
 {
     recentSerialAccessoryData = juce::ValueTree::fromXml(file.loadFileAsString());
@@ -158,7 +108,7 @@ void SerialAccessoryTerminalWindow::loadRecents()
         sendValue.addItem(data["data"], sendValue.getNumItems() + 1);
     }
 
-    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : "Hello World!", juce::dontSendNotification);
+    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::dontSendNotification);
 }
 
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()

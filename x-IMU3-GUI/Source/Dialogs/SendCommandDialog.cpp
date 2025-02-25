@@ -18,7 +18,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
     if (!recentCommands.isValid())
     {
         recentCommands = juce::ValueTree("RecentCommands");
-        recentCommands.appendChild({ "Command", { { "key", "note" }, { "type", static_cast<int>(Type::string) }, { "value", "Hello World!" } } }, nullptr);
+        recentCommands.appendChild({ "Command", { { "key", "ping" }, { "type", static_cast<int>(Type::null) } } }, nullptr);
     }
 
     typeValue.addItemList({ toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null) }, 1);

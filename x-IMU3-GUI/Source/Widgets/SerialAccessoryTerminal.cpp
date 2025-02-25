@@ -1,4 +1,5 @@
 #include "SerialAccessoryTerminal.h"
+#include "EscapedStrings.h"
 
 SerialAccessoryTerminal::SerialAccessoryTerminal()
 {
@@ -13,7 +14,7 @@ void SerialAccessoryTerminal::paint(juce::Graphics& g)
     for (auto lineIndex = (int) std::floor(scrollbar.getCurrentRangeStart()); lineIndex < (int) std::ceil(scrollbar.getCurrentRange().getEnd()); lineIndex++)
     {
         const auto y = juce::jmap((float) lineIndex, (float) scrollbar.getCurrentRangeStart(), (float) scrollbar.getCurrentRangeStart() + (float) numberOfLinesOnScreen, 0.0f, (float) getHeight());
-        wrappedMessages[(size_t) lineIndex].draw(g, { 0.0f, (float) y, (float) getWidth(), (float) juce::roundToInt(font.getHeight()) });
+        wrappedLines[(size_t) lineIndex].draw(g, { 0.0f, (float) y, (float) getWidth(), (float) juce::roundToInt(font.getHeight()) });
     }
 }
 
@@ -30,135 +31,106 @@ void SerialAccessoryTerminal::resized()
     numberOfLinesOnScreen = getHeight() / font.getHeight();
     numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / juce::GlyphArrangement::getStringWidth(font, "0")));
 
-    wrappedMessages.clear();
-    for (const auto& message : messages)
+    wrappedLines.clear();
+    for (const auto& line : lines)
     {
-        for (const auto& line : wrapped(message))
+        for (const auto& wrappedLine : wrapped(line))
         {
-            wrappedMessages.push_back(line);
+            wrappedLines.push_back(wrappedLine);
         }
     }
 
     updateScrollbarRange();
 }
 
-void SerialAccessoryTerminal::add(const uint64_t timestamp, const juce::String& text)
+void SerialAccessoryTerminal::addRX(const uint64_t timestamp, const juce::String& text)
 {
-    juce::AttributedString message;
-    if (timestamp == uint64_t(-1))
+    juce::AttributedString line;
+    line.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
+    for (const auto& string : EscapedStrings::splitPrintable(text.toStdString()))
     {
-        message.append("TX ", juce::Colours::green);
+        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }
-    else
-    {
-        message.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
-    }
-    for (const auto& string : addEscapeCharacters(text))
-    {
-        message.append(string, string.startsWith("\\") ? juce::Colours::grey : juce::Colours::white);
-    }
-    messages.push_back(message);
+    addLine(line);
+}
 
-    const auto wrappedMessage = wrapped(message);
-    wrappedMessages.insert(wrappedMessages.end(), wrappedMessage.begin(), wrappedMessage.end());
-
-    if ((int) messages.size() > maxNumberOfMessages)
+void SerialAccessoryTerminal::addTX(const juce::String& text)
+{
+    juce::AttributedString line;
+    line.append("TX ", UIColours::success);
+    for (const auto& string : EscapedStrings::splitPrintable(text.toStdString()))
     {
-        const auto numberOfLinesToDrop = (int) wrapped(messages[0]).size();
-        messages.erase(messages.begin());
-        wrappedMessages.erase(wrappedMessages.begin(), wrappedMessages.begin() + numberOfLinesToDrop);
+        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
     }
+    addLine(line);
+}
 
-    updateScrollbarRange();
+void SerialAccessoryTerminal::addError(const juce::String& text)
+{
+    juce::AttributedString line;
+    line.append("Invalid JSON \"" + text + "\"", UIColours::error);
+    addLine(line);
 }
 
 void SerialAccessoryTerminal::copyToClipboard() const
 {
     juce::String text;
-    for (const auto& message : messages)
+    for (const auto& line : lines)
     {
-        text += message.getText() + "\n";
+        text += line.getText() + "\n";
     }
     juce::SystemClipboard::copyTextToClipboard(text);
 }
 
 void SerialAccessoryTerminal::clearAll()
 {
-    messages.clear();
-    wrappedMessages.clear();
+    lines.clear();
+    wrappedLines.clear();
     updateScrollbarRange();
 }
 
-std::vector<juce::String> SerialAccessoryTerminal::addEscapeCharacters(const juce::String& input)
+void SerialAccessoryTerminal::addLine(const juce::AttributedString& line)
 {
-    std::vector<juce::String> output(1);
+    lines.push_back(line);
 
-    for (const auto character : input)
+    const auto wrappedLine = wrapped(line);
+    wrappedLines.insert(wrappedLines.end(), wrappedLine.begin(), wrappedLine.end());
+
+    if ((int) lines.size() > maxNumberOfLines)
     {
-        if (juce::CharacterFunctions::isPrintable(character))
-        {
-            if (output.back()[0] == '\\')
-            {
-                output.push_back({});
-            }
-
-            output.back() += character;
-            continue;
-        }
-
-        if (output.back().isNotEmpty())
-        {
-            output.push_back({});
-        }
-
-        switch (character)
-        {
-            case '\\':
-                output.back() += "\\\\";
-                break;
-
-            case '\n':
-                output.back() += "\\n";
-                break;
-
-            case '\r':
-                output.back() += "\\r";
-                break;
-
-            default:
-                output.back() += "\\x" + juce::String::toHexString(character).paddedLeft('0', 2);
-                break;
-        }
+        const auto numberOfLinesToDrop = (int) wrapped(lines[0]).size();
+        lines.erase(lines.begin());
+        wrappedLines.erase(wrappedLines.begin(), wrappedLines.begin() + numberOfLinesToDrop);
     }
 
-    return output;
+    updateScrollbarRange();
 }
 
 void SerialAccessoryTerminal::updateScrollbarRange()
 {
     const auto wasScrolledDown = juce::roundToInt(scrollbar.getCurrentRange().getEnd()) >= scrollbar.getMaximumRangeLimit();
-    scrollbar.setRangeLimits({ 0.0, (double) wrappedMessages.size() }, juce::dontSendNotification);
+    scrollbar.setRangeLimits({ 0.0, (double) wrappedLines.size() }, juce::dontSendNotification);
     scrollbar.setCurrentRange(wasScrolledDown ? (scrollbar.getMaximumRangeLimit() - (double) numberOfLinesOnScreen) : scrollbar.getCurrentRangeStart(), (double) numberOfLinesOnScreen, juce::dontSendNotification);
     repaint();
 }
 
-std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce::AttributedString& message) const
+std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce::AttributedString& line) const
 {
-    std::vector<juce::AttributedString> wrappedMessage;
+    std::vector<juce::AttributedString> wrappedLine;
 
     int attributeIndex = 0, characterStartIndex = 0, lineEndIndex = 0;
-    while (attributeIndex < message.getNumAttributes())
+    while (attributeIndex < line.getNumAttributes())
     {
         if (characterStartIndex == lineEndIndex)
         {
-            wrappedMessage.push_back({});
+            wrappedLine.push_back({});
             lineEndIndex += numberOfCharactersPerLine;
         }
 
-        const auto& attribute = message.getAttribute(attributeIndex);
+        const auto& attribute = line.getAttribute(attributeIndex);
         const auto characterEndIndex = std::min(lineEndIndex, attribute.range.getEnd());
 
-        wrappedMessage.back().append(message.getText().substring(characterStartIndex, characterEndIndex), font, attribute.colour);
+        wrappedLine.back().append(line.getText().substring(characterStartIndex, characterEndIndex), font, attribute.colour);
 
         characterStartIndex = characterEndIndex;
         if (characterStartIndex == attribute.range.getEnd())
@@ -167,7 +139,7 @@ std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce:
         }
     }
 
-    return wrappedMessage;
+    return wrappedLine;
 }
 
 void SerialAccessoryTerminal::scrollBarMoved(juce::ScrollBar*, double)
