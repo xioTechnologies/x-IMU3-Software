@@ -244,7 +244,7 @@ insert(file_path, template, 6)
 template = """
 #[no_mangle]
 pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pascal_case$Message) -> *const c_char {
-    str_to_char_ptr!(&message.to_string())
+    str_to_char_ptr(&message.to_string())
 }\n"""
 
 insert("../ffi/data_messages.rs", template, 0)
