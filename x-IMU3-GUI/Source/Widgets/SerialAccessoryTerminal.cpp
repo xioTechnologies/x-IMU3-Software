@@ -1,5 +1,5 @@
-#include "SerialAccessoryTerminal.h"
 #include "EscapedStrings.h"
+#include "SerialAccessoryTerminal.h"
 
 SerialAccessoryTerminal::SerialAccessoryTerminal()
 {
