@@ -26,7 +26,6 @@
 
 # Visual Studio
 **/.vs
-**/x64
+**/obj
 **/Debug
 **/CSharp/**/Release
-**/*.vcxproj.user

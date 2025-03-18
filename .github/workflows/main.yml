@@ -125,7 +125,6 @@ jobs:
 
   c-sharp:
     runs-on: windows-latest
-    needs: [ create-release, rust ]
 
     strategy:
       fail-fast: false
@@ -133,14 +132,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download from artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: rust-x86_64-pc-windows-msvc
-          path: x-IMU3-API/Rust/target/release
+      - name: Build Rust
+        working-directory: x-IMU3-API/Rust/
+        run: cargo build --release
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet Packages
+        run: nuget restore Examples/CSharp/x-IMU3-Examples/x-IMU3-Examples.sln
 
       - name: Run examples
         working-directory: Examples/CSharp/x-IMU3-Examples/

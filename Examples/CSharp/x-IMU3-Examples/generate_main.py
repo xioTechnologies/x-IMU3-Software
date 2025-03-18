@@ -21,13 +21,11 @@ examples = sorted(examples)
 with open("Program.cs", "w") as file:
     file.write(helpers.preamble())
 
-    file.write("using System;\n")
-    file.write("\n")
     file.write("namespace Ximu3Examples\n")
     file.write("{\n")
     file.write("    class Program\n")
     file.write("    {\n")
-    file.write("        static int Main(string[] args)\n")
+    file.write("        static int Main()\n")
     file.write("        {\n")
     file.write('            Console.WriteLine("Select example");\n')
 
@@ -42,7 +40,7 @@ with open("Program.cs", "w") as file:
     key = "A"
     for example in examples:
         file.write(f"                case '{key}':\n")
-        file.write(f"                    new {example}();\n")
+        file.write(f"                    _ = new {example}();\n")
         file.write("                    break;\n")
         key = chr(ord(key) + 1)
 
