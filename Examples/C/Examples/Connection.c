@@ -68,8 +68,9 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
         XIMU3_connection_add_serial_accessory_callback(connection, SerialAccessoryCallback, NULL);
         XIMU3_connection_add_notification_callback(connection, NotificationCallback, NULL);
         XIMU3_connection_add_error_callback(connection, ErrorCallback, NULL);
-        XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallback, NULL);
     }
+
+    XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallback, NULL);
 
     // Open connection
     if (XIMU3_connection_open(connection) != XIMU3_ResultOk)

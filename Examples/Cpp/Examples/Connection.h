@@ -40,8 +40,8 @@ protected:
             connection.addSerialAccessoryCallback(serialAccessoryCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
-            connection.addEndOfFileCallback(endOfFileCallback);
         }
+        connection.addEndOfFileCallback(endOfFileCallback);
 
         // Open connection
         if (connection.open() != ximu3::XIMU3_ResultOk)
@@ -60,9 +60,9 @@ protected:
     }
 
 private:
-    std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback = [](auto decode_error)
+    std::function<void(ximu3::XIMU3_DecodeError decodeError)> decodeErrorCallback = [](auto decodeError)
     {
-        std::cout << ximu3::XIMU3_decode_error_to_string(decode_error) << std::endl;
+        std::cout << ximu3::XIMU3_decode_error_to_string(decodeError) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics)
