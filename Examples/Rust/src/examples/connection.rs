@@ -30,8 +30,9 @@ pub fn run(connection_info: ConnectionInfo) {
         connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
-        connection.add_end_of_file_closure(Box::new(end_of_file_closure));
     }
+
+    connection.add_end_of_file_closure(Box::new(end_of_file_closure));
 
     // Open connection
     if connection.open().is_err() {
