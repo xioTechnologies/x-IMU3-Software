@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 namespace Ximu3
@@ -360,211 +361,211 @@ namespace Ximu3
         public delegate void XIMU3_CallbackDevices(XIMU3_Devices data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackEndOfFile(IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_char_arrays_free(XIMU3_CharArrays char_arrays);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus charging_status);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CommandMessage XIMU3_command_message_parse(IntPtr json);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_usb(XIMU3_UsbConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_serial(XIMU3_SerialConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_tcp(XIMU3_TcpConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_udp(XIMU3_UdpConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_bluetooth(XIMU3_BluetoothConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_file(XIMU3_FileConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_free(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Result XIMU3_connection_open(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_open_async(IntPtr connection, XIMU3_CallbackResult callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_close(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_PingResponse XIMU3_connection_ping(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_connection_send_commands(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_send_commands_async(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout, XIMU3_CallbackCharArrays callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_ConnectionType XIMU3_connection_get_type(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_UsbConnectionInfo XIMU3_connection_get_info_usb(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_SerialConnectionInfo XIMU3_connection_get_info_serial(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_TcpConnectionInfo XIMU3_connection_get_info_tcp(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_UdpConnectionInfo XIMU3_connection_get_info_udp(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_decode_error_callback(IntPtr connection, XIMU3_CallbackDecodeError callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_statistics_callback(IntPtr connection, XIMU3_CallbackStatistics callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_inertial_callback(IntPtr connection, XIMU3_CallbackInertialMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_magnetometer_callback(IntPtr connection, XIMU3_CallbackMagnetometerMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_quaternion_callback(IntPtr connection, XIMU3_CallbackQuaternionMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_rotation_matrix_callback(IntPtr connection, XIMU3_CallbackRotationMatrixMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_euler_angles_callback(IntPtr connection, XIMU3_CallbackEulerAnglesMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_linear_acceleration_callback(IntPtr connection, XIMU3_CallbackLinearAccelerationMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_earth_acceleration_callback(IntPtr connection, XIMU3_CallbackEarthAccelerationMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_ahrs_status_callback(IntPtr connection, XIMU3_CallbackAhrsStatusMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_high_g_accelerometer_callback(IntPtr connection, XIMU3_CallbackHighGAccelerometerMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_temperature_callback(IntPtr connection, XIMU3_CallbackTemperatureMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_battery_callback(IntPtr connection, XIMU3_CallbackBatteryMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_rssi_callback(IntPtr connection, XIMU3_CallbackRssiMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_serial_accessory_callback(IntPtr connection, XIMU3_CallbackSerialAccessoryMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_notification_callback(IntPtr connection, XIMU3_CallbackNotificationMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_error_callback(IntPtr connection, XIMU3_CallbackErrorMessage callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_end_of_file_callback(IntPtr connection, XIMU3_CallbackEndOfFile callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_remove_callback(IntPtr connection, UInt64 callback_id);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_usb_connection_info_to_string(XIMU3_UsbConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_serial_connection_info_to_string(XIMU3_SerialConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_tcp_connection_info_to_string(XIMU3_TcpConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_udp_connection_info_to_string(XIMU3_UdpConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_bluetooth_connection_info_to_string(XIMU3_BluetoothConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_connection_info_to_string(XIMU3_FileConnectionInfo connection_info);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_type_to_string(XIMU3_ConnectionType connection_type);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_data_logger_new(IntPtr destination, IntPtr name, IntPtr connections, UInt32 length);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_data_logger_free(IntPtr data_logger);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Result XIMU3_data_logger_get_result(IntPtr data_logger);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Result XIMU3_data_logger_log(IntPtr destination, IntPtr name, IntPtr connections, UInt32 length, UInt32 seconds);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_inertial_message_to_string(XIMU3_InertialMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_magnetometer_message_to_string(XIMU3_MagnetometerMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_quaternion_message_to_string(XIMU3_QuaternionMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_rotation_matrix_message_to_string(XIMU3_RotationMatrixMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_euler_angles_message_to_string(XIMU3_EulerAnglesMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_linear_acceleration_message_to_string(XIMU3_LinearAccelerationMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_earth_acceleration_message_to_string(XIMU3_EarthAccelerationMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_ahrs_status_message_to_string(XIMU3_AhrsStatusMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_high_g_accelerometer_message_to_string(XIMU3_HighGAccelerometerMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_temperature_message_to_string(XIMU3_TemperatureMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_battery_message_to_string(XIMU3_BatteryMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_rssi_message_to_string(XIMU3_RssiMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_serial_accessory_message_to_string(XIMU3_SerialAccessoryMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_notification_message_to_string(XIMU3_NotificationMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_error_message_to_string(XIMU3_ErrorMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_EulerAnglesMessage XIMU3_quaternion_message_to_euler_angles_message(XIMU3_QuaternionMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_EulerAnglesMessage XIMU3_rotation_matrix_message_to_euler_angles_message(XIMU3_RotationMatrixMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_QuaternionMessage XIMU3_euler_angles_message_to_quaternion_message(XIMU3_EulerAnglesMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angles_message(XIMU3_LinearAccelerationMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_decode_error_to_string(XIMU3_DecodeError decode_error);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_status_to_string(XIMU3_FileConverterStatus status);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_progress_to_string(XIMU3_FileConverterProgress progress);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_new(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length, XIMU3_CallbackFileConverterProgress callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_file_converter_free(IntPtr file_converter);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_FileConverterProgress XIMU3_file_converter_convert(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(XIMU3_NetworkAnnouncementMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_UdpConnectionInfo XIMU3_network_announcement_message_to_udp_connection_info(XIMU3_NetworkAnnouncementMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_network_announcement_message_to_string(XIMU3_NetworkAnnouncementMessage message);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_network_announcement_messages_free(XIMU3_NetworkAnnouncementMessages messages);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_network_announcement_new();
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_network_announcement_free(IntPtr network_announcement);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Result XIMU3_network_announcement_get_result(IntPtr network_announcement);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_network_announcement_add_callback(IntPtr network_announcement, XIMU3_CallbackNetworkAnnouncementMessageC callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_network_announcement_remove_callback(IntPtr network_announcement, UInt64 callback_id);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages(IntPtr network_announcement);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages_after_short_delay(IntPtr network_announcement);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_ping_response_to_string(XIMU3_PingResponse ping_response);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_device_to_string(XIMU3_Device device);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_devices_free(XIMU3_Devices devices);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, IntPtr context);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_port_scanner_free(IntPtr port_scanner);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_port_scanner_get_devices(IntPtr port_scanner);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_port_scanner_scan();
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_port_scanner_scan_filter(XIMU3_ConnectionType connection_type);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_port_scanner_get_port_names();
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_result_to_string(XIMU3_Result result);
-        [DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_statistics_to_string(XIMU3_Statistics statistics);
     }
 }
