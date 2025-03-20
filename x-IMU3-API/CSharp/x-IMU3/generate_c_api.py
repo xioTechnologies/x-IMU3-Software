@@ -109,13 +109,14 @@ for line in c_code.splitlines():
     ]:
         line = line.replace(pattern, "IntPtr ")
 
-    cs_code += '[DllImport("ximu3.dll", CallingConvention = CallingConvention.Cdecl)]\n'
+    cs_code += '[DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]\n'
     cs_code += "public static extern " + line + "\n\n"
 
 # Write C# file
 cs_code = "\n".join([f"        {p}" for p in cs_code.splitlines() if p])
 
 cs_code = f"""\
+using System;
 using System.Runtime.InteropServices;
 
 namespace Ximu3

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Ximu3
@@ -9,23 +10,23 @@ namespace Ximu3
         {
             switch (connectionInfo)
             {
-                case CApi.XIMU3_UsbConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_usb((CApi.XIMU3_UsbConnectionInfo)connectionInfo);
+                case CApi.XIMU3_UsbConnectionInfo usbConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_usb(usbConnectionInfo);
                     return;
-                case CApi.XIMU3_SerialConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_serial((CApi.XIMU3_SerialConnectionInfo)connectionInfo);
+                case CApi.XIMU3_SerialConnectionInfo serialConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_serial(serialConnectionInfo);
                     return;
-                case CApi.XIMU3_TcpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_tcp((CApi.XIMU3_TcpConnectionInfo)connectionInfo);
+                case CApi.XIMU3_TcpConnectionInfo tcpConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionInfo);
                     return;
-                case CApi.XIMU3_UdpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_udp((CApi.XIMU3_UdpConnectionInfo)connectionInfo);
+                case CApi.XIMU3_UdpConnectionInfo udpConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_udp(udpConnectionInfo);
                     return;
-                case CApi.XIMU3_BluetoothConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_bluetooth((CApi.XIMU3_BluetoothConnectionInfo)connectionInfo);
+                case CApi.XIMU3_BluetoothConnectionInfo bluetoothConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionInfo);
                     return;
-                case CApi.XIMU3_FileConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_file((CApi.XIMU3_FileConnectionInfo)connectionInfo);
+                case CApi.XIMU3_FileConnectionInfo fileConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_file(fileConnectionInfo);
                     return;
             }
             Debug.Assert(false);

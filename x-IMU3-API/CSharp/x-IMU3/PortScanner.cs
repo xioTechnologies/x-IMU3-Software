@@ -1,9 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Ximu3
 {
-    public class PortScanner(PortScanner.Callback callback) : IDisposable
+    public class PortScanner : IDisposable
     {
+        public PortScanner(Callback callback)
+        {
+            portScanner = CApi.XIMU3_port_scanner_new(CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
         public delegate void Callback(CApi.XIMU3_Device[] devices);
         private static void CallbackInternal(CApi.XIMU3_Devices devices, IntPtr context)
         {
@@ -53,7 +59,6 @@ namespace Ximu3
             return devices;
         }
 
-        private readonly Callback callback = callback;
-        private IntPtr portScanner = CApi.XIMU3_port_scanner_new(CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        private IntPtr portScanner;
     }
 }

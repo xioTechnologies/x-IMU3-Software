@@ -1,9 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Ximu3
 {
-    public class DataLogger(string destination, string name, Connection[] connections) : IDisposable
+    public class DataLogger : IDisposable
     {
+        public DataLogger(string destination, string name, Connection[] connections)
+        {
+            dataLogger = CApi.XIMU3_data_logger_new(Helpers.ToPointer(destination), Helpers.ToPointer(name), Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0), (UInt32)connections.Length);
+        }
+
         ~DataLogger() => Dispose();
 
         public void Dispose()
@@ -36,6 +42,6 @@ namespace Ximu3
             return pointers;
         }
 
-        private IntPtr dataLogger = CApi.XIMU3_data_logger_new(Helpers.ToPointer(destination), Helpers.ToPointer(name), Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0), (UInt32)connections.Length);
+        private IntPtr dataLogger;
     }
 }
