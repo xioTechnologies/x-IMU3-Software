@@ -430,5 +430,15 @@
         "name": "Shipping mode enabled",
         "declaration": "bool name",
         "default": "{false}"
+    },
+    {
+        "name": "Battery max charging temperature",
+        "declaration": "float name",
+        "default": "{45.0f}"
+    },
+    {
+        "name": "Battery max discharging temperature",
+        "declaration": "float name",
+        "default": "{60.0f}"
     }
 ]
