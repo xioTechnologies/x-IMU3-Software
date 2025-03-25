@@ -296,7 +296,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     });
 
     juce::PopupMenu customModelsMenu;
-    customModelsMenu.addItem("Load", [&]
+    customModelsMenu.addItem("Load .obj File", [&]
     {
         fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
@@ -326,7 +326,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     if (const auto customModels = customModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); customModels.isEmpty() == false)
     {
         customModelsMenu.addSeparator();
-        customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
+        customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto& file : customModels)
         {
             const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
