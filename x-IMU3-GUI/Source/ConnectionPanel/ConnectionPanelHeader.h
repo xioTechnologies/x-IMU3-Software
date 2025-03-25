@@ -64,7 +64,7 @@ private:
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
     std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
-    uint64_t networkAnnouncementCallbackID;
+    std::optional<uint64_t> networkAnnouncementCallbackID;
 
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
     uint64_t rssiCallbackID;
