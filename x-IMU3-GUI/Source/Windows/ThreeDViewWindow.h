@@ -72,7 +72,7 @@ private:
     Icon accelerationRecoveryIcon { BinaryData::vibration_grey_svg, "Acceleration Recovery" };
     Icon magneticRecoveryIcon { BinaryData::magnet_grey_svg, "Magnetic Recovery" };
 
-    const juce::File userModelsDirectory = ApplicationSettings::getDirectory().getChildFile("User Models");
+    const juce::File customModelsDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Models");
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
