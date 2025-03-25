@@ -7,7 +7,7 @@
 
 static PyObject* charging_status_from_float(PyObject* self, PyObject* args)
 {
-    int charging_status;
+    float charging_status;
 
     if (PyArg_ParseTuple(args, "f", &charging_status) == 0)
     {
