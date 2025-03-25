@@ -36,7 +36,7 @@ public:
     Model arrow;
     Model board;
     Model housing;
-    Model user;
+    Model custom;
     PlaneModel plane;
     TextQuad textQuad;
     LineBuffer graphGridBuffer { true };

@@ -14,7 +14,7 @@ public:
     {
         board,
         housing,
-        user,
+        custom,
     };
 
     enum class AxesConvention
@@ -35,7 +35,7 @@ public:
         bool axesEnabled = true;
         bool compassEnabled = true;
         Model model { Model::housing };
-        juce::File userModel;
+        juce::File customModel;
         AxesConvention axesConvention { AxesConvention::nwu };
     };
 

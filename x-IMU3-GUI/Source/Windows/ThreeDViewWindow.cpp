@@ -190,7 +190,7 @@ void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings& settings)
     settingsTree.setProperty("axesEnabled", settings.axesEnabled, nullptr);
     settingsTree.setProperty("compassEnabled", settings.compassEnabled, nullptr);
     settingsTree.setProperty("model", static_cast<int>(settings.model), nullptr);
-    settingsTree.setProperty("userModel", settings.userModel.getFullPathName(), nullptr);
+    settingsTree.setProperty("customModel", settings.customModel.getFullPathName(), nullptr);
     settingsTree.setProperty("axesConvention", static_cast<int>(settings.axesConvention), nullptr);
 }
 
@@ -205,7 +205,7 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const
     settings.axesEnabled = settingsTree.getProperty("axesEnabled", settings.axesEnabled);
     settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.axesEnabled);
     settings.model = static_cast<ThreeDView::Model>((int) settingsTree.getProperty("model", static_cast<int>(settings.model)));
-    settings.userModel = settingsTree["userModel"];
+    settings.customModel = settingsTree["customModel"];
     settings.axesConvention = static_cast<ThreeDView::AxesConvention>((int) settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
     return settings;
 }
@@ -295,8 +295,8 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
         writeToValueTree(settings);
     });
 
-    juce::PopupMenu userModelsMenu;
-    userModelsMenu.addItem("Load", [&]
+    juce::PopupMenu customModelsMenu;
+    customModelsMenu.addItem("Load .obj File", [&]
     {
         fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
@@ -309,37 +309,37 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
             const auto objFileOriginal = fileChooser->getResult();
             const auto mtlFileOriginal = objFileOriginal.withFileExtension(".mtl");
 
-            const auto objFileCopy = userModelsDirectory.getChildFile(objFileOriginal.getFileName());
-            const auto mtlFileCopy = userModelsDirectory.getChildFile(mtlFileOriginal.getFileName());
+            const auto objFileCopy = customModelsDirectory.getChildFile(objFileOriginal.getFileName());
+            const auto mtlFileCopy = customModelsDirectory.getChildFile(mtlFileOriginal.getFileName());
 
-            userModelsDirectory.createDirectory();
+            customModelsDirectory.createDirectory();
             objFileOriginal.copyFileTo(objFileCopy);
             mtlFileCopy.deleteFile();
             mtlFileOriginal.copyFileTo(mtlFileCopy);
 
             auto settings = threeDView.getSettings();
-            settings.model = ThreeDView::Model::user;
-            settings.userModel = objFileCopy;
+            settings.model = ThreeDView::Model::custom;
+            settings.customModel = objFileCopy;
             writeToValueTree(settings);
         });
     });
-    if (const auto userModels = userModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); userModels.isEmpty() == false)
+    if (const auto customModels = customModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); customModels.isEmpty() == false)
     {
-        userModelsMenu.addSeparator();
-        userModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
-        for (const auto& file : userModels)
+        customModelsMenu.addSeparator();
+        customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
+        for (const auto& file : customModels)
         {
-            const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::user) && (threeDView.getSettings().userModel == file);
-            userModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
+            const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
+            customModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
             {
                 auto settings = threeDView.getSettings();
-                settings.model = ThreeDView::Model::user;
-                settings.userModel = file;
+                settings.model = ThreeDView::Model::custom;
+                settings.customModel = file;
                 writeToValueTree(settings);
             });
         }
     }
-    menu.addSubMenu("User", userModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::user);
+    menu.addSubMenu("Custom", customModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::custom);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);
