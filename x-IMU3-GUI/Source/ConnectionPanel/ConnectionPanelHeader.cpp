@@ -28,17 +28,30 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<ConnectionPanel*> { &connectionPanel }));
     };
 
-    networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&](auto message)
+    const auto addNetworkAnnouncementCallback = [&](const std::string& ipAddress)
     {
-        if (juce::String(message.serial_number) == serialNumber)
+        networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message)
         {
-            if (message.rssi != -1)
+            if (std::string(message.ip_address) == ipAddress)
             {
-                rssiIcon.update(message.rssi);
+                if (message.rssi != -1)
+                {
+                    rssiIcon.update(message.rssi);
+                }
+                batteryIcon.update(message.battery, message.charging_status);
             }
-            batteryIcon.update(message.battery, message.charging_status);
-        }
-    });
+        });
+    };
+
+    const auto connectionInfo = connection->getInfo();
+    if (const auto* const tcpConnectionInfo = dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo*>(connectionInfo.get()))
+    {
+        addNetworkAnnouncementCallback(tcpConnectionInfo->ip_address);
+    }
+    if (const auto* const udpConnectionInfo = dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo*>(connectionInfo.get()))
+    {
+        addNetworkAnnouncementCallback(udpConnectionInfo->ip_address);
+    }
 
     rssiCallbackID = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
@@ -47,7 +60,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
     batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
-        batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float (message.charging_status));
+        batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float(message.charging_status));
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
@@ -57,7 +70,11 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
 ConnectionPanelHeader::~ConnectionPanelHeader()
 {
-    networkAnnouncement->removeCallback(networkAnnouncementCallbackID);
+    if (networkAnnouncementCallbackID)
+    {
+        networkAnnouncement->removeCallback(*networkAnnouncementCallbackID);
+    }
+
     connectionPanel.getConnection()->removeCallback(rssiCallbackID);
     connectionPanel.getConnection()->removeCallback(batteryCallbackID);
 
