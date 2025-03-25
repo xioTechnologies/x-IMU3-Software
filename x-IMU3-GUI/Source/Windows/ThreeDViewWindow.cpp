@@ -339,7 +339,9 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
             });
         }
     }
-    menu.addSubMenu("Custom", customModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::custom);
+
+    const auto suffix = (threeDView.getSettings().model == ThreeDView::Model::custom) ? (" (" + threeDView.getSettings().customModel.getFileNameWithoutExtension() + ")") : "";
+    menu.addSubMenu("Custom" + suffix, customModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::custom);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);
