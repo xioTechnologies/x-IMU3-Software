@@ -48,3 +48,5 @@ with open("DeviceSettingsEnums.xml", "w") as file:
     </Enum>\n""")
 
     file.write("</DeviceSettingsEnums>\n")
+
+# TODO: Update for schema
