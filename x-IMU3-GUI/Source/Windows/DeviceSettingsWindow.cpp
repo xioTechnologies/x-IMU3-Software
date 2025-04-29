@@ -130,26 +130,13 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         {
             enableInProgress(deviceSettings->getReadCommands());
 
-            connectionPanel.sendCommands({ { "default", {} } }, this, [this](const auto& responses)
+            sendCommand("default", false, [this]
             {
-                if (responses.empty())
+                sendCommand("save", false, [this]
                 {
-                    disableInProgress();
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm default command."));
-                    return;
-                }
-
-                connectionPanel.sendCommands({ { "save", {} } }, this, [this](const auto& responses_)
-                {
-                    if (responses_.empty())
+                    sendCommand("apply", true, [this]
                     {
                         disableInProgress();
-                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                        return;
-                    }
-
-                    connectionPanel.sendCommands({ { "apply", {} } }, this, [this](const auto&)
-                    {
                         readAllButton.onClick();
                     });
                 });
@@ -219,6 +206,33 @@ DeviceSettingsWindow::Settings DeviceSettingsWindow::readFromValueTree()
     return settings;
 }
 
+void DeviceSettingsWindow::sendCommand(const juce::String& key, const bool silent, std::function<void()> callback)
+{
+    const CommandMessage command { key, {} };
+
+    connectionPanel.sendCommands({ command }, this, [command, silent, callback](const std::vector<CommandMessage>& responses)
+    {
+        if (silent == false)
+        {
+            const auto showError = [command](const std::string& error)
+            {
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>(command.json + " command failed. " + error + (error.ends_with(".") ? "" : ".")));
+            };
+
+            if (responses.empty())
+            {
+                showError("No response");
+            }
+            else if (responses.front().error)
+            {
+                showError(*responses.front().error);
+            }
+        }
+
+        callback();
+    });
+}
+
 void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& commands)
 {
     enableInProgress(commands);
@@ -241,17 +255,12 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
 
         writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
-        connectionPanel.sendCommands({ { "save", {} } }, this, [&](const auto& responses_)
+        sendCommand("save", false, [this]
         {
-            disableInProgress();
-
-            if (responses_.empty())
+            sendCommand("apply", true, [this]
             {
-                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                return;
-            }
-
-            connectionPanel.sendCommands({ { "apply", {} } });
+                disableInProgress();
+            });
         });
     });
 }

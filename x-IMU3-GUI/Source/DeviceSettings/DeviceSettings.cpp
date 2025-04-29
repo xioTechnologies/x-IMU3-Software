@@ -124,7 +124,7 @@ juce::ValueTree DeviceSettings::getSetting(const juce::String& key) const
 void DeviceSettings::valueTreePropertyChanged(juce::ValueTree& tree_, const juce::Identifier& identifier)
 {
     rootItem.treeHasChanged();
-    
+
     if ((ignoreCallback == false) && (identifier == DeviceSettingsIDs::value))
     {
         juce::NullCheckedInvocation::invoke(onSettingModified, getWriteCommand(tree_));

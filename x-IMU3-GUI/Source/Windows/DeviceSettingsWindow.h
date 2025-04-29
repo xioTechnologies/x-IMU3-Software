@@ -52,6 +52,8 @@ private:
 
     Settings readFromValueTree();
 
+    void sendCommand(const juce::String& key, const bool silent, std::function<void()> callback);
+
     void writeCommands(const std::vector<CommandMessage>& commands);
 
     void enableInProgress(const std::vector<CommandMessage>& commands);
