@@ -16,7 +16,7 @@ namespace DeviceSettingsIDs
 
     DECLARE_ID(key)
     DECLARE_ID(name)
-    DECLARE_ID(open)
+    DECLARE_ID(expand)
     DECLARE_ID(type)
     DECLARE_ID(readOnly)
     DECLARE_ID(hideKey)

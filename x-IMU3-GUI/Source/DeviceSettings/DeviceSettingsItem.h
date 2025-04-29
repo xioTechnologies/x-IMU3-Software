@@ -32,7 +32,7 @@ public:
             }
         }
 
-        setOpen(settingsTree[DeviceSettingsIDs::open]);
+        setOpen(settingsTree[DeviceSettingsIDs::expand]);
     }
 
     bool mightContainSubItems() override
