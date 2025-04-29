@@ -332,12 +332,20 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
                 return;
             }
 
-            auto settings = readFromValueTree();
-            settings.customSchema = customSchemasDirectory.getChildFile(fileChooser->getResult().getFileName());
+            const auto customSchema = customSchemasDirectory.getChildFile(fileChooser->getResult().getFileName());
             customSchemasDirectory.createDirectory();
-            fileChooser->getResult().copyFileTo(settings.customSchema);
+            fileChooser->getResult().copyFileTo(customSchema);
 
-            writeToValueTree(settings);
+            if (readFromValueTree().customSchema == customSchema)
+            {
+                settingsTree.sendPropertyChangeMessage("customSchema");
+            }
+            else
+            {
+                auto settings = readFromValueTree();
+                settings.customSchema = customSchema;
+                writeToValueTree(settings);
+            }
         });
     });
     if (const auto files = customSchemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false)
