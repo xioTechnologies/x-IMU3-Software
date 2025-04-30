@@ -1,23 +1,17 @@
 #include "DeviceSettings.h"
 
-DeviceSettings::DeviceSettings()
+DeviceSettings::DeviceSettings(juce::ValueTree tree, std::function<void(const CommandMessage&)> onSettingModified_) : onSettingModified(onSettingModified_), settingsTree(tree.getChildWithName(DeviceSettingsIDs::Settings)), rootItem(settingsTree, settingsFlattened, tree.getChildWithName(DeviceSettingsIDs::Enums), hideUnusedSettings)
 {
     setRootItem(&rootItem);
     setRootItemVisible(false);
 
-    tree.addListener(this);
-    ApplicationSettings::getSingleton().getTree().addListener(this);
-}
-
-DeviceSettings::~DeviceSettings()
-{
-    ApplicationSettings::getSingleton().getTree().removeListener(this);
+    settingsTree.addListener(this);
 }
 
 std::vector<CommandMessage> DeviceSettings::getReadCommands() const
 {
     std::vector<CommandMessage> commands;
-    for (auto setting : settings)
+    for (auto setting : settingsFlattened)
     {
         commands.push_back({ setting[DeviceSettingsIDs::key], {} });
     }
@@ -27,7 +21,7 @@ std::vector<CommandMessage> DeviceSettings::getReadCommands() const
 std::vector<CommandMessage> DeviceSettings::getWriteCommands(const bool replaceReadOnlyValuesWithNull) const
 {
     std::vector<CommandMessage> commands;
-    for (auto setting : settings)
+    for (auto setting : settingsFlattened)
     {
         if (setting.hasProperty(DeviceSettingsIDs::value) == false)
         {
@@ -86,6 +80,12 @@ void DeviceSettings::setStatus(const juce::String& key, const Setting::Status st
     setting.setProperty(DeviceSettingsIDs::statusTooltip, statusTooltip, nullptr);
 }
 
+void DeviceSettings::setHideUnusedSettings(const bool hide)
+{
+    hideUnusedSettings = hide;
+    rootItem.treeHasChanged();
+}
+
 std::vector<juce::ValueTree> DeviceSettings::flatten(const juce::ValueTree& parent)
 {
     std::vector<juce::ValueTree> vector;
@@ -111,7 +111,7 @@ CommandMessage DeviceSettings::getWriteCommand(juce::ValueTree setting)
 
 juce::ValueTree DeviceSettings::getSetting(const juce::String& key) const
 {
-    for (auto setting : settings)
+    for (auto setting : settingsFlattened)
     {
         if (CommandMessage::normaliseKey(setting[DeviceSettingsIDs::key]) == CommandMessage::normaliseKey(key))
         {

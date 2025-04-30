@@ -2,11 +2,11 @@
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/MessageDialog.h"
 #include "Firmware/Firmware.h"
+#include "Widgets/PopupMenuHeader.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
 {
-    addAndMakeVisible(deviceSettings);
     addAndMakeVisible(readAllButton);
     addAndMakeVisible(writeAllButton);
     addAndMakeVisible(saveToFileButton);
@@ -16,7 +16,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     readAllButton.onClick = [this]
     {
-        const auto commands = deviceSettings.getReadCommands();
+        const auto commands = deviceSettings->getReadCommands();
 
         enableInProgress(commands);
 
@@ -28,19 +28,19 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
                 if (response == responses.end() || response->error)
                 {
-                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Read from Device");
+                    deviceSettings->setStatus(command.key, Setting::Status::warning, "Unable to Read from Device");
                     continue;
                 }
 
-                deviceSettings.setValue(*response);
+                deviceSettings->setValue(*response);
 
                 if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmware_version") && response->getValue() != Firmware::version)
                 {
-                    deviceSettings.setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
+                    deviceSettings->setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
                     continue;
                 }
 
-                deviceSettings.setStatus(response->key, Setting::Status::normal, {});
+                deviceSettings->setStatus(response->key, Setting::Status::normal, {});
             }
 
             readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
@@ -49,34 +49,21 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         });
     };
 
-    if (ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens)
-    {
-        readAllButton.onClick();
-    }
-
     writeAllButton.onClick = [this]
     {
-        writeCommands(deviceSettings.getWriteCommands(true));
-    };
-
-    deviceSettings.onSettingModified = [this](const CommandMessage& command)
-    {
-        if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
-        {
-            writeCommands({ command });
-        }
+        writeCommands(deviceSettings->getWriteCommands(true));
     };
 
     directory.createDirectory();
 
     saveToFileButton.onClick = [&]
     {
-        auto fileName = deviceSettings.getValue("device_name").toString();
+        auto fileName = deviceSettings->getValue("device_name").toString();
         if (fileName.isEmpty())
         {
             fileName = "Unknown Device";
         }
-        if (const auto serialNumber = deviceSettings.getValue("serial_number").toString(); serialNumber.isNotEmpty())
+        if (const auto serialNumber = deviceSettings->getValue("serial_number").toString(); serialNumber.isNotEmpty())
         {
             fileName += " " + serialNumber;
         }
@@ -90,7 +77,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             }
 
             juce::DynamicObject object;
-            for (const auto& command : deviceSettings.getWriteCommands(false))
+            for (const auto& command : deviceSettings->getWriteCommands(false))
             {
                 object.setProperty(juce::String(command.key), command.getValue());
             }
@@ -107,7 +94,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
         std::optional<juce::File> defaultFile;
         for (auto file : directory.findChildFiles(juce::File::findFiles, false, "*.json"))
         {
-            if (file.getFileName().contains(deviceSettings.getValue("serial_number").toString()) && (file.getLastModificationTime() > defaultFile.value_or(juce::File()).getLastModificationTime()))
+            if (file.getFileName().contains(deviceSettings->getValue("serial_number").toString()) && (file.getLastModificationTime() > defaultFile.value_or(juce::File()).getLastModificationTime()))
             {
                 defaultFile = file;
             }
@@ -126,13 +113,13 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 for (const auto& command : object->getProperties())
                 {
-                    deviceSettings.setValue({ command.name.toString(), command.value });
+                    deviceSettings->setValue({ command.name.toString(), command.value });
                 }
             }
 
-            if (ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified)
+            if (readFromValueTree().writeSettingsWhenModified)
             {
-                writeCommands(deviceSettings.getWriteCommands(true));
+                writeCommands(deviceSettings->getWriteCommands(true));
             }
         });
     };
@@ -141,28 +128,15 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this]
         {
-            enableInProgress(deviceSettings.getReadCommands());
+            enableInProgress(deviceSettings->getReadCommands());
 
-            connectionPanel.sendCommands({ { "default", {} } }, this, [this](const auto& responses)
+            sendCommand("default", false, [this]
             {
-                if (responses.empty())
+                sendCommand("save", false, [this]
                 {
-                    disableInProgress();
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm default command."));
-                    return;
-                }
-
-                connectionPanel.sendCommands({ { "save", {} } }, this, [this](const auto& responses_)
-                {
-                    if (responses_.empty())
+                    sendCommand("apply", true, [this]
                     {
                         disableInProgress();
-                        DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                        return;
-                    }
-
-                    connectionPanel.sendCommands({ { "apply", {} } }, this, [this](const auto&)
-                    {
                         readAllButton.onClick();
                     });
                 });
@@ -170,10 +144,8 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             return true;
         });
     };
-}
 
-DeviceSettingsWindow::~DeviceSettingsWindow()
-{
+    valueTreePropertyChanged(settingsTree, "customSchema");
 }
 
 void DeviceSettingsWindow::paint(juce::Graphics& g)
@@ -196,12 +168,69 @@ void DeviceSettingsWindow::resized()
     buttonBounds = bounds.removeFromBottom(25).toFloat();
     const auto buttonWidth = buttonBounds.getWidth() / buttons.size();
 
-    deviceSettings.setBounds(bounds);
+    deviceSettings->setBounds(bounds);
     juce::ScopedValueSetter _(buttonBounds, buttonBounds);
     for (auto* const button : buttons)
     {
         button->setBounds(buttonBounds.removeFromLeft(buttonWidth).reduced(2.0f).toNearestInt());
     }
+}
+
+void DeviceSettingsWindow::expandOrCollapseAll(juce::TreeViewItem& rootItem, const bool expand)
+{
+    rootItem.setOpen(expand || rootItem.getParentItem() == nullptr);
+    for (int index = 0; index < rootItem.getNumSubItems(); index++)
+    {
+        expandOrCollapseAll(*rootItem.getSubItem(index), expand);
+    }
+}
+
+void DeviceSettingsWindow::writeToValueTree(const Settings& settings)
+{
+    settingsTree.setProperty("hideUnusedSettings", settings.hideUnusedSettings, nullptr);
+    settingsTree.setProperty("readSettingsWhenWindowOpens", settings.readSettingsWhenWindowOpens, nullptr);
+    settingsTree.setProperty("writeSettingsWhenModified", settings.writeSettingsWhenModified, nullptr);
+    if (settingsTree.getProperty("customSchema") != settings.customSchema.getFullPathName()) // avoid callback when property doesn't exist
+    {
+        settingsTree.setProperty("customSchema", settings.customSchema.getFullPathName(), nullptr);
+    }
+}
+
+DeviceSettingsWindow::Settings DeviceSettingsWindow::readFromValueTree()
+{
+    Settings settings;
+    settings.hideUnusedSettings = settingsTree.getProperty("hideUnusedSettings", settings.hideUnusedSettings);
+    settings.readSettingsWhenWindowOpens = settingsTree.getProperty("readSettingsWhenWindowOpens", settings.readSettingsWhenWindowOpens);
+    settings.writeSettingsWhenModified = settingsTree.getProperty("writeSettingsWhenModified", settings.writeSettingsWhenModified);
+    settings.customSchema = settingsTree.getProperty("customSchema");
+    return settings;
+}
+
+void DeviceSettingsWindow::sendCommand(const juce::String& key, const bool silent, std::function<void()> callback)
+{
+    const CommandMessage command { key, {} };
+
+    connectionPanel.sendCommands({ command }, this, [command, silent, callback](const std::vector<CommandMessage>& responses)
+    {
+        if (silent == false)
+        {
+            const auto showError = [command](const std::string& error)
+            {
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>(command.json + " command failed. " + error + (error.ends_with(".") ? "" : ".")));
+            };
+
+            if (responses.empty())
+            {
+                showError("No response");
+            }
+            else if (responses.front().error)
+            {
+                showError(*responses.front().error);
+            }
+        }
+
+        callback();
+    });
 }
 
 void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& commands)
@@ -216,27 +245,22 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
 
             if (response == responses.end() || response->error)
             {
-                deviceSettings.setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
+                deviceSettings->setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
                 continue;
             }
 
-            deviceSettings.setValue(*response);
-            deviceSettings.setStatus(response->key, Setting::Status::normal, {});
+            deviceSettings->setValue(*response);
+            deviceSettings->setStatus(response->key, Setting::Status::normal, {});
         }
 
         writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
 
-        connectionPanel.sendCommands({ { "save", {} } }, this, [&](const auto& responses_)
+        sendCommand("save", false, [this]
         {
-            disableInProgress();
-
-            if (responses_.empty())
+            sendCommand("apply", true, [this]
             {
-                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Unable to confirm save command."));
-                return;
-            }
-
-            connectionPanel.sendCommands({ { "apply", {} } });
+                disableInProgress();
+            });
         });
     });
 }
@@ -245,7 +269,7 @@ void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& c
 {
     for (const auto& command : commands)
     {
-        deviceSettings.setStatus(command.key, Setting::Status::normal, {});
+        deviceSettings->setStatus(command.key, Setting::Status::normal, {});
     }
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);
@@ -268,18 +292,129 @@ juce::PopupMenu DeviceSettingsWindow::getMenu()
 {
     juce::PopupMenu menu = Window::getMenu();
 
-    menu.addItem("Hide Unused Settings", true, ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings, [&]
+    menu.addItem("Read Settings When Window Opens", true, readFromValueTree().readSettingsWhenWindowOpens, [&]
     {
-        ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings = !ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings;
+        auto settings = readFromValueTree();
+        settings.readSettingsWhenWindowOpens = !settings.readSettingsWhenWindowOpens;
+        writeToValueTree(settings);
     });
-    menu.addItem("Read Settings When Window Opens", true, ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens, [&]
+    menu.addItem("Write Settings When Modified", true, readFromValueTree().writeSettingsWhenModified, [&]
     {
-        ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens = !ApplicationSettings::getSingleton().deviceSettings.readSettingsWhenWindowOpens;
-    });
-    menu.addItem("Write Settings When Modified", true, ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified, [&]
-    {
-        ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified = !ApplicationSettings::getSingleton().deviceSettings.writeSettingsWhenModified;
+        auto settings = readFromValueTree();
+        settings.writeSettingsWhenModified = !settings.writeSettingsWhenModified;
+        writeToValueTree(settings);
     });
 
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
+    menu.addItem("Hide Unused Settings", true, readFromValueTree().hideUnusedSettings, [&]
+    {
+        auto settings = readFromValueTree();
+        settings.hideUnusedSettings = !settings.hideUnusedSettings;
+        writeToValueTree(settings);
+    });
+    menu.addItem("Expand All", [&]
+    {
+        expandOrCollapseAll(*deviceSettings->getRootItem(), true);
+    });
+    menu.addItem("Collapse All", [&]
+    {
+        expandOrCollapseAll(*deviceSettings->getRootItem(), false);
+    });
+
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCHEMA"), nullptr);
+    menu.addItem("x-IMU3", true, readFromValueTree().customSchema == juce::File(), [&]
+    {
+        auto settings = readFromValueTree();
+        settings.customSchema = juce::File();
+        writeToValueTree(settings);
+    });
+    juce::PopupMenu customSchemasMenu;
+    customSchemasMenu.addItem("Load .xml File", [&]
+    {
+        fileChooser = std::make_unique<juce::FileChooser>("Select Schema", juce::File(), "*.xml");
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
+        {
+            if (fileChooser->getResult() == juce::File())
+            {
+                return;
+            }
+
+            const auto customSchema = customSchemasDirectory.getChildFile(fileChooser->getResult().getFileName());
+            customSchemasDirectory.createDirectory();
+            fileChooser->getResult().copyFileTo(customSchema);
+
+            if (readFromValueTree().customSchema == customSchema)
+            {
+                settingsTree.sendPropertyChangeMessage("customSchema");
+            }
+            else
+            {
+                auto settings = readFromValueTree();
+                settings.customSchema = customSchema;
+                writeToValueTree(settings);
+            }
+        });
+    });
+    if (const auto files = customSchemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false)
+    {
+        customSchemasMenu.addSeparator();
+        customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
+        for (const auto& file : files)
+        {
+            const auto ticked = readFromValueTree().customSchema == file.getFullPathName();
+            customSchemasMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
+            {
+                auto settings = readFromValueTree();
+                settings.customSchema = file;
+                writeToValueTree(settings);
+            });
+        }
+    }
+
+    const auto suffix = readFromValueTree().customSchema != juce::File() ? (" (" + juce::File(readFromValueTree().customSchema).getFileNameWithoutExtension() + ")") : "";
+    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, readFromValueTree().customSchema != juce::File());
+
     return menu;
+}
+
+void DeviceSettingsWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
+{
+    if (treeWhosePropertyHasChanged != settingsTree)
+    {
+        return;
+    }
+
+    if (property.toString() == "customSchema")
+    {
+        const auto tree = [&]
+        {
+            if (const auto customSchemaFile = readFromValueTree().customSchema; customSchemaFile != juce::File())
+            {
+                return juce::ValueTree::fromXml(juce::File(customSchemaFile).loadFileAsString());
+            }
+            return juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
+        }();
+
+        deviceSettings = std::make_unique<DeviceSettings>(tree, [this](const CommandMessage& command)
+        {
+            if (readFromValueTree().writeSettingsWhenModified)
+            {
+                writeCommands({ command });
+            }
+        });
+        addAndMakeVisible(*deviceSettings);
+        resized();
+
+        if (readFromValueTree().readSettingsWhenWindowOpens)
+        {
+            readAllButton.onClick();
+        }
+    }
+
+    if (deviceSettings)
+    {
+        deviceSettings->setHideUnusedSettings(readFromValueTree().hideUnusedSettings);
+    }
 }

@@ -11,20 +11,20 @@
 class DeviceSettingsItem : public juce::TreeViewItem
 {
 public:
-    DeviceSettingsItem(const juce::ValueTree& tree_, const std::vector<juce::ValueTree>& settings) : tree(tree_)
+    DeviceSettingsItem(const juce::ValueTree settingsTree_, const std::vector<juce::ValueTree>& settingsFlattened, const juce::ValueTree enumsTree_, const bool& hideUnusedSettings_) : settingsTree(settingsTree_), enumsTree(enumsTree_), hideUnusedSettings(hideUnusedSettings_)
     {
         setLinesDrawnForSubItems(false);
 
-        for (auto setting : tree)
+        for (auto child : settingsTree)
         {
-            addSubItem(new DeviceSettingsItem(setting, settings));
+            addSubItem(new DeviceSettingsItem(child, settingsFlattened, enumsTree, hideUnusedSettings));
         }
 
-        if (tree.hasProperty(DeviceSettingsIDs::hideKey))
+        if (settingsTree.hasProperty(DeviceSettingsIDs::hideKey))
         {
-            for (const auto& setting : settings)
+            for (const auto& setting : settingsFlattened)
             {
-                if (setting[DeviceSettingsIDs::key] == tree[DeviceSettingsIDs::hideKey])
+                if (setting[DeviceSettingsIDs::key] == settingsTree[DeviceSettingsIDs::hideKey])
                 {
                     hideSetting = setting;
                     break;
@@ -32,29 +32,29 @@ public:
             }
         }
 
-        setOpen(tree[DeviceSettingsIDs::open]);
+        setOpen(settingsTree[DeviceSettingsIDs::expand]);
     }
 
     bool mightContainSubItems() override
     {
-        return tree.getNumChildren() > 0;
+        return settingsTree.getNumChildren() > 0;
     }
 
     int getItemHeight() const override
     {
-        if (tree.getType() == DeviceSettingsIDs::Margin)
+        if (settingsTree.getType() == DeviceSettingsIDs::Margin)
         {
             return Setting::rowMargin / 2;
         }
 
-        if (ApplicationSettings::getSingleton().deviceSettings.hideUnusedSettings && (isStatusSet(tree) == false))
+        if (hideUnusedSettings && (isStatusSet(settingsTree) == false))
         {
             if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
             {
                 return 0;
             }
 
-            if (juce::StringArray::fromTokens(tree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIDs::value].toString()))
+            if (juce::StringArray::fromTokens(settingsTree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIDs::value].toString()))
             {
                 return 0;
             }
@@ -65,29 +65,29 @@ public:
 
     std::unique_ptr<juce::Component> createItemComponent() override
     {
-        if (tree.getType() == DeviceSettingsIDs::Group)
+        if (settingsTree.getType() == DeviceSettingsIDs::Group)
         {
-            return std::make_unique<Setting>(tree, this);
+            return std::make_unique<Setting>(settingsTree, this);
         }
 
-        if (tree.getType() == DeviceSettingsIDs::Margin)
+        if (settingsTree.getType() == DeviceSettingsIDs::Margin)
         {
             return nullptr;
         }
 
-        const auto type = tree[DeviceSettingsIDs::type];
+        const auto type = settingsTree[DeviceSettingsIDs::type];
 
         if (type == "string" || type == "number")
         {
-            return std::make_unique<SettingText>(tree);
+            return std::make_unique<SettingText>(settingsTree);
         }
 
         if (type == "bool")
         {
-            return std::make_unique<SettingToggle>(tree);
+            return std::make_unique<SettingToggle>(settingsTree);
         }
 
-        return std::make_unique<SettingEnum>(tree, enums.getChildWithProperty(DeviceSettingsIDs::name, type));
+        return std::make_unique<SettingEnum>(settingsTree, enumsTree.getChildWithProperty(DeviceSettingsIDs::name, type));
     }
 
     void itemOpennessChanged(bool) override
@@ -101,9 +101,10 @@ public:
     std::function<void()> onOpennessChanged;
 
 private:
-    const juce::ValueTree tree;
-    inline static const juce::ValueTree enums = juce::ValueTree::fromXml(BinaryData::DeviceSettingsEnums_xml);
+    const juce::ValueTree settingsTree;
+    const juce::ValueTree enumsTree;
     juce::ValueTree hideSetting;
+    const bool& hideUnusedSettings;
 
     static bool isStatusSet(juce::ValueTree tree_)
     {
