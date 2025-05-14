@@ -1,7 +1,3 @@
-use crossbeam::channel::Sender;
-use std::ops::Drop;
-use std::sync::{Arc, Mutex};
-use std::time::{SystemTime, UNIX_EPOCH};
 use crate::command_message::*;
 use crate::connection_info::*;
 use crate::connections::*;
@@ -11,6 +7,10 @@ use crate::decoder::*;
 use crate::dispatcher::*;
 use crate::ping_response::*;
 use crate::statistics::*;
+use crossbeam::channel::Sender;
+use std::ops::Drop;
+use std::sync::{Arc, Mutex};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub struct Connection {
     dropped: Arc<Mutex<bool>>,
@@ -85,7 +85,7 @@ impl Connection {
                 }
 
                 if result.is_err() {
-                    closure(result); // argument must not include lock() because this could cause deadlock
+                    closure(result);
                     return;
                 }
 
@@ -112,7 +112,7 @@ impl Connection {
         let decoder = self.internal.lock().unwrap().get_decoder();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
-        Self::send_commands_internal(decoder, write_sender, commands, retries, timeout) // argument must not include lock() because this could cause deadlock
+        Self::send_commands_internal(decoder, write_sender, commands, retries, timeout)
     }
 
     pub fn send_commands_async(&self, commands: Vec<&str>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<String>) + Send>) {
@@ -139,13 +139,22 @@ impl Connection {
             response: Option<CommandMessage>,
         }
 
-        let mut transactions: Vec<Transaction> = commands.iter().map(|&command| {
-            if let Ok(command) = CommandMessage::parse_json(command) {
-                Transaction { command: Some(command), response: None }
-            } else {
-                Transaction { command: None, response: None }
-            }
-        }).collect();
+        let mut transactions: Vec<Transaction> = commands
+            .iter()
+            .map(|&command| {
+                if let Ok(command) = CommandMessage::parse_json(command) {
+                    Transaction {
+                        command: Some(command),
+                        response: None,
+                    }
+                } else {
+                    Transaction {
+                        command: None,
+                        response: None,
+                    }
+                }
+            })
+            .collect();
 
         let (response_sender, response_receiver) = crossbeam::channel::unbounded();
 
@@ -167,7 +176,10 @@ impl Connection {
                     for transaction in transactions.iter_mut() {
                         if let Some(command) = transaction.command.as_ref() {
                             if response.key == command.key {
-                                *transaction = Transaction { command: None, response: Some(response.clone()) };
+                                *transaction = Transaction {
+                                    command: None,
+                                    response: Some(response.clone()),
+                                };
                             }
                         }
                     }

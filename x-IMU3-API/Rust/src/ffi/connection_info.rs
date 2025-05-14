@@ -1,7 +1,7 @@
-use std::net::Ipv4Addr;
-use std::os::raw::c_char;
 use crate::connection_info::*;
 use crate::ffi::helpers::*;
+use std::net::Ipv4Addr;
+use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct UsbConnectionInfoC {
@@ -87,8 +87,7 @@ pub struct TcpConnectionInfoC {
 
 impl Default for TcpConnectionInfoC {
     fn default() -> TcpConnectionInfoC {
-        TcpConnectionInfoC
-        {
+        TcpConnectionInfoC {
             ip_address: EMPTY_CHAR_ARRAY,
             port: 0,
         }
@@ -107,7 +106,7 @@ impl From<&TcpConnectionInfo> for TcpConnectionInfoC {
 impl From<TcpConnectionInfoC> for TcpConnectionInfo {
     fn from(connection_info: TcpConnectionInfoC) -> Self {
         TcpConnectionInfo {
-            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| { Ipv4Addr::new(0, 0, 0, 0) }),
+            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             port: connection_info.port,
         }
     }
@@ -148,7 +147,7 @@ impl From<&UdpConnectionInfo> for UdpConnectionInfoC {
 impl From<UdpConnectionInfoC> for UdpConnectionInfo {
     fn from(connection_info: UdpConnectionInfoC) -> Self {
         UdpConnectionInfo {
-            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| { Ipv4Addr::new(0, 0, 0, 0) }),
+            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             send_port: connection_info.send_port,
             receive_port: connection_info.receive_port,
         }

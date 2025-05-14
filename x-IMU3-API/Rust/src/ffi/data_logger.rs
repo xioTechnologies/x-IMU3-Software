@@ -1,8 +1,8 @@
-use std::os::raw::c_char;
 use crate::connection::*;
 use crate::data_logger::*;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
+use std::os::raw::c_char;
 
 pub struct DataLoggerC {
     internal: core::result::Result<DataLogger<'static>, ()>,
@@ -11,7 +11,9 @@ pub struct DataLoggerC {
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_new(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32) -> *mut DataLoggerC {
     let connections = connection_array_to_vec(connections, length);
-    Box::into_raw(Box::new(DataLoggerC { internal: DataLogger::new(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections) }))
+    Box::into_raw(Box::new(DataLoggerC {
+        internal: DataLogger::new(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections),
+    }))
 }
 
 #[no_mangle]

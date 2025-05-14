@@ -1,5 +1,5 @@
-use ximu3::network_announcement::*;
 use crate::helpers;
+use ximu3::network_announcement::*;
 
 pub fn run() {
     let network_announcement = NetworkAnnouncement::new();
@@ -25,6 +25,7 @@ pub fn run() {
 }
 
 fn print_message(message: NetworkAnnouncementMessage) {
+    #[rustfmt::skip]
     println!("{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
              message.device_name,
              message.serial_number,

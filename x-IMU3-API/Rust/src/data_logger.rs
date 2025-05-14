@@ -1,3 +1,5 @@
+use crate::connection::*;
+use crate::ping_response::*;
 use serde_json;
 use std::collections::HashMap;
 use std::fs::File;
@@ -5,8 +7,6 @@ use std::io::{Seek, SeekFrom, Write};
 use std::ops::Drop;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
-use crate::connection::*;
-use crate::ping_response::*;
 
 pub struct DataLogger<'a> {
     connections: Vec<&'a Connection>,
@@ -16,7 +16,6 @@ pub struct DataLogger<'a> {
 
 impl DataLogger<'_> {
     pub fn new<'a>(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<DataLogger<'a>, ()> {
-
         // Create root directory
         if Path::new(destination).exists() == false {
             return Err(());
@@ -155,6 +154,6 @@ impl Drop for DataLogger<'_> {
 
         while *self.in_progress.lock().unwrap() {
             std::thread::sleep(std::time::Duration::from_millis(1));
-        };
+        }
     }
 }

@@ -1,6 +1,6 @@
-use std::os::raw::c_char;
-use crate::ffi::helpers::*;
 use crate::command_message::*;
+use crate::ffi::helpers::*;
+use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct CommandMessageC {

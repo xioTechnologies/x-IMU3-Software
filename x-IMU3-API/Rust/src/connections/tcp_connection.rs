@@ -1,11 +1,11 @@
+use crate::connection_info::*;
+use crate::connections::*;
+use crate::decoder::*;
 use crossbeam::channel::Sender;
 use std::io::{Read, Write};
 use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use crate::connection_info::*;
-use crate::connections::*;
-use crate::decoder::*;
 
 pub struct TcpConnection {
     connection_info: TcpConnectionInfo,

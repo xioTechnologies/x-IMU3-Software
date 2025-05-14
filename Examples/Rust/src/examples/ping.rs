@@ -2,7 +2,6 @@ use ximu3::connection::*;
 use ximu3::connection_info::*;
 
 pub fn run() {
-
     // Create connection info
     let connection_info = ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo {
         port_name: "COM1".to_string(),

@@ -1,13 +1,12 @@
+use crate::helpers;
 use ximu3::charging_status::*;
 use ximu3::connection::*;
 use ximu3::connection_info::*;
 use ximu3::data_messages::*;
 use ximu3::decode_error::*;
 use ximu3::statistics::*;
-use crate::helpers;
 
 pub fn run(connection_info: ConnectionInfo) {
-
     // Create connection
     let connection = Connection::new(&connection_info);
 
@@ -48,20 +47,37 @@ pub fn run(connection_info: ConnectionInfo) {
     connection.close();
 }
 
-macro_rules! timestamp_format {() => { "{:>8} us" }}
+macro_rules! timestamp_fmt {
+    () => {
+        "{:>8} us"
+    };
+}
 
-macro_rules! int_format {() => { " {:>8}" }}
+macro_rules! int_fmt {
+    () => {
+        " {:>8}"
+    };
+}
 
-macro_rules! float_format {() => { " {:>8.3}" }}
+macro_rules! float_fmt {
+    () => {
+        " {:>8.3}"
+    };
+}
 
-macro_rules! string_format {() => { " \"{}\"" }}
+macro_rules! string_fmt {
+    () => {
+        " \"{}\""
+    };
+}
 
 pub fn decode_error_closure(decode_error: DecodeError) {
     println!("{}", decode_error);
 }
 
 pub fn statistics_closure(statistics: Statistics) {
-    println!(concat!(timestamp_format!(), int_format!(), " bytes", int_format!(), " bytes/s", int_format!(), " messages", int_format!(), " messages/s", int_format!(), " errors", int_format!(), " errors/s"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), int_fmt!(), " bytes", int_fmt!(), " bytes/s", int_fmt!(), " messages", int_fmt!(), " messages/s", int_fmt!(), " errors", int_fmt!(), " errors/s"),
              statistics.timestamp,
              statistics.data_total,
              statistics.data_rate,
@@ -73,7 +89,8 @@ pub fn statistics_closure(statistics: Statistics) {
 }
 
 pub fn inertial_closure(message: InertialMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " deg/s", float_format!(), " deg/s", float_format!(), " deg/s", float_format!(), " g", float_format!(), " g", float_format!(), " g"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " deg/s", float_fmt!(), " deg/s", float_fmt!(), " deg/s", float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
              message.gyroscope_x,
              message.gyroscope_y,
@@ -85,7 +102,8 @@ pub fn inertial_closure(message: InertialMessage) {
 }
 
 pub fn magnetometer_closure(message: MagnetometerMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " a.u.", float_format!(), " a.u.", float_format!(), " a.u."),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " a.u.", float_fmt!(), " a.u.", float_fmt!(), " a.u."),
              message.timestamp,
              message.x,
              message.y,
@@ -94,7 +112,8 @@ pub fn magnetometer_closure(message: MagnetometerMessage) {
 }
 
 pub fn quaternion_closure(message: QuaternionMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!()),
              message.timestamp,
              message.w,
              message.x,
@@ -105,7 +124,8 @@ pub fn quaternion_closure(message: QuaternionMessage) {
 }
 
 pub fn rotation_matrix_closure(message: RotationMatrixMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!()),
              message.timestamp,
              message.xx,
              message.xy,
@@ -121,7 +141,8 @@ pub fn rotation_matrix_closure(message: RotationMatrixMessage) {
 }
 
 pub fn euler_angles_closure(message: EulerAnglesMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " deg", float_format!(), " deg", float_format!(), " deg"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " deg", float_fmt!(), " deg", float_fmt!(), " deg"),
              message.timestamp,
              message.roll,
              message.pitch,
@@ -131,7 +152,8 @@ pub fn euler_angles_closure(message: EulerAnglesMessage) {
 }
 
 pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), " g", float_format!(), " g", float_format!(), " g"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
              message.quaternion_w,
              message.quaternion_x,
@@ -145,7 +167,8 @@ pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
 }
 
 pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!(), float_format!(), " g", float_format!(), " g", float_format!(), " g"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
              message.quaternion_w,
              message.quaternion_x,
@@ -159,7 +182,8 @@ pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
 }
 
 pub fn ahrs_status_closure(message: AhrsStatusMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), float_format!(), float_format!(), float_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!()),
              message.timestamp,
              message.initialising,
              message.angular_rate_recovery,
@@ -169,7 +193,8 @@ pub fn ahrs_status_closure(message: AhrsStatusMessage) {
 }
 
 pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " g", float_format!(), " g", float_format!(), " g"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
              message.x,
              message.y,
@@ -178,14 +203,16 @@ pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
 }
 
 pub fn temperature_closure(message: TemperatureMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " degC"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " degC"),
              message.timestamp,
              message.temperature);
     // println!("{}", message); // alternative to above
 }
 
 pub fn battery_closure(message: BatteryMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " %", float_format!(), " V", float_format!(), " ({})"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " %", float_fmt!(), " V", float_fmt!(), " ({})"),
              message.timestamp,
              message.percentage,
              message.voltage,
@@ -195,7 +222,8 @@ pub fn battery_closure(message: BatteryMessage) {
 }
 
 pub fn rssi_closure(message: RssiMessage) {
-    println!(concat!(timestamp_format!(), float_format!(), " %", float_format!(), " dBm"),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " %", float_fmt!(), " dBm"),
              message.timestamp,
              message.percentage,
              message.power);
@@ -203,21 +231,24 @@ pub fn rssi_closure(message: RssiMessage) {
 }
 
 pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
-    println!(concat!(timestamp_format!(), string_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
     // println!("{}", message); // alternative to above
 }
 
 pub fn notification_closure(message: NotificationMessage) {
-    println!(concat!(timestamp_format!(), string_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
     // println!("{}", message); // alternative to above
 }
 
 pub fn error_closure(message: ErrorMessage) {
-    println!(concat!(timestamp_format!(), string_format!()),
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
     // println!("{}", message); // alternative to above

@@ -1,8 +1,8 @@
+use super::connection;
+use crate::helpers;
 use std::net::Ipv4Addr;
 use ximu3::connection_info::*;
 use ximu3::network_announcement::*;
-use crate::helpers;
-use super::connection;
 
 pub fn run() {
     let connection_info;

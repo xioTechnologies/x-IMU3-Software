@@ -1,7 +1,7 @@
-use crossbeam::channel::Sender;
-use std::sync::{Arc, Mutex};
 use crate::connection_info::*;
 use crate::decoder::*;
+use crossbeam::channel::Sender;
+use std::sync::{Arc, Mutex};
 
 pub trait GenericConnection {
     fn open(&mut self) -> std::io::Result<()>;

@@ -1,10 +1,10 @@
+use crate::connection_info::*;
+use crate::connections::*;
+use crate::decoder::*;
 use crossbeam::channel::Sender;
 use serialport::FlowControl;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use crate::connection_info::*;
-use crate::connections::*;
-use crate::decoder::*;
 
 pub struct SerialConnection {
     connection_info: SerialConnectionInfo,
@@ -27,7 +27,10 @@ impl SerialConnection {
 impl GenericConnection for SerialConnection {
     fn open(&mut self) -> std::io::Result<()> {
         let mut serial_port = serialport::new(&self.connection_info.port_name, self.connection_info.baud_rate)
-            .flow_control(if self.connection_info.rts_cts_enabled { FlowControl::Hardware } else { FlowControl::None })
+            .flow_control(match self.connection_info.rts_cts_enabled {
+                true => FlowControl::Hardware,
+                false => FlowControl::None,
+            })
             .timeout(Duration::from_millis(1))
             .open()?;
 

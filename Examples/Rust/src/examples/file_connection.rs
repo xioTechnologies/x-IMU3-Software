@@ -1,5 +1,5 @@
-use ximu3::connection_info::*;
 use super::connection;
+use ximu3::connection_info::*;
 
 pub fn run() {
     let connection_info = ConnectionInfo::FileConnectionInfo(FileConnectionInfo {

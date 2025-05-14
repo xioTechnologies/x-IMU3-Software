@@ -1,13 +1,13 @@
-use std::mem;
-use std::net::Ipv4Addr;
-use std::os::raw::{c_char, c_void};
 use crate::charging_status::*;
+use crate::connection_info::*;
 use crate::ffi::callback::*;
 use crate::ffi::connection_info::*;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
 use crate::network_announcement::*;
-use crate::connection_info::*;
+use std::mem;
+use std::net::Ipv4Addr;
+use std::os::raw::{c_char, c_void};
 
 #[repr(C)]
 pub struct NetworkAnnouncementMessageC {
@@ -59,7 +59,7 @@ impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
         NetworkAnnouncementMessage {
             device_name: char_array_to_string(&message.device_name),
             serial_number: char_array_to_string(&message.serial_number),
-            ip_address: char_array_to_string(&message.ip_address).parse().ok().unwrap_or_else(|| { Ipv4Addr::new(0, 0, 0, 0) }),
+            ip_address: char_array_to_string(&message.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             tcp_port: message.tcp_port,
             udp_send: message.udp_send,
             udp_receive: message.udp_receive,
@@ -120,7 +120,9 @@ pub struct NetworkAnnouncementC {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_new() -> *mut NetworkAnnouncementC {
-    Box::into_raw(Box::new(NetworkAnnouncementC { internal: NetworkAnnouncement::new() }))
+    Box::into_raw(Box::new(NetworkAnnouncementC {
+        internal: NetworkAnnouncement::new(),
+    }))
 }
 
 #[no_mangle]

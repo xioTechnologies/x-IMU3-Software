@@ -1,10 +1,10 @@
-use crossbeam::channel::Sender;
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
 use crate::command_message::*;
 use crate::data_messages::*;
 use crate::decode_error::*;
 use crate::statistics::*;
+use crossbeam::channel::Sender;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 
 pub enum DispatcherData {
     DecodeError(DecodeError),

@@ -29,6 +29,14 @@ pub struct UsbConnectionInfo {
     pub port_name: String,
 }
 
+impl From<SerialConnectionInfo> for UsbConnectionInfo {
+    fn from(connection_info: SerialConnectionInfo) -> Self {
+        UsbConnectionInfo {
+            port_name: connection_info.port_name,
+        }
+    }
+}
+
 impl fmt::Display for UsbConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(formatter, "USB {}", self.port_name)
@@ -44,7 +52,10 @@ pub struct SerialConnectionInfo {
 
 impl fmt::Display for SerialConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let enabled_disabled = if self.rts_cts_enabled { "Enabled" } else { "Disabled" };
+        let enabled_disabled = match self.rts_cts_enabled {
+            true => "Enabled",
+            false => "Disabled",
+        };
         write!(formatter, "Serial {}, {}, RTS/CTS {}", self.port_name, self.baud_rate, enabled_disabled)
     }
 }
@@ -77,6 +88,13 @@ impl fmt::Display for UdpConnectionInfo {
 #[derive(Clone)]
 pub struct BluetoothConnectionInfo {
     pub port_name: String,
+}
+impl From<SerialConnectionInfo> for BluetoothConnectionInfo {
+    fn from(connection_info: SerialConnectionInfo) -> Self {
+        BluetoothConnectionInfo {
+            port_name: connection_info.port_name,
+        }
+    }
 }
 
 impl fmt::Display for BluetoothConnectionInfo {
