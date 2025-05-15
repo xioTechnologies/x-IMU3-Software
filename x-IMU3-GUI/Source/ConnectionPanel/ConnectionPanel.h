@@ -42,6 +42,8 @@ public:
 
     void cleanupWindows();
 
+    juce::String getDescriptor() const;
+
     juce::String getTitle() const;
 
     ConnectionPanelContainer& getConnectionPanelContainer();

@@ -114,7 +114,12 @@ namespace ximu3
             XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout, Helpers::wrapCallable<XIMU3_CharArrays>(*wrappedCallback), wrappedCallback);
         }
 
-        std::unique_ptr<ConnectionInfo> getInfo()
+        XIMU3_ConnectionType getType() const
+        {
+            return XIMU3_connection_get_type(connection);
+        }
+
+        std::unique_ptr<ConnectionInfo> getInfo() const
         {
             switch (XIMU3_connection_get_type(connection))
             {

@@ -188,6 +188,11 @@ void ConnectionPanel::cleanupWindows()
     triggerAsyncUpdate();
 }
 
+juce::String ConnectionPanel::getDescriptor() const
+{
+    return header.getDescriptor();
+}
+
 juce::String ConnectionPanel::getTitle() const
 {
     return header.getTitle();

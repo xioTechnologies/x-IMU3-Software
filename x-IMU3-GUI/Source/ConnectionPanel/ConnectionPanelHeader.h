@@ -38,6 +38,8 @@ public:
 
     void setState(const State state);
 
+    juce::String getDescriptor() const;
+
     juce::String getTitle() const;
 
     void updateTitle(const std::vector<CommandMessage>& responses);
@@ -55,6 +57,7 @@ private:
     std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
 
     juce::String deviceName, serialNumber;
+    juce::String descriptor;
 
     IconButton retryButton { BinaryData::refresh_svg, "Retry" };
     IconButton strobeButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };
@@ -72,7 +75,7 @@ private:
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     uint64_t batteryCallbackID;
 
-    void updateTitle(const juce::String& status);
+    void updateTitle(const juce::String& descriptor_);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelHeader)
 };

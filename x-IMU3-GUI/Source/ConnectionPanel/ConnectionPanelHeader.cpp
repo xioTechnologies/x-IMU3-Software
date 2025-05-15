@@ -196,6 +196,11 @@ void ConnectionPanelHeader::setState(const State state)
     }
 }
 
+juce::String ConnectionPanelHeader::getDescriptor() const
+{
+    return descriptor;
+}
+
 juce::String ConnectionPanelHeader::getTitle() const
 {
     return title.getText();
@@ -228,7 +233,8 @@ void ConnectionPanelHeader::updateTitle(const juce::String& deviceName_, const j
     updateTitle(deviceName + " " + serialNumber);
 }
 
-void ConnectionPanelHeader::updateTitle(const juce::String& status)
+void ConnectionPanelHeader::updateTitle(const juce::String& descriptor_)
 {
-    title.setText(status + "    " + connection->getInfo()->toString());
+    descriptor = descriptor_;
+    title.setText(descriptor + "    " + connection->getInfo()->toString());
 }

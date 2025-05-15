@@ -1,9 +1,9 @@
 #include "ApplicationSettings.h"
 #include "AvailableConnectionsDialog.h"
 
-AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
+AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
     : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
-      existingConnections(std::move(existingConnections_))
+      existingConnections(existingConnections_)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);
@@ -28,7 +28,7 @@ std::vector<ximu3::ConnectionInfo*> AvailableConnectionsDialog::getConnectionInf
 
     for (auto& row : table.getRows())
     {
-        if (row.selected)
+        if (row.selected && row.unavailable == false)
         {
             connectionInfos.push_back(row.connectionInfo.get());
         }
@@ -64,13 +64,13 @@ void AvailableConnectionsDialog::timerCallback()
     {
         for (const auto& existingConnection : existingConnections)
         {
-            if (existingConnection->toString() == connectionInfo->toString())
+            if (existingConnection.info->toString() == connectionInfo->toString())
             {
                 return;
             }
         }
 
-        rows.push_back({ false, deviceName, serialNumber, std::move(connectionInfo), connectionType, rssiPercentage, batteryPercentage, batteryStatus });
+        rows.push_back({ false, juce::String(deviceName) + " " + juce::String(serialNumber), connectionInfo, rssiPercentage, batteryPercentage, batteryStatus, false });
         numberOfConnections[connectionType]++;
     };
 
@@ -100,6 +100,12 @@ void AvailableConnectionsDialog::timerCallback()
         {
             addConnection(message.device_name, message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(ximu3::XIMU3_network_announcement_message_to_tcp_connection_info(message)), ximu3::XIMU3_ConnectionTypeTcp, message.rssi, message.battery, message.charging_status);
         }
+    }
+
+    for (const auto& existingConnection : existingConnections)
+    {
+        rows.push_back({ true, existingConnection.descriptor, existingConnection.info, {}, {}, {}, true });
+        numberOfConnections[existingConnection.type]++;
     }
 
     table.setRows(rows);

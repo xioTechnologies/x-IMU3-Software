@@ -14,6 +14,11 @@ ConnectionsTable::ConnectionsTable()
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
+            if (rows[index].unavailable)
+            {
+                continue;
+            }
+
             if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
             {
                 toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
@@ -23,7 +28,7 @@ ConnectionsTable::ConnectionsTable()
     };
 
     table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
-    table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
+    table.getHeader().addColumn("", (int) ColumnIDs::descriptor, 1);
     table.getHeader().addColumn("", (int) ColumnIDs::connection, 140);
     table.getHeader().addColumn("", (int) ColumnIDs::rssi, 25, 25, 25);
     table.getHeader().addColumn("", (int) ColumnIDs::battery, 25, 25, 25);
@@ -40,7 +45,7 @@ void ConnectionsTable::resized()
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIDs::device - 1)).getX()));
+    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIDs::descriptor - 1)).getX()));
     table.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
 }
@@ -70,9 +75,14 @@ void ConnectionsTable::setRows(std::vector<Row> rows_)
         }
     }
 
+    std::stable_partition(rows.rbegin(), rows.rend(), [](const auto& row)
+    {
+        return row.unavailable;
+    });
+
     for (auto& row : rows)
     {
-        row.selected |= selectAllButton.getToggleState();
+        row.selected = row.selected || selectAllButton.getToggleState();
     }
 
     table.updateContent();
@@ -116,13 +126,13 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 break;
             }
 
-        case ColumnIDs::device:
+        case ColumnIDs::descriptor:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " " + rows[(size_t) rowNumber].serialNumber);
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].descriptor);
             break;
 
         case ColumnIDs::connection:
@@ -170,6 +180,10 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             break;
     }
 
+    if (existingComponentToUpdate != nullptr)
+    {
+        existingComponentToUpdate->setEnabled(rows[(size_t) rowNumber].unavailable == false);
+    }
     return existingComponentToUpdate;
 }
 
@@ -177,6 +191,9 @@ void ConnectionsTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
 {
     if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, rowNumber)))
     {
-        toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+        if (rows[(size_t) rowNumber].unavailable == false)
+        {
+            toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+        }
     }
 }

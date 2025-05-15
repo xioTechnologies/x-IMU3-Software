@@ -20,7 +20,7 @@ public:
         if (icon != nullptr)
         {
             icon->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
-                             juce::RectanglePlacement::centred, 1.0f);
+                             juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.5f);
         }
     }
 
