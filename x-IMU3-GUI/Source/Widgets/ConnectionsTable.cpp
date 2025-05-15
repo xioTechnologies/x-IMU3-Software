@@ -14,6 +14,11 @@ ConnectionsTable::ConnectionsTable()
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
+            if (rows[index].unavailable)
+            {
+                continue;
+            }
+
             if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIds::selected, (int) index)))
             {
                 toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
@@ -70,9 +75,14 @@ void ConnectionsTable::setRows(std::vector<Row> rows_)
         }
     }
 
+    std::stable_partition(rows.rbegin(), rows.rend(), [](const auto& row)
+    {
+        return row.unavailable;
+    });
+
     for (auto& row : rows)
     {
-        row.selected |= selectAllButton.getToggleState();
+        row.selected = row.selected || selectAllButton.getToggleState();
     }
 
     table.updateContent();
@@ -170,6 +180,10 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             break;
     }
 
+    if (existingComponentToUpdate != nullptr)
+    {
+        existingComponentToUpdate->setEnabled(rows[(size_t) rowNumber].unavailable == false);
+    }
     return existingComponentToUpdate;
 }
 
@@ -177,6 +191,9 @@ void ConnectionsTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
 {
     if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIds::selected, rowNumber)))
     {
-        toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+        if (rows[(size_t) rowNumber].unavailable == false)
+        {
+            toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+        }
     }
 }
