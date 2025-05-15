@@ -35,7 +35,9 @@ public:
 
     void updateHeading(const juce::String& deviceName_, const juce::String& serialNumber_);
 
-    void updateHeading(const juce::String& status);
+    void updateHeading(const juce::String& descriptor_);
+
+    juce::String getDescriptor() const;
 
     void showRetry(std::function<void()> onClick);
 
@@ -48,6 +50,7 @@ private:
 
     juce::String deviceName, serialNumber;
     const juce::String connectionInfoString = connection->getInfo()->toString();
+    juce::String descriptor;
 
     IconButton retryButton { BinaryData::refresh_svg, "Retry" };
     IconButton locateButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };

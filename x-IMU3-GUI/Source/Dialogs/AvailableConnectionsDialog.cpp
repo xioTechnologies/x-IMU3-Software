@@ -1,9 +1,9 @@
 #include "ApplicationSettings.h"
 #include "AvailableConnectionsDialog.h"
 
-AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_)
+AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
     : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
-      existingConnections(std::move(existingConnections_))
+      existingConnections(existingConnections_)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);
@@ -28,7 +28,7 @@ std::vector<ximu3::ConnectionInfo*> AvailableConnectionsDialog::getConnectionInf
 
     for (auto& row : table.getRows())
     {
-        if (row.selected)
+        if (row.selected && row.unavailable == false)
         {
             connectionInfos.push_back(row.connectionInfo.get());
         }
@@ -82,20 +82,12 @@ void AvailableConnectionsDialog::timerCallback()
 
     const auto addRow = [&](const auto& descriptor, const auto& connectionInfo, const std::optional<int>& rssi, const std::optional<int>& battery, const std::optional<ximu3::XIMU3_ChargingStatus>& status)
     {
-        if (filter(connectionInfo->getType()))
+        if (filter(connectionInfo->getType()) || std::find(existingConnections.begin(), existingConnections.end(), *connectionInfo) != existingConnections.end())
         {
             return;
         }
 
-        for (const auto& existingConnection : existingConnections)
-        {
-            if (existingConnection->toString() == connectionInfo->toString())
-            {
-                return;
-            }
-        }
-
-        rows.push_back({ false, descriptor, connectionInfo, rssi, battery, status });
+        rows.push_back({ false, descriptor, connectionInfo, rssi, battery, status, false });
         numberOfConnections[connectionInfo->getType()]++;
     };
 
@@ -108,6 +100,11 @@ void AvailableConnectionsDialog::timerCallback()
     {
         addRow(juce::String(message.device_name) + " " + message.serial_number, ximu3::tcpConnectionInfoFrom(message), message.rssi, message.battery, message.charging_status);
         addRow(juce::String(message.device_name) + " " + message.serial_number, ximu3::udpConnectionInfoFrom(message), message.rssi, message.battery, message.charging_status);
+    }
+
+    for (const auto& existingConnection : existingConnections)
+    {
+        rows.push_back({ true, existingConnection.descriptor, existingConnection.connectionInfo, {}, {}, {}, true });
     }
 
     table.setRows(rows);

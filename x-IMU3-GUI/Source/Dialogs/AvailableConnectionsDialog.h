@@ -10,20 +10,33 @@ class AvailableConnectionsDialog : public Dialog,
                                    private juce::Timer
 {
 public:
-    AvailableConnectionsDialog(std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections_);
+    struct ExistingConnection
+    {
+        juce::String descriptor;
+        std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
+
+        bool operator==(const ximu3::ConnectionInfo& connectionInfo_) const
+        {
+            return connectionInfo->toString() == connectionInfo_.toString();
+        }
+    };
+
+    AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_);
 
     void resized() override;
 
     std::vector<ximu3::ConnectionInfo*> getConnectionInfos() const;
 
 private:
-    const std::vector<std::unique_ptr<ximu3::ConnectionInfo>> existingConnections;
+    const std::vector<ExistingConnection> existingConnections;
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    ximu3::PortScanner portScanner { [](const auto&)
-                                     {
-                                     }};
+    ximu3::PortScanner portScanner {
+        [](const auto&)
+        {
+        }
+    };
 
     ConnectionsTable table;
 

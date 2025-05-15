@@ -170,9 +170,15 @@ void ConnectionPanelHeader::updateHeading(const juce::String& deviceName_, const
     updateHeading(deviceName + " " + serialNumber);
 }
 
-void ConnectionPanelHeader::updateHeading(const juce::String& status)
+void ConnectionPanelHeader::updateHeading(const juce::String& descriptor_)
 {
-    headingLabel.setText(status + "    " + connectionInfoString);
+    descriptor = descriptor_;
+    headingLabel.setText(descriptor + "    " + connectionInfoString);
+}
+
+juce::String ConnectionPanelHeader::getDescriptor() const
+{
+    return descriptor;
 }
 
 void ConnectionPanelHeader::showRetry(std::function<void()> onClick)

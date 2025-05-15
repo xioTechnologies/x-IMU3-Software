@@ -188,6 +188,11 @@ juce::String ConnectionPanel::getHeading() const
     return header.getHeading();
 }
 
+juce::String ConnectionPanel::getDescriptor() const
+{
+    return header.getDescriptor();
+}
+
 ConnectionPanelContainer& ConnectionPanel::getConnectionPanelContainer()
 {
     return connectionPanelContainer;
