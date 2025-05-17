@@ -1,6 +1,6 @@
 #include "../Helpers.h"
 #include "Connection.h"
-#include <inttypes.h> // PRIu64
+#include <inttypes.h>
 #include <stdio.h>
 
 #define TIMESTAMP_FORMAT "%8" PRIu64 " us"
