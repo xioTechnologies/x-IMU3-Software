@@ -9,14 +9,15 @@ examples = []
 
 for _, _, file_names in os.walk("Examples"):
     for file_name in file_names:
-        file_name_without_extension, extension = os.path.splitext(file_name)
+        file_stem, extension = os.path.splitext(file_name)
 
-        if extension != ".c" or file_name_without_extension == "Connection":
-            continue
-
-        examples.append(file_name_without_extension)
+        examples.append(file_stem)
 
 examples = sorted(examples)
+
+examples = [s for s in examples if s != "Connection"]
+
+keys = [chr(ord("A") + i) for i in range(len(examples))]
 
 with open("main.c", "w") as file:
     file.write(helpers.preamble())
@@ -24,26 +25,22 @@ with open("main.c", "w") as file:
     file.write('#include "Helpers.h"\n')
     file.write("#include <stdio.h>\n\n")
 
-    for declaration in examples:
-        file.write(f"void {declaration}();\n\n")
+    for example in examples:
+        file.write(f"void {example}();\n\n")
 
     file.write("int main(int argc, const char* argv[])\n{\n")
     file.write('    printf("Select example\\n");\n')
 
-    key = "A"
-    for declaration in examples:
-        file.write(f'    printf("{key}. {declaration}.c\\n");\n')
-        key = chr(ord(key) + 1)
+    for key, example in zip(keys, examples):
+        file.write(f'    printf("{key}. {example}.c\\n");\n')
 
     file.write("    switch (GetKey())\n")
     file.write("    {\n")
 
-    key = "A"
-    for declaration in examples:
+    for key, example in zip(keys, examples):
         file.write(f"        case '{key}':\n")
-        file.write(f"            {declaration}();\n")
+        file.write(f"            {example}();\n")
         file.write("            break;\n")
-        key = chr(ord(key) + 1)
 
     file.write("    }\n")
     file.write("}\n")
