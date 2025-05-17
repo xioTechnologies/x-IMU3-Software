@@ -7,17 +7,17 @@ import helpers
 
 examples = []
 
-for _, _, file_names in os.walk("examples"):
+for _, _, file_names in os.walk("Examples"):
     for file_name in file_names:
-        file_name_without_extension = os.path.splitext(file_name)[0]
+        file_stem, extension = os.path.splitext(file_name)
 
-        if file_name_without_extension == "connection":
-            continue
-
-        examples.append(file_name_without_extension)
+        examples.append(file_stem)
 
 examples = sorted(examples)
-examples.remove("mod")
+
+examples = [s for s in examples if s not in ["connection", "mod"]]
+
+keys = [chr(ord("A") + i) for i in range(len(examples))]
 
 with open("examples/mod.rs", "w") as file:
     file.write(helpers.preamble())
@@ -36,18 +36,14 @@ with open("main.rs", "w") as file:
     file.write("fn main() {\n")
     file.write('    println!("Select example");\n')
 
-    key = "A"
-    for example in examples:
+    for key, example in zip(keys, examples):
         file.write(f'    println!("{key}. {example}.rs");\n')
-        key = chr(ord(key) + 1)
 
     file.write("\n")
     file.write("    match helpers::get_key() {\n")
 
-    key = "A"
-    for example in examples:
+    for key, example in zip(keys, examples):
         file.write(f"        '{key}' => {example}::run(),\n")
-        key = chr(ord(key) + 1)
 
     file.write("        _ => {}\n")
     file.write("    }\n")

@@ -25,28 +25,28 @@ for setting in settings:
 
     json_types.append(json_type)
 
+enum_types = list(set(enum_types))
+enum_types.sort()
+
 with open("DeviceSettings.xml", "w") as file:
     file.write("<DeviceSettings>\n")
+    file.write("    <Settings>\n")
 
     for setting, json_type in zip(settings, json_types):
-        file.write(f'    <Setting key="{helpers.snake_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get('read only') else "")}/>\n')
+        file.write(f'        <Setting key="{helpers.snake_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get("read only") else "")}/>\n')
 
-    file.write("    <Margin/>\n")
-    file.write("</DeviceSettings>\n")
+    file.write("        <Margin/>\n")
+    file.write("    </Settings>\n")
 
-enum_types = list(set(enum_types))  # remove duplicates
-enum_types.sort()  # sort alphabetically
-
-with open("DeviceSettingsEnums.xml", "w") as file:
-    file.write("<DeviceSettingsEnums>\n")
+    file.write("    <Enums>\n")
 
     for enum_type in enum_types:
         file.write(f"""\
-    <Enum name="{enum_type}">
-        <Enumerator name="Zero" value="0"/>
-        <Enumerator name="One" value="1"/>
-    </Enum>\n""")
+        <Enum name="{enum_type}">
+            <Enumerator name="Zero" value="0"/>
+            <Enumerator name="One" value="1"/>
+        </Enum>\n""")
 
-    file.write("</DeviceSettingsEnums>\n")
+    file.write("    </Enums>\n")
 
-# TODO: Update for schema
+    file.write("</DeviceSettings>\n")

@@ -11,25 +11,25 @@ NUMBER = "1"
 TRUE = "2"
 NULL = "4"
 
-device_settings_keys = []
-device_settings_types = []
+settings_keys = []
+settings_types = []
 
 with open("../DeviceSettings/DeviceSettings.json") as file:
     for setting in json.load(file):
         if bool(setting.get("calibration")):
             continue
 
-        device_settings_keys.append(helpers.snake_case(setting["name"]))
+        settings_keys.append(helpers.snake_case(setting["name"]))
 
         if any([d in setting["declaration"] for d in ["char name[", "RS9116BDAddress", "RS9116IPAddress", "RS9116LinkKey", "RS9116MacAddress"]]):
-            device_settings_types.append(STRING)
+            settings_types.append(STRING)
         elif any([d in setting["declaration"] for d in ["float", "uint32_t", "int32_t", "uint16_t"]]):
-            device_settings_types.append(NUMBER)
+            settings_types.append(NUMBER)
         elif "bool" in setting["declaration"]:
-            device_settings_types.append(TRUE)
+            settings_types.append(TRUE)
         else:
             json_type = setting["declaration"].split()[0]
-            device_settings_types.append(NUMBER)
+            settings_types.append(NUMBER)
 
 with open("CommandKeys.xml", "w") as file:
     file.write("<CommandKeys>\n")
@@ -57,7 +57,7 @@ with open("CommandKeys.xml", "w") as file:
 
     file.write('    <Separator header="DEVICE SETTINGS"/>\n')
 
-    for device_settings_key, device_settings_type in zip(device_settings_keys, device_settings_types):
+    for device_settings_key, device_settings_type in zip(settings_keys, settings_types):
         file.write(f'    <Command key="{device_settings_key}" type="{device_settings_type}"/>\n')
 
     file.write("</CommandKeys>\n")

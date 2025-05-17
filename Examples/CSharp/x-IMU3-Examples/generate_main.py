@@ -9,14 +9,15 @@ examples = []
 
 for _, _, file_names in os.walk("Examples"):
     for file_name in file_names:
-        file_name_without_extension, extension = os.path.splitext(file_name)
+        file_stem, extension = os.path.splitext(file_name)
 
-        if extension != ".cs" or file_name_without_extension == "Connection":
-            continue
-
-        examples.append(file_name_without_extension)
+        examples.append(file_stem)
 
 examples = sorted(examples)
+
+examples = [s for s in examples if s != "Connection"]
+
+keys = [chr(ord("A") + i) for i in range(len(examples))]
 
 with open("Program.cs", "w") as file:
     file.write(helpers.preamble())
@@ -29,20 +30,16 @@ with open("Program.cs", "w") as file:
     file.write("        {\n")
     file.write('            Console.WriteLine("Select example");\n')
 
-    key = "A"
-    for example in examples:
+    for key, example in zip(keys, examples):
         file.write(f'            Console.WriteLine("{key}. {example}");\n')
-        key = chr(ord(key) + 1)
 
     file.write("            switch (Helpers.GetKey())\n")
     file.write("            {\n")
 
-    key = "A"
-    for example in examples:
+    for key, example in zip(keys, examples):
         file.write(f"                case '{key}':\n")
         file.write(f"                    _ = new {example}();\n")
         file.write("                    break;\n")
-        key = chr(ord(key) + 1)
 
     file.write("            }\n")
     file.write('            Console.WriteLine("Press any key to exit");\n')
