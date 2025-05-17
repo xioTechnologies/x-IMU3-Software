@@ -1,7 +1,7 @@
-use std::os::raw::c_char;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
 use crate::ping_response::*;
+use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct PingResponseC {

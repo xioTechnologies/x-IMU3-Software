@@ -1,4 +1,3 @@
-use std::os::raw::{c_char, c_void};
 use crate::connection::*;
 use crate::connection_info::*;
 use crate::connection_type::*;
@@ -10,6 +9,7 @@ use crate::ffi::helpers::*;
 use crate::ffi::ping_response::*;
 use crate::ffi::result::*;
 use crate::statistics::*;
+use std::os::raw::{c_char, c_void};
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_usb(connection_info: UsbConnectionInfoC) -> *mut Connection {
@@ -59,11 +59,9 @@ pub extern "C" fn XIMU3_connection_open(connection: *mut Connection) -> Result {
 pub extern "C" fn XIMU3_connection_open_async(connection: *mut Connection, callback: Callback<Result>, context: *mut c_void) {
     let connection: &Connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    connection.open_async(Box::new(move |result| {
-        match result {
-            Ok(_) => callback(Result::Ok, void_ptr.0),
-            Err(_) => callback(Result::Error, void_ptr.0),
-        }
+    connection.open_async(Box::new(move |result| match result {
+        Ok(_) => callback(Result::Ok, void_ptr.0),
+        Err(_) => callback(Result::Error, void_ptr.0),
     }));
 }
 
@@ -97,7 +95,7 @@ pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connecti
     let commands = char_ptr_array_to_vec_string(commands, length);
     let commands = commands.iter().map(|s| s.as_str()).collect();
     let void_ptr = VoidPtr(context);
-    let closure = Box::new(move |responses: Vec<String>| { callback(responses.into(), void_ptr.0) });
+    let closure = Box::new(move |responses: Vec<String>| callback(responses.into(), void_ptr.0));
     connection.send_commands_async(commands, retries, timeout, closure);
 }
 

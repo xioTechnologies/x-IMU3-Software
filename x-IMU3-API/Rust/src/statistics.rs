@@ -27,8 +27,10 @@ impl Default for Statistics {
 }
 
 impl fmt::Display for Statistics {
+    #[rustfmt::skip]
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8} bytes {:>8} bytes/s {:>8} messages {:>8} messages/s {:>8} errors {:>8} errors/s",
+        write!(formatter,
+               "{:>8} us {:>8} bytes {:>8} bytes/s {:>8} messages {:>8} messages/s {:>8} errors {:>8} errors/s",
                self.timestamp,
                self.data_total,
                self.data_rate,

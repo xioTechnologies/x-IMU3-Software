@@ -1,10 +1,10 @@
-use std::fmt;
-use std::ops::Drop;
-use std::sync::{Arc, Mutex};
-use std::sync::atomic::{AtomicUsize, Ordering};
 use crate::connection::*;
 use crate::connection_info::*;
 use crate::data_logger::*;
+use std::fmt;
+use std::ops::Drop;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
 
 #[repr(C)]
 #[derive(Clone, PartialEq)]
@@ -35,11 +35,7 @@ pub struct FileConverterProgress {
 
 impl fmt::Display for FileConverterProgress {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {:.1}%, {} of {} bytes",
-               self.status,
-               self.percentage,
-               self.bytes_processed,
-               self.bytes_total)
+        write!(formatter, "{}, {:.1}%, {} of {} bytes", self.status, self.percentage, self.bytes_processed, self.bytes_total,)
     }
 }
 
@@ -74,9 +70,14 @@ impl FileConverter {
         let destination = destination.to_owned();
         let name = name.to_owned();
 
-        let connections: Vec<Connection> = file_paths.iter().map(|&file_path| {
-            Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo { file_path: file_path.to_owned() }))
-        }).collect();
+        let connections: Vec<Connection> = file_paths
+            .iter()
+            .map(|&file_path| {
+                Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo {
+                    file_path: file_path.to_owned(),
+                }))
+            })
+            .collect();
 
         std::thread::spawn(move || {
             let data_logger = DataLogger::new(&destination, &name, connections.iter().collect());
@@ -145,9 +146,11 @@ impl FileConverter {
     pub fn convert(destination: &str, name: &str, files: Vec<&str>) -> FileConverterProgress {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
-        let _file_converter = FileConverter::new(destination, name, files, Box::new(move |progress| {
+        let closure = Box::new(move |progress| {
             sender.send(progress).ok();
-        }));
+        });
+
+        let _file_converter = FileConverter::new(destination, name, files, closure);
 
         loop {
             if let Ok(progress) = receiver.recv() {

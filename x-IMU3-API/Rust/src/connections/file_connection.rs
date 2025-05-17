@@ -1,11 +1,11 @@
-use crossbeam::channel::Sender;
-use std::fs::OpenOptions;
-use std::io::Read;
-use std::sync::{Arc, Mutex};
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::decoder::*;
 use crate::dispatcher::*;
+use crossbeam::channel::Sender;
+use std::fs::OpenOptions;
+use std::io::Read;
+use std::sync::{Arc, Mutex};
 
 pub struct FileConnection {
     connection_info: FileConnectionInfo,

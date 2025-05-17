@@ -1,7 +1,7 @@
-use std::os::raw::{c_char, c_void};
-use crate::file_converter::*;
 use crate::ffi::callback::*;
 use crate::ffi::helpers::*;
+use crate::file_converter::*;
+use std::os::raw::{c_char, c_void};
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_converter_status_to_string(status: FileConverterStatus) -> *const c_char {

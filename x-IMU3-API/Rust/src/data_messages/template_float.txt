@@ -1,13 +1,13 @@
-use std::fmt;
-use std::mem::size_of;
 use crate::data_messages::*;
 use crate::decode_error::*;
+use std::fmt;
+use std::mem::size_of;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct $name_pascal_case$Message {
     pub timestamp: u64,
-    $arguments_struct$
+    $arguments_struct_declare$
 }
 
 impl DataMessage for $name_pascal_case$Message {
@@ -16,8 +16,11 @@ impl DataMessage for $name_pascal_case$Message {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
-        match scan_fmt!( message, "{},{d},$arguments_scan_format$\n",  char, u64, $arguments_types$) {
-            Ok((_, timestamp, $arguments_list$)) => Ok($name_pascal_case$Message { timestamp, $arguments_list$ }),
+        match scan_fmt!(message, "{},{d},$arguments_scan_fmt$\n", char, u64, $arguments_types$) {
+            Ok((_, timestamp, $arguments_scan_result$)) => Ok($name_pascal_case$Message {
+                timestamp,
+                $arguments_struct_asign$
+            }),
             Err(_) => Err(DecodeError::UnableToParseAsciiMessage),
         }
     }
@@ -40,7 +43,10 @@ impl DataMessage for $name_pascal_case$Message {
             binary_message
         };
 
-        Ok($name_pascal_case$Message { timestamp: binary_message.timestamp, $arguments_assign_struct$ })
+        Ok($name_pascal_case$Message {
+            timestamp: binary_message.timestamp,
+            $arguments_assign_struct$
+        })
     }
 
     fn get_csv_file_name(&self) -> &'static str {

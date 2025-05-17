@@ -1,5 +1,5 @@
-use serde_json;
 use crate::decode_error::*;
+use serde_json;
 
 #[derive(Clone)]
 pub struct CommandMessage {

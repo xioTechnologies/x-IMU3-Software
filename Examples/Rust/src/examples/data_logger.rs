@@ -1,11 +1,10 @@
+use crate::helpers;
 use ximu3::connection::*;
 use ximu3::connection_type::*;
 use ximu3::data_logger::*;
 use ximu3::port_scanner::*;
-use crate::helpers;
 
 pub fn run() {
-
     // Open all USB connections
     let mut connections = vec![];
 

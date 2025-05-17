@@ -1,13 +1,13 @@
+use crate::charging_status::*;
+use crate::connection_info::*;
 use serde::Deserialize;
 use serde_json;
 use std::fmt;
 use std::net::{Ipv4Addr, UdpSocket};
 use std::ops::Drop;
-use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::charging_status::*;
-use crate::connection_info::*;
 
 #[derive(Clone)]
 pub struct NetworkAnnouncementMessage {
@@ -43,21 +43,26 @@ impl From<&NetworkAnnouncementMessage> for UdpConnectionInfo {
 }
 
 impl fmt::Display for NetworkAnnouncementMessage {
+    #[rustfmt::skip]
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
-               self.device_name,
-               self.serial_number,
-               self.ip_address,
-               self.tcp_port,
-               self.udp_send,
-               self.udp_receive,
-               self.rssi,
-               self.battery,
-               self.charging_status)
+        write!(
+            formatter,
+            "{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
+            self.device_name,
+            self.serial_number,
+            self.ip_address,
+            self.tcp_port,
+            self.udp_send,
+            self.udp_receive,
+            self.rssi,
+            self.battery,
+            self.charging_status
+        )
     }
 }
 
 impl PartialEq for NetworkAnnouncementMessage {
+    #[rustfmt::skip]
     fn eq(&self, other: &Self) -> bool { // comparison must not include rssi, battery, charging_status, expiry
         self.device_name == other.device_name
             && self.serial_number == other.serial_number

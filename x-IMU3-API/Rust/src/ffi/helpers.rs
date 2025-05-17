@@ -1,7 +1,7 @@
+use std::cell::RefCell;
 use std::ffi::CStr;
 use std::mem;
 use std::os::raw::c_char;
-use std::cell::RefCell;
 
 pub const CHAR_ARRAY_SIZE: usize = 256;
 
@@ -48,7 +48,6 @@ pub fn str_to_char_ptr(string: &str) -> *const c_char {
         array.as_ptr()
     })
 }
-
 
 pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
     let mut string = string.to_string();

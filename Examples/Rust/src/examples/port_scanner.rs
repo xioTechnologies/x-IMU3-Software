@@ -1,5 +1,5 @@
-use ximu3::port_scanner::*;
 use crate::helpers;
+use ximu3::port_scanner::*;
 
 pub fn run() {
     if helpers::yes_or_no("Use async implementation?") {

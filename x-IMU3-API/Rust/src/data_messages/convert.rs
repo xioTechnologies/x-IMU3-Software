@@ -111,7 +111,8 @@ impl From<LinearAccelerationMessage> for EulerAnglesMessage {
             x: message.quaternion_x,
             y: message.quaternion_y,
             z: message.quaternion_z,
-        }.into()
+        }
+        .into()
     }
 }
 
@@ -123,6 +124,7 @@ impl From<EarthAccelerationMessage> for EulerAnglesMessage {
             x: message.quaternion_x,
             y: message.quaternion_y,
             z: message.quaternion_z,
-        }.into()
+        }
+        .into()
     }
 }

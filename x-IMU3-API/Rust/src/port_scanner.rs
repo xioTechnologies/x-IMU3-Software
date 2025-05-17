@@ -1,10 +1,10 @@
+use crate::connection::*;
+use crate::connection_info::*;
+use crate::connection_type::*;
 use crossbeam::channel::Sender;
 use std::fmt;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
-use crate::connection::*;
-use crate::connection_info::*;
-use crate::connection_type::*;
 
 #[derive(Clone)]
 pub struct Device {
@@ -15,10 +15,7 @@ pub struct Device {
 
 impl fmt::Display for Device {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {}, {}",
-               self.device_name,
-               self.serial_number,
-               self.connection_info.to_string())
+        write!(formatter, "{}, {}, {}", self.device_name, self.serial_number, self.connection_info.to_string())
     }
 }
 
@@ -53,8 +50,7 @@ impl PortScanner {
                     let sender = sender.clone();
 
                     std::thread::spawn(move || loop {
-                        if devices.lock().unwrap().iter().any(|device| device.connection_info.to_string().contains(&port_name)) == false
-                        {
+                        if devices.lock().unwrap().iter().any(|device| device.connection_info.to_string().contains(&port_name)) == false {
                             PortScanner::ping_port(&port_name, devices.clone(), sender.clone());
                         } else if PortScanner::get_port_names().contains(&port_name) == false {
                             devices.lock().unwrap().retain(|device| device.connection_info.to_string().contains(&port_name) == false);
@@ -101,9 +97,9 @@ impl PortScanner {
                     device_name: ping_response.device_name,
                     serial_number: ping_response.serial_number,
                     connection_info: match ping_response.interface.as_str() {
-                        "USB" => ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo { port_name: connection_info.port_name }),
+                        "USB" => ConnectionInfo::UsbConnectionInfo(connection_info.into()),
                         "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info),
-                        "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(BluetoothConnectionInfo { port_name: connection_info.port_name }),
+                        "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(connection_info.into()),
                         _ => ConnectionInfo::SerialConnectionInfo(connection_info),
                     },
                 };
@@ -142,15 +138,8 @@ impl PortScanner {
     pub fn scan_filter(connection_type: ConnectionType) -> Vec<Device> {
         let mut devices = PortScanner::scan();
 
-        devices.retain(|device| {
-            match device.connection_info {
-                ConnectionInfo::UsbConnectionInfo(_) => if let ConnectionType::Usb = connection_type { return true; },
-                ConnectionInfo::SerialConnectionInfo(_) => if let ConnectionType::Serial = connection_type { return true; },
-                ConnectionInfo::BluetoothConnectionInfo(_) => if let ConnectionType::Bluetooth = connection_type { return true; },
-                _ => {}
-            }
-            false
-        });
+        devices.retain(|device| connection_type == (&device.connection_info).into());
+
         devices
     }
 

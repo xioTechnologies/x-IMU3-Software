@@ -1,8 +1,8 @@
+use super::connection;
+use crate::helpers;
 use ximu3::connection_info::*;
 use ximu3::connection_type::*;
 use ximu3::port_scanner::*;
-use crate::helpers;
-use super::connection;
 
 pub fn run() {
     let connection_info;

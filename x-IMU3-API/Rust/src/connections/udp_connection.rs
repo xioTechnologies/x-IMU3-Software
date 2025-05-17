@@ -1,9 +1,9 @@
-use crossbeam::channel::Sender;
-use std::net::{IpAddr, SocketAddr, UdpSocket};
-use std::sync::{Arc, Mutex};
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::decoder::*;
+use crossbeam::channel::Sender;
+use std::net::{IpAddr, SocketAddr, UdpSocket};
+use std::sync::{Arc, Mutex};
 
 pub struct UdpConnection {
     connection_info: UdpConnectionInfo,

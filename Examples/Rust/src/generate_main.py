@@ -15,17 +15,17 @@ for _, _, file_names in os.walk("Examples"):
 
 examples = sorted(examples)
 
-examples = [s for s in examples if s not in ["connection", "mod"]]
+examples = [s for s in examples if s not in ["mod"]]
 
 keys = [chr(ord("A") + i) for i in range(len(examples))]
 
 with open("examples/mod.rs", "w") as file:
     file.write(helpers.preamble())
 
-    file.write("mod connection;\n")
-
     for example in examples:
         file.write(f"pub mod {example};\n")
+
+examples = [s for s in examples if s not in ["connection"]]
 
 with open("main.rs", "w") as file:
     file.write(helpers.preamble())
