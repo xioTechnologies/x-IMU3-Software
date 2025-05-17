@@ -3,7 +3,7 @@
 #include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <chrono>
-#include <inttypes.h> // PRIu64
+#include <inttypes.h>
 #include <iostream>
 #include <stdio.h>
 #include <thread>

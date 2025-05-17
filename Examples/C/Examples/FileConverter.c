@@ -1,6 +1,6 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
 #include "../Helpers.h"
-#include <inttypes.h> // PRIu64
+#include <inttypes.h>
 #include <stdio.h>
 
 static void Callback(const XIMU3_FileConverterProgress progress, void* context);
