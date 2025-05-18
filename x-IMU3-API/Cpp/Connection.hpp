@@ -256,6 +256,7 @@ namespace ximu3
 
     private:
         friend class DataLogger;
+        friend class KeepOpen;
 
         XIMU3_Connection* connection;
     };

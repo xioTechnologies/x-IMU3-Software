@@ -15,13 +15,6 @@ class ConnectionPanelContainer;
 class ConnectionPanelHeader : public juce::Component
 {
 public:
-    enum class State
-    {
-        connecting,
-        connected,
-        connectionFailed,
-    };
-
     ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_);
 
     ~ConnectionPanelHeader() override;
@@ -36,15 +29,13 @@ public:
 
     void mouseUp(const juce::MouseEvent& mouseEvent) override;
 
-    void setState(const State state);
-
     juce::String getTitle() const;
 
     void updateTitle(const std::vector<CommandMessage>& responses);
 
     void updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_);
 
-    std::function<void()> onRetry;
+    void updateTitle(const juce::String& status);
 
 private:
     ConnectionPanel& connectionPanel;
@@ -55,7 +46,6 @@ private:
 
     juce::String deviceName, serialNumber;
 
-    IconButton retryButton { BinaryData::refresh_svg, "Retry" };
     IconButton strobeButton { BinaryData::location_svg, "Locate Device (Strobe LED)" };
     SimpleLabel title;
     RssiIconAndText rssiIcon;
@@ -70,8 +60,6 @@ private:
 
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
     uint64_t batteryCallbackId;
-
-    void updateTitle(const juce::String& status);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanelHeader)
 };
