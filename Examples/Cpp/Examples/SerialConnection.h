@@ -9,19 +9,25 @@ public:
     {
         if (helpers::yesOrNo("Search for connections?"))
         {
-            std::cout << "Searching for connections" << std::endl;
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeSerial);
-            if (devices.size() == 0)
+
+            if (devices.empty())
             {
                 std::cout << "No serial connections available" << std::endl;
                 return;
             }
+
             std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
-            run(ximu3::SerialConnectionInfo(devices[0].serial_connection_info));
+
+            const auto connectionInfo = ximu3::SerialConnectionInfo(devices[0].serial_connection_info);
+
+            run(connectionInfo);
         }
         else
         {
-            run(ximu3::SerialConnectionInfo("COM1", 115200, false));
+            const ximu3::SerialConnectionInfo connectionInfo("COM1", 115200, false); // replace with actual connection info
+
+            run(connectionInfo);
         }
     }
 };

@@ -6,7 +6,7 @@ use ximu3::data_messages::*;
 use ximu3::decode_error::*;
 use ximu3::statistics::*;
 
-pub fn run(connection_info: ConnectionInfo) {
+pub fn run(connection_info: &ConnectionInfo) {
     // Create connection
     let connection = Connection::new(&connection_info);
 
@@ -71,8 +71,8 @@ macro_rules! string_fmt {
     };
 }
 
-pub fn decode_error_closure(decode_error: DecodeError) {
-    println!("{}", decode_error);
+pub fn decode_error_closure(error: DecodeError) {
+    println!("{}", error);
 }
 
 pub fn statistics_closure(statistics: Statistics) {

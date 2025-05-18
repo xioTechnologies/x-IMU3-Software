@@ -91,9 +91,9 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     XIMU3_connection_free(connection);
 }
 
-void DecodeErrorCallback(const XIMU3_DecodeError decodeError, void* context)
+void DecodeErrorCallback(const XIMU3_DecodeError error, void* context)
 {
-    printf("%s\n", XIMU3_decode_error_to_string(decodeError));
+    printf("%s\n", XIMU3_decode_error_to_string(error));
 }
 
 void StatisticsCallback(const XIMU3_Statistics statistics, void* context)

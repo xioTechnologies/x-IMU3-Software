@@ -1,14 +1,22 @@
 use ximu3::connection::*;
-use ximu3::connection_info::*;
+use ximu3::connection_type::*;
+use ximu3::port_scanner::*;
 
 pub fn run() {
-    // Create connection info
-    let connection_info = ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo {
-        port_name: "COM1".to_string(),
-    });
+    // Search for connection
+    let devices = PortScanner::scan_filter(ConnectionType::Usb);
+
+    if devices.is_empty() {
+        println!("No USB connections available");
+        return;
+    }
+
+    let device = devices.first().unwrap();
+
+    println!("Found {} {}", device.device_name, device.serial_number);
 
     // Open connection
-    let connection = Connection::new(&connection_info);
+    let connection = Connection::new(&device.connection_info);
 
     if connection.open().is_err() {
         println!("Unable to open connection");
@@ -16,9 +24,9 @@ pub fn run() {
     }
 
     // Ping
-    if let Ok(ping_response) = connection.ping() {
-        println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
-        // println!("{}", ping_response); // alternative to above
+    if let Ok(response) = connection.ping() {
+        println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
+        // println!("{}", response); // alternative to above
     } else {
         println!("No response");
     }

@@ -14,12 +14,15 @@ public:
         if (helpers::yesOrNo("Use async implementation?"))
         {
             ximu3::PortScanner portScanner(callback);
+
             std::this_thread::sleep_for(std::chrono::seconds(60));
         }
         else
         {
             const auto devices = ximu3::PortScanner::scan();
+
             std::cout << "Found " << devices.size() << " devices" << std::endl;
+
             printDevices(devices);
         }
     }
@@ -36,6 +39,7 @@ private:
         for (const auto& device : devices)
         {
             const char* connectionInfo;
+
             switch (device.connection_type)
             {
                 case ximu3::XIMU3_ConnectionTypeUsb:
@@ -51,6 +55,7 @@ private:
                     connectionInfo = "";
                     break;
             }
+
             std::cout << device.device_name << ", " << device.serial_number << ", " << connectionInfo << std::endl;
             // std::cout << ximu3::XIMU3_device_to_string(*device) << std::endl; // alternative to above
         }

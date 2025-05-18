@@ -4,7 +4,7 @@ use ximu3::file_converter::*;
 pub fn run() {
     let destination = "C:/";
     let name = "File Conversion Example";
-    let file_paths = vec!["C:/file.ximu3"];
+    let file_paths = vec!["C:/file.ximu3"]; // replace with actual file path
 
     if helpers::yes_or_no("Use async implementation?") {
         let closure = Box::new(|progress| {

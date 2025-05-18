@@ -9,6 +9,7 @@ namespace Ximu3Examples
 
             connection.AddDecodeErrorCallback(DecodeErrorCallback);
             connection.AddStatisticsCallback(StatisticsCallback);
+
             if (Helpers.YesOrNo("Print data messages?"))
             {
                 connection.AddInertialCallback(InertialCallback);
@@ -70,9 +71,9 @@ namespace Ximu3Examples
             return $@" ""{value}""";
         }
 
-        private static void DecodeErrorCallback(Ximu3.CApi.XIMU3_DecodeError decodeError)
+        private static void DecodeErrorCallback(Ximu3.CApi.XIMU3_DecodeError error)
         {
-            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_decode_error_to_string(decodeError)));
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_decode_error_to_string(error)));
         }
 
         private static void StatisticsCallback(Ximu3.CApi.XIMU3_Statistics statistics)

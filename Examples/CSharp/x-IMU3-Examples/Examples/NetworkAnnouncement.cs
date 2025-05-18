@@ -15,6 +15,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?"))
             {
                 networkAnnouncement.AddCallback(Callback);
+
                 System.Threading.Thread.Sleep(60000);
             }
             else

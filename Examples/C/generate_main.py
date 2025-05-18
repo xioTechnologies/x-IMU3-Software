@@ -34,6 +34,7 @@ with open("main.c", "w") as file:
     for key, example in zip(keys, examples):
         file.write(f'    printf("{key}. {example}.c\\n");\n')
 
+    file.write("\n")
     file.write("    switch (GetKey())\n")
     file.write("    {\n")
 

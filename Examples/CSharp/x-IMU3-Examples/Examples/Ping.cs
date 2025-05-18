@@ -4,54 +4,41 @@ namespace Ximu3Examples
     {
         public Ping()
         {
-            // Create connection info
-            Ximu3.CApi.XIMU3_UsbConnectionInfo connectionInfo = new()
-            {
-                port_name = Ximu3.Helpers.ToBytes("COM1")
-            };
+            // Search for connection
+            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb);
 
-            // Open and ping
-            connection = new Ximu3.Connection(connectionInfo);
-            if (Helpers.YesOrNo("Use async implementation?"))
+            if (devices.Length == 0)
             {
-                connection.OpenAsync(Callback);
-                System.Threading.Thread.Sleep(3000);
+                Console.WriteLine("No USB connections available");
+                return;
+            }
+
+            Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
+
+            // Open connection
+            Ximu3.Connection connection = new(devices[0].usb_connection_info);
+
+            if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            {
+                Console.WriteLine("Unable to open connection");
+                return;
+            }
+
+            // Ping
+            Ximu3.CApi.XIMU3_PingResponse response = connection.Ping();
+
+            if (response.result == Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            {
+                Console.WriteLine(Ximu3.Helpers.ToString(response.interface_) + ", " + Ximu3.Helpers.ToString(response.device_name) + ", " + Ximu3.Helpers.ToString(response.serial_number));
+                // Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_ping_response_to_string(response))); // alternative to above
             }
             else
             {
-                if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
-                {
-                    Console.WriteLine("Unable to open connection");
-                    return;
-                }
-                PrintPingResponse(connection.Ping());
+                Console.WriteLine("No response");
             }
 
             // Close connection
             connection.Close();
         }
-
-        private void Callback(Ximu3.CApi.XIMU3_Result result)
-        {
-            if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
-            {
-                Console.WriteLine("Unable to open connection");
-                return;
-            }
-            PrintPingResponse(connection.Ping());
-        }
-
-        private static void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse pingResponse)
-        {
-            if (pingResponse.result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
-            {
-                Console.WriteLine("No response");
-                return;
-            }
-            Console.WriteLine(Ximu3.Helpers.ToString(pingResponse.interface_) + ", " + Ximu3.Helpers.ToString(pingResponse.device_name) + ", " + Ximu3.Helpers.ToString(pingResponse.serial_number));
-            // Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_ping_response_to_string(pingResponse))); // alternative to above
-        }
-
-        private readonly Ximu3.Connection connection;
     }
 }

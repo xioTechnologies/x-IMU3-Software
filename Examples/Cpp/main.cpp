@@ -19,6 +19,7 @@
 int main(int argc, const char* argv[])
 {
     setbuf(stdout, NULL);
+
     std::cout << "Select example " << std::endl;
     std::cout << "A. BluetoothConnection.h" << std::endl;
     std::cout << "B. Commands.h" << std::endl;
@@ -33,6 +34,7 @@ int main(int argc, const char* argv[])
     std::cout << "K. TcpConnection.h" << std::endl;
     std::cout << "L. UdpConnection.h" << std::endl;
     std::cout << "M. UsbConnection.h" << std::endl;
+
     switch (helpers::getKey())
     {
         case 'A':

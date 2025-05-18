@@ -6,7 +6,9 @@ namespace Ximu3Examples
         {
             // Open all USB connections
             Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb);
+
             List<Ximu3.Connection> connections = [];
+
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
                 Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
@@ -23,9 +25,16 @@ namespace Ximu3Examples
                 }
             }
 
+            if (connections.Count == 0)
+            {
+                Console.WriteLine("No USB connections available");
+                return;
+            }
+
             // Log data
             string destination = "C:/";
             string name = "Data Logger Example";
+
             if (Helpers.YesOrNo("Use async implementation?"))
             {
                 using Ximu3.DataLogger dataLogger = new(destination, name, [.. connections]);

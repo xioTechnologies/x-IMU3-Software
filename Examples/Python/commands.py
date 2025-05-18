@@ -2,9 +2,7 @@ import helpers
 import time
 import ximu3
 
-# Find USB device
-print("Searching for connections")
-
+# Search for connection
 devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
 
 if not devices:
@@ -28,14 +26,14 @@ commands = [
 
 
 def print_responses(responses):
-    print(f"{str(len(responses))} responses received")
-    
+    print(f"{str(len(responses))} responses")
+
     for response in responses:
         response = ximu3.CommandMessage.parse(response)
 
         if response.error:
             print(response.error)
-            return
+            continue
 
         print(f"{response.key} : {response.value}")
 

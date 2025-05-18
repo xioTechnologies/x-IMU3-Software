@@ -7,13 +7,11 @@ void SerialConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        printf("Searching for connections\n");
-
         const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeSerial);
 
         if (devices.length == 0)
         {
-            printf("No serial connections available\n");
+            printf("No Serial connections available\n");
             return;
         }
         printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
@@ -22,7 +20,9 @@ void SerialConnection()
 
         XIMU3_devices_free(devices);
 
-        Run(XIMU3_connection_new_serial(connectionInfo), XIMU3_serial_connection_info_to_string(connectionInfo));
+        XIMU3_Connection* const connection = XIMU3_connection_new_serial(connectionInfo);
+
+        Run(connection, XIMU3_serial_connection_info_to_string(connectionInfo));
     }
     else
     {
@@ -30,7 +30,10 @@ void SerialConnection()
             .port_name = "COM1",
             .baud_rate = 115200,
             .rts_cts_enabled = false,
-        };
-        Run(XIMU3_connection_new_serial(connectionInfo), XIMU3_serial_connection_info_to_string(connectionInfo));
+        }; // replace with actual connection info
+
+        XIMU3_Connection* const connection = XIMU3_connection_new_serial(connectionInfo);
+
+        Run(connection, XIMU3_serial_connection_info_to_string(connectionInfo));
     }
 }

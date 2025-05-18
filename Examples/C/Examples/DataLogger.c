@@ -36,6 +36,12 @@ void DataLogger()
     }
     XIMU3_devices_free(devices);
 
+    if (numberOfConnections == 0)
+    {
+        printf("No USB connections available\n");
+        return;
+    }
+
     // Log data
     const char* destination = "C:/";
     const char* name = "Data Logger Example";

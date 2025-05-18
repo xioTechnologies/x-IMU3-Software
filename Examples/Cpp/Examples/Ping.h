@@ -12,51 +12,40 @@ class Ping
 public:
     Ping()
     {
-        // Create connection info
-        const ximu3::UsbConnectionInfo connectionInfo("COM1");
+        // Search for connection
+        const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
 
-        // Open and ping
-        connection = std::make_unique<ximu3::Connection>(connectionInfo);
-        if (helpers::yesOrNo("Use async implementation?"))
+        if (devices.empty())
         {
-            connection->openAsync(callback);
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-        }
-        else
-        {
-            if (connection->open() != ximu3::XIMU3_ResultOk)
-            {
-                std::cout << "Unable to open connection" << std::endl;
-                return;
-            }
-            printPingResponse(connection->ping());
+            std::cout << "No USB connections available" << std::endl;
+            return;
         }
 
-        // Close connection
-        connection->close();
-    }
+        std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
 
-private:
-    std::function<void(ximu3::XIMU3_Result)> callback = [&](auto result)
-    {
-        if (result != ximu3::XIMU3_ResultOk)
+        // Open connection
+        ximu3::Connection connection(ximu3::UsbConnectionInfo(devices[0].usb_connection_info));
+
+        if (connection.open() != ximu3::XIMU3_ResultOk)
         {
             std::cout << "Unable to open connection" << std::endl;
             return;
         }
-        printPingResponse(connection->ping());
-    };
 
-    std::unique_ptr<ximu3::Connection> connection; // declare connection after callbacks so that it is destroyed first
+        // Ping
+        const auto response = connection.ping();
 
-    static void printPingResponse(const ximu3::XIMU3_PingResponse pingResponse)
-    {
-        if (pingResponse.result != ximu3::XIMU3_ResultOk)
+        if (response.result == ximu3::XIMU3_ResultOk)
+        {
+            std::cout << response.interface << ", " << response.device_name << ", " << response.serial_number << std::endl;
+            // std::cout << ximu3::XIMU3_ping_response_to_string(response) << std::endl; // alternative to above
+        }
+        else
         {
             std::cout << "No response" << std::endl;
-            return;
         }
-        std::cout << pingResponse.interface << ", " << pingResponse.device_name << ", " << pingResponse.serial_number << std::endl;
-        // std::cout << ximu3::XIMU3_ping_response_to_string(pingResponse) << std::endl; // alternative to above
+
+        // Close connection
+        connection.close();
     }
 };

@@ -45,6 +45,7 @@ int main(int argc, const char* argv[])
     printf("K. TcpConnection.c\n");
     printf("L. UdpConnection.c\n");
     printf("M. UsbConnection.c\n");
+
     switch (GetKey())
     {
         case 'A':

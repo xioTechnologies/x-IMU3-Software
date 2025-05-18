@@ -11,14 +11,19 @@ void PortScanner()
     if (YesOrNo("Use async implementation?"))
     {
         XIMU3_PortScanner* const portScanner = XIMU3_port_scanner_new(Callback, NULL);
+
         Wait(60);
+
         XIMU3_port_scanner_free(portScanner);
     }
     else
     {
         const XIMU3_Devices devices = XIMU3_port_scanner_scan();
+
         printf("Found %u devices\n", devices.length);
+
         PrintDevices(devices);
+
         XIMU3_devices_free(devices);
     }
 }
@@ -26,7 +31,9 @@ void PortScanner()
 static void Callback(const XIMU3_Devices devices, void* context)
 {
     printf("Devices updated (%u devices available)\n", devices.length);
+
     PrintDevices(devices);
+
     XIMU3_devices_free(devices);
 }
 
@@ -53,10 +60,7 @@ static void PrintDevices(const XIMU3_Devices devices)
                 break;
         }
 
-        printf("%s, %s, %s\n",
-               device->device_name,
-               device->serial_number,
-               connectionInfo);
+        printf("%s, %s, %s\n", device->device_name, device->serial_number, connectionInfo);
         // printf("%s\n", XIMU3_device_to_string(*device)); // alternative to above
     }
 }

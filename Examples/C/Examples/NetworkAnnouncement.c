@@ -21,6 +21,7 @@ void NetworkAnnouncement()
     if (YesOrNo("Use async implementation?"))
     {
         XIMU3_network_announcement_add_callback(networkAnnouncement, Callback, NULL);
+
         Wait(60);
     }
     else
@@ -29,8 +30,7 @@ void NetworkAnnouncement()
 
         for (uint32_t index = 0; index < messages.length; index++)
         {
-            const XIMU3_NetworkAnnouncementMessage* const message = &messages.array[index];
-            PrintMessage(*message);
+            PrintMessage(messages.array[index]);
         }
 
         XIMU3_network_announcement_messages_free(messages);

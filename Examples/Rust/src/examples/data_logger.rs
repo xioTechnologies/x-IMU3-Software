@@ -20,6 +20,11 @@ pub fn run() {
         }
     }
 
+    if connections.is_empty() {
+        println!("No USB connections available");
+        return;
+    }
+
     // Log data
     let destination = "C:/";
     let name = "Data Logger Example";

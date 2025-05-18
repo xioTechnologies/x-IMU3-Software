@@ -1,38 +1,25 @@
-import helpers
-import time
 import ximu3
 
-# Create connection info
-connection_info = ximu3.UsbConnectionInfo("COM1")
+# Search for connection
+devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
 
-# Open and ping
-connection = ximu3.Connection(connection_info)
+if not devices:
+    raise Exception("No USB connections available")
 
+print(f"Found {devices[0].device_name} {devices[0].serial_number}")
 
-def print_ping_response(ping_response):
-    if ping_response.result != ximu3.RESULT_OK:
-        print("No response")
-        return
+# Open connection
+connection = ximu3.Connection(devices[0].connection_info)
 
-    print(", ".join([ping_response.interface, ping_response.device_name, ping_response.serial_number]))
-    # print(ping_response.to_string())  # alternative to above
+if connection.open() != ximu3.RESULT_OK:
+    raise Exception("Unable to open connection")
 
+response = connection.ping()
 
-def callback(result):
-    if result == ximu3.RESULT_OK:
-        print_ping_response(connection.ping())
-    else:
-        print("Unable to open connection")
-
-
-if helpers.yes_or_no("Use async implementation?"):
-    connection.open_async(callback)
-    time.sleep(3)
+if response.result == ximu3.RESULT_OK:
+    print(", ".join([response.interface, response.device_name, response.serial_number]))
 else:
-    if connection.open() == ximu3.RESULT_OK:
-        print_ping_response(connection.ping())
-    else:
-        print("Unable to open connection")
+    print("No response")
 
 # Close connection
 connection.close()

@@ -11,13 +11,17 @@ def print_devices(devices):
 
 def callback(devices):
     print(f"Devices updated ({len(devices)}) devices available)")
+
     print_devices(devices)
 
 
 if helpers.yes_or_no("Use async implementation?"):
     _ = ximu3.PortScanner(callback)
+
     time.sleep(60)
 else:
     devices = ximu3.PortScanner.scan()
+
     print("Found " + str(len(devices)) + " devices")
+
     print_devices(devices)

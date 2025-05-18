@@ -33,6 +33,7 @@ with open("Program.cs", "w") as file:
     for key, example in zip(keys, examples):
         file.write(f'            Console.WriteLine("{key}. {example}");\n')
 
+    file.write("\n")
     file.write("            switch (Helpers.GetKey())\n")
     file.write("            {\n")
 
@@ -41,7 +42,7 @@ with open("Program.cs", "w") as file:
         file.write(f"                    _ = new {example}();\n")
         file.write("                    break;\n")
 
-    file.write("            }\n")
+    file.write("            }\n\n")
     file.write('            Console.WriteLine("Press any key to exit");\n')
     file.write("            Helpers.GetKey();\n")
     file.write("            return 0;\n")

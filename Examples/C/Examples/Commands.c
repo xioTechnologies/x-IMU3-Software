@@ -10,8 +10,6 @@ static void PrintResponses(const XIMU3_CharArrays responses);
 void Commands()
 {
     // Search for connection
-    printf("Searching for connections\n");
-
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
 
     if (devices.length == 0)
@@ -68,13 +66,14 @@ static void Callback(const XIMU3_CharArrays responses, void* context)
 
 static void PrintResponses(const XIMU3_CharArrays responses)
 {
-    printf("%u responses received\n", responses.length);
+    printf("%u responses\n", responses.length);
     for (uint32_t index = 0; index < responses.length; index++)
     {
         const XIMU3_CommandMessage response = XIMU3_command_message_parse(responses.array[index]);
-        if (strlen(response.error) > 0) {
+        if (strlen(response.error) > 0)
+        {
             printf("%s\n", response.error);
-            return;
+            continue;
         }
         printf("%s : %s\n", response.key, response.value);
     }
