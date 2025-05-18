@@ -7,6 +7,7 @@
 #include "Examples/FileConverter.h"
 #include "Examples/GetPortNames.h"
 #include "Examples/NetworkAnnouncement.h"
+#include "Examples/OpenAsync.h"
 #include "Examples/Ping.h"
 #include "Examples/PortScanner.h"
 #include "Examples/SerialConnection.h"
@@ -28,12 +29,13 @@ int main(int argc, const char* argv[])
     std::cout << "E. FileConverter.h" << std::endl;
     std::cout << "F. GetPortNames.h" << std::endl;
     std::cout << "G. NetworkAnnouncement.h" << std::endl;
-    std::cout << "H. Ping.h" << std::endl;
-    std::cout << "I. PortScanner.h" << std::endl;
-    std::cout << "J. SerialConnection.h" << std::endl;
-    std::cout << "K. TcpConnection.h" << std::endl;
-    std::cout << "L. UdpConnection.h" << std::endl;
-    std::cout << "M. UsbConnection.h" << std::endl;
+    std::cout << "H. OpenAsync.h" << std::endl;
+    std::cout << "I. Ping.h" << std::endl;
+    std::cout << "J. PortScanner.h" << std::endl;
+    std::cout << "K. SerialConnection.h" << std::endl;
+    std::cout << "L. TcpConnection.h" << std::endl;
+    std::cout << "M. UdpConnection.h" << std::endl;
+    std::cout << "N. UsbConnection.h" << std::endl;
 
     switch (helpers::getKey())
     {
@@ -59,21 +61,24 @@ int main(int argc, const char* argv[])
             NetworkAnnouncement();
             break;
         case 'H':
-            Ping();
+            OpenAsync();
             break;
         case 'I':
-            PortScanner();
+            Ping();
             break;
         case 'J':
-            SerialConnection();
+            PortScanner();
             break;
         case 'K':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'L':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'M':
+            UdpConnection();
+            break;
+        case 'N':
             UsbConnection();
             break;
     }
