@@ -17,6 +17,8 @@ void GetPortNames();
 
 void NetworkAnnouncement();
 
+void OpenAsync();
+
 void Ping();
 
 void PortScanner();
@@ -39,12 +41,13 @@ int main(int argc, const char* argv[])
     printf("E. FileConverter.c\n");
     printf("F. GetPortNames.c\n");
     printf("G. NetworkAnnouncement.c\n");
-    printf("H. Ping.c\n");
-    printf("I. PortScanner.c\n");
-    printf("J. SerialConnection.c\n");
-    printf("K. TcpConnection.c\n");
-    printf("L. UdpConnection.c\n");
-    printf("M. UsbConnection.c\n");
+    printf("H. OpenAsync.c\n");
+    printf("I. Ping.c\n");
+    printf("J. PortScanner.c\n");
+    printf("K. SerialConnection.c\n");
+    printf("L. TcpConnection.c\n");
+    printf("M. UdpConnection.c\n");
+    printf("N. UsbConnection.c\n");
 
     switch (GetKey())
     {
@@ -70,21 +73,24 @@ int main(int argc, const char* argv[])
             NetworkAnnouncement();
             break;
         case 'H':
-            Ping();
+            OpenAsync();
             break;
         case 'I':
-            PortScanner();
+            Ping();
             break;
         case 'J':
-            SerialConnection();
+            PortScanner();
             break;
         case 'K':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'L':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'M':
+            UdpConnection();
+            break;
+        case 'N':
             UsbConnection();
             break;
     }
