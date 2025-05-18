@@ -62,6 +62,12 @@ typedef enum XIMU3_FileConverterStatus
     XIMU3_FileConverterStatusInProgress,
 } XIMU3_FileConverterStatus;
 
+typedef enum XIMU3_KeepOpenState
+{
+    XIMU3_KeepOpenStateConnecting,
+    XIMU3_KeepOpenStateConnected,
+} XIMU3_KeepOpenState;
+
 typedef enum XIMU3_Result
 {
     XIMU3_ResultOk,
@@ -73,6 +79,8 @@ typedef struct XIMU3_Connection XIMU3_Connection;
 typedef struct XIMU3_DataLogger XIMU3_DataLogger;
 
 typedef struct XIMU3_FileConverter XIMU3_FileConverter;
+
+typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
 
 typedef struct XIMU3_NetworkAnnouncement XIMU3_NetworkAnnouncement;
 
@@ -330,6 +338,8 @@ typedef struct XIMU3_FileConverterProgress
 
 typedef void (*XIMU3_CallbackFileConverterProgress)(struct XIMU3_FileConverterProgress data, void *context);
 
+typedef void (*XIMU3_CallbackKeepOpenState)(enum XIMU3_KeepOpenState data, void *context);
+
 typedef struct XIMU3_NetworkAnnouncementMessage
 {
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
@@ -538,6 +548,12 @@ struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, co
 void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
 struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
+
+const char *XIMU3_keep_open_state_to_string(enum XIMU3_KeepOpenState state);
+
+struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection, XIMU3_CallbackKeepOpenState callback, void *context);
+
+void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
 
 struct XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
 

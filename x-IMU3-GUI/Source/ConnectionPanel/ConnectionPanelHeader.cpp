@@ -3,25 +3,15 @@
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
 
-ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_)
+ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
     : connectionPanel(connectionPanel_),
-      threadPool(threadPool_),
       connectionPanelContainer(connectionPanelContainer_),
       connection(connectionPanel.getConnection())
 {
-    addAndMakeVisible(retryButton);
-    addChildComponent(strobeButton);
+    addAndMakeVisible(strobeButton);
     addAndMakeVisible(title);
     addAndMakeVisible(rssiIcon);
     addAndMakeVisible(batteryIcon);
-
-    retryButton.onClick = [&]
-    {
-        if (onRetry)
-        {
-            onRetry();
-        }
-    };
 
     strobeButton.onClick = [&]
     {
@@ -64,8 +54,6 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
-
-    setState(State::connecting);
 }
 
 ConnectionPanelHeader::~ConnectionPanelHeader()
@@ -96,8 +84,7 @@ void ConnectionPanelHeader::resized()
 
     bounds.removeFromLeft(UILayout::tagWidth);
 
-    retryButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
-    strobeButton.setBounds(retryButton.getBounds());
+    strobeButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     bounds.removeFromLeft(margin);
 
     const auto showIconText = getWidth() > 500;
@@ -142,57 +129,6 @@ void ConnectionPanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
     if (mouseEvent.mouseWasClicked() && connectionPanelContainer.getLayout() == ConnectionPanelContainer::Layout::accordion)
     {
         connectionPanelContainer.setExpandedConnectionPanel((connectionPanelContainer.getExpandedConnectionPanel() == &connectionPanel) ? nullptr : &connectionPanel);
-    }
-}
-
-void ConnectionPanelHeader::setState(const State state)
-{
-    switch (state)
-    {
-        case State::connecting:
-            updateTitle("Connecting");
-            retryButton.setEnabled(false);
-            break;
-
-        case State::connected:
-            {
-                updateTitle("Pinging");
-                retryButton.setVisible(false);
-                strobeButton.setVisible(true);
-
-                const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection_ = connection, destroyed_ = destroyed]
-                {
-                    if (*destroyed_)
-                    {
-                        return juce::ThreadPoolJob::jobHasFinished;
-                    }
-
-                    auto response = connection_->ping();
-
-                    if (response.result == ximu3::XIMU3_ResultOk)
-                    {
-                        juce::MessageManager::callAsync([&, connection_, destroyed_, response]
-                        {
-                            if (*destroyed_)
-                            {
-                                return;
-                            }
-
-                            updateTitle(response.device_name, response.serial_number);
-                        });
-                        return juce::ThreadPoolJob::jobHasFinished;
-                    }
-
-                    return juce::ThreadPoolJob::jobNeedsRunningAgain;
-                };
-                threadPool.addJob(job);
-                break;
-            }
-
-        case State::connectionFailed:
-            updateTitle("Connection Failed");
-            retryButton.setEnabled(true);
-            break;
     }
 }
 

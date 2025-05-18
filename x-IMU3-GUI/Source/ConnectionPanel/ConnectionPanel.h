@@ -26,7 +26,8 @@ public:
                     GLRenderer& glRenderer_,
                     juce::ThreadPool& threadPool_,
                     ConnectionPanelContainer& connectionPanelContainer_,
-                    const juce::Colour& tag_);
+                    const juce::Colour& tag_,
+                    const bool keepOpen_);
 
     ~ConnectionPanel() override;
 
@@ -34,7 +35,7 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
+    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
 
     const juce::Colour& getTag() const;
 
@@ -56,7 +57,7 @@ private:
     ConnectionPanelContainer& connectionPanelContainer;
     const juce::Colour tag;
 
-    ConnectionPanelHeader header { *this, threadPool, connectionPanelContainer };
+    ConnectionPanelHeader header { *this, connectionPanelContainer };
     ConnectionPanelFooter footer { *this };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;
@@ -66,7 +67,11 @@ private:
 
     DisabledOverlay disabledOverlay { false };
 
-    void connect();
+    std::unique_ptr<ximu3::KeepOpen> keepOpen;
+
+    void connecting();
+
+    void connected();
 
     void handleAsyncUpdate() override;
 

@@ -28,7 +28,8 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
                                  GLRenderer& glRenderer_,
                                  juce::ThreadPool& threadPool_,
                                  ConnectionPanelContainer& connectionPanelContainer_,
-                                 const juce::Colour& tag_)
+                                 const juce::Colour& tag_,
+                                 const bool keepAlive_)
     : windowLayout(windowLayout_),
       connection(connection_),
       glRenderer(glRenderer_),
@@ -40,12 +41,54 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
     addAndMakeVisible(footer);
     addChildComponent(disabledOverlay);
 
-    header.onRetry = [&]
+    if (keepAlive_)
     {
-        connect();
-    };
+        keepOpen = std::make_unique<ximu3::KeepOpen>(
+            *connection, [ &, destroyed_ = destroyed](ximu3::XIMU3_KeepOpenState state)
+            {
+                juce::MessageManager::callAsync([&, destroyed_, state]
+                {
+                    if (*destroyed_)
+                    {
+                        return;
+                    }
 
-    connect();
+                    switch (state)
+                    {
+                        case ximu3::XIMU3_KeepOpenStateConnecting:
+                            connecting();
+                            break;
+
+                        case ximu3::XIMU3_KeepOpenStateConnected:
+                            connected();
+                            break;
+                    }
+                });
+            });
+    }
+    else
+    {
+        connecting();
+
+        connection->openAsync([&, destroyed_ = destroyed](auto result)
+        {
+            juce::MessageManager::callAsync([&, destroyed_, result]
+            {
+                if (*destroyed_)
+                {
+                    return;
+                }
+
+                if (result != ximu3::XIMU3_ResultOk)
+                {
+                    header.updateTitle("Connection Failed");
+                    return;
+                }
+
+                connected();
+            });
+        });
+    }
 }
 
 ConnectionPanel::~ConnectionPanel()
@@ -203,32 +246,58 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
     disabledOverlay.setVisible(visible);
 }
 
-void ConnectionPanel::connect()
+void ConnectionPanel::connecting()
 {
-    header.setState(ConnectionPanelHeader::State::connecting);
+    // Update header
+    // Update bottom left icon
 
-    connection->openAsync([&, destroyed_ = destroyed](auto result)
+    header.updateTitle("Connecting");
+}
+
+void ConnectionPanel::connected()
+{
+    // If first time: spawn windows
+    // Update header
+    // Update bottom left icon
+    // Ping: after ping update header
+    // Signal subscribers (e.g. device settings)
+
+
+
+    header.updateTitle("Pinging");
+
+    if (windowContainer == nullptr)
     {
-        juce::MessageManager::callAsync([&, destroyed_, result]
+        windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
+        addAndMakeVisible(*windowContainer);
+        resized();
+    }
+
+    const std::function pingJob = [&, connection_ = connection, destroyed_ = destroyed]
+    {
+        if (*destroyed_)
         {
-            if (*destroyed_)
+            return juce::ThreadPoolJob::jobHasFinished;
+        }
+
+        if (const auto pingResponse = connection_->ping(); pingResponse.result == ximu3::XIMU3_ResultOk)
+        {
+            juce::MessageManager::callAsync([&, destroyed_, pingResponse]
             {
-                return;
-            }
+                if (*destroyed_)
+                {
+                    return;
+                }
 
-            if (result != ximu3::XIMU3_ResultOk)
-            {
-                header.setState(ConnectionPanelHeader::State::connectionFailed);
-                return;
-            }
+                header.updateTitle(pingResponse.device_name, pingResponse.serial_number);
+            });
+            return juce::ThreadPoolJob::jobHasFinished;
+        }
 
-            windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
-            addAndMakeVisible(*windowContainer);
-            resized();
+        return juce::ThreadPoolJob::jobNeedsRunningAgain;
+    };
 
-            header.setState(ConnectionPanelHeader::State::connected);
-        });
-    });
+    threadPool.addJob(pingJob);
 }
 
 void ConnectionPanel::handleAsyncUpdate()

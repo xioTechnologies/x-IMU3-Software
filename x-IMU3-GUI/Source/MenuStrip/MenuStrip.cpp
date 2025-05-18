@@ -47,7 +47,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
-                    connectionPanelContainer.connectToDevice(*connectionInfo);
+                    connectionPanelContainer.connectToDevice(*connectionInfo, true);
                 }
             }
             return true;
@@ -300,7 +300,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
         if (auto* dialog = dynamic_cast<ManualConnectionDialog*>(DialogQueue::getSingleton().getActive()))
         {
             auto connectionInfo = dialog->getConnectionInfo();
-            connectionPanelContainer.connectToDevice(*connectionInfo);
+            connectionPanelContainer.connectToDevice(*connectionInfo, false);
             RecentConnections().update(*connectionInfo);
         }
         return true;
@@ -336,7 +336,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
             const auto connectionInfoString = connectionInfo->toString();
             menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
             {
-                connectionPanelContainer.connectToDevice(*connectionInfo_);
+                connectionPanelContainer.connectToDevice(*connectionInfo_, false);
             });
         }
     }
