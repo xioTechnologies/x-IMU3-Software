@@ -25,6 +25,8 @@ commands = [
     '{"invalid_key":null}',  # invalid key to demonstrate an error response
 ]
 
+# Send commands
+
 
 def print_responses(responses):
     print(f"{str(len(responses))} responses")
@@ -43,7 +45,6 @@ def callback(responses):
     print_responses(responses)
 
 
-# Send commands
 if helpers.yes_or_no("Use async implementation?"):
     connection.send_commands_async(commands, 2, 500, callback)
     time.sleep(3)

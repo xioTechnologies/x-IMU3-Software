@@ -318,6 +318,8 @@ namespace Ximu3
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackResult(XIMU3_Result data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackPingResponseC(XIMU3_PingResponse data, IntPtr context);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackCharArrays(XIMU3_CharArrays data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackDecodeError(XIMU3_DecodeError data, IntPtr context);
@@ -391,6 +393,8 @@ namespace Ximu3
         public static extern void XIMU3_connection_close(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_PingResponse XIMU3_connection_ping(IntPtr connection);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_connection_ping_async(IntPtr connection, XIMU3_CallbackPingResponseC callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_connection_send_commands(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

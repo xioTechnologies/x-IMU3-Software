@@ -1,3 +1,6 @@
+import time
+
+import helpers
 import ximu3
 
 # Search for connection
@@ -14,12 +17,26 @@ connection = ximu3.Connection(devices[0].connection_info)
 if connection.open() != ximu3.RESULT_OK:
     raise Exception("Unable to open connection")
 
-response = connection.ping()
+# Ping
 
-if response.result == ximu3.RESULT_OK:
-    print(", ".join([response.interface, response.device_name, response.serial_number]))
+
+def print_response(response):
+    if response.result == ximu3.RESULT_OK:
+        print(", ".join([response.interface, response.device_name, response.serial_number]))
+        # print(response.to_string())  # alternative to above
+    else:
+        print("No response")
+
+
+def callback(response):
+    print_response(response)
+
+
+if helpers.yes_or_no("Use async implementation?"):
+    connection.ping_async(callback)
+    time.sleep(3)
 else:
-    print("No response")
+    print_response(connection.ping())
 
 # Close connection
 connection.close()

@@ -146,7 +146,7 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
     }
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
-    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, threadPool, *this, [&]
+    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&]
     {
         static unsigned int counter;
 

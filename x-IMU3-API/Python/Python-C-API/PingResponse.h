@@ -70,4 +70,17 @@ static PyObject* ping_response_from(const XIMU3_PingResponse* const pingResponse
     return (PyObject*) self;
 }
 
+static void ping_response_callback(XIMU3_PingResponse data, void* context)
+{
+    const PyGILState_STATE state = PyGILState_Ensure();
+
+    PyObject* const object = ping_response_from(&data);
+    PyObject* const tuple = Py_BuildValue("(O)", object);
+    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+    Py_DECREF(tuple);
+    Py_DECREF(object);
+
+    PyGILState_Release(state);
+}
+
 #endif
