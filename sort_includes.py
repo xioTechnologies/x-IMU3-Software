@@ -4,13 +4,13 @@ from itertools import dropwhile, takewhile
 paths = []
 
 for root, _, file_names in os.walk(os.path.dirname(os.path.realpath(__file__))):
-    if "config" in root:
+    if "cmake-build-" in root:
         continue
 
     for file_name in file_names:
         _, extension = os.path.splitext(file_name)
 
-        if extension in (".h", ".c"):
+        if extension in (".h", ".hpp", ".c", ".cpp"):
             paths.append(os.path.join(root, file_name))
 
 
@@ -30,9 +30,6 @@ for path in paths:
 
     for index, include_line in enumerate(include_lines):
         include_lines[index] = str(include_line.lstrip()).replace("<", '"').replace(">", '"')
-
-    for index, include_line in enumerate(include_lines):
-        include_lines[index] = include_line.split('"')[0] + '"' + include_line.split('"')[1] + '"\n'
 
     include_lines.sort(key=lambda line: line.upper())
 
