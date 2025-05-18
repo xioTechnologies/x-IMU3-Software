@@ -6,8 +6,6 @@ use ximu3::port_scanner::*;
 
 pub fn run() {
     // Search for connection
-    println!("Searching for connections");
-
     let devices = PortScanner::scan_filter(ConnectionType::Usb);
 
     if devices.is_empty() {
@@ -53,14 +51,14 @@ pub fn run() {
 }
 
 fn print_responses(responses: Vec<String>) {
-    println!("{} responses received", responses.len());
+    println!("{} responses", responses.len());
 
     for response in responses {
         let response = CommandMessage::parse(&response);
 
         if let Some(error) = response.error {
             println!("{}", error);
-            return;
+            continue;
         }
 
         println!("{} : {}", response.key, response.value);

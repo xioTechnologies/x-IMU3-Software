@@ -16,6 +16,9 @@ for device in devices:
     else:
         raise Exception("Unable to open connection")
 
+if not connections:
+    raise Exception("No USB connections available")
+
 # Log data
 destination = "C:/"
 name = "Data Logger Example"

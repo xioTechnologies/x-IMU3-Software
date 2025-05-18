@@ -5,11 +5,7 @@ use ximu3::connection_info::*;
 use ximu3::network_announcement::*;
 
 pub fn run() {
-    let connection_info;
-
     if helpers::yes_or_no("Search for connections?") {
-        println!("Searching for connections");
-
         let network_announcement = NetworkAnnouncement::new();
 
         if network_announcement.is_err() {
@@ -28,13 +24,15 @@ pub fn run() {
 
         println!("Found {} {}", message.device_name, message.serial_number);
 
-        connection_info = message.into();
+        let connection_info = &ConnectionInfo::TcpConnectionInfo(message.into());
+
+        connection::run(connection_info);
     } else {
-        connection_info = TcpConnectionInfo {
+        let connection_info = &ConnectionInfo::TcpConnectionInfo(TcpConnectionInfo {
             ip_address: Ipv4Addr::new(192, 168, 1, 1),
             port: 7000,
-        };
-    }
+        }); // replace with actual connection info
 
-    connection::run(ConnectionInfo::TcpConnectionInfo(connection_info));
+        connection::run(connection_info);
+    }
 }

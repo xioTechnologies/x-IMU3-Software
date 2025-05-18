@@ -7,8 +7,6 @@ void BluetoothConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        printf("Searching for connections\n");
-
         const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeBluetooth);
 
         if (devices.length == 0)
@@ -22,13 +20,18 @@ void BluetoothConnection()
 
         XIMU3_devices_free(devices);
 
-        Run(XIMU3_connection_new_bluetooth(connectionInfo), XIMU3_bluetooth_connection_info_to_string(connectionInfo));
+        XIMU3_Connection* const connection = XIMU3_connection_new_bluetooth(connectionInfo);
+
+        Run(connection, XIMU3_bluetooth_connection_info_to_string(connectionInfo));
     }
     else
     {
         const XIMU3_BluetoothConnectionInfo connectionInfo = (XIMU3_BluetoothConnectionInfo) {
             .port_name = "COM1",
-        };
-        Run(XIMU3_connection_new_bluetooth(connectionInfo), XIMU3_bluetooth_connection_info_to_string(connectionInfo));
+        }; // replace with actual connection info
+
+        XIMU3_Connection* const connection = XIMU3_connection_new_bluetooth(connectionInfo);
+
+        Run(connection, XIMU3_bluetooth_connection_info_to_string(connectionInfo));
     }
 }

@@ -20,6 +20,7 @@ namespace Ximu3Examples
             Console.WriteLine("K. TcpConnection");
             Console.WriteLine("L. UdpConnection");
             Console.WriteLine("M. UsbConnection");
+
             switch (Helpers.GetKey())
             {
                 case 'A':
@@ -62,6 +63,7 @@ namespace Ximu3Examples
                     _ = new UsbConnection();
                     break;
             }
+
             Console.WriteLine("Press any key to exit");
             Helpers.GetKey();
             return 0;

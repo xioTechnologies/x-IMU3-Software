@@ -14,11 +14,15 @@ public:
     {
         // Open all USB connections
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
+
         std::vector<std::unique_ptr<ximu3::Connection>> connections;
+
         for (auto device : devices)
         {
             std::cout << ximu3::XIMU3_device_to_string(device) << std::endl;
+
             auto connection = std::make_unique<ximu3::Connection>(ximu3::UsbConnectionInfo(device.usb_connection_info));
+
             if (connection->open() == ximu3::XIMU3_ResultOk)
             {
                 connections.push_back(std::move(connection));
@@ -29,9 +33,16 @@ public:
             }
         }
 
+        if (connections.empty())
+        {
+            std::cout << "No USB connections available" << std::endl;
+            return;
+        }
+
         // Log data
         const auto destination = "C:/";
         const auto name = "Data Logger Example";
+
         if (helpers::yesOrNo("Use async implementation?"))
         {
             ximu3::DataLogger dataLogger(destination, name, toRawPointers(connections));
@@ -61,10 +72,12 @@ private:
     static std::vector<ximu3::Connection*> toRawPointers(const std::vector<std::unique_ptr<ximu3::Connection>>& connections)
     {
         std::vector<ximu3::Connection*> rawPointers;
+
         for (auto& connection : connections)
         {
             rawPointers.push_back(connection.get());
         }
+
         return rawPointers;
     }
 

@@ -13,17 +13,19 @@ public:
     Commands()
     {
         // Search for connection
-        std::cout << "Searching for connections" << std::endl;
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
-        if (devices.size() == 0)
+
+        if (devices.empty())
         {
             std::cout << "No USB connections available" << std::endl;
             return;
         }
+
         std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
 
         // Open connection
         ximu3::Connection connection(ximu3::UsbConnectionInfo(devices[0].usb_connection_info));
+
         if (connection.open() != ximu3::XIMU3_ResultOk)
         {
             std::cout << "Unable to open connection" << std::endl;
@@ -61,15 +63,18 @@ private:
 
     static void printResponses(const std::vector<std::string>& responses)
     {
-        std::cout << responses.size() << " responses received" << std::endl;
+        std::cout << responses.size() << " responses" << std::endl;
+
         for (const auto& response_ : responses)
         {
             const auto response = ximu3::XIMU3_command_message_parse(response_.c_str());
+
             if (std::strlen(response.error) > 0)
             {
                 std::cout << response.error << std::endl;
                 return;
             }
+
             std::cout << response.key << " : " << response.value << std::endl;
         }
     }

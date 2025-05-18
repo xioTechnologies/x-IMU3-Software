@@ -7,8 +7,6 @@ void UdpConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        printf("Searching for connections\n");
-
         XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
 
         if (XIMU3_network_announcement_get_result(networkAnnouncement) != XIMU3_ResultOk)
@@ -33,7 +31,9 @@ void UdpConnection()
 
         XIMU3_network_announcement_messages_free(messages);
 
-        Run(XIMU3_connection_new_udp(connectionInfo), XIMU3_udp_connection_info_to_string(connectionInfo));
+        XIMU3_Connection* const connection = XIMU3_connection_new_udp(connectionInfo);
+
+        Run(connection, XIMU3_udp_connection_info_to_string(connectionInfo));
     }
     else
     {
@@ -41,7 +41,10 @@ void UdpConnection()
             .ip_address = "192.168.1.1",
             .send_port = 9000,
             .receive_port = 8000,
-        };
-        Run(XIMU3_connection_new_udp(connectionInfo), XIMU3_udp_connection_info_to_string(connectionInfo));
+        }; // replace with actual connection info
+
+        XIMU3_Connection* const connection = XIMU3_connection_new_udp(connectionInfo);
+
+        Run(connection, XIMU3_udp_connection_info_to_string(connectionInfo));
     }
 }

@@ -7,12 +7,15 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use async implementation?"))
             {
                 using Ximu3.PortScanner portScanner = new(Callback);
+
                 System.Threading.Thread.Sleep(60000);
             }
             else
             {
                 Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.Scan();
+
                 Console.WriteLine("Devices updated (" + devices.Length + " devices available)");
+
                 PrintDevices(devices);
             }
         }
@@ -20,6 +23,7 @@ namespace Ximu3Examples
         private void Callback(Ximu3.CApi.XIMU3_Device[] devices)
         {
             Console.WriteLine("Found " + devices.Length + " devices");
+
             PrintDevices(devices);
         }
 
@@ -28,6 +32,7 @@ namespace Ximu3Examples
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
                 string connectionInfo = "";
+
                 switch (device.connection_type)
                 {
                     case Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb:

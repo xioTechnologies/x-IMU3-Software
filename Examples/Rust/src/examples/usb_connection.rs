@@ -5,11 +5,7 @@ use ximu3::connection_type::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
-    let connection_info;
-
     if helpers::yes_or_no("Search for connections?") {
-        println!("Searching for connections");
-
         let devices = PortScanner::scan_filter(ConnectionType::Usb);
 
         if devices.is_empty() {
@@ -21,12 +17,14 @@ pub fn run() {
 
         println!("Found {} {}", device.device_name, device.serial_number);
 
-        connection_info = device.connection_info.clone();
-    } else {
-        connection_info = ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo {
-            port_name: "COM1".to_owned(),
-        });
-    }
+        let connection_info = &device.connection_info;
 
-    connection::run(connection_info);
+        connection::run(connection_info);
+    } else {
+        let connection_info = &ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo {
+            port_name: "COM1".to_owned(),
+        }); // replace with actual connection info
+
+        connection::run(connection_info);
+    }
 }

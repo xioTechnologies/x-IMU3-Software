@@ -5,10 +5,12 @@
         public static Char? GetKey()
         {
             string? buffer = Console.ReadLine();
+
             if (string.IsNullOrEmpty(buffer))
             {
                 return null;
             }
+
             return Char.ToUpper(buffer[0]);
         }
 

@@ -21,8 +21,10 @@ protected:
     {
         // Create connection
         ximu3::Connection connection(connectionInfo);
+
         connection.addDecodeErrorCallback(decodeErrorCallback);
         connection.addStatisticsCallback(statisticsCallback);
+
         if (helpers::yesOrNo("Print data messages?"))
         {
             connection.addInertialCallback(inertialCallback);
@@ -60,9 +62,9 @@ protected:
     }
 
 private:
-    std::function<void(ximu3::XIMU3_DecodeError decodeError)> decodeErrorCallback = [](auto decodeError)
+    std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback = [](auto error)
     {
-        std::cout << ximu3::XIMU3_decode_error_to_string(decodeError) << std::endl;
+        std::cout << ximu3::XIMU3_decode_error_to_string(error) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics)

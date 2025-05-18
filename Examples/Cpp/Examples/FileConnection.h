@@ -7,6 +7,8 @@ class FileConnection : public Connection
 public:
     FileConnection()
     {
-        run(ximu3::FileConnectionInfo("C:/file.ximu3"));
+        const ximu3::FileConnectionInfo connectionInfo("C:/file.ximu3"); // replace with actual connection info
+
+        run(connectionInfo);
     }
 };

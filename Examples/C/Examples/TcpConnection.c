@@ -7,8 +7,6 @@ void TcpConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        printf("Searching for connections\n");
-
         XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
 
         if (XIMU3_network_announcement_get_result(networkAnnouncement) != XIMU3_ResultOk)
@@ -31,14 +29,19 @@ void TcpConnection()
 
         XIMU3_network_announcement_messages_free(messages);
 
-        Run(XIMU3_connection_new_tcp(connectionInfo), XIMU3_tcp_connection_info_to_string(connectionInfo));
+        XIMU3_Connection* const connection = XIMU3_connection_new_tcp(connectionInfo);
+
+        Run(connection, XIMU3_tcp_connection_info_to_string(connectionInfo));
     }
     else
     {
         const XIMU3_TcpConnectionInfo connectionInfo = (XIMU3_TcpConnectionInfo) {
             .ip_address = "192.168.1.1",
             .port = 7000,
-        };
-        Run(XIMU3_connection_new_tcp(connectionInfo), XIMU3_tcp_connection_info_to_string(connectionInfo));
+        }; // replace with actual connection info
+
+        XIMU3_Connection* const connection = XIMU3_connection_new_tcp(connectionInfo);
+
+        Run(connection, XIMU3_tcp_connection_info_to_string(connectionInfo));
     }
 }

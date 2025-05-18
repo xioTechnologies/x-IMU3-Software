@@ -19,8 +19,8 @@ def string_format(string):
     return f' "{string}"'
 
 
-def decode_error_callback(decode_error):
-    print(ximu3.decode_error_to_string(decode_error))
+def decode_error_callback(error):
+    print(ximu3.decode_error_to_string(error))
 
 
 def statistics_callback(statistics):
@@ -246,7 +246,7 @@ def error_callback(message):
 
 def end_of_file_callback():
     print("End of file")
-    
+
 
 def run(connection_info):
     connection = ximu3.Connection(connection_info)

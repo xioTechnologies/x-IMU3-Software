@@ -9,19 +9,25 @@ public:
     {
         if (helpers::yesOrNo("Search for connections?"))
         {
-            std::cout << "Searching for connections" << std::endl;
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
-            if (devices.size() == 0)
+
+            if (devices.empty())
             {
                 std::cout << "No Bluetooth connections available" << std::endl;
                 return;
             }
+
             std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
-            run(ximu3::BluetoothConnectionInfo(devices[0].bluetooth_connection_info));
+
+            const auto connectionInfo = ximu3::BluetoothConnectionInfo(devices[0].bluetooth_connection_info);
+
+            run(connectionInfo);
         }
         else
         {
-            run(ximu3::BluetoothConnectionInfo("COM1"));
+            const ximu3::BluetoothConnectionInfo connectionInfo("COM1"); // replace with actual connection info
+
+            run(connectionInfo);
         }
     }
 };

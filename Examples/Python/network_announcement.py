@@ -33,6 +33,7 @@ if network_announcement.get_result() != ximu3.RESULT_OK:
 
 if helpers.yes_or_no("Use async implementation?"):
     network_announcement.add_callback(callback)
+
     time.sleep(60)
 else:
     for message in network_announcement.get_messages():

@@ -15,11 +15,12 @@ public:
     {
         const auto destination = "C:/";
         const auto name = "File Conversion Example";
-        const std::vector<std::string> file_paths = { "C:/file.ximu3" };
+        const std::vector<std::string> file_paths = { "C:/file.ximu3" }; // replace with actual file path
 
         if (helpers::yesOrNo("Use async implementation?"))
         {
             ximu3::FileConverter fileConverter(destination, name, file_paths, callback);
+
             std::this_thread::sleep_for(std::chrono::seconds(60));
         }
         else

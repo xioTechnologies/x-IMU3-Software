@@ -1,59 +1,44 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
-#include "../Helpers.h"
 #include <stdio.h>
-
-static void PrintPingResponse(const XIMU3_PingResponse pingResponse);
-
-static void Callback(const XIMU3_Result result, void* context);
 
 void Ping()
 {
-    // Create connection info
-    const XIMU3_UsbConnectionInfo connectionInfo = (XIMU3_UsbConnectionInfo) {
-        .port_name = "COM1",
-    };
+    // Search for connection
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
 
-    // Open and ping
-    XIMU3_Connection* const connection = XIMU3_connection_new_usb(connectionInfo);
-
-    if (YesOrNo("Use async implementation?"))
+    if (devices.length == 0)
     {
-        XIMU3_connection_open_async(connection, Callback, connection);
-        Wait(3);
+        printf("No USB connections available\n");
+        return;
+    }
+    printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+    // Open connection
+    XIMU3_Connection* const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
+
+    XIMU3_devices_free(devices);
+
+    if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
+    {
+        printf("Unable to open connection\n");
+        XIMU3_connection_free(connection);
+        return;
+    }
+
+    // Ping
+    const XIMU3_PingResponse response = XIMU3_connection_ping(connection);
+
+    if (response.result == XIMU3_ResultOk)
+    {
+        printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
+        // printf("%s\n", XIMU3_ping_response_to_string(response)); // alternative to above
     }
     else
     {
-        if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
-        {
-            printf("Unable to open connection\n");
-            XIMU3_connection_free(connection);
-            return;
-        }
-        PrintPingResponse(XIMU3_connection_ping(connection));
+        printf("No response\n");
     }
 
     // Close connection
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
-}
-
-static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
-{
-    if (pingResponse.result != XIMU3_ResultOk)
-    {
-        printf("No response\n");
-        return;
-    }
-    printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
-    // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
-}
-
-static void Callback(const XIMU3_Result result, void* context)
-{
-    if (result != XIMU3_ResultOk)
-    {
-        printf("Unable to open connection\n");
-        return;
-    }
-    PrintPingResponse(XIMU3_connection_ping(((XIMU3_Connection*) context)));
 }
