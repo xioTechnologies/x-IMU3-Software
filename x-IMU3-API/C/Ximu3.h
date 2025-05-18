@@ -138,6 +138,8 @@ typedef struct XIMU3_PingResponse
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
 } XIMU3_PingResponse;
 
+typedef void (*XIMU3_CallbackPingResponseC)(struct XIMU3_PingResponse data, void *context);
+
 typedef void (*XIMU3_CallbackCharArrays)(struct XIMU3_CharArrays data, void *context);
 
 typedef struct XIMU3_Statistics
@@ -402,6 +404,8 @@ void XIMU3_connection_open_async(struct XIMU3_Connection *connection, XIMU3_Call
 void XIMU3_connection_close(struct XIMU3_Connection *connection);
 
 struct XIMU3_PingResponse XIMU3_connection_ping(struct XIMU3_Connection *connection);
+
+void XIMU3_connection_ping_async(struct XIMU3_Connection *connection, XIMU3_CallbackPingResponseC callback, void *context);
 
 struct XIMU3_CharArrays XIMU3_connection_send_commands(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout);
 

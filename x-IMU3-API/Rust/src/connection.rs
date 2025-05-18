@@ -99,13 +99,37 @@ impl Connection {
     }
 
     pub fn ping(&self) -> Result<PingResponse, ()> {
-        let response = self.send_commands(vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
+        let decoder = self.internal.lock().unwrap().get_decoder();
+        let write_sender = self.internal.lock().unwrap().get_write_sender();
 
-        if response.len() == 0 {
+        Self::ping_internal(decoder, write_sender)
+    }
+
+    pub fn ping_async(&self, closure: Box<dyn FnOnce(Result<PingResponse, ()>) + Send>) {
+        let decoder = self.internal.lock().unwrap().get_decoder();
+        let write_sender = self.internal.lock().unwrap().get_write_sender();
+        let dropped = self.dropped.clone();
+
+        std::thread::spawn(move || {
+            let ping_response = Self::ping_internal(decoder, write_sender);
+
+            if let Ok(dropped) = dropped.lock() {
+                if *dropped {
+                    return;
+                }
+                closure(ping_response);
+            }
+        });
+    }
+
+    pub(crate) fn ping_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<String>>) -> Result<PingResponse, ()> {
+        let responses = Self::send_commands_internal(decoder, write_sender, vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
+
+        if responses.len() == 0 {
             return Err(());
         }
 
-        PingResponse::parse_json(response[0].as_str())
+        PingResponse::parse_json(responses[0].as_str())
     }
 
     pub fn send_commands(&self, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {

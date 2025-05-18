@@ -1,5 +1,7 @@
+use crate::helpers;
 use ximu3::connection::*;
 use ximu3::connection_type::*;
+use ximu3::ping_response::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
@@ -24,13 +26,27 @@ pub fn run() {
     }
 
     // Ping
-    if let Ok(response) = connection.ping() {
+    if helpers::yes_or_no("Use async implementation?") {
+        let closure = Box::new(|response| {
+            print_ping_response(response);
+        });
+
+        connection.ping_async(closure);
+
+        std::thread::sleep(std::time::Duration::from_secs(3));
+    } else {
+        print_ping_response(connection.ping());
+    }
+
+    // Close connection
+    connection.close();
+}
+
+fn print_ping_response(response: Result<PingResponse, ()>) {
+    if let Ok(response) = response {
         println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
         // println!("{}", response); // alternative to above
     } else {
         println!("No response");
     }
-
-    // Close connection
-    connection.close();
 }
