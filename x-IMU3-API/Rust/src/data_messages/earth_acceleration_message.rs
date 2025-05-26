@@ -42,7 +42,7 @@ impl DataMessage for EarthAccelerationMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
             quaternion_w: f32,
             quaternion_x: f32,
@@ -51,7 +51,7 @@ impl DataMessage for EarthAccelerationMessage {
             acceleration_x: f32,
             acceleration_y: f32,
             acceleration_z: f32,
-            termination: u8,
+            _termination: u8,
         }
 
         if message.len() != size_of::<BinaryMessage>() {

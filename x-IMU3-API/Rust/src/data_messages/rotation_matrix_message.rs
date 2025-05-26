@@ -46,7 +46,7 @@ impl DataMessage for RotationMatrixMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
             xx: f32,
             xy: f32,
@@ -57,7 +57,7 @@ impl DataMessage for RotationMatrixMessage {
             zx: f32,
             zy: f32,
             zz: f32,
-            termination: u8,
+            _termination: u8,
         }
 
         if message.len() != size_of::<BinaryMessage>() {
