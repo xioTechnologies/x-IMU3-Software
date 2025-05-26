@@ -9,7 +9,7 @@ pub struct PingResponse {
 }
 
 impl PingResponse {
-    pub(crate) fn parse_json(json: &str) -> Result<PingResponse, ()> {
+    pub(crate) fn parse(json: &str) -> Result<PingResponse, ()> {
         #[derive(Deserialize)]
         struct ParentObject {
             ping: ChildObject,

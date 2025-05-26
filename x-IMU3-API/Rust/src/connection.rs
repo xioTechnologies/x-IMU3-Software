@@ -105,7 +105,7 @@ impl Connection {
             return Err(());
         }
 
-        PingResponse::parse_json(response[0].as_str())
+        PingResponse::parse(response[0].as_str())
     }
 
     pub fn send_commands(&self, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {

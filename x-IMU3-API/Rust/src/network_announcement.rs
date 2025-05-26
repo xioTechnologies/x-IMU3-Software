@@ -104,7 +104,7 @@ impl NetworkAnnouncement {
                 let mut message = None;
 
                 if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
-                    message = NetworkAnnouncement::parse_json(&buffer[..number_of_bytes]);
+                    message = NetworkAnnouncement::parse(&buffer[..number_of_bytes]);
                 }
 
                 if let Some(message) = &message {
@@ -133,7 +133,7 @@ impl NetworkAnnouncement {
         Ok(network_announcement)
     }
 
-    fn parse_json(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
+    fn parse(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
         let json = std::str::from_utf8(json).ok()?;
 
         #[derive(Deserialize)]

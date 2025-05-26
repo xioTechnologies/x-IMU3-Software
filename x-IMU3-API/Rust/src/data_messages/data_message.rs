@@ -23,9 +23,11 @@ pub trait DataMessage {
             }
             return Err(DecodeError::UnableToParseAsciiMessage);
         }
+
         if message[0] == Self::get_binary_id() {
             return Self::parse_binary(message);
         }
+
         Err(DecodeError::InvalidMessageIdentifier)
     }
 

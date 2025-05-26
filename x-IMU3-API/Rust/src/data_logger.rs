@@ -110,7 +110,7 @@ impl DataLogger<'_> {
                 if let Ok(json) = std::fs::read_to_string(Path::new(&path).join(COMMAND_FILE_NAME).to_str().unwrap()) {
                     if let Ok(array) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
                         for element in array {
-                            if let Ok(ping_response) = PingResponse::parse_json(&element.to_string()) {
+                            if let Ok(ping_response) = PingResponse::parse(&element.to_string()) {
                                 let new_path = Path::new(&root).join(ping_response.device_name + " " + ping_response.serial_number.as_str() + " (" + ping_response.interface.as_str() + ")");
                                 std::fs::rename(path, new_path).ok();
                                 break;
