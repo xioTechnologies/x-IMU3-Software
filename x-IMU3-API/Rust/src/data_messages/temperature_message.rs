@@ -14,7 +14,7 @@ pub struct TemperatureMessage {
 
 impl DataMessage for TemperatureMessage {
     fn get_ascii_id() -> u8 {
-        'T' as u8
+        b'T'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

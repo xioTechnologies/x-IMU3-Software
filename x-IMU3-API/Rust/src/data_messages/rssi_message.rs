@@ -15,7 +15,7 @@ pub struct RssiMessage {
 
 impl DataMessage for RssiMessage {
     fn get_ascii_id() -> u8 {
-        'W' as u8
+        b'W'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

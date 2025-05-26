@@ -20,7 +20,7 @@ pub struct LinearAccelerationMessage {
 
 impl DataMessage for LinearAccelerationMessage {
     fn get_ascii_id() -> u8 {
-        'L' as u8
+        b'L'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

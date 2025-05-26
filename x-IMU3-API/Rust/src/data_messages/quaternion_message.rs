@@ -17,7 +17,7 @@ pub struct QuaternionMessage {
 
 impl DataMessage for QuaternionMessage {
     fn get_ascii_id() -> u8 {
-        'Q' as u8
+        b'Q'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

@@ -37,7 +37,7 @@ impl Decoder {
                 continue;
             }
 
-            if *byte == '\n' as u8 {
+            if *byte == b'\n' {
                 match self.process_message() {
                     Ok(_) => self.statistics.message_total += 1,
                     Err(decode_error) => {
@@ -51,7 +51,7 @@ impl Decoder {
     }
 
     fn process_message(&mut self) -> Result<(), DecodeError> {
-        if self.buffer[0] == ('{' as u8) {
+        if self.buffer[0] == b'{' {
             self.process_command_message()
         } else {
             self.process_data_message()
