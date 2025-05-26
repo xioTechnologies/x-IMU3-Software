@@ -23,7 +23,7 @@ impl NotificationMessage {
 
 impl DataMessage for NotificationMessage {
     fn get_ascii_id() -> u8 {
-        'N' as u8
+        b'N'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

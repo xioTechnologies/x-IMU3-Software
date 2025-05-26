@@ -16,7 +16,7 @@ pub struct EulerAnglesMessage {
 
 impl DataMessage for EulerAnglesMessage {
     fn get_ascii_id() -> u8 {
-        'A' as u8
+        b'A'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

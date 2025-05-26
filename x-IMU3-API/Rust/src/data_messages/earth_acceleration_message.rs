@@ -20,7 +20,7 @@ pub struct EarthAccelerationMessage {
 
 impl DataMessage for EarthAccelerationMessage {
     fn get_ascii_id() -> u8 {
-        'E' as u8
+        b'E'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

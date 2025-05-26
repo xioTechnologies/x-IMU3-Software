@@ -23,7 +23,7 @@ impl SerialAccessoryMessage {
 
 impl DataMessage for SerialAccessoryMessage {
     fn get_ascii_id() -> u8 {
-        'S' as u8
+        b'S'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

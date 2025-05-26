@@ -19,7 +19,7 @@ pub struct InertialMessage {
 
 impl DataMessage for InertialMessage {
     fn get_ascii_id() -> u8 {
-        'I' as u8
+        b'I'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

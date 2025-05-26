@@ -16,7 +16,7 @@ pub struct BatteryMessage {
 
 impl DataMessage for BatteryMessage {
     fn get_ascii_id() -> u8 {
-        'B' as u8
+        b'B'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

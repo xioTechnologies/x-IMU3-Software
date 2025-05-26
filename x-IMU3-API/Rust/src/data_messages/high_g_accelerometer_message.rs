@@ -16,7 +16,7 @@ pub struct HighGAccelerometerMessage {
 
 impl DataMessage for HighGAccelerometerMessage {
     fn get_ascii_id() -> u8 {
-        'H' as u8
+        b'H'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

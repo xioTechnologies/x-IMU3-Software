@@ -17,7 +17,7 @@ pub struct AhrsStatusMessage {
 
 impl DataMessage for AhrsStatusMessage {
     fn get_ascii_id() -> u8 {
-        'U' as u8
+        b'U'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

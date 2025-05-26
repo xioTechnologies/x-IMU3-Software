@@ -16,7 +16,7 @@ pub struct MagnetometerMessage {
 
 impl DataMessage for MagnetometerMessage {
     fn get_ascii_id() -> u8 {
-        'M' as u8
+        b'M'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

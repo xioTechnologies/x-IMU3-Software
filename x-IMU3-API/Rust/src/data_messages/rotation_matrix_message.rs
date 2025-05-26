@@ -22,7 +22,7 @@ pub struct RotationMatrixMessage {
 
 impl DataMessage for RotationMatrixMessage {
     fn get_ascii_id() -> u8 {
-        'R' as u8
+        b'R'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

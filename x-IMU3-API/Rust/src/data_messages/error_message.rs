@@ -23,7 +23,7 @@ impl ErrorMessage {
 
 impl DataMessage for ErrorMessage {
     fn get_ascii_id() -> u8 {
-        'F' as u8
+        b'F'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {

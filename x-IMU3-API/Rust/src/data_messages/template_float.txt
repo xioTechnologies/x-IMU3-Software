@@ -12,7 +12,7 @@ pub struct $name_pascal_case$Message {
 
 impl DataMessage for $name_pascal_case$Message {
     fn get_ascii_id() -> u8 {
-        '$ascii_id$' as u8
+        b'$ascii_id$'
     }
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
