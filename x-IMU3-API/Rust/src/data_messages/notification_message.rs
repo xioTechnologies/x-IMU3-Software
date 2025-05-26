@@ -44,7 +44,7 @@ impl DataMessage for NotificationMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
         }
 

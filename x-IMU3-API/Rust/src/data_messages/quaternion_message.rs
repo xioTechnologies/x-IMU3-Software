@@ -36,13 +36,13 @@ impl DataMessage for QuaternionMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
             w: f32,
             x: f32,
             y: f32,
             z: f32,
-            termination: u8,
+            _termination: u8,
         }
 
         if message.len() != size_of::<BinaryMessage>() {

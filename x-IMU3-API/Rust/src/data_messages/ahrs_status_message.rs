@@ -36,13 +36,13 @@ impl DataMessage for AhrsStatusMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
             initialising: f32,
             angular_rate_recovery: f32,
             acceleration_recovery: f32,
             magnetic_recovery: f32,
-            termination: u8,
+            _termination: u8,
         }
 
         if message.len() != size_of::<BinaryMessage>() {

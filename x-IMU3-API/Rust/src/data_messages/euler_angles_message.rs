@@ -34,12 +34,12 @@ impl DataMessage for EulerAnglesMessage {
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
         struct BinaryMessage {
-            id: u8,
+            _id: u8,
             timestamp: u64,
             roll: f32,
             pitch: f32,
             yaw: f32,
-            termination: u8,
+            _termination: u8,
         }
 
         if message.len() != size_of::<BinaryMessage>() {
