@@ -8,7 +8,7 @@ const BUFFER_SIZE: usize = 4096;
 
 pub struct Decoder {
     buffer: [u8; BUFFER_SIZE],
-    buffer_index: usize,
+    index: usize,
     pub statistics: Statistics,
     pub dispatcher: Dispatcher,
 }
@@ -17,7 +17,7 @@ impl Decoder {
     pub fn new() -> Decoder {
         Decoder {
             buffer: [0; BUFFER_SIZE],
-            buffer_index: 0,
+            index: 0,
             statistics: Default::default(),
             dispatcher: Dispatcher::new(),
         }
@@ -27,13 +27,13 @@ impl Decoder {
         self.statistics.data_total += bytes.len() as u64;
 
         for byte in bytes {
-            self.buffer[self.buffer_index] = *byte;
+            self.buffer[self.index] = *byte;
 
-            self.buffer_index += 1;
-            if self.buffer_index >= self.buffer.len() {
+            self.index += 1;
+            if self.index >= self.buffer.len() {
                 self.statistics.error_total += 1;
                 self.dispatcher.sender.send(DispatcherData::DecodeError(DecodeError::BufferOverrun)).ok();
-                self.buffer_index = 0;
+                self.index = 0;
                 continue;
             }
 
@@ -45,27 +45,26 @@ impl Decoder {
                         self.dispatcher.sender.send(DispatcherData::DecodeError(decode_error)).ok();
                     }
                 }
-                self.buffer_index = 0;
+                self.index = 0;
             }
         }
     }
 
     fn process_message(&mut self) -> Result<(), DecodeError> {
-        if self.buffer[0] == b'{' {
-            self.process_command_message()
-        } else {
-            self.process_data_message()
+        match self.buffer[0] {
+            b'{' => self.process_command_message(),
+            _ => self.process_data_message(),
         }
     }
 
     fn process_command_message(&self) -> Result<(), DecodeError> {
-        let command = CommandMessage::parse_bytes(&self.buffer[..self.buffer_index])?;
+        let command = CommandMessage::parse_bytes(&self.buffer[..self.index])?;
         self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
         Ok(())
     }
 
     fn process_data_message(&mut self) -> Result<(), DecodeError> {
-        let message = Decoder::undo_byte_stuffing(&mut self.buffer[..self.buffer_index])?;
+        let message = Decoder::undo_byte_stuffing(&mut self.buffer[..self.index])?;
 
         macro_rules! parse {
             ($data_message:ident, $dispatcher_data:ident) => {{
@@ -74,11 +73,8 @@ impl Decoder {
                         self.dispatcher.sender.send(DispatcherData::$dispatcher_data(message)).ok();
                         return Ok(());
                     }
-                    Err(error) => {
-                        if error != DecodeError::InvalidMessageIdentifier {
-                            return Err(error);
-                        }
-                    }
+                    Err(DecodeError::InvalidMessageIdentifier) => {}
+                    Err(error) => return Err(error),
                 }
             }};
         }
