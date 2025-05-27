@@ -74,8 +74,8 @@ pub extern "C" fn XIMU3_connection_close(connection: *mut Connection) {
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResponseC {
     let connection: &Connection = unsafe { &*connection };
-    if let Ok(ping_response) = connection.ping() {
-        ping_response.into()
+    if let Ok(response) = connection.ping() {
+        response.into()
     } else {
         Default::default()
     }

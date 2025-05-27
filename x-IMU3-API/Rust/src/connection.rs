@@ -99,13 +99,13 @@ impl Connection {
     }
 
     pub fn ping(&self) -> Result<PingResponse, ()> {
-        let response = self.send_commands(vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
+        let responses = self.send_commands(vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
 
-        if response.len() == 0 {
+        if responses.len() == 0 {
             return Err(());
         }
 
-        PingResponse::parse(response[0].as_str())
+        PingResponse::parse(responses[0].as_str())
     }
 
     pub fn send_commands(&self, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
