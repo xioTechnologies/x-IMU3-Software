@@ -8,5 +8,5 @@ pub trait GenericConnection {
     fn close(&self);
     fn get_info(&self) -> ConnectionInfo;
     fn get_decoder(&self) -> Arc<Mutex<Decoder>>;
-    fn get_write_sender(&self) -> Option<Sender<String>>;
+    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>>;
 }

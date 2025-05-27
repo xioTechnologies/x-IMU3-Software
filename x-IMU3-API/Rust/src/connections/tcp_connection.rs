@@ -11,7 +11,7 @@ pub struct TcpConnection {
     connection_info: TcpConnectionInfo,
     decoder: Arc<Mutex<Decoder>>,
     close_sender: Option<Sender<()>>,
-    write_sender: Option<Sender<String>>,
+    write_sender: Option<Sender<Vec<u8>>>,
 }
 
 impl TcpConnection {
@@ -46,8 +46,8 @@ impl GenericConnection for TcpConnection {
                 if let Ok(number_of_bytes) = stream.read(&mut buffer) {
                     decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
-                while let Some(terminated_json) = write_receiver.try_recv().iter().next() {
-                    stream.write(terminated_json.as_bytes()).ok();
+                while let Some(data) = write_receiver.try_recv().iter().next() {
+                    stream.write(data).ok();
                 }
             }
         });
@@ -69,7 +69,7 @@ impl GenericConnection for TcpConnection {
         self.decoder.clone()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<String>> {
+    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
         self.write_sender.clone()
     }
 }

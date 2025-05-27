@@ -64,7 +64,7 @@ impl GenericConnection for FileConnection {
         self.decoder.clone()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<String>> {
+    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
         None
     }
 }

@@ -4,7 +4,7 @@ use serde_json;
 #[derive(Clone)]
 pub struct CommandMessage {
     pub json: String,
-    pub(crate) terminated_json: String,
+    pub(crate) terminated_json: Vec<u8>,
     pub key: String,
     pub value: String,
     pub error: Option<String>,
@@ -33,7 +33,7 @@ impl CommandMessage {
 
         let mut command_message = CommandMessage {
             json: json.clone(),
-            terminated_json: format!("{}\n", json),
+            terminated_json: format!("{}\n", json).into_bytes(),
             key: object.keys().nth(0).unwrap().to_owned(),
             value: value.to_string(),
             error: None,
@@ -49,7 +49,7 @@ impl CommandMessage {
     pub fn parse(json: &str) -> CommandMessage {
         CommandMessage::parse_json(json).unwrap_or(CommandMessage {
             json: "".to_owned(),
-            terminated_json: "".to_owned(),
+            terminated_json: b"".to_vec(),
             key: "".to_owned(),
             value: "".to_owned(),
             error: None,

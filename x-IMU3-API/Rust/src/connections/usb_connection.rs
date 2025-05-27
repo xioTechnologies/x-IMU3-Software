@@ -43,7 +43,7 @@ impl GenericConnection for UsbConnection {
         self.serial_connection.get_decoder()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<String>> {
+    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
         self.serial_connection.get_write_sender()
     }
 }
