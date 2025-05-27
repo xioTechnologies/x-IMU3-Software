@@ -43,24 +43,26 @@ impl DataMessage for ErrorMessage {
 
     fn parse_binary(message: &[u8]) -> Result<Self, DecodeError> {
         #[repr(C, packed)]
-        struct BinaryMessage {
+        struct Header {
             _id: u8,
             timestamp: u64,
         }
 
-        if (message.len() - 1) < size_of::<BinaryMessage>() {
+        let min_message_size = size_of::<Header>() + 1; // include termination byte
+
+        if message.len() < min_message_size {
             return Err(DecodeError::InvalidBinaryMessageLength);
         }
 
-        let binary_message = unsafe {
-            let ref binary_message = *(message.as_ptr() as *const BinaryMessage);
-            binary_message
+        let timestamp = unsafe {
+            let ref binary_message = *(message.as_ptr() as *const Header);
+            binary_message.timestamp
         };
 
-        let (char_array, number_of_bytes) = slice_to_char_array(&message[size_of::<BinaryMessage>()..(message.len() - 1)]);
+        let (char_array, number_of_bytes) = slice_to_char_array(&message[size_of::<Header>()..(message.len() - 1)]); // exclude termination byte
 
         Ok(ErrorMessage {
-            timestamp: binary_message.timestamp,
+            timestamp,
             char_array,
             number_of_bytes,
         })
