@@ -50,6 +50,7 @@ typedef enum XIMU3_DecodeError
     XIMU3_DecodeErrorInvalidJson,
     XIMU3_DecodeErrorJsonIsNotAnObject,
     XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
+    XIMU3_DecodeErrorInvalidMuxMessageLength,
     XIMU3_DecodeErrorInvalidEscapeSequence,
     XIMU3_DecodeErrorInvalidBinaryMessageLength,
     XIMU3_DecodeErrorUnableToParseAsciiMessage,
