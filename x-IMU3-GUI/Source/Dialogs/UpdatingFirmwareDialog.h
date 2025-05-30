@@ -7,12 +7,12 @@
 class UpdatingFirmwareDialog : public Dialog
 {
 public:
-    UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool);
+    UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool);
 
     void resized() override;
 
 private:
-    const std::unique_ptr<ximu3::ConnectionInfo> connectionInfo;
+    const std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
     const juce::File hexFile;
 
     double progressBarValue = 0.0;
