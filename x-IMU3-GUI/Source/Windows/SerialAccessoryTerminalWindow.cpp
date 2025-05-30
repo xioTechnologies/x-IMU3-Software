@@ -26,7 +26,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
 
-        serialAccessoryTerminal.addTX(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
+        serialAccessoryTerminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
 
         for (const auto data : recentSerialAccessoryData)
         {
@@ -57,7 +57,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.addRX(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
+            serialAccessoryTerminal.addRx(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
 }
