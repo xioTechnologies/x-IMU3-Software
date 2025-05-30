@@ -121,7 +121,7 @@ Model::GLBuffer::GLBuffer(const WavefrontObjFile::Shape& shape) : associatedShap
 {
     using namespace ::juce::gl;
 
-    // Generate Ids for OpenGL vertex objects
+    // Generate IDs for OpenGL vertex objects
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &ebo);
     glGenBuffers(1, &vbo);

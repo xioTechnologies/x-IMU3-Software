@@ -175,7 +175,7 @@ namespace OpenGLHelpers
             }
         }
 
-        /** The uniform's Id number.
+        /** The uniform's ID number.
             If the uniform couldn't be found, this value will be < 0.
         */
         GLint uniformId;
