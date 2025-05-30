@@ -3,15 +3,15 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "ReceivedMessageRateGraphWindow.h"
 
-ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Throughput (messages/s)",
                   { "" },
                   { UIColours::graphChannel1 },
                   true)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {
         update(message.timestamp, { (float) message.message_rate });
     }));
@@ -19,8 +19,8 @@ ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::Value
 
 ReceivedMessageRateGraphWindow::~ReceivedMessageRateGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

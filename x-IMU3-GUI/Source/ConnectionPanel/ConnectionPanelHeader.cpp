@@ -30,7 +30,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
     const auto addNetworkAnnouncementCallback = [&](const std::string& ipAddress)
     {
-        networkAnnouncementCallbackID = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message)
+        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message)
         {
             if (std::string(message.ip_address) == ipAddress)
             {
@@ -53,12 +53,12 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
         addNetworkAnnouncementCallback(udpConnectionInfo->ip_address);
     }
 
-    rssiCallbackID = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
+    rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
     {
         rssiIcon.update((int) message.percentage);
     });
 
-    batteryCallbackID = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
+    batteryCallbackId = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float(message.charging_status));
     });
@@ -70,13 +70,13 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
 ConnectionPanelHeader::~ConnectionPanelHeader()
 {
-    if (networkAnnouncementCallbackID)
+    if (networkAnnouncementCallbackId)
     {
-        networkAnnouncement->removeCallback(*networkAnnouncementCallbackID);
+        networkAnnouncement->removeCallback(*networkAnnouncementCallbackId);
     }
 
-    connectionPanel.getConnection()->removeCallback(rssiCallbackID);
-    connectionPanel.getConnection()->removeCallback(batteryCallbackID);
+    connectionPanel.getConnection()->removeCallback(rssiCallbackId);
+    connectionPanel.getConnection()->removeCallback(batteryCallbackId);
 
     *destroyed = true;
 }

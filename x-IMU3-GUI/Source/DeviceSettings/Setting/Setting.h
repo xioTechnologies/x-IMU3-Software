@@ -2,7 +2,7 @@
 
 #include <BinaryData.h>
 #include "CustomLookAndFeel.h"
-#include "DeviceSettings/DeviceSettingsIDs.h"
+#include "DeviceSettings/DeviceSettingsIds.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
 #include "Widgets/SimpleLabel.h"

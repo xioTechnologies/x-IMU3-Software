@@ -3,9 +3,9 @@
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
-ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_, juce::ThreadPool& threadPool_)
+ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_, juce::ThreadPool& threadPool_)
     : windowLayout(windowLayout_),
-      glRenderer(glRenderer_),
+      openGLRenderer(openGLRenderer_),
       threadPool(threadPool_)
 {
     addAndMakeVisible(noConnectionsLabel);
@@ -146,7 +146,7 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
     }
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
-    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, glRenderer, threadPool, *this, [&]
+    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, threadPool, *this, [&]
     {
         static unsigned int counter;
 

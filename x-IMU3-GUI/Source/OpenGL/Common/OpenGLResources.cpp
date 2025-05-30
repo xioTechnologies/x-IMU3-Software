@@ -1,6 +1,6 @@
-#include "GLResources.h"
+#include "OpenGLResources.h"
 
-GLResources::GLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool) :
+OpenGLResources::OpenGLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool) :
     context(context_),
     arrow(context, threadPool),
     board(context, threadPool),
@@ -36,7 +36,7 @@ GLResources::GLResources(juce::OpenGLContext& context_, juce::ThreadPool& thread
     threeDViewAxesText = std::make_unique<Text>(charactersToLoad);
 }
 
-Text& GLResources::getGraphTickText()
+Text& OpenGLResources::getGraphTickText()
 {
     // Handles font reload if window moved between low and high DPI monitors because GL pixel size will differ
     const auto fontSizeJucePixels = 12;
@@ -47,7 +47,7 @@ Text& GLResources::getGraphTickText()
     return *graphTickText;
 }
 
-Text& GLResources::get3DViewAxesText()
+Text& OpenGLResources::get3DViewAxesText()
 {
     // Handles font reload if window moved between low and high DPI monitors because GL pixel size will differ
     const auto fontSizeJucePixels = 30;

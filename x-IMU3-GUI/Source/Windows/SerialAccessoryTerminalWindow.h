@@ -29,7 +29,7 @@ private:
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Serial Accessory Data.xml");
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
-    uint64_t callbackID;
+    uint64_t callbackId;
 
     void loadRecents();
 

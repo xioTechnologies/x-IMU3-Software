@@ -3,17 +3,17 @@
 #pragma once
 
 #include "GraphWindow.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
 class MagnetometerGraphWindow : public GraphWindow
 {
 public:
-    MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~MagnetometerGraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
     std::function<void(ximu3::XIMU3_MagnetometerMessage)> magnetometerCallback;
 };

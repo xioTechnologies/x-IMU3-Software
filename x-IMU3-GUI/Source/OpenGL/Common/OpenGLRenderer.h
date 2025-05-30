@@ -1,16 +1,16 @@
 #pragma once
 
 #include <algorithm>
-#include "GLResources.h"
+#include "OpenGLResources.h"
 #include "OpenGL/OpenGLComponent.h"
 #include <vector>
 
-class GLRenderer : private juce::OpenGLRenderer
+class OpenGLRenderer : private juce::OpenGLRenderer
 {
 public:
-    GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_);
+    OpenGLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_);
 
-    ~GLRenderer() override;
+    ~OpenGLRenderer() override;
 
     juce::OpenGLContext& getContext();
 
@@ -18,7 +18,7 @@ public:
 
     void removeComponent(OpenGLComponent& component);
 
-    GLResources& getResources();
+    OpenGLResources& getResources();
 
 private:
     juce::ThreadPool& threadPool;
@@ -30,7 +30,7 @@ private:
 
     std::vector<OpenGLComponent*> components;
 
-    std::unique_ptr<GLResources> resources;
+    std::unique_ptr<OpenGLResources> resources;
 
     // Reset OpenGL state to the default settings expected by our OpenGLComponents.
     static void resetDefaultOpenGLState();
@@ -41,5 +41,5 @@ private:
 
     void openGLContextClosing() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GLRenderer)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OpenGLRenderer)
 };

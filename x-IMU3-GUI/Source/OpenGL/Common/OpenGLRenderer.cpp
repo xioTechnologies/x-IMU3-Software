@@ -1,7 +1,7 @@
 #include "CustomLookAndFeel.h"
-#include "GLRenderer.h"
+#include "OpenGLRenderer.h"
 
-GLRenderer::GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
+OpenGLRenderer::OpenGLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
 {
     context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
     context.setRenderer(this);
@@ -9,35 +9,35 @@ GLRenderer::GLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_)
     context.attachTo(attachTo);
 }
 
-GLRenderer::~GLRenderer()
+OpenGLRenderer::~OpenGLRenderer()
 {
     context.detach();
 }
 
-juce::OpenGLContext& GLRenderer::getContext()
+juce::OpenGLContext& OpenGLRenderer::getContext()
 {
     return context;
 }
 
-void GLRenderer::addComponent(OpenGLComponent& component)
+void OpenGLRenderer::addComponent(OpenGLComponent& component)
 {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
     components.push_back(&component);
 }
 
-void GLRenderer::removeComponent(OpenGLComponent& component)
+void OpenGLRenderer::removeComponent(OpenGLComponent& component)
 {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
     components.erase(std::remove(components.begin(), components.end(), &component), components.end());
 }
 
-GLResources& GLRenderer::getResources()
+OpenGLResources& OpenGLRenderer::getResources()
 {
     jassert(resources != nullptr);
     return *resources;
 }
 
-void GLRenderer::resetDefaultOpenGLState()
+void OpenGLRenderer::resetDefaultOpenGLState()
 {
     // Blend settings
     juce::gl::glEnable(juce::gl::GL_BLEND);
@@ -56,15 +56,15 @@ void GLRenderer::resetDefaultOpenGLState()
     juce::gl::glEnable(juce::gl::GL_MULTISAMPLE);
 }
 
-void GLRenderer::newOpenGLContextCreated()
+void OpenGLRenderer::newOpenGLContextCreated()
 {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
 
     // All texture, shader, model and buffer resources are created here
-    resources = std::make_unique<GLResources>(context, threadPool);
+    resources = std::make_unique<OpenGLResources>(context, threadPool);
 }
 
-void GLRenderer::renderOpenGL()
+void OpenGLRenderer::renderOpenGL()
 {
     resetDefaultOpenGLState(); // JUCE paint() modifies OpenGL state, so we must set default state every render loop
 
@@ -85,7 +85,7 @@ void GLRenderer::renderOpenGL()
          *
          *  The text drawn in Graph by OpenGL may be the easiest candidate for an instancing optimization. Instead of issuing a draw
          *  command for each text string, all OpenGL text strings on screen could be drawn in a single draw command to the GPU. To
-         *  implement this, we would need to add a global queue of text data to GLRenderer. Instead of drawing Text on its own, each
+         *  implement this, we would need to add a global queue of text data to OpenGLRenderer. Instead of drawing Text on its own, each
          *  Graph component would add data to this queue in it's render() function to describe how it wants its text rendered. Then
          *  after all OpenGL components have completed rendering, GLRender would empty the queue of text data and send it off to the
          *  GPU in one draw command. This queue empty and draw command would happen here, immediately after looping through all OpenGL
@@ -98,7 +98,7 @@ void GLRenderer::renderOpenGL()
     juce::gl::glDisable(juce::gl::GL_CULL_FACE); // prevent cull interference with JUCE Component paint() via OpenGL
 }
 
-void GLRenderer::openGLContextClosing()
+void OpenGLRenderer::openGLContextClosing()
 {
     {
         std::lock_guard<std::mutex> _(sharedGLDataLock);

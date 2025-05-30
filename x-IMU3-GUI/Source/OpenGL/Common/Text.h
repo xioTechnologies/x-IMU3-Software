@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-class GLResources;
+class OpenGLResources;
 
 class Text
 {
@@ -29,9 +29,9 @@ public:
 
     float getStringWidthJucePixels(const juce::String& string) const;
 
-    void draw(GLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
+    void draw(OpenGLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
 
-    void drawChar3D(GLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const;
+    void drawChar3D(OpenGLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const;
 
     static int toGLPixels(int jucePixels);
 
@@ -65,7 +65,7 @@ private:
 
     struct Glyph
     {
-        GLuint textureID; // texture freetypeTextureID for each letter
+        GLuint textureId; // texture freetypeTextureId for each letter
         glm::ivec2 size; // width/height of glyph
         glm::ivec2 bearing; // offset from origin to top left of glyph
         float advance; // offset to advance to next glyph in pixels

@@ -17,9 +17,9 @@ public:
 
     void resized() override;
 
-    void addRX(const uint64_t timestamp, const juce::String& text);
+    void addRx(const uint64_t timestamp, const juce::String& text);
 
-    void addTX(const juce::String& text);
+    void addTx(const juce::String& text);
 
     void addError(const juce::String& text);
 

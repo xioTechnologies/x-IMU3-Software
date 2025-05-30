@@ -3,17 +3,17 @@
 #pragma once
 
 #include "GraphWindow.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
 class BatteryVoltageGraphWindow : public GraphWindow
 {
 public:
-    BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~BatteryVoltageGraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
 };

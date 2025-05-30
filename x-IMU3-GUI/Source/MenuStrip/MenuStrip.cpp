@@ -16,7 +16,7 @@
 #include "RecentConnections.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "WindowLayouts.h"
-#include "Windows/WindowIDs.h"
+#include "Windows/WindowIds.h"
 
 MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_) : windowLayout(windowLayout_),
                                                                                                                                            threadPool(threadPool_),
@@ -386,16 +386,16 @@ juce::PopupMenu MenuStrip::getWindowMenu()
 
     const auto tile = [&](const bool horizontally)
     {
-        juce::ValueTree windowLayout_(WindowIDs::Row);
+        juce::ValueTree windowLayout_(WindowIds::Row);
 
         for (const auto& [windowType, _] : windowTitles)
         {
             if (findWindow(windowLayout, windowType).isValid())
             {
-                (horizontally ? windowLayout_.getOrCreateChildWithName(WindowIDs::Column, nullptr) : windowLayout_).appendChild({ windowType, {} }, nullptr);
+                (horizontally ? windowLayout_.getOrCreateChildWithName(WindowIds::Column, nullptr) : windowLayout_).appendChild({ windowType, {} }, nullptr);
             }
         }
-        setWindowLayout({ WindowIDs::Row, {}, { windowLayout_ } });
+        setWindowLayout({ WindowIds::Row, {}, { windowLayout_ } });
     };
 
     juce::PopupMenu arrangeMenu;
@@ -473,44 +473,44 @@ juce::PopupMenu MenuStrip::getWindowMenu()
             auto totalWindowSizes = 0.0f;
             for (const auto window : windowLayout.getRoot())
             {
-                totalWindowSizes += (float) window.getProperty(WindowIDs::size, 1.0f);
+                totalWindowSizes += (float) window.getProperty(WindowIds::size, 1.0f);
             }
 
             const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
-            windowLayout.getRoot().appendChild({ id_, { { WindowIDs::size, newSize } } }, nullptr);
+            windowLayout.getRoot().appendChild({ id_, { { WindowIds::size, newSize } } }, nullptr);
         });
     };
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("DEVICE SETTINGS"), nullptr);
-    addWindowItem(WindowIDs::DeviceSettings);
+    addWindowItem(WindowIds::DeviceSettings);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SENSORS"), nullptr);
-    addWindowItem(WindowIDs::Gyroscope);
-    addWindowItem(WindowIDs::Accelerometer);
-    addWindowItem(WindowIDs::Magnetometer);
-    addWindowItem(WindowIDs::HighGAccelerometer);
+    addWindowItem(WindowIds::Gyroscope);
+    addWindowItem(WindowIds::Accelerometer);
+    addWindowItem(WindowIds::Magnetometer);
+    addWindowItem(WindowIds::HighGAccelerometer);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AHRS"), nullptr);
-    addWindowItem(WindowIDs::ThreeDView);
-    addWindowItem(WindowIDs::EulerAngles);
-    addWindowItem(WindowIDs::LinearAcceleration);
-    addWindowItem(WindowIDs::EarthAcceleration);
+    addWindowItem(WindowIds::ThreeDView);
+    addWindowItem(WindowIds::EulerAngles);
+    addWindowItem(WindowIds::LinearAcceleration);
+    addWindowItem(WindowIds::EarthAcceleration);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SERIAL ACCESSORY"), nullptr);
-    addWindowItem(WindowIDs::SerialAccessoryTerminal);
-    addWindowItem(WindowIDs::SerialAccessoryCsvs);
+    addWindowItem(WindowIds::SerialAccessoryTerminal);
+    addWindowItem(WindowIds::SerialAccessoryCsvs);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("STATUS"), nullptr);
-    addWindowItem(WindowIDs::Temperature);
-    addWindowItem(WindowIDs::BatteryPercentage);
-    addWindowItem(WindowIDs::BatteryVoltage);
-    addWindowItem(WindowIDs::RssiPercentage);
-    addWindowItem(WindowIDs::RssiPower);
+    addWindowItem(WindowIds::Temperature);
+    addWindowItem(WindowIds::BatteryPercentage);
+    addWindowItem(WindowIds::BatteryVoltage);
+    addWindowItem(WindowIds::RssiPercentage);
+    addWindowItem(WindowIds::RssiPower);
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNNECTION"), nullptr);
-    addWindowItem(WindowIDs::ReceivedMessageRate);
-    addWindowItem(WindowIDs::ReceivedDataRate);
+    addWindowItem(WindowIds::ReceivedMessageRate);
+    addWindowItem(WindowIds::ReceivedDataRate);
 
     return menu;
 }
@@ -606,23 +606,23 @@ void MenuStrip::setWindowLayout(juce::ValueTree windowLayout_)
     if (windowLayout_.isValid() == false)
     {
         windowLayout_ = {
-            WindowIDs::Row, {},
+            WindowIds::Row, {},
             {
-                { WindowIDs::DeviceSettings, { { WindowIDs::size, 0.4 } } },
+                { WindowIds::DeviceSettings, { { WindowIds::size, 0.4 } } },
                 {
-                    WindowIDs::Column, {}, {
+                    WindowIds::Column, {}, {
                         {
-                            WindowIDs::Row, {}, {
-                                { WindowIDs::Gyroscope, {} },
-                                { WindowIDs::Accelerometer, {} },
-                                { WindowIDs::Magnetometer, {} },
-                                { WindowIDs::HighGAccelerometer, {} },
+                            WindowIds::Row, {}, {
+                                { WindowIds::Gyroscope, {} },
+                                { WindowIds::Accelerometer, {} },
+                                { WindowIds::Magnetometer, {} },
+                                { WindowIds::HighGAccelerometer, {} },
                             }
                         },
                         {
-                            WindowIDs::Row, {}, {
-                                { WindowIDs::EulerAngles, { { WindowIDs::size, 1 } } },
-                                { WindowIDs::ThreeDView, { { WindowIDs::size, 3 } } },
+                            WindowIds::Row, {}, {
+                                { WindowIds::EulerAngles, { { WindowIds::size, 1 } } },
+                                { WindowIds::ThreeDView, { { WindowIds::size, 3 } } },
                             }
                         }
                     }

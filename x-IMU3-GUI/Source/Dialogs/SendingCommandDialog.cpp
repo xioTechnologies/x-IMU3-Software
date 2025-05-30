@@ -9,9 +9,9 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
     addAndMakeVisible(closeWhenCompleteButton);
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
-    table.getHeader().addColumn("", (int) ColumnIDs::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIDs::titleAndResponse, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::icon, 50, 50, 50);
+    table.getHeader().addColumn("", (int) ColumnIds::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
+    table.getHeader().addColumn("", (int) ColumnIds::titleAndResponse, 1);
+    table.getHeader().addColumn("", (int) ColumnIds::icon, 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -159,7 +159,7 @@ void SendingCommandDialog::paintRowBackground(juce::Graphics& g, int rowNumber, 
     g.fillRect(0, 0, UILayout::tagWidth, height);
 }
 
-juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
+juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate)
 {
     if (rowNumber >= (int) rows.size())
     {
@@ -168,12 +168,12 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
     delete existingComponentToUpdate;
 
-    switch ((ColumnIDs) columnID)
+    switch ((ColumnIds) columnId)
     {
-        case ColumnIDs::tag:
+        case ColumnIds::tag:
             return nullptr;
 
-        case ColumnIDs::titleAndResponse:
+        case ColumnIds::titleAndResponse:
             class TitleAndResponse : public juce::Component
             {
             public:
@@ -216,7 +216,7 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
             return new TitleAndResponse(rows[(size_t) rowNumber]);
 
-        case ColumnIDs::icon:
+        case ColumnIds::icon:
             switch (rows[(size_t) rowNumber].state)
             {
                 case Row::State::inProgress:

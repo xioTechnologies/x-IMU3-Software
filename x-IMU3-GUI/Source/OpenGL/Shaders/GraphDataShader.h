@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLHelpers.h"
+#include "OpenGL/Common/OpenGLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class GraphDataShader : public Shader
@@ -11,9 +11,9 @@ public:
     {
     }
 
-    GLHelpers::Uniform axisLimitsRange { *this, "axisLimitsRange" };
-    GLHelpers::Uniform axisLimitsMin { *this, "axisLimitsMin" };
-    GLHelpers::Uniform colour { *this, "colour" };
+    OpenGLHelpers::Uniform axisLimitsRange { *this, "axisLimitsRange" };
+    OpenGLHelpers::Uniform axisLimitsMin { *this, "axisLimitsMin" };
+    OpenGLHelpers::Uniform colour { *this, "colour" };
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphDataShader)

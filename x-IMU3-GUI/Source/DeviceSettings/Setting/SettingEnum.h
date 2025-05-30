@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DeviceSettings/DeviceSettingsIDs.h"
+#include "DeviceSettings/DeviceSettingsIds.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting.h"
 #include "Widgets/CustomComboBox.h"
@@ -21,7 +21,7 @@ public:
 
         for (auto child : typeTree)
         {
-            value.addItem(child[DeviceSettingsIDs::name], (int) child.getProperty(DeviceSettingsIDs::value) + 1);
+            value.addItem(child[DeviceSettingsIds::name], (int) child.getProperty(DeviceSettingsIds::value) + 1);
         }
 
         valueChanged();

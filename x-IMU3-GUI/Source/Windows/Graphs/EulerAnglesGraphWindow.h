@@ -3,18 +3,18 @@
 #pragma once
 
 #include "GraphWindow.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
 class EulerAnglesGraphWindow : public GraphWindow
 {
 public:
-    EulerAnglesGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    EulerAnglesGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~EulerAnglesGraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
     std::function<void(ximu3::XIMU3_RotationMatrixMessage)> rotationMatrixCallback;
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;

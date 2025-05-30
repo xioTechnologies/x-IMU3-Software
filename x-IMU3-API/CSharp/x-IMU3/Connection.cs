@@ -310,9 +310,9 @@ namespace Ximu3
             return CApi.XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
-        public void RemoveCallback(UInt64 callbackID)
+        public void RemoveCallback(UInt64 callbackId)
         {
-            CApi.XIMU3_connection_remove_callback(connection, callbackID);
+            CApi.XIMU3_connection_remove_callback(connection, callbackId);
         }
 
         internal IntPtr connection;

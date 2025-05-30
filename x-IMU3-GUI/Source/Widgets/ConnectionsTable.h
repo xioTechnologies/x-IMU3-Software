@@ -35,7 +35,7 @@ public:
     const std::vector<Row>& getRows() const;
 
 private:
-    enum class ColumnIDs
+    enum class ColumnIds
     {
         selected = 1,
         device,
@@ -63,7 +63,7 @@ private:
     {
     }
 
-    juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
+    juce::Component* refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate) override;
 
     void cellClicked(int rowNumber, int, const juce::MouseEvent&) override;
 

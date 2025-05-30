@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "OpenGL/Common/GLResources.h"
+#include "OpenGL/Common/OpenGLResources.h"
 
 Model::Model(juce::OpenGLContext& context_, juce::ThreadPool& threadPool_) : context(context_), threadPool(threadPool_)
 {

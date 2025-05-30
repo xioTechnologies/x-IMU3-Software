@@ -3,13 +3,13 @@
 #include "CommandMessage.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Widgets/DragOverlay.h"
 
 class ConnectionPanelContainer : public juce::Component
 {
 public:
-    ConnectionPanelContainer(juce::ValueTree& windowLayout_, GLRenderer& glRenderer_, juce::ThreadPool& threadPool_);
+    ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_, juce::ThreadPool& threadPool_);
 
     void resized() override;
 
@@ -51,7 +51,7 @@ public:
 
 private:
     juce::ValueTree& windowLayout;
-    GLRenderer& glRenderer;
+    OpenGLRenderer& openGLRenderer;
     juce::ThreadPool& threadPool;
 
     SimpleLabel noConnectionsLabel { "No Connections", UIFonts::getDefaultFont(), juce::Justification::centred };

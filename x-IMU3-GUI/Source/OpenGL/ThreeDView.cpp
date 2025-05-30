@@ -1,7 +1,7 @@
 #include "CustomLookAndFeel.h"
 #include "ThreeDView.h"
 
-ThreeDView::ThreeDView(GLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_)
+ThreeDView::ThreeDView(OpenGLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_)
 {
     renderer.addComponent(*this);
 }
@@ -49,8 +49,8 @@ void ThreeDView::render()
     }
 
     // Draw scene
-    GLHelpers::ScopedCapability scopedCapability(juce::gl::GL_SCISSOR_TEST, true);
-    GLHelpers::viewportAndScissor(bounds); // clip drawing to bounds
+    OpenGLHelpers::ScopedCapability scopedCapability(juce::gl::GL_SCISSOR_TEST, true);
+    OpenGLHelpers::viewportAndScissor(bounds); // clip drawing to bounds
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
     const bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
@@ -155,7 +155,7 @@ void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4&
 
 void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight) const
 {
-    GLHelpers::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
+    OpenGLHelpers::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
     const auto scaleGrid = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f));
@@ -168,8 +168,8 @@ void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4&
 void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight) const
 {
     // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
-    GLHelpers::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
-    GLHelpers::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
+    OpenGLHelpers::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
+    OpenGLHelpers::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
 
     const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     const auto compassModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight, 0.0f)) * compassRotateScale;

@@ -4,7 +4,7 @@
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/ThreeDView/WavefrontObjFile.h"
 
-class GLResources;
+class OpenGLResources;
 
 class Model
 {

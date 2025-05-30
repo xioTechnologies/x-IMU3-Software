@@ -2,7 +2,7 @@
 #include "ConnectionPanelContainer.h"
 #include "Widgets/DragOverlay.h"
 #include "WindowHeader.h"
-#include "WindowIDs.h"
+#include "WindowIds.h"
 
 WindowHeader::WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup)
     : connectionPanel(connectionPanel_),
@@ -98,13 +98,13 @@ void WindowHeader::mouseUp(const juce::MouseEvent& mouseEvent)
         removeFromParent(movingTree);
 
         const auto targetTree = findWindow(windowLayout, targetWindow->getType());
-        movingTree.setProperty(WindowIDs::size, targetTree.getProperty(WindowIDs::size, 1.0f), nullptr);
+        movingTree.setProperty(WindowIds::size, targetTree.getProperty(WindowIds::size, 1.0f), nullptr);
 
         const auto side = connectionPanel.getConnectionPanelContainer().getCurrentlyShowingDragOverlay()->getSide();
         const auto add = (side == DragOverlay::Side::bottom || side == DragOverlay::Side::right) ? 1 : 0;
 
         auto parent = targetTree.getParent();
-        if (parent.hasType(WindowIDs::Column) == (side == DragOverlay::Side::top || side == DragOverlay::Side::bottom))
+        if (parent.hasType(WindowIds::Column) == (side == DragOverlay::Side::top || side == DragOverlay::Side::bottom))
         {
             parent.addChild(movingTree, parent.indexOf(targetTree) + add, nullptr);
         }
@@ -113,8 +113,8 @@ void WindowHeader::mouseUp(const juce::MouseEvent& mouseEvent)
             const auto containerIndex = parent.indexOf(targetTree);
             parent.removeChild(targetTree, nullptr);
 
-            juce::ValueTree container(parent.getType() == WindowIDs::Column ? WindowIDs::Row : WindowIDs::Column);
-            container.setProperty(WindowIDs::size, targetTree.getProperty(WindowIDs::size, 1.0f), nullptr);
+            juce::ValueTree container(parent.getType() == WindowIds::Column ? WindowIds::Row : WindowIds::Column);
+            container.setProperty(WindowIds::size, targetTree.getProperty(WindowIds::size, 1.0f), nullptr);
             container.addChild(targetTree, 0, nullptr);
             container.addChild(movingTree, add, nullptr);
             parent.addChild(container, containerIndex, nullptr);

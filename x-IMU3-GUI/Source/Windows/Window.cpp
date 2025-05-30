@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "WindowIDs.h"
+#include "WindowIds.h"
 
 Window::Window(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, const juce::String& menuButtonTooltip)
     : settingsTree(findWindow(windowLayout_, type_)),

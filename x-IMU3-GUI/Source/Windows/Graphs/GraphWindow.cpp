@@ -5,7 +5,7 @@
 const juce::String GraphWindow::degreeSymbol = (juce::CharPointer_UTF8("\xc2\xba"));
 
 GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_,
-                         GLRenderer& glRenderer,
+                         OpenGLRenderer& openGLRenderer,
                          const juce::String& yAxis,
                          std::vector<juce::String> legendStrings_,
                          std::vector<juce::Colour> legendColours_,
@@ -14,7 +14,7 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
       legendStrings(legendStrings_),
       legendColours(legendColours_),
       defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
-      graph(glRenderer, legendColours_, labelHeight, rightMargin),
+      graph(openGLRenderer, legendColours_, labelHeight, rightMargin),
       xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
       yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred)
 {
@@ -224,11 +224,11 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [this]
     {
-        const auto size = settingsTree.getProperty(WindowIDs::size);
+        const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
         if (size.isVoid() == false)
         {
-            settingsTree.setProperty(WindowIDs::size, size, nullptr);
+            settingsTree.setProperty(WindowIds::size, size, nullptr);
         }
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]

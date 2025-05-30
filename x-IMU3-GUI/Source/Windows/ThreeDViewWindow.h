@@ -3,7 +3,7 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "OpenGL/ThreeDView.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Widgets/SimpleLabel.h"
@@ -14,7 +14,7 @@ class ThreeDViewWindow : public Window,
                          private juce::Timer
 {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~ThreeDViewWindow() override;
 
@@ -45,22 +45,22 @@ private:
     juce::Point<int> lastMousePosition;
 
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
-    uint64_t quaternionCallbackID;
+    uint64_t quaternionCallbackId;
 
     std::function<void(ximu3::XIMU3_RotationMatrixMessage)> rotationMatrixCallback;
-    uint64_t rotationMatrixCallbackID;
+    uint64_t rotationMatrixCallbackId;
 
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;
-    uint64_t eulerAnglesCallbackID;
+    uint64_t eulerAnglesCallbackId;
 
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
-    uint64_t linearAccelerationCallbackID;
+    uint64_t linearAccelerationCallbackId;
 
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
-    uint64_t earthAccelerationCallbackID;
+    uint64_t earthAccelerationCallbackId;
 
     std::function<void(ximu3::XIMU3_AhrsStatusMessage)> ahrsStatusMessageCallback;
-    uint64_t ahrsStatusMessageCallbackID;
+    uint64_t ahrsStatusMessageCallbackId;
 
     bool compactView = false;
 

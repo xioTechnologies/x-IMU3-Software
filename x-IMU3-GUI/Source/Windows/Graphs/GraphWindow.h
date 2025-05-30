@@ -9,7 +9,7 @@ class GraphWindow : public Window, private juce::AsyncUpdater
 {
 public:
     GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_,
-                GLRenderer& glRenderer,
+                OpenGLRenderer& openGLRenderer,
                 const juce::String& yAxis,
                 std::vector<juce::String> legendStrings_,
                 std::vector<juce::Colour> legendColours_,

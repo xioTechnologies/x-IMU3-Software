@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Common/GLHelpers.h"
-#include "Common/GLRenderer.h"
+#include "Common/OpenGLHelpers.h"
+#include "Common/OpenGLRenderer.h"
 #include "CustomLookAndFeel.h"
 #include "Graph/AxesLimits.h"
 #include "Graph/ChannelBuffers.h"
@@ -19,7 +19,7 @@ public:
         std::vector<bool> enabledChannels;
     };
 
-    Graph(GLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_);
+    Graph(OpenGLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_);
 
     ~Graph() override;
 
@@ -41,7 +41,7 @@ public:
     std::atomic<float> plotHeightJUCEPixels = 0.0f;
 
 private:
-    GLRenderer& renderer;
+    OpenGLRenderer& renderer;
     const std::vector<juce::Colour> colours;
     const int legendHeight;
     const int rightMargin;

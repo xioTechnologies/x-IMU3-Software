@@ -15,7 +15,7 @@ public:
     void resized() override;
 
 private:
-    enum class ColumnIDs
+    enum class ColumnIds
     {
         tag = 1,
         titleAndResponse,
@@ -55,7 +55,7 @@ private:
     {
     }
 
-    juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
+    juce::Component* refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate) override;
 
     void timerCallback() override;
 
