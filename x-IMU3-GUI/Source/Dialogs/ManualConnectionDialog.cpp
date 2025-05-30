@@ -161,7 +161,7 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
     addAndMakeVisible(sendPortValue);
     addAndMakeVisible(receivePortLabel);
     addAndMakeVisible(receivePortValue);
-    addAndMakeVisible(receivePortFromIPValue);
+    addAndMakeVisible(receivePortFromIpValue);
     addAndMakeVisible(broadcastToggle);
     addAndMakeVisible(fromIpAddressToggle);
 
@@ -169,7 +169,7 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
     {
         ipAddressValue.setVisible(broadcastToggle.getToggleState() == false);
         ipAddressBroadcastValue.setVisible(broadcastToggle.getToggleState());
-        receivePortFromIPValue.setText(juce::String(8000 + (broadcastToggle.getToggleState() ? 0 : juce::IPAddress(getIpAddressValue()).address[3])));
+        receivePortFromIpValue.setText(juce::String(8000 + (broadcastToggle.getToggleState() ? 0 : juce::IPAddress(getIpAddressValue()).address[3])));
         validateDialog();
     };
 
@@ -186,7 +186,7 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
     fromIpAddressToggle.onClick = [this]
     {
         receivePortValue.setVisible(fromIpAddressToggle.getToggleState() == false);
-        receivePortFromIPValue.setVisible(fromIpAddressToggle.getToggleState());
+        receivePortFromIpValue.setVisible(fromIpAddressToggle.getToggleState());
         validateDialog();
     };
 
@@ -195,7 +195,7 @@ ManualUdpConnectionDialog::ManualUdpConnectionDialog() : ManualConnectionDialog(
     ipAddressBroadcastValue.setEnabled(false);
     sendPortValue.setText("9000");
     receivePortValue.setText("8000");
-    receivePortFromIPValue.setEnabled(false);
+    receivePortFromIpValue.setEnabled(false);
     fromIpAddressToggle.setToggleState(true, juce::sendNotificationSync);
 
     validateDialog();
@@ -230,7 +230,7 @@ void ManualUdpConnectionDialog::resized()
     auto receivePortRow = bounds.removeFromTop(UILayout::textComponentHeight);
     receivePortLabel.setBounds(receivePortRow.removeFromLeft(columnWidth));
     receivePortValue.setBounds(receivePortRow.removeFromLeft(columnWidth));
-    receivePortFromIPValue.setBounds(receivePortValue.getBounds());
+    receivePortFromIpValue.setBounds(receivePortValue.getBounds());
     receivePortRow.removeFromLeft(margin);
     fromIpAddressToggle.setBounds(receivePortRow);
 }
@@ -249,7 +249,7 @@ juce::String ManualUdpConnectionDialog::getIpAddressValue() const
 
 juce::String ManualUdpConnectionDialog::getReceivePortValue() const
 {
-    return (fromIpAddressToggle.getToggleState() ? receivePortFromIPValue : receivePortValue).getText();
+    return (fromIpAddressToggle.getToggleState() ? receivePortFromIpValue : receivePortValue).getText();
 }
 
 void ManualUdpConnectionDialog::validateDialog()

@@ -109,7 +109,7 @@ private:
     CustomTextEditor ipAddressBroadcastValue;
     CustomTextEditor sendPortValue;
     CustomTextEditor receivePortValue;
-    CustomTextEditor receivePortFromIPValue;
+    CustomTextEditor receivePortFromIpValue;
     CustomToggleButton broadcastToggle { "Broadcast" };
     CustomToggleButton fromIpAddressToggle { "From IP Address" };
 
