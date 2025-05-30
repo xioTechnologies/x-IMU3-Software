@@ -38,7 +38,7 @@ private:
         switch (result)
         {
             case ximu3::XIMU3_ResultOk:
-                std::cout << "Ok" << std::endl;
+                std::cout << "OK" << std::endl;
                 break;
             case ximu3::XIMU3_ResultError:
                 std::cout << "Error" << std::endl;

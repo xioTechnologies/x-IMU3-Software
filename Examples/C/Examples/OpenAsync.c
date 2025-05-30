@@ -34,7 +34,7 @@ static void Callback(const XIMU3_Result result, void* context)
     switch (result)
     {
         case XIMU3_ResultOk:
-            printf("Ok\n");
+            printf("OK\n");
             break;
         case XIMU3_ResultError:
             printf("Error\n");

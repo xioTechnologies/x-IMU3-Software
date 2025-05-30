@@ -65,7 +65,7 @@ namespace Ximu3Examples
             switch (result)
             {
                 case Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk:
-                    Console.WriteLine("Ok");
+                    Console.WriteLine("OK");
                     break;
                 case Ximu3.CApi.XIMU3_Result.XIMU3_ResultError:
                     Console.WriteLine("Error");

@@ -51,7 +51,7 @@ pub fn run() {
 
 fn print_result<T>(result: &Result<T, ()>) {
     match result {
-        Ok(_) => println!("Ok"),
+        Ok(_) => println!("OK"),
         Err(_) => println!("Error"),
     }
 }
