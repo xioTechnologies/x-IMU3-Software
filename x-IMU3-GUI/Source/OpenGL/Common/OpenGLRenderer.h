@@ -1,8 +1,8 @@
 #pragma once
 
 #include <algorithm>
-#include "OpenGLResources.h"
 #include "OpenGL/OpenGLComponent.h"
+#include "OpenGLResources.h"
 #include <vector>
 
 class OpenGLRenderer : private juce::OpenGLRenderer
