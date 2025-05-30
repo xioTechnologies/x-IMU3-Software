@@ -38,26 +38,8 @@ private:
     {
         for (const auto& device : devices)
         {
-            const char* connectionInfo;
-
-            switch (device.connection_type)
-            {
-                case ximu3::XIMU3_ConnectionTypeUsb:
-                    connectionInfo = ximu3::XIMU3_usb_connection_info_to_string(device.usb_connection_info);
-                    break;
-                case ximu3::XIMU3_ConnectionTypeSerial:
-                    connectionInfo = ximu3::XIMU3_serial_connection_info_to_string(device.serial_connection_info);
-                    break;
-                case ximu3::XIMU3_ConnectionTypeBluetooth:
-                    connectionInfo = ximu3::XIMU3_bluetooth_connection_info_to_string(device.bluetooth_connection_info);
-                    break;
-                default:
-                    connectionInfo = "";
-                    break;
-            }
-
-            std::cout << device.device_name << ", " << device.serial_number << ", " << connectionInfo << std::endl;
-            // std::cout << ximu3::XIMU3_device_to_string(*device) << std::endl; // alternative to above
+            std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::connectionInfoFrom(device)->toString() << std::endl;
+            // std::cout << ximu3::XIMU3_device_to_string(device) << std::endl; // alternative to above
         }
     }
 };

@@ -23,7 +23,7 @@ ConnectionsTable::ConnectionsTable()
     };
 
     table.getHeader().addColumn("", (int) ColumnIds::selected, 40, 40, 40);
-    table.getHeader().addColumn("", (int) ColumnIds::device, 1);
+    table.getHeader().addColumn("", (int) ColumnIds::descriptor, 1);
     table.getHeader().addColumn("", (int) ColumnIds::connection, 140);
     table.getHeader().addColumn("", (int) ColumnIds::rssi, 25, 25, 25);
     table.getHeader().addColumn("", (int) ColumnIds::battery, 25, 25, 25);
@@ -40,7 +40,7 @@ void ConnectionsTable::resized()
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIds::device - 1)).getX()));
+    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIds::descriptor - 1)).getX()));
     table.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
 }
@@ -116,13 +116,13 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 break;
             }
 
-        case ColumnIds::device:
+        case ColumnIds::descriptor:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " " + rows[(size_t) rowNumber].serialNumber);
+            static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].descriptor);
             break;
 
         case ColumnIds::connection:

@@ -19,9 +19,9 @@ public:
 
             std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
 
-            const auto connectionInfo = ximu3::BluetoothConnectionInfo(devices[0].bluetooth_connection_info);
+            const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
 
-            run(connectionInfo);
+            run(*connectionInfo);
         }
         else
         {

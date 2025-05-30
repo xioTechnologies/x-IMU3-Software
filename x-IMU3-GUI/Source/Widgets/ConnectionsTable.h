@@ -12,10 +12,8 @@ public:
     struct Row
     {
         bool selected;
-        juce::String deviceName;
-        juce::String serialNumber;
+        juce::String descriptor;
         std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
-        ximu3::XIMU3_ConnectionType connectionType;
         std::optional<int> rssiPercentage;
         std::optional<int> batteryPercentage;
         std::optional<ximu3::XIMU3_ChargingStatus> batteryStatus;
@@ -38,7 +36,7 @@ private:
     enum class ColumnIds
     {
         selected = 1,
-        device,
+        descriptor,
         connection,
         rssi,
         battery,

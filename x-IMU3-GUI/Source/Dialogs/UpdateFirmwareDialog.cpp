@@ -44,28 +44,14 @@ void UpdateFirmwareDialog::resized()
     warningLabel.setBounds(warningIcon.getRight(), warningIcon.getY(), (int) std::ceil(warningLabel.getTextWidth()), warningIcon.getHeight());
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const
+std::shared_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const
 {
     if (deviceValue.getSelectedId() == 0)
     {
         return nullptr;
     }
 
-    const auto& device = devices[(size_t) deviceValue.getSelectedId() - 1];
-    switch (device.connection_type)
-    {
-        case ximu3::XIMU3_ConnectionTypeUsb:
-            return std::make_unique<ximu3::UsbConnectionInfo>(device.usb_connection_info);
-        case ximu3::XIMU3_ConnectionTypeSerial:
-            return std::make_unique<ximu3::SerialConnectionInfo>(device.serial_connection_info);
-        case ximu3::XIMU3_ConnectionTypeBluetooth:
-        case ximu3::XIMU3_ConnectionTypeTcp:
-        case ximu3::XIMU3_ConnectionTypeUdp:
-        case ximu3::XIMU3_ConnectionTypeFile:
-            return nullptr;
-    }
-
-    return nullptr;
+    return ximu3::connectionInfoFrom(devices[(size_t) deviceValue.getSelectedId() - 1]);
 }
 
 juce::File UpdateFirmwareDialog::getHexFile() const

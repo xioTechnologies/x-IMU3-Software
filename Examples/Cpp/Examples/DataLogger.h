@@ -21,7 +21,7 @@ public:
         {
             std::cout << ximu3::XIMU3_device_to_string(device) << std::endl;
 
-            auto connection = std::make_unique<ximu3::Connection>(ximu3::UsbConnectionInfo(device.usb_connection_info));
+            auto connection = std::make_unique<ximu3::Connection>(*ximu3::connectionInfoFrom(device));
 
             if (connection->open() == ximu3::XIMU3_ResultOk)
             {
