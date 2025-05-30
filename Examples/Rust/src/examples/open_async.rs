@@ -19,7 +19,7 @@ pub fn run() {
     let connection = Connection::new(&device.connection_info);
 
     let closure = Box::new(|result| match result {
-        Ok(_) => println!("Ok"),
+        Ok(_) => println!("OK"),
         Err(_) => println!("Error"),
     });
 

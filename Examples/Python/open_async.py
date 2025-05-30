@@ -17,7 +17,7 @@ connection = ximu3.Connection(devices[0].connection_info)
 def callback(result):
     match result:
         case ximu3.RESULT_OK:
-            print("Ok")
+            print("OK")
         case ximu3.RESULT_ERROR:
             print("Error")
 
