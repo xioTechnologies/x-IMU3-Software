@@ -8,6 +8,7 @@ use crate::ffi::connection_info::*;
 use crate::ffi::helpers::*;
 use crate::ffi::ping_response::*;
 use crate::ffi::result::*;
+use crate::ping_response::*;
 use crate::statistics::*;
 use std::os::raw::{c_char, c_void};
 
@@ -79,6 +80,22 @@ pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResp
     } else {
         Default::default()
     }
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callback: Callback<PingResponseC>, context: *mut c_void) {
+    let connection: &Connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    let closure = Box::new(move |response: std::result::Result<PingResponse, ()>| {
+        callback(
+            match response {
+                Ok(response) => response.into(),
+                Err(_) => Default::default(),
+            },
+            void_ptr.0,
+        )
+    });
+    connection.ping_async(closure);
 }
 
 #[no_mangle]

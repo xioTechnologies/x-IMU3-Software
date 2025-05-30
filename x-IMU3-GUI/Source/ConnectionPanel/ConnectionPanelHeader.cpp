@@ -3,9 +3,8 @@
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
 
-ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_)
+ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
     : connectionPanel(connectionPanel_),
-      threadPool(threadPool_),
       connectionPanelContainer(connectionPanelContainer_),
       connection(connectionPanel.getConnection())
 {
@@ -160,32 +159,24 @@ void ConnectionPanelHeader::setState(const State state)
                 retryButton.setVisible(false);
                 strobeButton.setVisible(true);
 
-                const std::function<juce::ThreadPoolJob::JobStatus()> job = [&, connection_ = connection, destroyed_ = destroyed]
+                connection->pingAsync([&, connection_ = connection, destroyed_ = destroyed](ximu3::XIMU3_PingResponse response)
                 {
-                    if (*destroyed_)
+                    juce::MessageManager::callAsync([&, connection_, destroyed_, response]
                     {
-                        return juce::ThreadPoolJob::jobHasFinished;
-                    }
-
-                    auto response = connection_->ping();
-
-                    if (response.result == ximu3::XIMU3_ResultOk)
-                    {
-                        juce::MessageManager::callAsync([&, connection_, destroyed_, response]
+                        if (*destroyed_)
                         {
-                            if (*destroyed_)
-                            {
-                                return;
-                            }
+                            return;
+                        }
 
+                        if (response.result == ximu3::XIMU3_ResultOk)
+                        {
                             updateTitle(response.device_name, response.serial_number);
-                        });
-                        return juce::ThreadPoolJob::jobHasFinished;
-                    }
+                            return;
+                        }
 
-                    return juce::ThreadPoolJob::jobNeedsRunningAgain;
-                };
-                threadPool.addJob(job);
+                        setState(State::connected); // retry
+                    });
+                });
                 break;
             }
 

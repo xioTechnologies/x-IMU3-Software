@@ -121,6 +121,30 @@ static PyObject* connection_ping(Connection* self, PyObject* args)
     return ping_response_from(&ping_response);
 }
 
+static PyObject* connection_ping_async(Connection* self, PyObject* args)
+{
+    PyObject* callable;
+
+    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PyCallable_Check(callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    Py_INCREF(callable); // this will never be destroyed (memory leak)
+
+    XIMU3_connection_ping_async(self->connection, ping_response_callback, callable);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+}
+
 static PyObject* connection_send_commands(Connection* self, PyObject* args)
 {
     PyObject* commands_list;
@@ -739,6 +763,7 @@ static PyMethodDef connection_methods[] = {
         { "open_async",                        (PyCFunction) connection_open_async,                        METH_VARARGS, "" },
         { "close",                             (PyCFunction) connection_close,                             METH_NOARGS,  "" },
         { "ping",                              (PyCFunction) connection_ping,                              METH_NOARGS,  "" },
+        { "ping_async",                        (PyCFunction) connection_ping_async,                        METH_VARARGS, "" },
         { "send_commands",                     (PyCFunction) connection_send_commands,                     METH_VARARGS, "" },
         { "send_commands_async",               (PyCFunction) connection_send_commands_async,               METH_VARARGS, "" },
         { "get_info",                          (PyCFunction) connection_get_info,                          METH_NOARGS,  "" },

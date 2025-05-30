@@ -90,6 +90,23 @@ namespace ximu3
             return XIMU3_connection_ping(connection);
         }
 
+        void pingAsync(std::function<void(XIMU3_PingResponse)> callback)
+        {
+            struct WrappedCallback
+            {
+                std::function<void(const XIMU3_PingResponse)> callback;
+
+                void operator()(XIMU3_PingResponse pingResponse) const
+                {
+                    callback(pingResponse);
+                    delete this;
+                }
+            };
+            auto* const wrappedCallback = new WrappedCallback({ callback });
+
+            return XIMU3_connection_ping_async(connection, Helpers::wrapCallable<XIMU3_PingResponse>(*wrappedCallback), wrappedCallback);
+        }
+
         std::vector<std::string> sendCommands(const std::vector<std::string>& commands, const uint32_t retries, const uint32_t timeout)
         {
             const auto charPtrVector = Helpers::toCharPtrVector(commands);

@@ -33,8 +33,29 @@ public:
         }
 
         // Ping
-        const auto response = connection.ping();
+        if (helpers::yesOrNo("Use async implementation?"))
+        {
+            connection.pingAsync(callback);
 
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+        }
+        else
+        {
+            printPingResponse(connection.ping());
+        }
+
+        // Close connection
+        connection.close();
+    }
+
+private:
+    std::function<void(const ximu3::XIMU3_PingResponse)> callback = [](const auto response)
+    {
+        printPingResponse(response);
+    };
+
+    static void printPingResponse(const ximu3::XIMU3_PingResponse response)
+    {
         if (response.result == ximu3::XIMU3_ResultOk)
         {
             std::cout << response.interface << ", " << response.device_name << ", " << response.serial_number << std::endl;
@@ -44,8 +65,5 @@ public:
         {
             std::cout << "No response" << std::endl;
         }
-
-        // Close connection
-        connection.close();
     }
 };

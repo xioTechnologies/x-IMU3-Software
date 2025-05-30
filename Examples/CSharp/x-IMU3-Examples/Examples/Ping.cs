@@ -25,8 +25,28 @@ namespace Ximu3Examples
             }
 
             // Ping
-            Ximu3.CApi.XIMU3_PingResponse response = connection.Ping();
+            if (Helpers.YesOrNo("Use async implementation?"))
+            {
+                connection.PingAsync(Callback);
 
+                System.Threading.Thread.Sleep(3000);
+            }
+            else
+            {
+                PrintPingResponse(connection.Ping());
+            }
+
+            // Close connection
+            connection.Close();
+        }
+
+        private void Callback(Ximu3.CApi.XIMU3_PingResponse response)
+        {
+            PrintPingResponse(response);
+        }
+
+        private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse response)
+        {
             if (response.result == Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
                 Console.WriteLine(Ximu3.Helpers.ToString(response.interface_) + ", " + Ximu3.Helpers.ToString(response.device_name) + ", " + Ximu3.Helpers.ToString(response.serial_number));
@@ -36,9 +56,6 @@ namespace Ximu3Examples
             {
                 Console.WriteLine("No response");
             }
-
-            // Close connection
-            connection.Close();
         }
     }
 }

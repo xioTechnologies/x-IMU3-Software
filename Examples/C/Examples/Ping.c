@@ -1,5 +1,10 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
+#include "../Helpers.h"
 #include <stdio.h>
+
+static void Callback(const XIMU3_PingResponse response, void* context);
+
+static void PrintPingResponse(const XIMU3_PingResponse response);
 
 void Ping()
 {
@@ -26,8 +31,29 @@ void Ping()
     }
 
     // Ping
-    const XIMU3_PingResponse response = XIMU3_connection_ping(connection);
+    if (YesOrNo("Use async implementation?"))
+    {
+        XIMU3_connection_ping_async(connection, Callback, NULL);
 
+        Wait(3);
+    }
+    else
+    {
+        PrintPingResponse(XIMU3_connection_ping(connection));
+    }
+
+    // Close connection
+    XIMU3_connection_close(connection);
+    XIMU3_connection_free(connection);
+}
+
+static void Callback(const XIMU3_PingResponse response, void* context)
+{
+    PrintPingResponse(response);
+}
+
+static void PrintPingResponse(const XIMU3_PingResponse response)
+{
     if (response.result == XIMU3_ResultOk)
     {
         printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
@@ -37,8 +63,4 @@ void Ping()
     {
         printf("No response\n");
     }
-
-    // Close connection
-    XIMU3_connection_close(connection);
-    XIMU3_connection_free(connection);
 }
