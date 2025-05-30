@@ -83,13 +83,7 @@ impl Connection {
                 if *dropped {
                     return;
                 }
-
-                if result.is_err() {
-                    closure(result);
-                    return;
-                }
-
-                closure(Ok(()));
+                closure(result);
             }
         });
     }

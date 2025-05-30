@@ -14,12 +14,13 @@ namespace Ximu3Examples
             Console.WriteLine("E. FileConverter");
             Console.WriteLine("F. GetPortNames");
             Console.WriteLine("G. NetworkAnnouncement");
-            Console.WriteLine("H. Ping");
-            Console.WriteLine("I. PortScanner");
-            Console.WriteLine("J. SerialConnection");
-            Console.WriteLine("K. TcpConnection");
-            Console.WriteLine("L. UdpConnection");
-            Console.WriteLine("M. UsbConnection");
+            Console.WriteLine("H. OpenAsync");
+            Console.WriteLine("I. Ping");
+            Console.WriteLine("J. PortScanner");
+            Console.WriteLine("K. SerialConnection");
+            Console.WriteLine("L. TcpConnection");
+            Console.WriteLine("M. UdpConnection");
+            Console.WriteLine("N. UsbConnection");
 
             switch (Helpers.GetKey())
             {
@@ -45,21 +46,24 @@ namespace Ximu3Examples
                     _ = new NetworkAnnouncement();
                     break;
                 case 'H':
-                    _ = new Ping();
+                    _ = new OpenAsync();
                     break;
                 case 'I':
-                    _ = new PortScanner();
+                    _ = new Ping();
                     break;
                 case 'J':
-                    _ = new SerialConnection();
+                    _ = new PortScanner();
                     break;
                 case 'K':
-                    _ = new TcpConnection();
+                    _ = new SerialConnection();
                     break;
                 case 'L':
-                    _ = new UdpConnection();
+                    _ = new TcpConnection();
                     break;
                 case 'M':
+                    _ = new UdpConnection();
+                    break;
+                case 'N':
                     _ = new UsbConnection();
                     break;
             }
