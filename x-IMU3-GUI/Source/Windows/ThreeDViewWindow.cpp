@@ -1,9 +1,9 @@
 #include "./ConnectionPanelContainer.h"
 #include "ThreeDViewWindow.h"
 
-ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
-      threeDView(glRenderer)
+      threeDView(openGLRenderer)
 {
     addAndMakeVisible(threeDView);
 

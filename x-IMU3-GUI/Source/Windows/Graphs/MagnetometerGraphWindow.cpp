@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "MagnetometerGraphWindow.h"
 
-MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Intensity (a.u.)",
                   { "X", "Y", "Z" },
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },

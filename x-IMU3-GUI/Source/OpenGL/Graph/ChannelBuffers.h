@@ -52,8 +52,8 @@ private:
     std::array<FifoDatum, 1 << 10> fifoData;
     juce::AbstractFifo fifo { (int) fifoData.size() };
 
-    std::array<uint64_t, GLResources::graphBufferSize> timestamps;
-    std::vector<std::array<juce::Point<GLfloat>, GLResources::graphBufferSize>> channelBuffers;
+    std::array<uint64_t, OpenGLResources::graphBufferSize> timestamps;
+    std::vector<std::array<juce::Point<GLfloat>, OpenGLResources::graphBufferSize>> channelBuffers;
 
     int numberAvailable = 0;
 
@@ -78,7 +78,7 @@ private:
         }
 
         // Shift buffers to make space
-        if (const auto shiftAmount = (numberAvailable + fifoNumReady - GLResources::graphBufferSize); shiftAmount > 0)
+        if (const auto shiftAmount = (numberAvailable + fifoNumReady - OpenGLResources::graphBufferSize); shiftAmount > 0)
         {
             std::copy(timestamps.begin() + shiftAmount, timestamps.end(), timestamps.begin());
             for (auto& channelBuffer : channelBuffers)
@@ -88,7 +88,7 @@ private:
         }
 
         // Copy new data
-        auto writeIndex = std::min(GLResources::graphBufferSize - fifoNumReady, numberAvailable);
+        auto writeIndex = std::min(OpenGLResources::graphBufferSize - fifoNumReady, numberAvailable);
         juce::AbstractFifo::ScopedRead(fifo, (int) fifoNumReady).forEach([&](auto fifoIndex)
                                                                          {
                                                                              timestamps[(size_t) writeIndex] = fifoData[(size_t) fifoIndex].timestamp;
@@ -101,7 +101,7 @@ private:
                                                                              writeIndex++;
                                                                          });
 
-        numberAvailable = std::min(GLResources::graphBufferSize, numberAvailable + fifoNumReady);
+        numberAvailable = std::min(OpenGLResources::graphBufferSize, numberAvailable + fifoNumReady);
 
         // Update timestamps
         for (size_t lineIndex = 0; lineIndex < channelBuffers.size(); lineIndex++)

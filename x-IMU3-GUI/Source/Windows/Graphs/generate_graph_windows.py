@@ -285,7 +285,7 @@ helpers.insert(file_path, code, "0")
 template = """\
     if (type == WindowIds::$name$)
     {
-        return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, glRenderer);
+        return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, openGLRenderer);
     }\n"""
 
 code = "".join([template.replace("$name$", w.name) for w in windows])

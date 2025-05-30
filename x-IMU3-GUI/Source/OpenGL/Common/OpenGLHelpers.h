@@ -6,7 +6,7 @@
 #include "glm/vec4.hpp"
 #include <juce_opengl/juce_opengl.h>
 
-namespace GLHelpers
+namespace OpenGLHelpers
 {
     /** Represents an OpenGL uniform value.
         After a juce::OpenGLShaderProgram has been linked, you can create Uniform objects to
@@ -233,14 +233,14 @@ namespace GLHelpers
 
     static inline void viewportAndScissor(const juce::Rectangle<int>& bounds)
     {
-        GLHelpers::viewport(bounds);
-        GLHelpers::scissor(bounds);
+        OpenGLHelpers::viewport(bounds);
+        OpenGLHelpers::scissor(bounds);
     }
 
     static inline void clear(const juce::Colour& colour, const juce::Rectangle<int>& bounds)
     {
-        GLHelpers::ScopedCapability _(juce::gl::GL_SCISSOR_TEST, true);
-        GLHelpers::viewportAndScissor(bounds);
+        OpenGLHelpers::ScopedCapability _(juce::gl::GL_SCISSOR_TEST, true);
+        OpenGLHelpers::viewportAndScissor(bounds);
         juce::OpenGLHelpers::clear(colour);
     }
 

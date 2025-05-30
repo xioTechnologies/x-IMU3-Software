@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "SerialAccessoryCsvsGraphWindow.h"
 
-SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "CSV",
                   { "1", "2", "3", "4", "5", "6", "7", "8" },
                   { UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 },

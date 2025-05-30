@@ -1,9 +1,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "$name$GraphWindow.h"
 
-$name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+$name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "$y_axis$",
                   $legend_strings$,
                   $legend_colours$,

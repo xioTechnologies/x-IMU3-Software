@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "BatteryVoltageGraphWindow.h"
 
-BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Voltage (V)",
                   { "" },
                   { UIColours::graphChannel1 },

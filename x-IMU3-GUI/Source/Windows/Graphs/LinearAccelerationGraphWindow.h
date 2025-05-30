@@ -3,13 +3,13 @@
 #pragma once
 
 #include "GraphWindow.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
 class LinearAccelerationGraphWindow : public GraphWindow
 {
 public:
-    LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~LinearAccelerationGraphWindow() override;
 

@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "RssiPercentageGraphWindow.h"
 
-RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Percentage (%)",
                   { "" },
                   { UIColours::graphChannel1 },

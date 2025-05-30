@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLHelpers.h"
+#include "OpenGL/Common/OpenGLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class TextShader : public Shader
@@ -21,11 +21,11 @@ public:
         glBindTexture(target, texture);
     }
 
-    GLHelpers::Uniform colour { *this, "colour" };
-    GLHelpers::Uniform transform { *this, "transform" };
+    OpenGLHelpers::Uniform colour { *this, "colour" };
+    OpenGLHelpers::Uniform transform { *this, "transform" };
 
 private:
-    GLHelpers::Uniform textureImage { *this, "textureImage" };
+    OpenGLHelpers::Uniform textureImage { *this, "textureImage" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TextShader)
 };

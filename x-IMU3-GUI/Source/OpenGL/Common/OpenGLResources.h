@@ -18,14 +18,14 @@
 #include "Text.h"
 #include "TextQuad.h"
 
-class GLResources
+class OpenGLResources
 {
     juce::OpenGLContext& context;
 
 public:
     static constexpr int graphBufferSize = 1 << 16;
 
-    GLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool);
+    OpenGLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool);
 
     // Text
     Text& getGraphTickText();
@@ -61,5 +61,5 @@ private:
     std::unique_ptr<Text> graphTickText;
     std::unique_ptr<Text> threeDViewAxesText;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GLResources)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OpenGLResources)
 };

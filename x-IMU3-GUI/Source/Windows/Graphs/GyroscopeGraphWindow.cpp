@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "GyroscopeGraphWindow.h"
 
-GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Angular Rate (" + degreeSymbol + "/s)",
                   { "X", "Y", "Z" },
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },

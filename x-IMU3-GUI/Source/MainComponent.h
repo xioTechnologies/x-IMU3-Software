@@ -6,7 +6,7 @@
 #include "Dialogs/MessageDialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Widgets/DisabledOverlay.h"
 #include "Windows/WindowIds.h"
 
@@ -69,8 +69,8 @@ private:
     const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
     juce::ValueTree windowLayout { WindowIds::Row };
     juce::ThreadPool threadPool;
-    GLRenderer glRenderer { *this, threadPool };
-    ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer, threadPool };
+    OpenGLRenderer openGLRenderer { *this, threadPool };
+    ConnectionPanelContainer connectionPanelContainer { windowLayout, openGLRenderer, threadPool };
     juce::Viewport connectionPanelViewport;
     MenuStrip menuStrip { windowLayout, threadPool, connectionPanelContainer };
     juce::TooltipWindow tooltipWindow { nullptr, 300 };

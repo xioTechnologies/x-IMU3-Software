@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common/GLResources.h"
+#include "Common/OpenGLResources.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_opengl/juce_opengl.h>
 #include <mutex>

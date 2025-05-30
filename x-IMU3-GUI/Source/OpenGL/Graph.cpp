@@ -1,6 +1,6 @@
 #include "Graph.h"
 
-Graph::Graph(GLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_)
+Graph::Graph(OpenGLRenderer& renderer_, const std::vector<juce::Colour>& colours_, const int legendHeight_, const int rightMargin_)
     : OpenGLComponent(renderer_.getContext()),
       renderer(renderer_),
       colours(colours_),
@@ -32,7 +32,7 @@ void Graph::render()
 
     settings.axesLimits.autoscale(settings.horizontalAutoscale, settings.verticalAutoscale, channels, settings.enabledChannels);
 
-    GLHelpers::clear(UIColours::backgroundLight, toOpenGLBounds(bounds)); // paint graph background color
+    OpenGLHelpers::clear(UIColours::backgroundLight, toOpenGLBounds(bounds)); // paint graph background color
 
     if (ticksEnabled)
     {
@@ -118,12 +118,12 @@ void Graph::drawPlot(const juce::Rectangle<int>& bounds, const AxesLimits& limit
 {
     // Set rendering bounds
     const auto glBounds = toOpenGLBounds(bounds);
-    GLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
-    GLHelpers::viewportAndScissor(glBounds);
+    OpenGLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
+    OpenGLHelpers::viewportAndScissor(glBounds);
 
     // Setup OpenGL state
-    GLHelpers::ScopedCapability scopedCull(juce::gl::GL_CULL_FACE, false);
-    GLHelpers::ScopedCapability scopedDepth(juce::gl::GL_DEPTH_TEST, false);
+    OpenGLHelpers::ScopedCapability scopedCull(juce::gl::GL_CULL_FACE, false);
+    OpenGLHelpers::ScopedCapability scopedDepth(juce::gl::GL_DEPTH_TEST, false);
 
     /*  NOTE: We are using OpenGL's built-in line rendering system, GL_LINES. By using this system, we are
      *  limited to drawing lines with a width of 1 pixel. The OpenGL spec only requires graphics drivers
@@ -186,7 +186,7 @@ void Graph::drawGrid(const AxesLimits& limits, const std::vector<Tick>& xTicks, 
     }
 
     // Draw lines
-    GLHelpers::ScopedCapability _(juce::gl::GL_LINE_SMOOTH, false); // provides sharper horizontal/vertical lines
+    OpenGLHelpers::ScopedCapability _(juce::gl::GL_LINE_SMOOTH, false); // provides sharper horizontal/vertical lines
 
     renderer.getResources().graphGridShader.use();
     auto& gridBuffer = renderer.getResources().graphGridBuffer;
@@ -240,8 +240,8 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int>& plotBounds, con
     // Set rendering bounds, expanded to allow drawing past graph edges
     const auto glPlotBounds = toOpenGLBounds(plotBounds); // only plot area
     const auto glDrawBounds = toOpenGLBounds(drawBounds); // full area allowed to draw text
-    GLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
-    GLHelpers::viewportAndScissor(glDrawBounds);
+    OpenGLHelpers::ScopedCapability scopedScissor(juce::gl::GL_SCISSOR_TEST, true);
+    OpenGLHelpers::viewportAndScissor(glDrawBounds);
 
     const auto& text = renderer.getResources().getGraphTickText();
     const int distanceOfPlotAxis = isXTicks ? glPlotBounds.getWidth() : glPlotBounds.getHeight();

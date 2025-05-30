@@ -3,7 +3,7 @@
 #include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "OpenGL/ThreeDView.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "Widgets/SimpleLabel.h"
@@ -14,7 +14,7 @@ class ThreeDViewWindow : public Window,
                          private juce::Timer
 {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~ThreeDViewWindow() override;
 

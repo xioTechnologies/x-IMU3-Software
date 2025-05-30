@@ -3,13 +3,13 @@
 #pragma once
 
 #include "GraphWindow.h"
-#include "OpenGL/Common/GLRenderer.h"
+#include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
 class BatteryPercentageGraphWindow : public GraphWindow
 {
 public:
-    BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer);
+    BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
 
     ~BatteryPercentageGraphWindow() override;
 

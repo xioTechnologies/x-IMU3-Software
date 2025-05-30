@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common/GLRenderer.h"
+#include "Common/OpenGLRenderer.h"
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
@@ -39,7 +39,7 @@ public:
         AxesConvention axesConvention { AxesConvention::nwu };
     };
 
-    explicit ThreeDView(GLRenderer& renderer_);
+    explicit ThreeDView(OpenGLRenderer& renderer_);
 
     ~ThreeDView() override;
 
@@ -56,7 +56,7 @@ public:
     void update(const float x, const float y, const float z, const float w);
 
 private:
-    GLRenderer& renderer;
+    OpenGLRenderer& renderer;
 
     mutable std::mutex settingsMutex;
     Settings settings;

@@ -3,9 +3,9 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "EulerAnglesGraphWindow.h"
 
-EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, GLRenderer& glRenderer)
+EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
-                  glRenderer,
+                  openGLRenderer,
                   "Angle (" + degreeSymbol + ")",
                   { "Roll", "Pitch", "Yaw" },
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },

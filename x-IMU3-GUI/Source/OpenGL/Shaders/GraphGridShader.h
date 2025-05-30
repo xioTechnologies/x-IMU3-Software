@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLHelpers.h"
+#include "OpenGL/Common/OpenGLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class GraphGridShader : public Shader

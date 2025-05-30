@@ -1,7 +1,7 @@
 #pragma once
 
 #include <BinaryData.h>
-#include "OpenGL/Common/GLHelpers.h"
+#include "OpenGL/Common/OpenGLHelpers.h"
 #include "OpenGL/Common/Shader.h"
 
 class UnlitShader : public Shader
@@ -20,11 +20,11 @@ public:
         texture.bind();
     }
 
-    GLHelpers::Uniform modelViewProjectionMatrix { *this, "modelViewProjectionMatrix" };
-    GLHelpers::Uniform colour { *this, "colour" };
+    OpenGLHelpers::Uniform modelViewProjectionMatrix { *this, "modelViewProjectionMatrix" };
+    OpenGLHelpers::Uniform colour { *this, "colour" };
 
 private:
-    GLHelpers::Uniform textureImage { *this, "textureImage" };
+    OpenGLHelpers::Uniform textureImage { *this, "textureImage" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnlitShader)
 };

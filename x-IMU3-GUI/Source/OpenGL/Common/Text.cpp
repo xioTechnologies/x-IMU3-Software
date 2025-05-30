@@ -1,4 +1,4 @@
-#include "OpenGL/Common/GLResources.h"
+#include "OpenGL/Common/OpenGLResources.h"
 #include "Text.h"
 
 Text::Text(const std::unordered_set<unsigned char>& charactersToLoad_) : charactersToLoad(charactersToLoad_)
@@ -118,7 +118,7 @@ float Text::getStringWidthJucePixels(const juce::String& string) const
     return (float) ((double) getStringWidthGLPixels(string) / (context ? context->getRenderingScale() : 1.0));
 }
 
-void Text::draw(GLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
+void Text::draw(OpenGLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
 {
     if (justification.testFlags(juce::Justification::horizontallyCentred))
     {
@@ -162,7 +162,7 @@ void Text::draw(GLResources& resources, const juce::String& text, const juce::Co
     }
 }
 
-void Text::drawChar3D(GLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
+void Text::drawChar3D(OpenGLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
 {
     auto glyphSearch = glyphs.find(character);
     if (glyphSearch == glyphs.end())
