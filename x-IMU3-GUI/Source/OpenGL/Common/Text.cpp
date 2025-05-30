@@ -40,9 +40,9 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
         }
 
         // Generate texture
-        GLuint textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        GLuint textureId;
+        glGenTextures(1, &textureId);
+        glBindTexture(GL_TEXTURE_2D, textureId);
         glTexImage2D(GL_TEXTURE_2D,
                      0,
                      GL_RED,
@@ -62,7 +62,7 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         const Glyph glyph = {
-            textureID,
+            textureId,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
             toPixels((float) face->glyph->advance.x)
@@ -78,7 +78,7 @@ void Text::unloadFont()
 {
     for (auto& glyph : glyphs)
     {
-        juce::gl::glDeleteTextures(1, &(glyph.second.textureID));
+        juce::gl::glDeleteTextures(1, &(glyph.second.textureId));
     }
 
     glyphs.clear();
@@ -155,7 +155,7 @@ void Text::draw(GLResources& resources, const juce::String& text, const juce::Co
         const auto translation = glm::translate(glm::mat4(1.0), glm::vec3(textOrigin + glyphCentre, 0.0f));
         const auto transform = projection * translation * scale;
         textShader.transform.set(transform);
-        textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
+        textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureId);
         resources.textQuad.draw();
 
         textOrigin.x += glyph.advance; // move origin to next character
@@ -184,7 +184,7 @@ void Text::drawChar3D(GLResources& resources, unsigned char character, const juc
     const auto scale = glm::scale(glm::mat4(1.0), glm::vec3(scaleFactor, 1.0f));
     const auto ndcTransform = ndcMatrix * scale;
     textShader.transform.set(ndcTransform);
-    textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureID);
+    textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureId);
     resources.textQuad.draw();
 }
 

@@ -14,6 +14,6 @@ public:
     ~HighGAccelerometerGraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
     std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;
 };

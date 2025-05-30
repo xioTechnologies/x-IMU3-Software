@@ -38,9 +38,9 @@ namespace Ximu3
             return CApi.XIMU3_network_announcement_add_callback(networkAnnouncement, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
-        public void RemoveCallback(UInt64 callbackID)
+        public void RemoveCallback(UInt64 callbackId)
         {
-            CApi.XIMU3_network_announcement_remove_callback(networkAnnouncement, callbackID);
+            CApi.XIMU3_network_announcement_remove_callback(networkAnnouncement, callbackId);
         }
 
         public CApi.XIMU3_NetworkAnnouncementMessage[] GetMessages()

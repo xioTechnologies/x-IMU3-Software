@@ -59,7 +59,7 @@ private:
         {
             const auto componentSize = parent.isVertical ? parent.childComponents[i]->getHeight() : parent.childComponents[i]->getWidth();
             const auto sizeProportion = componentSize / (float) parent.totalWindowSize;
-            parent.layoutTree.getChild((int) i).setPropertyExcludingListener(&parent, WindowIDs::size, sizeProportion, nullptr);
+            parent.layoutTree.getChild((int) i).setPropertyExcludingListener(&parent, WindowIds::size, sizeProportion, nullptr);
         }
     }
 
@@ -93,7 +93,7 @@ void WindowContainer::resized()
 
     const auto sizeProportionsSum = std::accumulate(layoutTree.begin(), layoutTree.end(), 0.0f, [](float sum, auto child)
     {
-        return sum + (float) child.getProperty(WindowIDs::size, 1.0f);
+        return sum + (float) child.getProperty(WindowIds::size, 1.0f);
     });
 
     int position = 0;
@@ -102,7 +102,7 @@ void WindowContainer::resized()
         if (i % 2 == 0)
         {
             const auto index = i / 2;
-            const auto size = juce::roundToInt(totalWindowSize * (float) layoutTree.getChild(index).getProperty(WindowIDs::size, 1.0f) / sizeProportionsSum);
+            const auto size = juce::roundToInt(totalWindowSize * (float) layoutTree.getChild(index).getProperty(WindowIds::size, 1.0f) / sizeProportionsSum);
             if (isVertical)
             {
                 childComponents[(size_t) index]->setBounds(0, position, getWidth(), size);
@@ -151,7 +151,7 @@ void WindowContainer::componentAddedOrRemoved()
 
 void WindowContainer::valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property)
 {
-    if (property == WindowIDs::size && tree.getParent() == layoutTree)
+    if (property == WindowIds::size && tree.getParent() == layoutTree)
     {
         resized();
     }
@@ -165,7 +165,7 @@ void WindowContainer::valueTreeChildAdded(juce::ValueTree& parentTree, juce::Val
     }
 
     std::shared_ptr<juce::Component> componentToAdd;
-    if (childWhichHasBeenAdded.hasType(WindowIDs::Row) || childWhichHasBeenAdded.hasType(WindowIDs::Column))
+    if (childWhichHasBeenAdded.hasType(WindowIds::Row) || childWhichHasBeenAdded.hasType(WindowIds::Column))
     {
         componentToAdd = std::make_shared<WindowContainer>(connectionPanel, childWhichHasBeenAdded);
     }

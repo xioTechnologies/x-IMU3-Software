@@ -2,7 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <vector>
-#include "Windows/WindowIDs.h"
+#include "Windows/WindowIds.h"
 
 class WindowContainer : public juce::Component,
                         private juce::ValueTree::Listener
@@ -17,7 +17,7 @@ public:
 private:
     ConnectionPanel& connectionPanel;
     juce::ValueTree layoutTree;
-    const bool isVertical = layoutTree.hasType(WindowIDs::Column);
+    const bool isVertical = layoutTree.hasType(WindowIds::Column);
 
     std::vector<std::shared_ptr<juce::Component>> childComponents;
 

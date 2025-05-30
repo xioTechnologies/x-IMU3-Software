@@ -11,7 +11,7 @@ GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_,
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
     {
         update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
     }));
@@ -19,8 +19,8 @@ GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_,
 
 GyroscopeGraphWindow::~GyroscopeGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

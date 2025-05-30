@@ -232,9 +232,9 @@ namespace ximu3
             return XIMU3_connection_add_end_of_file_callback(connection, Helpers::wrapCallable<>(callback), &callback);
         }
 
-        void removeCallback(const uint64_t callbackID)
+        void removeCallback(const uint64_t callbackId)
         {
-            XIMU3_connection_remove_callback(connection, callbackID);
+            XIMU3_connection_remove_callback(connection, callbackId);
         }
 
     private:

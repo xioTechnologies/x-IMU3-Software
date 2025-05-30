@@ -11,7 +11,7 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
     }));
@@ -19,8 +19,8 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
 
 EarthAccelerationGraphWindow::~EarthAccelerationGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

@@ -11,7 +11,7 @@ MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLa
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)
     {
         update(message.timestamp, { message.x, message.y, message.z });
     }));
@@ -19,8 +19,8 @@ MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree& windowLa
 
 MagnetometerGraphWindow::~MagnetometerGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

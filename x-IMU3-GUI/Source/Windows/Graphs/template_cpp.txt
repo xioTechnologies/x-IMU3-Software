@@ -14,8 +14,8 @@ $callback_implementations$
 
 $name$GraphWindow::~$name$GraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

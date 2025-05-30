@@ -65,7 +65,7 @@ private:
 
     struct Glyph
     {
-        GLuint textureID; // texture freetypeTextureID for each letter
+        GLuint textureId; // texture freetypeTextureId for each letter
         glm::ivec2 size; // width/height of glyph
         glm::ivec2 bearing; // offset from origin to top left of glyph
         float advance; // offset to advance to next glyph in pixels

@@ -14,7 +14,7 @@ ConnectionsTable::ConnectionsTable()
     {
         for (size_t index = 0; index < rows.size(); index++)
         {
-            if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, (int) index)))
+            if (auto* const toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIds::selected, (int) index)))
             {
                 toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
             }
@@ -22,12 +22,12 @@ ConnectionsTable::ConnectionsTable()
         }
     };
 
-    table.getHeader().addColumn("", (int) ColumnIDs::selected, 40, 40, 40);
-    table.getHeader().addColumn("", (int) ColumnIDs::device, 1);
-    table.getHeader().addColumn("", (int) ColumnIDs::connection, 140);
-    table.getHeader().addColumn("", (int) ColumnIDs::rssi, 25, 25, 25);
-    table.getHeader().addColumn("", (int) ColumnIDs::battery, 25, 25, 25);
-    table.getHeader().addColumn("", (int) ColumnIDs::margin, 5, 5, 5);
+    table.getHeader().addColumn("", (int) ColumnIds::selected, 40, 40, 40);
+    table.getHeader().addColumn("", (int) ColumnIds::device, 1);
+    table.getHeader().addColumn("", (int) ColumnIds::connection, 140);
+    table.getHeader().addColumn("", (int) ColumnIds::rssi, 25, 25, 25);
+    table.getHeader().addColumn("", (int) ColumnIds::battery, 25, 25, 25);
+    table.getHeader().addColumn("", (int) ColumnIds::margin, 5, 5, 5);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -40,7 +40,7 @@ void ConnectionsTable::resized()
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIDs::device - 1)).getX()));
+    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition(((int) ColumnIds::device - 1)).getX()));
     table.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
 }
@@ -90,16 +90,16 @@ int ConnectionsTable::getNumRows()
     return (int) rows.size();
 }
 
-juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate)
+juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate)
 {
     if (rowNumber >= (int) rows.size())
     {
         return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
     }
 
-    switch ((ColumnIDs) columnID)
+    switch ((ColumnIds) columnId)
     {
-        case ColumnIDs::selected:
+        case ColumnIds::selected:
             {
                 if (existingComponentToUpdate == nullptr)
                 {
@@ -116,7 +116,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 break;
             }
 
-        case ColumnIDs::device:
+        case ColumnIds::device:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
@@ -125,7 +125,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].deviceName + " " + rows[(size_t) rowNumber].serialNumber);
             break;
 
-        case ColumnIDs::connection:
+        case ColumnIds::connection:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new SimpleLabel();
@@ -134,7 +134,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             static_cast<SimpleLabel*>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].connectionInfo->toString());
             break;
 
-        case ColumnIDs::rssi:
+        case ColumnIds::rssi:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new RssiIcon(0.65f);
@@ -150,7 +150,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             }
             break;
 
-        case ColumnIDs::battery:
+        case ColumnIds::battery:
             if (existingComponentToUpdate == nullptr)
             {
                 existingComponentToUpdate = new BatteryIcon(0.65f);
@@ -166,7 +166,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
             }
             break;
 
-        case ColumnIDs::margin:
+        case ColumnIds::margin:
             break;
     }
 
@@ -175,7 +175,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
 
 void ConnectionsTable::cellClicked(int rowNumber, int, const juce::MouseEvent&)
 {
-    if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIDs::selected, rowNumber)))
+    if (auto* toggle = dynamic_cast<CustomToggleButton*>(table.getCellComponent((int) ColumnIds::selected, rowNumber)))
     {
         toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
     }

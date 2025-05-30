@@ -11,7 +11,7 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
     {
         update(message.timestamp, { message.x, message.y, message.z });
     }));
@@ -19,8 +19,8 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
 
 HighGAccelerometerGraphWindow::~HighGAccelerometerGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

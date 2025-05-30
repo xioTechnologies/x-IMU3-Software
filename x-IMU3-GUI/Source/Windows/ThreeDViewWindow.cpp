@@ -19,7 +19,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     addAndMakeVisible(loadingLabel);
 
-    quaternionCallbackID = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
+    quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
         threeDView.update(message.x, message.y, message.z, message.w);
 
@@ -30,12 +30,12 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = eulerAngles.yaw;
     });
 
-    rotationMatrixCallbackID = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
+    rotationMatrixCallbackId = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
         quaternionCallback(ximu3::XIMU3_euler_angles_message_to_quaternion_message(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
     });
 
-    eulerAnglesCallbackID = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
+    eulerAnglesCallbackId = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
         const auto quaternion = ximu3::XIMU3_euler_angles_message_to_quaternion_message(message);
 
@@ -46,17 +46,17 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = message.yaw;
     });
 
-    linearAccelerationCallbackID = connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
+    linearAccelerationCallbackId = connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
         quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
     });
 
-    earthAccelerationCallbackID = connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    earthAccelerationCallbackId = connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
     });
 
-    ahrsStatusMessageCallbackID = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message)
+    ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message)
     {
         angularRateRecoveryState = juce::exactlyEqual(message.angular_rate_recovery, 0.0f) == false;
         accelerationRecoveryState = juce::exactlyEqual(message.acceleration_recovery, 0.0f) == false;
@@ -71,12 +71,12 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
 ThreeDViewWindow::~ThreeDViewWindow()
 {
-    connectionPanel.getConnection()->removeCallback(quaternionCallbackID);
-    connectionPanel.getConnection()->removeCallback(rotationMatrixCallbackID);
-    connectionPanel.getConnection()->removeCallback(eulerAnglesCallbackID);
-    connectionPanel.getConnection()->removeCallback(linearAccelerationCallbackID);
-    connectionPanel.getConnection()->removeCallback(earthAccelerationCallbackID);
-    connectionPanel.getConnection()->removeCallback(ahrsStatusMessageCallbackID);
+    connectionPanel.getConnection()->removeCallback(quaternionCallbackId);
+    connectionPanel.getConnection()->removeCallback(rotationMatrixCallbackId);
+    connectionPanel.getConnection()->removeCallback(eulerAnglesCallbackId);
+    connectionPanel.getConnection()->removeCallback(linearAccelerationCallbackId);
+    connectionPanel.getConnection()->removeCallback(earthAccelerationCallbackId);
+    connectionPanel.getConnection()->removeCallback(ahrsStatusMessageCallbackId);
 }
 
 void ThreeDViewWindow::resized()
@@ -237,11 +237,11 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [&]
     {
-        const auto size = settingsTree.getProperty(WindowIDs::size);
+        const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
         if (size.isVoid() == false)
         {
-            settingsTree.setProperty(WindowIDs::size, size, nullptr);
+            settingsTree.setProperty(WindowIds::size, size, nullptr);
         }
     });
 

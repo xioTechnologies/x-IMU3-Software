@@ -11,7 +11,7 @@ ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& 
                   { UIColours::graphChannel1 },
                   true)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
     {
         update(message.timestamp, { (float) message.data_rate / 1000.0f });
     }));
@@ -19,8 +19,8 @@ ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree& 
 
 ReceivedDataRateGraphWindow::~ReceivedDataRateGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

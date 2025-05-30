@@ -32,11 +32,11 @@ private:
     SimpleLabel numberOfErrorsLabel { "0", UIFonts::getSmallFont(), juce::Justification::right };
 
     std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;
-    uint64_t statisticsCallbackID;
+    uint64_t statisticsCallbackId;
     std::function<void(ximu3::XIMU3_NotificationMessage)> notificationCallback;
-    uint64_t notificationCallbackID;
+    uint64_t notificationCallbackId;
     std::function<void(ximu3::XIMU3_ErrorMessage)> errorCallback;
-    uint64_t errorCallbackID;
+    uint64_t errorCallbackId;
 
     std::vector<NotificationsAndErrorsDialog::Message> messages;
 

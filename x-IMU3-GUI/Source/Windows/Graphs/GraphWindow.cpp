@@ -224,11 +224,11 @@ juce::PopupMenu GraphWindow::getMenu()
 
     menu.addItem("Restore Defaults", true, false, [this]
     {
-        const auto size = settingsTree.getProperty(WindowIDs::size);
+        const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
         if (size.isVoid() == false)
         {
-            settingsTree.setProperty(WindowIDs::size, size, nullptr);
+            settingsTree.setProperty(WindowIds::size, size, nullptr);
         }
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]

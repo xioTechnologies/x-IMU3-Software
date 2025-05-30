@@ -14,7 +14,7 @@ public:
     ~EulerAnglesGraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
     std::function<void(ximu3::XIMU3_RotationMatrixMessage)> rotationMatrixCallback;
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;

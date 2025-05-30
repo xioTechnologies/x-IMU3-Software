@@ -11,7 +11,7 @@ SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::Value
                   { UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)
     {
         std::vector<float> values;
         for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", ""))
@@ -24,8 +24,8 @@ SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::Value
 
 SerialAccessoryCsvsGraphWindow::~SerialAccessoryCsvsGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

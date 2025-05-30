@@ -37,7 +37,7 @@ public:
     void messagesChanged();
 
 private:
-    enum class ColumnID
+    enum class ColumnId
     {
         type = 1,
         timestamp,
@@ -63,7 +63,7 @@ private:
     {
     }
 
-    juce::Component* refreshComponentForCell(int rowNumber, int columnID, bool, juce::Component* existingComponentToUpdate) override;
+    juce::Component* refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotificationsAndErrorsDialog)
 };

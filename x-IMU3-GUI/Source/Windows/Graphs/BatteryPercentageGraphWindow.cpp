@@ -11,7 +11,7 @@ BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree
                   { UIColours::graphChannel1 },
                   true)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         update(message.timestamp, { message.percentage });
     }));
@@ -19,8 +19,8 @@ BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree
 
 BatteryPercentageGraphWindow::~BatteryPercentageGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

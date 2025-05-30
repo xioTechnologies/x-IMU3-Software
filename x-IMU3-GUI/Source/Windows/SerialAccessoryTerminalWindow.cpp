@@ -48,7 +48,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         loadRecents();
     };
 
-    callbackID = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
+    callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
         juce::MessageManager::callAsync([&, self, message]
         {
@@ -64,7 +64,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
 SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
 {
-    connectionPanel.getConnection()->removeCallback(callbackID);
+    connectionPanel.getConnection()->removeCallback(callbackId);
 }
 
 void SerialAccessoryTerminalWindow::paint(juce::Graphics& g)

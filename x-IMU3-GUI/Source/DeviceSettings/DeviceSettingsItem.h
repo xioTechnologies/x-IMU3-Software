@@ -20,11 +20,11 @@ public:
             addSubItem(new DeviceSettingsItem(child, settingsFlattened, enumsTree, hideUnusedSettings));
         }
 
-        if (settingsTree.hasProperty(DeviceSettingsIDs::hideKey))
+        if (settingsTree.hasProperty(DeviceSettingsIds::hideKey))
         {
             for (const auto& setting : settingsFlattened)
             {
-                if (setting[DeviceSettingsIDs::key] == settingsTree[DeviceSettingsIDs::hideKey])
+                if (setting[DeviceSettingsIds::key] == settingsTree[DeviceSettingsIds::hideKey])
                 {
                     hideSetting = setting;
                     break;
@@ -32,7 +32,7 @@ public:
             }
         }
 
-        setOpen(settingsTree[DeviceSettingsIDs::expand]);
+        setOpen(settingsTree[DeviceSettingsIds::expand]);
     }
 
     bool mightContainSubItems() override
@@ -42,7 +42,7 @@ public:
 
     int getItemHeight() const override
     {
-        if (settingsTree.getType() == DeviceSettingsIDs::Margin)
+        if (settingsTree.getType() == DeviceSettingsIds::Margin)
         {
             return Setting::rowMargin / 2;
         }
@@ -54,7 +54,7 @@ public:
                 return 0;
             }
 
-            if (juce::StringArray::fromTokens(settingsTree[DeviceSettingsIDs::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIDs::value].toString()))
+            if (juce::StringArray::fromTokens(settingsTree[DeviceSettingsIds::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIds::value].toString()))
             {
                 return 0;
             }
@@ -65,17 +65,17 @@ public:
 
     std::unique_ptr<juce::Component> createItemComponent() override
     {
-        if (settingsTree.getType() == DeviceSettingsIDs::Group)
+        if (settingsTree.getType() == DeviceSettingsIds::Group)
         {
             return std::make_unique<Setting>(settingsTree, this);
         }
 
-        if (settingsTree.getType() == DeviceSettingsIDs::Margin)
+        if (settingsTree.getType() == DeviceSettingsIds::Margin)
         {
             return nullptr;
         }
 
-        const auto type = settingsTree[DeviceSettingsIDs::type];
+        const auto type = settingsTree[DeviceSettingsIds::type];
 
         if (type == "string" || type == "number")
         {
@@ -87,7 +87,7 @@ public:
             return std::make_unique<SettingToggle>(settingsTree);
         }
 
-        return std::make_unique<SettingEnum>(settingsTree, enumsTree.getChildWithProperty(DeviceSettingsIDs::name, type));
+        return std::make_unique<SettingEnum>(settingsTree, enumsTree.getChildWithProperty(DeviceSettingsIds::name, type));
     }
 
     void itemOpennessChanged(bool) override
@@ -115,7 +115,7 @@ private:
                 return true;
             }
         }
-        return (int) tree_[DeviceSettingsIDs::status] != (int) Setting::Status::normal;
+        return (int) tree_[DeviceSettingsIds::status] != (int) Setting::Status::normal;
     }
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)

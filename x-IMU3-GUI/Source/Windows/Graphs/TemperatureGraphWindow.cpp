@@ -11,7 +11,7 @@ TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayo
                   { UIColours::graphChannel1 },
                   true)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)
     {
         update(message.timestamp, { message.temperature });
     }));
@@ -19,8 +19,8 @@ TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree& windowLayo
 
 TemperatureGraphWindow::~TemperatureGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

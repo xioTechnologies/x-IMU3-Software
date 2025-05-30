@@ -11,7 +11,7 @@ LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTr
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
         update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
     }));
@@ -19,8 +19,8 @@ LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTr
 
 LinearAccelerationGraphWindow::~LinearAccelerationGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

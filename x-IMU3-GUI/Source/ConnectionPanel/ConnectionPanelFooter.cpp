@@ -23,7 +23,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
             resized();
         });
     };
-    statisticsCallbackID = connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback);
+    statisticsCallbackId = connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback);
 
     addAndMakeVisible(latestMessageLabel);
 
@@ -62,7 +62,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
             messagesChanged();
         });
     };
-    notificationCallbackID = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
+    notificationCallbackId = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
 
     errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
     {
@@ -78,14 +78,14 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
             messagesChanged();
         });
     };
-    errorCallbackID = connectionPanel.getConnection()->addErrorCallback(errorCallback);
+    errorCallbackId = connectionPanel.getConnection()->addErrorCallback(errorCallback);
 }
 
 ConnectionPanelFooter::~ConnectionPanelFooter()
 {
-    connectionPanel.getConnection()->removeCallback(statisticsCallbackID);
-    connectionPanel.getConnection()->removeCallback(notificationCallbackID);
-    connectionPanel.getConnection()->removeCallback(errorCallbackID);
+    connectionPanel.getConnection()->removeCallback(statisticsCallbackId);
+    connectionPanel.getConnection()->removeCallback(notificationCallbackId);
+    connectionPanel.getConnection()->removeCallback(errorCallbackId);
 }
 
 void ConnectionPanelFooter::paint(juce::Graphics& g)

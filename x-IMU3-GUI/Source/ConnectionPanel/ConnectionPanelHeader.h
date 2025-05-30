@@ -64,13 +64,13 @@ private:
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
     std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
-    std::optional<uint64_t> networkAnnouncementCallbackID;
+    std::optional<uint64_t> networkAnnouncementCallbackId;
 
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
-    uint64_t rssiCallbackID;
+    uint64_t rssiCallbackId;
 
     std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;
-    uint64_t batteryCallbackID;
+    uint64_t batteryCallbackId;
 
     void updateTitle(const juce::String& status);
 

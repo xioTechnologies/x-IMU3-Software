@@ -14,7 +14,7 @@ public:
         {
             juce::var newValue; // will be interpreted as null in json
 
-            if (tree[DeviceSettingsIDs::type] == "number")
+            if (tree[DeviceSettingsIds::type] == "number")
             {
                 try
                 {
@@ -29,7 +29,7 @@ public:
                 newValue = value.getText();
             }
 
-            if (newValue == tree[DeviceSettingsIDs::value])
+            if (newValue == tree[DeviceSettingsIds::value])
             {
                 return;
             }
@@ -53,7 +53,7 @@ protected:
 
     void updateTextToShowWhenEmpty()
     {
-        value.setDefaultText(tree.getProperty(DeviceSettingsIDs::emptyValue, "Empty"));
+        value.setDefaultText(tree.getProperty(DeviceSettingsIds::emptyValue, "Empty"));
     }
 
     void valueChanged() override

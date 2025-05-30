@@ -25,7 +25,7 @@ namespace GLHelpers
             The program must have been successfully linked when this
             constructor is called.
         */
-        Uniform(const juce::OpenGLShaderProgram& program, const char* uniformName_) : uniformID(juce::gl::glGetUniformLocation(program.getProgramID(), uniformName_))
+        Uniform(const juce::OpenGLShaderProgram& program, const char* uniformName_) : uniformId(juce::gl::glGetUniformLocation(program.getProgramID(), uniformName_))
 #if JUCE_DEBUG
                 , uniformName(uniformName_)
 #endif
@@ -35,7 +35,7 @@ namespace GLHelpers
 
         bool isValid() const noexcept
         {
-            return uniformID >= 0;
+            return uniformId >= 0;
         }
 
         explicit operator bool() const noexcept
@@ -43,21 +43,21 @@ namespace GLHelpers
             return isValid();
         }
 
-        GLint getUniformID() const
+        GLint getUniformId() const
         {
-            return uniformID;
+            return uniformId;
         }
 
         /** Sets a float uniform. */
         void set(GLfloat n1) const noexcept
         {
-            juce::gl::glUniform1f(uniformID, n1);
+            juce::gl::glUniform1f(uniformId, n1);
         }
 
         /** Sets an int uniform. */
         void set(GLint n1) const noexcept
         {
-            juce::gl::glUniform1i(uniformID, n1);
+            juce::gl::glUniform1i(uniformId, n1);
         }
 
         /** Sets a boolean into an int uniform. */
@@ -69,49 +69,49 @@ namespace GLHelpers
         /** Sets a vec2 uniform. */
         void set(GLfloat n1, GLfloat n2) const noexcept
         {
-            juce::gl::glUniform2f(uniformID, n1, n2);
+            juce::gl::glUniform2f(uniformId, n1, n2);
         }
 
         /** Sets a vec3 uniform. */
         void set(GLfloat n1, GLfloat n2, GLfloat n3) const noexcept
         {
-            juce::gl::glUniform3f(uniformID, n1, n2, n3);
+            juce::gl::glUniform3f(uniformId, n1, n2, n3);
         }
 
         /** Sets a vec4 uniform. */
         void set(GLfloat n1, GLfloat n2, GLfloat n3, GLfloat n4) const noexcept
         {
-            juce::gl::glUniform4f(uniformID, n1, n2, n3, n4);
+            juce::gl::glUniform4f(uniformId, n1, n2, n3, n4);
         }
 
         /** Sets an ivec4 uniform. */
         void set(GLint n1, GLint n2, GLint n3, GLint n4) const noexcept
         {
-            juce::gl::glUniform4i(uniformID, n1, n2, n3, n4);
+            juce::gl::glUniform4i(uniformId, n1, n2, n3, n4);
         }
 
         /** Sets a vector float uniform. */
         void set(const GLfloat* values, int numValues) const noexcept
         {
-            juce::gl::glUniform1fv(uniformID, numValues, values);
+            juce::gl::glUniform1fv(uniformId, numValues, values);
         }
 
         /** Sets a 2x2 matrix float uniform. */
         void setMatrix2(const GLfloat* values, GLint count, GLboolean transpose) const noexcept
         {
-            juce::gl::glUniformMatrix2fv(uniformID, count, transpose, values);
+            juce::gl::glUniformMatrix2fv(uniformId, count, transpose, values);
         }
 
         /** Sets a 3x3 matrix float uniform. */
         void setMatrix3(const GLfloat* values, GLint count, GLboolean transpose) const noexcept
         {
-            juce::gl::glUniformMatrix3fv(uniformID, count, transpose, values);
+            juce::gl::glUniformMatrix3fv(uniformId, count, transpose, values);
         }
 
         /** Sets a 4x4 matrix float uniform. */
         void setMatrix4(const GLfloat* values, GLint count, GLboolean transpose) const noexcept
         {
-            juce::gl::glUniformMatrix4fv(uniformID, count, transpose, values);
+            juce::gl::glUniformMatrix4fv(uniformId, count, transpose, values);
         }
 
         /** Sets the RGB portion of a JUCE colour to a vec3 uniform. */
@@ -135,25 +135,25 @@ namespace GLHelpers
         /** Sets a vec3 uniform. */
         void set(glm::vec3 data) const noexcept
         {
-            juce::gl::glUniform3fv(uniformID, 1, glm::value_ptr(data));
+            juce::gl::glUniform3fv(uniformId, 1, glm::value_ptr(data));
         }
 
         /** Sets a vec4 uniform. */
         void set(glm::vec4 data) const noexcept
         {
-            juce::gl::glUniform4fv(uniformID, 1, glm::value_ptr(data));
+            juce::gl::glUniform4fv(uniformId, 1, glm::value_ptr(data));
         }
 
         /** Sets a mat3 uniform. */
         void set(glm::mat3 matrix) const noexcept
         {
-            juce::gl::glUniformMatrix3fv(uniformID, 1, juce::gl::GL_FALSE, glm::value_ptr(matrix));
+            juce::gl::glUniformMatrix3fv(uniformId, 1, juce::gl::GL_FALSE, glm::value_ptr(matrix));
         }
 
         /** Sets a mat4 uniform. */
         void set(glm::mat4 matrix) const noexcept
         {
-            juce::gl::glUniformMatrix4fv(uniformID, 1, juce::gl::GL_FALSE, glm::value_ptr(matrix));
+            juce::gl::glUniformMatrix4fv(uniformId, 1, juce::gl::GL_FALSE, glm::value_ptr(matrix));
         }
 
     private:
@@ -175,10 +175,10 @@ namespace GLHelpers
             }
         }
 
-        /** The uniform's ID number.
+        /** The uniform's Id number.
             If the uniform couldn't be found, this value will be < 0.
         */
-        GLint uniformID;
+        GLint uniformId;
 
 #if JUCE_DEBUG
         juce::String uniformName;

@@ -12,6 +12,6 @@ public:
     ~$name$GraphWindow() override;
 
 private:
-    std::vector<uint64_t> callbackIDs;
+    std::vector<uint64_t> callbackIds;
 $callback_declarations$
 };

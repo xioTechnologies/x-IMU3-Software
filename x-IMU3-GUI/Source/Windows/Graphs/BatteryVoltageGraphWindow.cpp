@@ -11,7 +11,7 @@ BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& wind
                   { UIColours::graphChannel1 },
                   true)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
     {
         update(message.timestamp, { message.voltage });
     }));
@@ -19,8 +19,8 @@ BatteryVoltageGraphWindow::BatteryVoltageGraphWindow(const juce::ValueTree& wind
 
 BatteryVoltageGraphWindow::~BatteryVoltageGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

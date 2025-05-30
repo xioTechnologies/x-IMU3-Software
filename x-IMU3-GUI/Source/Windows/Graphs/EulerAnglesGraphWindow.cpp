@@ -11,30 +11,30 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
                   { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
                   false)
 {
-    callbackIDs.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
     {
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
         update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
     }));
 
-    callbackIDs.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
     {
         const auto eulerAngles = ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message);
         update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
     }));
 
-    callbackIDs.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
     {
         update(message.timestamp, { message.roll, message.pitch, message.yaw });
     }));
 
-    callbackIDs.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
     {
         const auto eulerAngles = ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message);
         update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
     }));
 
-    callbackIDs.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
     {
         const auto eulerAngles = ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message);
         update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
@@ -43,8 +43,8 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree& windowLayo
 
 EulerAnglesGraphWindow::~EulerAnglesGraphWindow()
 {
-    for (const auto callbackID : callbackIDs)
+    for (const auto callbackId : callbackIds)
     {
-        connectionPanel.getConnection()->removeCallback(callbackID);
+        connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

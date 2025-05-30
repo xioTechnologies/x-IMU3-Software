@@ -8,7 +8,7 @@
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/GLRenderer.h"
 #include "Widgets/DisabledOverlay.h"
-#include "Windows/WindowIDs.h"
+#include "Windows/WindowIds.h"
 
 class MainComponent : public juce::Component, private juce::ChangeListener
 {
@@ -67,7 +67,7 @@ private:
     };
 
     const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
-    juce::ValueTree windowLayout { WindowIDs::Row };
+    juce::ValueTree windowLayout { WindowIds::Row };
     juce::ThreadPool threadPool;
     GLRenderer glRenderer { *this, threadPool };
     ConnectionPanelContainer connectionPanelContainer { windowLayout, glRenderer, threadPool };
