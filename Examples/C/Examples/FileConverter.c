@@ -16,11 +16,11 @@ void FileConverter()
 
     if (YesOrNo("Use async implementation?"))
     {
-        XIMU3_FileConverter* const file_converter = XIMU3_file_converter_new(destination, name, file_paths, numberOfFiles, Callback, NULL);
+        XIMU3_FileConverter* const fileConverter = XIMU3_file_converter_new(destination, name, file_paths, numberOfFiles, Callback, NULL);
 
         Wait(60);
 
-        XIMU3_file_converter_free(file_converter);
+        XIMU3_file_converter_free(fileConverter);
     }
     else
     {
