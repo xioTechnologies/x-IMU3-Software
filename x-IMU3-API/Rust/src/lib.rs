@@ -14,6 +14,7 @@ mod decoder;
 mod dispatcher;
 mod ffi;
 pub mod file_converter;
+pub mod keep_open;
 pub mod network_announcement;
 pub mod ping_response;
 pub mod port_scanner;

@@ -14,7 +14,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 pub struct Connection {
     dropped: Arc<Mutex<bool>>,
-    internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
+    pub(crate) internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
 }
 
 impl Connection {

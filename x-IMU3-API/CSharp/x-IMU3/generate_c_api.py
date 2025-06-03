@@ -104,6 +104,7 @@ for line in c_code.splitlines():
         "XIMU3_Connection *",
         "XIMU3_DataLogger *",
         "XIMU3_FileConverter *",
+        "XIMU3_KeepOpen *",
         "XIMU3_NetworkAnnouncement *",
         "XIMU3_PortScanner *",
     ]:

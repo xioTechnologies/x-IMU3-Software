@@ -15,6 +15,11 @@ namespace Ximu3
             XIMU3_ChargingStatusChargingComplete,
             XIMU3_ChargingStatusChargingOnHold,
         }
+        public enum XIMU3_ConnectionStatus
+        {
+            XIMU3_ConnectionStatusConnected,
+            XIMU3_ConnectionStatusReconnecting,
+        }
         public enum XIMU3_ConnectionType
         {
             XIMU3_ConnectionTypeUsb,
@@ -358,6 +363,8 @@ namespace Ximu3
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackFileConverterProgress(XIMU3_FileConverterProgress data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackConnectionStatus(XIMU3_ConnectionStatus data, IntPtr context);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackNetworkAnnouncementMessageC(XIMU3_NetworkAnnouncementMessage data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackDevices(XIMU3_Devices data, IntPtr context);
@@ -527,6 +534,12 @@ namespace Ximu3
         public static extern void XIMU3_file_converter_free(IntPtr file_converter);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_FileConverterProgress XIMU3_file_converter_convert(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_connection_status_to_string(XIMU3_ConnectionStatus status);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_keep_open_new(IntPtr connection, XIMU3_CallbackConnectionStatus callback, IntPtr context);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_keep_open_free(IntPtr keep_open);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(XIMU3_NetworkAnnouncementMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
