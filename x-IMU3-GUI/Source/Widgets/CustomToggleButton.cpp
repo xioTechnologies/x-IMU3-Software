@@ -23,10 +23,7 @@ public:
         g.setColour(button.findColour(juce::ToggleButton::textColourId));
         g.setFont(font);
 
-        if (!button.isEnabled())
-        {
-            g.setOpacity(0.5f);
-        }
+        g.setOpacity(button.isEnabled() ? 1.0f : 0.5f);
 
         g.drawText(button.getButtonText(), button.getLocalBounds().withTrimmedLeft(juce::roundToInt(tickWidth) + 10).withTrimmedRight(2),
                    juce::Justification::centredLeft, true);
@@ -48,6 +45,8 @@ public:
         const auto tickBounds = juce::Rectangle<float>(x, y, w, h).reduced(2.0f);
 
         g.setColour(component.findColour(juce::ToggleButton::tickDisabledColourId));
+
+        g.setOpacity(component.isEnabled() ? 1.0f : 0.5f);
 
         if (!ticked)
         {

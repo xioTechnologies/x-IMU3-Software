@@ -45,6 +45,8 @@ public:
 
     juce::String getHeading() const;
 
+    juce::String getDescriptor() const;
+
     ConnectionPanelContainer& getConnectionPanelContainer();
 
     void setOverlayVisible(const bool visible);

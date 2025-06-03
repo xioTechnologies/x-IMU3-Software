@@ -17,6 +17,7 @@ public:
         std::optional<int> rssiPercentage;
         std::optional<int> batteryPercentage;
         std::optional<ximu3::XIMU3_ChargingStatus> batteryStatus;
+        bool unavailable;
 
         bool operator==(const Row& row) const
         {
