@@ -54,7 +54,7 @@ private:
         printPingResponse(response);
     };
 
-    static void printPingResponse(const ximu3::XIMU3_PingResponse response)
+    static void printPingResponse(const ximu3::XIMU3_PingResponse& response)
     {
         if (response.result == ximu3::XIMU3_ResultOk)
         {

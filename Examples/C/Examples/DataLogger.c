@@ -48,9 +48,9 @@ void DataLogger()
 
     if (YesOrNo("Use async implementation?"))
     {
-        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(destination, name, connections, numberOfConnections);
+        XIMU3_DataLogger* const dataLogger = XIMU3_data_logger_new(destination, name, connections, numberOfConnections);
 
-        const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
+        const XIMU3_Result result = XIMU3_data_logger_get_result(dataLogger);
 
         if (result == XIMU3_ResultOk)
         {
@@ -59,7 +59,7 @@ void DataLogger()
 
         PrintResult(result);
 
-        XIMU3_data_logger_free(data_logger);
+        XIMU3_data_logger_free(dataLogger);
     }
     else
     {
