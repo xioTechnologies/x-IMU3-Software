@@ -134,7 +134,7 @@ void ConnectionPanelContainer::updateSize()
     resized();
 }
 
-void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo)
+void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo, const bool keepOpen)
 {
     for (const auto& connectionPanel : connectionPanels)
     {
@@ -156,7 +156,7 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
         }
 
         return UIColours::tags[counter];
-    }())));
+    }(), keepOpen)));
 
     connectionPanelsSizeChanged();
 }

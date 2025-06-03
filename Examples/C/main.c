@@ -15,6 +15,8 @@ void FileConverter();
 
 void GetPortNames();
 
+void KeepOpen();
+
 void NetworkAnnouncement();
 
 void OpenAsync();
@@ -40,14 +42,15 @@ int main(int argc, const char* argv[])
     printf("D. FileConnection.c\n");
     printf("E. FileConverter.c\n");
     printf("F. GetPortNames.c\n");
-    printf("G. NetworkAnnouncement.c\n");
-    printf("H. OpenAsync.c\n");
-    printf("I. Ping.c\n");
-    printf("J. PortScanner.c\n");
-    printf("K. SerialConnection.c\n");
-    printf("L. TcpConnection.c\n");
-    printf("M. UdpConnection.c\n");
-    printf("N. UsbConnection.c\n");
+    printf("G. KeepOpen.c\n");
+    printf("H. NetworkAnnouncement.c\n");
+    printf("I. OpenAsync.c\n");
+    printf("J. Ping.c\n");
+    printf("K. PortScanner.c\n");
+    printf("L. SerialConnection.c\n");
+    printf("M. TcpConnection.c\n");
+    printf("N. UdpConnection.c\n");
+    printf("O. UsbConnection.c\n");
 
     switch (GetKey())
     {
@@ -70,27 +73,30 @@ int main(int argc, const char* argv[])
             GetPortNames();
             break;
         case 'G':
-            NetworkAnnouncement();
+            KeepOpen();
             break;
         case 'H':
-            OpenAsync();
+            NetworkAnnouncement();
             break;
         case 'I':
-            Ping();
+            OpenAsync();
             break;
         case 'J':
-            PortScanner();
+            Ping();
             break;
         case 'K':
-            SerialConnection();
+            PortScanner();
             break;
         case 'L':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'M':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'N':
+            UdpConnection();
+            break;
+        case 'O':
             UsbConnection();
             break;
     }

@@ -8,21 +8,13 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
       connectionPanelContainer(connectionPanelContainer_),
       connection(connectionPanel.getConnection())
 {
-    addAndMakeVisible(retryButton);
-    addChildComponent(strobeButton);
-    addAndMakeVisible(title);
+    addChildComponent(retryButton);
+    addChildComponent(locateButton);
+    addAndMakeVisible(headingLabel);
     addAndMakeVisible(rssiIcon);
     addAndMakeVisible(batteryIcon);
 
-    retryButton.onClick = [&]
-    {
-        if (onRetry)
-        {
-            onRetry();
-        }
-    };
-
-    strobeButton.onClick = [&]
+    locateButton.onClick = [&]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<ConnectionPanel*> { &connectionPanel }));
     };
@@ -63,8 +55,6 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
-
-    setState(State::connecting);
 }
 
 ConnectionPanelHeader::~ConnectionPanelHeader()
@@ -76,8 +66,6 @@ ConnectionPanelHeader::~ConnectionPanelHeader()
 
     connectionPanel.getConnection()->removeCallback(rssiCallbackId);
     connectionPanel.getConnection()->removeCallback(batteryCallbackId);
-
-    *destroyed = true;
 }
 
 void ConnectionPanelHeader::paint(juce::Graphics& g)
@@ -95,8 +83,14 @@ void ConnectionPanelHeader::resized()
 
     bounds.removeFromLeft(UILayout::tagWidth);
 
-    retryButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
-    strobeButton.setBounds(retryButton.getBounds());
+    if (retryButton.isVisible())
+    {
+        retryButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
+    }
+    if (locateButton.isVisible())
+    {
+        locateButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
+    }
     bounds.removeFromLeft(margin);
 
     const auto showIconText = getWidth() > 500;
@@ -106,7 +100,7 @@ void ConnectionPanelHeader::resized()
     rssiIcon.setBounds(bounds.removeFromRight(rssiIcon.getWidth(showIconText)));
     bounds.removeFromRight(margin);
 
-    title.setBounds(bounds);
+    headingLabel.setBounds(bounds);
 }
 
 void ConnectionPanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -144,55 +138,12 @@ void ConnectionPanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
     }
 }
 
-void ConnectionPanelHeader::setState(const State state)
+juce::String ConnectionPanelHeader::getHeading() const
 {
-    switch (state)
-    {
-        case State::connecting:
-            updateTitle("Connecting");
-            retryButton.setEnabled(false);
-            break;
-
-        case State::connected:
-            {
-                updateTitle("Pinging");
-                retryButton.setVisible(false);
-                strobeButton.setVisible(true);
-
-                connection->pingAsync([&, connection_ = connection, destroyed_ = destroyed](ximu3::XIMU3_PingResponse response)
-                {
-                    juce::MessageManager::callAsync([&, connection_, destroyed_, response]
-                    {
-                        if (*destroyed_)
-                        {
-                            return;
-                        }
-
-                        if (response.result == ximu3::XIMU3_ResultOk)
-                        {
-                            updateTitle(response.device_name, response.serial_number);
-                            return;
-                        }
-
-                        setState(State::connected); // retry
-                    });
-                });
-                break;
-            }
-
-        case State::connectionFailed:
-            updateTitle("Connection Failed");
-            retryButton.setEnabled(true);
-            break;
-    }
+    return headingLabel.getText();
 }
 
-juce::String ConnectionPanelHeader::getTitle() const
-{
-    return title.getText();
-}
-
-void ConnectionPanelHeader::updateTitle(const std::vector<CommandMessage>& responses)
+void ConnectionPanelHeader::updateHeading(const std::vector<CommandMessage>& responses)
 {
     for (const auto& response : responses)
     {
@@ -203,23 +154,41 @@ void ConnectionPanelHeader::updateTitle(const std::vector<CommandMessage>& respo
 
         if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("device_name"))
         {
-            updateTitle(response.getValue(), serialNumber);
+            updateHeading(response.getValue(), serialNumber);
         }
         else if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serial_number"))
         {
-            updateTitle(deviceName, response.getValue());
+            updateHeading(deviceName, response.getValue());
         }
     }
 }
 
-void ConnectionPanelHeader::updateTitle(const juce::String& deviceName_, const juce::String& serialNumber_)
+void ConnectionPanelHeader::updateHeading(const juce::String& deviceName_, const juce::String& serialNumber_)
 {
     deviceName = deviceName_;
     serialNumber = serialNumber_;
-    updateTitle(deviceName + " " + serialNumber);
+    updateHeading(deviceName + " " + serialNumber);
 }
 
-void ConnectionPanelHeader::updateTitle(const juce::String& status)
+void ConnectionPanelHeader::updateHeading(const juce::String& status)
 {
-    title.setText(status + "    " + connection->getInfo()->toString());
+    headingLabel.setText(status + "    " + connectionInfoString);
+}
+
+void ConnectionPanelHeader::showRetry(std::function<void()> onClick)
+{
+    retryButton.setVisible(true);
+    retryButton.setEnabled(onClick != nullptr);
+    retryButton.onClick = onClick;
+    locateButton.setVisible(false);
+
+    resized();
+}
+
+void ConnectionPanelHeader::showLocate()
+{
+    retryButton.setVisible(false);
+    locateButton.setVisible(true);
+
+    resized();
 }

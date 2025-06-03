@@ -13,14 +13,15 @@ namespace Ximu3Examples
             Console.WriteLine("D. FileConnection");
             Console.WriteLine("E. FileConverter");
             Console.WriteLine("F. GetPortNames");
-            Console.WriteLine("G. NetworkAnnouncement");
-            Console.WriteLine("H. OpenAsync");
-            Console.WriteLine("I. Ping");
-            Console.WriteLine("J. PortScanner");
-            Console.WriteLine("K. SerialConnection");
-            Console.WriteLine("L. TcpConnection");
-            Console.WriteLine("M. UdpConnection");
-            Console.WriteLine("N. UsbConnection");
+            Console.WriteLine("G. KeepOpen");
+            Console.WriteLine("H. NetworkAnnouncement");
+            Console.WriteLine("I. OpenAsync");
+            Console.WriteLine("J. Ping");
+            Console.WriteLine("K. PortScanner");
+            Console.WriteLine("L. SerialConnection");
+            Console.WriteLine("M. TcpConnection");
+            Console.WriteLine("N. UdpConnection");
+            Console.WriteLine("O. UsbConnection");
 
             switch (Helpers.GetKey())
             {
@@ -43,27 +44,30 @@ namespace Ximu3Examples
                     _ = new GetPortNames();
                     break;
                 case 'G':
-                    _ = new NetworkAnnouncement();
+                    _ = new KeepOpen();
                     break;
                 case 'H':
-                    _ = new OpenAsync();
+                    _ = new NetworkAnnouncement();
                     break;
                 case 'I':
-                    _ = new Ping();
+                    _ = new OpenAsync();
                     break;
                 case 'J':
-                    _ = new PortScanner();
+                    _ = new Ping();
                     break;
                 case 'K':
-                    _ = new SerialConnection();
+                    _ = new PortScanner();
                     break;
                 case 'L':
-                    _ = new TcpConnection();
+                    _ = new SerialConnection();
                     break;
                 case 'M':
-                    _ = new UdpConnection();
+                    _ = new TcpConnection();
                     break;
                 case 'N':
+                    _ = new UdpConnection();
+                    break;
+                case 'O':
                     _ = new UsbConnection();
                     break;
             }

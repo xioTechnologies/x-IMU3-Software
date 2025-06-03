@@ -27,21 +27,18 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
                                  std::shared_ptr<ximu3::Connection> connection_,
                                  OpenGLRenderer& openGLRenderer_,
                                  ConnectionPanelContainer& connectionPanelContainer_,
-                                 const juce::Colour& tag_)
+                                 const juce::Colour& tag_,
+                                 const bool keepOpenEnabled_)
     : windowLayout(windowLayout_),
       connection(connection_),
       openGLRenderer(openGLRenderer_),
       connectionPanelContainer(connectionPanelContainer_),
-      tag(tag_)
+      tag(tag_),
+      keepOpenEnabled(keepOpenEnabled_)
 {
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
     addChildComponent(disabledOverlay);
-
-    header.onRetry = [&]
-    {
-        connect();
-    };
 
     connect();
 }
@@ -79,7 +76,7 @@ void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, 
     {
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
         {
-            header.updateTitle({ responses.begin(), responses.end() });
+            header.updateHeading({ responses.begin(), responses.end() });
 
             if (callbackOwner != nullptr && callback != nullptr)
             {
@@ -186,9 +183,9 @@ void ConnectionPanel::cleanupWindows()
     triggerAsyncUpdate();
 }
 
-juce::String ConnectionPanel::getTitle() const
+juce::String ConnectionPanel::getHeading() const
 {
-    return header.getTitle();
+    return header.getHeading();
 }
 
 ConnectionPanelContainer& ConnectionPanel::getConnectionPanelContainer()
@@ -203,29 +200,78 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
 
 void ConnectionPanel::connect()
 {
-    header.setState(ConnectionPanelHeader::State::connecting);
+    header.updateHeading("Connecting");
+    header.showRetry({});
 
-    connection->openAsync([&, destroyed_ = destroyed](auto result)
+    const juce::WeakReference weakReference(this);
+
+    if (keepOpenEnabled)
     {
-        juce::MessageManager::callAsync([&, destroyed_, result]
+        keepOpen = std::make_unique<ximu3::KeepOpen>(
+            *connection, [ &, weakReference](ximu3::XIMU3_ConnectionStatus status)
+            {
+                juce::MessageManager::callAsync([&, weakReference, status]
+                {
+                    if (weakReference == nullptr)
+                    {
+                        return;
+                    }
+
+                    switch (status)
+                    {
+                        case ximu3::XIMU3_ConnectionStatusConnected:
+                            connected();
+                            break;
+
+                        case ximu3::XIMU3_ConnectionStatusReconnecting:
+                            recursivePing.reset();
+                            header.updateHeading("Reconnecting");
+                            break;
+                    }
+                });
+            });
+    }
+    else
+    {
+        connection->openAsync([&, weakReference](auto result)
         {
-            if (*destroyed_)
+            juce::MessageManager::callAsync([&, weakReference, result]
             {
-                return;
-            }
+                if (weakReference == nullptr)
+                {
+                    return;
+                }
 
-            if (result != ximu3::XIMU3_ResultOk)
-            {
-                header.setState(ConnectionPanelHeader::State::connectionFailed);
-                return;
-            }
+                if (result != ximu3::XIMU3_ResultOk)
+                {
+                    header.updateHeading("Connection Failed");
+                    header.showRetry([&]
+                    {
+                        connect();
+                    });
+                    return;
+                }
 
-            windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
-            addAndMakeVisible(*windowContainer);
-            resized();
-
-            header.setState(ConnectionPanelHeader::State::connected);
+                connected();
+            });
         });
+    }
+}
+
+void ConnectionPanel::connected()
+{
+    if (windowContainer == nullptr)
+    {
+        windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
+        addAndMakeVisible(*windowContainer);
+        resized();
+    }
+
+    header.showLocate();
+
+    recursivePing = std::make_unique<RecursivePing>(connection, [&](const juce::String& deviceName, const juce::String& serialNumber)
+    {
+        header.updateHeading(deviceName, serialNumber);
     });
 }
 

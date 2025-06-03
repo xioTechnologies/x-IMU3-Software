@@ -16,6 +16,8 @@ namespace ximu3
 
         friend class FileConverter;
 
+        friend class KeepOpen;
+
         friend class NetworkAnnouncement;
 
         friend class PortScanner;

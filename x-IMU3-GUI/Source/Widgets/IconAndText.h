@@ -11,8 +11,6 @@ public:
         addAndMakeVisible(icon);
         addAndMakeVisible(text);
 
-        icon.setSize(18, 0);
-
         timerCallback();
         startTimer(3000);
     }
@@ -20,14 +18,14 @@ public:
     void resized() override
     {
         auto bounds = getLocalBounds();
-        icon.setBounds(bounds.removeFromLeft(icon.getWidth()));
+        icon.setBounds(bounds.removeFromLeft(iconWidth));
         bounds.removeFromLeft(5);
         text.setBounds(bounds);
     }
 
     int getWidth(const bool showText) const
     {
-        return icon.getWidth() + ((showText && text.getText().isNotEmpty()) ? 40 : 0);
+        return iconWidth + ((showText && text.getText().isNotEmpty()) ? 40 : 0);
     }
 
 protected:
@@ -52,6 +50,8 @@ protected:
     }
 
 private:
+    static constexpr int iconWidth = 18;
+
     SimpleLabel text;
 };
 

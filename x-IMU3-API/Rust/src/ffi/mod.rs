@@ -11,6 +11,7 @@ mod data_logger;
 mod data_messages;
 mod decode_error;
 mod file_converter;
+mod keep_open;
 mod network_announcement;
 mod ping_response;
 mod port_scanner;

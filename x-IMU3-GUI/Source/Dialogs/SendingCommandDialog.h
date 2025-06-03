@@ -18,7 +18,7 @@ private:
     enum class ColumnIds
     {
         tag = 1,
-        titleAndResponse,
+        headingAndResponse,
         icon,
     };
 

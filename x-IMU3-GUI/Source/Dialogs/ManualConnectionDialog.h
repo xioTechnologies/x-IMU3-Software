@@ -15,12 +15,16 @@ class ManualConnectionDialog : public Dialog
 public:
     ~ManualConnectionDialog() override;
 
+    bool keepOpen() const;
+
     virtual std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const = 0;
 
 protected:
     ManualConnectionDialog(const juce::String& dialogTitle);
 
 private:
+    CustomToggleButton keepOpenToggle { "Keep Open" };
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualConnectionDialog)
 };
 
