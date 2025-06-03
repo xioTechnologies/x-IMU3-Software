@@ -47,7 +47,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
             {
                 for (const auto& connectionInfo : dialog->getConnectionInfos())
                 {
-                    connectionPanelContainer.connectToDevice(*connectionInfo);
+                    connectionPanelContainer.connectToDevice(*connectionInfo, true);
                 }
             }
             return true;
@@ -258,7 +258,7 @@ void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(ConnectionP
 
     for (auto* const connectionPanel : connectionPanelContainer.getConnectionPanels())
     {
-        juce::PopupMenu::Item item(connectionPanel->getTitle());
+        juce::PopupMenu::Item item(connectionPanel->getHeading());
 
         item.action = [connectionPanel, action]
         {
@@ -299,9 +299,8 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
     {
         if (auto* dialog = dynamic_cast<ManualConnectionDialog*>(DialogQueue::getSingleton().getActive()))
         {
-            auto connectionInfo = dialog->getConnectionInfo();
-            connectionPanelContainer.connectToDevice(*connectionInfo);
-            RecentConnections().update(*connectionInfo);
+            connectionPanelContainer.connectToDevice(*dialog->getConnectionInfo(), dialog->keepOpen());
+            RecentConnections().update(*dialog->getConnectionInfo());
         }
         return true;
     };
@@ -336,7 +335,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
             const auto connectionInfoString = connectionInfo->toString();
             menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
             {
-                connectionPanelContainer.connectToDevice(*connectionInfo_);
+                connectionPanelContainer.connectToDevice(*connectionInfo_, true);
             });
         }
     }
@@ -534,7 +533,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu()
 
     addDevices(menu, [&](auto& connectionPanel)
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getTitle(), connectionPanel.getTag()), [&, connectionPanel_ = &connectionPanel]
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getHeading(), connectionPanel.getTag()), [&, connectionPanel_ = &connectionPanel]
         {
             if (auto* dialog = dynamic_cast<SendCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {

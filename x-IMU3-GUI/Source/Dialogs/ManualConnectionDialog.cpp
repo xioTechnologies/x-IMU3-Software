@@ -1,12 +1,19 @@
 #include "CustomLookAndFeel.h"
 #include "ManualConnectionDialog.h"
 
-ManualConnectionDialog::ManualConnectionDialog(const juce::String& dialogTitle) : Dialog(BinaryData::manual_svg, dialogTitle, "Connect")
+ManualConnectionDialog::ManualConnectionDialog(const juce::String& dialogTitle) : Dialog(BinaryData::manual_svg, dialogTitle, "Connect", "Cancel", &keepOpenToggle, 175)
 {
+    addAndMakeVisible(keepOpenToggle);
+    keepOpenToggle.setToggleState(true, juce::dontSendNotification);
 }
 
 ManualConnectionDialog::~ManualConnectionDialog()
 {
+}
+
+bool ManualConnectionDialog::keepOpen() const
+{
+    return keepOpenToggle.getToggleState();
 }
 
 ManualUsbConnectionDialog::ManualUsbConnectionDialog() : ManualConnectionDialog("Manual USB Connection")

@@ -6,6 +6,7 @@
 #include "ConnectionPanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/OpenGLRenderer.h"
+#include "RecursivePing.h"
 #include "Widgets/DisabledOverlay.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
@@ -25,7 +26,8 @@ public:
                     std::shared_ptr<ximu3::Connection> connection_,
                     OpenGLRenderer& openGLRenderer_,
                     ConnectionPanelContainer& connectionPanelContainer_,
-                    const juce::Colour& tag_);
+                    const juce::Colour& tag_,
+                    const bool keepOpenEnabled_);
 
     ~ConnectionPanel() override;
 
@@ -33,7 +35,7 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer <juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
+    void sendCommands(const std::vector<CommandMessage>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<CommandMessage>& responses)> callback = nullptr);
 
     const juce::Colour& getTag() const;
 
@@ -41,7 +43,7 @@ public:
 
     void cleanupWindows();
 
-    juce::String getTitle() const;
+    juce::String getHeading() const;
 
     ConnectionPanelContainer& getConnectionPanelContainer();
 
@@ -64,9 +66,16 @@ private:
 
     DisabledOverlay disabledOverlay { false };
 
+    const bool keepOpenEnabled;
+    std::unique_ptr<ximu3::KeepOpen> keepOpen;
+    std::unique_ptr<RecursivePing> recursivePing;
+
     void connect();
+
+    void connected();
 
     void handleAsyncUpdate() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionPanel)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ConnectionPanel)
 };

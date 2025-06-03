@@ -10,7 +10,7 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
     table.getHeader().addColumn("", (int) ColumnIds::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIds::titleAndResponse, 1);
+    table.getHeader().addColumn("", (int) ColumnIds::headingAndResponse, 1);
     table.getHeader().addColumn("", (int) ColumnIds::icon, 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
@@ -173,15 +173,15 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
         case ColumnIds::tag:
             return nullptr;
 
-        case ColumnIds::titleAndResponse:
-            class TitleAndResponse : public juce::Component
+        case ColumnIds::headingAndResponse:
+            class HeadingAndResponse : public juce::Component
             {
             public:
-                TitleAndResponse(const Row& row)
-                    : titleLabel(row.connectionPanel.getTitle()),
+                HeadingAndResponse(const Row& row)
+                    : headingLabel(row.connectionPanel.getHeading()),
                       responseLabel(row.response, UIFonts::getDefaultFont(), juce::Justification::centredRight)
                 {
-                    addAndMakeVisible(titleLabel);
+                    addAndMakeVisible(headingLabel);
                     addAndMakeVisible(responseLabel);
                     switch (row.state)
                     {
@@ -204,17 +204,17 @@ juce::Component* SendingCommandDialog::refreshComponentForCell(int rowNumber, in
                         responseLabel.setBounds(bounds.removeFromRight((int) std::ceil(responseLabel.getTextWidth())));
                         bounds.removeFromRight(10);
                     }
-                    titleLabel.setBounds(bounds);
+                    headingLabel.setBounds(bounds);
                 }
 
-                SimpleLabel titleLabel;
+                SimpleLabel headingLabel;
                 SimpleLabel responseLabel;
 
             private:
-                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TitleAndResponse)
+                JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadingAndResponse)
             };
 
-            return new TitleAndResponse(rows[(size_t) rowNumber]);
+            return new HeadingAndResponse(rows[(size_t) rowNumber]);
 
         case ColumnIds::icon:
             switch (rows[(size_t) rowNumber].state)
