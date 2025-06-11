@@ -2,7 +2,7 @@ namespace Ximu3Examples
 {
     class Connection
     {
-        protected static void Run(object connectionInfo)
+        protected static void Run(Ximu3.ConnectionInfo connectionInfo)
         {
             // Create connection
             Ximu3.Connection connection = new(connectionInfo);

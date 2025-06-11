@@ -93,13 +93,13 @@ void AvailableConnectionsDialog::timerCallback()
 
     for (const auto& device : portScanner.getDevices())
     {
-        addRow(juce::String(device.device_name) + " " + device.serial_number, ximu3::connectionInfoFrom(device), {}, {}, {});
+        addRow(juce::String(device.device_name) + " " + device.serial_number, ximu3::ConnectionInfo::from(device), {}, {}, {});
     }
 
     for (const auto& message : networkAnnouncement->getMessages())
     {
-        addRow(juce::String(message.device_name) + " " + message.serial_number, ximu3::tcpConnectionInfoFrom(message), message.rssi, message.battery, message.charging_status);
-        addRow(juce::String(message.device_name) + " " + message.serial_number, ximu3::udpConnectionInfoFrom(message), message.rssi, message.battery, message.charging_status);
+        addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
+        addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
     }
 
     for (const auto& existingConnection : existingConnections)

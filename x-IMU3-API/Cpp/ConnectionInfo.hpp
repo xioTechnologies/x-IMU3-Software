@@ -22,6 +22,8 @@ namespace ximu3
 
         virtual XIMU3_ConnectionType getType() const = 0;
 
+        static std::shared_ptr<ConnectionInfo> from(const XIMU3_Device& device);
+
     protected:
         static void stringCopy(char* destination, const char* source, const size_t destinationSize)
         {
@@ -38,9 +40,8 @@ namespace ximu3
             stringCopy(port_name, portName.c_str(), sizeof(port_name));
         }
 
-        explicit UsbConnectionInfo(const XIMU3_UsbConnectionInfo& connectionInfo) : XIMU3_UsbConnectionInfo()
+        explicit UsbConnectionInfo(const XIMU3_UsbConnectionInfo& connectionInfo) : XIMU3_UsbConnectionInfo(connectionInfo)
         {
-            stringCopy(port_name, connectionInfo.port_name, sizeof(port_name));
         }
 
         std::string toString() const override
@@ -64,11 +65,8 @@ namespace ximu3
             rts_cts_enabled = rtsCtsEnabled;
         }
 
-        explicit SerialConnectionInfo(const XIMU3_SerialConnectionInfo& connectionInfo) : XIMU3_SerialConnectionInfo()
+        explicit SerialConnectionInfo(const XIMU3_SerialConnectionInfo& connectionInfo) : XIMU3_SerialConnectionInfo(connectionInfo)
         {
-            stringCopy(port_name, connectionInfo.port_name, sizeof(port_name));
-            baud_rate = connectionInfo.baud_rate;
-            rts_cts_enabled = connectionInfo.rts_cts_enabled;
         }
 
         std::string toString() const override
@@ -91,10 +89,12 @@ namespace ximu3
             this->port = port_;
         }
 
-        explicit TcpConnectionInfo(const XIMU3_TcpConnectionInfo& connectionInfo) : XIMU3_TcpConnectionInfo()
+        explicit TcpConnectionInfo(const XIMU3_TcpConnectionInfo& connectionInfo) : XIMU3_TcpConnectionInfo(connectionInfo)
         {
-            stringCopy(ip_address, connectionInfo.ip_address, sizeof(ip_address));
-            port = connectionInfo.port;
+        }
+
+        explicit TcpConnectionInfo(const XIMU3_NetworkAnnouncementMessage& message) : XIMU3_TcpConnectionInfo(XIMU3_network_announcement_message_to_tcp_connection_info(message))
+        {
         }
 
         std::string toString() const override
@@ -118,11 +118,12 @@ namespace ximu3
             receive_port = receivePort;
         }
 
-        explicit UdpConnectionInfo(const XIMU3_UdpConnectionInfo& connectionInfo) : XIMU3_UdpConnectionInfo()
+        explicit UdpConnectionInfo(const XIMU3_UdpConnectionInfo& connectionInfo) : XIMU3_UdpConnectionInfo(connectionInfo)
         {
-            stringCopy(ip_address, connectionInfo.ip_address, sizeof(ip_address));
-            send_port = connectionInfo.send_port;
-            receive_port = connectionInfo.receive_port;
+        }
+
+        explicit UdpConnectionInfo(const XIMU3_NetworkAnnouncementMessage& message) : XIMU3_UdpConnectionInfo(XIMU3_network_announcement_message_to_udp_connection_info(message))
+        {
         }
 
         std::string toString() const override
@@ -144,9 +145,8 @@ namespace ximu3
             stringCopy(port_name, portName.c_str(), sizeof(port_name));
         }
 
-        explicit BluetoothConnectionInfo(const XIMU3_BluetoothConnectionInfo& connectionInfo) : XIMU3_BluetoothConnectionInfo()
+        explicit BluetoothConnectionInfo(const XIMU3_BluetoothConnectionInfo& connectionInfo) : XIMU3_BluetoothConnectionInfo(connectionInfo)
         {
-            stringCopy(port_name, connectionInfo.port_name, sizeof(port_name));
         }
 
         std::string toString() const override
@@ -168,9 +168,8 @@ namespace ximu3
             stringCopy(file_path, filePath.c_str(), sizeof(file_path));
         }
 
-        explicit FileConnectionInfo(const XIMU3_FileConnectionInfo& connectionInfo) : XIMU3_FileConnectionInfo()
+        explicit FileConnectionInfo(const XIMU3_FileConnectionInfo& connectionInfo) : XIMU3_FileConnectionInfo(connectionInfo)
         {
-            stringCopy(file_path, connectionInfo.file_path, sizeof(file_path));
         }
 
         std::string toString() const override
@@ -184,7 +183,7 @@ namespace ximu3
         }
     };
 
-    inline std::shared_ptr<ConnectionInfo> connectionInfoFrom(const XIMU3_Device& device)
+    inline std::shared_ptr<ConnectionInfo> ConnectionInfo::from(const XIMU3_Device& device)
     {
         switch (device.connection_type)
         {
@@ -200,15 +199,5 @@ namespace ximu3
                 break;
         }
         return {};
-    }
-
-    inline std::shared_ptr<TcpConnectionInfo> tcpConnectionInfoFrom(const XIMU3_NetworkAnnouncementMessage& message)
-    {
-        return std::make_shared<TcpConnectionInfo>(XIMU3_network_announcement_message_to_tcp_connection_info(message));
-    }
-
-    inline std::shared_ptr<UdpConnectionInfo> udpConnectionInfoFrom(const XIMU3_NetworkAnnouncementMessage& message)
-    {
-        return std::make_shared<UdpConnectionInfo>(XIMU3_network_announcement_message_to_udp_connection_info(message));
     }
 } // namespace ximu3

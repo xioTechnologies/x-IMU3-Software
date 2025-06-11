@@ -19,7 +19,7 @@ public:
 
             std::cout << "Found " << messages[0].device_name << " " << messages[0].serial_number << std::endl;
 
-            const auto connectionInfo = ximu3::UdpConnectionInfo(ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0]));
+            const ximu3::UdpConnectionInfo connectionInfo(messages[0]);
 
             run(connectionInfo);
         }

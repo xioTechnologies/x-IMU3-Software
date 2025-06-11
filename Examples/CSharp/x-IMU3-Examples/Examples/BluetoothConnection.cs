@@ -16,16 +16,13 @@ namespace Ximu3Examples
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
 
-                Ximu3.CApi.XIMU3_BluetoothConnectionInfo connectionInfo = devices[0].bluetooth_connection_info;
+                Ximu3.ConnectionInfo connectionInfo = Ximu3.ConnectionInfo.From(devices[0])!;
 
                 Run(connectionInfo);
             }
             else
             {
-                Ximu3.CApi.XIMU3_BluetoothConnectionInfo connectionInfo = new()
-                {
-                    port_name = Ximu3.Helpers.ToBytes("COM1"),
-                }; // replace with actual connection info
+                Ximu3.BluetoothConnectionInfo connectionInfo = new("COM1"); // replace with actual connection info
 
                 Run(connectionInfo);
             }

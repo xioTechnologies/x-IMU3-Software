@@ -6,27 +6,27 @@ namespace Ximu3
 {
     public class Connection : IDisposable
     {
-        public Connection(object connectionInfo)
+        public Connection(ConnectionInfo connectionInfo)
         {
             switch (connectionInfo)
             {
-                case CApi.XIMU3_UsbConnectionInfo usbConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_usb(usbConnectionInfo);
+                case UsbConnectionInfo usbConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_usb(usbConnectionInfo.connectionInfo);
                     return;
-                case CApi.XIMU3_SerialConnectionInfo serialConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_serial(serialConnectionInfo);
+                case SerialConnectionInfo serialConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_serial(serialConnectionInfo.connectionInfo);
                     return;
-                case CApi.XIMU3_TcpConnectionInfo tcpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionInfo);
+                case TcpConnectionInfo tcpConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionInfo.connectionInfo);
                     return;
-                case CApi.XIMU3_UdpConnectionInfo udpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_udp(udpConnectionInfo);
+                case UdpConnectionInfo udpConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_udp(udpConnectionInfo.connectionInfo);
                     return;
-                case CApi.XIMU3_BluetoothConnectionInfo bluetoothConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionInfo);
+                case BluetoothConnectionInfo bluetoothConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionInfo.connectionInfo);
                     return;
-                case CApi.XIMU3_FileConnectionInfo fileConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_file(fileConnectionInfo);
+                case FileConnectionInfo fileConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_file(fileConnectionInfo.connectionInfo);
                     return;
             }
             Debug.Assert(false);

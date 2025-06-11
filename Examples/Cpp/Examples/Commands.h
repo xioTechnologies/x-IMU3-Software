@@ -24,7 +24,7 @@ public:
         std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
 
         // Open connection
-        ximu3::Connection connection(*ximu3::connectionInfoFrom(devices[0]));
+        ximu3::Connection connection(*ximu3::ConnectionInfo::from(devices[0]));
 
         if (connection.open() != ximu3::XIMU3_ResultOk)
         {

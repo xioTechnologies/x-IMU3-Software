@@ -16,7 +16,7 @@ namespace Ximu3Examples
             Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
 
             // Open connection
-            Ximu3.Connection connection = new(devices[0].usb_connection_info);
+            Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(devices[0])!);
 
             if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
@@ -45,7 +45,7 @@ namespace Ximu3Examples
             PrintPingResponse(response);
         }
 
-        private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse response)
+        static private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse response)
         {
             if (response.result == Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {

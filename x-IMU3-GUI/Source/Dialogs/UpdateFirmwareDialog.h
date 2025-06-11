@@ -38,7 +38,7 @@ private:
                 devices.clear();
                 for (auto& device : devices_)
                 {
-                    if (ximu3::connectionInfoFrom(device)->getType() != ximu3::XIMU3_ConnectionTypeBluetooth)
+                    if (ximu3::ConnectionInfo::from(device)->getType() != ximu3::XIMU3_ConnectionTypeBluetooth)
                     {
                         devices.push_back(device);
                     }
@@ -48,7 +48,7 @@ private:
                 deviceValue.clear();
                 for (const auto& device : devices)
                 {
-                    deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::connectionInfoFrom(device)->toString() + ")", 1 + deviceValue.getNumItems());
+                    deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::ConnectionInfo::from(device)->toString() + ")", 1 + deviceValue.getNumItems());
                 }
                 deviceValue.setSelectedId(std::max(1, id));
             });
