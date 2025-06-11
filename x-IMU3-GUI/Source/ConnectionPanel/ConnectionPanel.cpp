@@ -205,7 +205,7 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
 
 void ConnectionPanel::connect()
 {
-    header.updateHeading("Connecting");
+    header.updateHeading("Connecting...");
     header.showRetry({});
 
     const juce::WeakReference weakReference(this);
@@ -230,7 +230,7 @@ void ConnectionPanel::connect()
 
                         case ximu3::XIMU3_ConnectionStatusReconnecting:
                             recursivePing.reset();
-                            header.updateHeading("Reconnecting");
+                            header.updateHeading("Reconnecting...");
                             break;
                     }
                 });
