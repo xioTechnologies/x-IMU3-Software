@@ -12,7 +12,7 @@ namespace Ximu3Examples
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
                 Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
-                Ximu3.Connection connection = new(device.usb_connection_info);
+                Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(device)!);
                 try
                 {
                     connection.Open();

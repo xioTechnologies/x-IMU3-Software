@@ -16,18 +16,13 @@ namespace Ximu3Examples
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(messages[0].device_name) + " " + Ximu3.Helpers.ToString(messages[0].serial_number));
 
-                Ximu3.CApi.XIMU3_UdpConnectionInfo connectionInfo = Ximu3.CApi.XIMU3_network_announcement_message_to_udp_connection_info(messages[0]);
+                Ximu3.UdpConnectionInfo connectionInfo = new(messages[0]);
 
                 Run(connectionInfo);
             }
             else
             {
-                Ximu3.CApi.XIMU3_UdpConnectionInfo connectionInfo = new()
-                {
-                    ip_address = Ximu3.Helpers.ToBytes("192.168.1.1"),
-                    send_port = 9000,
-                    receive_port = 8000,
-                }; // replace with actual connection info
+                Ximu3.UdpConnectionInfo connectionInfo = new("192.168.1.1", 9000, 8000); // replace with actual connection info
 
                 Run(connectionInfo);
             }

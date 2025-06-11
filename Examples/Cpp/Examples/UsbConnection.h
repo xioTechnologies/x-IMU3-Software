@@ -19,7 +19,7 @@ public:
 
             std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
 
-            const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
+            const auto connectionInfo = ximu3::ConnectionInfo::from(devices[0]);
 
             run(*connectionInfo);
         }

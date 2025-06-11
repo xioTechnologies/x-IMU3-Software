@@ -51,7 +51,7 @@ std::shared_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo()
         return nullptr;
     }
 
-    return ximu3::connectionInfoFrom(devices[(size_t) deviceValue.getSelectedId() - 1]);
+    return ximu3::ConnectionInfo::from(devices[(size_t) deviceValue.getSelectedId() - 1]);
 }
 
 juce::File UpdateFirmwareDialog::getHexFile() const

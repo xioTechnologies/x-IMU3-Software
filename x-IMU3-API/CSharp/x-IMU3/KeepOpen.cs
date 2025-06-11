@@ -3,13 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Ximu3
 {
-    public class KeepOpen : IDisposable
+    public class KeepOpen(Connection connection, KeepOpen.Callback callback) : IDisposable
     {
-        public KeepOpen(Connection connection, Callback callback)
-        {
-            keepOpen = CApi.XIMU3_keep_open_new(connection.connection, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }
-
         public delegate void Callback(CApi.XIMU3_ConnectionStatus status);
         private static void CallbackInternal(CApi.XIMU3_ConnectionStatus status, IntPtr context)
         {
@@ -28,6 +23,6 @@ namespace Ximu3
             GC.SuppressFinalize(this);
         }
 
-        private IntPtr keepOpen;
+        private IntPtr keepOpen = CApi.XIMU3_keep_open_new(connection.connection, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
     }
 }
