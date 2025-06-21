@@ -28,6 +28,7 @@ impl Connection {
             ConnectionInfo::UdpConnectionInfo(connection_info) => internal = Box::new(UdpConnection::new(connection_info)),
             ConnectionInfo::BluetoothConnectionInfo(connection_info) => internal = Box::new(BluetoothConnection::new(connection_info)),
             ConnectionInfo::FileConnectionInfo(connection_info) => internal = Box::new(FileConnection::new(connection_info)),
+            ConnectionInfo::MuxConnectionInfo(connection_info) => internal = Box::new(MuxConnection::new(connection_info)),
         }
 
         let connection = Connection {

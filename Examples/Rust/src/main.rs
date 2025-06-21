@@ -14,14 +14,15 @@ fn main() {
     println!("E. file_converter.rs");
     println!("F. get_port_names.rs");
     println!("G. keep_open.rs");
-    println!("H. network_announcement.rs");
-    println!("I. open_async.rs");
-    println!("J. ping.rs");
-    println!("K. port_scanner.rs");
-    println!("L. serial_connection.rs");
-    println!("M. tcp_connection.rs");
-    println!("N. udp_connection.rs");
-    println!("O. usb_connection.rs");
+    println!("H. mux_connection.rs");
+    println!("I. network_announcement.rs");
+    println!("J. open_async.rs");
+    println!("K. ping.rs");
+    println!("L. port_scanner.rs");
+    println!("M. serial_connection.rs");
+    println!("N. tcp_connection.rs");
+    println!("O. udp_connection.rs");
+    println!("P. usb_connection.rs");
 
     match helpers::get_key() {
         'A' => bluetooth_connection::run(),
@@ -31,14 +32,15 @@ fn main() {
         'E' => file_converter::run(),
         'F' => get_port_names::run(),
         'G' => keep_open::run(),
-        'H' => network_announcement::run(),
-        'I' => open_async::run(),
-        'J' => ping::run(),
-        'K' => port_scanner::run(),
-        'L' => serial_connection::run(),
-        'M' => tcp_connection::run(),
-        'N' => udp_connection::run(),
-        'O' => usb_connection::run(),
+        'H' => mux_connection::run(),
+        'I' => network_announcement::run(),
+        'J' => open_async::run(),
+        'K' => ping::run(),
+        'L' => port_scanner::run(),
+        'M' => serial_connection::run(),
+        'N' => tcp_connection::run(),
+        'O' => udp_connection::run(),
+        'P' => usb_connection::run(),
         _ => {}
     }
 }

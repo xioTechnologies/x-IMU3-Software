@@ -1,3 +1,4 @@
+use crate::connection::*;
 use crate::connection_info::*;
 use crate::ffi::helpers::*;
 use std::net::Ipv4Addr;
@@ -225,4 +226,21 @@ impl From<FileConnectionInfoC> for FileConnectionInfo {
 #[no_mangle]
 pub extern "C" fn XIMU3_file_connection_info_to_string(connection_info: FileConnectionInfoC) -> *const c_char {
     str_to_char_ptr(&FileConnectionInfo::from(connection_info).to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_mux_connection_info_new(channel: u8, connection: *mut Connection) -> *mut MuxConnectionInfo {
+    let connection: &Connection = unsafe { &*connection };
+    Box::into_raw(Box::new(MuxConnectionInfo::new(channel, connection)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_mux_connection_info_free(connection_info: *mut MuxConnectionInfo) {
+    unsafe { drop(Box::from_raw(connection_info)) };
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_mux_connection_info_to_string(connection_info: *mut MuxConnectionInfo) -> *const c_char {
+    let connection_info: &MuxConnectionInfo = unsafe { &*connection_info };
+    str_to_char_ptr(&connection_info.to_string())
 }
