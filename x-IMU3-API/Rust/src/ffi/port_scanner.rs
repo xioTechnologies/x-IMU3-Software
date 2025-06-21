@@ -1,7 +1,7 @@
 use crate::connection_info::*;
-use crate::connection_type::*;
 use crate::ffi::callback::*;
 use crate::ffi::connection_info::*;
+use crate::ffi::connection_type::*;
 use crate::ffi::helpers::*;
 use crate::port_scanner::*;
 use std::mem;
