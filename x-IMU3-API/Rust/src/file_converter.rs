@@ -44,7 +44,7 @@ pub struct FileConverter {
 }
 
 impl FileConverter {
-    pub fn new<'a>(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> FileConverter {
+    pub fn new(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> FileConverter {
         let file_converter = FileConverter {
             dropped: Arc::new(Mutex::new(false)),
         };

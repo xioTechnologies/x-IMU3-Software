@@ -182,7 +182,7 @@ impl Connection {
 
         'outer: for _ in 0..(1 + retries) {
             for command in transactions.iter().filter_map(|transaction| transaction.command.clone()) {
-                if let Some(write_sender) = write_sender.clone() {
+                if let Some(write_sender) = &write_sender {
                     write_sender.send(command.terminated_json).ok();
                 }
             }

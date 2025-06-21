@@ -47,12 +47,12 @@ impl GenericConnection for SerialConnection {
         std::thread::spawn(move || {
             let mut buffer: Vec<u8> = vec![0; 2048];
 
-            while let Err(_) = close_receiver.try_recv() {
+            while close_receiver.try_recv().is_err() {
                 if let Ok(number_of_bytes) = serial_port.read(buffer.as_mut_slice()) {
                     decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
-                while let Some(data) = write_receiver.try_recv().iter().next() {
-                    serial_port.write(data).ok();
+                while let Ok(data) = write_receiver.try_recv() {
+                    serial_port.write(&data).ok();
                 }
             }
         });
