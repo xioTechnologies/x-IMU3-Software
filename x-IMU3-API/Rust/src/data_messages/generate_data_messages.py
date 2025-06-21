@@ -7,7 +7,7 @@ sys.path.append(os.path.join("..", "..", "..", ".."))  # location of helpers.py
 import helpers
 
 
-@dataclass
+@dataclass(frozen=True)
 class Message:
     name: str
     ascii_id: str
