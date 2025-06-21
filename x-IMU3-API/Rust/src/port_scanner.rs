@@ -1,6 +1,5 @@
 use crate::connection::*;
 use crate::connection_info::*;
-use crate::connection_type::*;
 use crossbeam::channel::Sender;
 use std::fmt;
 use std::ops::Drop;
@@ -16,6 +15,24 @@ pub struct Device {
 impl fmt::Display for Device {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "{}, {}, {}", self.device_name, self.serial_number, self.connection_info.to_string())
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum PortType {
+    Usb,
+    Serial,
+    Bluetooth,
+}
+
+impl fmt::Display for PortType {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PortType::Usb => write!(formatter, "USB"),
+            PortType::Serial => write!(formatter, "Serial"),
+            PortType::Bluetooth => write!(formatter, "Bluetooth"),
+        }
     }
 }
 
@@ -129,16 +146,21 @@ impl PortScanner {
         }
 
         drop(sender);
+
         while let Ok(_) = receiver.recv() {} // wait for all senders to be dropped
 
         let devices = devices.lock().unwrap().clone();
         devices
     }
 
-    pub fn scan_filter(connection_type: ConnectionType) -> Vec<Device> {
+    pub fn scan_filter(port_type: PortType) -> Vec<Device> {
         let mut devices = PortScanner::scan();
 
-        devices.retain(|device| connection_type == (&device.connection_info).into());
+        devices.retain(|device| match port_type {
+            PortType::Usb => matches!(device.connection_info, ConnectionInfo::UsbConnectionInfo(_)),
+            PortType::Serial => matches!(device.connection_info, ConnectionInfo::SerialConnectionInfo(_)),
+            PortType::Bluetooth => matches!(device.connection_info, ConnectionInfo::BluetoothConnectionInfo(_)),
+        });
 
         devices
     }

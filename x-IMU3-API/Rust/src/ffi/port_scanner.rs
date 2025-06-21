@@ -105,6 +105,11 @@ pub extern "C" fn XIMU3_devices_free(devices: Devices) {
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_port_type_to_string(port_type: PortType) -> *const c_char {
+    str_to_char_ptr(&port_type.to_string())
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_new(callback: Callback<Devices>, context: *mut c_void) -> *mut PortScanner {
     let void_ptr = VoidPtr(context);
     Box::into_raw(Box::new(PortScanner::new(Box::new(move |devices| callback(devices.into(), void_ptr.0)))))
@@ -127,8 +132,8 @@ pub extern "C" fn XIMU3_port_scanner_scan() -> Devices {
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_port_scanner_scan_filter(connection_type: ConnectionType) -> Devices {
-    PortScanner::scan_filter(connection_type).into()
+pub extern "C" fn XIMU3_port_scanner_scan_filter(port_type: PortType) -> Devices {
+    PortScanner::scan_filter(port_type).into()
 }
 
 #[no_mangle]

@@ -1,12 +1,11 @@
 use super::connection;
 use crate::helpers;
 use ximu3::connection_info::*;
-use ximu3::connection_type::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
-        let devices = PortScanner::scan_filter(ConnectionType::Usb);
+        let devices = PortScanner::scan_filter(PortType::Usb);
 
         if devices.is_empty() {
             println!("No USB connections available");
