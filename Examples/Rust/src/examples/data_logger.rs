@@ -1,6 +1,5 @@
 use crate::helpers;
 use ximu3::connection::*;
-use ximu3::connection_type::*;
 use ximu3::data_logger::*;
 use ximu3::port_scanner::*;
 
@@ -8,7 +7,7 @@ pub fn run() {
     // Open all USB connections
     let mut connections = vec![];
 
-    for device in PortScanner::scan_filter(ConnectionType::Usb) {
+    for device in PortScanner::scan_filter(PortType::Usb) {
         println!("{}", device);
 
         let connection = Connection::new(&device.connection_info);
