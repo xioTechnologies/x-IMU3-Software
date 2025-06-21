@@ -12,6 +12,7 @@ pub enum ConnectionType {
     Udp,
     Bluetooth,
     File,
+    Mux,
 }
 
 impl From<&ConnectionInfo> for ConnectionType {
@@ -23,6 +24,7 @@ impl From<&ConnectionInfo> for ConnectionType {
             ConnectionInfo::UdpConnectionInfo(_) => ConnectionType::Udp,
             ConnectionInfo::BluetoothConnectionInfo(_) => ConnectionType::Bluetooth,
             ConnectionInfo::FileConnectionInfo(_) => ConnectionType::File,
+            ConnectionInfo::MuxConnectionInfo(_) => ConnectionType::Mux,
         }
     }
 }
@@ -36,6 +38,7 @@ impl fmt::Display for ConnectionType {
             ConnectionType::Udp => write!(formatter, "UDP"),
             ConnectionType::Bluetooth => write!(formatter, "Bluetooth"),
             ConnectionType::File => write!(formatter, "File"),
+            ConnectionType::Mux => write!(formatter, "Mux"),
         }
     }
 }
