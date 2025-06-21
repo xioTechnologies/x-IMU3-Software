@@ -36,7 +36,7 @@ impl GenericConnection for FileConnection {
         std::thread::spawn(move || {
             let mut buffer: Vec<u8> = vec![0; 2048];
 
-            while let Err(_) = close_receiver.try_recv() {
+            while close_receiver.try_recv().is_err() {
                 if let Ok(number_of_bytes) = file.read(&mut buffer) {
                     if number_of_bytes == 0 {
                         decoder.lock().unwrap().dispatcher.sender.send(DispatcherData::EndOfFile()).ok();

@@ -42,12 +42,12 @@ impl GenericConnection for UdpConnection {
         std::thread::spawn(move || {
             let mut buffer: Vec<u8> = vec![0; 2048];
 
-            while let Err(_) = close_receiver.try_recv() {
+            while close_receiver.try_recv().is_err() {
                 if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
                     decoder.lock().unwrap().process_bytes(&buffer.as_mut_slice()[..number_of_bytes]);
                 }
-                while let Some(data) = write_receiver.try_recv().iter().next() {
-                    socket.send_to(data, socket_address).ok();
+                while let Ok(data) = write_receiver.try_recv() {
+                    socket.send_to(&data, socket_address).ok();
                 }
             }
         });
