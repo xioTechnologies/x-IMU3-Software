@@ -39,6 +39,7 @@ prefix = "XIMU3_"
 [export.rename]
 "CommandMessageC" = "CommandMessage"
 "DataLoggerC" = "DataLogger"
+"DemuxC" = "Demux"
 "DeviceC" = "Device"
 "NetworkAnnouncementC" = "NetworkAnnouncement"
 "NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
