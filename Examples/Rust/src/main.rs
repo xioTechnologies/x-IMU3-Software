@@ -10,35 +10,37 @@ fn main() {
     println!("A. bluetooth_connection.rs");
     println!("B. commands.rs");
     println!("C. data_logger.rs");
-    println!("D. file_connection.rs");
-    println!("E. file_converter.rs");
-    println!("F. get_port_names.rs");
-    println!("G. keep_open.rs");
-    println!("H. network_announcement.rs");
-    println!("I. open_async.rs");
-    println!("J. ping.rs");
-    println!("K. port_scanner.rs");
-    println!("L. serial_connection.rs");
-    println!("M. tcp_connection.rs");
-    println!("N. udp_connection.rs");
-    println!("O. usb_connection.rs");
+    println!("D. demux.rs");
+    println!("E. file_connection.rs");
+    println!("F. file_converter.rs");
+    println!("G. get_port_names.rs");
+    println!("H. keep_open.rs");
+    println!("I. network_announcement.rs");
+    println!("J. open_async.rs");
+    println!("K. ping.rs");
+    println!("L. port_scanner.rs");
+    println!("M. serial_connection.rs");
+    println!("N. tcp_connection.rs");
+    println!("O. udp_connection.rs");
+    println!("P. usb_connection.rs");
 
     match helpers::get_key() {
         'A' => bluetooth_connection::run(),
         'B' => commands::run(),
         'C' => data_logger::run(),
-        'D' => file_connection::run(),
-        'E' => file_converter::run(),
-        'F' => get_port_names::run(),
-        'G' => keep_open::run(),
-        'H' => network_announcement::run(),
-        'I' => open_async::run(),
-        'J' => ping::run(),
-        'K' => port_scanner::run(),
-        'L' => serial_connection::run(),
-        'M' => tcp_connection::run(),
-        'N' => udp_connection::run(),
-        'O' => usb_connection::run(),
+        'D' => demux::run(),
+        'E' => file_connection::run(),
+        'F' => file_converter::run(),
+        'G' => get_port_names::run(),
+        'H' => keep_open::run(),
+        'I' => network_announcement::run(),
+        'J' => open_async::run(),
+        'K' => ping::run(),
+        'L' => port_scanner::run(),
+        'M' => serial_connection::run(),
+        'N' => tcp_connection::run(),
+        'O' => udp_connection::run(),
+        'P' => usb_connection::run(),
         _ => {}
     }
 }
