@@ -10,18 +10,19 @@ namespace Ximu3Examples
             Console.WriteLine("A. BluetoothConnection");
             Console.WriteLine("B. Commands");
             Console.WriteLine("C. DataLogger");
-            Console.WriteLine("D. FileConnection");
-            Console.WriteLine("E. FileConverter");
-            Console.WriteLine("F. GetPortNames");
-            Console.WriteLine("G. KeepOpen");
-            Console.WriteLine("H. NetworkAnnouncement");
-            Console.WriteLine("I. OpenAsync");
-            Console.WriteLine("J. Ping");
-            Console.WriteLine("K. PortScanner");
-            Console.WriteLine("L. SerialConnection");
-            Console.WriteLine("M. TcpConnection");
-            Console.WriteLine("N. UdpConnection");
-            Console.WriteLine("O. UsbConnection");
+            Console.WriteLine("D. Demux");
+            Console.WriteLine("E. FileConnection");
+            Console.WriteLine("F. FileConverter");
+            Console.WriteLine("G. GetPortNames");
+            Console.WriteLine("H. KeepOpen");
+            Console.WriteLine("I. NetworkAnnouncement");
+            Console.WriteLine("J. OpenAsync");
+            Console.WriteLine("K. Ping");
+            Console.WriteLine("L. PortScanner");
+            Console.WriteLine("M. SerialConnection");
+            Console.WriteLine("N. TcpConnection");
+            Console.WriteLine("O. UdpConnection");
+            Console.WriteLine("P. UsbConnection");
 
             switch (Helpers.GetKey())
             {
@@ -35,39 +36,42 @@ namespace Ximu3Examples
                     _ = new DataLogger();
                     break;
                 case 'D':
-                    _ = new FileConnection();
+                    _ = new Demux();
                     break;
                 case 'E':
-                    _ = new FileConverter();
+                    _ = new FileConnection();
                     break;
                 case 'F':
-                    _ = new GetPortNames();
+                    _ = new FileConverter();
                     break;
                 case 'G':
-                    _ = new KeepOpen();
+                    _ = new GetPortNames();
                     break;
                 case 'H':
-                    _ = new NetworkAnnouncement();
+                    _ = new KeepOpen();
                     break;
                 case 'I':
-                    _ = new OpenAsync();
+                    _ = new NetworkAnnouncement();
                     break;
                 case 'J':
-                    _ = new Ping();
+                    _ = new OpenAsync();
                     break;
                 case 'K':
-                    _ = new PortScanner();
+                    _ = new Ping();
                     break;
                 case 'L':
-                    _ = new SerialConnection();
+                    _ = new PortScanner();
                     break;
                 case 'M':
-                    _ = new TcpConnection();
+                    _ = new SerialConnection();
                     break;
                 case 'N':
-                    _ = new UdpConnection();
+                    _ = new TcpConnection();
                     break;
                 case 'O':
+                    _ = new UdpConnection();
+                    break;
+                case 'P':
                     _ = new UsbConnection();
                     break;
             }

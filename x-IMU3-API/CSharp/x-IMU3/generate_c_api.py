@@ -99,10 +99,12 @@ for line in c_code.splitlines():
     for pattern in [
         "const char *const *",
         "const char *",
+        "const uint8_t *",
         "void *",
         "XIMU3_Connection *const *",
         "XIMU3_Connection *",
         "XIMU3_DataLogger *",
+        "XIMU3_Demux *",
         "XIMU3_FileConverter *",
         "XIMU3_KeepOpen *",
         "XIMU3_NetworkAnnouncement *",
