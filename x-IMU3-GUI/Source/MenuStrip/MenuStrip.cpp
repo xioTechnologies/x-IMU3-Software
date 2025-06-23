@@ -323,6 +323,67 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<ManualBluetoothConnectionDialog>(), connectCallback);
     });
+    menu.addItem("Mux 0x4C", [&]
+    {
+        const auto devices = ximu3::PortScanner::scan();
+
+        if (devices.empty())
+        {
+            return;
+        }
+
+        auto* const usbConnection = connectionPanelContainer.connectToDevice(*ximu3::ConnectionInfo::from(devices.front()), true);
+
+        if (usbConnection != nullptr)
+        {
+            ximu3::MuxConnectionInfo muxConnectionInfo(0x4C, *usbConnection);
+            connectionPanelContainer.connectToDevice(muxConnectionInfo, false);
+        }
+    });
+    menu.addItem("Mux 0x41-0x4B", [&]
+    {
+        const auto devices = ximu3::PortScanner::scan();
+
+        if (devices.empty())
+        {
+            return;
+        }
+
+        auto* const usbConnection = connectionPanelContainer.connectToDevice(*ximu3::ConnectionInfo::from(devices.front()), true);
+
+        if (usbConnection != nullptr)
+        {
+            constexpr std::uint8_t firstChannel = 0x41;
+            constexpr std::uint8_t numberOfChannels = 16;
+            for (std::uint8_t channel = firstChannel; channel < (firstChannel + numberOfChannels); channel++)
+            {
+                ximu3::MuxConnectionInfo muxConnectionInfo(channel, *usbConnection);
+                connectionPanelContainer.connectToDevice(muxConnectionInfo, false);
+            }
+        }
+    });
+    menu.addItem("Mux 0x41-0x54", [&]
+    {
+        const auto devices = ximu3::PortScanner::scan();
+
+        if (devices.empty())
+        {
+            return;
+        }
+
+        auto* const usbConnection = connectionPanelContainer.connectToDevice(*ximu3::ConnectionInfo::from(devices.front()), true);
+
+        if (usbConnection != nullptr)
+        {
+            constexpr std::uint8_t firstChannel = 0x41;
+            constexpr std::uint8_t numberOfChannels = 20;
+            for (std::uint8_t channel = firstChannel; channel < (firstChannel + numberOfChannels); channel++)
+            {
+                ximu3::MuxConnectionInfo muxConnectionInfo(channel, *usbConnection);
+                connectionPanelContainer.connectToDevice(muxConnectionInfo, false);
+            }
+        }
+    });
 
     if (auto connectionInfos = RecentConnections().get(); connectionInfos.empty() == false)
     {
