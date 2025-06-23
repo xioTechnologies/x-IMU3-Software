@@ -5,6 +5,7 @@ use crate::data_messages::*;
 use crate::decode_error::*;
 use crate::decoder::*;
 use crate::dispatcher::*;
+use crate::mux_message::*;
 use crate::ping_response::*;
 use crate::statistics::*;
 use crossbeam::channel::Sender;
@@ -217,6 +218,12 @@ impl Connection {
         responses.iter().map(|response| response.json.clone()).collect()
     }
 
+    pub fn send_mux_message(&self, message: MuxMessage) {
+        if let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() {
+            write_sender.send(message.into_bytes()).ok();
+        }
+    }
+
     pub fn get_info(&self) -> ConnectionInfo {
         self.internal.lock().unwrap().get_info()
     }
@@ -235,6 +242,10 @@ impl Connection {
 
     pub(crate) fn add_command_closure(&self, closure: Box<dyn Fn(CommandMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_command_closure(closure)
+    }
+
+    pub fn add_mux_closure(&self, closure: Box<dyn Fn(MuxMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_mux_closure(closure)
     }
 
     pub(crate) fn add_data_closure(&self, closure: Box<dyn Fn(Box<dyn DataMessage>) + Send>) -> u64 {
