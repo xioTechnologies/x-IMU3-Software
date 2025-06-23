@@ -2,6 +2,7 @@ use crate::command_message::*;
 use crate::data_messages::*;
 use crate::decode_error::*;
 use crate::dispatcher::*;
+use crate::mux_message::*;
 use crate::statistics::*;
 
 const BUFFER_SIZE: usize = 4096;
@@ -53,6 +54,7 @@ impl Decoder {
     fn process_message(&mut self) -> Result<(), DecodeError> {
         match self.buffer[0] {
             b'{' => self.process_command_message(),
+            b'^' => self.process_mux_message(),
             _ => self.process_data_message(),
         }
     }
@@ -60,6 +62,12 @@ impl Decoder {
     fn process_command_message(&self) -> Result<(), DecodeError> {
         let command = CommandMessage::parse_bytes(&self.buffer[..self.index])?;
         self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
+        Ok(())
+    }
+
+    fn process_mux_message(&self) -> Result<(), DecodeError> {
+        let message = MuxMessage::parse(&self.buffer[..self.index])?;
+        self.dispatcher.sender.send(DispatcherData::Mux(message)).ok();
         Ok(())
     }
 

@@ -61,6 +61,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_JSON", XIMU3_DecodeErrorInvalidJson) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_JSON_IS_NOT_AN_OBJECT", XIMU3_DecodeErrorJsonIsNotAnObject) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR", XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair) == 0) &&
+        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_MUX_MESSAGE_LENGTH", XIMU3_DecodeErrorInvalidMuxMessageLength) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_ESCAPE_SEQUENCE", XIMU3_DecodeErrorInvalidEscapeSequence) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_BINARY_MESSAGE_LENGTH", XIMU3_DecodeErrorInvalidBinaryMessageLength) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE", XIMU3_DecodeErrorUnableToParseAsciiMessage) == 0) &&
