@@ -11,6 +11,7 @@ pub mod data_logger;
 pub mod data_messages;
 pub mod decode_error;
 mod decoder;
+pub mod demux;
 mod dispatcher;
 mod ffi;
 pub mod file_converter;
