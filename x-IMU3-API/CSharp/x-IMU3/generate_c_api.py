@@ -88,6 +88,7 @@ for line in c_code.splitlines():
     if line.startswith("typedef"):
         continue
 
+    line = line.replace("uint8_t", "Byte")
     line = line.replace("uint32_t", "UInt32")
     line = line.replace("uint64_t", "UInt64")
     line = line.replace("enum ", "")
@@ -99,12 +100,14 @@ for line in c_code.splitlines():
     for pattern in [
         "const char *const *",
         "const char *",
+        "const XIMU3_MuxConnectionInfo *",
         "void *",
         "XIMU3_Connection *const *",
         "XIMU3_Connection *",
         "XIMU3_DataLogger *",
         "XIMU3_FileConverter *",
         "XIMU3_KeepOpen *",
+        "XIMU3_MuxConnectionInfo *",
         "XIMU3_NetworkAnnouncement *",
         "XIMU3_PortScanner *",
     ]:

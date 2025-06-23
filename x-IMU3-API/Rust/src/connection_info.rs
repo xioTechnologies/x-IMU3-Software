@@ -1,5 +1,8 @@
+use crate::connection::*;
+use crate::connections::*;
 use std::fmt;
 use std::net::Ipv4Addr;
+use std::sync::{Arc, Mutex};
 
 #[derive(Clone)]
 pub enum ConnectionInfo {
@@ -9,6 +12,7 @@ pub enum ConnectionInfo {
     UdpConnectionInfo(UdpConnectionInfo),
     BluetoothConnectionInfo(BluetoothConnectionInfo),
     FileConnectionInfo(FileConnectionInfo),
+    MuxConnectionInfo(MuxConnectionInfo),
 }
 
 impl fmt::Display for ConnectionInfo {
@@ -20,6 +24,7 @@ impl fmt::Display for ConnectionInfo {
             Self::UdpConnectionInfo(connection_info) => connection_info.fmt(formatter),
             Self::BluetoothConnectionInfo(connection_info) => connection_info.fmt(formatter),
             Self::FileConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::MuxConnectionInfo(connection_info) => connection_info.fmt(formatter),
         }
     }
 }
@@ -111,5 +116,26 @@ pub struct FileConnectionInfo {
 impl fmt::Display for FileConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(formatter, "File {}", self.file_path)
+    }
+}
+
+#[derive(Clone)]
+pub struct MuxConnectionInfo {
+    pub channel: u8,
+    pub(crate) connection: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
+}
+
+impl MuxConnectionInfo {
+    pub fn new(channel: u8, connection: &Connection) -> MuxConnectionInfo {
+        MuxConnectionInfo {
+            channel,
+            connection: connection.internal.clone(),
+        }
+    }
+}
+
+impl fmt::Display for MuxConnectionInfo {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(formatter, "Mux 0x{:02X}, {}", self.channel, self.connection.lock().unwrap().get_info().to_string())
     }
 }

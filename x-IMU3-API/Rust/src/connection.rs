@@ -28,6 +28,7 @@ impl Connection {
                 ConnectionInfo::UdpConnectionInfo(connection_info) => Box::new(UdpConnection::new(connection_info)),
                 ConnectionInfo::BluetoothConnectionInfo(connection_info) => Box::new(BluetoothConnection::new(connection_info)),
                 ConnectionInfo::FileConnectionInfo(connection_info) => Box::new(FileConnection::new(connection_info)),
+                ConnectionInfo::MuxConnectionInfo(connection_info) => Box::new(MuxConnection::new(connection_info)),
             })),
         };
 

@@ -43,6 +43,12 @@ pub extern "C" fn XIMU3_connection_new_file(connection_info: FileConnectionInfoC
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_new_mux(connection_info: *const MuxConnectionInfo) -> *mut Connection {
+    let connection_info: &MuxConnectionInfo = unsafe { &*connection_info };
+    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::MuxConnectionInfo(connection_info.clone()))))
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_free(connection: *mut Connection) {
     unsafe { drop(Box::from_raw(connection)) };
 }
@@ -155,6 +161,15 @@ pub extern "C" fn XIMU3_connection_get_info_file(connection: *mut Connection) ->
     match &connection.get_info() {
         ConnectionInfo::FileConnectionInfo(connection_info) => connection_info.into(),
         _ => Default::default(),
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_info_mux(connection: *mut Connection) -> *mut MuxConnectionInfo {
+    let connection: &Connection = unsafe { &*connection };
+    match connection.get_info() {
+        ConnectionInfo::MuxConnectionInfo(connection_info) => Box::into_raw(Box::new(connection_info)),
+        _ => panic!("ConnectionInfo is not MuxConnectionInfo"),
     }
 }
 

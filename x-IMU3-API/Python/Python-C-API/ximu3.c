@@ -149,7 +149,8 @@ PyMODINIT_FUNC PyInit_ximu3()
         add_object(module, &tcp_connection_info_object, "TcpConnectionInfo") &&
         add_object(module, &udp_connection_info_object, "UdpConnectionInfo") &&
         add_object(module, &bluetooth_connection_info_object, "BluetoothConnectionInfo") &&
-        add_object(module, &file_connection_info_object, "FileConnectionInfo"))
+        add_object(module, &file_connection_info_object, "FileConnectionInfo") &&
+        add_object(module, &mux_connection_info_object, "MuxConnectionInfo"))
     {
         return module;
     }
@@ -157,4 +158,22 @@ PyMODINIT_FUNC PyInit_ximu3()
     Py_DECREF(module);
 
     return NULL;
+}
+
+// This function cannot be in ConnectionInfo.h because this results in a circular reference
+PyObject* mux_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
+{
+    unsigned char channel;
+    PyObject* connection;
+
+    if (PyArg_ParseTuple(args, "bO!", &channel, &connection_object, &connection) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    MuxConnectionInfo* const self = (MuxConnectionInfo*) subtype->tp_alloc(subtype, 0);
+    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection*) connection)->connection);
+
+    return (PyObject*) self;
 }

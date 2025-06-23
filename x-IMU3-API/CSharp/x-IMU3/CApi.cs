@@ -28,6 +28,7 @@ namespace Ximu3
             XIMU3_ConnectionTypeUdp,
             XIMU3_ConnectionTypeBluetooth,
             XIMU3_ConnectionTypeFile,
+            XIMU3_ConnectionTypeMux,
         }
         public enum XIMU3_DecodeError
         {
@@ -37,6 +38,7 @@ namespace Ximu3
             XIMU3_DecodeErrorInvalidJson,
             XIMU3_DecodeErrorJsonIsNotAnObject,
             XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
+            XIMU3_DecodeErrorInvalidMuxMessageLength,
             XIMU3_DecodeErrorInvalidEscapeSequence,
             XIMU3_DecodeErrorInvalidBinaryMessageLength,
             XIMU3_DecodeErrorUnableToParseAsciiMessage,
@@ -433,6 +435,8 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_file(XIMU3_FileConnectionInfo connection_info);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_connection_new_mux(IntPtr connection_info);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_free(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Result XIMU3_connection_open(IntPtr connection);
@@ -462,6 +466,8 @@ namespace Ximu3
         public static extern XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(IntPtr connection);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_connection_get_info_mux(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -514,6 +520,12 @@ namespace Ximu3
         public static extern IntPtr XIMU3_bluetooth_connection_info_to_string(XIMU3_BluetoothConnectionInfo connection_info);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_connection_info_to_string(XIMU3_FileConnectionInfo connection_info);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_mux_connection_info_new(Byte channel, IntPtr connection);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_mux_connection_info_free(IntPtr connection_info);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_mux_connection_info_to_string(IntPtr connection_info);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_type_to_string(XIMU3_ConnectionType connection_type);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
