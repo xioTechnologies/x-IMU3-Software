@@ -4,6 +4,7 @@ pub mod bluetooth_connection;
 pub mod commands;
 pub mod connection;
 pub mod data_logger;
+pub mod demux;
 pub mod file_connection;
 pub mod file_converter;
 pub mod get_port_names;

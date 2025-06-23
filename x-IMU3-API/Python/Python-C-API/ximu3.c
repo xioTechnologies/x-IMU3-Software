@@ -7,6 +7,7 @@
 #include "DataLogger.h"
 #include "DataMessages/DataMessages.h"
 #include "DecodeError.h"
+#include "Demux.h"
 #include "Device.h"
 #include "FileConverter.h"
 #include "FileConverterProgress.h"
@@ -118,6 +119,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         add_object(module, &command_message_object, "CommandMessage") &&
         add_object(module, &connection_object, "Connection") &&
         add_object(module, &data_logger_object, "DataLogger") &&
+        add_object(module, &demux_object, "Demux") &&
         add_object(module, &device_object, "Device") &&
         add_object(module, &file_converter_object, "FileConverter") &&
         add_object(module, &file_converter_progress_object, "FileConverterProgress") &&

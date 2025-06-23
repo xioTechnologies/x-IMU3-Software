@@ -263,6 +263,7 @@ namespace ximu3
 
     private:
         friend class DataLogger;
+        friend class Demux;
         friend class KeepOpen;
         friend class MuxConnectionInfo;
 

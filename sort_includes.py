@@ -38,6 +38,7 @@ for path in paths:
         '"cassert"',
         '"chrono"',
         '"cmath"',
+        '"cstdint"',
         '"cstring"',
         '"ctype.h"',
         '"filesystem"',

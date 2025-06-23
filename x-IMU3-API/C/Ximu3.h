@@ -123,6 +123,8 @@ typedef struct XIMU3_Connection XIMU3_Connection;
 
 typedef struct XIMU3_DataLogger XIMU3_DataLogger;
 
+typedef struct XIMU3_Demux XIMU3_Demux;
+
 typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 
 typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
@@ -595,6 +597,12 @@ struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angle
 struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
 
 const char *XIMU3_decode_error_to_string(enum XIMU3_DecodeError decode_error);
+
+struct XIMU3_Demux *XIMU3_demux_new(struct XIMU3_Connection *connection, const uint8_t *channels, uint32_t length);
+
+void XIMU3_demux_free(struct XIMU3_Demux *demux);
+
+enum XIMU3_Result XIMU3_demux_get_result(struct XIMU3_Demux *demux);
 
 const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus status);
 

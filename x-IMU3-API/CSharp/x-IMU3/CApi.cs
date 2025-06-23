@@ -579,6 +579,12 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_decode_error_to_string(XIMU3_DecodeError decode_error);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_demux_new(IntPtr connection, IntPtr channels, UInt32 length);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_demux_free(IntPtr demux);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Result XIMU3_demux_get_result(IntPtr demux);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_status_to_string(XIMU3_FileConverterStatus status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_progress_to_string(XIMU3_FileConverterProgress progress);
