@@ -37,6 +37,7 @@ namespace Ximu3
             XIMU3_DecodeErrorInvalidJson,
             XIMU3_DecodeErrorJsonIsNotAnObject,
             XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
+            XIMU3_DecodeErrorInvalidMuxMessageLength,
             XIMU3_DecodeErrorInvalidEscapeSequence,
             XIMU3_DecodeErrorInvalidBinaryMessageLength,
             XIMU3_DecodeErrorUnableToParseAsciiMessage,
@@ -566,6 +567,12 @@ namespace Ximu3
         public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_decode_error_to_string(XIMU3_DecodeError decode_error);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_demux_new(IntPtr connection, IntPtr channels, UInt32 length);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_demux_free(IntPtr demux);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Result XIMU3_demux_get_result(IntPtr demux);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_status_to_string(XIMU3_FileConverterStatus status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
