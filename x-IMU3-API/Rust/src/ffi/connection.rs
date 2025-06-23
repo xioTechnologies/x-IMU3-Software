@@ -119,14 +119,7 @@ pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connecti
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_type(connection: *mut Connection) -> ConnectionType {
     let connection: &Connection = unsafe { &*connection };
-    match connection.get_info() {
-        ConnectionInfo::UsbConnectionInfo(_) => ConnectionType::Usb,
-        ConnectionInfo::SerialConnectionInfo(_) => ConnectionType::Serial,
-        ConnectionInfo::TcpConnectionInfo(_) => ConnectionType::Tcp,
-        ConnectionInfo::UdpConnectionInfo(_) => ConnectionType::Udp,
-        ConnectionInfo::BluetoothConnectionInfo(_) => ConnectionType::Bluetooth,
-        ConnectionInfo::FileConnectionInfo(_) => ConnectionType::File,
-    }
+    (&connection.get_info()).into()
 }
 
 #[no_mangle]
