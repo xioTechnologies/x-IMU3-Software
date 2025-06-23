@@ -9,6 +9,8 @@ void Commands();
 
 void DataLogger();
 
+void Demux();
+
 void FileConnection();
 
 void FileConverter();
@@ -41,19 +43,20 @@ int main(int argc, const char* argv[])
     printf("A. BluetoothConnection.c\n");
     printf("B. Commands.c\n");
     printf("C. DataLogger.c\n");
-    printf("D. FileConnection.c\n");
-    printf("E. FileConverter.c\n");
-    printf("F. GetPortNames.c\n");
-    printf("G. KeepOpen.c\n");
-    printf("H. MuxConnection.c\n");
-    printf("I. NetworkAnnouncement.c\n");
-    printf("J. OpenAsync.c\n");
-    printf("K. Ping.c\n");
-    printf("L. PortScanner.c\n");
-    printf("M. SerialConnection.c\n");
-    printf("N. TcpConnection.c\n");
-    printf("O. UdpConnection.c\n");
-    printf("P. UsbConnection.c\n");
+    printf("D. Demux.c\n");
+    printf("E. FileConnection.c\n");
+    printf("F. FileConverter.c\n");
+    printf("G. GetPortNames.c\n");
+    printf("H. KeepOpen.c\n");
+    printf("I. MuxConnection.c\n");
+    printf("J. NetworkAnnouncement.c\n");
+    printf("K. OpenAsync.c\n");
+    printf("L. Ping.c\n");
+    printf("M. PortScanner.c\n");
+    printf("N. SerialConnection.c\n");
+    printf("O. TcpConnection.c\n");
+    printf("P. UdpConnection.c\n");
+    printf("Q. UsbConnection.c\n");
 
     switch (GetKey())
     {
@@ -67,42 +70,45 @@ int main(int argc, const char* argv[])
             DataLogger();
             break;
         case 'D':
-            FileConnection();
+            Demux();
             break;
         case 'E':
-            FileConverter();
+            FileConnection();
             break;
         case 'F':
-            GetPortNames();
+            FileConverter();
             break;
         case 'G':
-            KeepOpen();
+            GetPortNames();
             break;
         case 'H':
-            MuxConnection();
+            KeepOpen();
             break;
         case 'I':
-            NetworkAnnouncement();
+            MuxConnection();
             break;
         case 'J':
-            OpenAsync();
+            NetworkAnnouncement();
             break;
         case 'K':
-            Ping();
+            OpenAsync();
             break;
         case 'L':
-            PortScanner();
+            Ping();
             break;
         case 'M':
-            SerialConnection();
+            PortScanner();
             break;
         case 'N':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'O':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'P':
+            UdpConnection();
+            break;
+        case 'Q':
             UsbConnection();
             break;
     }
