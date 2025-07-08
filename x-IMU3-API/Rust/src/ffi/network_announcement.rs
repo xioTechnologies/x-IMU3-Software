@@ -22,22 +22,6 @@ pub struct NetworkAnnouncementMessageC {
     charging_status: ChargingStatus,
 }
 
-impl Default for NetworkAnnouncementMessageC {
-    fn default() -> NetworkAnnouncementMessageC {
-        NetworkAnnouncementMessageC {
-            device_name: EMPTY_CHAR_ARRAY,
-            serial_number: EMPTY_CHAR_ARRAY,
-            ip_address: EMPTY_CHAR_ARRAY,
-            tcp_port: 0,
-            udp_send: 0,
-            udp_receive: 0,
-            rssi: 0,
-            battery: 0,
-            charging_status: ChargingStatus::NotConnected,
-        }
-    }
-}
-
 impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         NetworkAnnouncementMessageC {
