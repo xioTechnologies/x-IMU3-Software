@@ -166,7 +166,7 @@ juce::Component* ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 existingComponentToUpdate = new BatteryIcon(0.65f);
             }
 
-            if (const auto percentage = rows[(size_t) rowNumber].batteryPercentage)
+            if (const auto percentage = rows[(size_t) rowNumber].batteryPercentage; percentage.has_value() && (percentage != -1))
             {
                 static_cast<BatteryIcon*>(existingComponentToUpdate)->update(*percentage, *rows[(size_t) rowNumber].batteryStatus);
             }

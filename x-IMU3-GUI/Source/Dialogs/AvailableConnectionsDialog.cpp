@@ -130,8 +130,14 @@ void AvailableConnectionsDialog::timerCallback()
 
     for (const auto& message : networkAnnouncement->getMessages())
     {
-        addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
-        addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
+        if (message.tcp_port != 0)
+        {
+            addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::TcpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
+        }
+        if ((message.udp_send != 0) && (message.udp_receive != 0))
+        {
+            addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::UdpConnectionInfo>(message), message.rssi, message.battery, message.charging_status);
+        }
     }
 
     for (const auto& existingConnection : existingConnections)
