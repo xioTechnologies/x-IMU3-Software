@@ -9,7 +9,7 @@ public:
     {
         if (helpers::yesOrNo("Search for connections?"))
         {
-            const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
+            const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
             if (devices.empty())
             {

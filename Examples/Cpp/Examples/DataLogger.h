@@ -13,7 +13,7 @@ public:
     DataLogger()
     {
         // Open all USB connections
-        const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeUsb);
+        const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
         std::vector<std::unique_ptr<ximu3::Connection>> connections;
 

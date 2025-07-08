@@ -35,9 +35,9 @@ namespace ximu3
             return toVectorAndFree(XIMU3_port_scanner_scan());
         }
 
-        static std::vector<XIMU3_Device> scanFilter(XIMU3_ConnectionType connectionType)
+        static std::vector<XIMU3_Device> scanFilter(XIMU3_PortType portType)
         {
-            return toVectorAndFree(XIMU3_port_scanner_scan_filter(connectionType));
+            return toVectorAndFree(XIMU3_port_scanner_scan_filter(portType));
         }
 
         static std::vector<std::string> getPortNames()
