@@ -76,7 +76,6 @@ static PyTypeObject statistics_object = {
         .tp_name = "ximu3.Statistics",
         .tp_basicsize = sizeof(Statistics),
         .tp_dealloc = (destructor) statistics_free,
-        .tp_new = PyType_GenericNew,
         .tp_getset = statistics_get_set,
         .tp_methods = statistics_methods,
 };

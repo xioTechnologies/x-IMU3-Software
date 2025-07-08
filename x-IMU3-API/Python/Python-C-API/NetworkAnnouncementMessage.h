@@ -102,7 +102,6 @@ static PyTypeObject network_announcement_message_object = {
         .tp_name = "ximu3.NetworkAnnouncementMessage",
         .tp_basicsize = sizeof(NetworkAnnouncementMessage),
         .tp_dealloc = (destructor) network_announcement_message_free,
-        .tp_new = PyType_GenericNew,
         .tp_getset = network_announcement_message_get_set,
         .tp_methods = network_announcement_message_methods,
 };

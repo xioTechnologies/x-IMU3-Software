@@ -62,7 +62,6 @@ static PyTypeObject device_object = {
         .tp_name = "ximu3.Device",
         .tp_basicsize = sizeof(Device),
         .tp_dealloc = (destructor) device_free,
-        .tp_new = PyType_GenericNew,
         .tp_getset = device_get_set,
         .tp_methods = device_methods,
 };
