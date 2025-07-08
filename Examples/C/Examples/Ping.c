@@ -2,9 +2,9 @@
 #include "../Helpers.h"
 #include <stdio.h>
 
-static void Callback(const XIMU3_PingResponse response, void* context);
+static void Callback(const XIMU3_PingResponse pingResponse, void* context);
 
-static void PrintPingResponse(const XIMU3_PingResponse response);
+static void PrintPingResponse(const XIMU3_PingResponse pingResponse);
 
 void Ping()
 {
@@ -47,17 +47,17 @@ void Ping()
     XIMU3_connection_free(connection);
 }
 
-static void Callback(const XIMU3_PingResponse response, void* context)
+static void Callback(const XIMU3_PingResponse pingResponse, void* context)
 {
-    PrintPingResponse(response);
+    PrintPingResponse(pingResponse);
 }
 
-static void PrintPingResponse(const XIMU3_PingResponse response)
+static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
 {
-    if (response.result == XIMU3_ResultOk)
+    if (pingResponse.result == XIMU3_ResultOk)
     {
-        printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
-        // printf("%s\n", XIMU3_ping_response_to_string(response)); // alternative to above
+        printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
+        // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
     }
     else
     {

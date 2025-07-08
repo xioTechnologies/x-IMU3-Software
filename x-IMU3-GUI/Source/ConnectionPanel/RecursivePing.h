@@ -14,18 +14,18 @@ public:
     {
         const juce::WeakReference weakReference (this);
 
-        connection->pingAsync([&, connection_ = connection, weakReference](ximu3::XIMU3_PingResponse response)
+        connection->pingAsync([&, connection_ = connection, weakReference](ximu3::XIMU3_PingResponse pingResponse)
         {
-            juce::MessageManager::callAsync([&, connection_, response, weakReference]
+            juce::MessageManager::callAsync([&, connection_, pingResponse, weakReference]
             {
                 if (weakReference == nullptr)
                 {
                     return;
                 }
 
-                if (response.result == ximu3::XIMU3_ResultOk)
+                if (pingResponse.result == ximu3::XIMU3_ResultOk)
                 {
-                    callback(response.device_name, response.serial_number);
+                    callback(pingResponse.device_name, pingResponse.serial_number);
                     return;
                 }
 
