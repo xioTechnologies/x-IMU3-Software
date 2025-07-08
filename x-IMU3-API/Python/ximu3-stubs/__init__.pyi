@@ -6,12 +6,6 @@ CHARGING_STATUS_CHARGING_COMPLETE: int
 CHARGING_STATUS_CHARGING_ON_HOLD: int
 CONNECTION_STATUS_CONNECTED: int
 CONNECTION_STATUS_RECONNECTING: int
-CONNECTION_TYPE_USB: int
-CONNECTION_TYPE_SERIAL: int
-CONNECTION_TYPE_TCP: int
-CONNECTION_TYPE_UDP: int
-CONNECTION_TYPE_BLUETOOTH: int
-CONNECTION_TYPE_FILE: int
 DECODE_ERROR_BUFFER_OVERRUN: int
 DECODE_ERROR_INVALID_MESSAGE_IDENTIFIER: int
 DECODE_ERROR_INVALID_UTF8: int
@@ -36,9 +30,6 @@ def charging_status_to_string(status: int) -> str: ...
 
 # connection_status_methods
 def connection_status_to_string(status: int) -> str: ...
-
-# connection_type_methods
-def connection_type_to_string(type: int) -> str: ...
 
 # decode_error_methods
 def decode_error_to_string(error: int) -> str: ...
