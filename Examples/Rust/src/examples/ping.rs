@@ -26,8 +26,8 @@ pub fn run() {
 
     // Ping
     if helpers::yes_or_no("Use async implementation?") {
-        let closure = Box::new(|response| {
-            print_ping_response(response);
+        let closure = Box::new(|ping_response| {
+            print_ping_response(ping_response);
         });
 
         connection.ping_async(closure);
@@ -41,10 +41,10 @@ pub fn run() {
     connection.close();
 }
 
-fn print_ping_response(response: Result<PingResponse, ()>) {
-    if let Ok(response) = response {
-        println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
-        // println!("{response}"); // alternative to above
+fn print_ping_response(ping_response: Result<PingResponse, ()>) {
+    if let Ok(ping_response) = ping_response {
+        println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
+        // println!("{ping_response}"); // alternative to above
     } else {
         println!("No response");
     }
