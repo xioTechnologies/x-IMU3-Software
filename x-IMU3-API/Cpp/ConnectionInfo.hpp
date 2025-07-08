@@ -20,8 +20,6 @@ namespace ximu3
 
         virtual std::string toString() const = 0;
 
-        virtual XIMU3_ConnectionType getType() const = 0;
-
         static std::shared_ptr<ConnectionInfo> from(const XIMU3_Device& device);
 
     protected:
@@ -48,11 +46,6 @@ namespace ximu3
         {
             return XIMU3_usb_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeUsb;
-        }
     };
 
     class SerialConnectionInfo : public ConnectionInfo, public XIMU3_SerialConnectionInfo
@@ -72,11 +65,6 @@ namespace ximu3
         std::string toString() const override
         {
             return XIMU3_serial_connection_info_to_string(*this);
-        }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeSerial;
         }
     };
 
@@ -100,11 +88,6 @@ namespace ximu3
         std::string toString() const override
         {
             return XIMU3_tcp_connection_info_to_string(*this);
-        }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeTcp;
         }
     };
 
@@ -130,11 +113,6 @@ namespace ximu3
         {
             return XIMU3_udp_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeUdp;
-        }
     };
 
     class BluetoothConnectionInfo : public ConnectionInfo, public XIMU3_BluetoothConnectionInfo
@@ -153,11 +131,6 @@ namespace ximu3
         {
             return XIMU3_bluetooth_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeBluetooth;
-        }
     };
 
     class FileConnectionInfo : public ConnectionInfo, public XIMU3_FileConnectionInfo
@@ -175,11 +148,6 @@ namespace ximu3
         std::string toString() const override
         {
             return XIMU3_file_connection_info_to_string(*this);
-        }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeFile;
         }
     };
 

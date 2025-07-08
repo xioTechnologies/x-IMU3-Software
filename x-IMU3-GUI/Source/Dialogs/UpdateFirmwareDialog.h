@@ -38,7 +38,10 @@ private:
                 devices.clear();
                 for (auto& device : devices_)
                 {
-                    if (ximu3::ConnectionInfo::from(device)->getType() != ximu3::XIMU3_ConnectionTypeBluetooth)
+                    const auto connectionInfo = ximu3::ConnectionInfo::from(device);
+
+                    if ((dynamic_cast<ximu3::UsbConnectionInfo*>(connectionInfo.get()) != nullptr) ||
+                        (dynamic_cast<ximu3::SerialConnectionInfo*>(connectionInfo.get()) != nullptr))
                     {
                         devices.push_back(device);
                     }
