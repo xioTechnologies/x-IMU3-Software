@@ -7,7 +7,7 @@ void SerialConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeSerial);
+        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeSerial);
 
         if (devices.length == 0)
         {

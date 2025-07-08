@@ -9,7 +9,7 @@ static void PrintPingResponse(const XIMU3_PingResponse response);
 void Ping()
 {
     // Search for connection
-    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
     if (devices.length == 0)
     {

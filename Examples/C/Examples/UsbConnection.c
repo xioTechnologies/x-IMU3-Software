@@ -7,7 +7,7 @@ void UsbConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
+        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
         if (devices.length == 0)
         {
