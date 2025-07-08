@@ -24,6 +24,9 @@ DECODE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE: int
 FILE_CONVERTER_STATUS_COMPLETE: int
 FILE_CONVERTER_STATUS_FAILED: int
 FILE_CONVERTER_STATUS_IN_PROGRESS: int
+PORT_TYPE_USB: int
+PORT_TYPE_SERIAL: int
+PORT_TYPE_BLUETOOTH: int
 RESULT_OK: int
 RESULT_ERROR: int
 
@@ -42,6 +45,9 @@ def decode_error_to_string(error: int) -> str: ...
 
 # file_converter_status_methods
 def file_converter_status_to_string(status: int) -> str: ...
+
+# port_type_methods
+def port_type_to_string(error: int) -> str: ...
 
 # result_methods
 def result_to_string(result: int) -> str: ...
@@ -432,7 +438,7 @@ class PortScanner:
     @staticmethod
     def scan() -> list[Device]: ...
     @staticmethod
-    def scan_filter(connection_type: int) -> list[Device]: ...
+    def scan_filter(port_type: int) -> list[Device]: ...
     @staticmethod
     def get_port_names() -> list[str]: ...
 

@@ -54,26 +54,22 @@ static PyObject* port_scanner_scan(PyObject* null, PyObject* args)
 
 static PyObject* port_scanner_scan_filter(PyObject* null, PyObject* args)
 {
-    int connection_type_int;
+    int port_type_int;
 
-    if (PyArg_ParseTuple(args, "i", &connection_type_int) == 0)
+    if (PyArg_ParseTuple(args, "i", &port_type_int) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_ConnectionType connection_type_enum = (XIMU3_ConnectionType) connection_type_int;
+    const XIMU3_PortType port_type_enum = (XIMU3_PortType) port_type_int;
 
-    switch (connection_type_enum)
+    switch (port_type_enum)
     {
-        case XIMU3_ConnectionTypeUsb:
-        case XIMU3_ConnectionTypeSerial:
-        case XIMU3_ConnectionTypeBluetooth:
-            return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(connection_type_enum));
-        case XIMU3_ConnectionTypeTcp:
-        case XIMU3_ConnectionTypeUdp:
-        case XIMU3_ConnectionTypeFile:
-            break;
+        case XIMU3_PortTypeUsb:
+        case XIMU3_PortTypeSerial:
+        case XIMU3_PortTypeBluetooth:
+            return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(port_type_enum));
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);

@@ -17,6 +17,7 @@
 #include "NetworkAnnouncementMessage.h"
 #include "PingResponse.h"
 #include "PortScanner.h"
+#include "PortType.h"
 #include <Python.h>
 #include "Result.h"
 #include "Statistics.h"
@@ -73,6 +74,9 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_FAILED", XIMU3_FileConverterStatusFailed) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_IN_PROGRESS", XIMU3_FileConverterStatusInProgress) == 0) &&
+        (PyModule_AddIntConstant(module, "PORT_TYPE_USB", XIMU3_PortTypeUsb) == 0) &&
+        (PyModule_AddIntConstant(module, "PORT_TYPE_SERIAL", XIMU3_PortTypeSerial) == 0) &&
+        (PyModule_AddIntConstant(module, "PORT_TYPE_BLUETOOTH", XIMU3_PortTypeBluetooth) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_OK", XIMU3_ResultOk) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_ERROR", XIMU3_ResultError) == 0) &&
         (PyModule_AddFunctions(module, charging_status_methods) == 0) &&
@@ -80,6 +84,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddFunctions(module, connection_type_methods) == 0) &&
         (PyModule_AddFunctions(module, decode_error_methods) == 0) &&
         (PyModule_AddFunctions(module, file_converter_status_methods) == 0) &&
+        (PyModule_AddFunctions(module, port_type_methods) == 0) &&
         (PyModule_AddFunctions(module, result_methods) == 0) &&
         add_object(module, &command_message_object, "CommandMessage") &&
         add_object(module, &connection_object, "Connection") &&

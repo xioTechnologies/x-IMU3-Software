@@ -4,7 +4,7 @@ import helpers
 import ximu3
 
 # Open all USB connections
-devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
+devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 connections = []
 
 for device in devices:
