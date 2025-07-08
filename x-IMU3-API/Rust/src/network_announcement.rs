@@ -141,12 +141,12 @@ impl NetworkAnnouncement {
             name: String,
             sn: String,
             ip: String,
-            port: u16,
-            send: u16,
-            receive: u16,
-            rssi: i32,
-            battery: i32,
-            status: i32,
+            port: Option<u16>,
+            send: Option<u16>,
+            receive: Option<u16>,
+            rssi: Option<i32>,
+            battery: Option<i32>,
+            status: Option<i32>,
         }
 
         let object: Object = serde_json::from_str(json).ok()?;
@@ -156,12 +156,12 @@ impl NetworkAnnouncement {
             device_name: object.name,
             serial_number: object.sn,
             ip_address,
-            tcp_port: object.port,
-            udp_send: object.send,
-            udp_receive: object.receive,
-            rssi: object.rssi,
-            battery: object.battery,
-            charging_status: ChargingStatus::from(object.status),
+            tcp_port: object.port.unwrap_or(0),
+            udp_send: object.send.unwrap_or(0),
+            udp_receive: object.receive.unwrap_or(0),
+            rssi: object.rssi.unwrap_or(-1),
+            battery: object.battery.unwrap_or(-1),
+            charging_status: ChargingStatus::from(object.status.unwrap_or(-1)),
             expiry: SystemTime::now().duration_since(UNIX_EPOCH).ok()?.as_millis() + 2000, // expire after 2 seconds
         })
     }

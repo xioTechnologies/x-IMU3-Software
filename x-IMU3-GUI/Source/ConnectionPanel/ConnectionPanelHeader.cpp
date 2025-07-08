@@ -29,7 +29,10 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
                 {
                     rssiIcon.update(message.rssi);
                 }
-                batteryIcon.update(message.battery, message.charging_status);
+                if (message.battery != -1)
+                {
+                    batteryIcon.update(message.battery, message.charging_status);
+                }
             }
         });
     };
