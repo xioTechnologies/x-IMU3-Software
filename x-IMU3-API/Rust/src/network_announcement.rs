@@ -36,8 +36,8 @@ impl From<&NetworkAnnouncementMessage> for UdpConnectionInfo {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         UdpConnectionInfo {
             ip_address: message.ip_address,
-            send_port: message.udp_send,
-            receive_port: message.udp_receive,
+            send_port: message.udp_receive, // swap send and receive ports
+            receive_port: message.udp_send,
         }
     }
 }
@@ -157,8 +157,8 @@ impl NetworkAnnouncement {
             serial_number: object.sn,
             ip_address,
             tcp_port: object.port,
-            udp_send: object.receive,
-            udp_receive: object.send,
+            udp_send: object.send,
+            udp_receive: object.receive,
             rssi: object.rssi,
             battery: object.battery,
             charging_status: ChargingStatus::from(object.status),
