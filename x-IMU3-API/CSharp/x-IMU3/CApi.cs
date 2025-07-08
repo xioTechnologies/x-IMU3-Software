@@ -47,6 +47,12 @@ namespace Ximu3
             XIMU3_FileConverterStatusFailed,
             XIMU3_FileConverterStatusInProgress,
         }
+        public enum XIMU3_PortType
+        {
+            XIMU3_PortTypeUsb,
+            XIMU3_PortTypeSerial,
+            XIMU3_PortTypeBluetooth,
+        }
         public enum XIMU3_Result
         {
             XIMU3_ResultOk,
@@ -569,6 +575,8 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_devices_free(XIMU3_Devices devices);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_port_type_to_string(XIMU3_PortType port_type);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_port_scanner_free(IntPtr port_scanner);
@@ -577,7 +585,7 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_port_scanner_scan();
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_Devices XIMU3_port_scanner_scan_filter(XIMU3_ConnectionType connection_type);
+        public static extern XIMU3_Devices XIMU3_port_scanner_scan_filter(XIMU3_PortType port_type);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_port_scanner_get_port_names();
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
