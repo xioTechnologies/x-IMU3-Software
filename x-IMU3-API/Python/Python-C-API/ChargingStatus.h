@@ -28,7 +28,7 @@ static PyObject* charging_status_to_string(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    return Py_BuildValue("s", XIMU3_charging_status_to_string(XIMU3_charging_status_from_float(charging_status)));
+    return Py_BuildValue("s", XIMU3_charging_status_to_string(XIMU3_charging_status_from_float((float) charging_status)));
 }
 
 static PyMethodDef charging_status_methods[] = {
