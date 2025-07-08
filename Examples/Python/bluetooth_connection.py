@@ -3,7 +3,7 @@ import helpers
 import ximu3
 
 if helpers.yes_or_no("Search for connections?"):
-    devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_BLUETOOTH)
+    devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_BLUETOOTH)
 
     if not devices:
         raise Exception("No Bluetooth connections available")

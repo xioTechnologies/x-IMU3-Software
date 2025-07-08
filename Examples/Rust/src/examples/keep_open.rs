@@ -1,11 +1,10 @@
 use ximu3::connection::*;
-use ximu3::connection_type::*;
 use ximu3::keep_open::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
     // Search for connection
-    let devices = PortScanner::scan_filter(ConnectionType::Usb);
+    let devices = PortScanner::scan_filter(PortType::Usb);
 
     if devices.is_empty() {
         println!("No USB connections available");

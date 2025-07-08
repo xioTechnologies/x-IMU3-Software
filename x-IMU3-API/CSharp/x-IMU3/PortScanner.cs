@@ -33,9 +33,9 @@ namespace Ximu3
             return ToArrayAndFree(CApi.XIMU3_port_scanner_scan());
         }
 
-        public static CApi.XIMU3_Device[] ScanFilter(CApi.XIMU3_ConnectionType connectionType)
+        public static CApi.XIMU3_Device[] ScanFilter(CApi.XIMU3_PortType portType)
         {
-            return ToArrayAndFree(CApi.XIMU3_port_scanner_scan_filter(connectionType));
+            return ToArrayAndFree(CApi.XIMU3_port_scanner_scan_filter(portType));
         }
 
         public static string[] GetPortNames()

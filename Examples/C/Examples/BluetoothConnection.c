@@ -7,7 +7,7 @@ void BluetoothConnection()
 {
     if (YesOrNo("Search for connections?"))
     {
-        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeBluetooth);
+        const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeBluetooth);
 
         if (devices.length == 0)
         {

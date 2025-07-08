@@ -5,7 +5,7 @@ namespace Ximu3Examples
         public DataLogger()
         {
             // Open all USB connections
-            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb);
+            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
             List<Ximu3.Connection> connections = [];
 

@@ -3,7 +3,7 @@ import time
 import ximu3
 
 # Search for connection
-devices = ximu3.PortScanner.scan_filter(ximu3.CONNECTION_TYPE_USB)
+devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 
 if not devices:
     raise Exception("No USB connections available")

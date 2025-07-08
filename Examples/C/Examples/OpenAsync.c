@@ -7,7 +7,7 @@ static void Callback(const XIMU3_Result result, void* context);
 void OpenAsync()
 {
     // Search for connection
-    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
     if (devices.length == 0)
     {

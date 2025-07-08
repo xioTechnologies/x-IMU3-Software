@@ -9,7 +9,7 @@ static void PrintResult(const XIMU3_Result result);
 void DataLogger()
 {
     // Open all USB connections
-    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_ConnectionTypeUsb);
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
     XIMU3_Connection* connections[MAX_NUMBER_OF_CONNECTION];
     uint32_t numberOfConnections = 0;

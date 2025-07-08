@@ -68,6 +68,13 @@ typedef enum XIMU3_FileConverterStatus
     XIMU3_FileConverterStatusInProgress,
 } XIMU3_FileConverterStatus;
 
+typedef enum XIMU3_PortType
+{
+    XIMU3_PortTypeUsb,
+    XIMU3_PortTypeSerial,
+    XIMU3_PortTypeBluetooth,
+} XIMU3_PortType;
+
 typedef enum XIMU3_Result
 {
     XIMU3_ResultOk,
@@ -583,6 +590,8 @@ const char *XIMU3_device_to_string(struct XIMU3_Device device);
 
 void XIMU3_devices_free(struct XIMU3_Devices devices);
 
+const char *XIMU3_port_type_to_string(enum XIMU3_PortType port_type);
+
 struct XIMU3_PortScanner *XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, void *context);
 
 void XIMU3_port_scanner_free(struct XIMU3_PortScanner *port_scanner);
@@ -591,7 +600,7 @@ struct XIMU3_Devices XIMU3_port_scanner_get_devices(struct XIMU3_PortScanner *po
 
 struct XIMU3_Devices XIMU3_port_scanner_scan(void);
 
-struct XIMU3_Devices XIMU3_port_scanner_scan_filter(enum XIMU3_ConnectionType connection_type);
+struct XIMU3_Devices XIMU3_port_scanner_scan_filter(enum XIMU3_PortType port_type);
 
 struct XIMU3_CharArrays XIMU3_port_scanner_get_port_names(void);
 
