@@ -8,7 +8,7 @@ pub fn run() {
     let mut connections = vec![];
 
     for device in PortScanner::scan_filter(PortType::Usb) {
-        println!("{}", device);
+        println!("{device}");
 
         let connection = Connection::new(&device.connection_info);
 

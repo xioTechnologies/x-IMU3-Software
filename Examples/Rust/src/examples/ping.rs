@@ -44,7 +44,7 @@ pub fn run() {
 fn print_ping_response(response: Result<PingResponse, ()>) {
     if let Ok(response) = response {
         println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
-        // println!("{}", response); // alternative to above
+        // println!("{response}"); // alternative to above
     } else {
         println!("No response");
     }

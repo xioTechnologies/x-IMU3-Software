@@ -36,5 +36,5 @@ fn print_message(message: NetworkAnnouncementMessage) {
              message.rssi,
              message.battery,
              message.charging_status);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }

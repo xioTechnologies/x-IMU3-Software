@@ -21,5 +21,5 @@ pub fn run() {
 
 fn print_progress(progress: FileConverterProgress) {
     println!("{}, {:.1}%, {} of {} bytes", progress.status, progress.percentage, progress.bytes_processed, progress.bytes_total);
-    // println!("{}", progress); // alternative to above
+    // println!("{progress}"); // alternative to above
 }

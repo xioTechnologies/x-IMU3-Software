@@ -33,7 +33,7 @@ impl CommandMessage {
 
         let mut command_message = CommandMessage {
             json: json.clone(),
-            terminated_json: format!("{}\n", json).into_bytes(),
+            terminated_json: format!("{json}\n").into_bytes(),
             key: object.keys().nth(0).unwrap().to_owned(),
             value: value.to_string(),
             error: None,
