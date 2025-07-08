@@ -58,7 +58,6 @@ static PyTypeObject file_converter_progress_object = {
         .tp_name = "ximu3.FileConverterProgress",
         .tp_basicsize = sizeof(FileConverterProgress),
         .tp_dealloc = (destructor) file_converter_progress_free,
-        .tp_new = PyType_GenericNew,
         .tp_getset = file_converter_progress_get_set,
         .tp_methods = file_converter_progress_methods,
 };

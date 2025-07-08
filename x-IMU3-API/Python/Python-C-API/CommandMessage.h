@@ -55,7 +55,6 @@ static PyTypeObject command_message_object = {
         .tp_name = "ximu3.CommandMessage",
         .tp_basicsize = sizeof(CommandMessage),
         .tp_dealloc = (destructor) command_message_free,
-        .tp_new = PyType_GenericNew,
         .tp_getset = command_message_get_set,
         .tp_methods = command_message_methods,
 };
