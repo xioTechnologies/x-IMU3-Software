@@ -31,22 +31,7 @@ namespace Ximu3Examples
         {
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
-                string connectionInfo = "";
-
-                switch (device.connection_type)
-                {
-                    case Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb:
-                        connectionInfo = Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_usb_connection_info_to_string(device.usb_connection_info));
-                        break;
-                    case Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial:
-                        connectionInfo = Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_connection_info_to_string(device.serial_connection_info));
-                        break;
-                    case Ximu3.CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth:
-                        connectionInfo = Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_bluetooth_connection_info_to_string(device.bluetooth_connection_info));
-                        break;
-                }
-
-                Console.WriteLine(Ximu3.Helpers.ToString(device.device_name) + ", " + Ximu3.Helpers.ToString(device.serial_number) + ", " + connectionInfo);
+                Console.WriteLine(Ximu3.Helpers.ToString(device.device_name) + ", " + Ximu3.Helpers.ToString(device.serial_number) + ", " + Ximu3.ConnectionInfo.From(device));
                 //Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_device_to_string(device))); // alternative to above
             }
         }
