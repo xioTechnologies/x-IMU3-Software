@@ -4,7 +4,6 @@
 #include "Connection.h"
 #include "ConnectionInfo.h"
 #include "ConnectionStatus.h"
-#include "ConnectionType.h"
 #include "DataLogger.h"
 #include "DataMessages/DataMessages.h"
 #include "DecodeError.h"
@@ -56,12 +55,6 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_ON_HOLD", XIMU3_ChargingStatusChargingOnHold) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_CONNECTED", XIMU3_ConnectionStatusConnected) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_RECONNECTING", XIMU3_ConnectionStatusReconnecting) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_USB", XIMU3_ConnectionTypeUsb) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_SERIAL", XIMU3_ConnectionTypeSerial) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_TCP", XIMU3_ConnectionTypeTcp) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_UDP", XIMU3_ConnectionTypeUdp) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_BLUETOOTH", XIMU3_ConnectionTypeBluetooth) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_TYPE_FILE", XIMU3_ConnectionTypeFile) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_BUFFER_OVERRUN", XIMU3_DecodeErrorBufferOverrun) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_MESSAGE_IDENTIFIER", XIMU3_DecodeErrorInvalidMessageIdentifier) == 0) &&
         (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_UTF8", XIMU3_DecodeErrorInvalidUtf8) == 0) &&
@@ -81,7 +74,6 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "RESULT_ERROR", XIMU3_ResultError) == 0) &&
         (PyModule_AddFunctions(module, charging_status_methods) == 0) &&
         (PyModule_AddFunctions(module, connection_status_methods) == 0) &&
-        (PyModule_AddFunctions(module, connection_type_methods) == 0) &&
         (PyModule_AddFunctions(module, decode_error_methods) == 0) &&
         (PyModule_AddFunctions(module, file_converter_status_methods) == 0) &&
         (PyModule_AddFunctions(module, port_type_methods) == 0) &&

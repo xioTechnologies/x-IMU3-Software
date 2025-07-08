@@ -58,37 +58,69 @@ juce::PopupMenu AvailableConnectionsDialog::getFilterMenu()
 void AvailableConnectionsDialog::timerCallback()
 {
     std::vector<ConnectionsTable::Row> rows;
-    std::map<ximu3::XIMU3_ConnectionType, int> numberOfConnections;
+    std::map<juce::String, int> numberOfConnections;
 
-    static const auto filter = [](ximu3::XIMU3_ConnectionType connectionType)
+    static const auto toString = [](const ximu3::ConnectionInfo& connectionInfo)
     {
-        switch (connectionType)
+        if (dynamic_cast<const ximu3::XIMU3_UsbConnectionInfo*>(&connectionInfo) != nullptr)
         {
-            case ximu3::XIMU3_ConnectionTypeUsb:
-                return ApplicationSettings::getSingleton().availableConnections.usb == false;
-            case ximu3::XIMU3_ConnectionTypeSerial:
-                return ApplicationSettings::getSingleton().availableConnections.serial == false;
-            case ximu3::XIMU3_ConnectionTypeTcp:
-                return ApplicationSettings::getSingleton().availableConnections.tcp == false;
-            case ximu3::XIMU3_ConnectionTypeUdp:
-                return ApplicationSettings::getSingleton().availableConnections.udp == false;
-            case ximu3::XIMU3_ConnectionTypeBluetooth:
-                return ApplicationSettings::getSingleton().availableConnections.bluetooth == false;
-            case ximu3::XIMU3_ConnectionTypeFile:
-                break;
+            return "USB";
         }
+        if (dynamic_cast<const ximu3::XIMU3_SerialConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return "Serial";
+        }
+        if (dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return "TCP";
+        }
+        if (dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return "UDP";
+        }
+        if (dynamic_cast<const ximu3::XIMU3_BluetoothConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return "Bluetooth";
+        }
+        jassertfalse;
+        return "";
+    };
+
+    static const auto filter = [](const ximu3::ConnectionInfo& connectionInfo)
+    {
+        if (dynamic_cast<const ximu3::XIMU3_UsbConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return *ApplicationSettings::getSingleton().availableConnections.usb;
+        }
+        if (dynamic_cast<const ximu3::XIMU3_SerialConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return *ApplicationSettings::getSingleton().availableConnections.serial;
+        }
+        if (dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return *ApplicationSettings::getSingleton().availableConnections.tcp;
+        }
+        if (dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return *ApplicationSettings::getSingleton().availableConnections.udp;
+        }
+        if (dynamic_cast<const ximu3::XIMU3_BluetoothConnectionInfo*>(&connectionInfo) != nullptr)
+        {
+            return *ApplicationSettings::getSingleton().availableConnections.bluetooth;
+        }
+        jassertfalse;
         return false;
     };
 
     const auto addRow = [&](const auto& descriptor, const auto& connectionInfo, const std::optional<int>& rssi, const std::optional<int>& battery, const std::optional<ximu3::XIMU3_ChargingStatus>& status)
     {
-        if (filter(connectionInfo->getType()) || std::find(existingConnections.begin(), existingConnections.end(), *connectionInfo) != existingConnections.end())
+        if (filter(*connectionInfo) == false || std::find(existingConnections.begin(), existingConnections.end(), *connectionInfo) != existingConnections.end())
         {
             return;
         }
 
         rows.push_back({ false, descriptor, connectionInfo, rssi, battery, status, false });
-        numberOfConnections[connectionInfo->getType()]++;
+        numberOfConnections[toString(*connectionInfo)]++;
     };
 
     for (const auto& device : portScanner.getDevices())
@@ -112,7 +144,7 @@ void AvailableConnectionsDialog::timerCallback()
     juce::String numberOfConnectionsText;
     for (const auto& pair : numberOfConnections)
     {
-        numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(XIMU3_connection_type_to_string(pair.first)) + ", ";
+        numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(pair.first) + ", ";
     }
     getTopLevelComponent()->setName("Available Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
