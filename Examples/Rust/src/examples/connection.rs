@@ -72,7 +72,7 @@ macro_rules! string_fmt {
 }
 
 pub fn decode_error_closure(error: DecodeError) {
-    println!("{}", error);
+    println!("{error}");
 }
 
 pub fn statistics_closure(statistics: Statistics) {
@@ -85,7 +85,7 @@ pub fn statistics_closure(statistics: Statistics) {
              statistics.message_rate,
              statistics.error_total,
              statistics.error_rate);
-    // println!("{}", statistics); // alternative to above
+    // println!("{statistics}"); // alternative to above
 }
 
 pub fn inertial_closure(message: InertialMessage) {
@@ -98,7 +98,7 @@ pub fn inertial_closure(message: InertialMessage) {
              message.accelerometer_x,
              message.accelerometer_y,
              message.accelerometer_z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn magnetometer_closure(message: MagnetometerMessage) {
@@ -108,7 +108,7 @@ pub fn magnetometer_closure(message: MagnetometerMessage) {
              message.x,
              message.y,
              message.z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn quaternion_closure(message: QuaternionMessage) {
@@ -119,7 +119,7 @@ pub fn quaternion_closure(message: QuaternionMessage) {
              message.x,
              message.y,
              message.z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
     println!("{}", EulerAnglesMessage::from(message));
 }
 
@@ -136,7 +136,7 @@ pub fn rotation_matrix_closure(message: RotationMatrixMessage) {
              message.zx,
              message.zy,
              message.zz);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
     println!("{}", EulerAnglesMessage::from(message));
 }
 
@@ -147,7 +147,7 @@ pub fn euler_angles_closure(message: EulerAnglesMessage) {
              message.roll,
              message.pitch,
              message.yaw);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
     println!("{}", QuaternionMessage::from(message));
 }
 
@@ -162,7 +162,7 @@ pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
              message.acceleration_x,
              message.acceleration_y,
              message.acceleration_z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
     println!("{}", EulerAnglesMessage::from(message));
 }
 
@@ -177,7 +177,7 @@ pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
              message.acceleration_x,
              message.acceleration_y,
              message.acceleration_z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
     println!("{}", EulerAnglesMessage::from(message));
 }
 
@@ -189,7 +189,7 @@ pub fn ahrs_status_closure(message: AhrsStatusMessage) {
              message.angular_rate_recovery,
              message.acceleration_recovery,
              message.magnetic_recovery);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
@@ -199,7 +199,7 @@ pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
              message.x,
              message.y,
              message.z);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn temperature_closure(message: TemperatureMessage) {
@@ -207,7 +207,7 @@ pub fn temperature_closure(message: TemperatureMessage) {
     println!(concat!(timestamp_fmt!(), float_fmt!(), " degC"),
              message.timestamp,
              message.temperature);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn battery_closure(message: BatteryMessage) {
@@ -218,7 +218,7 @@ pub fn battery_closure(message: BatteryMessage) {
              message.voltage,
              message.charging_status,
              ChargingStatus::from(message.charging_status));
-    // println!("{} ({})", message, ChargingStatus::from(message.charging_status)); // alternative to above
+    // println!("{message} ({})", ChargingStatus::from(message.charging_status)); // alternative to above
 }
 
 pub fn rssi_closure(message: RssiMessage) {
@@ -227,7 +227,7 @@ pub fn rssi_closure(message: RssiMessage) {
              message.timestamp,
              message.percentage,
              message.power);
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
@@ -235,7 +235,7 @@ pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
     println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn notification_closure(message: NotificationMessage) {
@@ -243,7 +243,7 @@ pub fn notification_closure(message: NotificationMessage) {
     println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn error_closure(message: ErrorMessage) {
@@ -251,7 +251,7 @@ pub fn error_closure(message: ErrorMessage) {
     println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
-    // println!("{}", message); // alternative to above
+    // println!("{message}"); // alternative to above
 }
 
 pub fn end_of_file_closure() {

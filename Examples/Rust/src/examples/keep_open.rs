@@ -23,7 +23,7 @@ pub fn run() {
             ConnectionStatus::Connected => println!("Connected"),
             ConnectionStatus::Reconnecting => println!("Reconnecting"),
         }
-        // println!("{}", status); // alternative to above
+        // println!("{status}"); // alternative to above
     });
 
     let keep_open = KeepOpen::new(&connection, closure);

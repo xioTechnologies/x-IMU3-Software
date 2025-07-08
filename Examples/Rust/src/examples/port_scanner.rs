@@ -22,6 +22,6 @@ pub fn run() {
 fn print_devices(devices: Vec<Device>) {
     for device in devices {
         println!("{}, {}, {}", device.device_name, device.serial_number, device.connection_info);
-        // println!("{}", device); // alternative to above
+        // println!("{device}"); // alternative to above
     }
 }

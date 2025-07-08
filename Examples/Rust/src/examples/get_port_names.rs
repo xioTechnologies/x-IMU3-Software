@@ -8,6 +8,6 @@ pub fn run() {
     }
 
     for port_name in port_names {
-        println!("{}", port_name);
+        println!("{port_name}");
     }
 }

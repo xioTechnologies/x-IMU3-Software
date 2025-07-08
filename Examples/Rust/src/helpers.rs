@@ -10,7 +10,7 @@ pub fn get_key() -> char {
 
 pub fn yes_or_no(question: &str) -> bool {
     loop {
-        println!("{} [Y/N]", question);
+        println!("{question} [Y/N]");
 
         match get_key() {
             'Y' => return true,

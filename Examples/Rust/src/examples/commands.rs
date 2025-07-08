@@ -56,7 +56,7 @@ fn print_responses(responses: Vec<String>) {
         let response = CommandMessage::parse(&response);
 
         if let Some(error) = response.error {
-            println!("{}", error);
+            println!("{error}");
             continue;
         }
 
