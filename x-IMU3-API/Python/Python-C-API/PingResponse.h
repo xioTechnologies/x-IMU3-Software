@@ -8,7 +8,7 @@
 typedef struct
 {
     PyObject_HEAD
-    XIMU3_PingResponse pingResponse;
+    XIMU3_PingResponse ping_response;
 } PingResponse;
 
 static void ping_response_free(PingResponse* self)
@@ -18,27 +18,27 @@ static void ping_response_free(PingResponse* self)
 
 static PyObject* ping_response_get_result(PingResponse* self)
 {
-    return Py_BuildValue("i", self->pingResponse.result);
+    return Py_BuildValue("i", self->ping_response.result);
 }
 
 static PyObject* ping_response_get_interface(PingResponse* self)
 {
-    return Py_BuildValue("s", self->pingResponse.interface);
+    return Py_BuildValue("s", self->ping_response.interface);
 }
 
 static PyObject* ping_response_get_device_name(PingResponse* self)
 {
-    return Py_BuildValue("s", self->pingResponse.device_name);
+    return Py_BuildValue("s", self->ping_response.device_name);
 }
 
 static PyObject* ping_response_get_serial_number(PingResponse* self)
 {
-    return Py_BuildValue("s", self->pingResponse.serial_number);
+    return Py_BuildValue("s", self->ping_response.serial_number);
 }
 
 static PyObject* ping_response_to_string(PingResponse* self, PyObject* args)
 {
-    return Py_BuildValue("s", XIMU3_ping_response_to_string(self->pingResponse));
+    return Py_BuildValue("s", XIMU3_ping_response_to_string(self->ping_response));
 }
 
 static PyGetSetDef ping_response_get_set[] = {
@@ -63,10 +63,10 @@ static PyTypeObject ping_response_object = {
         .tp_methods = ping_response_methods
 };
 
-static PyObject* ping_response_from(const XIMU3_PingResponse* const pingResponse)
+static PyObject* ping_response_from(const XIMU3_PingResponse* const ping_response)
 {
     PingResponse* const self = (PingResponse*) ping_response_object.tp_alloc(&ping_response_object, 0);
-    self->pingResponse = *pingResponse;
+    self->ping_response = *ping_response;
     return (PyObject*) self;
 }
 

@@ -20,7 +20,7 @@ if connection.open() != ximu3.RESULT_OK:
 # Ping
 
 
-def print_response(response):
+def print_ping_response(response):
     if response.result == ximu3.RESULT_OK:
         print(", ".join([response.interface, response.device_name, response.serial_number]))
         # print(response.to_string())  # alternative to above
@@ -29,14 +29,14 @@ def print_response(response):
 
 
 def callback(response):
-    print_response(response)
+    print_ping_response(response)
 
 
 if helpers.yes_or_no("Use async implementation?"):
     connection.ping_async(callback)
     time.sleep(3)
 else:
-    print_response(connection.ping())
+    print_ping_response(connection.ping())
 
 # Close connection
 connection.close()
