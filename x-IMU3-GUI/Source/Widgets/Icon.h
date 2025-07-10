@@ -9,7 +9,7 @@ class Icon : public juce::Component,
 {
 public:
     Icon(const juce::String& icon_, const juce::String& tooltip, const float scale_ = 1.0f)
-            : scale(scale_)
+        : scale(scale_)
     {
         setIcon(icon_);
         setTooltip(tooltip);
@@ -58,10 +58,13 @@ public:
 
     void update(const int percentage)
     {
-        setIcon(percentage <= 25 ? BinaryData::wifi_25_svg :
-                percentage <= 50 ? BinaryData::wifi_50_svg :
-                percentage <= 75 ? BinaryData::wifi_75_svg :
-                BinaryData::wifi_100_svg);
+        setIcon(percentage <= 25 ?
+                    BinaryData::wifi_25_svg :
+                    percentage <= 50 ?
+                    BinaryData::wifi_50_svg :
+                    percentage <= 75 ?
+                    BinaryData::wifi_75_svg :
+                    BinaryData::wifi_100_svg);
         setTooltip(title + " (" + juce::String(percentage) + "%)");
     }
 };
@@ -87,10 +90,13 @@ public:
         switch (status)
         {
             case ximu3::XIMU3_ChargingStatusNotConnected:
-                setIcon(percentage <= 25 ? BinaryData::battery_25_svg :
-                        percentage <= 50 ? BinaryData::battery_50_svg :
-                        percentage <= 75 ? BinaryData::battery_75_svg :
-                        BinaryData::battery_100_svg);
+                setIcon(percentage <= 25 ?
+                            BinaryData::battery_25_svg :
+                            percentage <= 50 ?
+                            BinaryData::battery_50_svg :
+                            percentage <= 75 ?
+                            BinaryData::battery_75_svg :
+                            BinaryData::battery_100_svg);
                 setTooltip(title + " (" + juce::String(percentage) + "%)");
                 break;
 

@@ -28,7 +28,7 @@ public:
 
     void resized() override;
 
-    void mouseDown (const juce::MouseEvent&) override;
+    void mouseDown(const juce::MouseEvent&) override;
 
 protected:
     juce::ValueTree tree;
@@ -47,8 +47,8 @@ protected:
 
 private:
     SimpleLabel name;
-    Icon modifiedIcon { BinaryData::modify_svg, {}};
-    Icon warningIcon { BinaryData::warning_orange_svg, {}};
+    Icon modifiedIcon { BinaryData::modify_svg, {} };
+    Icon warningIcon { BinaryData::warning_orange_svg, {} };
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
 

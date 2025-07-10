@@ -10,9 +10,9 @@ public:
 
     void resized() override;
 
-    bool isInterestedInFileDrag (const juce::StringArray&) override;
+    bool isInterestedInFileDrag(const juce::StringArray&) override;
 
-    void filesDropped (const juce::StringArray& files, int, int) override;
+    void filesDropped(const juce::StringArray& files, int, int) override;
 
     juce::Array<juce::File> getFiles() const;
 

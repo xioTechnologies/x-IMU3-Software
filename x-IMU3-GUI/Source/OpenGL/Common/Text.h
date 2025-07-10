@@ -36,7 +36,6 @@ public:
     static int toGLPixels(int jucePixels);
 
 private:
-
     /*  Default FreeType glyph loading for some data uses fractional pixels in the 26.6 fixed point float format, F26Dot6, where 1 unit = 1/64th of a pixel.
         Freetype glyph units can optionally be represented in raw pixels by calling FT_Load_Char with the FT_LOAD_NO_SCALE flag.
         Refs: https://freetype.org/freetype2/docs/tutorial/step2.html https://freetype.org/freetype1/docs/api/freetype1.txt

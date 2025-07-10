@@ -24,7 +24,7 @@ public:
     {
         static constexpr int floatsInPoint = 2;
         static_assert(sizeof(juce::Point<GLfloat>) == sizeof(float) * floatsInPoint); // if this fails, use contiguous raw float sequence instead
-        fillBuffers({ reinterpret_cast<const GLfloat*> (vertices.data()), vertices.size() * floatsInPoint });
+        fillBuffers({ reinterpret_cast<const GLfloat*>(vertices.data()), vertices.size() * floatsInPoint });
     }
 
     void fillBuffers(const std::span<const GLfloat>& vertices)

@@ -7,7 +7,6 @@ class ChannelBuffers
 public:
     ChannelBuffers(const int numberOfChannels) : channelBuffers((size_t) numberOfChannels)
     {
-
     }
 
     void clear()
@@ -37,10 +36,10 @@ public:
         mostRecentTimestamp = timestamp;
 
         juce::AbstractFifo::ScopedWrite(fifo, 1).forEach([&](auto index)
-                                                         {
-                                                             fifoData[(size_t) index] = { timestamp, values };
-                                                             fifoData[(size_t) index].values.resize(channelBuffers.size());
-                                                         });
+        {
+            fifoData[(size_t) index] = { timestamp, values };
+            fifoData[(size_t) index].values.resize(channelBuffers.size());
+        });
     }
 
 private:
@@ -49,6 +48,7 @@ private:
         uint64_t timestamp;
         std::vector<float> values;
     };
+
     std::array<FifoDatum, 1 << 10> fifoData;
     juce::AbstractFifo fifo { (int) fifoData.size() };
 
@@ -90,16 +90,16 @@ private:
         // Copy new data
         auto writeIndex = std::min(OpenGLResources::graphBufferSize - fifoNumReady, numberAvailable);
         juce::AbstractFifo::ScopedRead(fifo, (int) fifoNumReady).forEach([&](auto fifoIndex)
-                                                                         {
-                                                                             timestamps[(size_t) writeIndex] = fifoData[(size_t) fifoIndex].timestamp;
+        {
+            timestamps[(size_t) writeIndex] = fifoData[(size_t) fifoIndex].timestamp;
 
-                                                                             for (size_t lineIndex = 0; lineIndex < channelBuffers.size(); lineIndex++)
-                                                                             {
-                                                                                 channelBuffers[lineIndex][(size_t) writeIndex].y = fifoData[(size_t) fifoIndex].values[lineIndex];
-                                                                             }
+            for (size_t lineIndex = 0; lineIndex < channelBuffers.size(); lineIndex++)
+            {
+                channelBuffers[lineIndex][(size_t) writeIndex].y = fifoData[(size_t) fifoIndex].values[lineIndex];
+            }
 
-                                                                             writeIndex++;
-                                                                         });
+            writeIndex++;
+        });
 
         numberAvailable = std::min(OpenGLResources::graphBufferSize, numberAvailable + fifoNumReady);
 

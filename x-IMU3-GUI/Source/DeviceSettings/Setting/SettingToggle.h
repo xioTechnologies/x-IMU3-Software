@@ -6,11 +6,13 @@
 class SettingToggle : public SettingEnum
 {
 public:
-    explicit SettingToggle(const juce::ValueTree& settingTree) : SettingEnum(settingTree, { DeviceSettingsIds::Enum, {},
-                                                                                            {
-                                                                                                    { DeviceSettingsIds::Enumerator, {{ DeviceSettingsIds::name, "Disabled" }, { DeviceSettingsIds::value, 0 }}},
-                                                                                                    { DeviceSettingsIds::Enumerator, {{ DeviceSettingsIds::name, "Enabled" }, { DeviceSettingsIds::value, 1 }}},
-                                                                                            }})
+    explicit SettingToggle(const juce::ValueTree& settingTree) : SettingEnum(settingTree, {
+                                                                                 DeviceSettingsIds::Enum, {},
+                                                                                 {
+                                                                                     { DeviceSettingsIds::Enumerator, { { DeviceSettingsIds::name, "Disabled" }, { DeviceSettingsIds::value, 0 } } },
+                                                                                     { DeviceSettingsIds::Enumerator, { { DeviceSettingsIds::name, "Enabled" }, { DeviceSettingsIds::value, 1 } } },
+                                                                                 }
+                                                                             })
     {
     }
 

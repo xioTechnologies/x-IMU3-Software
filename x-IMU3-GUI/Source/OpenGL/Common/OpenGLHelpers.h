@@ -27,7 +27,7 @@ namespace OpenGLHelpers
         */
         Uniform(const juce::OpenGLShaderProgram& program, const char* uniformName_) : uniformId(juce::gl::glGetUniformLocation(program.getProgramID(), uniformName_))
 #if JUCE_DEBUG
-                , uniformName(uniformName_)
+                                                                                      , uniformName(uniformName_)
 #endif
         {
             assertUniformExistsInShaderProgram();
@@ -243,5 +243,4 @@ namespace OpenGLHelpers
         OpenGLHelpers::viewportAndScissor(bounds);
         juce::OpenGLHelpers::clear(colour);
     }
-
 } // GLUtil

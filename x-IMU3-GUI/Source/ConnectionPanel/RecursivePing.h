@@ -12,7 +12,7 @@ public:
 
     void ping()
     {
-        const juce::WeakReference weakReference (this);
+        const juce::WeakReference weakReference(this);
 
         connection->pingAsync([&, connection_ = connection, weakReference](ximu3::XIMU3_PingResponse pingResponse)
         {

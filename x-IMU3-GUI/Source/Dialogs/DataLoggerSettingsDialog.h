@@ -18,6 +18,7 @@ public:
         juce::String name;
         bool nameEmpty = true;
         float timeValue = 10.0f;
+
         enum class TimeUnit
         {
             unlimited,
@@ -25,6 +26,7 @@ public:
             minutes,
             seconds,
         };
+
         TimeUnit timeUnit = TimeUnit::unlimited;
 
         std::optional<juce::RelativeTime> getTime() const

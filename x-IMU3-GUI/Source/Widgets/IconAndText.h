@@ -61,16 +61,16 @@ public:
     void update(const int percentage)
     {
         juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            icon.update(percentage);
-                                            setText(juce::String(percentage) + "%");
-                                            startTimer(getTimerInterval());
-                                        });
+            icon.update(percentage);
+            setText(juce::String(percentage) + "%");
+            startTimer(getTimerInterval());
+        });
     }
 };
 
@@ -80,25 +80,25 @@ public:
     void update(const int percentage, const ximu3::XIMU3_ChargingStatus status)
     {
         juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage, status]
-                                        {
-                                            if (self == nullptr)
-                                            {
-                                                return;
-                                            }
+        {
+            if (self == nullptr)
+            {
+                return;
+            }
 
-                                            icon.update(percentage, status);
-                                            switch (status)
-                                            {
-                                                case ximu3::XIMU3_ChargingStatusNotConnected:
-                                                    setText(juce::String(percentage) + "%");
-                                                    break;
-                                                case ximu3::XIMU3_ChargingStatusCharging:
-                                                case ximu3::XIMU3_ChargingStatusChargingComplete:
-                                                case ximu3::XIMU3_ChargingStatusChargingOnHold:
-                                                    setText("USB");
-                                                    break;
-                                            }
-                                            startTimer(getTimerInterval());
-                                        });
+            icon.update(percentage, status);
+            switch (status)
+            {
+                case ximu3::XIMU3_ChargingStatusNotConnected:
+                    setText(juce::String(percentage) + "%");
+                    break;
+                case ximu3::XIMU3_ChargingStatusCharging:
+                case ximu3::XIMU3_ChargingStatusChargingComplete:
+                case ximu3::XIMU3_ChargingStatusChargingOnHold:
+                    setText("USB");
+                    break;
+            }
+            startTimer(getTimerInterval());
+        });
     }
 };
