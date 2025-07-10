@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <chrono>
 #include <functional>
 #include <inttypes.h>
 #include <iostream>
 #include <thread>
+#include "Ximu3.hpp"
 
 class FileConverter
 {

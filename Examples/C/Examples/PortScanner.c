@@ -1,6 +1,6 @@
-#include "../../../x-IMU3-API/C/Ximu3.h"
 #include "../Helpers.h"
 #include <stdio.h>
+#include "Ximu3.h"
 
 static void Callback(const XIMU3_Devices devices, void* context);
 

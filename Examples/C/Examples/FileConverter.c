@@ -1,7 +1,7 @@
-#include "../../../x-IMU3-API/C/Ximu3.h"
 #include "../Helpers.h"
 #include <inttypes.h>
 #include <stdio.h>
+#include "Ximu3.h"
 
 static void Callback(const XIMU3_FileConverterProgress progress, void* context);
 

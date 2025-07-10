@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <iostream>
+#include "Ximu3.hpp"
 
 class GetPortNames
 {

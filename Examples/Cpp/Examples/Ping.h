@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../../../x-IMU3-API/Cpp/Ximu3.hpp"
 #include "../Helpers.hpp"
 #include <chrono>
 #include <iostream>
 #include <memory>
 #include <thread>
+#include "Ximu3.hpp"
 
 class Ping
 {

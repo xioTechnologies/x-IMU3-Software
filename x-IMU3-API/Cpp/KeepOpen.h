@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../C/Ximu3.h"
-#include "Helpers.hpp"
 #include "Connection.hpp"
+#include "Helpers.hpp"
 
 namespace ximu3
 {
