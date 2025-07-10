@@ -252,11 +252,11 @@ pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pasca
 insert("../ffi/data_messages.rs", template, 0)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
-template = """
+template = """\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)
         {
             return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
-        }\n"""
+        }\n\n"""
 
 insert("../../../Cpp/Connection.hpp", template, 0)
 
