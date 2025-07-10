@@ -17,6 +17,8 @@ public:
 
     void resized() override;
 
+    void reconnected() override;
+
 private:
     std::unique_ptr<DeviceSettings> deviceSettings;
 
