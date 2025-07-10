@@ -32,9 +32,9 @@ static PyObject* charging_status_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef charging_status_methods[] = {
-        { "charging_status_from_float", (PyCFunction) charging_status_from_float, METH_VARARGS, "" },
-        { "charging_status_to_string", (PyCFunction) charging_status_to_string, METH_VARARGS, "" },
-        { NULL } /* sentinel */
+    { "charging_status_from_float", (PyCFunction) charging_status_from_float, METH_VARARGS, "" },
+    { "charging_status_to_string", (PyCFunction) charging_status_to_string, METH_VARARGS, "" },
+    { NULL } /* sentinel */
 };
 
 #endif

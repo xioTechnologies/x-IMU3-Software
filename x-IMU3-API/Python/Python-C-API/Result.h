@@ -29,8 +29,8 @@ static PyObject* result_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef result_methods[] = {
-        { "result_to_string", (PyCFunction) result_to_string, METH_VARARGS, "" },
-        { NULL } /* sentinel */
+    { "result_to_string", (PyCFunction) result_to_string, METH_VARARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static void result_callback(XIMU3_Result data, void* context)

@@ -38,24 +38,24 @@ static PyObject* rssi_message_to_string(RssiMessage* self, PyObject* args)
 }
 
 static PyGetSetDef rssi_message_get_set[] = {
-        { "timestamp",  (getter) rssi_message_get_timestamp,  NULL, "", NULL },
-        { "percentage", (getter) rssi_message_get_percentage, NULL, "", NULL },
-        { "power",      (getter) rssi_message_get_power,      NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) rssi_message_get_timestamp, NULL, "", NULL },
+    { "percentage", (getter) rssi_message_get_percentage, NULL, "", NULL },
+    { "power", (getter) rssi_message_get_power, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef rssi_message_methods[] = {
-        { "to_string", (PyCFunction) rssi_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) rssi_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject rssi_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.RssiMessage",
-        .tp_basicsize = sizeof(RssiMessage),
-        .tp_dealloc = (destructor) rssi_message_free,
-        .tp_getset = rssi_message_get_set,
-        .tp_methods = rssi_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.RssiMessage",
+    .tp_basicsize = sizeof(RssiMessage),
+    .tp_dealloc = (destructor) rssi_message_free,
+    .tp_getset = rssi_message_get_set,
+    .tp_methods = rssi_message_methods,
 };
 
 static PyObject* rssi_message_from(const XIMU3_RssiMessage* const message)

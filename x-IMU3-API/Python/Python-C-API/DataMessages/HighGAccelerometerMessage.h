@@ -43,25 +43,25 @@ static PyObject* high_g_accelerometer_message_to_string(HighGAccelerometerMessag
 }
 
 static PyGetSetDef high_g_accelerometer_message_get_set[] = {
-        { "timestamp", (getter) high_g_accelerometer_message_get_timestamp, NULL, "", NULL },
-        { "x",         (getter) high_g_accelerometer_message_get_x,         NULL, "", NULL },
-        { "y",         (getter) high_g_accelerometer_message_get_y,         NULL, "", NULL },
-        { "z",         (getter) high_g_accelerometer_message_get_z,         NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) high_g_accelerometer_message_get_timestamp, NULL, "", NULL },
+    { "x", (getter) high_g_accelerometer_message_get_x, NULL, "", NULL },
+    { "y", (getter) high_g_accelerometer_message_get_y, NULL, "", NULL },
+    { "z", (getter) high_g_accelerometer_message_get_z, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef high_g_accelerometer_message_methods[] = {
-        { "to_string", (PyCFunction) high_g_accelerometer_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) high_g_accelerometer_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject high_g_accelerometer_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.HighGAccelerometerMessage",
-        .tp_basicsize = sizeof(HighGAccelerometerMessage),
-        .tp_dealloc = (destructor) high_g_accelerometer_message_free,
-        .tp_getset = high_g_accelerometer_message_get_set,
-        .tp_methods = high_g_accelerometer_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.HighGAccelerometerMessage",
+    .tp_basicsize = sizeof(HighGAccelerometerMessage),
+    .tp_dealloc = (destructor) high_g_accelerometer_message_free,
+    .tp_getset = high_g_accelerometer_message_get_set,
+    .tp_methods = high_g_accelerometer_message_methods,
 };
 
 static PyObject* high_g_accelerometer_message_from(const XIMU3_HighGAccelerometerMessage* const message)

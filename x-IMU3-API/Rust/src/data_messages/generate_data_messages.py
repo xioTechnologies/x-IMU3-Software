@@ -252,11 +252,11 @@ pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pasca
 insert("../ffi/data_messages.rs", template, 0)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
-template = """
+template = """\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)
         {
             return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
-        }\n"""
+        }\n\n"""
 
 insert("../../../Cpp/Connection.hpp", template, 0)
 
@@ -305,30 +305,24 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         template = template.replace("$method_functions$", method_functions.rstrip("\n"))
 
         # Get set members
-        width = max([len(n) for n in argument_names], default=0)
-
         get_set_members = ""
 
         for argument_name in argument_names:
-            get_set_member = '{ "$argument_name$", $whitespace$(getter) $name_snake_case$_message_get_$argument_name$, $whitespace$NULL, "", NULL },\n        '
+            get_set_member = '{ "$argument_name$", (getter) $name_snake_case$_message_get_$argument_name$, NULL, "", NULL },\n    '
             get_set_member = get_set_member.replace("$argument_name$", helpers.snake_case(argument_name))
-            get_set_member = get_set_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(argument_name))))
             get_set_members += get_set_member
 
-        template = template.replace("$get_set_members$", get_set_members.rstrip("\n        "))
+        template = template.replace("$get_set_members$", get_set_members.rstrip("\n    "))
 
         # Get method members
-        width = max([len(n) for n in method_names])
-
         method_members = ""
 
         for method_name in method_names:
-            method_member = '{ "$method_name$", $whitespace$(PyCFunction) $name_snake_case$_message_$method_name$, $whitespace$METH_NOARGS, "" },\n        '
+            method_member = '{ "$method_name$", (PyCFunction) $name_snake_case$_message_$method_name$, METH_NOARGS, "" },\n    '
             method_member = method_member.replace("$method_name$", method_name)
-            method_member = method_member.replace("$whitespace$", "".ljust(width - len(helpers.snake_case(method_name))))
             method_members += method_member
 
-        template = template.replace("$method_members$", method_members.rstrip("\n        "))
+        template = template.replace("$method_members$", method_members.rstrip("\n    "))
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
@@ -352,7 +346,7 @@ insert("../../../Python/Python-C-API/ximu3.c", template, 0)
 # Insert code into x-IMU3-API/Python/Python-C-API/Connection.h
 file_path = "../../../Python/Python-C-API/Connection.h"
 
-template = """
+template = """\
 static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)
 {
     PyObject* callable;
@@ -376,17 +370,16 @@ static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyO
         id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, callable);
     Py_END_ALLOW_THREADS
     return Py_BuildValue("K", id);
-}\n"""
+}\n\n"""
 
 insert(file_path, template, 0)
 
 code = ""
 
 for message in messages:
-    template = '        { "add_$name_snake_case$_callback", $whitespace$(PyCFunction) connection_add_$name_snake_case$_callback, $whitespace$METH_VARARGS, "" },\n'
+    template = '    { "add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_VARARGS, "" },\n'
 
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
-    template = template.replace("$whitespace$", "".ljust(20 - len(message.name)))
 
     code += template
 

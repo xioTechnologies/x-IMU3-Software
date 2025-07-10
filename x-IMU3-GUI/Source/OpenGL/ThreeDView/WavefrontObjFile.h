@@ -55,7 +55,7 @@ public:
         float refractiveIndex = 0.0f;
 
         juce::String ambientTextureName, diffuseTextureName,
-                specularTextureName, normalTextureName;
+                     specularTextureName, normalTextureName;
 
         juce::StringPairArray parameters;
     };

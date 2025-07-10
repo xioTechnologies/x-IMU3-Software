@@ -46,11 +46,11 @@ static void keep_open_free(KeepOpen* self)
 }
 
 static PyTypeObject keep_open_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.KeepOpen",
-        .tp_basicsize = sizeof(KeepOpen),
-        .tp_dealloc = (destructor) keep_open_free,
-        .tp_new = keep_open_new,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.KeepOpen",
+    .tp_basicsize = sizeof(KeepOpen),
+    .tp_dealloc = (destructor) keep_open_free,
+    .tp_new = keep_open_new,
 };
 
 #endif

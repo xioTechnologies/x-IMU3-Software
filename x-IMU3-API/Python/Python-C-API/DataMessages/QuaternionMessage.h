@@ -47,30 +47,30 @@ static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject*
     return Py_BuildValue("s", XIMU3_quaternion_message_to_string(self->message));
 }
 
-PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
+static PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
 
 static PyGetSetDef quaternion_message_get_set[] = {
-        { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },
-        { "w",         (getter) quaternion_message_get_w,         NULL, "", NULL },
-        { "x",         (getter) quaternion_message_get_x,         NULL, "", NULL },
-        { "y",         (getter) quaternion_message_get_y,         NULL, "", NULL },
-        { "z",         (getter) quaternion_message_get_z,         NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },
+    { "w", (getter) quaternion_message_get_w, NULL, "", NULL },
+    { "x", (getter) quaternion_message_get_x, NULL, "", NULL },
+    { "y", (getter) quaternion_message_get_y, NULL, "", NULL },
+    { "z", (getter) quaternion_message_get_z, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef quaternion_message_methods[] = {
-        { "to_string",               (PyCFunction) quaternion_message_to_string,               METH_NOARGS, "" },
-        { "to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) quaternion_message_to_string, METH_NOARGS, "" },
+    { "to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject quaternion_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.QuaternionMessage",
-        .tp_basicsize = sizeof(QuaternionMessage),
-        .tp_dealloc = (destructor) quaternion_message_free,
-        .tp_getset = quaternion_message_get_set,
-        .tp_methods = quaternion_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.QuaternionMessage",
+    .tp_basicsize = sizeof(QuaternionMessage),
+    .tp_dealloc = (destructor) quaternion_message_free,
+    .tp_getset = quaternion_message_get_set,
+    .tp_methods = quaternion_message_methods,
 };
 
 static PyObject* quaternion_message_from(const XIMU3_QuaternionMessage* const message)

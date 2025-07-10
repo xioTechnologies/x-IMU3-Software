@@ -36,8 +36,8 @@ static PyObject* decode_error_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef decode_error_methods[] = {
-        { "decode_error_to_string", (PyCFunction) decode_error_to_string, METH_VARARGS, "" },
-        { NULL } /* sentinel */
+    { "decode_error_to_string", (PyCFunction) decode_error_to_string, METH_VARARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static void decode_error_callback(XIMU3_DecodeError data, void* context)

@@ -28,28 +28,28 @@ namespace UIColours
     static const juce::Colour graphChannel8 { 0xFFFF8000 };
 
     static const std::vector<juce::Colour> tags =
-            {
-                    juce::Colour(0xFF000000),
-                    juce::Colour(0xFF964B00),
-                    juce::Colour(0xFFFF0000),
-                    juce::Colour(0xFFFFA500),
-                    juce::Colour(0xFFFFFF00),
-                    juce::Colour(0xFF9ACD32),
-                    juce::Colour(0xFF6495ED),
-                    juce::Colour(0xFF9400D3),
-                    juce::Colour(0xFFA0A0A0),
-                    juce::Colour(0xFFFFFFFF),
-                    juce::Colour(0xFF0C2A51),
-                    juce::Colour(0xFF23869A),
-                    juce::Colour(0xFF5AFBF1),
-                    juce::Colour(0xFF41993C),
-                    juce::Colour(0xFFFFE057),
-                    juce::Colour(0xFFEE672B),
-                    juce::Colour(0xFFD1366C),
-                    juce::Colour(0xFFFF9CAA),
-                    juce::Colour(0xFFFFF0C4),
-                    juce::Colour(0xFFD19B1D),
-            };
+    {
+        juce::Colour(0xFF000000),
+        juce::Colour(0xFF964B00),
+        juce::Colour(0xFFFF0000),
+        juce::Colour(0xFFFFA500),
+        juce::Colour(0xFFFFFF00),
+        juce::Colour(0xFF9ACD32),
+        juce::Colour(0xFF6495ED),
+        juce::Colour(0xFF9400D3),
+        juce::Colour(0xFFA0A0A0),
+        juce::Colour(0xFFFFFFFF),
+        juce::Colour(0xFF0C2A51),
+        juce::Colour(0xFF23869A),
+        juce::Colour(0xFF5AFBF1),
+        juce::Colour(0xFF41993C),
+        juce::Colour(0xFFFFE057),
+        juce::Colour(0xFFEE672B),
+        juce::Colour(0xFFD1366C),
+        juce::Colour(0xFFFF9CAA),
+        juce::Colour(0xFFFFF0C4),
+        juce::Colour(0xFFD19B1D),
+    };
 }
 
 namespace UILayout

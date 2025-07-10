@@ -38,24 +38,24 @@ static PyObject* error_message_to_string(ErrorMessage* self, PyObject* args)
 }
 
 static PyGetSetDef error_message_get_set[] = {
-        { "timestamp", (getter) error_message_get_timestamp, NULL, "", NULL },
-        { "string",    (getter) error_message_get_string,    NULL, "", NULL },
-        { "bytes",     (getter) error_message_get_bytes,     NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) error_message_get_timestamp, NULL, "", NULL },
+    { "string", (getter) error_message_get_string, NULL, "", NULL },
+    { "bytes", (getter) error_message_get_bytes, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef error_message_methods[] = {
-        { "to_string", (PyCFunction) error_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) error_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject error_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.ErrorMessage",
-        .tp_basicsize = sizeof(ErrorMessage),
-        .tp_dealloc = (destructor) error_message_free,
-        .tp_getset = error_message_get_set,
-        .tp_methods = error_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.ErrorMessage",
+    .tp_basicsize = sizeof(ErrorMessage),
+    .tp_dealloc = (destructor) error_message_free,
+    .tp_getset = error_message_get_set,
+    .tp_methods = error_message_methods,
 };
 
 static PyObject* error_message_from(const XIMU3_ErrorMessage* const message)

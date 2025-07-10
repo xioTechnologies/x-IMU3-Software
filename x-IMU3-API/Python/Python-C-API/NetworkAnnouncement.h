@@ -85,21 +85,21 @@ static PyObject* network_announcement_get_messages_after_short_delay(NetworkAnno
 }
 
 static PyMethodDef network_announcement_methods[] = {
-        { "get_result",                     (PyCFunction) network_announcement_get_result,                     METH_NOARGS,  "" },
-        { "add_callback",                   (PyCFunction) network_announcement_add_callback,                   METH_VARARGS, "" },
-        { "remove_callback",                (PyCFunction) network_announcement_remove_callback,                METH_VARARGS, "" },
-        { "get_messages",                   (PyCFunction) network_announcement_get_messages,                   METH_NOARGS,  "" },
-        { "get_messages_after_short_delay", (PyCFunction) network_announcement_get_messages_after_short_delay, METH_NOARGS,  "" },
-        { NULL } /* sentinel */
+    { "get_result", (PyCFunction) network_announcement_get_result, METH_NOARGS, "" },
+    { "add_callback", (PyCFunction) network_announcement_add_callback, METH_VARARGS, "" },
+    { "remove_callback", (PyCFunction) network_announcement_remove_callback, METH_VARARGS, "" },
+    { "get_messages", (PyCFunction) network_announcement_get_messages, METH_NOARGS, "" },
+    { "get_messages_after_short_delay", (PyCFunction) network_announcement_get_messages_after_short_delay, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject network_announcement_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.NetworkAnnouncement",
-        .tp_basicsize = sizeof(NetworkAnnouncement),
-        .tp_dealloc = (destructor) network_announcement_free,
-        .tp_new = network_announcement_new,
-        .tp_methods = network_announcement_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.NetworkAnnouncement",
+    .tp_basicsize = sizeof(NetworkAnnouncement),
+    .tp_dealloc = (destructor) network_announcement_free,
+    .tp_new = network_announcement_new,
+    .tp_methods = network_announcement_methods,
 };
 
 #endif

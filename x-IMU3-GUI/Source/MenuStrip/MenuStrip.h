@@ -47,19 +47,19 @@ private:
     IconButton aboutButton { BinaryData::xio_icon_svg, "About", nullptr, false, BinaryData::xio_icon_update_svg, "About (Update Available)" };
 
     const std::vector<std::vector<juce::Button*>> buttonGroups {
-            { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
-            { &windowsButton },
-            { &shutdownButton,             &zeroHeadingButton,      &noteButton,       &sendCommandButton },
-            { &dataLoggerStartStopButton,  &dataLoggerTime },
-            { &toolsButton },
-            { &mainSettingsButton,         &aboutButton },
+        { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
+        { &windowsButton },
+        { &shutdownButton, &zeroHeadingButton, &noteButton, &sendCommandButton },
+        { &dataLoggerStartStopButton, &dataLoggerTime },
+        { &toolsButton },
+        { &mainSettingsButton, &aboutButton },
     };
 
     const std::map<ConnectionPanelContainer::Layout, juce::String> layoutIcons {
-            { ConnectionPanelContainer::Layout::rows,      BinaryData::rows_svg },
-            { ConnectionPanelContainer::Layout::columns,   BinaryData::columns_svg },
-            { ConnectionPanelContainer::Layout::grid,      BinaryData::grid_svg },
-            { ConnectionPanelContainer::Layout::accordion, BinaryData::accordion_svg },
+        { ConnectionPanelContainer::Layout::rows, BinaryData::rows_svg },
+        { ConnectionPanelContainer::Layout::columns, BinaryData::columns_svg },
+        { ConnectionPanelContainer::Layout::grid, BinaryData::grid_svg },
+        { ConnectionPanelContainer::Layout::accordion, BinaryData::accordion_svg },
     };
 
     DataLoggerSettingsDialog::Settings dataLoggerSettings;

@@ -32,11 +32,11 @@ private:
     ThreeDView threeDView;
 
     SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-            yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+                rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+                pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+                pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+                yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
+                yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
 
     std::atomic<float> roll { 0.0f }, pitch { 0.0f }, yaw { 0.0f };
 

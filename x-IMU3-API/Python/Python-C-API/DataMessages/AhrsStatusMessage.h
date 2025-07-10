@@ -48,26 +48,26 @@ static PyObject* ahrs_status_message_to_string(AhrsStatusMessage* self, PyObject
 }
 
 static PyGetSetDef ahrs_status_message_get_set[] = {
-        { "timestamp",             (getter) ahrs_status_message_get_timestamp,             NULL, "", NULL },
-        { "initialising",          (getter) ahrs_status_message_get_initialising,          NULL, "", NULL },
-        { "angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL },
-        { "acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL },
-        { "magnetic_recovery",     (getter) ahrs_status_message_get_magnetic_recovery,     NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) ahrs_status_message_get_timestamp, NULL, "", NULL },
+    { "initialising", (getter) ahrs_status_message_get_initialising, NULL, "", NULL },
+    { "angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL },
+    { "acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL },
+    { "magnetic_recovery", (getter) ahrs_status_message_get_magnetic_recovery, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef ahrs_status_message_methods[] = {
-        { "to_string", (PyCFunction) ahrs_status_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) ahrs_status_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject ahrs_status_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.AhrsStatusMessage",
-        .tp_basicsize = sizeof(AhrsStatusMessage),
-        .tp_dealloc = (destructor) ahrs_status_message_free,
-        .tp_getset = ahrs_status_message_get_set,
-        .tp_methods = ahrs_status_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.AhrsStatusMessage",
+    .tp_basicsize = sizeof(AhrsStatusMessage),
+    .tp_dealloc = (destructor) ahrs_status_message_free,
+    .tp_getset = ahrs_status_message_get_set,
+    .tp_methods = ahrs_status_message_methods,
 };
 
 static PyObject* ahrs_status_message_from(const XIMU3_AhrsStatusMessage* const message)

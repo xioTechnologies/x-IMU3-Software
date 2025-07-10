@@ -41,16 +41,16 @@ private:
 
         // 3 floats for position, 2 floats for UV
         const std::vector<GLfloat> vertices = {
-                extent, -extent, 0.0f, 1.0f, 1.0f, // bottom right
-                extent, extent, 0.0f, 1.0f, 0.0f, // top right
-                -extent, extent, 0.0f, 0.0f, 0.0f, // top left
-                -extent, -extent, 0.0f, 0.0f, 1.0f // bottom left
+            extent, -extent, 0.0f, 1.0f, 1.0f, // bottom right
+            extent, extent, 0.0f, 1.0f, 0.0f, // top right
+            -extent, extent, 0.0f, 0.0f, 0.0f, // top left
+            -extent, -extent, 0.0f, 0.0f, 1.0f // bottom left
         };
 
         // Triangles have counter-clockwise winding order to be front-facing
         const std::vector<GLuint> indices = {
-                0, 1, 3, // first triangle
-                1, 2, 3 // second triangle
+            0, 1, 3, // first triangle
+            1, 2, 3 // second triangle
         };
 
         glBindVertexArray(vao); // bind VAO to cache all VBO, EBO, and vertex attribute state

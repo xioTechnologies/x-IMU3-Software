@@ -43,25 +43,25 @@ static PyObject* battery_message_to_string(BatteryMessage* self, PyObject* args)
 }
 
 static PyGetSetDef battery_message_get_set[] = {
-        { "timestamp",       (getter) battery_message_get_timestamp,       NULL, "", NULL },
-        { "percentage",      (getter) battery_message_get_percentage,      NULL, "", NULL },
-        { "voltage",         (getter) battery_message_get_voltage,         NULL, "", NULL },
-        { "charging_status", (getter) battery_message_get_charging_status, NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) battery_message_get_timestamp, NULL, "", NULL },
+    { "percentage", (getter) battery_message_get_percentage, NULL, "", NULL },
+    { "voltage", (getter) battery_message_get_voltage, NULL, "", NULL },
+    { "charging_status", (getter) battery_message_get_charging_status, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef battery_message_methods[] = {
-        { "to_string", (PyCFunction) battery_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) battery_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject battery_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.BatteryMessage",
-        .tp_basicsize = sizeof(BatteryMessage),
-        .tp_dealloc = (destructor) battery_message_free,
-        .tp_getset = battery_message_get_set,
-        .tp_methods = battery_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.BatteryMessage",
+    .tp_basicsize = sizeof(BatteryMessage),
+    .tp_dealloc = (destructor) battery_message_free,
+    .tp_getset = battery_message_get_set,
+    .tp_methods = battery_message_methods,
 };
 
 static PyObject* battery_message_from(const XIMU3_BatteryMessage* const message)

@@ -30,8 +30,8 @@ static PyObject* file_converter_status_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef file_converter_status_methods[] = {
-        { "file_converter_status_to_string", (PyCFunction) file_converter_status_to_string, METH_VARARGS, "" },
-        { NULL } /* sentinel */
+    { "file_converter_status_to_string", (PyCFunction) file_converter_status_to_string, METH_VARARGS, "" },
+    { NULL } /* sentinel */
 };
 
 #endif
