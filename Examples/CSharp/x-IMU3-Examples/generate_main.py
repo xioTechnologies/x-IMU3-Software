@@ -11,7 +11,8 @@ for _, _, file_names in os.walk("Examples"):
     for file_name in file_names:
         file_stem, extension = os.path.splitext(file_name)
 
-        examples.append(file_stem)
+        if extension == ".cs":
+            examples.append(file_stem)
 
 examples = sorted(examples)
 
