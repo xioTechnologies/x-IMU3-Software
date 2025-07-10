@@ -82,20 +82,20 @@ static PyObject* port_scanner_get_port_names(PyObject* null, PyObject* args)
 }
 
 static PyMethodDef port_scanner_methods[] = {
-        { "get_devices",    (PyCFunction) port_scanner_get_devices,    METH_NOARGS, "" },
-        { "scan",           (PyCFunction) port_scanner_scan,           METH_NOARGS | METH_STATIC,  "" },
-        { "scan_filter",    (PyCFunction) port_scanner_scan_filter,    METH_VARARGS | METH_STATIC, "" },
-        { "get_port_names", (PyCFunction) port_scanner_get_port_names, METH_NOARGS | METH_STATIC,  "" },
-        { NULL } /* sentinel */
+    { "get_devices", (PyCFunction) port_scanner_get_devices, METH_NOARGS, "" },
+    { "scan", (PyCFunction) port_scanner_scan, METH_NOARGS | METH_STATIC, "" },
+    { "scan_filter", (PyCFunction) port_scanner_scan_filter, METH_VARARGS | METH_STATIC, "" },
+    { "get_port_names", (PyCFunction) port_scanner_get_port_names, METH_NOARGS | METH_STATIC, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject port_scanner_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.PortScanner",
-        .tp_basicsize = sizeof(PortScanner),
-        .tp_dealloc = (destructor) port_scanner_free,
-        .tp_new = port_scanner_new,
-        .tp_methods = port_scanner_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.PortScanner",
+    .tp_basicsize = sizeof(PortScanner),
+    .tp_dealloc = (destructor) port_scanner_free,
+    .tp_new = port_scanner_new,
+    .tp_methods = port_scanner_methods,
 };
 
 #endif

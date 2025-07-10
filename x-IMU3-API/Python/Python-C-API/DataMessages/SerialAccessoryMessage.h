@@ -38,24 +38,24 @@ static PyObject* serial_accessory_message_to_string(SerialAccessoryMessage* self
 }
 
 static PyGetSetDef serial_accessory_message_get_set[] = {
-        { "timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL },
-        { "string",    (getter) serial_accessory_message_get_string,    NULL, "", NULL },
-        { "bytes",     (getter) serial_accessory_message_get_bytes,     NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL },
+    { "string", (getter) serial_accessory_message_get_string, NULL, "", NULL },
+    { "bytes", (getter) serial_accessory_message_get_bytes, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef serial_accessory_message_methods[] = {
-        { "to_string", (PyCFunction) serial_accessory_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) serial_accessory_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject serial_accessory_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.SerialAccessoryMessage",
-        .tp_basicsize = sizeof(SerialAccessoryMessage),
-        .tp_dealloc = (destructor) serial_accessory_message_free,
-        .tp_getset = serial_accessory_message_get_set,
-        .tp_methods = serial_accessory_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.SerialAccessoryMessage",
+    .tp_basicsize = sizeof(SerialAccessoryMessage),
+    .tp_dealloc = (destructor) serial_accessory_message_free,
+    .tp_getset = serial_accessory_message_get_set,
+    .tp_methods = serial_accessory_message_methods,
 };
 
 static PyObject* serial_accessory_message_from(const XIMU3_SerialAccessoryMessage* const message)

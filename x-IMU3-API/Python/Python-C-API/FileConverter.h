@@ -107,17 +107,17 @@ static PyObject* file_converter_convert(PyObject* null, PyObject* args)
 }
 
 static PyMethodDef file_converter_methods[] = {
-        { "convert", (PyCFunction) file_converter_convert, METH_VARARGS | METH_STATIC, "" },
-        { NULL } /* sentinel */
+    { "convert", (PyCFunction) file_converter_convert, METH_VARARGS | METH_STATIC, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject file_converter_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.FileConverter",
-        .tp_basicsize = sizeof(FileConverter),
-        .tp_dealloc = (destructor) file_converter_free,
-        .tp_new = file_converter_new,
-        .tp_methods = file_converter_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.FileConverter",
+    .tp_basicsize = sizeof(FileConverter),
+    .tp_dealloc = (destructor) file_converter_free,
+    .tp_new = file_converter_new,
+    .tp_methods = file_converter_methods,
 };
 
 #endif

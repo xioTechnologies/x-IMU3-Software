@@ -42,25 +42,25 @@ static PyObject* ping_response_to_string(PingResponse* self, PyObject* args)
 }
 
 static PyGetSetDef ping_response_get_set[] = {
-        { "result",        (getter) ping_response_get_result,        NULL, "", NULL },
-        { "interface",     (getter) ping_response_get_interface,     NULL, "", NULL },
-        { "device_name",   (getter) ping_response_get_device_name,   NULL, "", NULL },
-        { "serial_number", (getter) ping_response_get_serial_number, NULL, "", NULL },
-        { NULL }  /* sentinel */
+    { "result", (getter) ping_response_get_result, NULL, "", NULL },
+    { "interface", (getter) ping_response_get_interface, NULL, "", NULL },
+    { "device_name", (getter) ping_response_get_device_name, NULL, "", NULL },
+    { "serial_number", (getter) ping_response_get_serial_number, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef ping_response_methods[] = {
-        { "to_string", (PyCFunction) ping_response_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) ping_response_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject ping_response_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.PingResponse",
-        .tp_basicsize = sizeof(PingResponse),
-        .tp_dealloc = (destructor) ping_response_free,
-        .tp_getset = ping_response_get_set,
-        .tp_methods = ping_response_methods
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.PingResponse",
+    .tp_basicsize = sizeof(PingResponse),
+    .tp_dealloc = (destructor) ping_response_free,
+    .tp_getset = ping_response_get_set,
+    .tp_methods = ping_response_methods
 };
 
 static PyObject* ping_response_from(const XIMU3_PingResponse* const ping_response)

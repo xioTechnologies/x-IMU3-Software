@@ -75,32 +75,32 @@ static PyObject* rotation_matrix_message_to_string(RotationMatrixMessage* self, 
 PyObject* rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage* self, PyObject* args);
 
 static PyGetSetDef rotation_matrix_message_get_set[] = {
-        { "timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL },
-        { "xx",        (getter) rotation_matrix_message_get_xx,        NULL, "", NULL },
-        { "xy",        (getter) rotation_matrix_message_get_xy,        NULL, "", NULL },
-        { "xz",        (getter) rotation_matrix_message_get_xz,        NULL, "", NULL },
-        { "yx",        (getter) rotation_matrix_message_get_yx,        NULL, "", NULL },
-        { "yy",        (getter) rotation_matrix_message_get_yy,        NULL, "", NULL },
-        { "yz",        (getter) rotation_matrix_message_get_yz,        NULL, "", NULL },
-        { "zx",        (getter) rotation_matrix_message_get_zx,        NULL, "", NULL },
-        { "zy",        (getter) rotation_matrix_message_get_zy,        NULL, "", NULL },
-        { "zz",        (getter) rotation_matrix_message_get_zz,        NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL },
+    { "xx", (getter) rotation_matrix_message_get_xx, NULL, "", NULL },
+    { "xy", (getter) rotation_matrix_message_get_xy, NULL, "", NULL },
+    { "xz", (getter) rotation_matrix_message_get_xz, NULL, "", NULL },
+    { "yx", (getter) rotation_matrix_message_get_yx, NULL, "", NULL },
+    { "yy", (getter) rotation_matrix_message_get_yy, NULL, "", NULL },
+    { "yz", (getter) rotation_matrix_message_get_yz, NULL, "", NULL },
+    { "zx", (getter) rotation_matrix_message_get_zx, NULL, "", NULL },
+    { "zy", (getter) rotation_matrix_message_get_zy, NULL, "", NULL },
+    { "zz", (getter) rotation_matrix_message_get_zz, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef rotation_matrix_message_methods[] = {
-        { "to_string",               (PyCFunction) rotation_matrix_message_to_string,               METH_NOARGS, "" },
-        { "to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) rotation_matrix_message_to_string, METH_NOARGS, "" },
+    { "to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject rotation_matrix_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.RotationMatrixMessage",
-        .tp_basicsize = sizeof(RotationMatrixMessage),
-        .tp_dealloc = (destructor) rotation_matrix_message_free,
-        .tp_getset = rotation_matrix_message_get_set,
-        .tp_methods = rotation_matrix_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.RotationMatrixMessage",
+    .tp_basicsize = sizeof(RotationMatrixMessage),
+    .tp_dealloc = (destructor) rotation_matrix_message_free,
+    .tp_getset = rotation_matrix_message_get_set,
+    .tp_methods = rotation_matrix_message_methods,
 };
 
 static PyObject* rotation_matrix_message_from(const XIMU3_RotationMatrixMessage* const message)

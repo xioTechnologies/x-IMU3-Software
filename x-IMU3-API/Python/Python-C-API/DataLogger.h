@@ -104,18 +104,18 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
 }
 
 static PyMethodDef data_logger_methods[] = {
-        { "get_result", (PyCFunction) data_logger_get_result, METH_NOARGS, "" },
-        { "log",        (PyCFunction) data_logger_log,        METH_VARARGS | METH_STATIC, "" },
-        { NULL } /* sentinel */
+    { "get_result", (PyCFunction) data_logger_get_result, METH_NOARGS, "" },
+    { "log", (PyCFunction) data_logger_log, METH_VARARGS | METH_STATIC, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject data_logger_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.DataLogger",
-        .tp_basicsize = sizeof(DataLogger),
-        .tp_dealloc = (destructor) data_logger_free,
-        .tp_new = data_logger_new,
-        .tp_methods = data_logger_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.DataLogger",
+    .tp_basicsize = sizeof(DataLogger),
+    .tp_dealloc = (destructor) data_logger_free,
+    .tp_new = data_logger_new,
+    .tp_methods = data_logger_methods,
 };
 
 #endif

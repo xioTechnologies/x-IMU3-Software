@@ -56,28 +56,28 @@ static PyObject* statistics_to_string(Statistics* self, PyObject* args)
 }
 
 static PyGetSetDef statistics_get_set[] = {
-        { "timestamp",     (getter) statistics_get_timestamp,     NULL, "", NULL },
-        { "data_total",    (getter) statistics_get_data_total,    NULL, "", NULL },
-        { "data_rate",     (getter) statistics_get_data_rate,     NULL, "", NULL },
-        { "message_total", (getter) statistics_get_message_total, NULL, "", NULL },
-        { "message_rate",  (getter) statistics_get_message_rate,  NULL, "", NULL },
-        { "error_total",   (getter) statistics_get_error_total,   NULL, "", NULL },
-        { "error_rate",    (getter) statistics_get_error_rate,    NULL, "", NULL },
-        { NULL }  /* sentinel */
+    { "timestamp", (getter) statistics_get_timestamp, NULL, "", NULL },
+    { "data_total", (getter) statistics_get_data_total, NULL, "", NULL },
+    { "data_rate", (getter) statistics_get_data_rate, NULL, "", NULL },
+    { "message_total", (getter) statistics_get_message_total, NULL, "", NULL },
+    { "message_rate", (getter) statistics_get_message_rate, NULL, "", NULL },
+    { "error_total", (getter) statistics_get_error_total, NULL, "", NULL },
+    { "error_rate", (getter) statistics_get_error_rate, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef statistics_methods[] = {
-        { "to_string", (PyCFunction) statistics_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) statistics_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject statistics_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.Statistics",
-        .tp_basicsize = sizeof(Statistics),
-        .tp_dealloc = (destructor) statistics_free,
-        .tp_getset = statistics_get_set,
-        .tp_methods = statistics_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.Statistics",
+    .tp_basicsize = sizeof(Statistics),
+    .tp_dealloc = (destructor) statistics_free,
+    .tp_getset = statistics_get_set,
+    .tp_methods = statistics_methods,
 };
 
 static PyObject* statistics_from(const XIMU3_Statistics* const statistics)

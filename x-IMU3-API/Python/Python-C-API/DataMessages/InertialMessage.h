@@ -58,28 +58,28 @@ static PyObject* inertial_message_to_string(InertialMessage* self, PyObject* arg
 }
 
 static PyGetSetDef inertial_message_get_set[] = {
-        { "timestamp",       (getter) inertial_message_get_timestamp,       NULL, "", NULL },
-        { "gyroscope_x",     (getter) inertial_message_get_gyroscope_x,     NULL, "", NULL },
-        { "gyroscope_y",     (getter) inertial_message_get_gyroscope_y,     NULL, "", NULL },
-        { "gyroscope_z",     (getter) inertial_message_get_gyroscope_z,     NULL, "", NULL },
-        { "accelerometer_x", (getter) inertial_message_get_accelerometer_x, NULL, "", NULL },
-        { "accelerometer_y", (getter) inertial_message_get_accelerometer_y, NULL, "", NULL },
-        { "accelerometer_z", (getter) inertial_message_get_accelerometer_z, NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) inertial_message_get_timestamp, NULL, "", NULL },
+    { "gyroscope_x", (getter) inertial_message_get_gyroscope_x, NULL, "", NULL },
+    { "gyroscope_y", (getter) inertial_message_get_gyroscope_y, NULL, "", NULL },
+    { "gyroscope_z", (getter) inertial_message_get_gyroscope_z, NULL, "", NULL },
+    { "accelerometer_x", (getter) inertial_message_get_accelerometer_x, NULL, "", NULL },
+    { "accelerometer_y", (getter) inertial_message_get_accelerometer_y, NULL, "", NULL },
+    { "accelerometer_z", (getter) inertial_message_get_accelerometer_z, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef inertial_message_methods[] = {
-        { "to_string", (PyCFunction) inertial_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) inertial_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject inertial_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.InertialMessage",
-        .tp_basicsize = sizeof(InertialMessage),
-        .tp_dealloc = (destructor) inertial_message_free,
-        .tp_getset = inertial_message_get_set,
-        .tp_methods = inertial_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.InertialMessage",
+    .tp_basicsize = sizeof(InertialMessage),
+    .tp_dealloc = (destructor) inertial_message_free,
+    .tp_getset = inertial_message_get_set,
+    .tp_methods = inertial_message_methods,
 };
 
 static PyObject* inertial_message_from(const XIMU3_InertialMessage* const message)

@@ -30,8 +30,8 @@ static PyObject* port_type_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef port_type_methods[] = {
-        { "port_type_to_string", (PyCFunction) port_type_to_string, METH_VARARGS, "" },
-        { NULL } /* sentinel */
+    { "port_type_to_string", (PyCFunction) port_type_to_string, METH_VARARGS, "" },
+    { NULL } /* sentinel */
 };
 
 #endif

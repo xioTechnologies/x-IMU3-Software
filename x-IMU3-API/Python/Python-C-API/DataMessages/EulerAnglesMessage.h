@@ -45,26 +45,26 @@ static PyObject* euler_angles_message_to_string(EulerAnglesMessage* self, PyObje
 PyObject* euler_angles_message_to_quaternion_message(EulerAnglesMessage* self, PyObject* args);
 
 static PyGetSetDef euler_angles_message_get_set[] = {
-        { "timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL },
-        { "roll",      (getter) euler_angles_message_get_roll,      NULL, "", NULL },
-        { "pitch",     (getter) euler_angles_message_get_pitch,     NULL, "", NULL },
-        { "yaw",       (getter) euler_angles_message_get_yaw,       NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL },
+    { "roll", (getter) euler_angles_message_get_roll, NULL, "", NULL },
+    { "pitch", (getter) euler_angles_message_get_pitch, NULL, "", NULL },
+    { "yaw", (getter) euler_angles_message_get_yaw, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef euler_angles_message_methods[] = {
-        { "to_string",             (PyCFunction) euler_angles_message_to_string,             METH_NOARGS, "" },
-        { "to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) euler_angles_message_to_string, METH_NOARGS, "" },
+    { "to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject euler_angles_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.EulerAnglesMessage",
-        .tp_basicsize = sizeof(EulerAnglesMessage),
-        .tp_dealloc = (destructor) euler_angles_message_free,
-        .tp_getset = euler_angles_message_get_set,
-        .tp_methods = euler_angles_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.EulerAnglesMessage",
+    .tp_basicsize = sizeof(EulerAnglesMessage),
+    .tp_dealloc = (destructor) euler_angles_message_free,
+    .tp_getset = euler_angles_message_get_set,
+    .tp_methods = euler_angles_message_methods,
 };
 
 static PyObject* euler_angles_message_from(const XIMU3_EulerAnglesMessage* const message)

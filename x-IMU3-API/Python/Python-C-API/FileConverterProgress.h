@@ -41,25 +41,25 @@ static PyObject* file_converter_progress_to_string(FileConverterProgress* self, 
 }
 
 static PyGetSetDef file_converter_progress_get_set[] = {
-        { "status",          (getter) file_converter_progress_get_status,          NULL, "", NULL },
-        { "percentage",      (getter) file_converter_progress_get_percentage,      NULL, "", NULL },
-        { "bytes_processed", (getter) file_converter_progress_get_bytes_processed, NULL, "", NULL },
-        { "bytes_total",     (getter) file_converter_progress_get_bytes_total,     NULL, "", NULL },
-        { NULL }  /* sentinel */
+    { "status", (getter) file_converter_progress_get_status, NULL, "", NULL },
+    { "percentage", (getter) file_converter_progress_get_percentage, NULL, "", NULL },
+    { "bytes_processed", (getter) file_converter_progress_get_bytes_processed, NULL, "", NULL },
+    { "bytes_total", (getter) file_converter_progress_get_bytes_total, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef file_converter_progress_methods[] = {
-        { "to_string", (PyCFunction) file_converter_progress_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) file_converter_progress_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject file_converter_progress_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.FileConverterProgress",
-        .tp_basicsize = sizeof(FileConverterProgress),
-        .tp_dealloc = (destructor) file_converter_progress_free,
-        .tp_getset = file_converter_progress_get_set,
-        .tp_methods = file_converter_progress_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.FileConverterProgress",
+    .tp_basicsize = sizeof(FileConverterProgress),
+    .tp_dealloc = (destructor) file_converter_progress_free,
+    .tp_getset = file_converter_progress_get_set,
+    .tp_methods = file_converter_progress_methods,
 };
 
 static PyObject* file_converter_progress_from(const XIMU3_FileConverterProgress* const progress)

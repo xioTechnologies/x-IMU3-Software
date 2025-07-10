@@ -36,24 +36,24 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
 }
 
 static PyGetSetDef $name_snake_case$_message_get_set[] = {
-        { "timestamp", (getter) $name_snake_case$_message_get_timestamp, NULL, "", NULL },
-        { "string",    (getter) $name_snake_case$_message_get_string,    NULL, "", NULL },
-        { "bytes",     (getter) $name_snake_case$_message_get_bytes,     NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) $name_snake_case$_message_get_timestamp, NULL, "", NULL },
+    { "string", (getter) $name_snake_case$_message_get_string, NULL, "", NULL },
+    { "bytes", (getter) $name_snake_case$_message_get_bytes, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef $name_snake_case$_message_methods[] = {
-        { "to_string", (PyCFunction) $name_snake_case$_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) $name_snake_case$_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject $name_snake_case$_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.$name_pascal_case$Message",
-        .tp_basicsize = sizeof($name_pascal_case$Message),
-        .tp_dealloc = (destructor) $name_snake_case$_message_free,
-        .tp_getset = $name_snake_case$_message_get_set,
-        .tp_methods = $name_snake_case$_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.$name_pascal_case$Message",
+    .tp_basicsize = sizeof($name_pascal_case$Message),
+    .tp_dealloc = (destructor) $name_snake_case$_message_free,
+    .tp_getset = $name_snake_case$_message_get_set,
+    .tp_methods = $name_snake_case$_message_methods,
 };
 
 static PyObject* $name_snake_case$_message_from(const XIMU3_$name_pascal_case$Message* const message)

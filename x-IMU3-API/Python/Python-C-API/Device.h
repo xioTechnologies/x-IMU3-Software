@@ -46,24 +46,24 @@ static PyObject* device_to_string(Device* self, PyObject* args)
 }
 
 static PyGetSetDef device_get_set[] = {
-        { "device_name",     (getter) device_get_device_name,     NULL, "", NULL },
-        { "serial_number",   (getter) device_get_serial_number,   NULL, "", NULL },
-        { "connection_info", (getter) device_get_connection_info, NULL, "", NULL },
-        { NULL }  /* sentinel */
+    { "device_name", (getter) device_get_device_name, NULL, "", NULL },
+    { "serial_number", (getter) device_get_serial_number, NULL, "", NULL },
+    { "connection_info", (getter) device_get_connection_info, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef device_methods[] = {
-        { "to_string", (PyCFunction) device_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) device_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject device_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.Device",
-        .tp_basicsize = sizeof(Device),
-        .tp_dealloc = (destructor) device_free,
-        .tp_getset = device_get_set,
-        .tp_methods = device_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.Device",
+    .tp_basicsize = sizeof(Device),
+    .tp_dealloc = (destructor) device_free,
+    .tp_getset = device_get_set,
+    .tp_methods = device_methods,
 };
 
 static PyObject* device_from(const XIMU3_Device* const device)

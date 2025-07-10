@@ -23,10 +23,10 @@
 #include <stdio.h>
 
 static struct PyModuleDef config = {
-        PyModuleDef_HEAD_INIT,
-        "ximu3",
-        "",
-        -1,
+    PyModuleDef_HEAD_INIT,
+    "ximu3",
+    "",
+    -1,
 };
 
 bool add_object(PyObject* const module, PyTypeObject* const type_object, const char* const name)

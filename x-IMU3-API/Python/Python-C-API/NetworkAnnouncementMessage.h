@@ -78,32 +78,32 @@ static PyObject* network_announcement_message_to_string(NetworkAnnouncementMessa
 }
 
 static PyGetSetDef network_announcement_message_get_set[] = {
-        { "device_name",     (getter) network_announcement_message_get_device_name,     NULL, "", NULL },
-        { "serial_number",   (getter) network_announcement_message_get_serial_number,   NULL, "", NULL },
-        { "ip_address",      (getter) network_announcement_message_get_ip_address,      NULL, "", NULL },
-        { "tcp_port",        (getter) network_announcement_message_get_tcp_port,        NULL, "", NULL },
-        { "udp_send",        (getter) network_announcement_message_get_udp_send,        NULL, "", NULL },
-        { "udp_receive",     (getter) network_announcement_message_get_udp_receive,     NULL, "", NULL },
-        { "rssi",            (getter) network_announcement_message_get_rssi,            NULL, "", NULL },
-        { "battery",         (getter) network_announcement_message_get_battery,         NULL, "", NULL },
-        { "charging_status", (getter) network_announcement_message_get_charging_status, NULL, "", NULL },
-        { NULL }  /* sentinel */
+    { "device_name", (getter) network_announcement_message_get_device_name, NULL, "", NULL },
+    { "serial_number", (getter) network_announcement_message_get_serial_number, NULL, "", NULL },
+    { "ip_address", (getter) network_announcement_message_get_ip_address, NULL, "", NULL },
+    { "tcp_port", (getter) network_announcement_message_get_tcp_port, NULL, "", NULL },
+    { "udp_send", (getter) network_announcement_message_get_udp_send, NULL, "", NULL },
+    { "udp_receive", (getter) network_announcement_message_get_udp_receive, NULL, "", NULL },
+    { "rssi", (getter) network_announcement_message_get_rssi, NULL, "", NULL },
+    { "battery", (getter) network_announcement_message_get_battery, NULL, "", NULL },
+    { "charging_status", (getter) network_announcement_message_get_charging_status, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef network_announcement_message_methods[] = {
-        { "to_tcp_connection_info", (PyCFunction) network_announcement_message_to_tcp_connection_info, METH_NOARGS, "" },
-        { "to_udp_connection_info", (PyCFunction) network_announcement_message_to_udp_connection_info, METH_NOARGS, "" },
-        { "to_string",              (PyCFunction) network_announcement_message_to_string,              METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_tcp_connection_info", (PyCFunction) network_announcement_message_to_tcp_connection_info, METH_NOARGS, "" },
+    { "to_udp_connection_info", (PyCFunction) network_announcement_message_to_udp_connection_info, METH_NOARGS, "" },
+    { "to_string", (PyCFunction) network_announcement_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject network_announcement_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.NetworkAnnouncementMessage",
-        .tp_basicsize = sizeof(NetworkAnnouncementMessage),
-        .tp_dealloc = (destructor) network_announcement_message_free,
-        .tp_getset = network_announcement_message_get_set,
-        .tp_methods = network_announcement_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.NetworkAnnouncementMessage",
+    .tp_basicsize = sizeof(NetworkAnnouncementMessage),
+    .tp_dealloc = (destructor) network_announcement_message_free,
+    .tp_getset = network_announcement_message_get_set,
+    .tp_methods = network_announcement_message_methods,
 };
 
 static PyObject* network_announcement_message_from(const XIMU3_NetworkAnnouncementMessage* const message)

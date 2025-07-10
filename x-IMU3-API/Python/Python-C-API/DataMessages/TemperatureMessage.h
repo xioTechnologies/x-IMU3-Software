@@ -33,23 +33,23 @@ static PyObject* temperature_message_to_string(TemperatureMessage* self, PyObjec
 }
 
 static PyGetSetDef temperature_message_get_set[] = {
-        { "timestamp",   (getter) temperature_message_get_timestamp,   NULL, "", NULL },
-        { "temperature", (getter) temperature_message_get_temperature, NULL, "", NULL },
-        { NULL } /* sentinel */
+    { "timestamp", (getter) temperature_message_get_timestamp, NULL, "", NULL },
+    { "temperature", (getter) temperature_message_get_temperature, NULL, "", NULL },
+    { NULL } /* sentinel */
 };
 
 static PyMethodDef temperature_message_methods[] = {
-        { "to_string", (PyCFunction) temperature_message_to_string, METH_NOARGS, "" },
-        { NULL } /* sentinel */
+    { "to_string", (PyCFunction) temperature_message_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
 };
 
 static PyTypeObject temperature_message_object = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ximu3.TemperatureMessage",
-        .tp_basicsize = sizeof(TemperatureMessage),
-        .tp_dealloc = (destructor) temperature_message_free,
-        .tp_getset = temperature_message_get_set,
-        .tp_methods = temperature_message_methods,
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.TemperatureMessage",
+    .tp_basicsize = sizeof(TemperatureMessage),
+    .tp_dealloc = (destructor) temperature_message_free,
+    .tp_getset = temperature_message_get_set,
+    .tp_methods = temperature_message_methods,
 };
 
 static PyObject* temperature_message_from(const XIMU3_TemperatureMessage* const message)
