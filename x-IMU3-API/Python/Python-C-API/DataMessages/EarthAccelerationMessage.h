@@ -62,7 +62,7 @@ static PyObject* earth_acceleration_message_to_string(EarthAccelerationMessage* 
     return Py_BuildValue("s", XIMU3_earth_acceleration_message_to_string(self->message));
 }
 
-PyObject* earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage* self, PyObject* args);
+static PyObject* earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage* self, PyObject* args);
 
 static PyGetSetDef earth_acceleration_message_get_set[] = {
     { "timestamp", (getter) earth_acceleration_message_get_timestamp, NULL, "", NULL },

@@ -47,7 +47,7 @@ static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject*
     return Py_BuildValue("s", XIMU3_quaternion_message_to_string(self->message));
 }
 
-PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
+static PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
 
 static PyGetSetDef quaternion_message_get_set[] = {
     { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },

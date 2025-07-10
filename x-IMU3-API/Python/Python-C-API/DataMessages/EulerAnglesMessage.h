@@ -42,7 +42,7 @@ static PyObject* euler_angles_message_to_string(EulerAnglesMessage* self, PyObje
     return Py_BuildValue("s", XIMU3_euler_angles_message_to_string(self->message));
 }
 
-PyObject* euler_angles_message_to_quaternion_message(EulerAnglesMessage* self, PyObject* args);
+static PyObject* euler_angles_message_to_quaternion_message(EulerAnglesMessage* self, PyObject* args);
 
 static PyGetSetDef euler_angles_message_get_set[] = {
     { "timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL },

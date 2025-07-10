@@ -62,7 +62,7 @@ static PyObject* linear_acceleration_message_to_string(LinearAccelerationMessage
     return Py_BuildValue("s", XIMU3_linear_acceleration_message_to_string(self->message));
 }
 
-PyObject* linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage* self, PyObject* args);
+static PyObject* linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage* self, PyObject* args);
 
 static PyGetSetDef linear_acceleration_message_get_set[] = {
     { "timestamp", (getter) linear_acceleration_message_get_timestamp, NULL, "", NULL },
