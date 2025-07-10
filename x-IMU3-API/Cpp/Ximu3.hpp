@@ -2,6 +2,6 @@
 #include "ConnectionInfo.hpp"
 #include "DataLogger.hpp"
 #include "FileConverter.hpp"
-#include "KeepOpen.h"
+#include "KeepOpen.hpp"
 #include "NetworkAnnouncement.hpp"
 #include "PortScanner.hpp"
