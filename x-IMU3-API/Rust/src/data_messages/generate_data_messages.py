@@ -296,11 +296,11 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
 
         if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
             method_names = method_names + ["to_euler_angles_message"]
-            method_functions += "PyObject* $name_snake_case$_message_to_euler_angles_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+            method_functions += "static PyObject* $name_snake_case$_message_to_euler_angles_message($name_pascal_case$Message* self, PyObject* args);\n\n"
 
         if message.name == "Euler Angles":
             method_names = method_names + ["to_quaternion_message"]
-            method_functions += "PyObject* $name_snake_case$_message_to_quaternion_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+            method_functions += "static PyObject* $name_snake_case$_message_to_quaternion_message($name_pascal_case$Message* self, PyObject* args);\n\n"
 
         template = template.replace("$method_functions$", method_functions.rstrip("\n"))
 
