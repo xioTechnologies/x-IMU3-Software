@@ -17,7 +17,7 @@ impl DataMessage for $name_pascal_case$Message {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},$arguments_scan_fmt$\n", char, u64, $arguments_types$) {
-            Ok((_, timestamp, $arguments_scan_result$)) => Ok($name_pascal_case$Message {
+            Ok((_, timestamp, $arguments_scan_result$)) => Ok(Self {
                 timestamp,
                 $arguments_struct_asign$
             }),
@@ -43,7 +43,7 @@ impl DataMessage for $name_pascal_case$Message {
             binary_message
         };
 
-        Ok($name_pascal_case$Message {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             $arguments_assign_struct$
         })

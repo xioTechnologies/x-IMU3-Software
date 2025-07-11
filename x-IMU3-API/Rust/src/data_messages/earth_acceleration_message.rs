@@ -25,7 +25,7 @@ impl DataMessage for EarthAccelerationMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, quaternion_w, quaternion_x, quaternion_y, quaternion_z, acceleration_x, acceleration_y, acceleration_z)) => Ok(EarthAccelerationMessage {
+            Ok((_, timestamp, quaternion_w, quaternion_x, quaternion_y, quaternion_z, acceleration_x, acceleration_y, acceleration_z)) => Ok(Self {
                 timestamp,
                 quaternion_w,
                 quaternion_x,
@@ -63,7 +63,7 @@ impl DataMessage for EarthAccelerationMessage {
             binary_message
         };
 
-        Ok(EarthAccelerationMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             quaternion_w: binary_message.quaternion_w,
             quaternion_x: binary_message.quaternion_x,

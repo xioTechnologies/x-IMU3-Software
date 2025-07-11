@@ -31,7 +31,7 @@ impl DataMessage for SerialAccessoryMessage {
             Ok((_, timestamp, string)) => {
                 let (char_array, number_of_bytes) = string_to_char_array(string);
 
-                Ok(SerialAccessoryMessage {
+                Ok(Self {
                     timestamp,
                     char_array,
                     number_of_bytes,

@@ -21,7 +21,7 @@ impl DataMessage for EulerAnglesMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f}\n", char, u64, f32, f32, f32) {
-            Ok((_, timestamp, roll, pitch, yaw)) => Ok(EulerAnglesMessage {
+            Ok((_, timestamp, roll, pitch, yaw)) => Ok(Self {
                 timestamp,
                 roll,
                 pitch,
@@ -51,7 +51,7 @@ impl DataMessage for EulerAnglesMessage {
             binary_message
         };
 
-        Ok(EulerAnglesMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             roll: binary_message.roll,
             pitch: binary_message.pitch,

@@ -13,8 +13,8 @@ pub struct Statistics {
 }
 
 impl Default for Statistics {
-    fn default() -> Statistics {
-        Statistics {
+    fn default() -> Self {
+        Self {
             timestamp: 0,
             data_total: 0,
             data_rate: 0,

@@ -18,8 +18,8 @@ pub struct DeviceC {
 }
 
 impl Default for DeviceC {
-    fn default() -> DeviceC {
-        DeviceC {
+    fn default() -> Self {
+        Self {
             device_name: EMPTY_CHAR_ARRAY,
             serial_number: EMPTY_CHAR_ARRAY,
             connection_type: ConnectionType::Usb,
@@ -32,7 +32,7 @@ impl Default for DeviceC {
 
 impl From<&Device> for DeviceC {
     fn from(device: &Device) -> Self {
-        let mut device_c: DeviceC = Default::default();
+        let mut device_c: Self = Default::default();
 
         device_c.device_name = str_to_char_array(&device.device_name);
         device_c.serial_number = str_to_char_array(&device.serial_number);
@@ -58,7 +58,7 @@ impl From<&Device> for DeviceC {
 
 impl From<DeviceC> for Device {
     fn from(device: DeviceC) -> Self {
-        Device {
+        Self {
             device_name: char_array_to_string(&device.device_name),
             serial_number: char_array_to_string(&device.serial_number),
             connection_info: match device.connection_type {
@@ -87,7 +87,7 @@ impl From<Vec<Device>> for Devices {
     fn from(devices: Vec<Device>) -> Self {
         let mut vector: Vec<DeviceC> = devices.iter().map(|device| device.into()).collect();
 
-        let devices = Devices {
+        let devices = Self {
             array: vector.as_mut_ptr(),
             length: vector.len() as u32,
             capacity: vector.capacity() as u32,

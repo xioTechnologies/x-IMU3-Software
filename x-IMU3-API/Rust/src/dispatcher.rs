@@ -58,10 +58,10 @@ pub struct Dispatcher {
 }
 
 impl Dispatcher {
-    pub fn new() -> Dispatcher {
+    pub fn new() -> Self {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
-        let dispatcher = Dispatcher {
+        let dispatcher = Self {
             sender,
             closure_counter: AtomicU64::new(0),
             decode_error_closures: Arc::new(Mutex::new(Vec::new())),

@@ -17,9 +17,9 @@ pub enum FileConverterStatus {
 impl fmt::Display for FileConverterStatus {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            FileConverterStatus::Complete => write!(formatter, "Complete"),
-            FileConverterStatus::Failed => write!(formatter, "Failed"),
-            FileConverterStatus::InProgress => write!(formatter, "In progress"),
+            Self::Complete => write!(formatter, "Complete"),
+            Self::Failed => write!(formatter, "Failed"),
+            Self::InProgress => write!(formatter, "In progress"),
         }
     }
 }
@@ -44,8 +44,8 @@ pub struct FileConverter {
 }
 
 impl FileConverter {
-    pub fn new(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> FileConverter {
-        let file_converter = FileConverter {
+    pub fn new(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> Self {
+        let file_converter = Self {
             dropped: Arc::new(Mutex::new(false)),
         };
 
@@ -150,7 +150,7 @@ impl FileConverter {
             sender.send(progress).ok();
         });
 
-        let _file_converter = FileConverter::new(destination, name, files, closure);
+        let _file_converter = Self::new(destination, name, files, closure);
 
         loop {
             if let Ok(progress) = receiver.recv() {

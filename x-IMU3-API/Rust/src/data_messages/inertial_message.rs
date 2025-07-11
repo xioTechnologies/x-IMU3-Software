@@ -24,7 +24,7 @@ impl DataMessage for InertialMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, gyroscope_x, gyroscope_y, gyroscope_z, accelerometer_x, accelerometer_y, accelerometer_z)) => Ok(InertialMessage {
+            Ok((_, timestamp, gyroscope_x, gyroscope_y, gyroscope_z, accelerometer_x, accelerometer_y, accelerometer_z)) => Ok(Self {
                 timestamp,
                 gyroscope_x,
                 gyroscope_y,
@@ -60,7 +60,7 @@ impl DataMessage for InertialMessage {
             binary_message
         };
 
-        Ok(InertialMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             gyroscope_x: binary_message.gyroscope_x,
             gyroscope_y: binary_message.gyroscope_y,

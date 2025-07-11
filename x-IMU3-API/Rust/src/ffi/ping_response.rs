@@ -12,8 +12,8 @@ pub struct PingResponseC {
 }
 
 impl Default for PingResponseC {
-    fn default() -> PingResponseC {
-        PingResponseC {
+    fn default() -> Self {
+        Self {
             result: Result::Error,
             interface: EMPTY_CHAR_ARRAY,
             device_name: EMPTY_CHAR_ARRAY,
@@ -24,7 +24,7 @@ impl Default for PingResponseC {
 
 impl From<PingResponse> for PingResponseC {
     fn from(ping_response: PingResponse) -> Self {
-        PingResponseC {
+        Self {
             result: Result::Ok,
             interface: str_to_char_array(&ping_response.interface),
             device_name: str_to_char_array(&ping_response.device_name),
@@ -35,7 +35,7 @@ impl From<PingResponse> for PingResponseC {
 
 impl From<PingResponseC> for PingResponse {
     fn from(ping_response: PingResponseC) -> Self {
-        PingResponse {
+        Self {
             interface: char_array_to_string(&ping_response.interface),
             device_name: char_array_to_string(&ping_response.device_name),
             serial_number: char_array_to_string(&ping_response.serial_number),

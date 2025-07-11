@@ -14,12 +14,12 @@ pub enum ConnectionInfo {
 impl fmt::Display for ConnectionInfo {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ConnectionInfo::UsbConnectionInfo(connection_info) => connection_info.fmt(formatter),
-            ConnectionInfo::SerialConnectionInfo(connection_info) => connection_info.fmt(formatter),
-            ConnectionInfo::TcpConnectionInfo(connection_info) => connection_info.fmt(formatter),
-            ConnectionInfo::UdpConnectionInfo(connection_info) => connection_info.fmt(formatter),
-            ConnectionInfo::BluetoothConnectionInfo(connection_info) => connection_info.fmt(formatter),
-            ConnectionInfo::FileConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::UsbConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::SerialConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::TcpConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::UdpConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::BluetoothConnectionInfo(connection_info) => connection_info.fmt(formatter),
+            Self::FileConnectionInfo(connection_info) => connection_info.fmt(formatter),
         }
     }
 }
@@ -31,7 +31,7 @@ pub struct UsbConnectionInfo {
 
 impl From<SerialConnectionInfo> for UsbConnectionInfo {
     fn from(connection_info: SerialConnectionInfo) -> Self {
-        UsbConnectionInfo {
+        Self {
             port_name: connection_info.port_name,
         }
     }
@@ -91,7 +91,7 @@ pub struct BluetoothConnectionInfo {
 }
 impl From<SerialConnectionInfo> for BluetoothConnectionInfo {
     fn from(connection_info: SerialConnectionInfo) -> Self {
-        BluetoothConnectionInfo {
+        Self {
             port_name: connection_info.port_name,
         }
     }

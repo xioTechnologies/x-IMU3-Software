@@ -21,7 +21,7 @@ impl DataMessage for MagnetometerMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f}\n", char, u64, f32, f32, f32) {
-            Ok((_, timestamp, x, y, z)) => Ok(MagnetometerMessage {
+            Ok((_, timestamp, x, y, z)) => Ok(Self {
                 timestamp,
                 x,
                 y,
@@ -51,7 +51,7 @@ impl DataMessage for MagnetometerMessage {
             binary_message
         };
 
-        Ok(MagnetometerMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             x: binary_message.x,
             y: binary_message.y,

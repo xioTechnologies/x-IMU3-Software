@@ -29,7 +29,7 @@ impl DataMessage for $name_pascal_case$Message {
             Ok((_, timestamp, string)) => {
                 let (char_array, number_of_bytes) = string_to_char_array(string);
 
-                Ok($name_pascal_case$Message {
+                Ok(Self {
                     timestamp,
                     char_array,
                     number_of_bytes,

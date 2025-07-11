@@ -27,7 +27,7 @@ impl DataMessage for RotationMatrixMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f},{f},{f},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, xx, xy, xz, yx, yy, yz, zx, zy, zz)) => Ok(RotationMatrixMessage {
+            Ok((_, timestamp, xx, xy, xz, yx, yy, yz, zx, zy, zz)) => Ok(Self {
                 timestamp,
                 xx,
                 xy,
@@ -69,7 +69,7 @@ impl DataMessage for RotationMatrixMessage {
             binary_message
         };
 
-        Ok(RotationMatrixMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             xx: binary_message.xx,
             xy: binary_message.xy,

@@ -18,7 +18,7 @@ pub struct Connection {
 }
 
 impl Connection {
-    pub fn new(connection_info: &ConnectionInfo) -> Connection {
+    pub fn new(connection_info: &ConnectionInfo) -> Self {
         let internal: Box<dyn GenericConnection + Send>;
 
         match connection_info {
@@ -30,7 +30,7 @@ impl Connection {
             ConnectionInfo::FileConnectionInfo(connection_info) => internal = Box::new(FileConnection::new(connection_info)),
         }
 
-        let connection = Connection {
+        let connection = Self {
             dropped: Arc::new(Mutex::new(false)),
             internal: Arc::new(Mutex::new(internal)),
         };

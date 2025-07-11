@@ -20,7 +20,7 @@ impl DataMessage for RssiMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f}\n", char, u64, f32, f32) {
-            Ok((_, timestamp, percentage, power)) => Ok(RssiMessage {
+            Ok((_, timestamp, percentage, power)) => Ok(Self {
                 timestamp,
                 percentage,
                 power,
@@ -48,7 +48,7 @@ impl DataMessage for RssiMessage {
             binary_message
         };
 
-        Ok(RssiMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             percentage: binary_message.percentage,
             power: binary_message.power,

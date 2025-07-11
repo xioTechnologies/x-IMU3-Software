@@ -81,10 +81,10 @@ pub struct NetworkAnnouncement {
 }
 
 impl NetworkAnnouncement {
-    pub fn new() -> Result<NetworkAnnouncement, std::io::Error> {
+    pub fn new() -> Result<Self, std::io::Error> {
         let socket = UdpSocket::bind("0.0.0.0:10000")?;
 
-        let network_announcement = NetworkAnnouncement {
+        let network_announcement = Self {
             dropped: Arc::new(Mutex::new(false)),
             closure_counter: AtomicU64::new(0),
             closures: Arc::new(Mutex::new(Vec::new())),
@@ -104,7 +104,7 @@ impl NetworkAnnouncement {
                 let mut message = None;
 
                 if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
-                    message = NetworkAnnouncement::parse(&buffer[..number_of_bytes]);
+                    message = Self::parse(&buffer[..number_of_bytes]);
                 }
 
                 if let Some(message) = &message {

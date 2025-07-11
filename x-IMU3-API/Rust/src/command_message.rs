@@ -11,14 +11,14 @@ pub struct CommandMessage {
 }
 
 impl CommandMessage {
-    pub(crate) fn parse_bytes(bytes: &[u8]) -> Result<CommandMessage, DecodeError> {
+    pub(crate) fn parse_bytes(bytes: &[u8]) -> Result<Self, DecodeError> {
         match std::str::from_utf8(bytes) {
             Ok(json) => Self::parse_json(json),
             Err(_) => Err(DecodeError::InvalidUtf8),
         }
     }
 
-    pub(crate) fn parse_json(json: &str) -> Result<CommandMessage, DecodeError> {
+    pub(crate) fn parse_json(json: &str) -> Result<Self, DecodeError> {
         let value = serde_json::from_str::<serde_json::Value>(json).map_err(|_| DecodeError::InvalidJson)?;
 
         let object = value.as_object().ok_or(DecodeError::JsonIsNotAnObject)?;
@@ -31,7 +31,7 @@ impl CommandMessage {
 
         let value = object.values().nth(0).unwrap();
 
-        let mut command_message = CommandMessage {
+        let mut command_message = Self {
             json: json.clone(),
             terminated_json: format!("{json}\n").into_bytes(),
             key: object.keys().nth(0).unwrap().to_owned(),
@@ -46,8 +46,8 @@ impl CommandMessage {
         Ok(command_message)
     }
 
-    pub fn parse(json: &str) -> CommandMessage {
-        CommandMessage::parse_json(json).unwrap_or(CommandMessage {
+    pub fn parse(json: &str) -> Self {
+        Self::parse_json(json).unwrap_or(Self {
             json: "".to_owned(),
             terminated_json: b"".to_vec(),
             key: "".to_owned(),
