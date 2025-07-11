@@ -29,9 +29,9 @@ pub enum PortType {
 impl fmt::Display for PortType {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PortType::Usb => write!(formatter, "USB"),
-            PortType::Serial => write!(formatter, "Serial"),
-            PortType::Bluetooth => write!(formatter, "Bluetooth"),
+            Self::Usb => write!(formatter, "USB"),
+            Self::Serial => write!(formatter, "Serial"),
+            Self::Bluetooth => write!(formatter, "Bluetooth"),
         }
     }
 }
@@ -42,8 +42,8 @@ pub struct PortScanner {
 }
 
 impl PortScanner {
-    pub fn new(closure: Box<dyn Fn(Vec<Device>) + Send>) -> PortScanner {
-        let port_scanner = PortScanner {
+    pub fn new(closure: Box<dyn Fn(Vec<Device>) + Send>) -> Self {
+        let port_scanner = Self {
             dropped: Arc::new(Mutex::new(false)),
             devices: Arc::new(Mutex::new(Vec::new())),
         };
@@ -56,7 +56,7 @@ impl PortScanner {
             let (sender, receiver) = crossbeam::channel::unbounded();
 
             loop {
-                for port_name in PortScanner::get_port_names() {
+                for port_name in Self::get_port_names() {
                     if handled_port_names.contains(&port_name) {
                         continue;
                     }
@@ -68,8 +68,8 @@ impl PortScanner {
 
                     std::thread::spawn(move || loop {
                         if devices.lock().unwrap().iter().any(|device| device.connection_info.to_string().contains(&port_name)) == false {
-                            PortScanner::ping_port(&port_name, devices.clone(), sender.clone());
-                        } else if PortScanner::get_port_names().contains(&port_name) == false {
+                            Self::ping_port(&port_name, devices.clone(), sender.clone());
+                        } else if Self::get_port_names().contains(&port_name) == false {
                             devices.lock().unwrap().retain(|device| device.connection_info.to_string().contains(&port_name) == false);
                             sender.send(()).ok();
                         }
@@ -136,12 +136,12 @@ impl PortScanner {
         let devices = Arc::new(Mutex::new(Vec::new()));
         let (sender, receiver) = crossbeam::channel::unbounded();
 
-        for port_name in PortScanner::get_port_names() {
+        for port_name in Self::get_port_names() {
             let devices = devices.clone();
             let sender = sender.clone();
 
             std::thread::spawn(move || {
-                PortScanner::ping_port(&port_name, devices, sender);
+                Self::ping_port(&port_name, devices, sender);
             });
         }
 
@@ -154,7 +154,7 @@ impl PortScanner {
     }
 
     pub fn scan_filter(port_type: PortType) -> Vec<Device> {
-        let mut devices = PortScanner::scan();
+        let mut devices = Self::scan();
 
         devices.retain(|device| match port_type {
             PortType::Usb => matches!(device.connection_info, ConnectionInfo::UsbConnectionInfo(_)),

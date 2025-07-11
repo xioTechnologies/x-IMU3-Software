@@ -15,7 +15,7 @@ pub struct Decoder {
 
 impl Decoder {
     pub fn new() -> Decoder {
-        Decoder {
+        Self {
             buffer: [0; BUFFER_SIZE],
             index: 0,
             statistics: Default::default(),
@@ -64,7 +64,7 @@ impl Decoder {
     }
 
     fn process_data_message(&mut self) -> Result<(), DecodeError> {
-        let message = Decoder::undo_byte_stuffing(&mut self.buffer[..self.index])?;
+        let message = Self::undo_byte_stuffing(&mut self.buffer[..self.index])?;
 
         macro_rules! parse {
             ($data_message:ident, $dispatcher_data:ident) => {{

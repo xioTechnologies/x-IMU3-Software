@@ -10,7 +10,7 @@ pub struct UsbConnection {
 }
 
 impl UsbConnection {
-    pub fn new(connection_info: &UsbConnectionInfo) -> UsbConnection {
+    pub fn new(connection_info: &UsbConnectionInfo) -> Self {
         let serial_info = SerialConnectionInfo {
             port_name: connection_info.port_name.clone(),
             baud_rate: 115200,
@@ -19,7 +19,7 @@ impl UsbConnection {
 
         let serial_connection = SerialConnection::new(&serial_info);
 
-        UsbConnection {
+        Self {
             connection_info: connection_info.clone(),
             serial_connection,
         }

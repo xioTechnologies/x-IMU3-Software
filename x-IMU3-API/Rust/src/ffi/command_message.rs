@@ -12,7 +12,7 @@ pub struct CommandMessageC {
 
 impl From<CommandMessage> for CommandMessageC {
     fn from(command_message: CommandMessage) -> Self {
-        CommandMessageC {
+        Self {
             json: str_to_char_array(&command_message.json),
             key: str_to_char_array(&command_message.key),
             value: str_to_char_array(&command_message.value),

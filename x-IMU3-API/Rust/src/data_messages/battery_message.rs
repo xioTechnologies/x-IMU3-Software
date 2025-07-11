@@ -21,7 +21,7 @@ impl DataMessage for BatteryMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f}\n", char, u64, f32, f32, f32) {
-            Ok((_, timestamp, percentage, voltage, charging_status)) => Ok(BatteryMessage {
+            Ok((_, timestamp, percentage, voltage, charging_status)) => Ok(Self {
                 timestamp,
                 percentage,
                 voltage,
@@ -51,7 +51,7 @@ impl DataMessage for BatteryMessage {
             binary_message
         };
 
-        Ok(BatteryMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             percentage: binary_message.percentage,
             voltage: binary_message.voltage,

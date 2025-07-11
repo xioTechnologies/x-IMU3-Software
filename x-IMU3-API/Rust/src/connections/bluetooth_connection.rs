@@ -10,7 +10,7 @@ pub struct BluetoothConnection {
 }
 
 impl BluetoothConnection {
-    pub fn new(connection_info: &BluetoothConnectionInfo) -> BluetoothConnection {
+    pub fn new(connection_info: &BluetoothConnectionInfo) -> Self {
         let serial_info = SerialConnectionInfo {
             port_name: connection_info.port_name.clone(),
             baud_rate: 115200,
@@ -19,7 +19,7 @@ impl BluetoothConnection {
 
         let serial_connection = SerialConnection::new(&serial_info);
 
-        BluetoothConnection {
+        Self {
             connection_info: connection_info.clone(),
             serial_connection,
         }

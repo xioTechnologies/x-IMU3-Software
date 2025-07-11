@@ -17,12 +17,12 @@ pub enum ConnectionType {
 impl From<&ConnectionInfo> for ConnectionType {
     fn from(connection_info: &ConnectionInfo) -> Self {
         match connection_info {
-            ConnectionInfo::UsbConnectionInfo(_) => ConnectionType::Usb,
-            ConnectionInfo::SerialConnectionInfo(_) => ConnectionType::Serial,
-            ConnectionInfo::TcpConnectionInfo(_) => ConnectionType::Tcp,
-            ConnectionInfo::UdpConnectionInfo(_) => ConnectionType::Udp,
-            ConnectionInfo::BluetoothConnectionInfo(_) => ConnectionType::Bluetooth,
-            ConnectionInfo::FileConnectionInfo(_) => ConnectionType::File,
+            ConnectionInfo::UsbConnectionInfo(_) => Self::Usb,
+            ConnectionInfo::SerialConnectionInfo(_) => Self::Serial,
+            ConnectionInfo::TcpConnectionInfo(_) => Self::Tcp,
+            ConnectionInfo::UdpConnectionInfo(_) => Self::Udp,
+            ConnectionInfo::BluetoothConnectionInfo(_) => Self::Bluetooth,
+            ConnectionInfo::FileConnectionInfo(_) => Self::File,
         }
     }
 }
@@ -30,12 +30,12 @@ impl From<&ConnectionInfo> for ConnectionType {
 impl fmt::Display for ConnectionType {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ConnectionType::Usb => write!(formatter, "USB"),
-            ConnectionType::Serial => write!(formatter, "Serial"),
-            ConnectionType::Tcp => write!(formatter, "TCP"),
-            ConnectionType::Udp => write!(formatter, "UDP"),
-            ConnectionType::Bluetooth => write!(formatter, "Bluetooth"),
-            ConnectionType::File => write!(formatter, "File"),
+            Self::Usb => write!(formatter, "USB"),
+            Self::Serial => write!(formatter, "Serial"),
+            Self::Tcp => write!(formatter, "TCP"),
+            Self::Udp => write!(formatter, "UDP"),
+            Self::Bluetooth => write!(formatter, "Bluetooth"),
+            Self::File => write!(formatter, "File"),
         }
     }
 }

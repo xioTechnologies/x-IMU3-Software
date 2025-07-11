@@ -22,7 +22,7 @@ impl DataMessage for AhrsStatusMessage {
 
     fn parse_ascii(message: &str) -> Result<Self, DecodeError> {
         match scan_fmt!(message, "{},{d},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32) {
-            Ok((_, timestamp, initialising, angular_rate_recovery, acceleration_recovery, magnetic_recovery)) => Ok(AhrsStatusMessage {
+            Ok((_, timestamp, initialising, angular_rate_recovery, acceleration_recovery, magnetic_recovery)) => Ok(Self {
                 timestamp,
                 initialising,
                 angular_rate_recovery,
@@ -54,7 +54,7 @@ impl DataMessage for AhrsStatusMessage {
             binary_message
         };
 
-        Ok(AhrsStatusMessage {
+        Ok(Self {
             timestamp: binary_message.timestamp,
             initialising: binary_message.initialising,
             angular_rate_recovery: binary_message.angular_rate_recovery,

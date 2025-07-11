@@ -132,7 +132,7 @@ impl DataLogger<'_> {
     }
 
     pub fn log(destination: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> Result<(), ()> {
-        let data_logger = DataLogger::new(destination, name, connections)?;
+        let data_logger = Self::new(destination, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
 

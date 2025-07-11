@@ -9,7 +9,7 @@ pub struct PingResponse {
 }
 
 impl PingResponse {
-    pub(crate) fn parse(json: &str) -> Result<PingResponse, ()> {
+    pub(crate) fn parse(json: &str) -> Result<Self, ()> {
         #[derive(Deserialize)]
         struct ParentObject {
             ping: ChildObject,
@@ -26,7 +26,7 @@ impl PingResponse {
 
         let object = serde_json::from_str::<ParentObject>(json).map_err(|_| ())?;
 
-        Ok(PingResponse {
+        Ok(Self {
             interface: object.ping.interface,
             device_name: object.ping.name,
             serial_number: object.ping.sn,

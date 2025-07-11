@@ -24,7 +24,7 @@ pub struct NetworkAnnouncementMessageC {
 
 impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        NetworkAnnouncementMessageC {
+        Self {
             device_name: str_to_char_array(&message.device_name),
             serial_number: str_to_char_array(&message.serial_number),
             ip_address: str_to_char_array(&message.ip_address.to_string()),
@@ -40,7 +40,7 @@ impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
 
 impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
     fn from(message: NetworkAnnouncementMessageC) -> Self {
-        NetworkAnnouncementMessage {
+        Self {
             device_name: char_array_to_string(&message.device_name),
             serial_number: char_array_to_string(&message.serial_number),
             ip_address: char_array_to_string(&message.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
@@ -81,7 +81,7 @@ impl From<Vec<NetworkAnnouncementMessage>> for NetworkAnnouncementMessages {
     fn from(messages: Vec<NetworkAnnouncementMessage>) -> Self {
         let mut vector: Vec<NetworkAnnouncementMessageC> = messages.iter().map(|message| message.into()).collect();
 
-        let messages = NetworkAnnouncementMessages {
+        let messages = Self {
             length: vector.len() as u32,
             array: vector.as_mut_ptr(),
             capacity: vector.capacity() as u32,

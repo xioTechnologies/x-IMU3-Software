@@ -13,8 +13,8 @@ pub struct UdpConnection {
 }
 
 impl UdpConnection {
-    pub fn new(connection_info: &UdpConnectionInfo) -> UdpConnection {
-        UdpConnection {
+    pub fn new(connection_info: &UdpConnectionInfo) -> Self {
+        Self {
             connection_info: connection_info.clone(),
             decoder: Arc::new(Mutex::new(Decoder::new())),
             close_sender: None,
