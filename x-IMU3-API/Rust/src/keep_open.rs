@@ -24,9 +24,9 @@ pub struct KeepOpen<'a> {
     connection: &'a Connection,
 }
 
-impl KeepOpen<'_> {
-    pub fn new(connection: &Connection, closure: Box<dyn Fn(ConnectionStatus) + Send>) -> KeepOpen {
-        let keep_open = KeepOpen {
+impl<'a> KeepOpen<'a> {
+    pub fn new(connection: &'a Connection, closure: Box<dyn Fn(ConnectionStatus) + Send>) -> Self {
+        let keep_open = Self {
             dropped: Arc::new(Mutex::new(false)),
             connection,
         };
