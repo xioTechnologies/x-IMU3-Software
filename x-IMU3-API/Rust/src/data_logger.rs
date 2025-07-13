@@ -14,8 +14,8 @@ pub struct DataLogger<'a> {
     in_progress: Arc<Mutex<bool>>,
 }
 
-impl DataLogger<'_> {
-    pub fn new<'a>(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<DataLogger<'a>, ()> {
+impl<'a> DataLogger<'a> {
+    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<Self, ()> {
         // Create root directory
         if Path::new(destination).exists() == false {
             return Err(());
@@ -32,7 +32,7 @@ impl DataLogger<'_> {
         }
 
         // Initialise structure
-        let mut data_logger = DataLogger {
+        let mut data_logger = Self {
             connections,
             closure_ids: Vec::new(),
             in_progress: Arc::new(Mutex::new(false)),
@@ -131,7 +131,7 @@ impl DataLogger<'_> {
         Ok(data_logger)
     }
 
-    pub fn log(destination: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> Result<(), ()> {
+    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> Result<(), ()> {
         let data_logger = Self::new(destination, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
