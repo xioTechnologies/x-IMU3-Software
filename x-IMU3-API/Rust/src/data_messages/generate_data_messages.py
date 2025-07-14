@@ -190,9 +190,9 @@ insert("../connection.rs", template, 0)
 template = """
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {
-    let connection: &Connection = unsafe { &*connection };
+    let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    connection.add_$name_snake_case$_closure(Box::new(move |message: $name_pascal_case$Message| callback(message, void_ptr.0)))
+    connection.add_$name_snake_case$_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }\n"""
 
 insert("../ffi/connection.rs", template, 0)

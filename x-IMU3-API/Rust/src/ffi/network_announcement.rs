@@ -125,7 +125,7 @@ pub extern "C" fn XIMU3_network_announcement_get_result(network_announcement: *m
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_add_callback(network_announcement: *mut NetworkAnnouncementC, callback: Callback<NetworkAnnouncementMessageC>, context: *mut c_void) -> u64 {
-    let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
+    let network_announcement = unsafe { &*network_announcement };
     let void_ptr = VoidPtr(context);
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.add_closure(Box::new(move |message| callback((&message).into(), void_ptr.0)))
@@ -136,7 +136,7 @@ pub extern "C" fn XIMU3_network_announcement_add_callback(network_announcement: 
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcement: *mut NetworkAnnouncementC, callback_id: u64) {
-    let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
+    let network_announcement = unsafe { &*network_announcement };
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.remove_closure(callback_id);
     }
@@ -144,20 +144,20 @@ pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcemen
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_messages(network_announcement: *mut NetworkAnnouncementC) -> NetworkAnnouncementMessages {
-    let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
+    let network_announcement = unsafe { &*network_announcement };
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.get_messages().into()
     } else {
-        (Vec::new() as Vec<NetworkAnnouncementMessage>).into()
+        Vec::new().into()
     }
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_messages_after_short_delay(network_announcement: *mut NetworkAnnouncementC) -> NetworkAnnouncementMessages {
-    let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
+    let network_announcement = unsafe { &*network_announcement };
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.get_messages_after_short_delay().into()
     } else {
-        (Vec::new() as Vec<NetworkAnnouncementMessage>).into()
+        Vec::new().into()
     }
 }

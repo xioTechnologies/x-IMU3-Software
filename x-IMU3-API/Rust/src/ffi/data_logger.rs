@@ -23,7 +23,7 @@ pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> Result {
-    let data_logger: &DataLoggerC = unsafe { &*data_logger };
+    let data_logger = unsafe { &*data_logger };
     match data_logger.internal {
         Ok(_) => Result::Ok,
         Err(_) => Result::Error,

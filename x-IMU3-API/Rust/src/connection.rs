@@ -19,20 +19,16 @@ pub struct Connection {
 
 impl Connection {
     pub fn new(connection_info: &ConnectionInfo) -> Self {
-        let internal: Box<dyn GenericConnection + Send>;
-
-        match connection_info {
-            ConnectionInfo::UsbConnectionInfo(connection_info) => internal = Box::new(UsbConnection::new(connection_info)),
-            ConnectionInfo::SerialConnectionInfo(connection_info) => internal = Box::new(SerialConnection::new(connection_info)),
-            ConnectionInfo::TcpConnectionInfo(connection_info) => internal = Box::new(TcpConnection::new(connection_info)),
-            ConnectionInfo::UdpConnectionInfo(connection_info) => internal = Box::new(UdpConnection::new(connection_info)),
-            ConnectionInfo::BluetoothConnectionInfo(connection_info) => internal = Box::new(BluetoothConnection::new(connection_info)),
-            ConnectionInfo::FileConnectionInfo(connection_info) => internal = Box::new(FileConnection::new(connection_info)),
-        }
-
         let connection = Self {
             dropped: Arc::new(Mutex::new(false)),
-            internal: Arc::new(Mutex::new(internal)),
+            internal: Arc::new(Mutex::new(match connection_info {
+                ConnectionInfo::UsbConnectionInfo(connection_info) => Box::new(UsbConnection::new(connection_info)),
+                ConnectionInfo::SerialConnectionInfo(connection_info) => Box::new(SerialConnection::new(connection_info)),
+                ConnectionInfo::TcpConnectionInfo(connection_info) => Box::new(TcpConnection::new(connection_info)),
+                ConnectionInfo::UdpConnectionInfo(connection_info) => Box::new(UdpConnection::new(connection_info)),
+                ConnectionInfo::BluetoothConnectionInfo(connection_info) => Box::new(BluetoothConnection::new(connection_info)),
+                ConnectionInfo::FileConnectionInfo(connection_info) => Box::new(FileConnection::new(connection_info)),
+            })),
         };
 
         let dropped = connection.dropped.clone();
