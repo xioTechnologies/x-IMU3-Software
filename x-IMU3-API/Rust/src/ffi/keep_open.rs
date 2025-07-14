@@ -11,7 +11,7 @@ pub extern "C" fn XIMU3_connection_status_to_string(status: ConnectionStatus) ->
 
 #[no_mangle]
 pub extern "C" fn XIMU3_keep_open_new(connection: *mut Connection, callback: Callback<ConnectionStatus>, context: *mut c_void) -> *mut KeepOpen<'static> {
-    let connection: &Connection = unsafe { &*connection };
+    let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     Box::into_raw(Box::new(KeepOpen::new(connection, Box::new(move |status| callback(status, void_ptr.0)))))
 }
