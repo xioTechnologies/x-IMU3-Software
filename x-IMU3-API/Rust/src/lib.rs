@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate scan_fmt;
 
+pub mod api_error;
 pub mod charging_status;
 pub mod command_message;
 pub mod connection;

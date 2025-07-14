@@ -1,4 +1,5 @@
 use crate::helpers;
+use ximu3::api_error::*;
 use ximu3::connection::*;
 use ximu3::data_logger::*;
 use ximu3::port_scanner::*;
@@ -48,9 +49,9 @@ pub fn run() {
     }
 }
 
-fn print_result<T>(result: &Result<T, ()>) {
+fn print_result<T>(result: &Result<T, ApiError>) {
     match result {
         Ok(_) => println!("OK"),
-        Err(_) => println!("Error"),
+        Err(error) => println!("{error}"),
     }
 }

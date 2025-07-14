@@ -1,3 +1,4 @@
+use crate::api_error::*;
 use crate::connection::*;
 use crate::ping_response::*;
 use serde_json;
@@ -15,20 +16,20 @@ pub struct DataLogger<'a> {
 }
 
 impl<'a> DataLogger<'a> {
-    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<Self, ()> {
+    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<Self, ApiError> {
         // Create root directory
         if Path::new(destination).exists() == false {
-            return Err(());
+            return Err(ApiError::ErrorA);
         }
 
         let root = Path::new(destination).join(name);
 
         if Path::new(&root).exists() {
-            return Err(());
+            return Err(ApiError::ErrorB);
         }
 
         if std::fs::create_dir_all(&root).is_err() {
-            return Err(());
+            return Err(ApiError::ErrorC);
         }
 
         // Initialise structure
@@ -131,7 +132,7 @@ impl<'a> DataLogger<'a> {
         Ok(data_logger)
     }
 
-    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> Result<(), ()> {
+    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> Result<(), ApiError> {
         let data_logger = Self::new(destination, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));

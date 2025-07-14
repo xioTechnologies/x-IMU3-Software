@@ -1,6 +1,7 @@
 #[macro_use]
 mod helpers;
 
+mod api_error;
 mod callback;
 mod charging_status;
 mod command_message;

@@ -1,11 +1,11 @@
+use crate::api_error::*;
 use crate::connection::*;
 use crate::data_logger::*;
 use crate::ffi::helpers::*;
-use crate::ffi::result::*;
 use std::os::raw::c_char;
 
 pub struct DataLoggerC {
-    internal: core::result::Result<DataLogger<'static>, ()>,
+    internal: Result<DataLogger<'static>, ApiError>,
 }
 
 #[no_mangle]
@@ -22,20 +22,20 @@ pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> Result {
+pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> ApiError {
     let data_logger = unsafe { &*data_logger };
     match data_logger.internal {
-        Ok(_) => Result::Ok,
-        Err(_) => Result::Error,
+        Ok(_) => ApiError::Ok,
+        Err(error) => error,
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> Result {
+pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> ApiError {
     let connections = connection_array_to_vec(connections, length);
     match DataLogger::log(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections, seconds) {
-        Ok(_) => Result::Ok,
-        Err(_) => Result::Error,
+        Ok(_) => ApiError::Ok,
+        Err(error) => error,
     }
 }
 

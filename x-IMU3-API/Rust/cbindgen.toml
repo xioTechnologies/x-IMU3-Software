@@ -37,6 +37,7 @@ style = "both"
 prefix = "XIMU3_"
 
 [export.rename]
+"ApiError" = "Result"
 "CommandMessageC" = "CommandMessage"
 "DataLoggerC" = "DataLogger"
 "DeviceC" = "Device"

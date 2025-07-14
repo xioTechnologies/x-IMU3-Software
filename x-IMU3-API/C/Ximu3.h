@@ -24,6 +24,14 @@ namespace ximu3 {
 
 #define XIMU3_CHAR_ARRAY_SIZE 256
 
+typedef enum XIMU3_Result
+{
+    XIMU3_ResultOk,
+    XIMU3_ResultErrorA,
+    XIMU3_ResultErrorB,
+    XIMU3_ResultErrorC,
+} XIMU3_Result;
+
 typedef enum XIMU3_ChargingStatus
 {
     XIMU3_ChargingStatusNotConnected,
@@ -393,6 +401,8 @@ extern "C" {
 #endif // __cplusplus
 
 void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
+
+const char *XIMU3_api_error_to_string(enum XIMU3_Result result);
 
 enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
 
