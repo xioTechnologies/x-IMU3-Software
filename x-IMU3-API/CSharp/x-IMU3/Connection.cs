@@ -103,12 +103,12 @@ namespace Ximu3
         {
             return CApi.XIMU3_connection_get_type(connection) switch
             {
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => CApi.XIMU3_connection_get_info_usb(connection),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => CApi.XIMU3_connection_get_info_serial(connection),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => CApi.XIMU3_connection_get_info_tcp(connection),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => CApi.XIMU3_connection_get_info_udp(connection),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => CApi.XIMU3_connection_get_info_bluetooth(connection),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => CApi.XIMU3_connection_get_info_file(connection),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => new UsbConnectionInfo(CApi.XIMU3_connection_get_info_usb(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => new SerialConnectionInfo(CApi.XIMU3_connection_get_info_serial(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => new TcpConnectionInfo(CApi.XIMU3_connection_get_info_tcp(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionInfo(CApi.XIMU3_connection_get_info_udp(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionInfo(CApi.XIMU3_connection_get_info_bluetooth(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionInfo(CApi.XIMU3_connection_get_info_file(connection)),
                 _ => null,
             };
         }
