@@ -20,34 +20,39 @@ namespace ximu3
 
         explicit Connection(const ConnectionInfo& connectionInfo)
         {
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UsbConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const UsbConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_usb(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_SerialConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const SerialConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_serial(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_TcpConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const TcpConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_tcp(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_UdpConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const UdpConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_udp(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_BluetoothConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const BluetoothConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_bluetooth(*castConnectionInfo);
                 return;
             }
-            if (auto* castConnectionInfo = dynamic_cast<const XIMU3_FileConnectionInfo*>(&connectionInfo))
+            if (auto* castConnectionInfo = dynamic_cast<const FileConnectionInfo*>(&connectionInfo))
             {
                 connection = XIMU3_connection_new_file(*castConnectionInfo);
+                return;
+            }
+            if (auto* castConnectionInfo = dynamic_cast<const MuxConnectionInfo*>(&connectionInfo))
+            {
+                connection = XIMU3_connection_new_mux(castConnectionInfo->muxConnectionInfo);
                 return;
             }
             assert(false);
@@ -147,6 +152,8 @@ namespace ximu3
                     return std::make_unique<BluetoothConnectionInfo>(XIMU3_connection_get_info_bluetooth(connection));
                 case XIMU3_ConnectionTypeFile:
                     return std::make_unique<FileConnectionInfo>(XIMU3_connection_get_info_file(connection));
+                case XIMU3_ConnectionTypeMux:
+                    return std::make_unique<MuxConnectionInfo>(XIMU3_connection_get_info_mux(connection));
             }
             return nullptr;
         }
@@ -257,6 +264,7 @@ namespace ximu3
     private:
         friend class DataLogger;
         friend class KeepOpen;
+        friend class MuxConnectionInfo;
 
         XIMU3_Connection* connection;
     };
