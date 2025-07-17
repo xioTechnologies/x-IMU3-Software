@@ -176,14 +176,6 @@ void DeviceSettingsWindow::resized()
     }
 }
 
-void DeviceSettingsWindow::reconnected()
-{
-    if (readFromValueTree().readSettingsWhenWindowOpens)
-    {
-        readAllButton.onClick();
-    }
-}
-
 void DeviceSettingsWindow::expandOrCollapseAll(juce::TreeViewItem& rootItem, const bool expand)
 {
     rootItem.setOpen(expand || rootItem.getParentItem() == nullptr);

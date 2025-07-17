@@ -265,11 +265,6 @@ void ConnectionPanel::connect()
 
 void ConnectionPanel::connected()
 {
-    for (auto& window : windows)
-    {
-        window.second->reconnected();
-    }
-
     if (windowContainer == nullptr)
     {
         windowContainer = std::make_unique<WindowContainer>(*this, windowLayout);
