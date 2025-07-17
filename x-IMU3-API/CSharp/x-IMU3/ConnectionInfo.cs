@@ -17,6 +17,7 @@ namespace Ximu3
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile:
+                case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux:
                     break;
             }
 
@@ -157,5 +158,37 @@ namespace Ximu3
         }
 
         public CApi.XIMU3_FileConnectionInfo connectionInfo = new();
+    }
+
+    public class MuxConnectionInfo : ConnectionInfo, IDisposable
+    {
+        public MuxConnectionInfo(Byte channel, Connection connection)
+        {
+            connectionInfo = CApi.XIMU3_mux_connection_info_new(channel, connection.connection);
+        }
+
+        public MuxConnectionInfo(IntPtr connectionInfo)
+        {
+            this.connectionInfo = connectionInfo;
+        }
+
+        ~MuxConnectionInfo() => Dispose();
+
+        public void Dispose()
+        {
+            if (connectionInfo != IntPtr.Zero)
+            {
+                CApi.XIMU3_mux_connection_info_free(connectionInfo);
+                connectionInfo = IntPtr.Zero;
+            }
+            GC.SuppressFinalize(this);
+        }
+
+        public override string ToString()
+        {
+            return Helpers.ToString(CApi.XIMU3_mux_connection_info_to_string(connectionInfo));
+        }
+
+        public IntPtr connectionInfo;
     }
 }
