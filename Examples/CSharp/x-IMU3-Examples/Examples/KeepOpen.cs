@@ -1,7 +1,4 @@
-﻿using System.Xml.Linq;
-using Ximu3;
-
-namespace Ximu3Examples
+﻿namespace Ximu3Examples
 {
     class KeepOpen
     {
