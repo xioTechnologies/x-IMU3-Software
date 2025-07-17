@@ -287,12 +287,16 @@ void ConnectionPanel::connected()
 
 void ConnectionPanel::handleAsyncUpdate()
 {
-    for (auto& window : windows)
+    for (auto it = windows.begin(); it != windows.end();)
     {
         // Destroy if the use_count is 1, since it means no one is pointing to it except us
-        if (window.second.use_count() == 1)
+        if (it->second.use_count() == 1)
         {
-            window.second.reset();
+            it = windows.erase(it);
+        }
+        else
+        {
+            ++it;
         }
     }
 }
