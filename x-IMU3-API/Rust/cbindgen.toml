@@ -37,18 +37,18 @@ style = "both"
 prefix = "XIMU3_"
 
 [export.rename]
-"DataLoggerC" = "DataLogger"
-"NetworkAnnouncementC" = "NetworkAnnouncement"
 "CommandMessageC" = "CommandMessage"
+"DataLoggerC" = "DataLogger"
+"DeviceC" = "Device"
+"NetworkAnnouncementC" = "NetworkAnnouncement"
+"NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
+"PingResponseC" = "PingResponse"
 "UsbConnectionInfoC" = "UsbConnectionInfo"
 "SerialConnectionInfoC" = "SerialConnectionInfo"
 "TcpConnectionInfoC" = "TcpConnectionInfo"
 "UdpConnectionInfoC" = "UdpConnectionInfo"
 "BluetoothConnectionInfoC" = "BluetoothConnectionInfo"
 "FileConnectionInfoC" = "FileConnectionInfo"
-"PingResponseC" = "PingResponse"
-"NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
-"DeviceC" = "Device"
 
 [export.mangle]
 
