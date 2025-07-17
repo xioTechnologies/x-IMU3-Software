@@ -13,8 +13,6 @@ public:
 
     void resized() override;
 
-    virtual void reconnected() {}
-
     juce::Rectangle<int> getContentBounds() const;
 
     const juce::Identifier& getType() const;
