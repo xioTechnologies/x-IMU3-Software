@@ -447,4 +447,49 @@ static PyObject* file_connection_info_from(const XIMU3_FileConnectionInfo* const
     return (PyObject*) self;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Mux connection info
+
+typedef struct
+{
+    PyObject_HEAD
+    XIMU3_MuxConnectionInfo* connection_info;
+} MuxConnectionInfo;
+
+PyObject* mux_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords);
+
+static void mux_connection_info_free(MuxConnectionInfo* self)
+{
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+      XIMU3_mux_connection_info_free(self->connection_info);
+    Py_END_ALLOW_THREADS
+    Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject* mux_connection_info_to_string(MuxConnectionInfo* self, PyObject* args)
+{
+    return Py_BuildValue("s", XIMU3_mux_connection_info_to_string(self->connection_info));
+}
+
+static PyMethodDef mux_connection_info_methods[] = {
+    { "to_string", (PyCFunction) mux_connection_info_to_string, METH_NOARGS, "" },
+    { NULL } /* sentinel */
+};
+
+static PyTypeObject mux_connection_info_object = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.MuxConnectionInfo",
+    .tp_basicsize = sizeof(MuxConnectionInfo),
+    .tp_dealloc = (destructor) mux_connection_info_free,
+    .tp_new = mux_connection_info_new,
+    .tp_methods = mux_connection_info_methods
+};
+
+static PyObject* mux_connection_info_from(XIMU3_MuxConnectionInfo* const connection_info)
+{
+    MuxConnectionInfo* const self = (MuxConnectionInfo*) mux_connection_info_object.tp_alloc(&mux_connection_info_object, 0);
+    self->connection_info = connection_info;
+    return (PyObject*) self;
+}
+
 #endif
