@@ -16,17 +16,15 @@ typedef struct
 
 static PyObject* usb_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    UsbConnectionInfo* const self = (UsbConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* port_name;
 
     if (PyArg_ParseTuple(args, "s", &port_name) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    UsbConnectionInfo* const self = (UsbConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
 
     return (PyObject*) self;
@@ -85,8 +83,6 @@ typedef struct
 
 static PyObject* serial_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    SerialConnectionInfo* const self = (SerialConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* port_name;
     unsigned long baud_rate;
     bool rts_cts_enabled;
@@ -94,10 +90,10 @@ static PyObject* serial_connection_info_new(PyTypeObject* subtype, PyObject* arg
     if (PyArg_ParseTuple(args, "skp", &port_name, &baud_rate, &rts_cts_enabled) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    SerialConnectionInfo* const self = (SerialConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
     self->connection_info.baud_rate = (uint32_t) baud_rate;
     self->connection_info.rts_cts_enabled = rts_cts_enabled;
@@ -170,18 +166,16 @@ typedef struct
 
 static PyObject* tcp_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    TcpConnectionInfo* const self = (TcpConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* ip_address;
     unsigned int port;
 
     if (PyArg_ParseTuple(args, "sI", &ip_address, &port) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    TcpConnectionInfo* const self = (TcpConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
     self->connection_info.port = (uint16_t) port;
 
@@ -247,8 +241,6 @@ typedef struct
 
 static PyObject* udp_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    UdpConnectionInfo* const self = (UdpConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* ip_address;
     unsigned int send_port;
     unsigned int receive_port;
@@ -256,10 +248,10 @@ static PyObject* udp_connection_info_new(PyTypeObject* subtype, PyObject* args, 
     if (PyArg_ParseTuple(args, "sII", &ip_address, &send_port, &receive_port) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    UdpConnectionInfo* const self = (UdpConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
     self->connection_info.send_port = (uint16_t) send_port;
     self->connection_info.receive_port = (uint16_t) receive_port;
@@ -332,17 +324,15 @@ typedef struct
 
 static PyObject* bluetooth_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    BluetoothConnectionInfo* const self = (BluetoothConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* port_name;
 
     if (PyArg_ParseTuple(args, "s", &port_name) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    BluetoothConnectionInfo* const self = (BluetoothConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
 
     return (PyObject*) self;
@@ -401,17 +391,15 @@ typedef struct
 
 static PyObject* file_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
 {
-    FileConnectionInfo* const self = (FileConnectionInfo*) subtype->tp_alloc(subtype, 0);
-
     const char* file_path;
 
     if (PyArg_ParseTuple(args, "s", &file_path) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        Py_DECREF(self);
         return NULL;
     }
 
+    FileConnectionInfo* const self = (FileConnectionInfo*) subtype->tp_alloc(subtype, 0);
     snprintf(self->connection_info.file_path, sizeof(self->connection_info.file_path), "%s", file_path);
 
     return (PyObject*) self;
