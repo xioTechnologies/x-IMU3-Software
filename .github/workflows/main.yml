@@ -306,7 +306,7 @@ jobs:
       fail-fast: false
       matrix:
         target: # [ rust-target, cmake-architecture ]
-          - [ x86_64-pc-windows-msvc, Win32 ]
+          - [ x86_64-pc-windows-msvc, x64 ]
           - [ aarch64-pc-windows-msvc, ARM64 ]
 
     steps:
