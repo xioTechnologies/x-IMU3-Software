@@ -95,8 +95,7 @@ target_include_directories(x-IMU3-GUI
         PRIVATE
         "Source"
         "../x-IMU3-API/Cpp"
-        "${FREETYPE_INCLUDE_DIRS}"
-        "../x-IMU3-Bootloader")
+        "${FREETYPE_INCLUDE_DIRS}")
 
 add_dependencies(x-IMU3-GUI freetype)
 

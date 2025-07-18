@@ -4,7 +4,7 @@
 #include "MessageDialog.h"
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
-#include "Ximu3Bootloader.h"
+// #include "Ximu3Bootloader.h"
 
 UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool)
     : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
@@ -93,15 +93,17 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         {
             updateProgress("Attempting Upload on " + portName);
 
-            if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", hexFile.getFullPathName().toRawUTF8(), portName.data()) == 0)
-            {
-                updateProgress("Update Complete", true);
-                juce::Timer::callAfterDelay(1000, [&]
-                {
-                    DialogQueue::getSingleton().pop();
-                });
-                return;
-            }
+            // if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", hexFile.getFullPathName().toRawUTF8(), portName.data()) == 0)
+            // {
+            //     updateProgress("Update Complete", true);
+            //     juce::Timer::callAfterDelay(1000, [&]
+            //     {
+            //         DialogQueue::getSingleton().pop();
+            //     });
+            //     return;
+            // }
+
+            return;
         }
 
         showError("Firmware update failed.");
