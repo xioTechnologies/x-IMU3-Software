@@ -17,16 +17,22 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
 {
     const char* destination;
     const char* name;
-    PyObject* connections_list;
+    PyObject* connections_sequence;
 
-    if (PyArg_ParseTuple(args, "ssO!", &destination, &name, &PyList_Type, &connections_list) == 0)
+    if (PyArg_ParseTuple(args, "ssO", &destination, &name, &connections_sequence) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(connections_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     XIMU3_Connection* connections_array[CONNECTIONS_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(connections_list);
+    const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -36,7 +42,7 @@ static PyObject* data_logger_new(PyTypeObject* subtype, PyObject* args, PyObject
             return NULL;
         }
 
-        PyObject* connection = PyList_GetItem(connections_list, index);
+        PyObject* connection = PySequence_GetItem(connections_sequence, index);
 
         if (PyObject_IsInstance(connection, (PyObject*) &connection_object) != 1)
         {
@@ -69,17 +75,23 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
 {
     const char* destination;
     const char* name;
-    PyObject* connections_list;
+    PyObject* connections_sequence;
     unsigned long seconds;
 
-    if (PyArg_ParseTuple(args, "ssO!k", &destination, &name, &PyList_Type, &connections_list, &seconds) == 0)
+    if (PyArg_ParseTuple(args, "ssOk", &destination, &name, &connections_sequence, &seconds) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(connections_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     XIMU3_Connection* connections_array[CONNECTIONS_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(connections_list);
+    const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -89,7 +101,7 @@ static PyObject* data_logger_log(PyObject* null, PyObject* args)
             return NULL;
         }
 
-        PyObject* connection = PyList_GetItem(connections_list, index);
+        PyObject* connection = PySequence_GetItem(connections_sequence, index);
 
         if (PyObject_IsInstance(connection, (PyObject*) &connection_object) != 1)
         {

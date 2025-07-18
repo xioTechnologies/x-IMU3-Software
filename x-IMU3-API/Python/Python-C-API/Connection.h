@@ -147,18 +147,24 @@ static PyObject* connection_ping_async(Connection* self, PyObject* args)
 
 static PyObject* connection_send_commands(Connection* self, PyObject* args)
 {
-    PyObject* commands_list;
+    PyObject* commands_sequence;
     unsigned long retries;
     unsigned long timeout;
 
-    if (PyArg_ParseTuple(args, "O!kk", &PyList_Type, &commands_list, &retries, &timeout) == 0)
+    if (PyArg_ParseTuple(args, "Okk", &commands_sequence, &retries, &timeout) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(commands_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const char* commands_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(commands_list);
+    const uint32_t length = (uint32_t) PySequence_Size(commands_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -168,7 +174,7 @@ static PyObject* connection_send_commands(Connection* self, PyObject* args)
             return NULL;
         }
 
-        PyObject* command = PyList_GetItem(commands_list, index);
+        PyObject* command = PySequence_GetItem(commands_sequence, index);
 
         if (PyUnicode_Check(command) == 0)
         {
@@ -188,19 +194,25 @@ static PyObject* connection_send_commands(Connection* self, PyObject* args)
 
 static PyObject* connection_send_commands_async(Connection* self, PyObject* args)
 {
-    PyObject* commands_list;
+    PyObject* commands_sequence;
     unsigned long retries;
     unsigned long timeout;
     PyObject* callable;
 
-    if (PyArg_ParseTuple(args, "O!kkO:set_callback", &PyList_Type, &commands_list, &retries, &timeout, &callable) == 0)
+    if (PyArg_ParseTuple(args, "OkkO:set_callback", &commands_sequence, &retries, &timeout, &callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(commands_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const char* commands_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(commands_list);
+    const uint32_t length = (uint32_t) PySequence_Size(commands_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -210,7 +222,7 @@ static PyObject* connection_send_commands_async(Connection* self, PyObject* args
             return NULL;
         }
 
-        PyObject* command = PyList_GetItem(commands_list, index);
+        PyObject* command = PySequence_GetItem(commands_sequence, index);
 
         if (PyUnicode_Check(command) == 0)
         {

@@ -16,17 +16,23 @@ static PyObject* file_converter_new(PyTypeObject* subtype, PyObject* args, PyObj
 {
     const char* destination;
     const char* name;
-    PyObject* files_list;
+    PyObject* files_sequence;
     PyObject* callable;
 
-    if (PyArg_ParseTuple(args, "ssO!O:set_callback", &destination, &name, &PyList_Type, &files_list, &callable) == 0)
+    if (PyArg_ParseTuple(args, "ssOO:set_callback", &destination, &name, &files_sequence, &callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(files_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const char* files_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(files_list);
+    const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -36,7 +42,7 @@ static PyObject* file_converter_new(PyTypeObject* subtype, PyObject* args, PyObj
             return NULL;
         }
 
-        PyObject* file = PyList_GetItem(files_list, index);
+        PyObject* file = PySequence_GetItem(files_sequence, index);
 
         if (PyUnicode_Check(file) == 0)
         {
@@ -72,16 +78,22 @@ static PyObject* file_converter_convert(PyObject* null, PyObject* args)
 {
     const char* destination;
     const char* name;
-    PyObject* files_list;
+    PyObject* files_sequence;
 
-    if (PyArg_ParseTuple(args, "ssO!", &destination, &name, &PyList_Type, &files_list) == 0)
+    if (PyArg_ParseTuple(args, "ssO", &destination, &name, &files_sequence) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PySequence_Check(files_sequence) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const char* files_char_ptr_array[CHAR_PTR_ARRAY_LENGTH];
-    const uint32_t length = (uint32_t) PyList_Size(files_list);
+    const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
 
     for (uint32_t index = 0; index < length; index++)
     {
@@ -91,7 +103,7 @@ static PyObject* file_converter_convert(PyObject* null, PyObject* args)
             return NULL;
         }
 
-        PyObject* file = PyList_GetItem(files_list, index);
+        PyObject* file = PySequence_GetItem(files_sequence, index);
 
         if (PyUnicode_Check(file) == 0)
         {
