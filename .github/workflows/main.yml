@@ -42,7 +42,6 @@ jobs:
           - [ ubuntu-latest, x86_64-linux-android, libximu3.a, libximu3.so ]
           - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
-          - [ windows-latest, aarch64-pc-windows-gnu, libximu3.a, ximu3.dll ]
           - [ windows-latest, aarch64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
 
     steps:
@@ -127,9 +126,6 @@ jobs:
 
   c-sharp:
     runs-on: windows-latest
-
-    strategy:
-      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
@@ -309,7 +305,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: # [ rust-target, cmake-architecture  ]
+        target: # [ rust-target, cmake-architecture ]
           - [ x86_64-pc-windows-msvc, x86 ]
           - [ aarch64-pc-windows-msvc, ARM64 ]
 
