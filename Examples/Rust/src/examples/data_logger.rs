@@ -48,7 +48,7 @@ pub fn run() {
     }
 }
 
-fn print_result<T>(result: &Result<T, ()>) {
+fn print_result<T>(result: &std::io::Result<T>) {
     match result {
         Ok(_) => println!("OK"),
         Err(_) => println!("Error"),

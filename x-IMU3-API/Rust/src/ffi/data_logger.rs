@@ -5,7 +5,7 @@ use crate::ffi::result::*;
 use std::os::raw::c_char;
 
 pub struct DataLoggerC {
-    internal: core::result::Result<DataLogger<'static>, ()>,
+    internal: std::io::Result<DataLogger<'static>>,
 }
 
 #[no_mangle]
