@@ -323,6 +323,33 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<ManualBluetoothConnectionDialog>(), connectCallback);
     });
+    menu.addItem("Mux", [&]
+    {
+        ximu3::UsbConnectionInfo usbConnectionInfo("COM35");
+
+        auto* const usbConnection = connectionPanelContainer.connectToDevice(usbConnectionInfo, true);
+        RecentConnections().update(usbConnectionInfo);
+
+        if (usbConnection != nullptr)
+        {
+            constexpr std::uint8_t firstChannel = 0x41;
+            constexpr std::uint8_t numberOfChannels = 20;
+            for (std::uint8_t channel = firstChannel; channel < (firstChannel + numberOfChannels); channel++)
+            {
+                ximu3::MuxConnectionInfo muxConnectionInfo(channel, *usbConnection);
+                connectionPanelContainer.connectToDevice(muxConnectionInfo, false);
+            }
+        }
+    });
+    menu.addItem("20 UDP", [&]
+    {
+        for (std::uint16_t index = 0; index < 20; index++)
+        {
+            ximu3::UdpConnectionInfo connectionInfo("192.168.1.1", 9000, 8000 + index);
+
+            connectionPanelContainer.connectToDevice(connectionInfo, false);
+        }
+    });
 
     if (auto connectionInfos = RecentConnections().get(); connectionInfos.empty() == false)
     {
