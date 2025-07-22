@@ -68,6 +68,8 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
             toPixels((float) face->glyph->advance.x)
         };
         glyphs[character] = glyph;
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     FT_Done_Face(face);
@@ -155,8 +157,11 @@ void Text::draw(OpenGLResources& resources, const juce::String& text, const juce
         const auto translation = glm::translate(glm::mat4(1.0), glm::vec3(textOrigin + glyphCentre, 0.0f));
         const auto transform = projection * translation * scale;
         textShader.transform.set(transform);
-        textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureId);
+
+        juce::gl::glActiveTexture(juce::gl::GL_TEXTURE0);
+        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, glyph.textureId);
         resources.textQuad.draw();
+        juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, 0);
 
         textOrigin.x += glyph.advance; // move origin to next character
     }
@@ -184,8 +189,12 @@ void Text::drawChar3D(OpenGLResources& resources, unsigned char character, const
     const auto scale = glm::scale(glm::mat4(1.0), glm::vec3(scaleFactor, 1.0f));
     const auto ndcTransform = ndcMatrix * scale;
     textShader.transform.set(ndcTransform);
-    textShader.setTextureImage(juce::gl::GL_TEXTURE_2D, glyph.textureId);
+
+    juce::gl::glActiveTexture(juce::gl::GL_TEXTURE0);
+    juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, glyph.textureId);
     resources.textQuad.draw();
+    juce::gl::glBindTexture(juce::gl::GL_TEXTURE_2D, 0);
+
 }
 
 int Text::toGLPixels(int jucePixels)

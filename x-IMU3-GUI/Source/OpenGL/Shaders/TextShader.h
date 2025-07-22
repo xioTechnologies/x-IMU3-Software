@@ -14,13 +14,6 @@ public:
         textureImage.set(0);
     }
 
-    void setTextureImage(GLenum target, GLuint texture) const
-    {
-        using namespace ::juce::gl;
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(target, texture);
-    }
-
     OpenGLHelpers::Uniform colour { *this, "colour" };
     OpenGLHelpers::Uniform transform { *this, "transform" };
 

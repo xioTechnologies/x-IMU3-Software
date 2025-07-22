@@ -14,12 +14,6 @@ public:
         textureImage.set(0);
     }
 
-    void setTextureImage(const juce::OpenGLTexture& texture) const
-    {
-        juce::gl::glActiveTexture(juce::gl::GL_TEXTURE0);
-        texture.bind();
-    }
-
     OpenGLHelpers::Uniform modelViewProjectionMatrix { *this, "modelViewProjectionMatrix" };
     OpenGLHelpers::Uniform colour { *this, "colour" };
 

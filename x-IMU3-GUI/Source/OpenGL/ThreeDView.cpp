@@ -178,7 +178,9 @@ void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat
     const auto brightness = 0.8f;
     unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
     unlitShader.modelViewProjectionMatrix.set(projectionMatrix * viewMatrix * compassModelMatrix); // top compass layer above grid
-    unlitShader.setTextureImage(renderer.getResources().compassTexture);
+
+    juce::gl::glActiveTexture(juce::gl::GL_TEXTURE0);
+    renderer.getResources().compassTexture.bind();
     renderer.getResources().plane.render();
     renderer.getResources().compassTexture.unbind();
 }
