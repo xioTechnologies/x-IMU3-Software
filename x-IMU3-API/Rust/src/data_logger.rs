@@ -15,21 +15,13 @@ pub struct DataLogger<'a> {
 }
 
 impl<'a> DataLogger<'a> {
-    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> Result<Self, ()> {
+    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> std::io::Result<Self> {
         // Create root directory
-        if Path::new(destination).exists() == false {
-            return Err(());
-        }
+        Path::new(destination).read_dir()?; // check destination exists
 
         let root = Path::new(destination).join(name);
 
-        if Path::new(&root).exists() {
-            return Err(());
-        }
-
-        if std::fs::create_dir_all(&root).is_err() {
-            return Err(());
-        }
+        std::fs::create_dir(&root)?;
 
         // Initialise structure
         let mut data_logger = Self {
@@ -43,7 +35,7 @@ impl<'a> DataLogger<'a> {
 
         for (index, _) in data_logger.connections.iter().enumerate() {
             paths.push(Path::new(&root).join("Connection ".to_owned() + index.to_string().as_str()).to_str().unwrap().to_string());
-            std::fs::create_dir_all(paths.last().unwrap()).ok();
+            std::fs::create_dir_all(paths.last().unwrap())?;
         }
 
         // Add closures
@@ -131,7 +123,7 @@ impl<'a> DataLogger<'a> {
         Ok(data_logger)
     }
 
-    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> Result<(), ()> {
+    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> std::io::Result<()> {
         let data_logger = Self::new(destination, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
