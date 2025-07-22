@@ -20,8 +20,8 @@ impl From<std::io::Result<PingResponse>> for PingResponseC {
                 device_name: str_to_char_array(&ping_response.device_name),
                 serial_number: str_to_char_array(&ping_response.serial_number),
             },
-            Err(_) => Self {
-                result: Result::Error,
+            Err(error) => Self {
+                result: Result::from(&error),
                 interface: EMPTY_CHAR_ARRAY,
                 device_name: EMPTY_CHAR_ARRAY,
                 serial_number: EMPTY_CHAR_ARRAY,

@@ -117,10 +117,7 @@ pub extern "C" fn XIMU3_network_announcement_free(network_announcement: *mut Net
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_result(network_announcement: *mut NetworkAnnouncementC) -> Result {
     let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
-    match network_announcement.internal {
-        Ok(_) => Result::Ok,
-        Err(_) => Result::Error,
-    }
+    Result::from(&network_announcement.internal)
 }
 
 #[no_mangle]
