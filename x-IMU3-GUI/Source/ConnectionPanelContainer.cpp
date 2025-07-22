@@ -134,14 +134,14 @@ void ConnectionPanelContainer::updateSize()
     resized();
 }
 
-void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo, const bool keepOpen)
+ximu3::Connection* ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo, const bool keepOpen)
 {
     for (const auto& connectionPanel : connectionPanels)
     {
         if (connectionPanel->getConnection()->getInfo()->toString() == connectionInfo.toString())
         {
             DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + connectionInfo.toString() + "."));
-            return;
+            return nullptr;
         }
     }
 
@@ -159,6 +159,8 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
     }(), keepOpen)));
 
     connectionPanelsSizeChanged();
+
+    return connection.get();
 }
 
 std::vector<ConnectionPanel*> ConnectionPanelContainer::getConnectionPanels() const
