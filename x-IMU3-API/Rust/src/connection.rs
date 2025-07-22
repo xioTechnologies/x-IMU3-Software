@@ -88,14 +88,14 @@ impl Connection {
         self.internal.lock().unwrap().close();
     }
 
-    pub fn ping(&self) -> Result<PingResponse, ()> {
+    pub fn ping(&self) -> std::io::Result<PingResponse> {
         let decoder = self.internal.lock().unwrap().get_decoder();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
         Self::ping_internal(decoder, write_sender)
     }
 
-    pub fn ping_async(&self, closure: Box<dyn FnOnce(Result<PingResponse, ()>) + Send>) {
+    pub fn ping_async(&self, closure: Box<dyn FnOnce(std::io::Result<PingResponse>) + Send>) {
         let decoder = self.internal.lock().unwrap().get_decoder();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
@@ -112,11 +112,11 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<Vec<u8>>>) -> Result<PingResponse, ()> {
+    pub(crate) fn ping_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
         let responses = Self::send_commands_internal(decoder, write_sender, vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
 
         if responses.len() == 0 {
-            return Err(());
+            return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "No response."));
         }
 
         PingResponse::parse(responses[0].as_str())

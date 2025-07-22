@@ -11,24 +11,21 @@ pub struct PingResponseC {
     pub serial_number: [c_char; CHAR_ARRAY_SIZE],
 }
 
-impl Default for PingResponseC {
-    fn default() -> Self {
-        Self {
-            result: Result::Error,
-            interface: EMPTY_CHAR_ARRAY,
-            device_name: EMPTY_CHAR_ARRAY,
-            serial_number: EMPTY_CHAR_ARRAY,
-        }
-    }
-}
-
-impl From<PingResponse> for PingResponseC {
-    fn from(ping_response: PingResponse) -> Self {
-        Self {
-            result: Result::Ok,
-            interface: str_to_char_array(&ping_response.interface),
-            device_name: str_to_char_array(&ping_response.device_name),
-            serial_number: str_to_char_array(&ping_response.serial_number),
+impl From<std::io::Result<PingResponse>> for PingResponseC {
+    fn from(result: std::io::Result<PingResponse>) -> Self {
+        match result {
+            Ok(ping_response) => Self {
+                result: Result::Ok,
+                interface: str_to_char_array(&ping_response.interface),
+                device_name: str_to_char_array(&ping_response.device_name),
+                serial_number: str_to_char_array(&ping_response.serial_number),
+            },
+            Err(_) => Self {
+                result: Result::Error,
+                interface: EMPTY_CHAR_ARRAY,
+                device_name: EMPTY_CHAR_ARRAY,
+                serial_number: EMPTY_CHAR_ARRAY,
+            },
         }
     }
 }

@@ -81,7 +81,7 @@ pub struct NetworkAnnouncement {
 }
 
 impl NetworkAnnouncement {
-    pub fn new() -> Result<Self, std::io::Error> {
+    pub fn new() -> std::io::Result<Self> {
         let socket = UdpSocket::bind("0.0.0.0:10000")?;
 
         let network_announcement = Self {
