@@ -19,8 +19,8 @@ pub fn run() {
     // Open connection
     let connection = Connection::new(&device.connection_info);
 
-    if connection.open().is_err() {
-        println!("Unable to open connection");
+    if let Err(error) = connection.open() {
+        println!("Unable to open connection. {error}");
         return;
     }
 

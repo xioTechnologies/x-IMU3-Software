@@ -18,9 +18,11 @@ namespace Ximu3Examples
             // Open connection
             Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(devices[0])!);
 
-            if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            Ximu3.CApi.XIMU3_Result result = connection.Open();
+
+            if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open connection");
+                Console.WriteLine("Unable to open connection. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 return;
             }
 
@@ -54,7 +56,7 @@ namespace Ximu3Examples
             }
             else
             {
-                Console.WriteLine("No response");
+                Console.WriteLine("Ping failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(pingResponse.result)) + ".");
             }
         }
     }

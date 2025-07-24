@@ -46,9 +46,11 @@ protected:
         connection.addEndOfFileCallback(endOfFileCallback);
 
         // Open connection
-        if (connection.open() != ximu3::XIMU3_ResultOk)
+        const auto result = connection.open();
+
+        if (result != ximu3::XIMU3_ResultOk)
         {
-            std::cout << "Unable to open " << connectionInfo.toString() << std::endl;
+            std::cout << "Unable to open " << connectionInfo.toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
             return;
         }
 

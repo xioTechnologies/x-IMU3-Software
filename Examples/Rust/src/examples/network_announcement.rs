@@ -4,8 +4,8 @@ use ximu3::network_announcement::*;
 pub fn run() {
     let network_announcement = NetworkAnnouncement::new();
 
-    if network_announcement.is_err() {
-        println!("Unable to open network announcement socket");
+    if let Err(error) = network_announcement {
+        println!("Network announcement failed. {error}");
         return;
     }
 

@@ -19,8 +19,8 @@ pub fn run() {
     // Open connection
     let connection = Connection::new(&device.connection_info);
 
-    if connection.open().is_err() {
-        println!("Unable to open connection");
+    if let Err(error) = connection.open() {
+        println!("Unable to open connection. {error}");
         return;
     }
 
@@ -47,6 +47,6 @@ fn print_ping_response(ping_response: std::io::Result<PingResponse>) {
             println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
             // println!("{ping_response}"); // alternative to above
         }
-        Err(error) => println!("{error}"),
+        Err(error) => println!("Ping failed. {error}"),
     }
 }

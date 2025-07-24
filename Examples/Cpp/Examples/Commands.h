@@ -26,9 +26,11 @@ public:
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionInfo::from(devices[0]));
 
-        if (connection.open() != ximu3::XIMU3_ResultOk)
+        const auto result = connection.open();
+
+        if (result != ximu3::XIMU3_ResultOk)
         {
-            std::cout << "Unable to open connection" << std::endl;
+            std::cout << "Unable to open connection. " << XIMU3_result_to_string(result) << "." << std::endl;
             return;
         }
 

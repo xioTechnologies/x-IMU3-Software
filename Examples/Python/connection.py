@@ -274,8 +274,10 @@ def run(connection_info):
 
     connection.add_end_of_file_callback(end_of_file_callback)
 
-    if connection.open() != ximu3.RESULT_OK:
-        raise Exception(f"Unable to open {connection_info.to_string()}")
+    result = connection.open()
+
+    if result != ximu3.RESULT_OK:
+        raise Exception(f"Unable to open {connection_info.to_string()}. {ximu3.result_to_string(result)}.")
 
     connection.send_commands(['{"strobe":null}'], 2, 500)  # send command to strobe LED
 

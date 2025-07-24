@@ -51,6 +51,6 @@ pub fn run() {
 fn print_result<T>(result: &std::io::Result<T>) {
     match result {
         Ok(_) => println!("OK"),
-        Err(_) => println!("Error"),
+        Err(error) => println!("{error}"),
     }
 }
