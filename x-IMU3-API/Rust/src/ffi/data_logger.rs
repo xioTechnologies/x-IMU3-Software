@@ -24,19 +24,13 @@ pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> Result {
     let data_logger = unsafe { &*data_logger };
-    match data_logger.internal {
-        Ok(_) => Result::Ok,
-        Err(_) => Result::Error,
-    }
+    Result::from(&data_logger.internal)
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> Result {
     let connections = connection_array_to_vec(connections, length);
-    match DataLogger::log(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections, seconds) {
-        Ok(_) => Result::Ok,
-        Err(_) => Result::Error,
-    }
+    Result::from(&DataLogger::log(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections, seconds))
 }
 
 pub fn connection_array_to_vec(connections: *const *mut Connection, length: u32) -> Vec<&'static Connection> {
