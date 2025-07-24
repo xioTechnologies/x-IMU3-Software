@@ -35,15 +35,6 @@ public:
 private:
     std::function<void(const ximu3::XIMU3_Result)> callback = [](const auto result)
     {
-        switch (result)
-        {
-            case ximu3::XIMU3_ResultOk:
-                std::cout << "OK" << std::endl;
-                break;
-            case ximu3::XIMU3_ResultError:
-                std::cout << "Error" << std::endl;
-                break;
-        }
-        // std::cout << XIMU3_result_to_string(result) << std::endl; // alternative to above
+        std::cout << XIMU3_result_to_string(result) << std::endl;
     };
 };

@@ -13,9 +13,11 @@ public:
     {
         ximu3::NetworkAnnouncement networkAnnouncement;
 
-        if (networkAnnouncement.getResult() != ximu3::XIMU3_ResultOk)
+        const auto result = networkAnnouncement.getResult();
+
+        if (result != ximu3::XIMU3_ResultOk)
         {
-            std::cout << "Unable to open network announcement socket" << std::endl;
+            std::cout << "Network announcement failed. " << XIMU3_result_to_string(result) << "." << std::endl;
             return;
         }
 

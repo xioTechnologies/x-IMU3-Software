@@ -24,9 +24,11 @@ void Commands()
 
     XIMU3_devices_free(devices);
 
-    if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
+    const XIMU3_Result result = XIMU3_connection_open(connection);
+
+    if (result != XIMU3_ResultOk)
     {
-        printf("Unable to open connection\n");
+        printf("Unable to open connection. %s.\n", XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
     }

@@ -11,9 +11,11 @@ void NetworkAnnouncement()
 {
     XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
 
-    if (XIMU3_network_announcement_get_result(networkAnnouncement) != XIMU3_ResultOk)
+    const XIMU3_Result result = XIMU3_network_announcement_get_result(networkAnnouncement);
+
+    if (result != XIMU3_ResultOk)
     {
-        printf("Unable to open network announcement socket\n");
+        printf("Network announcement failed. %s.\n", XIMU3_result_to_string(result));
         XIMU3_network_announcement_free(networkAnnouncement);
         return;
     }

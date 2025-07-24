@@ -34,8 +34,8 @@ pub fn run(connection_info: &ConnectionInfo) {
     connection.add_end_of_file_closure(Box::new(end_of_file_closure));
 
     // Open connection
-    if connection.open().is_err() {
-        println!("Unable to open {}", connection_info.to_string());
+    if let Err(error) = connection.open() {
+        println!("Unable to open {}. {error}", connection_info.to_string());
         return;
     }
 

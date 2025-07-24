@@ -25,7 +25,7 @@ def print_ping_response(ping_response):
         print(", ".join([ping_response.interface, ping_response.device_name, ping_response.serial_number]))
         # print(ping_response.to_string())  # alternative to above
     else:
-        print("No response")
+        raise Exception(f"Ping failed. {ximu3.result_to_string(ping_response.result)}.")
 
 
 def callback(ping_response):

@@ -73,9 +73,11 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallback, NULL);
 
     // Open connection
-    if (XIMU3_connection_open(connection) != XIMU3_ResultOk)
+    const XIMU3_Result result = XIMU3_connection_open(connection);
+
+    if (result != XIMU3_ResultOk)
     {
-        printf("Unable to open %s\n", connectionInfoString);
+        printf("Unable to open %s. %s.\n", connectionInfoString, XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
     }

@@ -9,14 +9,9 @@ void TcpConnection()
     {
         XIMU3_NetworkAnnouncement* const networkAnnouncement = XIMU3_network_announcement_new();
 
-        if (XIMU3_network_announcement_get_result(networkAnnouncement) != XIMU3_ResultOk)
-        {
-            printf("Unable to open network announcement socket\n");
-            XIMU3_network_announcement_free(networkAnnouncement);
-            return;
-        }
-
         const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(networkAnnouncement);
+
+        XIMU3_network_announcement_free(networkAnnouncement);
 
         if (messages.length == 0)
         {

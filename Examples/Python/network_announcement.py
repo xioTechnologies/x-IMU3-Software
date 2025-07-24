@@ -29,8 +29,10 @@ def callback(message):
 
 network_announcement = ximu3.NetworkAnnouncement()
 
+result = network_announcement.get_result()
+
 if network_announcement.get_result() != ximu3.RESULT_OK:
-    raise Exception("Unable to open network announcement socket")
+    raise Exception(f"Network announcement failed. {ximu3.result_to_string(result)}.")
 
 if helpers.yes_or_no("Use async implementation?"):
     network_announcement.add_callback(callback)

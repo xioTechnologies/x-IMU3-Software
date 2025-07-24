@@ -83,15 +83,6 @@ private:
 
     static void printResult(const ximu3::XIMU3_Result result)
     {
-        switch (result)
-        {
-            case ximu3::XIMU3_ResultOk:
-                std::cout << "OK" << std::endl;
-                break;
-            case ximu3::XIMU3_ResultError:
-                std::cout << "Error" << std::endl;
-                break;
-        }
-        // std::cout << ximu3::XIMU3_result_to_string(result) << std::endl; // alternative to above
+        std::cout << ximu3::XIMU3_result_to_string(result) << std::endl;
     }
 };

@@ -8,8 +8,8 @@ pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
         let network_announcement = NetworkAnnouncement::new();
 
-        if network_announcement.is_err() {
-            println!("Unable to open network announcement socket");
+        if let Err(error) = network_announcement {
+            println!("Network announcement failed. {error}");
             return;
         }
 

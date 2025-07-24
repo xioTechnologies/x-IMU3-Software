@@ -19,7 +19,7 @@ pub fn run() {
 
     let closure = Box::new(|result| match result {
         Ok(_) => println!("OK"),
-        Err(_) => println!("Error"),
+        Err(error) => println!("{error}"),
     });
 
     connection.open_async(closure);

@@ -14,8 +14,10 @@ print(f"Found {devices[0].device_name} {devices[0].serial_number}")
 # Open connection
 connection = ximu3.Connection(devices[0].connection_info)
 
-if connection.open() != ximu3.RESULT_OK:
-    raise Exception("Unable to open connection")
+result = connection.open()
+
+if result != ximu3.RESULT_OK:
+    raise Exception(f"Unable to open connection. {ximu3.result_to_string(result)}.")
 
 # Example commands
 commands = [

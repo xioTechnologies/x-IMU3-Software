@@ -6,9 +6,11 @@ namespace Ximu3Examples
         {
             Ximu3.NetworkAnnouncement networkAnnouncement = new();
 
-            if (networkAnnouncement.GetResult() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            Ximu3.CApi.XIMU3_Result result = networkAnnouncement.GetResult();
+
+            if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open network announcement socket");
+                Console.WriteLine("Network announcement. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
                 return;
             }
 

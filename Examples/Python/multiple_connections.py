@@ -7,13 +7,15 @@ class Connection:
     def __init__(self, connection_info):
         self.__connection = ximu3.Connection(connection_info)
 
-        if self.__connection.open() != ximu3.RESULT_OK:
-            raise Exception(f"Unable to open {connection_info.to_string()}")
+        result = self.__connection.open()
+
+        if result != ximu3.RESULT_OK:
+            raise Exception(f"Unable to open {connection_info.to_string()}. {ximu3.result_to_string(result)}.")
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if ping_response.result != ximu3.RESULT_OK:
-            raise Exception(f"No ping response for {connection_info.to_string()}")
+            raise Exception(f"Ping failed for {connection_info.to_string()}. {ximu3.result_to_string(ping_response.result)}.")
 
         self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
 

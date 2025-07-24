@@ -31,9 +31,11 @@ namespace Ximu3Examples
             connection.AddEndOfFileCallback(EndOfFileCallback);
 
             // Open connection
-            if (connection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            Ximu3.CApi.XIMU3_Result result = connection.Open();
+
+            if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open " + connectionInfo);
+                Console.WriteLine("Unable to open " + connectionInfo + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 return;
             }
 

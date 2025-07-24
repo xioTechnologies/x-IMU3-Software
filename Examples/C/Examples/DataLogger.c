@@ -76,14 +76,5 @@ void DataLogger()
 
 static void PrintResult(const XIMU3_Result result)
 {
-    switch (result)
-    {
-        case XIMU3_ResultOk:
-            printf("OK\n");
-            break;
-        case XIMU3_ResultError:
-            printf("Error\n");
-            break;
-    }
-    // printf("%s\n", XIMU3_result_to_string(result)); // alternative to above
+    printf("%s\n", XIMU3_result_to_string(result));
 }

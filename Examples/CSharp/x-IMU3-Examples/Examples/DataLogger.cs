@@ -62,15 +62,7 @@ namespace Ximu3Examples
 
         private static void PrintResult(Ximu3.CApi.XIMU3_Result result)
         {
-            switch (result)
-            {
-                case Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk:
-                    Console.WriteLine("OK");
-                    break;
-                case Ximu3.CApi.XIMU3_Result.XIMU3_ResultError:
-                    Console.WriteLine("Error");
-                    break;
-            }
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
         }
     }
 }
