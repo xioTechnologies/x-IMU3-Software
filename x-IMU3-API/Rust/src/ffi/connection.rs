@@ -101,7 +101,7 @@ pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connecti
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_type(connection: *mut Connection) -> ConnectionType {
     let connection = unsafe { &*connection };
-    (&connection.get_info()).into()
+    ConnectionType::from(&connection.get_info())
 }
 
 #[no_mangle]
