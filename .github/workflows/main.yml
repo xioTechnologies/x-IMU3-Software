@@ -1,5 +1,7 @@
 name: CI
 
+# TODO: Revert windows-2025 back to windows-latest after agent update in September
+
 on:
   push:
     branches: [ main ]
@@ -40,9 +42,9 @@ jobs:
           - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3.a, libximu3.so ]
           - [ ubuntu-latest, aarch64-linux-android, libximu3.a, libximu3.so ]
           - [ ubuntu-latest, x86_64-linux-android, libximu3.a, libximu3.so ]
-          - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
-          - [ windows-latest, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
-          - [ windows-latest, aarch64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
+          - [ windows-2025, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
+          - [ windows-2025, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
+          - [ windows-2025, aarch64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
 
     steps:
       - uses: actions/checkout@v4
@@ -125,7 +127,7 @@ jobs:
         run: cargo publish --no-verify
 
   c-sharp:
-    runs-on: windows-latest
+    runs-on: windows-2025
 
     strategy:
       fail-fast: false
@@ -160,7 +162,7 @@ jobs:
           - [ ubuntu-latest, i686-unknown-linux-gnu, manylinux_i686 ]
           - [ ubuntu-latest, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
           - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
-          - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
+          - [ windows-2025, x86_64-pc-windows-msvc, win_amd64 ]
 
         python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-", "cp313-" ]
 
@@ -301,7 +303,7 @@ jobs:
         run: gh release upload ${{ github.ref_name }} "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI${{ matrix.target[2] }}"
 
   gui-windows:
-    runs-on: windows-latest
+    runs-on: windows-2025
     needs: [ create-release, rust ]
 
     strategy:
@@ -354,14 +356,21 @@ jobs:
         run: |
           smctl windows certsync
         shell: cmd
-      
+
+      - name: Install Inno Setup
+        run: |
+          curl -L https://jrsoftware.org/download.php/is.exe -o is.exe
+          .\is.exe /VERYSILENT
+
       - name: Create installer (signed)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: ISCC.exe "/DENABLE_SIGNING" "/Ssigntool=signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 `$f" WindowsInstaller.iss
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"  "/DENABLE_SIGNING" "/Ssigntool=signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 `$f" WindowsInstaller.iss
 
       - name: Create installer (unsigned)
         if: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
-        run: ISCC.exe WindowsInstaller.iss
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" WindowsInstaller.iss
 
       - uses: actions/upload-artifact@v4
         name: Upload to artifacts
