@@ -42,6 +42,7 @@ jobs:
           - [ ubuntu-latest, x86_64-linux-android, libximu3.a, libximu3.so ]
           - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
+          - [ windows-latest, aarch64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
 
     steps:
       - uses: actions/checkout@v4
