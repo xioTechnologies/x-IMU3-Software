@@ -8,7 +8,9 @@ DefaultGroupName=x-IMU3 GUI
 DisableProgramGroupPage=yes
 OutputDir=cmake-build-release\x-IMU3-GUI\x-IMU3-GUI_artefacts\Release\
 OutputBaseFilename=x-IMU3-GUI-Setup
+#ifdef ENABLE_SIGNING
 SignTool=signtool
+#endif
 UninstallDisplayIcon={app}\x-IMU3 GUI.exe
 WizardStyle=modern
 
