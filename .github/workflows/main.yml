@@ -9,7 +9,7 @@ on:
 
 jobs:
   create-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - if: startsWith(github.ref, 'refs/tags/v')
@@ -34,12 +34,12 @@ jobs:
           - [ macos-latest, aarch64-apple-ios, libximu3.a, libximu3.dylib ]
           - [ macos-latest, aarch64-apple-ios-sim, libximu3.a, libximu3.dylib ]
           - [ macos-latest, x86_64-apple-ios, libximu3.a, libximu3.dylib ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, libximu3.a, libximu3.so ]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, libximu3.a, libximu3.so ]
-          - [ ubuntu-latest, armv7-unknown-linux-gnueabihf, libximu3.a, libximu3.so ]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, libximu3.a, libximu3.so ]
-          - [ ubuntu-latest, aarch64-linux-android, libximu3.a, libximu3.so ]
-          - [ ubuntu-latest, x86_64-linux-android, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, i686-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, aarch64-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, armv7-unknown-linux-gnueabihf, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, x86_64-unknown-linux-gnu, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, aarch64-linux-android, libximu3.a, libximu3.so ]
+          - [ ubuntu-22.04, x86_64-linux-android, libximu3.a, libximu3.so ]
           - [ windows-latest, x86_64-pc-windows-gnu, libximu3.a, ximu3.dll ]
           - [ windows-latest, x86_64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
           - [ windows-latest, aarch64-pc-windows-msvc, ximu3.lib, ximu3.dll ]
@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - if: matrix.target[0] == 'ubuntu-latest'
+      - if: matrix.target[0] == 'ubuntu-22.04'
         name: Install ubuntu dependency
         run: |
           sudo dpkg --add-architecture i386
@@ -108,7 +108,7 @@ jobs:
         run: gh release upload ${{ github.ref_name }} "x-IMU3-API-${{ matrix.target[1] }}.zip"
 
   rust-publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
@@ -154,9 +154,9 @@ jobs:
         target: # [ os, rust-target, cibuildwheel-platform ]
           - [ macos-latest, x86_64-apple-darwin, macosx_x86_64 ]
           - [ macos-latest, aarch64-apple-darwin, macosx_arm64 ]
-          - [ ubuntu-latest, i686-unknown-linux-gnu, manylinux_i686 ]
-          - [ ubuntu-latest, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
-          - [ ubuntu-latest, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
+          - [ ubuntu-22.04, i686-unknown-linux-gnu, manylinux_i686 ]
+          - [ ubuntu-22.04, aarch64-unknown-linux-gnu, manylinux_aarch64 ]
+          - [ ubuntu-22.04, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
           - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
           - [ windows-latest, aarch64-pc-windows-msvc, win_arm64 ]
         python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-", "cp313-" ]
@@ -178,7 +178,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -U urllib3 requests
 
-      - if: matrix.target[0] == 'ubuntu-latest'
+      - if: matrix.target[0] == 'ubuntu-22.04'
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -197,7 +197,7 @@ jobs:
           path: wheelhouse/*
 
   python-publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: python
 
     steps:
@@ -391,7 +391,7 @@ jobs:
         run: gh release upload ${{ github.ref_name }} "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI-Setup-${{ matrix.target[1] }}.exe"
 
   gui-ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [ create-release, rust ]
 
     strategy:
