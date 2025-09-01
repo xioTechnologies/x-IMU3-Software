@@ -6,8 +6,8 @@ sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
 
 import helpers
 
-with open("DeviceSettings.json") as file:
-    settings = json.load(file)
+with open("Settings.json") as file:
+    settings = json.load(file)["settings"]
 
 json_types = []
 enum_types = []
@@ -33,7 +33,7 @@ with open("DeviceSettings.xml", "w") as file:
     file.write("    <Settings>\n")
 
     for setting, json_type in zip(settings, json_types):
-        file.write(f'        <Setting key="{helpers.snake_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get("read only") else "")}/>\n')
+        file.write(f'        <Setting key="{helpers.snake_case(setting["name"])}" name="{helpers.title_case(setting["name"])}" type="{json_type}" {('readOnly="true"' if setting.get("read-only") else "")}/>\n')
 
     file.write("        <Margin/>\n")
     file.write("    </Settings>\n")
