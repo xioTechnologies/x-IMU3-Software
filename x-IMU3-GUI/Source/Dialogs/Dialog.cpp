@@ -116,6 +116,7 @@ void Dialog::setOkButton(const bool valid, const juce::String& buttonText)
     if (buttonText.isNotEmpty())
     {
         okButton.setButtonText(buttonText);
+        resized();
     }
 }
 
@@ -125,6 +126,7 @@ void Dialog::setCancelButton(const bool valid, const juce::String& buttonText)
     if (buttonText.isNotEmpty())
     {
         cancelButton.setButtonText(buttonText);
+        resized();
     }
 }
 

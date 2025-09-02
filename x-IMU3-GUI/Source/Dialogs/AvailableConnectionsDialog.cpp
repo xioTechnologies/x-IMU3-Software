@@ -154,5 +154,5 @@ void AvailableConnectionsDialog::timerCallback()
     }
     getTopLevelComponent()->setName("Available Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
-    setOkButton(getConnectionInfos().empty() == false);
+    setOkButton(getConnectionInfos().empty() == false, "Connect (" + juce::String(getConnectionInfos().size()) + ")");
 }
