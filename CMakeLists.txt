@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # static linking to avoid rare compatibility issues
-project(x-IMU3-Software VERSION 1.5.8)
+project(x-IMU3-Software VERSION 1.6.0)
 
 add_custom_target(Rust-API COMMAND cargo build --manifest-path=${CMAKE_SOURCE_DIR}/x-IMU3-API/Rust/Cargo.toml --release)
 
