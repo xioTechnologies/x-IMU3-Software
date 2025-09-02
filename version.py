@@ -1,7 +1,7 @@
 import os
 import re
 
-version = "1.5.8"
+version = "1.6.0"
 
 
 def replace(file_path, string):
@@ -25,15 +25,6 @@ for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
 
         if file == "CMakeLists.txt":
             replace(file_path, "project\\(x-IMU3-Software VERSION .*\\)")
-
-        if file == "AssemblyInfo.cpp":
-            replace(file_path, 'AssemblyVersionAttribute\\(".*"\\)')
-
-        if file == "AssemblyInfo.cs":
-            replace(file_path, 'AssemblyVersion\\(".*"\\)')
-
-        if file == "AssemblyInfo.cs":
-            replace(file_path, 'AssemblyFileVersion\\(".*"\\)')
 
         if file == "WindowsInstaller.iss":
             replace(file_path, "AppVersion=.*\n")
