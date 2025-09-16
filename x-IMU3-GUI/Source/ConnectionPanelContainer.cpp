@@ -3,10 +3,9 @@
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
-ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_, juce::ThreadPool& threadPool_)
+ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_)
     : windowLayout(windowLayout_),
-      openGLRenderer(openGLRenderer_),
-      threadPool(threadPool_)
+      openGLRenderer(openGLRenderer_)
 {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
