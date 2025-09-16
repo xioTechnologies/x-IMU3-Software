@@ -52,7 +52,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
 
         // Read hardware version
         const auto responses = connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
-        if (responses.empty())
+        if (responses.empty() || CommandMessage(responses[0]).error.has_value())
         {
             showError("Unable to read hardware version.");
             return;
