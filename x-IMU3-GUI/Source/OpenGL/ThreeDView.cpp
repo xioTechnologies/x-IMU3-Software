@@ -85,7 +85,7 @@ void ThreeDView::setSettings(Settings settings_)
     std::scoped_lock _(settingsMutex);
     settings = settings_;
 
-    renderer.getResources().custom.setModel(settings.customModel);
+    // renderer.getResources().custom.setModel(settings.customModel);
 }
 
 ThreeDView::Settings ThreeDView::getSettings() const
@@ -96,15 +96,15 @@ ThreeDView::Settings ThreeDView::getSettings() const
 
 bool ThreeDView::isLoading() const
 {
-    switch (settings.model)
-    {
-        case Model::board:
-            return renderer.getResources().board.isLoading();
-        case Model::housing:
-            return renderer.getResources().housing.isLoading();
-        case Model::custom:
-            return renderer.getResources().custom.isLoading();
-    }
+    // switch (settings.model)
+    // {
+    //     case Model::board:
+    //         return renderer.getResources().board.isLoading();
+    //     case Model::housing:
+    //         return renderer.getResources().housing.isLoading();
+    //     case Model::custom:
+    //         return renderer.getResources().custom.isLoading();
+    // }
     return false;
 }
 

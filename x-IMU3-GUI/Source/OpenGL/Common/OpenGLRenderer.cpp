@@ -3,15 +3,15 @@
 
 OpenGLRenderer::OpenGLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
 {
-    context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
-    context.setRenderer(this);
-    context.setContinuousRepainting(true);
-    context.attachTo(attachTo);
+    // context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
+    // context.setRenderer(this);
+    // context.setContinuousRepainting(true);
+    // context.attachTo(attachTo);
 }
 
 OpenGLRenderer::~OpenGLRenderer()
 {
-    context.detach();
+    // context.detach();
 }
 
 juce::OpenGLContext& OpenGLRenderer::getContext()
