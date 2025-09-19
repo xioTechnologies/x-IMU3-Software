@@ -45,8 +45,8 @@ protected:
 
     void timerCallback() override
     {
-        icon.unavailable();
-        setText("");
+        // icon.unavailable();
+        // setText("");
     }
 
 private:
