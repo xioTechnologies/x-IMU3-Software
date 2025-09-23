@@ -12,6 +12,11 @@ public:
         addAndMakeVisible(value);
         value.onReturnKey = value.onEscapeKey = value.onFocusLost = [&]
         {
+            if (value.getText() == getValueAsString())
+            {
+                return; // discard if the user hasn't changed text
+            }
+
             juce::var newValue; // will be interpreted as null in json
 
             if (tree[DeviceSettingsIds::type] == "number")
@@ -27,11 +32,6 @@ public:
             else
             {
                 newValue = value.getText();
-            }
-
-            if (newValue == tree[DeviceSettingsIds::value])
-            {
-                return;
             }
 
             setValue(newValue);
@@ -56,6 +56,15 @@ protected:
         value.setDefaultText(tree.getProperty(DeviceSettingsIds::emptyValue, "Empty"));
     }
 
+    juce::String getValueAsString() const
+    {
+        if (getValue()->isDouble() && (std::abs((int) *getValue()) >= 1000)) // do not use scientific notation
+        {
+            return juce::String((int) *getValue());
+        }
+        return *getValue();
+    }
+
     void valueChanged() override
     {
         if (getValue().has_value() == false)
@@ -65,14 +74,7 @@ protected:
 
         updateTextToShowWhenEmpty();
 
-        if (getValue()->isDouble() && (std::abs((int) *getValue()) >= 1000)) // do not use scientific notation
-        {
-            value.setText(juce::String((int) *getValue()), juce::dontSendNotification);
-        }
-        else
-        {
-            value.setText(*getValue(), juce::dontSendNotification);
-        }
+        value.setText(getValueAsString(), juce::dontSendNotification);
     }
 
 private:
