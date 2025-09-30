@@ -58,7 +58,7 @@ private:
     ConnectionPanelContainer& connectionPanelContainer;
     const juce::Colour tag;
 
-    ConnectionPanelHeader header { *this, connectionPanelContainer };
+   // ConnectionPanelHeader header { *this, connectionPanelContainer };
     ConnectionPanelFooter footer { *this };
 
     std::map<juce::Identifier, std::shared_ptr<Window>> windows;

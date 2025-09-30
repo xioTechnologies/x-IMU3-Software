@@ -36,7 +36,7 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
       tag(tag_),
       keepOpenEnabled(keepOpenEnabled_)
 {
-    addAndMakeVisible(header);
+    //addAndMakeVisible(header);
     addAndMakeVisible(footer);
     addChildComponent(disabledOverlay);
 
@@ -55,7 +55,7 @@ void ConnectionPanel::resized()
     auto bounds = getLocalBounds();
     disabledOverlay.setBounds(bounds);
 
-    header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
+    //header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
     footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
 
     if (windowContainer)
@@ -76,7 +76,7 @@ void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, 
     {
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
         {
-            header.updateHeading({ responses.begin(), responses.end() });
+            // header.updateHeading({ responses.begin(), responses.end() });
 
             if (callbackOwner != nullptr && callback != nullptr)
             {
@@ -185,12 +185,12 @@ void ConnectionPanel::cleanupWindows()
 
 juce::String ConnectionPanel::getHeading() const
 {
-    return header.getHeading();
+    return ""; //header.getHeading();
 }
 
 juce::String ConnectionPanel::getDescriptor() const
 {
-    return header.getDescriptor();
+    return ""; // header.getDescriptor();
 }
 
 ConnectionPanelContainer& ConnectionPanel::getConnectionPanelContainer()
@@ -205,8 +205,8 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
 
 void ConnectionPanel::connect()
 {
-    header.updateHeading("Connecting...");
-    header.showRetry({});
+    // header.updateHeading("Connecting...");
+    // header.showRetry({});
 
     const juce::WeakReference weakReference(this);
 
@@ -230,7 +230,7 @@ void ConnectionPanel::connect()
 
                         case ximu3::XIMU3_ConnectionStatusReconnecting:
                             recursivePing.reset();
-                            header.updateHeading("Reconnecting...");
+                            // header.updateHeading("Reconnecting...");
                             break;
                     }
                 });
@@ -249,11 +249,11 @@ void ConnectionPanel::connect()
 
                 if (result != ximu3::XIMU3_ResultOk)
                 {
-                    header.updateHeading("Connection Failed");
-                    header.showRetry([&]
-                    {
-                        connect();
-                    });
+                    // header.updateHeading("Connection Failed");
+                    // header.showRetry([&]
+                    // {
+                    //     connect();
+                    // });
                     return;
                 }
 
@@ -272,11 +272,11 @@ void ConnectionPanel::connected()
         resized();
     }
 
-    header.showLocate();
+    // header.showLocate();
 
     recursivePing = std::make_unique<RecursivePing>(connection, [&](const juce::String& deviceName, const juce::String& serialNumber)
     {
-        header.updateHeading(deviceName, serialNumber);
+        // header.updateHeading(deviceName, serialNumber);
     });
 }
 
