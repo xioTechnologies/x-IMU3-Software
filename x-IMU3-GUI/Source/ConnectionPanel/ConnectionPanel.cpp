@@ -37,7 +37,7 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
       keepOpenEnabled(false)
 {
     //addAndMakeVisible(header);
-    addAndMakeVisible(footer);
+   // addAndMakeVisible(footer);
     addChildComponent(disabledOverlay);
 
     connect();
@@ -56,7 +56,7 @@ void ConnectionPanel::resized()
     disabledOverlay.setBounds(bounds);
 
     //header.setBounds(bounds.removeFromTop(headerHeight + UILayout::panelMargin));
-    footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
+   // footer.setBounds(bounds.removeFromBottom(footerHeight + UILayout::panelMargin));
 
     if (windowContainer)
     {
@@ -67,6 +67,8 @@ void ConnectionPanel::resized()
 
 std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
 {
+    jassertfalse;
+
     return connection;
 }
 
