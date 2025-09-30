@@ -15,21 +15,13 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
         button.setWantsKeyboardFocus(false);
         button.setVisible(visible);
         button.setButtonText(buttonText);
+        button.addShortcut(juce::KeyPress(juce::KeyPress::escapeKey));
     };
 
-    initButton(okButton, okButtonText.isNotEmpty(), okButtonText, true);
     initButton(cancelButton, cancelButtonText.isNotEmpty(), cancelButtonText, false);
-
+    initButton(okButton, okButtonText.isNotEmpty(), okButtonText, true);
     okButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
-    if (cancelButton.isVisible())
-    {
-        cancelButton.addShortcut(juce::KeyPress(juce::KeyPress::escapeKey));
-    }
-    else
-    {
-        okButton.addShortcut(juce::KeyPress(juce::KeyPress::escapeKey));
-    }
-
+    
     okButton.onClick = [this]
     {
         BailOutChecker thisDeletedChecker(this);
