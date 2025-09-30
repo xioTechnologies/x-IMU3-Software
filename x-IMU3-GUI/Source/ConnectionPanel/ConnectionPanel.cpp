@@ -34,7 +34,7 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree& windowLayout_,
       openGLRenderer(openGLRenderer_),
       connectionPanelContainer(connectionPanelContainer_),
       tag(tag_),
-      keepOpenEnabled(keepOpenEnabled_)
+      keepOpenEnabled(false)
 {
     //addAndMakeVisible(header);
     addAndMakeVisible(footer);
