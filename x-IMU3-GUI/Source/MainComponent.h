@@ -27,10 +27,10 @@ public:
         tooltipWindow.setOpaque(false);
 
         DialogQueue::getSingleton().addChangeListener(this);
-        if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
-        {
-            DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to access the network announcement socket. Please close all other x-IMU3 applications and restart the x-IMU3 GUI."));
-        }
+        // if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
+        // {
+        //     DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to access the network announcement socket. Please close all other x-IMU3 applications and restart the x-IMU3 GUI."));
+        // }
     }
 
     void resized() override
@@ -74,7 +74,7 @@ private:
     juce::Viewport connectionPanelViewport;
     MenuStrip menuStrip { windowLayout, threadPool, connectionPanelContainer };
     juce::TooltipWindow tooltipWindow { nullptr, 300 };
-    juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
+    //juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
     DisabledOverlay disabledOverlay;
 
