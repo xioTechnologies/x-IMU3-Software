@@ -207,62 +207,64 @@ void ConnectionPanel::setOverlayVisible(const bool visible)
 
 void ConnectionPanel::connect()
 {
+    connection->open();
+
     // header.updateHeading("Connecting...");
     // header.showRetry({});
 
-    const juce::WeakReference weakReference(this);
-
-    if (keepOpenEnabled)
-    {
-        keepOpen = std::make_unique<ximu3::KeepOpen>(
-            *connection, [ &, weakReference](ximu3::XIMU3_ConnectionStatus status)
-            {
-                juce::MessageManager::callAsync([&, weakReference, status]
-                {
-                    if (weakReference == nullptr)
-                    {
-                        return;
-                    }
-
-                    switch (status)
-                    {
-                        case ximu3::XIMU3_ConnectionStatusConnected:
-                            connected();
-                            break;
-
-                        case ximu3::XIMU3_ConnectionStatusReconnecting:
-                            recursivePing.reset();
-                            // header.updateHeading("Reconnecting...");
-                            break;
-                    }
-                });
-            });
-    }
-    else
-    {
-        connection->openAsync([&, weakReference](auto result)
-        {
-            juce::MessageManager::callAsync([&, weakReference, result]
-            {
-                if (weakReference == nullptr)
-                {
-                    return;
-                }
-
-                if (result != ximu3::XIMU3_ResultOk)
-                {
-                    // header.updateHeading("Connection Failed");
-                    // header.showRetry([&]
-                    // {
-                    //     connect();
-                    // });
-                    return;
-                }
-
-                connected();
-            });
-        });
-    }
+    // const juce::WeakReference weakReference(this);
+    //
+    // if (keepOpenEnabled)
+    // {
+    //     keepOpen = std::make_unique<ximu3::KeepOpen>(
+    //         *connection, [ &, weakReference](ximu3::XIMU3_ConnectionStatus status)
+    //         {
+    //             juce::MessageManager::callAsync([&, weakReference, status]
+    //             {
+    //                 if (weakReference == nullptr)
+    //                 {
+    //                     return;
+    //                 }
+    //
+    //                 switch (status)
+    //                 {
+    //                     case ximu3::XIMU3_ConnectionStatusConnected:
+    //                         connected();
+    //                         break;
+    //
+    //                     case ximu3::XIMU3_ConnectionStatusReconnecting:
+    //                         recursivePing.reset();
+    //                         // header.updateHeading("Reconnecting...");
+    //                         break;
+    //                 }
+    //             });
+    //         });
+    // }
+    // else
+    // {
+    //     connection->openAsync([&, weakReference](auto result)
+    //     {
+    //         juce::MessageManager::callAsync([&, weakReference, result]
+    //         {
+    //             if (weakReference == nullptr)
+    //             {
+    //                 return;
+    //             }
+    //
+    //             if (result != ximu3::XIMU3_ResultOk)
+    //             {
+    //                 // header.updateHeading("Connection Failed");
+    //                 // header.showRetry([&]
+    //                 // {
+    //                 //     connect();
+    //                 // });
+    //                 return;
+    //             }
+    //
+    //             connected();
+    //         });
+    //     });
+    // }
 }
 
 void ConnectionPanel::connected()
