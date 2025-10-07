@@ -250,6 +250,28 @@ int MenuStrip::getMinimumWidth() const
     return width;
 }
 
+void MenuStrip::openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channels)
+{
+    std::vector<ximu3::Connection*> connections;
+    for (auto* const connectionPanel : connectionPanelContainer.getConnectionPanels())
+    {
+        connections.push_back(connectionPanel->getConnection().get());
+    }
+
+    DialogQueue::getSingleton().pushFront(std::make_unique<ManualMuxConnectionDialog>(connections, channels), [this]
+    {
+        if (auto* dialog = dynamic_cast<ManualMuxConnectionDialog*>(DialogQueue::getSingleton().getActive()))
+        {
+            for (const auto& connectionInfo : dialog->getConnectionInfos())
+            {
+                connectionPanelContainer.connectToDevice(*connectionInfo, false);
+            }
+            RecentConnections().update(dialog->getChannels());
+        }
+        return true;
+    });
+}
+
 void MenuStrip::addDevices(juce::PopupMenu& menu, std::function<void(ConnectionPanel&)> action)
 {
     menu.addSeparator();
@@ -323,19 +345,35 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<ManualBluetoothConnectionDialog>(), connectCallback);
     });
+    menu.addItem("Mux", [&]
+    {
+        openMuxDialog({ 0x41, 0x50 });
+    });
 
-    if (auto connectionInfos = RecentConnections().get(); connectionInfos.empty() == false)
+    if (auto connections = RecentConnections().get(); connections.empty() == false)
     {
         menu.addSeparator();
         menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
 
-        for (auto& connectionInfo : connectionInfos)
+        for (auto& connection : connections)
         {
-            const auto connectionInfoString = connectionInfo->toString();
-            menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo.release())]
+            if (auto* connectionInfo = std::get_if<std::unique_ptr<ximu3::ConnectionInfo>>(&connection))
             {
-                connectionPanelContainer.connectToDevice(*connectionInfo_, true);
-            });
+                const auto connectionInfoString = (*connectionInfo)->toString();
+                menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo->release())]
+                {
+                    connectionPanelContainer.connectToDevice(*connectionInfo_, true);
+                });
+                continue;
+            }
+
+            if (auto* channels = std::get_if<std::pair<std::uint8_t, std::uint8_t>>(&connection))
+            {
+                menu.addItem(juce::String::formatted("Mux 0x%02X to 0x%02X", channels->first, channels->second), [this, channels_ = *channels]
+                {
+                    openMuxDialog({ channels_.first, channels_.second });
+                });
+            }
         }
     }
 

@@ -73,6 +73,8 @@ private:
 
     juce::File previousWindowLayout = ApplicationSettings::getDirectory().getChildFile("Previous Windows Layout.xml");
 
+    void openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channels);
+
     void addDevices(juce::PopupMenu& menu, std::function<void(ConnectionPanel&)> action);
 
     void disconnect(const ConnectionPanel* const);
