@@ -361,19 +361,17 @@ jobs:
         shell: cmd
 
       - name: Install Inno Setup
-        run: |
-          curl -L https://jrsoftware.org/download.php/is.exe -o is.exe
-          .\is.exe /VERYSILENT
+        run: choco install innosetup
 
       - name: Create installer (signed)
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"  "/DENABLE_SIGNING" "/Ssigntool=signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 `$f" WindowsInstaller.iss
+          ISCC.exe  "/DENABLE_SIGNING" "/Ssigntool=signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 `$f" WindowsInstaller.iss
 
       - name: Create installer (unsigned)
         if: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" WindowsInstaller.iss
+          ISCC.exe WindowsInstaller.iss
 
       - name: Rename installer
         run: Rename-Item -Path x-IMU3-GUI-Setup.exe -NewName x-IMU3-GUI-Setup-${{ matrix.target[1] }}.exe
