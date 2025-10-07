@@ -117,9 +117,9 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
                                                                      dataLoggerName.toStdString(),
                                                                      connections);
 
-                    if (dataLogger->getResult() != ximu3::XIMU3_ResultOk)
+                    if (const auto result = dataLogger->getResult(); result != ximu3::XIMU3_ResultOk)
                     {
-                        DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Data logger failed."));
+                        DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Data logger failed. " + juce::String(ximu3::XIMU3_result_to_string(result)) + "."));
                         return;
                     }
 
