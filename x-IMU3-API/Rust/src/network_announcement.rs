@@ -170,6 +170,7 @@ impl NetworkAnnouncement {
     }
 
     pub fn add_closure(&self, closure: Box<dyn Fn(NetworkAnnouncementMessage) + Send>) -> u64 {
+        println!("NetworkAnnouncement add_closure");
         let id = self.closure_counter.fetch_add(1, Ordering::SeqCst);
         self.closures.lock().unwrap().push((closure, id));
         id
