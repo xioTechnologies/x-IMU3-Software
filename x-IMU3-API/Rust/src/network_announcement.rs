@@ -121,6 +121,7 @@ impl NetworkAnnouncement {
 
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
+                        println!("NetworkAnnouncement return");
                         return;
                     }
                     if let Some(message) = message {
@@ -129,6 +130,8 @@ impl NetworkAnnouncement {
                 }
             }
         });
+
+        println!("NetworkAnnouncement new");
 
         Ok(network_announcement)
     }
