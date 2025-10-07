@@ -39,6 +39,12 @@ public:
             connections.push_back(std::move(connection));
         }
 
+        std::cout << "Connections size " << connections.size() << std::endl;
+        if (connections.size() != 18)
+        {
+            return;
+        }
+
         std::this_thread::sleep_for(std::chrono::hours(48));
     }
 
