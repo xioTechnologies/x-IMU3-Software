@@ -289,3 +289,94 @@ std::unique_ptr<ximu3::ConnectionInfo> ManualBluetoothConnectionDialog::getConne
 {
     return std::make_unique<ximu3::BluetoothConnectionInfo>(portNameValue.getSelectedPortName());
 }
+
+ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connection*> connections_, std::pair<std::uint8_t, std::uint8_t> channels) : Dialog(BinaryData::manual_svg, "Manual Mux Connection", "Connect", "Cancel"), connections(connections_)
+{
+    addAndMakeVisible(connectionLabel);
+    addAndMakeVisible(connectionValue);
+    addAndMakeVisible(channelsLabel);
+    addAndMakeVisible(firstChannelValue);
+    addAndMakeVisible(toLabel);
+    addAndMakeVisible(lastChannelValue);
+
+    for (const auto& connection : connections)
+    {
+        connectionValue.addItem(connection->getInfo()->toString(), 1 + connectionValue.getNumItems());
+    }
+    connectionValue.setSelectedItemIndex(0);
+
+    for (int channel = 0; channel < 256; channel++)
+    {
+        if (channel == 0x0A)
+        {
+            continue;
+        }
+
+        firstChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + firstChannelValue.getNumItems());
+        lastChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + lastChannelValue.getNumItems());
+    }
+
+    firstChannelValue.setText(juce::String::formatted("0x%02X", channels.first));
+    lastChannelValue.setText(juce::String::formatted("0x%02X", channels.second));
+
+    std::invoke(firstChannelValue.onChange = lastChannelValue.onChange = [&]
+    {
+        const auto connectionInfos = getConnectionInfos();
+
+        if (connectionInfos.empty())
+        {
+            setOkButton(false, "Connect");
+            return;
+        }
+
+        setOkButton(true, "Connect (" + juce::String(connectionInfos.size()) + ")");
+    });
+
+    setSize(dialogWidth, calculateHeight(2));
+}
+
+ManualMuxConnectionDialog::~ManualMuxConnectionDialog()
+{
+}
+
+void ManualMuxConnectionDialog::resized()
+{
+    Dialog::resized();
+    auto bounds = getContentBounds();
+
+    auto connectionRow = bounds.removeFromTop(UILayout::textComponentHeight);
+    connectionLabel.setBounds(connectionRow.removeFromLeft(columnWidth));
+    connectionValue.setBounds(connectionRow);
+
+    bounds.removeFromTop(margin);
+
+    auto channelsRow = bounds.removeFromTop(UILayout::textComponentHeight);
+    channelsLabel.setBounds(channelsRow.removeFromLeft(columnWidth));
+    firstChannelValue.setBounds(channelsRow.removeFromLeft(columnWidth));
+    toLabel.setBounds(channelsRow.removeFromLeft(30));
+    lastChannelValue.setBounds(channelsRow.removeFromLeft(columnWidth));
+}
+
+std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> ManualMuxConnectionDialog::getConnectionInfos() const
+{
+    if (connections.empty())
+    {
+        return {};
+    }
+
+    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> connectionInfos;
+    for (int channel = getChannels().first; channel <= getChannels().second; channel++)
+    {
+        if (channel == 0x0A)
+        {
+            continue;
+        }
+        connectionInfos.push_back(std::make_unique<ximu3::MuxConnectionInfo>(channel, *connections[(size_t) connectionValue.getSelectedItemIndex()]));
+    }
+    return connectionInfos;
+}
+
+std::pair<std::uint8_t, std::uint8_t> ManualMuxConnectionDialog::getChannels() const
+{
+    return { static_cast<std::uint8_t>(firstChannelValue.getText().getHexValue32()), static_cast<std::uint8_t>(lastChannelValue.getText().getHexValue32()) };
+}
