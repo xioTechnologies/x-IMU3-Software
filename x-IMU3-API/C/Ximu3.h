@@ -46,6 +46,7 @@ typedef enum XIMU3_ConnectionType
     XIMU3_ConnectionTypeUdp,
     XIMU3_ConnectionTypeBluetooth,
     XIMU3_ConnectionTypeFile,
+    XIMU3_ConnectionTypeMux,
 } XIMU3_ConnectionType;
 
 typedef enum XIMU3_DecodeError
@@ -56,6 +57,7 @@ typedef enum XIMU3_DecodeError
     XIMU3_DecodeErrorInvalidJson,
     XIMU3_DecodeErrorJsonIsNotAnObject,
     XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
+    XIMU3_DecodeErrorInvalidMuxMessageLength,
     XIMU3_DecodeErrorInvalidEscapeSequence,
     XIMU3_DecodeErrorInvalidBinaryMessageLength,
     XIMU3_DecodeErrorUnableToParseAsciiMessage,
@@ -124,6 +126,8 @@ typedef struct XIMU3_DataLogger XIMU3_DataLogger;
 typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 
 typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
+
+typedef struct XIMU3_MuxConnectionInfo XIMU3_MuxConnectionInfo;
 
 typedef struct XIMU3_NetworkAnnouncement XIMU3_NetworkAnnouncement;
 
@@ -448,6 +452,8 @@ struct XIMU3_Connection *XIMU3_connection_new_bluetooth(struct XIMU3_BluetoothCo
 
 struct XIMU3_Connection *XIMU3_connection_new_file(struct XIMU3_FileConnectionInfo connection_info);
 
+struct XIMU3_Connection *XIMU3_connection_new_mux(const struct XIMU3_MuxConnectionInfo *connection_info);
+
 void XIMU3_connection_free(struct XIMU3_Connection *connection);
 
 enum XIMU3_Result XIMU3_connection_open(struct XIMU3_Connection *connection);
@@ -477,6 +483,8 @@ struct XIMU3_UdpConnectionInfo XIMU3_connection_get_info_udp(struct XIMU3_Connec
 struct XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(struct XIMU3_Connection *connection);
 
 struct XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(struct XIMU3_Connection *connection);
+
+struct XIMU3_MuxConnectionInfo *XIMU3_connection_get_info_mux(struct XIMU3_Connection *connection);
 
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
@@ -529,6 +537,12 @@ const char *XIMU3_udp_connection_info_to_string(struct XIMU3_UdpConnectionInfo c
 const char *XIMU3_bluetooth_connection_info_to_string(struct XIMU3_BluetoothConnectionInfo connection_info);
 
 const char *XIMU3_file_connection_info_to_string(struct XIMU3_FileConnectionInfo connection_info);
+
+struct XIMU3_MuxConnectionInfo *XIMU3_mux_connection_info_new(uint8_t channel, struct XIMU3_Connection *connection);
+
+void XIMU3_mux_connection_info_free(struct XIMU3_MuxConnectionInfo *connection_info);
+
+const char *XIMU3_mux_connection_info_to_string(struct XIMU3_MuxConnectionInfo *connection_info);
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 

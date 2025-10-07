@@ -143,3 +143,30 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualBluetoothConnectionDialog)
 };
+
+class ManualMuxConnectionDialog : public Dialog
+{
+public:
+    ManualMuxConnectionDialog(std::vector<ximu3::Connection*> connections_, std::pair<std::uint8_t, std::uint8_t> channels);
+
+    ~ManualMuxConnectionDialog() override;
+
+    void resized() override;
+
+    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> getConnectionInfos() const;
+
+    std::pair<std::uint8_t, std::uint8_t> getChannels() const;
+
+private:
+    const std::vector<ximu3::Connection*> connections;
+
+    SimpleLabel connectionLabel { "Connection:" };
+    CustomComboBox connectionValue;
+
+    SimpleLabel channelsLabel { "Channels:" };
+    CustomComboBox firstChannelValue;
+    SimpleLabel toLabel { "to", UIFonts::getDefaultFont(), juce::Justification::centred };
+    CustomComboBox lastChannelValue;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualMuxConnectionDialog)
+};

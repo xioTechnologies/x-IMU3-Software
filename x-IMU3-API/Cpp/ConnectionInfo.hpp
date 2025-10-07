@@ -151,6 +151,34 @@ namespace ximu3
         }
     };
 
+    class Connection;
+
+    class MuxConnectionInfo : public ConnectionInfo
+    {
+    public:
+        MuxConnectionInfo(const std::uint8_t channel, const Connection& connection);
+
+        MuxConnectionInfo(XIMU3_MuxConnectionInfo* connectionInfo)
+        {
+            muxConnectionInfo = connectionInfo;
+        }
+
+        ~MuxConnectionInfo() override
+        {
+            XIMU3_mux_connection_info_free(muxConnectionInfo);
+        }
+
+        std::string toString() const override
+        {
+            return XIMU3_mux_connection_info_to_string(muxConnectionInfo);
+        }
+
+    private:
+        XIMU3_MuxConnectionInfo* muxConnectionInfo;
+
+        friend class Connection;
+    };
+
     inline std::shared_ptr<ConnectionInfo> ConnectionInfo::from(const XIMU3_Device& device)
     {
         switch (device.connection_type)
@@ -164,6 +192,7 @@ namespace ximu3
             case XIMU3_ConnectionTypeTcp:
             case XIMU3_ConnectionTypeUdp:
             case XIMU3_ConnectionTypeFile:
+            case XIMU3_ConnectionTypeMux:
                 break;
         }
         return {};
