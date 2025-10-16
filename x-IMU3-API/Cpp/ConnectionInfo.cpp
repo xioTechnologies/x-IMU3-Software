@@ -1,5 +1,5 @@
-#include "ConnectionInfo.hpp"
 #include "Connection.hpp"
+#include "ConnectionInfo.hpp"
 
 namespace ximu3
 {
