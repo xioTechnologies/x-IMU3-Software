@@ -1,7 +1,7 @@
 #include "PortNameComboBox.h"
 #include "Ximu3.hpp"
 
-PortNameComboBox::PortNameComboBox()
+PortNameComboBox::PortNameComboBox() : CustomComboBox("No Ports Found")
 {
     updatePorts();
     setSelectedItemIndex(0);

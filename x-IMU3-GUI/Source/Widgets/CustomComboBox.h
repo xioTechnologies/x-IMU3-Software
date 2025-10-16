@@ -5,7 +5,7 @@
 class CustomComboBox : public juce::ComboBox
 {
 public:
-    CustomComboBox();
+    CustomComboBox(const juce::String& emptyText = "");
 
     ~CustomComboBox() override;
 
