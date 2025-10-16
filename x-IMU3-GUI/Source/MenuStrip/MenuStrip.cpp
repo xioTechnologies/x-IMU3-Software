@@ -400,13 +400,19 @@ juce::PopupMenu MenuStrip::getConnectionLayoutMenu()
 {
     juce::PopupMenu menu;
 
-    const auto addItem = [&](const auto layout, const auto& title)
+    const auto addItem = [&](const auto layout, const auto& text)
     {
-        menu.addItem(title, true, connectionPanelContainer.getLayout() == layout, [&, layout]
+        int _, height;
+        getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
+
+        auto image = juce::Drawable::createFromSVG(*juce::XmlDocument::parse(layoutIcons.at(layout)));
+        image->setTransformToFit(juce::Rectangle<float>(0.0f, 0.0f, 35.0f, (float) height).reduced(0.0f, 3.0f), juce::RectanglePlacement::centred);
+
+        menu.addItem(juce::PopupMenu::Item { text }.setAction([&, layout]
         {
             connectionPanelContainer.setLayout(layout);
             connectionLayoutButton.setIcon(layoutIcons.at(layout), {});
-        });
+        }).setImage(std::move(image)));
     };
     addItem(ConnectionPanelContainer::Layout::rows, "Rows");
     addItem(ConnectionPanelContainer::Layout::columns, "Columns");
