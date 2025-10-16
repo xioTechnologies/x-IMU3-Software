@@ -298,6 +298,7 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
     addAndMakeVisible(firstChannelValue);
     addAndMakeVisible(toLabel);
     addAndMakeVisible(lastChannelValue);
+    addAndMakeVisible(singleToggle);
 
     for (const auto& connection : connections)
     {
@@ -307,20 +308,26 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
 
     for (int channel = 0; channel < 256; channel++)
     {
+        firstChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + channel);
+        lastChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + channel);
+
         if (channel == 0x0A)
         {
-            continue;
+            firstChannelValue.setItemEnabled(1 + channel, false);
+            lastChannelValue.setItemEnabled(1 + channel, false);
         }
-
-        firstChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + firstChannelValue.getNumItems());
-        lastChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + lastChannelValue.getNumItems());
     }
 
-    firstChannelValue.setText(juce::String::formatted("0x%02X", channels.first));
-    lastChannelValue.setText(juce::String::formatted("0x%02X", channels.second));
+    firstChannelValue.setSelectedItemIndex(channels.first);
+    lastChannelValue.setSelectedItemIndex(channels.second);
 
     std::invoke(firstChannelValue.onChange = lastChannelValue.onChange = [&]
     {
+        if (singleToggle.getToggleState())
+        {
+            lastChannelValue.setSelectedItemIndex(firstChannelValue.getSelectedItemIndex());
+        }
+
         const auto connectionInfos = getConnectionInfos();
 
         if (connectionInfos.empty())
@@ -331,6 +338,12 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
 
         setOkButton(true, "Connect (" + juce::String(connectionInfos.size()) + ")");
     });
+
+    singleToggle.onClick = [&]
+    {
+        lastChannelValue.setEnabled(singleToggle.getToggleState() == false);
+        lastChannelValue.setSelectedItemIndex(firstChannelValue.getSelectedItemIndex());
+    };
 
     setSize(dialogWidth, calculateHeight(2));
 }
@@ -355,6 +368,8 @@ void ManualMuxConnectionDialog::resized()
     firstChannelValue.setBounds(channelsRow.removeFromLeft(columnWidth));
     toLabel.setBounds(channelsRow.removeFromLeft(30));
     lastChannelValue.setBounds(channelsRow.removeFromLeft(columnWidth));
+    channelsRow.removeFromLeft(margin);
+    singleToggle.setBounds(channelsRow);
 }
 
 std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> ManualMuxConnectionDialog::getConnectionInfos() const
@@ -378,5 +393,5 @@ std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> ManualMuxConnectionDialog
 
 std::pair<std::uint8_t, std::uint8_t> ManualMuxConnectionDialog::getChannels() const
 {
-    return { static_cast<std::uint8_t>(firstChannelValue.getText().getHexValue32()), static_cast<std::uint8_t>(lastChannelValue.getText().getHexValue32()) };
+    return { static_cast<std::uint8_t>(firstChannelValue.getSelectedItemIndex()), static_cast<std::uint8_t>(lastChannelValue.getSelectedItemIndex()) };
 }

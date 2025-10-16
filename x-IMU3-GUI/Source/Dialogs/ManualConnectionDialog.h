@@ -161,12 +161,13 @@ private:
     const std::vector<ximu3::Connection*> connections;
 
     SimpleLabel connectionLabel { "Connection:" };
-    CustomComboBox connectionValue;
+    CustomComboBox connectionValue { "No Connections" };
 
     SimpleLabel channelsLabel { "Channels:" };
     CustomComboBox firstChannelValue;
     SimpleLabel toLabel { "to", UIFonts::getDefaultFont(), juce::Justification::centred };
     CustomComboBox lastChannelValue;
+    CustomToggleButton singleToggle { "Single" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualMuxConnectionDialog)
 };
