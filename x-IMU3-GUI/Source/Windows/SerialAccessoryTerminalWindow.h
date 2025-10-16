@@ -1,10 +1,8 @@
 #pragma once
 
-#include "ApplicationSettings.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Widgets/CustomComboBox.h"
-#include "Widgets/IconButton.h"
 #include "Widgets/SerialAccessoryTerminal.h"
+#include "Widgets/SerialAccessoryTextEditor.h"
 #include "Window.h"
 
 class SerialAccessoryTerminalWindow : public Window
@@ -21,17 +19,11 @@ public:
     void mouseDown(const juce::MouseEvent& mouseEvent) override;
 
 private:
-    SerialAccessoryTerminal serialAccessoryTerminal;
-    CustomComboBox sendValue;
-    IconButton sendButton { BinaryData::send_svg, "Send" };
-
-    juce::ValueTree previousSerialAccessoryData;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Serial Accessory Data.xml");
+    SerialAccessoryTerminal terminal;
+    SerialAccessoryTextEditor textEditor;
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackId;
-
-    void loadPrevious();
 
     juce::PopupMenu getMenu() override;
 

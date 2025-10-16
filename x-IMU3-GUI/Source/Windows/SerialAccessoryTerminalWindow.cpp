@@ -6,46 +6,23 @@
 SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Serial Accessory Terminal Menu")
 {
-    addAndMakeVisible(serialAccessoryTerminal);
-    serialAccessoryTerminal.addMouseListener(this, true);
+    addAndMakeVisible(terminal);
+    addAndMakeVisible(textEditor);
 
-    addAndMakeVisible(sendValue);
-    sendValue.setEditableText(true);
+    terminal.addMouseListener(this, true);
 
-    loadPrevious();
-
-    addAndMakeVisible(sendButton);
-    sendButton.onClick = [this]
+    textEditor.onReturnKey = [&]
     {
-        CommandMessage commandMessage("{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(sendValue.getText().toStdString())) + "}");
-        if (sendValue.getText().isEmpty() || commandMessage.json.empty())
+        CommandMessage commandMessage("{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(textEditor.getText().toStdString())) + "}");
+        if (textEditor.getText().isEmpty() || commandMessage.json.empty())
         {
-            serialAccessoryTerminal.addError(sendValue.getText());
+            terminal.addError(textEditor.getText());
             return;
         }
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(commandMessage, std::vector<ConnectionPanel*> { &connectionPanel }));
 
-        serialAccessoryTerminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
-
-        for (const auto data : previousSerialAccessoryData)
-        {
-            if (data["data"] == sendValue.getText())
-            {
-                previousSerialAccessoryData.removeChild(data, nullptr);
-                break;
-            }
-        }
-
-        while (previousSerialAccessoryData.getNumChildren() >= 12)
-        {
-            previousSerialAccessoryData.removeChild(previousSerialAccessoryData.getChild(previousSerialAccessoryData.getNumChildren() - 1), nullptr);
-        }
-
-        previousSerialAccessoryData.addChild({ "Data", { { "data", sendValue.getText() } } }, 0, nullptr);
-        file.replaceWithText(previousSerialAccessoryData.toXmlString());
-
-        loadPrevious();
+        terminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(commandMessage.value)));
     };
 
     callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message)
@@ -57,7 +34,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            serialAccessoryTerminal.addRx(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
+            terminal.addRx(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
 }
@@ -78,12 +55,8 @@ void SerialAccessoryTerminalWindow::resized()
     Window::resized();
 
     auto bounds = getContentBounds();
-
-    auto sendCommandBounds = bounds.removeFromBottom(UILayout::textComponentHeight);
-    sendButton.setBounds(sendCommandBounds.removeFromRight(40));
-    sendValue.setBounds(sendCommandBounds);
-
-    serialAccessoryTerminal.setBounds(bounds);
+    textEditor.setBounds(bounds.removeFromBottom(UILayout::textComponentHeight));
+    terminal.setBounds(bounds);
 }
 
 void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -94,33 +67,16 @@ void SerialAccessoryTerminalWindow::mouseDown(const juce::MouseEvent& mouseEvent
     }
 }
 
-void SerialAccessoryTerminalWindow::loadPrevious()
-{
-    previousSerialAccessoryData = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (previousSerialAccessoryData.isValid() == false)
-    {
-        previousSerialAccessoryData = juce::ValueTree("SerialAccessoryData");
-    }
-
-    sendValue.clear(juce::dontSendNotification);
-    for (const auto data : previousSerialAccessoryData)
-    {
-        sendValue.addItem(data["data"], sendValue.getNumItems() + 1);
-    }
-
-    sendValue.setText(sendValue.getNumItems() > 0 ? sendValue.getItemText(0) : R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::dontSendNotification);
-}
-
 juce::PopupMenu SerialAccessoryTerminalWindow::getMenu()
 {
     juce::PopupMenu menu = Window::getMenu();
     menu.addItem("Copy to Clipboard", [&]
     {
-        serialAccessoryTerminal.copyToClipboard();
+        terminal.copyToClipboard();
     });
     menu.addItem("Clear", [&]
     {
-        serialAccessoryTerminal.clearAll();
+        terminal.clearAll();
     });
     return menu;
 }
