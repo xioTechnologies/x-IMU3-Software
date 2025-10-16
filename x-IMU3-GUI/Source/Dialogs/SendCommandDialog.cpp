@@ -97,7 +97,7 @@ CommandMessage SendCommandDialog::getCommand()
         }
     }
 
-    while (previousCommands.getNumChildren() >= 12)
+    while (previousCommands.getNumChildren() >= 18)
     {
         previousCommands.removeChild(previousCommands.getChild(previousCommands.getNumChildren() - 1), nullptr);
     }

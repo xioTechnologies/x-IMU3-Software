@@ -48,7 +48,7 @@ juce::String SendNoteCommandDialog::getNote()
         }
     }
 
-    while (previousNotes.getNumChildren() >= 12)
+    while (previousNotes.getNumChildren() >= 18)
     {
         previousNotes.removeChild(previousNotes.getChild(previousNotes.getNumChildren() - 1), nullptr);
     }
