@@ -25,6 +25,7 @@ static PyObject* decode_error_to_string(PyObject* self, PyObject* args)
         case XIMU3_DecodeErrorInvalidJson:
         case XIMU3_DecodeErrorJsonIsNotAnObject:
         case XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair:
+        case XIMU3_DecodeErrorInvalidMuxMessageLength:
         case XIMU3_DecodeErrorInvalidEscapeSequence:
         case XIMU3_DecodeErrorInvalidBinaryMessageLength:
         case XIMU3_DecodeErrorUnableToParseAsciiMessage:

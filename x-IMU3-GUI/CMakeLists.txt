@@ -52,6 +52,7 @@ target_sources(x-IMU3-GUI PRIVATE ${CPP_FILES})
 if (APPLE)
     target_sources(x-IMU3-GUI PRIVATE Source/UIUtilsMac.mm)
 endif ()
+target_sources(x-IMU3-GUI PRIVATE ../x-IMU3-API/Cpp/ConnectionInfo.cpp)
 
 string(TIMESTAMP BUILD_DATE UTC)
 execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD OUTPUT_VARIABLE COMMIT_SHA OUTPUT_STRIP_TRAILING_WHITESPACE)

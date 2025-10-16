@@ -28,6 +28,9 @@ namespace Ximu3
                 case FileConnectionInfo fileConnectionInfo:
                     connection = CApi.XIMU3_connection_new_file(fileConnectionInfo.connectionInfo);
                     return;
+                case MuxConnectionInfo muxConnectionInfo:
+                    connection = CApi.XIMU3_connection_new_mux(muxConnectionInfo.connectionInfo);
+                    return;
             }
             Debug.Assert(false);
         }
@@ -109,6 +112,7 @@ namespace Ximu3
                 CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionInfo(CApi.XIMU3_connection_get_info_udp(connection)),
                 CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionInfo(CApi.XIMU3_connection_get_info_bluetooth(connection)),
                 CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionInfo(CApi.XIMU3_connection_get_info_file(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux => new MuxConnectionInfo(CApi.XIMU3_connection_get_info_mux(connection)),
                 _ => null,
             };
         }

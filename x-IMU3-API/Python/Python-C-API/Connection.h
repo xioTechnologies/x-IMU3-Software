@@ -62,6 +62,12 @@ static PyObject* connection_new(PyTypeObject* subtype, PyObject* args, PyObject*
             self->connection = XIMU3_connection_new_file(((FileConnectionInfo*) connection_info)->connection_info);
             return (PyObject*) self;
         }
+        if (PyObject_IsInstance(connection_info, (PyObject*) &mux_connection_info_object))
+        {
+            Connection* self = (Connection*) subtype->tp_alloc(subtype, 0);
+            self->connection = XIMU3_connection_new_mux(((MuxConnectionInfo*) connection_info)->connection_info);
+            return (PyObject*) self;
+        }
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
@@ -280,6 +286,11 @@ static PyObject* connection_get_info(Connection* self, PyObject* args)
             {
                 const XIMU3_FileConnectionInfo connection_info = XIMU3_connection_get_info_file(self->connection);
                 return file_connection_info_from(&connection_info);
+            }
+        case XIMU3_ConnectionTypeMux:
+            {
+                XIMU3_MuxConnectionInfo* connection_info = XIMU3_connection_get_info_mux(self->connection);
+                return mux_connection_info_from(connection_info);
             }
     }
     return NULL;
