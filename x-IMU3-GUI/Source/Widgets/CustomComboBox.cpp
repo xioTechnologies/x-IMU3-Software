@@ -39,11 +39,12 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LookAndFeel)
 };
 
-CustomComboBox::CustomComboBox()
+CustomComboBox::CustomComboBox(const juce::String& emptyText)
 {
     lookAndFeel = std::make_unique<LookAndFeel>();
     setLookAndFeel(lookAndFeel.get());
 
+    setTextWhenNothingSelected(emptyText);
     setTextWhenNoChoicesAvailable("");
 }
 

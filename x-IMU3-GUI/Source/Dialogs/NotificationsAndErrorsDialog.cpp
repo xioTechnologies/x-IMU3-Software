@@ -48,6 +48,7 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>&
     addAndMakeVisible(timestampLabel);
     addAndMakeVisible(messageLabel);
     addAndMakeVisible(table);
+    addAndMakeVisible(noNotificationsOrErrorsLabel);
 
     clearButton.onClick = [&, onClear_ = onClear]
     {
@@ -62,6 +63,8 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>&
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
     table.setWantsKeyboardFocus(false);
+
+    messagesChanged();
 
     setSize(800, 480);
 }
@@ -79,11 +82,13 @@ void NotificationsAndErrorsDialog::resized()
     messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnId::message - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
+    noNotificationsOrErrorsLabel.setBounds(bounds);
 }
 
 void NotificationsAndErrorsDialog::messagesChanged()
 {
     table.updateContent();
+    noNotificationsOrErrorsLabel.setVisible(messages.empty());
 }
 
 int NotificationsAndErrorsDialog::getNumRows()

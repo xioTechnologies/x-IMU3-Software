@@ -53,6 +53,8 @@ private:
     SimpleLabel messageLabel { "Message" };
     juce::TableListBox table { "", this };
 
+    SimpleLabel noNotificationsOrErrorsLabel { "No Notifications or Errors", UIFonts::getDefaultFont(), juce::Justification::centred };
+
     int getNumRows() override;
 
     void paintRowBackground(juce::Graphics&, int, int, int, bool) override

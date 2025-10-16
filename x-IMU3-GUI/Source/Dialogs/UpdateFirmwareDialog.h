@@ -59,7 +59,7 @@ private:
     };
 
     SimpleLabel deviceLabel { "Device:" };
-    CustomComboBox deviceValue;
+    CustomComboBox deviceValue { "No Devices Found" };
 
     SimpleLabel hexFileLabel { "Hex File:" };
     FileSelector hexFileSelector { "Select Firmware File", ".hex" };
