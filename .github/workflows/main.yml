@@ -159,7 +159,7 @@ jobs:
           - [ ubuntu-22.04, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
           - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
           - [ windows-latest, aarch64-pc-windows-msvc, win_arm64 ]
-        python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-", "cp313-" ]
+        python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-", "cp313-", "cp314-" ]
         exclude:
           - target: [ windows-latest, aarch64-pc-windows-msvc, win_arm64 ]
             python-version: "cp38-"
@@ -185,7 +185,7 @@ jobs:
           platforms: all
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v3.1.4
+        uses: pypa/cibuildwheel@v3.2.1
         env:
           CIBW_ARCHS: all
           CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
