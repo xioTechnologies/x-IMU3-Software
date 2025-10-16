@@ -63,6 +63,7 @@ target_compile_definitions(x-IMU3-GUI
         JUCE_USE_CURL=0
         JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_PRODUCT_NAME>"
         JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:x-IMU3-GUI,JUCE_VERSION>"
+        GLM_FORCE_SIZE_T_LENGTH # Resolves signed conversion warning on Ubuntu
         BUILD_DATE="${BUILD_DATE}"
         COMMIT_SHA="${COMMIT_SHA}")
 
