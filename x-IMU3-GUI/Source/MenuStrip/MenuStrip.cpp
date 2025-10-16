@@ -347,7 +347,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
     });
     menu.addItem("Mux", [&]
     {
-        openMuxDialog({ 0x41, 0x50 });
+        openMuxDialog({ static_cast<std::uint8_t>(0x41), static_cast<std::uint8_t>(0x50) });
     });
 
     if (auto connections = PreviousConnections().get(); connections.empty() == false)
