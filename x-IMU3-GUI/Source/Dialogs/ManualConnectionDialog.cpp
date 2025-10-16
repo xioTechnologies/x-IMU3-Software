@@ -386,7 +386,7 @@ std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> ManualMuxConnectionDialog
         {
             continue;
         }
-        connectionInfos.push_back(std::make_unique<ximu3::MuxConnectionInfo>(channel, *connections[(size_t) connectionValue.getSelectedItemIndex()]));
+        connectionInfos.push_back(std::make_unique<ximu3::MuxConnectionInfo>(static_cast<std::uint8_t>(channel), *connections[(size_t) connectionValue.getSelectedItemIndex()]));
     }
     return connectionInfos;
 }
