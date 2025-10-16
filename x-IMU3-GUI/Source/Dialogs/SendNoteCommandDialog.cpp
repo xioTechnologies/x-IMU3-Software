@@ -1,17 +1,17 @@
 #include "SendNoteCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog(BinaryData::note_svg, title, "Send", "Cancel", &recentNotesButton, iconButtonWidth)
+SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog(BinaryData::note_svg, title, "Send", "Cancel", &previousNotesButton, iconButtonWidth)
 {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
-    addAndMakeVisible(recentNotesButton);
+    addAndMakeVisible(previousNotesButton);
 
-    recentNotes = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (!recentNotes.isValid())
+    previousNotes = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (!previousNotes.isValid())
     {
-        recentNotes = juce::ValueTree("RecentNotes");
-        recentNotes.appendChild({ "Note", { { "note", "This message will be echoed as a timestamped notification" } } }, nullptr);
+        previousNotes = juce::ValueTree("Notes");
+        previousNotes.appendChild({ "Note", { { "note", "This message will be echoed as a timestamped notification" } } }, nullptr);
     }
 
     value.onTextChange = [&]
@@ -19,9 +19,9 @@ SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog
         setOkButton(value.isEmpty() == false);
     };
 
-    value.setText(recentNotes.getChild(0)["note"], juce::sendNotification);
+    value.setText(previousNotes.getChild(0)["note"], juce::sendNotification);
 
-    recentNotesButton.setWantsKeyboardFocus(false);
+    previousNotesButton.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(1));
 }
@@ -39,30 +39,30 @@ juce::String SendNoteCommandDialog::getNote()
 {
     juce::ValueTree newNote { "Note", { { "note", value.getText() } } };
 
-    for (const auto note : recentNotes)
+    for (const auto note : previousNotes)
     {
         if (note.isEquivalentTo(newNote))
         {
-            recentNotes.removeChild(note, nullptr);
+            previousNotes.removeChild(note, nullptr);
             break;
         }
     }
 
-    while (recentNotes.getNumChildren() >= 12)
+    while (previousNotes.getNumChildren() >= 12)
     {
-        recentNotes.removeChild(recentNotes.getChild(recentNotes.getNumChildren() - 1), nullptr);
+        previousNotes.removeChild(previousNotes.getChild(previousNotes.getNumChildren() - 1), nullptr);
     }
 
-    recentNotes.addChild(newNote, 0, nullptr);
-    file.replaceWithText(recentNotes.toXmlString());
+    previousNotes.addChild(newNote, 0, nullptr);
+    file.replaceWithText(previousNotes.toXmlString());
 
     return value.getText();
 }
 
-juce::PopupMenu SendNoteCommandDialog::getRecentNotesMenu()
+juce::PopupMenu SendNoteCommandDialog::getPreviousNotesMenu()
 {
     juce::PopupMenu menu;
-    for (const auto note : recentNotes)
+    for (const auto note : previousNotes)
     {
         menu.addItem(note["note"], [&, note]
         {

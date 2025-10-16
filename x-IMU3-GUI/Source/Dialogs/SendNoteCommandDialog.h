@@ -20,12 +20,12 @@ private:
     SimpleLabel label { "Note:" };
     CustomTextEditor value;
 
-    IconButton recentNotesButton { BinaryData::history_svg, "Recent Notes", std::bind(&SendNoteCommandDialog::getRecentNotesMenu, this) };
+    IconButton previousNotesButton { BinaryData::history_svg, "Previous Notes", std::bind(&SendNoteCommandDialog::getPreviousNotesMenu, this) };
 
-    juce::ValueTree recentNotes;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Notes.xml");
+    juce::ValueTree previousNotes;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Notes.xml");
 
-    juce::PopupMenu getRecentNotesMenu();
+    juce::PopupMenu getPreviousNotesMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendNoteCommandDialog)
 };

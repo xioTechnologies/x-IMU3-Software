@@ -4,10 +4,10 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
-class RecentConnections
+class PreviousConnections
 {
 public:
-    RecentConnections();
+    PreviousConnections();
 
     void update(const ximu3::ConnectionInfo& connectionInfo);
 
@@ -16,10 +16,10 @@ public:
     std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t>>> get() const;
 
 private:
-    juce::ValueTree recentConnections;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Connections.xml");
+    juce::ValueTree connections;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Connections.xml");
 
     void update(juce::ValueTree newChild);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentConnections)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreviousConnections)
 };
