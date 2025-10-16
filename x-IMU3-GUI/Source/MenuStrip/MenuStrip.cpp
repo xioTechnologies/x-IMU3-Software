@@ -13,7 +13,7 @@
 #include "Dialogs/SendNoteCommandDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "MenuStrip.h"
-#include "RecentConnections.h"
+#include "PreviousConnections.h"
 #include "Widgets/PopupMenuHeader.h"
 #include "WindowLayouts.h"
 #include "Windows/WindowIds.h"
@@ -266,7 +266,7 @@ void MenuStrip::openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channe
             {
                 connectionPanelContainer.connectToDevice(*connectionInfo, false);
             }
-            RecentConnections().update(dialog->getChannels());
+            PreviousConnections().update(dialog->getChannels());
         }
         return true;
     });
@@ -321,7 +321,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
         if (auto* dialog = dynamic_cast<ManualConnectionDialog*>(DialogQueue::getSingleton().getActive()))
         {
             connectionPanelContainer.connectToDevice(*dialog->getConnectionInfo(), dialog->keepOpen());
-            RecentConnections().update(*dialog->getConnectionInfo());
+            PreviousConnections().update(*dialog->getConnectionInfo());
         }
         return true;
     };
@@ -350,10 +350,10 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu()
         openMuxDialog({ 0x41, 0x50 });
     });
 
-    if (auto connections = RecentConnections().get(); connections.empty() == false)
+    if (auto connections = PreviousConnections().get(); connections.empty() == false)
     {
         menu.addSeparator();
-        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("RECENT"), nullptr);
+        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
 
         for (auto& connection : connections)
         {

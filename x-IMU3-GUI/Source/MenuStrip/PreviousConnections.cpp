@@ -1,15 +1,15 @@
-#include "RecentConnections.h"
+#include "PreviousConnections.h"
 
-RecentConnections::RecentConnections()
+PreviousConnections::PreviousConnections()
 {
-    recentConnections = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (recentConnections.isValid() == false)
+    connections = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (connections.isValid() == false)
     {
-        recentConnections = juce::ValueTree("RecentConnections");
+        connections = juce::ValueTree("Connections");
     }
 }
 
-void RecentConnections::update(const ximu3::ConnectionInfo& connectionInfo)
+void PreviousConnections::update(const ximu3::ConnectionInfo& connectionInfo)
 {
     if (const auto* usbConnectionInfo = dynamic_cast<const ximu3::UsbConnectionInfo*>(&connectionInfo))
     {
@@ -58,16 +58,16 @@ void RecentConnections::update(const ximu3::ConnectionInfo& connectionInfo)
     }
 }
 
-void RecentConnections::update(std::pair<std::uint8_t, std::uint8_t> muxChannels)
+void PreviousConnections::update(std::pair<std::uint8_t, std::uint8_t> muxChannels)
 {
     update({ "MuxConnectionInfos", { { "firstChannel", muxChannels.first }, { "lastChannel", muxChannels.second } } });
 }
 
-std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t>>> RecentConnections::get() const
+std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t>>> PreviousConnections::get() const
 {
     std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t>>> result;
 
-    for (auto connectionInfo : recentConnections)
+    for (auto connectionInfo : connections)
     {
         if (connectionInfo.hasType("UsbConnectionInfo"))
         {
@@ -113,23 +113,23 @@ std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::
     return result;
 }
 
-void RecentConnections::update(juce::ValueTree newChild)
+void PreviousConnections::update(juce::ValueTree newChild)
 {
-    for (auto child : recentConnections)
+    for (auto child : connections)
     {
         if (child.isEquivalentTo(newChild))
         {
-            recentConnections.removeChild(child, nullptr);
+            connections.removeChild(child, nullptr);
             break;
         }
     }
 
-    while (recentConnections.getNumChildren() >= 6)
+    while (connections.getNumChildren() >= 6)
     {
-        recentConnections.removeChild(recentConnections.getChild(recentConnections.getNumChildren() - 1), nullptr);
+        connections.removeChild(connections.getChild(connections.getNumChildren() - 1), nullptr);
     }
 
-    recentConnections.addChild(newChild, 0, nullptr);
+    connections.addChild(newChild, 0, nullptr);
     file.create();
-    file.replaceWithText(recentConnections.toXmlString());
+    file.replaceWithText(connections.toXmlString());
 }

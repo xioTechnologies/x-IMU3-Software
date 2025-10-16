@@ -1,7 +1,7 @@
 #include "SendCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optional<juce::Colour>& tag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &recentCommandsButton, iconButtonWidth, false, tag_)
+SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optional<juce::Colour>& tag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, tag_)
 {
     addAndMakeVisible(keyLabel);
     addAndMakeVisible(keyValue);
@@ -12,13 +12,13 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
     addAndMakeVisible(numberValue);
     addAndMakeVisible(commandLabel);
     addAndMakeVisible(commandValue);
-    addAndMakeVisible(recentCommandsButton);
+    addAndMakeVisible(previousCommandsButton);
 
-    recentCommands = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (!recentCommands.isValid())
+    previousCommands = juce::ValueTree::fromXml(file.loadFileAsString());
+    if (!previousCommands.isValid())
     {
-        recentCommands = juce::ValueTree("RecentCommands");
-        recentCommands.appendChild({ "Command", { { "key", "ping" }, { "type", static_cast<int>(Type::null) } } }, nullptr);
+        previousCommands = juce::ValueTree("Commands");
+        previousCommands.appendChild({ "Command", { { "key", "ping" }, { "type", static_cast<int>(Type::null) } } }, nullptr);
     }
 
     typeValue.addItemList({ toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null) }, 1);
@@ -33,11 +33,11 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
         setOkButton((keyValue.isEmpty() == false) && (CommandMessage(commandValue.getText().toStdString()).json.empty() == false));
     };
 
-    selectCommand(recentCommands.getChild(0));
+    selectCommand(previousCommands.getChild(0));
 
     commandValue.setReadOnly(true);
 
-    recentCommandsButton.setWantsKeyboardFocus(false);
+    previousCommandsButton.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(3));
 }
@@ -88,22 +88,22 @@ CommandMessage SendCommandDialog::getCommand()
             break;
     }
 
-    for (const auto command : recentCommands)
+    for (const auto command : previousCommands)
     {
         if (command.isEquivalentTo(newCommand))
         {
-            recentCommands.removeChild(command, nullptr);
+            previousCommands.removeChild(command, nullptr);
             break;
         }
     }
 
-    while (recentCommands.getNumChildren() >= 12)
+    while (previousCommands.getNumChildren() >= 12)
     {
-        recentCommands.removeChild(recentCommands.getChild(recentCommands.getNumChildren() - 1), nullptr);
+        previousCommands.removeChild(previousCommands.getChild(previousCommands.getNumChildren() - 1), nullptr);
     }
 
-    recentCommands.addChild(newCommand, 0, nullptr);
-    file.replaceWithText(recentCommands.toXmlString());
+    previousCommands.addChild(newCommand, 0, nullptr);
+    file.replaceWithText(previousCommands.toXmlString());
 
     return CommandMessage { commandValue.getText().toStdString() };
 }
@@ -179,10 +179,10 @@ juce::PopupMenu SendCommandDialog::getCommandKeysMenu()
     return menu;
 }
 
-juce::PopupMenu SendCommandDialog::getRecentCommandsMenu()
+juce::PopupMenu SendCommandDialog::getPreviousCommandsMenu()
 {
     juce::PopupMenu menu;
-    for (const auto command : recentCommands)
+    for (const auto command : previousCommands)
     {
         menu.addItem(createCommand(command["key"], static_cast<Type>((int) command["type"]), command["value"], command["value"]), [&, command]
         {

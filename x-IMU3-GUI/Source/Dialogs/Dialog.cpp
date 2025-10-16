@@ -21,7 +21,7 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
     initButton(cancelButton, cancelButtonText.isNotEmpty(), cancelButtonText, false);
     initButton(okButton, okButtonText.isNotEmpty(), okButtonText, true);
     okButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
-    
+
     okButton.onClick = [this]
     {
         BailOutChecker thisDeletedChecker(this);

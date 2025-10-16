@@ -25,13 +25,13 @@ private:
     CustomComboBox sendValue;
     IconButton sendButton { BinaryData::send_svg, "Send" };
 
-    juce::ValueTree recentSerialAccessoryData;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Serial Accessory Data.xml");
+    juce::ValueTree previousSerialAccessoryData;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Serial Accessory Data.xml");
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;
     uint64_t callbackId;
 
-    void loadRecents();
+    void loadPrevious();
 
     juce::PopupMenu getMenu() override;
 

@@ -39,12 +39,12 @@ private:
     SimpleLabel commandLabel { "Command:" };
     CustomTextEditor commandValue;
 
-    IconButton recentCommandsButton { BinaryData::history_svg, "Recent Commands", std::bind(&SendCommandDialog::getRecentCommandsMenu, this) };
+    IconButton previousCommandsButton { BinaryData::history_svg, "Previous Commands", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this) };
 
     const juce::ValueTree commandKeys = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
-    juce::ValueTree recentCommands;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Recent Commands.xml");
+    juce::ValueTree previousCommands;
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Commands.xml");
 
     static juce::String toString(const Type type);
 
@@ -54,7 +54,7 @@ private:
 
     juce::PopupMenu getCommandKeysMenu();
 
-    juce::PopupMenu getRecentCommandsMenu();
+    juce::PopupMenu getPreviousCommandsMenu();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendCommandDialog)
 };
