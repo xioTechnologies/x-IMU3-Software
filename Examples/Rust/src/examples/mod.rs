@@ -13,6 +13,7 @@ pub mod network_announcement;
 pub mod open_async;
 pub mod ping;
 pub mod port_scanner;
+pub mod serial_accessory_loopback;
 pub mod serial_connection;
 pub mod tcp_connection;
 pub mod udp_connection;

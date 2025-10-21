@@ -440,6 +440,8 @@ const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_s
 
 struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
 
+const char *XIMU3_bytes_to_json_string(const uint8_t *bytes, uint32_t length);
+
 struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionInfo connection_info);
 
 struct XIMU3_Connection *XIMU3_connection_new_serial(struct XIMU3_SerialConnectionInfo connection_info);

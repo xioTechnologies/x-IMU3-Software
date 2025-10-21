@@ -1,6 +1,7 @@
 use crate::command_message::*;
 use crate::ffi::helpers::*;
 use std::os::raw::c_char;
+use std::slice;
 
 #[repr(C)]
 pub struct CommandMessageC {
@@ -25,4 +26,10 @@ impl From<CommandMessage> for CommandMessageC {
 pub extern "C" fn XIMU3_command_message_parse(json: *const c_char) -> CommandMessageC {
     let json = unsafe { char_ptr_to_string(json) };
     CommandMessage::parse(json.as_str()).into()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_bytes_to_json_string(bytes: *const u8, length: u32) -> *const c_char {
+    let bytes = unsafe { slice::from_raw_parts(bytes, length as usize) };
+    str_to_char_ptr(CommandMessage::bytes_to_json_string(bytes).as_str())
 }
