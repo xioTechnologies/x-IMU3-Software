@@ -14,7 +14,7 @@ print(f"Found {devices[0].device_name} {devices[0].serial_number}")
 connection = ximu3.Connection(devices[0].connection_info)
 
 
-def callback(result):
+def callback(result: int) -> None:
     print(ximu3.result_to_string(result))
 
 

@@ -4,7 +4,7 @@ import helpers
 import ximu3
 
 
-def print_message(message):
+def print_message(message: ximu3.NetworkAnnouncementMessage) -> None:
     print(
         ", ".join(
             [
@@ -23,7 +23,7 @@ def print_message(message):
     # print(message.to_string())  # alternative to above
 
 
-def callback(message):
+def callback(message: ximu3.NetworkAnnouncementMessage) -> None:
     print_message(message)
 
 

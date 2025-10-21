@@ -1,10 +1,11 @@
 import time
+from typing import Any
 
 import ximu3
 
 
 class Connection:
-    def __init__(self, connection_info):
+    def __init__(self, connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | ximu3.TcpConnectionInfo | ximu3.UdpConnectionInfo | ximu3.BluetoothConnectionInfo | ximu3.FileConnectionInfo | ximu3.MuxConnectionInfo) -> None:
         self.__connection = ximu3.Connection(connection_info)
 
         result = self.__connection.open()
@@ -35,10 +36,10 @@ class Connection:
         self.__connection.add_notification_callback(self.__notification_callback)
         self.__connection.add_error_callback(self.__error_callback)
 
-    def close(self):
+    def close(self) -> None:
         self.__connection.close()
 
-    def send_command(self, key, value=None):
+    def send_command(self, key: str, value: Any = None) -> None:
         if value is None:
             value = "null"
         elif type(value) is bool:
@@ -62,49 +63,49 @@ class Connection:
 
         print(self.__prefix + f"{response.key} : {response.value}")
 
-    def __inertial_callback(self, message):
+    def __inertial_callback(self, message: ximu3.InertialMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __magnetometer_callback(self, message):
+    def __magnetometer_callback(self, message: ximu3.MagnetometerMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __quaternion_callback(self, message):
+    def __quaternion_callback(self, message: ximu3.QuaternionMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __rotation_matrix_callback(self, message):
+    def __rotation_matrix_callback(self, message: ximu3.RotationMatrixMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __euler_angles_callback(self, message):
+    def __euler_angles_callback(self, message: ximu3.EulerAnglesMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __linear_acceleration_callback(self, message):
+    def __linear_acceleration_callback(self, message: ximu3.LinearAccelerationMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __earth_acceleration_callback(self, message):
+    def __earth_acceleration_callback(self, message: ximu3.EarthAccelerationMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __ahrs_status_callback(self, message):
+    def __ahrs_status_callback(self, message: ximu3.AhrsStatusMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __high_g_accelerometer_callback(self, message):
+    def __high_g_accelerometer_callback(self, message: ximu3.HighGAccelerometerMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __temperature_callback(self, message):
+    def __temperature_callback(self, message: ximu3.TemperatureMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __battery_callback(self, message):
+    def __battery_callback(self, message: ximu3.BatteryMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __rssi_callback(self, message):
+    def __rssi_callback(self, message: ximu3.RssiMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __serial_accessory_callback(self, message):
+    def __serial_accessory_callback(self, message: ximu3.SerialAccessoryMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __notification_callback(self, message):
+    def __notification_callback(self, message: ximu3.NotificationMessage) -> None:
         print(self.__prefix + message.to_string())
 
-    def __error_callback(self, message):
+    def __error_callback(self, message: ximu3.ErrorMessage) -> None:
         print(self.__prefix + message.to_string())
 
 

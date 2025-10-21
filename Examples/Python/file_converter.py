@@ -4,7 +4,7 @@ import helpers
 import ximu3
 
 
-def print_progress(progress):
+def print_progress(progress: ximu3.FileConverterProgress) -> None:
     print(
         ", ".join(
             [
@@ -17,7 +17,7 @@ def print_progress(progress):
     # print(progress.to_string())  # alternative to above
 
 
-def callback(progress):
+def callback(progress: ximu3.FileConverterProgress) -> None:
     print_progress(progress)
 
 
