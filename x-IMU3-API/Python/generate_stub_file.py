@@ -1,4 +1,4 @@
-def extract(line, start_token, end_token):
+def extract(line: str, start_token: str, end_token: str) -> str:
     return line.split(start_token)[1].split(end_token)[0]
 
 

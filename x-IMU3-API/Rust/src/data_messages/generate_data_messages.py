@@ -152,7 +152,7 @@ for message in messages:
         file.write(template)
 
 
-def insert(file_path, template, id):
+def insert(file_path: str, template: str, id: int) -> None:
     code = ""
 
     for message in messages:

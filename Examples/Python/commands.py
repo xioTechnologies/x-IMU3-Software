@@ -30,7 +30,7 @@ commands = [
 # Send commands
 
 
-def print_responses(responses):
+def print_responses(responses: list[str]) -> None:
     print(f"{str(len(responses))} responses")
 
     for response in responses:
@@ -43,7 +43,7 @@ def print_responses(responses):
         print(f"{response.key} : {response.value}")
 
 
-def callback(responses):
+def callback(responses: list[str]) -> None:
     print_responses(responses)
 
 

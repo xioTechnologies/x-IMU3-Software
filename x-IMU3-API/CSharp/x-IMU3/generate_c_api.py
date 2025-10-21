@@ -1,4 +1,4 @@
-def get_blocks(c_code, declaration):
+def get_blocks(c_code: str, declaration: str) -> list[str]:
     blocks = []
     block = ""
     in_block = False

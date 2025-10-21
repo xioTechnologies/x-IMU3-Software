@@ -1,4 +1,4 @@
-def yes_or_no(question):
+def yes_or_no(question: str) -> bool:
     while True:
         key = input(f"{question} [Y/N]\n")
 
