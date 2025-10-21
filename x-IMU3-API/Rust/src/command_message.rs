@@ -12,7 +12,9 @@ pub struct CommandMessage {
 
 impl CommandMessage {
     pub(crate) fn parse_internal(json: &[u8]) -> Result<Self, ReceiveError> {
-        let value = serde_json::from_slice::<serde_json::Value>(json).map_err(|_| ReceiveError::InvalidJson)?;
+        // TODO: from_slice requires UTF-8 encoding
+        let str = unsafe { String::from_utf8_unchecked(Vec::from(json)) };
+        let value = serde_json::from_str::<serde_json::Value>(str.as_str()).map_err(|_| ReceiveError::InvalidJson)?;
 
         let object = value.as_object().ok_or(ReceiveError::JsonIsNotAnObject)?;
 
@@ -47,5 +49,26 @@ impl CommandMessage {
             value: vec![],
             error: None,
         })
+    }
+
+    pub fn bytes_to_json_string(bytes: &[u8]) -> String {
+        let string: String = bytes
+            .iter()
+            .map(|&byte| match byte {
+                0x00..=0x1F => match byte {
+                    0x08 => "\\b".to_string(),
+                    0x0C => "\\f".to_string(),
+                    b'\n' => "\\n".to_string(),
+                    b'\r' => "\\r".to_string(),
+                    b'\t' => "\\t".to_string(),
+                    _ => format!("\\u{:04X}", byte),
+                },
+                b'"' => "\\\"".to_string(),
+                b'\\' => "\\\\".to_string(),
+                _ => unsafe { String::from_utf8_unchecked([byte].to_vec()) }, // TODO: use from_utf8_lossy() instead to avoid safety issues?
+            })
+            .collect();
+
+        format!("\"{}\"", string)
     }
 }

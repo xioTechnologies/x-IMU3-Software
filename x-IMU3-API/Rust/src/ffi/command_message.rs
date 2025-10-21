@@ -27,3 +27,9 @@ pub extern "C" fn XIMU3_command_message_parse(json: *const c_char) -> CommandMes
     let json = unsafe { CStr::from_ptr(json).to_bytes() };
     CommandMessage::parse(json).into()
 }
+
+#[no_mangle]
+pub extern "C" fn XIMU3_bytes_to_json_string(bytes: *const u8, length: u32) -> *const c_char {
+    let bytes = unsafe { std::slice::from_raw_parts(bytes, length as usize) };
+    str_to_char_ptr(CommandMessage::bytes_to_json_string(bytes).as_str())
+}
