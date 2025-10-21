@@ -55,4 +55,25 @@ impl CommandMessage {
             error: None,
         })
     }
+
+    pub fn bytes_to_json_string(bytes: &[u8]) -> String {
+        let string: String = bytes
+            .iter()
+            .map(|&byte| match byte {
+                0x00..=0x1F => match byte {
+                    0x08 => "\\b".to_string(),
+                    0x0C => "\\f".to_string(),
+                    b'\n' => "\\n".to_string(),
+                    b'\r' => "\\r".to_string(),
+                    b'\t' => "\\t".to_string(),
+                    _ => format!("\\u{:04X}", byte),
+                },
+                b'"' => "\\\"".to_string(),
+                b'\\' => "\\\\".to_string(),
+                _ => unsafe { String::from_utf8_unchecked([byte].to_vec()) }, // TODO: use from_utf8_lossy() instead to avoid safety issues?
+            })
+            .collect();
+
+        format!("\"{}\"", string)
+    }
 }

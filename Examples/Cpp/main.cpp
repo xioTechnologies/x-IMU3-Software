@@ -12,6 +12,7 @@
 #include "Examples/OpenAsync.h"
 #include "Examples/Ping.h"
 #include "Examples/PortScanner.h"
+#include "Examples/SerialAccessoryLoopback.h"
 #include "Examples/SerialConnection.h"
 #include "Examples/TcpConnection.h"
 #include "Examples/UdpConnection.h"
@@ -36,10 +37,11 @@ int main(int argc, const char* argv[])
     std::cout << "J. OpenAsync.h" << std::endl;
     std::cout << "K. Ping.h" << std::endl;
     std::cout << "L. PortScanner.h" << std::endl;
-    std::cout << "M. SerialConnection.h" << std::endl;
-    std::cout << "N. TcpConnection.h" << std::endl;
-    std::cout << "O. UdpConnection.h" << std::endl;
-    std::cout << "P. UsbConnection.h" << std::endl;
+    std::cout << "M. SerialAccessoryLoopback.h" << std::endl;
+    std::cout << "N. SerialConnection.h" << std::endl;
+    std::cout << "O. TcpConnection.h" << std::endl;
+    std::cout << "P. UdpConnection.h" << std::endl;
+    std::cout << "Q. UsbConnection.h" << std::endl;
 
     switch (helpers::getKey())
     {
@@ -80,15 +82,18 @@ int main(int argc, const char* argv[])
             PortScanner();
             break;
         case 'M':
-            SerialConnection();
+            SerialAccessoryLoopback();
             break;
         case 'N':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'O':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'P':
+            UdpConnection();
+            break;
+        case 'Q':
             UsbConnection();
             break;
     }

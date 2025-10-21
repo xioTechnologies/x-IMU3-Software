@@ -27,6 +27,8 @@ void Ping();
 
 void PortScanner();
 
+void SerialAccessoryLoopback();
+
 void SerialConnection();
 
 void TcpConnection();
@@ -50,10 +52,11 @@ int main(int argc, const char* argv[])
     printf("J. OpenAsync.c\n");
     printf("K. Ping.c\n");
     printf("L. PortScanner.c\n");
-    printf("M. SerialConnection.c\n");
-    printf("N. TcpConnection.c\n");
-    printf("O. UdpConnection.c\n");
-    printf("P. UsbConnection.c\n");
+    printf("M. SerialAccessoryLoopback.c\n");
+    printf("N. SerialConnection.c\n");
+    printf("O. TcpConnection.c\n");
+    printf("P. UdpConnection.c\n");
+    printf("Q. UsbConnection.c\n");
 
     switch (GetKey())
     {
@@ -94,15 +97,18 @@ int main(int argc, const char* argv[])
             PortScanner();
             break;
         case 'M':
-            SerialConnection();
+            SerialAccessoryLoopback();
             break;
         case 'N':
-            TcpConnection();
+            SerialConnection();
             break;
         case 'O':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'P':
+            UdpConnection();
+            break;
+        case 'Q':
             UsbConnection();
             break;
     }
