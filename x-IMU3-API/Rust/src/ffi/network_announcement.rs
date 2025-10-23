@@ -41,9 +41,9 @@ impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
 impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
     fn from(message: NetworkAnnouncementMessageC) -> Self {
         Self {
-            device_name: char_array_to_string(&message.device_name),
-            serial_number: char_array_to_string(&message.serial_number),
-            ip_address: char_array_to_string(&message.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
+            device_name: unsafe { char_array_to_string(&message.device_name) },
+            serial_number: unsafe { char_array_to_string(&message.serial_number) },
+            ip_address: unsafe { char_array_to_string(&message.ip_address) }.parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             tcp_port: message.tcp_port,
             udp_send: message.udp_send,
             udp_receive: message.udp_receive,

@@ -46,7 +46,7 @@ pub fn str_to_char_ptr(string: &str) -> *const c_char {
         let mut array = char_array.borrow_mut();
         *array = str_to_char_array(string);
         array.as_ptr()
-    })
+    }) // returns a pointer valid until the next call of this function on the same thread
 }
 
 pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
@@ -62,19 +62,23 @@ pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
     char_array
 }
 
-pub fn char_ptr_to_string(char_ptr: *const c_char) -> String {
+/// # Safety
+/// `char_ptr` must point to a valid C string.
+pub unsafe fn char_ptr_to_string(char_ptr: *const c_char) -> String {
     let c_str = unsafe { CStr::from_ptr(char_ptr) };
-    let bytes = Vec::from(c_str.to_bytes());
-    let string = unsafe { String::from_utf8_unchecked(bytes) };
-
-    string
+    String::from_utf8_lossy(c_str.to_bytes()).to_string()
 }
 
-pub fn char_array_to_string(char_array: &[c_char]) -> String {
-    char_ptr_to_string(char_array.as_ptr())
+/// # Safety
+/// `char_array` must contain a valid C string.
+pub unsafe fn char_array_to_string(char_array: &[c_char]) -> String {
+    unsafe { char_ptr_to_string(char_array.as_ptr()) }
 }
 
-pub fn char_ptr_array_to_vec_string(char_ptr_array: *const *const c_char, length: u32) -> Vec<String> {
+/// # Safety
+/// `char_ptr_array` must be an array of `length` elements.
+/// Each element must point to a valid C string.
+pub unsafe fn char_ptr_array_to_vec_string(char_ptr_array: *const *const c_char, length: u32) -> Vec<String> {
     let mut vec_string = Vec::new();
 
     for index in 0..length {

@@ -30,7 +30,7 @@ pub fn slice_to_char_array(mut slice: &[u8]) -> ([c_char; DATA_MESSAGE_CHAR_ARRA
     (char_array, slice.len())
 }
 
-pub fn char_array_to_string(char_array: &[c_char], number_of_bytes: usize) -> String {
+pub fn char_array_to_string(char_array: &[c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE], number_of_bytes: usize) -> String {
     let bytes = unsafe { slice::from_raw_parts(char_array.as_ptr() as *const u8, cmp::min(number_of_bytes, char_array.len())) };
 
     let string: String = bytes

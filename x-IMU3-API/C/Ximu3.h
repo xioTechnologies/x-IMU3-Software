@@ -32,51 +32,6 @@ typedef enum XIMU3_ChargingStatus
     XIMU3_ChargingStatusChargingOnHold,
 } XIMU3_ChargingStatus;
 
-typedef enum XIMU3_ConnectionStatus
-{
-    XIMU3_ConnectionStatusConnected,
-    XIMU3_ConnectionStatusReconnecting,
-} XIMU3_ConnectionStatus;
-
-typedef enum XIMU3_ConnectionType
-{
-    XIMU3_ConnectionTypeUsb,
-    XIMU3_ConnectionTypeSerial,
-    XIMU3_ConnectionTypeTcp,
-    XIMU3_ConnectionTypeUdp,
-    XIMU3_ConnectionTypeBluetooth,
-    XIMU3_ConnectionTypeFile,
-    XIMU3_ConnectionTypeMux,
-} XIMU3_ConnectionType;
-
-typedef enum XIMU3_DecodeError
-{
-    XIMU3_DecodeErrorBufferOverrun,
-    XIMU3_DecodeErrorInvalidMessageIdentifier,
-    XIMU3_DecodeErrorInvalidUtf8,
-    XIMU3_DecodeErrorInvalidJson,
-    XIMU3_DecodeErrorJsonIsNotAnObject,
-    XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
-    XIMU3_DecodeErrorInvalidMuxMessageLength,
-    XIMU3_DecodeErrorInvalidEscapeSequence,
-    XIMU3_DecodeErrorInvalidBinaryMessageLength,
-    XIMU3_DecodeErrorUnableToParseAsciiMessage,
-} XIMU3_DecodeError;
-
-typedef enum XIMU3_FileConverterStatus
-{
-    XIMU3_FileConverterStatusComplete,
-    XIMU3_FileConverterStatusFailed,
-    XIMU3_FileConverterStatusInProgress,
-} XIMU3_FileConverterStatus;
-
-typedef enum XIMU3_PortType
-{
-    XIMU3_PortTypeUsb,
-    XIMU3_PortTypeSerial,
-    XIMU3_PortTypeBluetooth,
-} XIMU3_PortType;
-
 typedef enum XIMU3_Result
 {
     XIMU3_ResultOk,
@@ -118,6 +73,51 @@ typedef enum XIMU3_Result
     XIMU3_ResultWriteZero,
     XIMU3_ResultUnknownError,
 } XIMU3_Result;
+
+typedef enum XIMU3_ConnectionType
+{
+    XIMU3_ConnectionTypeUsb,
+    XIMU3_ConnectionTypeSerial,
+    XIMU3_ConnectionTypeTcp,
+    XIMU3_ConnectionTypeUdp,
+    XIMU3_ConnectionTypeBluetooth,
+    XIMU3_ConnectionTypeFile,
+    XIMU3_ConnectionTypeMux,
+} XIMU3_ConnectionType;
+
+typedef enum XIMU3_DecodeError
+{
+    XIMU3_DecodeErrorBufferOverrun,
+    XIMU3_DecodeErrorInvalidMessageIdentifier,
+    XIMU3_DecodeErrorInvalidUtf8,
+    XIMU3_DecodeErrorInvalidJson,
+    XIMU3_DecodeErrorJsonIsNotAnObject,
+    XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
+    XIMU3_DecodeErrorInvalidMuxMessageLength,
+    XIMU3_DecodeErrorInvalidEscapeSequence,
+    XIMU3_DecodeErrorInvalidBinaryMessageLength,
+    XIMU3_DecodeErrorUnableToParseAsciiMessage,
+} XIMU3_DecodeError;
+
+typedef enum XIMU3_FileConverterStatus
+{
+    XIMU3_FileConverterStatusComplete,
+    XIMU3_FileConverterStatusFailed,
+    XIMU3_FileConverterStatusInProgress,
+} XIMU3_FileConverterStatus;
+
+typedef enum XIMU3_ConnectionStatus
+{
+    XIMU3_ConnectionStatusConnected,
+    XIMU3_ConnectionStatusReconnecting,
+} XIMU3_ConnectionStatus;
+
+typedef enum XIMU3_PortType
+{
+    XIMU3_PortTypeUsb,
+    XIMU3_PortTypeSerial,
+    XIMU3_PortTypeBluetooth,
+} XIMU3_PortType;
 
 typedef struct XIMU3_Connection XIMU3_Connection;
 

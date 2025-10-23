@@ -33,9 +33,9 @@ impl From<std::io::Result<PingResponse>> for PingResponseC {
 impl From<PingResponseC> for PingResponse {
     fn from(ping_response: PingResponseC) -> Self {
         Self {
-            interface: char_array_to_string(&ping_response.interface),
-            device_name: char_array_to_string(&ping_response.device_name),
-            serial_number: char_array_to_string(&ping_response.serial_number),
+            interface: unsafe { char_array_to_string(&ping_response.interface) },
+            device_name: unsafe { char_array_to_string(&ping_response.device_name) },
+            serial_number: unsafe { char_array_to_string(&ping_response.serial_number) },
         }
     }
 }

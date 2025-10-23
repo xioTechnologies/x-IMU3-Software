@@ -28,7 +28,7 @@ impl From<&UsbConnectionInfo> for UsbConnectionInfoC {
 impl From<UsbConnectionInfoC> for UsbConnectionInfo {
     fn from(connection_info: UsbConnectionInfoC) -> Self {
         Self {
-            port_name: char_array_to_string(&connection_info.port_name),
+            port_name: unsafe { char_array_to_string(&connection_info.port_name) },
         }
     }
 }
@@ -68,7 +68,7 @@ impl From<&SerialConnectionInfo> for SerialConnectionInfoC {
 impl From<SerialConnectionInfoC> for SerialConnectionInfo {
     fn from(connection_info: SerialConnectionInfoC) -> Self {
         Self {
-            port_name: char_array_to_string(&connection_info.port_name),
+            port_name: unsafe { char_array_to_string(&connection_info.port_name) },
             baud_rate: connection_info.baud_rate,
             rts_cts_enabled: connection_info.rts_cts_enabled,
         }
@@ -107,7 +107,7 @@ impl From<&TcpConnectionInfo> for TcpConnectionInfoC {
 impl From<TcpConnectionInfoC> for TcpConnectionInfo {
     fn from(connection_info: TcpConnectionInfoC) -> Self {
         Self {
-            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
+            ip_address: unsafe { char_array_to_string(&connection_info.ip_address) }.parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             port: connection_info.port,
         }
     }
@@ -148,7 +148,7 @@ impl From<&UdpConnectionInfo> for UdpConnectionInfoC {
 impl From<UdpConnectionInfoC> for UdpConnectionInfo {
     fn from(connection_info: UdpConnectionInfoC) -> Self {
         Self {
-            ip_address: char_array_to_string(&connection_info.ip_address).parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
+            ip_address: unsafe { char_array_to_string(&connection_info.ip_address) }.parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             send_port: connection_info.send_port,
             receive_port: connection_info.receive_port,
         }
@@ -184,7 +184,7 @@ impl From<&BluetoothConnectionInfo> for BluetoothConnectionInfoC {
 impl From<BluetoothConnectionInfoC> for BluetoothConnectionInfo {
     fn from(connection_info: BluetoothConnectionInfoC) -> Self {
         Self {
-            port_name: char_array_to_string(&connection_info.port_name),
+            port_name: unsafe { char_array_to_string(&connection_info.port_name) },
         }
     }
 }
@@ -218,7 +218,7 @@ impl From<&FileConnectionInfo> for FileConnectionInfoC {
 impl From<FileConnectionInfoC> for FileConnectionInfo {
     fn from(connection_info: FileConnectionInfoC) -> Self {
         Self {
-            file_path: char_array_to_string(&connection_info.file_path),
+            file_path: unsafe { char_array_to_string(&connection_info.file_path) },
         }
     }
 }
