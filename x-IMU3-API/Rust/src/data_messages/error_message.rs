@@ -15,12 +15,6 @@ pub struct ErrorMessage {
     pub number_of_bytes: size_t,
 }
 
-impl ErrorMessage {
-    pub fn char_array_as_string(self) -> String {
-        char_array_to_string(&self.char_array, self.number_of_bytes)
-    }
-}
-
 impl DataMessage for ErrorMessage {
     fn get_ascii_id() -> u8 {
         b'F'
