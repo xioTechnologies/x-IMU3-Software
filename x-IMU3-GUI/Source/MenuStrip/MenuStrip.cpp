@@ -11,6 +11,7 @@
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "Dialogs/SendNoteCommandDialog.h"
+#include "Dialogs/SendStartCommandDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "MenuStrip.h"
 #include "PreviousConnections.h"
@@ -179,7 +180,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
 
     connectionPanelContainer.onConnectionPanelsSizeChanged = [&]
     {
-        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, windowsButton, shutdownButton, zeroHeadingButton, noteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
+        for (auto& component : std::vector<std::reference_wrapper<juce::Component>>({ disconnectButton, windowsButton, shutdownButton, zeroHeadingButton, noteButton, startStopButton, customCommandButton, dataLoggerStartStopButton, dataLoggerTime, }))
         {
             component.get().setEnabled(connectionPanelContainer.getConnectionPanels().size() > 0);
         }
@@ -557,11 +558,35 @@ juce::PopupMenu MenuStrip::getWindowMenu()
     return menu;
 }
 
-juce::PopupMenu MenuStrip::getSendCommandMenu()
+juce::PopupMenu MenuStrip::getStartStopMenu()
 {
     juce::PopupMenu menu;
 
-    const auto toAll = "Send Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")";
+    const auto startTitle = "Send Start Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")";
+    menu.addItem(startTitle, [&, startTitle]
+    {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendStartCommandDialog>(startTitle), [this]
+        {
+            if (auto* dialog = dynamic_cast<SendStartCommandDialog*>(DialogQueue::getSingleton().getActive()))
+            {
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("start", dialog->getFileName()), connectionPanelContainer.getConnectionPanels()));
+            }
+            return true;
+        });
+    });
+    menu.addItem("Send Stop Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")", [&]
+    {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage { "stop", {} }, connectionPanelContainer.getConnectionPanels()));
+    });
+
+    return menu;
+}
+
+juce::PopupMenu MenuStrip::getCustomCommandMenu()
+{
+    juce::PopupMenu menu;
+
+    const auto toAll = "Send Custom Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")";
     menu.addItem(toAll, [&, toAll]
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>(toAll), [this]
