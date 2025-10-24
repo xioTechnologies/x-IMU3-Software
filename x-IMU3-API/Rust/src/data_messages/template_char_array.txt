@@ -13,12 +13,6 @@ pub struct $name_pascal_case$Message {
     pub number_of_bytes: size_t,
 }
 
-impl $name_pascal_case$Message {
-    pub fn char_array_as_string(self) -> String {
-        char_array_to_string(&self.char_array, self.number_of_bytes)
-    }
-}
-
 impl DataMessage for $name_pascal_case$Message {
     fn get_ascii_id() -> u8 {
         b'$ascii_id$'
