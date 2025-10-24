@@ -10,9 +10,11 @@ pub struct DataLoggerC {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_new(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32) -> *mut DataLoggerC {
-    let connections = connection_array_to_vec(connections, length);
+    let destination = unsafe { char_ptr_to_string(destination) };
+    let name = unsafe { char_ptr_to_string(name) };
+    let connections = unsafe { connection_array_to_vec(connections, length) };
     Box::into_raw(Box::new(DataLoggerC {
-        internal: DataLogger::new(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections),
+        internal: DataLogger::new(destination.as_str(), name.as_str(), connections),
     }))
 }
 
@@ -29,11 +31,15 @@ pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) ->
 
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const c_char, connections: *const *mut Connection, length: u32, seconds: u32) -> Result {
-    let connections = connection_array_to_vec(connections, length);
-    Result::from(&DataLogger::log(char_ptr_to_string(destination).as_str(), char_ptr_to_string(name).as_str(), connections, seconds))
+    let destination = unsafe { char_ptr_to_string(destination) };
+    let name = unsafe { char_ptr_to_string(name) };
+    let connections = unsafe { connection_array_to_vec(connections, length) };
+    Result::from(&DataLogger::log(destination.as_str(), name.as_str(), connections, seconds))
 }
 
-pub fn connection_array_to_vec(connections: *const *mut Connection, length: u32) -> Vec<&'static Connection> {
+/// # Safety
+/// `connections` must be an array of `length` elements.
+pub unsafe fn connection_array_to_vec(connections: *const *mut Connection, length: u32) -> Vec<&'static Connection> {
     let mut vec_connections = Vec::new();
 
     for index in 0..length {

@@ -23,5 +23,6 @@ impl From<CommandMessage> for CommandMessageC {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_command_message_parse(json: *const c_char) -> CommandMessageC {
-    CommandMessage::parse(char_ptr_to_string(json).as_str()).into()
+    let json = unsafe { char_ptr_to_string(json) };
+    CommandMessage::parse(json.as_str()).into()
 }

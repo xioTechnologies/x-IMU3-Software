@@ -59,8 +59,8 @@ impl From<&Device> for DeviceC {
 impl From<DeviceC> for Device {
     fn from(device: DeviceC) -> Self {
         Self {
-            device_name: char_array_to_string(&device.device_name),
-            serial_number: char_array_to_string(&device.serial_number),
+            device_name: unsafe { char_array_to_string(&device.device_name) },
+            serial_number: unsafe { char_array_to_string(&device.serial_number) },
             connection_info: match device.connection_type {
                 ConnectionType::Usb => ConnectionInfo::UsbConnectionInfo(device.usb_connection_info.into()),
                 ConnectionType::Serial => ConnectionInfo::SerialConnectionInfo(device.serial_connection_info.into()),
