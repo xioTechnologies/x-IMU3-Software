@@ -106,7 +106,7 @@ pub extern "C" fn XIMU3_result_to_string(result: Result) -> *const c_char {
     }
 
     match result {
-        Result::Ok => str_as_char_ptr!("OK"),
+        Result::Ok => str_as_char_ptr!("Ok"),
         Result::AddrInUse => str_as_char_ptr!("Address in use"),
         Result::AddrNotAvailable => str_as_char_ptr!("Address not available"),
         Result::AlreadyExists => str_as_char_ptr!("Entity already exists"),
