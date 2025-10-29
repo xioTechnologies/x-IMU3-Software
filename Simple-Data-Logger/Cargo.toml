@@ -1,0 +1,10 @@
+[package]
+name = "simple-data-logger"
+version = "1.0.0"
+authors = ["x-io Technologies Limited <info@x-io.co.uk>"]
+edition = "2018"
+
+[dependencies]
+colour = "2.1.0"
+chrono = "0.4.42"
+ximu3 = { path = "../x-IMU3-API/Rust" }
