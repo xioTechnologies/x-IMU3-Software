@@ -29,7 +29,7 @@ impl GenericConnection for TcpConnection {
     fn open(&mut self) -> std::io::Result<()> {
         let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port), Duration::new(3, 0))?;
 
-        stream.set_read_timeout(Some(std::time::Duration::from_millis(1))).ok();
+        stream.set_nonblocking(true)?;
 
         let decoder = self.decoder.clone();
 
@@ -43,8 +43,14 @@ impl GenericConnection for TcpConnection {
             let mut buffer = [0u8; 2048];
 
             while close_receiver.try_recv().is_err() {
-                if let Ok(number_of_bytes) = stream.read(&mut buffer) {
-                    decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                match stream.read(&mut buffer) {
+                    Ok(number_of_bytes) => {
+                        decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                        std::thread::sleep(std::time::Duration::from_millis(1));
+                    }
+                    _ => {}
                 }
                 while let Ok(data) = write_receiver.try_recv() {
                     stream.write(&data).ok();

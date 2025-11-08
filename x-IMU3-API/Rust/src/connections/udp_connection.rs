@@ -27,7 +27,7 @@ impl GenericConnection for UdpConnection {
     fn open(&mut self) -> std::io::Result<()> {
         let socket = UdpSocket::bind(SocketAddr::new("0.0.0.0".parse::<IpAddr>().unwrap(), self.connection_info.receive_port))?;
 
-        socket.set_read_timeout(Some(std::time::Duration::from_millis(1))).ok();
+        socket.set_nonblocking(true)?;
 
         let socket_address = SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.send_port);
 
@@ -43,8 +43,14 @@ impl GenericConnection for UdpConnection {
             let mut buffer = [0u8; 2048];
 
             while close_receiver.try_recv().is_err() {
-                if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
-                    decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                match socket.recv_from(&mut buffer) {
+                    Ok((number_of_bytes, _)) => {
+                        decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                        std::thread::sleep(std::time::Duration::from_millis(1));
+                    }
+                    _ => {}
                 }
                 while let Ok(data) = write_receiver.try_recv() {
                     socket.send_to(&data, socket_address).ok();
