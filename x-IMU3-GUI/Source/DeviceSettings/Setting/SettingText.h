@@ -58,16 +58,16 @@ protected:
 
     juce::String getValueAsString() const
     {
-        if (getValue()->isDouble() && (std::abs((int) *getValue()) >= 1000)) // do not use scientific notation
+        if (getValue().isDouble() && (std::abs((int) getValue()) >= 1000)) // do not use scientific notation
         {
-            return juce::String((int) *getValue());
+            return juce::String((int) getValue());
         }
-        return *getValue();
+        return getValue();
     }
 
     void valueChanged() override
     {
-        if (getValue().has_value() == false)
+        if (getValue().isVoid())
         {
             return;
         }
