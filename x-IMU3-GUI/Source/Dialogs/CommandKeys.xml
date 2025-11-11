@@ -16,15 +16,16 @@
     <Command key="heading" type="1"/>
     <Command key="accessory" type="0"/>
     <Command key="note" type="0"/>
+    <Command key="timestamp" type="1"/>
     <Command key="format" type="4"/>
     <Command key="test" type="4"/>
     <Command key="bootloader" type="4"/>
     <Separator header="DEVICE SETTINGS"/>
-    <Command key="device_name" type="0"/>
     <Command key="serial_number" type="0"/>
-    <Command key="firmware_version" type="0"/>
-    <Command key="bootloader_version" type="0"/>
     <Command key="hardware_version" type="0"/>
+    <Command key="bootloader_version" type="0"/>
+    <Command key="firmware_version" type="0"/>
+    <Command key="device_name" type="0"/>
     <Command key="serial_mode" type="1"/>
     <Command key="serial_baud_rate" type="1"/>
     <Command key="serial_rts_cts_enabled" type="2"/>
@@ -90,4 +91,6 @@
     <Command key="data_logger_data_messages_enabled" type="2"/>
     <Command key="usb_power_on_enabled" type="2"/>
     <Command key="shipping_mode_enabled" type="2"/>
+    <Command key="battery_max_charging_temperature" type="1"/>
+    <Command key="battery_max_discharging_temperature" type="1"/>
 </CommandKeys>
