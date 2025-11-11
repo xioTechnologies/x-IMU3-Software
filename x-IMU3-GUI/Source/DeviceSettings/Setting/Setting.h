@@ -37,7 +37,7 @@ protected:
 
     const juce::Rectangle<int>& getValueBounds() const;
 
-    std::optional<juce::var> getValue() const;
+    juce::var getValue() const;
 
     void setValue(const juce::var& value);
 

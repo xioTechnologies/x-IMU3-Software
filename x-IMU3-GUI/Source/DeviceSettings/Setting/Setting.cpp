@@ -72,9 +72,9 @@ const juce::Rectangle<int>& Setting::getValueBounds() const
     return valueBounds;
 }
 
-std::optional<juce::var> Setting::getValue() const
+juce::var Setting::getValue() const
 {
-    return tree.hasProperty(DeviceSettingsIds::value) ? tree.getProperty(DeviceSettingsIds::value) : std::optional<juce::var>();
+    return tree.getProperty(DeviceSettingsIds::value);
 }
 
 void Setting::setValue(const juce::var& value)

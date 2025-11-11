@@ -37,9 +37,9 @@ protected:
     void valueChanged() override
     {
         int id = 0;
-        if (getValue().has_value())
+        if (! getValue().isVoid())
         {
-            id = (int) *getValue() + 1;
+            id = (int) getValue() + 1;
         }
         value.setSelectedId(id, juce::dontSendNotification);
     }
