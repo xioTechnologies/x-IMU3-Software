@@ -63,7 +63,6 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "PORT_TYPE_BLUETOOTH", XIMU3_PortTypeBluetooth) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_BUFFER_OVERRUN", XIMU3_ReceiveErrorBufferOverrun) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_MESSAGE_IDENTIFIER", XIMU3_ReceiveErrorInvalidMessageIdentifier) == 0) &&
-        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_UTF8", XIMU3_ReceiveErrorInvalidUtf8) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_JSON", XIMU3_ReceiveErrorInvalidJson) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_IS_NOT_AN_OBJECT", XIMU3_ReceiveErrorJsonIsNotAnObject) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR", XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair) == 0) &&
