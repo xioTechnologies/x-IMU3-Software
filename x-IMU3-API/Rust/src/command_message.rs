@@ -11,15 +11,8 @@ pub struct CommandMessage {
 }
 
 impl CommandMessage {
-    pub(crate) fn parse_bytes(bytes: &[u8]) -> Result<Self, ReceiveError> {
-        match std::str::from_utf8(bytes) {
-            Ok(json) => Self::parse_json(json),
-            Err(_) => Err(ReceiveError::InvalidUtf8),
-        }
-    }
-
-    pub(crate) fn parse_json(json: &str) -> Result<Self, ReceiveError> {
-        let value = serde_json::from_str::<serde_json::Value>(json).map_err(|_| ReceiveError::InvalidJson)?;
+    pub(crate) fn parse_internal(json: &[u8]) -> Result<Self, ReceiveError> {
+        let value = serde_json::from_slice::<serde_json::Value>(json).map_err(|_| ReceiveError::InvalidJson)?;
 
         let object = value.as_object().ok_or(ReceiveError::JsonIsNotAnObject)?;
 
@@ -47,7 +40,7 @@ impl CommandMessage {
     }
 
     pub fn parse(json: &str) -> Self {
-        Self::parse_json(json).unwrap_or(Self {
+        Self::parse_internal(json.as_bytes()).unwrap_or(Self {
             json: "".to_owned(),
             terminated_json: b"".to_vec(),
             key: "".to_owned(),
