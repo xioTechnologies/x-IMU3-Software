@@ -1,7 +1,6 @@
 use crate::connection::*;
 use crate::connection_info::*;
 use crate::data_messages::*;
-use crate::decode_error::*;
 use crate::ffi::callback::*;
 use crate::ffi::connection_info::*;
 use crate::ffi::connection_type::*;
@@ -9,6 +8,7 @@ use crate::ffi::helpers::*;
 use crate::ffi::ping_response::*;
 use crate::ffi::result::*;
 use crate::ping_response::*;
+use crate::receive_error::*;
 use crate::statistics::*;
 use std::os::raw::{c_char, c_void};
 
@@ -180,10 +180,10 @@ pub extern "C" fn XIMU3_connection_get_statistics(connection: *mut Connection) -
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_add_decode_error_callback(connection: *mut Connection, callback: Callback<DecodeError>, context: *mut c_void) -> u64 {
+pub extern "C" fn XIMU3_connection_add_receive_error_callback(connection: *mut Connection, callback: Callback<ReceiveError>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    connection.add_decode_error_closure(Box::new(move |decode_error| callback(decode_error, void_ptr.0)))
+    connection.add_receive_error_closure(Box::new(move |receive_error| callback(receive_error, void_ptr.0)))
 }
 
 #[no_mangle]

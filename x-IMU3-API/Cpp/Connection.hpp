@@ -163,9 +163,9 @@ namespace ximu3
             return XIMU3_connection_get_statistics(connection);
         }
 
-        uint64_t addDecodeErrorCallback(std::function<void(XIMU3_DecodeError)>& callback)
+        uint64_t addReceiveErrorCallback(std::function<void(XIMU3_ReceiveError)>& callback)
         {
-            return XIMU3_connection_add_decode_error_callback(connection, Helpers::wrapCallable<XIMU3_DecodeError>(callback), &callback);
+            return XIMU3_connection_add_receive_error_callback(connection, Helpers::wrapCallable<XIMU3_ReceiveError>(callback), &callback);
         }
 
         uint64_t addStatisticsCallback(std::function<void(XIMU3_Statistics)>& callback)

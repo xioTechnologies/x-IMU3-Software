@@ -9,7 +9,7 @@
 #define FLOAT_FORMAT " %8.3f"
 #define STRING_FORMAT " \"%s\""
 
-void DecodeErrorCallback(const XIMU3_DecodeError error, void* context);
+void ReceiveErrorCallback(const XIMU3_ReceiveError error, void* context);
 
 void StatisticsCallback(const XIMU3_Statistics statistics, void* context);
 
@@ -48,7 +48,7 @@ void EndOfFileCallback(void* context);
 void Run(XIMU3_Connection* const connection, const char* const connectionInfoString)
 {
     // Add callbacks
-    XIMU3_connection_add_decode_error_callback(connection, DecodeErrorCallback, NULL);
+    XIMU3_connection_add_receive_error_callback(connection, ReceiveErrorCallback, NULL);
     XIMU3_connection_add_statistics_callback(connection, StatisticsCallback, NULL);
 
     if (YesOrNo("Print data messages?"))
@@ -93,9 +93,9 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     XIMU3_connection_free(connection);
 }
 
-void DecodeErrorCallback(const XIMU3_DecodeError error, void* context)
+void ReceiveErrorCallback(const XIMU3_ReceiveError error, void* context)
 {
-    printf("%s\n", XIMU3_decode_error_to_string(error));
+    printf("%s\n", XIMU3_receive_error_to_string(error));
 }
 
 void StatisticsCallback(const XIMU3_Statistics statistics, void* context)

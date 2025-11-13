@@ -20,8 +20,8 @@ def string_format(string: str) -> str:
     return f' "{string}"'
 
 
-def decode_error_callback(error: int) -> None:
-    print(ximu3.decode_error_to_string(error))
+def receive_error_callback(error: int) -> None:
+    print(ximu3.receive_error_to_string(error))
 
 
 def statistics_callback(statistics: ximu3.Statistics) -> None:
@@ -252,7 +252,7 @@ def end_of_file_callback() -> None:
 def run(connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | ximu3.TcpConnectionInfo | ximu3.UdpConnectionInfo | ximu3.BluetoothConnectionInfo | ximu3.FileConnectionInfo | ximu3.MuxConnectionInfo) -> None:
     connection = ximu3.Connection(connection_info)
 
-    connection.add_decode_error_callback(decode_error_callback)
+    connection.add_receive_error_callback(receive_error_callback)
     connection.add_statistics_callback(statistics_callback)
 
     if helpers.yes_or_no("Print data messages?"):

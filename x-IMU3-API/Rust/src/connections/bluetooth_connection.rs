@@ -1,6 +1,6 @@
 use crate::connection_info::*;
 use crate::connections::*;
-use crate::decoder::*;
+use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
@@ -39,8 +39,8 @@ impl GenericConnection for BluetoothConnection {
         ConnectionInfo::BluetoothConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
-        self.serial_connection.get_decoder()
+    fn get_receiver(&self) -> Arc<Mutex<Receiver>> {
+        self.serial_connection.get_receiver()
     }
 
     fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {

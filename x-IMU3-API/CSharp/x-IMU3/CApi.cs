@@ -15,46 +15,6 @@ namespace Ximu3
             XIMU3_ChargingStatusChargingComplete,
             XIMU3_ChargingStatusChargingOnHold,
         }
-        public enum XIMU3_ConnectionStatus
-        {
-            XIMU3_ConnectionStatusConnected,
-            XIMU3_ConnectionStatusReconnecting,
-        }
-        public enum XIMU3_ConnectionType
-        {
-            XIMU3_ConnectionTypeUsb,
-            XIMU3_ConnectionTypeSerial,
-            XIMU3_ConnectionTypeTcp,
-            XIMU3_ConnectionTypeUdp,
-            XIMU3_ConnectionTypeBluetooth,
-            XIMU3_ConnectionTypeFile,
-            XIMU3_ConnectionTypeMux,
-        }
-        public enum XIMU3_DecodeError
-        {
-            XIMU3_DecodeErrorBufferOverrun,
-            XIMU3_DecodeErrorInvalidMessageIdentifier,
-            XIMU3_DecodeErrorInvalidUtf8,
-            XIMU3_DecodeErrorInvalidJson,
-            XIMU3_DecodeErrorJsonIsNotAnObject,
-            XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
-            XIMU3_DecodeErrorInvalidMuxMessageLength,
-            XIMU3_DecodeErrorInvalidEscapeSequence,
-            XIMU3_DecodeErrorInvalidBinaryMessageLength,
-            XIMU3_DecodeErrorUnableToParseAsciiMessage,
-        }
-        public enum XIMU3_FileConverterStatus
-        {
-            XIMU3_FileConverterStatusComplete,
-            XIMU3_FileConverterStatusFailed,
-            XIMU3_FileConverterStatusInProgress,
-        }
-        public enum XIMU3_PortType
-        {
-            XIMU3_PortTypeUsb,
-            XIMU3_PortTypeSerial,
-            XIMU3_PortTypeBluetooth,
-        }
         public enum XIMU3_Result
         {
             XIMU3_ResultOk,
@@ -95,6 +55,46 @@ namespace Ximu3
             XIMU3_ResultWouldBlock,
             XIMU3_ResultWriteZero,
             XIMU3_ResultUnknownError,
+        }
+        public enum XIMU3_ConnectionType
+        {
+            XIMU3_ConnectionTypeUsb,
+            XIMU3_ConnectionTypeSerial,
+            XIMU3_ConnectionTypeTcp,
+            XIMU3_ConnectionTypeUdp,
+            XIMU3_ConnectionTypeBluetooth,
+            XIMU3_ConnectionTypeFile,
+            XIMU3_ConnectionTypeMux,
+        }
+        public enum XIMU3_ReceiveError
+        {
+            XIMU3_ReceiveErrorBufferOverrun,
+            XIMU3_ReceiveErrorInvalidMessageIdentifier,
+            XIMU3_ReceiveErrorInvalidUtf8,
+            XIMU3_ReceiveErrorInvalidJson,
+            XIMU3_ReceiveErrorJsonIsNotAnObject,
+            XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair,
+            XIMU3_ReceiveErrorInvalidMuxMessageLength,
+            XIMU3_ReceiveErrorInvalidEscapeSequence,
+            XIMU3_ReceiveErrorInvalidBinaryMessageLength,
+            XIMU3_ReceiveErrorUnableToParseAsciiMessage,
+        }
+        public enum XIMU3_FileConverterStatus
+        {
+            XIMU3_FileConverterStatusComplete,
+            XIMU3_FileConverterStatusFailed,
+            XIMU3_FileConverterStatusInProgress,
+        }
+        public enum XIMU3_ConnectionStatus
+        {
+            XIMU3_ConnectionStatusConnected,
+            XIMU3_ConnectionStatusReconnecting,
+        }
+        public enum XIMU3_PortType
+        {
+            XIMU3_PortTypeUsb,
+            XIMU3_PortTypeSerial,
+            XIMU3_PortTypeBluetooth,
         }
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_CharArrays
@@ -371,7 +371,7 @@ namespace Ximu3
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackCharArrays(XIMU3_CharArrays data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void XIMU3_CallbackDecodeError(XIMU3_DecodeError data, IntPtr context);
+        public delegate void XIMU3_CallbackReceiveError(XIMU3_ReceiveError data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackStatistics(XIMU3_Statistics data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -471,7 +471,7 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern UInt64 XIMU3_connection_add_decode_error_callback(IntPtr connection, XIMU3_CallbackDecodeError callback, IntPtr context);
+        public static extern UInt64 XIMU3_connection_add_receive_error_callback(IntPtr connection, XIMU3_CallbackReceiveError callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_statistics_callback(IntPtr connection, XIMU3_CallbackStatistics callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -577,8 +577,6 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_decode_error_to_string(XIMU3_DecodeError decode_error);
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_status_to_string(XIMU3_FileConverterStatus status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_progress_to_string(XIMU3_FileConverterProgress progress);
@@ -636,6 +634,8 @@ namespace Ximu3
         public static extern XIMU3_Devices XIMU3_port_scanner_scan_filter(XIMU3_PortType port_type);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_port_scanner_get_port_names();
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_receive_error_to_string(XIMU3_ReceiveError receive_error);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_result_to_string(XIMU3_Result result);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

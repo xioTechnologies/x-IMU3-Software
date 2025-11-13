@@ -49,8 +49,8 @@ impl<'a> DataLogger<'a> {
             let sender_clone = sender.clone();
             let path_clone = paths[index].clone();
 
-            data_logger.closure_ids[index].push(connection.add_decode_error_closure(Box::new(move |decode_error| {
-                sender_clone.send((path_clone.join("DecodeError.txt"), "".to_owned(), decode_error.to_string() + "\n")).ok();
+            data_logger.closure_ids[index].push(connection.add_receive_error_closure(Box::new(move |receive_error| {
+                sender_clone.send((path_clone.join("ReceiveError.txt"), "".to_owned(), receive_error.to_string() + "\n")).ok();
             })));
 
             let sender_clone = sender.clone();

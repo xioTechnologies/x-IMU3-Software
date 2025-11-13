@@ -181,7 +181,7 @@ insert(file_path, template, 1)
 # Insert code into x-IMU3-API/Rust/src/connection.rs
 template = """
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)
     }\n"""
 
 insert("../connection.rs", template, 0)
@@ -197,10 +197,10 @@ pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *m
 
 insert("../ffi/connection.rs", template, 0)
 
-# Insert code into x-IMU3-API/Rust/src/decoder.rs
+# Insert code into x-IMU3-API/Rust/src/receiver.rs
 template = "        parse!($name_pascal_case$Message, $name_pascal_case$);\n"
 
-insert("../decoder.rs", template, 0)
+insert("../receiver.rs", template, 0)
 
 # Insert code into x-IMU3-API/Rust/src/dispatcher.rs
 file_path = "../dispatcher.rs"
