@@ -79,6 +79,8 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
         });
     };
     errorCallbackId = connectionPanel.getConnection()->addErrorCallback(errorCallback);
+
+    setOpaque(true);
 }
 
 ConnectionPanelFooter::~ConnectionPanelFooter()

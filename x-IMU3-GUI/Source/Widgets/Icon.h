@@ -17,24 +17,31 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        if (icon != nullptr)
+        if (drawable != nullptr)
         {
-            icon->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
+            drawable->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
                              juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.5f);
         }
     }
 
     void setIcon(const juce::String& icon_)
     {
-        if (auto xml = juce::XmlDocument::parse(icon_))
+        if (icon != icon_)
         {
-            icon = juce::Drawable::createFromSVG(*xml);
+            icon = icon_;
+
+            if (auto xml = juce::XmlDocument::parse(icon_))
+            {
+                drawable = juce::Drawable::createFromSVG(*xml);
+            }
+
+            repaint();
         }
-        repaint();
     }
 
 private:
-    std::unique_ptr<juce::Drawable> icon;
+    juce::String icon;
+    std::unique_ptr<juce::Drawable> drawable;
     const float scale;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Icon)

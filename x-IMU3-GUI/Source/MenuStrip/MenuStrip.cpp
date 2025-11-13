@@ -187,6 +187,8 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
         connectionLayoutButton.setEnabled(connectionPanelContainer.getConnectionPanels().size() > 1);
     };
     connectionPanelContainer.onConnectionPanelsSizeChanged();
+
+    setOpaque(true);
 }
 
 MenuStrip::~MenuStrip()

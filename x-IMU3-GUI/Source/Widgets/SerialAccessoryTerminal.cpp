@@ -5,6 +5,8 @@ SerialAccessoryTerminal::SerialAccessoryTerminal()
 {
     addAndMakeVisible(scrollbar);
     scrollbar.addListener(this);
+
+    setOpaque(true);
 }
 
 void SerialAccessoryTerminal::paint(juce::Graphics& g)

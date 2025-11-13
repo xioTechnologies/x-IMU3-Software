@@ -58,6 +58,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     });
 
     setMouseCursor(juce::MouseCursor::DraggingHandCursor);
+    setOpaque(true);
 }
 
 ConnectionPanelHeader::~ConnectionPanelHeader()

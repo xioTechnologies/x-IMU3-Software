@@ -146,6 +146,8 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
     };
 
     valueTreePropertyChanged(settingsTree, "customSchema");
+
+    setOpaque(true);
 }
 
 void DeviceSettingsWindow::paint(juce::Graphics& g)
@@ -154,8 +156,6 @@ void DeviceSettingsWindow::paint(juce::Graphics& g)
 
     g.setColour(UIColours::backgroundDark);
     g.fillRect(buttonBounds);
-
-    Window::paint(g);
 }
 
 void DeviceSettingsWindow::resized()
