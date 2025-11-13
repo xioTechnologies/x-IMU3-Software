@@ -1,13 +1,13 @@
 use crate::connection_info::*;
 use crate::connections::*;
-use crate::decoder::*;
+use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
 use std::sync::{Arc, Mutex};
 
 pub struct UdpConnection {
     connection_info: UdpConnectionInfo,
-    decoder: Arc<Mutex<Decoder>>,
+    receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
@@ -16,7 +16,7 @@ impl UdpConnection {
     pub fn new(connection_info: &UdpConnectionInfo) -> Self {
         Self {
             connection_info: connection_info.clone(),
-            decoder: Arc::new(Mutex::new(Decoder::new())),
+            receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
         }
@@ -31,7 +31,7 @@ impl GenericConnection for UdpConnection {
 
         let socket_address = SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.send_port);
 
-        let decoder = self.decoder.clone();
+        let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
         let (write_sender, write_receiver) = crossbeam::channel::unbounded();
@@ -45,7 +45,7 @@ impl GenericConnection for UdpConnection {
             while close_receiver.try_recv().is_err() {
                 match socket.recv_from(&mut buffer) {
                     Ok((number_of_bytes, _)) => {
-                        decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                        receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
                     }
                     Err(_) => {
                         std::thread::sleep(std::time::Duration::from_millis(1));
@@ -70,8 +70,8 @@ impl GenericConnection for UdpConnection {
         ConnectionInfo::UdpConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
-        self.decoder.clone()
+    fn get_receiver(&self) -> Arc<Mutex<Receiver>> {
+        self.receiver.clone()
     }
 
     fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {

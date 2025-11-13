@@ -2,10 +2,10 @@ use crate::command_message::*;
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::data_messages::*;
-use crate::decode_error::*;
-use crate::decoder::*;
 use crate::dispatcher::*;
 use crate::ping_response::*;
+use crate::receive_error::*;
+use crate::receiver::*;
 use crate::statistics::*;
 use crossbeam::channel::Sender;
 use std::ops::Drop;
@@ -32,28 +32,28 @@ impl Connection {
         };
 
         let dropped = connection.dropped.clone();
-        let decoder = connection.internal.lock().unwrap().get_decoder();
+        let receiver = connection.internal.lock().unwrap().get_receiver();
         let start_time = std::time::Instant::now();
         let mut previous_statistics: Statistics = Default::default();
 
         std::thread::spawn(move || loop {
             std::thread::sleep(std::time::Duration::from_secs(1));
 
-            if let Ok(mut decoder) = decoder.lock() {
-                decoder.statistics.timestamp = start_time.elapsed().as_micros() as u64;
+            if let Ok(mut receiver) = receiver.lock() {
+                receiver.statistics.timestamp = start_time.elapsed().as_micros() as u64;
 
-                let delta_time = (decoder.statistics.timestamp - previous_statistics.timestamp) as f32 / 1E6;
-                let delta_data = decoder.statistics.data_total - previous_statistics.data_total;
-                let delta_message = decoder.statistics.message_total - previous_statistics.message_total;
-                let delta_error = decoder.statistics.error_total - previous_statistics.error_total;
+                let delta_time = (receiver.statistics.timestamp - previous_statistics.timestamp) as f32 / 1E6;
+                let delta_data = receiver.statistics.data_total - previous_statistics.data_total;
+                let delta_message = receiver.statistics.message_total - previous_statistics.message_total;
+                let delta_error = receiver.statistics.error_total - previous_statistics.error_total;
 
-                decoder.statistics.data_rate = (delta_data as f32 / delta_time).round() as u32;
-                decoder.statistics.message_rate = (delta_message as f32 / delta_time).round() as u32;
-                decoder.statistics.error_rate = (delta_error as f32 / delta_time).round() as u32;
+                receiver.statistics.data_rate = (delta_data as f32 / delta_time).round() as u32;
+                receiver.statistics.message_rate = (delta_message as f32 / delta_time).round() as u32;
+                receiver.statistics.error_rate = (delta_error as f32 / delta_time).round() as u32;
 
-                previous_statistics = decoder.statistics;
+                previous_statistics = receiver.statistics;
 
-                decoder.dispatcher.sender.send(DispatcherData::Statistics(decoder.statistics)).ok();
+                receiver.dispatcher.sender.send(DispatcherData::Statistics(receiver.statistics)).ok();
             }
 
             if *dropped.lock().unwrap() {
@@ -89,19 +89,19 @@ impl Connection {
     }
 
     pub fn ping(&self) -> std::io::Result<PingResponse> {
-        let decoder = self.internal.lock().unwrap().get_decoder();
+        let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
-        Self::ping_internal(decoder, write_sender)
+        Self::ping_internal(receiver, write_sender)
     }
 
     pub fn ping_async(&self, closure: Box<dyn FnOnce(std::io::Result<PingResponse>) + Send>) {
-        let decoder = self.internal.lock().unwrap().get_decoder();
+        let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let ping_response = Self::ping_internal(decoder, write_sender);
+            let ping_response = Self::ping_internal(receiver, write_sender);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -112,8 +112,8 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
-        let responses = Self::send_commands_internal(decoder, write_sender, vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
+    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
+        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
 
         if responses.len() == 0 {
             return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "No response."));
@@ -123,20 +123,20 @@ impl Connection {
     }
 
     pub fn send_commands(&self, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
-        let decoder = self.internal.lock().unwrap().get_decoder();
+        let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
-        Self::send_commands_internal(decoder, write_sender, commands, retries, timeout)
+        Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
     }
 
     pub fn send_commands_async(&self, commands: Vec<&str>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<String>) + Send>) {
-        let decoder = self.internal.lock().unwrap().get_decoder();
+        let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
         let commands: Vec<String> = commands.iter().map(|&string| string.to_owned()).collect();
 
         std::thread::spawn(move || {
-            let responses = Self::send_commands_internal(decoder, write_sender, commands.iter().map(|string| string.as_ref()).collect(), retries, timeout);
+            let responses = Self::send_commands_internal(receiver, write_sender, commands.iter().map(|string| string.as_ref()).collect(), retries, timeout);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -147,7 +147,7 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(decoder: Arc<Mutex<Decoder>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
+    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
         struct Transaction {
             command: Option<CommandMessage>,
             response: Option<CommandMessage>,
@@ -172,7 +172,7 @@ impl Connection {
 
         let (response_sender, response_receiver) = crossbeam::channel::unbounded();
 
-        let closure_id = decoder.lock().unwrap().dispatcher.add_command_closure(Box::new(move |command: CommandMessage| {
+        let closure_id = receiver.lock().unwrap().dispatcher.add_command_closure(Box::new(move |command: CommandMessage| {
             response_sender.send(command).ok();
         }));
 
@@ -207,7 +207,7 @@ impl Connection {
             }
         }
 
-        decoder.lock().unwrap().dispatcher.remove_closure(closure_id);
+        receiver.lock().unwrap().dispatcher.remove_closure(closure_id);
 
         let responses: Vec<_> = transactions.iter().filter_map(|transaction| transaction.response.clone()).collect();
         responses.iter().map(|response| response.json.clone()).collect()
@@ -218,101 +218,101 @@ impl Connection {
     }
 
     pub fn get_statistics(&self) -> Statistics {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().statistics
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().statistics
     }
 
-    pub fn add_decode_error_closure(&self, closure: Box<dyn Fn(DecodeError) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_decode_error_closure(closure)
+    pub fn add_receive_error_closure(&self, closure: Box<dyn Fn(ReceiveError) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_receive_error_closure(closure)
     }
 
     pub fn add_statistics_closure(&self, closure: Box<dyn Fn(Statistics) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_statistics_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_statistics_closure(closure)
     }
 
     pub(crate) fn add_command_closure(&self, closure: Box<dyn Fn(CommandMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_command_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_command_closure(closure)
     }
 
     pub(crate) fn add_data_closure(&self, closure: Box<dyn Fn(Box<dyn DataMessage>) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_data_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_data_closure(closure)
     }
 
     // Start of code block #0 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
 
     pub fn add_inertial_closure(&self, closure: Box<dyn Fn(InertialMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_inertial_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_inertial_closure(closure)
     }
 
     pub fn add_magnetometer_closure(&self, closure: Box<dyn Fn(MagnetometerMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_magnetometer_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_magnetometer_closure(closure)
     }
 
     pub fn add_quaternion_closure(&self, closure: Box<dyn Fn(QuaternionMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_quaternion_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_quaternion_closure(closure)
     }
 
     pub fn add_rotation_matrix_closure(&self, closure: Box<dyn Fn(RotationMatrixMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_rotation_matrix_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_rotation_matrix_closure(closure)
     }
 
     pub fn add_euler_angles_closure(&self, closure: Box<dyn Fn(EulerAnglesMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_euler_angles_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_euler_angles_closure(closure)
     }
 
     pub fn add_linear_acceleration_closure(&self, closure: Box<dyn Fn(LinearAccelerationMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_linear_acceleration_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_linear_acceleration_closure(closure)
     }
 
     pub fn add_earth_acceleration_closure(&self, closure: Box<dyn Fn(EarthAccelerationMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_earth_acceleration_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_earth_acceleration_closure(closure)
     }
 
     pub fn add_ahrs_status_closure(&self, closure: Box<dyn Fn(AhrsStatusMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_ahrs_status_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_ahrs_status_closure(closure)
     }
 
     pub fn add_high_g_accelerometer_closure(&self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
     }
 
     pub fn add_temperature_closure(&self, closure: Box<dyn Fn(TemperatureMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_temperature_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_temperature_closure(closure)
     }
 
     pub fn add_battery_closure(&self, closure: Box<dyn Fn(BatteryMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_battery_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_battery_closure(closure)
     }
 
     pub fn add_rssi_closure(&self, closure: Box<dyn Fn(RssiMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_rssi_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_rssi_closure(closure)
     }
 
     pub fn add_serial_accessory_closure(&self, closure: Box<dyn Fn(SerialAccessoryMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
     }
 
     pub fn add_notification_closure(&self, closure: Box<dyn Fn(NotificationMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_notification_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_notification_closure(closure)
     }
 
     pub fn add_error_closure(&self, closure: Box<dyn Fn(ErrorMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_error_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_error_closure(closure)
     }
     // End of code block #0 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
 
     pub fn add_end_of_file_closure(&self, closure: Box<dyn Fn() + Send>) -> u64 {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_end_of_file_closure(closure)
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_end_of_file_closure(closure)
     }
 
     pub fn remove_closure(&self, id: u64) {
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.remove_closure(id);
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_closure(id);
     }
 }
 
 impl Drop for Connection {
     fn drop(&mut self) {
         *self.dropped.lock().unwrap() = true;
-        self.internal.lock().unwrap().get_decoder().lock().unwrap().dispatcher.remove_all_closures();
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_all_closures();
         self.close(); // call after open_sync complete
     }
 }

@@ -1,6 +1,6 @@
 use crate::connection_info::*;
 use crate::connections::*;
-use crate::decoder::*;
+use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::io::{Read, Write};
 use std::net::{IpAddr, SocketAddr, TcpStream};
@@ -9,7 +9,7 @@ use std::time::Duration;
 
 pub struct TcpConnection {
     connection_info: TcpConnectionInfo,
-    decoder: Arc<Mutex<Decoder>>,
+    receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
@@ -18,7 +18,7 @@ impl TcpConnection {
     pub fn new(connection_info: &TcpConnectionInfo) -> Self {
         Self {
             connection_info: connection_info.clone(),
-            decoder: Arc::new(Mutex::new(Decoder::new())),
+            receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
         }
@@ -31,7 +31,7 @@ impl GenericConnection for TcpConnection {
 
         stream.set_nonblocking(true)?;
 
-        let decoder = self.decoder.clone();
+        let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
         let (write_sender, write_receiver) = crossbeam::channel::unbounded();
@@ -45,7 +45,7 @@ impl GenericConnection for TcpConnection {
             while close_receiver.try_recv().is_err() {
                 match stream.read(&mut buffer) {
                     Ok(number_of_bytes) => {
-                        decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
+                        receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
                     }
                     Err(_) => {
                         std::thread::sleep(std::time::Duration::from_millis(1));
@@ -70,8 +70,8 @@ impl GenericConnection for TcpConnection {
         ConnectionInfo::TcpConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
-        self.decoder.clone()
+    fn get_receiver(&self) -> Arc<Mutex<Receiver>> {
+        self.receiver.clone()
     }
 
     fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
