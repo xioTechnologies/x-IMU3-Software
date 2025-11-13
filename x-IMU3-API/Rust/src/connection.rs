@@ -113,30 +113,29 @@ impl Connection {
     }
 
     pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
-        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}"], 4, 200); // 4 retries with 200 ms timeout = 1 second
+        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200); // 4 retries with 200 ms timeout = 1 second
 
         if responses.len() == 0 {
             return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "No response."));
         }
 
-        PingResponse::parse(responses[0].as_str())
+        PingResponse::parse(responses[0].as_slice())
     }
 
-    pub fn send_commands(&self, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
+    pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
         Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
     }
 
-    pub fn send_commands_async(&self, commands: Vec<&str>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<String>) + Send>) {
+    pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Vec<u8>>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
-        let commands: Vec<String> = commands.iter().map(|&string| string.to_owned()).collect();
 
         std::thread::spawn(move || {
-            let responses = Self::send_commands_internal(receiver, write_sender, commands.iter().map(|string| string.as_ref()).collect(), retries, timeout);
+            let responses = Self::send_commands_internal(receiver, write_sender, commands, retries, timeout);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -147,7 +146,7 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<&str>, retries: u32, timeout: u32) -> Vec<String> {
+    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
         struct Transaction {
             command: Option<CommandMessage>,
             response: Option<CommandMessage>,
@@ -155,8 +154,8 @@ impl Connection {
 
         let mut transactions: Vec<Transaction> = commands
             .iter()
-            .map(|&command| {
-                if let Ok(command) = CommandMessage::parse_internal(command.as_bytes()) {
+            .map(|command| {
+                if let Ok(command) = CommandMessage::parse_internal(command) {
                     Transaction {
                         command: Some(command),
                         response: None,
