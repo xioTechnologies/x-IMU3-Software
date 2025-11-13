@@ -360,9 +360,6 @@ jobs:
           smctl windows certsync
         shell: cmd
 
-      - name: Install Inno Setup
-        run: choco install innosetup
-
       - name: Create installer (signed)
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
