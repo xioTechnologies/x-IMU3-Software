@@ -2,7 +2,7 @@ use std::fmt;
 
 #[repr(C)]
 #[derive(Clone, Copy, PartialEq)]
-pub enum DecodeError {
+pub enum ReceiveError {
     BufferOverrun,
     InvalidMessageIdentifier,
     InvalidUtf8,
@@ -15,7 +15,7 @@ pub enum DecodeError {
     UnableToParseAsciiMessage,
 }
 
-impl fmt::Display for DecodeError {
+impl fmt::Display for ReceiveError {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Self::BufferOverrun => write!(formatter, "Buffer overrun"),

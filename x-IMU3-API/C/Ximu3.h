@@ -85,19 +85,19 @@ typedef enum XIMU3_ConnectionType
     XIMU3_ConnectionTypeMux,
 } XIMU3_ConnectionType;
 
-typedef enum XIMU3_DecodeError
+typedef enum XIMU3_ReceiveError
 {
-    XIMU3_DecodeErrorBufferOverrun,
-    XIMU3_DecodeErrorInvalidMessageIdentifier,
-    XIMU3_DecodeErrorInvalidUtf8,
-    XIMU3_DecodeErrorInvalidJson,
-    XIMU3_DecodeErrorJsonIsNotAnObject,
-    XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair,
-    XIMU3_DecodeErrorInvalidMuxMessageLength,
-    XIMU3_DecodeErrorInvalidEscapeSequence,
-    XIMU3_DecodeErrorInvalidBinaryMessageLength,
-    XIMU3_DecodeErrorUnableToParseAsciiMessage,
-} XIMU3_DecodeError;
+    XIMU3_ReceiveErrorBufferOverrun,
+    XIMU3_ReceiveErrorInvalidMessageIdentifier,
+    XIMU3_ReceiveErrorInvalidUtf8,
+    XIMU3_ReceiveErrorInvalidJson,
+    XIMU3_ReceiveErrorJsonIsNotAnObject,
+    XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair,
+    XIMU3_ReceiveErrorInvalidMuxMessageLength,
+    XIMU3_ReceiveErrorInvalidEscapeSequence,
+    XIMU3_ReceiveErrorInvalidBinaryMessageLength,
+    XIMU3_ReceiveErrorUnableToParseAsciiMessage,
+} XIMU3_ReceiveError;
 
 typedef enum XIMU3_FileConverterStatus
 {
@@ -208,7 +208,7 @@ typedef struct XIMU3_Statistics
     uint32_t error_rate;
 } XIMU3_Statistics;
 
-typedef void (*XIMU3_CallbackDecodeError)(enum XIMU3_DecodeError data, void *context);
+typedef void (*XIMU3_CallbackReceiveError)(enum XIMU3_ReceiveError data, void *context);
 
 typedef void (*XIMU3_CallbackStatistics)(struct XIMU3_Statistics data, void *context);
 
@@ -488,7 +488,7 @@ struct XIMU3_MuxConnectionInfo *XIMU3_connection_get_info_mux(struct XIMU3_Conne
 
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
-uint64_t XIMU3_connection_add_decode_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackDecodeError callback, void *context);
+uint64_t XIMU3_connection_add_receive_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackReceiveError callback, void *context);
 
 uint64_t XIMU3_connection_add_statistics_callback(struct XIMU3_Connection *connection, XIMU3_CallbackStatistics callback, void *context);
 
@@ -594,8 +594,6 @@ struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angle
 
 struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
 
-const char *XIMU3_decode_error_to_string(enum XIMU3_DecodeError decode_error);
-
 const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus status);
 
 const char *XIMU3_file_converter_progress_to_string(struct XIMU3_FileConverterProgress progress);
@@ -653,6 +651,8 @@ struct XIMU3_Devices XIMU3_port_scanner_scan(void);
 struct XIMU3_Devices XIMU3_port_scanner_scan_filter(enum XIMU3_PortType port_type);
 
 struct XIMU3_CharArrays XIMU3_port_scanner_get_port_names(void);
+
+const char *XIMU3_receive_error_to_string(enum XIMU3_ReceiveError receive_error);
 
 const char *XIMU3_result_to_string(enum XIMU3_Result result);
 

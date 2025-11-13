@@ -3,14 +3,14 @@ use ximu3::charging_status::*;
 use ximu3::connection::*;
 use ximu3::connection_info::*;
 use ximu3::data_messages::*;
-use ximu3::decode_error::*;
+use ximu3::receive_error::*;
 use ximu3::statistics::*;
 
 pub fn run(connection_info: &ConnectionInfo) {
     // Create connection
     let connection = Connection::new(&connection_info);
 
-    connection.add_decode_error_closure(Box::new(decode_error_closure));
+    connection.add_receive_error_closure(Box::new(receive_error_closure));
     connection.add_statistics_closure(Box::new(statistics_closure));
 
     if helpers::yes_or_no("Print data messages?") {
@@ -71,7 +71,7 @@ macro_rules! string_fmt {
     };
 }
 
-pub fn decode_error_closure(error: DecodeError) {
+pub fn receive_error_closure(error: ReceiveError) {
     println!("{error}");
 }
 

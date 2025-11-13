@@ -1,4 +1,4 @@
-use crate::decode_error::*;
+use crate::receive_error::*;
 use std::str;
 
 pub trait DataMessage {
@@ -13,7 +13,7 @@ pub trait DataMessage {
         0x80 + Self::get_ascii_id()
     }
 
-    fn parse(message: &[u8]) -> Result<Self, DecodeError>
+    fn parse(message: &[u8]) -> Result<Self, ReceiveError>
     where
         Self: Sized,
     {
@@ -21,21 +21,21 @@ pub trait DataMessage {
             if let Ok(message_str) = str::from_utf8(message) {
                 return Self::parse_ascii(message_str);
             }
-            return Err(DecodeError::UnableToParseAsciiMessage);
+            return Err(ReceiveError::UnableToParseAsciiMessage);
         }
 
         if message[0] == Self::get_binary_id() {
             return Self::parse_binary(message);
         }
 
-        Err(DecodeError::InvalidMessageIdentifier)
+        Err(ReceiveError::InvalidMessageIdentifier)
     }
 
-    fn parse_ascii(message: &str) -> Result<Self, DecodeError>
+    fn parse_ascii(message: &str) -> Result<Self, ReceiveError>
     where
         Self: Sized;
 
-    fn parse_binary(message: &[u8]) -> Result<Self, DecodeError>
+    fn parse_binary(message: &[u8]) -> Result<Self, ReceiveError>
     where
         Self: Sized;
 
