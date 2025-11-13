@@ -21,7 +21,6 @@ static PyObject* receive_error_to_string(PyObject* self, PyObject* args)
     {
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
-        case XIMU3_ReceiveErrorInvalidUtf8:
         case XIMU3_ReceiveErrorInvalidJson:
         case XIMU3_ReceiveErrorJsonIsNotAnObject:
         case XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair:
