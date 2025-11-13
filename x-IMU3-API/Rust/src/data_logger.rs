@@ -56,7 +56,7 @@ impl<'a> DataLogger<'a> {
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_command_closure(Box::new(move |command| {
-                sender_clone.send((Path::new(&path_clone).join(COMMAND_FILE_NAME).to_str().unwrap().to_owned(), "[\n", "    ".to_owned() + command.json.as_str() + "\n]")).ok();
+                sender_clone.send((Path::new(&path_clone).join(COMMAND_FILE_NAME).to_str().unwrap().to_owned(), "[\n", "    ".to_owned() + &*String::from_utf8_lossy(command.json.as_slice()) + "\n]")).ok();
             })));
 
             let sender_clone = sender.clone();

@@ -3,10 +3,10 @@ use serde_json;
 
 #[derive(Clone)]
 pub struct CommandMessage {
-    pub json: String,
+    pub json: Vec<u8>,
     pub(crate) terminated_json: Vec<u8>,
-    pub key: String,
-    pub value: String,
+    pub key: Vec<u8>,
+    pub value: Vec<u8>,
     pub error: Option<String>,
 }
 
@@ -20,15 +20,15 @@ impl CommandMessage {
             return Err(ReceiveError::JsonObjectIsNotASingleKeyValuePair);
         }
 
-        let json = serde_json::to_string(object).unwrap();
+        let json = serde_json::to_vec(object).unwrap();
 
         let value = object.values().nth(0).unwrap();
 
         let mut command_message = Self {
             json: json.clone(),
-            terminated_json: format!("{json}\n").into_bytes(),
-            key: object.keys().nth(0).unwrap().to_owned(),
-            value: value.to_string(),
+            terminated_json: [json.as_slice(), &[b'\n']].concat(),
+            key: object.keys().nth(0).unwrap().clone().into_bytes(),
+            value: serde_json::to_vec(value).unwrap(),
             error: None,
         };
 
@@ -39,12 +39,12 @@ impl CommandMessage {
         Ok(command_message)
     }
 
-    pub fn parse(json: &str) -> Self {
-        Self::parse_internal(json.as_bytes()).unwrap_or(Self {
-            json: "".to_owned(),
+    pub fn parse(json: &[u8]) -> Self {
+        Self::parse_internal(json).unwrap_or(Self {
+            json: b"".to_vec(),
             terminated_json: b"".to_vec(),
-            key: "".to_owned(),
-            value: "".to_owned(),
+            key: b"".to_vec(),
+            value: b"".to_vec(),
             error: None,
         })
     }

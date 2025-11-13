@@ -67,7 +67,7 @@ pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
 pub unsafe fn char_ptr_to_string(char_ptr: *const c_char) -> String {
     let c_str = unsafe { CStr::from_ptr(char_ptr) };
     let bytes = Vec::from(c_str.to_bytes());
-    let string = unsafe { String::from_utf8_unchecked(bytes) }; // TODO: this works but is UB. Consider using &[u8] for JSON throughout Rust API.
+    let string = unsafe { String::from_utf8_unchecked(bytes) };
     string
 }
 

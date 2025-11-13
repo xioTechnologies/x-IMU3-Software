@@ -1,5 +1,6 @@
 use crate::command_message::*;
 use crate::ffi::helpers::*;
+use std::ffi::CStr;
 use std::os::raw::c_char;
 
 #[repr(C)]
@@ -23,6 +24,6 @@ impl From<CommandMessage> for CommandMessageC {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_command_message_parse(json: *const c_char) -> CommandMessageC {
-    let json = unsafe { char_ptr_to_string(json) };
-    CommandMessage::parse(json.as_str()).into()
+    let json = unsafe { CStr::from_ptr(json).to_bytes() };
+    CommandMessage::parse(json).into()
 }
