@@ -25,9 +25,6 @@ GraphWindow::GraphWindow(const juce::ValueTree& windowLayout_, const juce::Ident
     addAndMakeVisible(yLabel);
 
     graph.setSettings(readFromValueTree());
-
-    settingsTree.setProperty("scaleToFit", false, nullptr);
-    settingsTree.setProperty("clear", false, nullptr);
 }
 
 void GraphWindow::paint(juce::Graphics& g)
@@ -151,8 +148,7 @@ void GraphWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
 
 void GraphWindow::mouseDoubleClick([[maybe_unused]] const juce::MouseEvent& mouseEvent)
 {
-    settingsTree.setProperty("scaleToFit", true, nullptr);
-    settingsTree.setProperty("scaleToFit", false, nullptr);
+    settingsTree.sendPropertyChangeMessage("scaleToFit");
 }
 
 void GraphWindow::update(const uint64_t timestamp, const std::vector<float>& arguments)
@@ -233,13 +229,11 @@ juce::PopupMenu GraphWindow::getMenu()
     });
     menu.addItem("Scale to Fit (Double Click)", (graph.getSettings().horizontalAutoscale == false) || (graph.getSettings().verticalAutoscale == false), false, [this]
     {
-        settingsTree.setProperty("scaleToFit", true, nullptr);
-        settingsTree.setProperty("scaleToFit", false, nullptr);
+        settingsTree.sendPropertyChangeMessage("scaleToFit");
     });
     menu.addItem("Clear", true, false, [this]
     {
-        settingsTree.setProperty("clear", true, nullptr);
-        settingsTree.setProperty("clear", false, nullptr);
+        settingsTree.sendPropertyChangeMessage("clear");
     });
     menu.addItem("Pause", true, paused, [this]
     {
@@ -356,13 +350,13 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHas
         return;
     }
 
-    if (treeWhosePropertyHasChanged["scaleToFit"])
+    if (property.toString() == "scaleToFit")
     {
         graph.scaleToFit();
         return;
     }
 
-    if (treeWhosePropertyHasChanged["clear"])
+    if (property.toString() == "clear")
     {
         graph.clear();
         return;
