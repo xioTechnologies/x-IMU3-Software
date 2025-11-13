@@ -37,6 +37,8 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
             terminal.addRx(message.timestamp, EscapedStrings::bytesToPrintable({ message.char_array, (unsigned int) message.number_of_bytes }));
         });
     });
+
+    setOpaque(true);
 }
 
 SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
@@ -47,7 +49,6 @@ SerialAccessoryTerminalWindow::~SerialAccessoryTerminalWindow()
 void SerialAccessoryTerminalWindow::paint(juce::Graphics& g)
 {
     g.fillAll(UIColours::backgroundDark);
-    Window::paint(g);
 }
 
 void SerialAccessoryTerminalWindow::resized()
