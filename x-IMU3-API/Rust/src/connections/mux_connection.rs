@@ -1,13 +1,13 @@
 use crate::connection_info::*;
 use crate::connections::*;
-use crate::decoder::*;
 use crate::mux_message::*;
+use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
 pub struct MuxConnection {
     connection_info: MuxConnectionInfo,
-    decoder: Arc<Mutex<Decoder>>,
+    receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
@@ -16,7 +16,7 @@ impl MuxConnection {
     pub fn new(connection_info: &MuxConnectionInfo) -> Self {
         Self {
             connection_info: connection_info.clone(),
-            decoder: Arc::new(Mutex::new(Decoder::new())),
+            receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
         }
@@ -28,7 +28,7 @@ impl GenericConnection for MuxConnection {
         let channel = self.connection_info.channel;
         let connection = self.connection_info.connection.clone();
 
-        let decoder = self.decoder.clone();
+        let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
         let (write_sender, write_receiver) = crossbeam::channel::unbounded();
@@ -37,9 +37,9 @@ impl GenericConnection for MuxConnection {
         self.write_sender = Some(write_sender);
 
         std::thread::spawn(move || {
-            let closure_id = connection.lock().unwrap().get_decoder().lock().unwrap().dispatcher.add_mux_closure(Box::new(move |message| {
+            let closure_id = connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_mux_closure(Box::new(move |message| {
                 if message.channel == channel {
-                    decoder.lock().unwrap().process_bytes(message.message.as_slice());
+                    receiver.lock().unwrap().receive_bytes(message.message.as_slice());
                 }
             }));
 
@@ -56,7 +56,7 @@ impl GenericConnection for MuxConnection {
                 std::thread::sleep(std::time::Duration::from_millis(1));
             }
 
-            connection.lock().unwrap().get_decoder().lock().unwrap().dispatcher.remove_closure(closure_id);
+            connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_closure(closure_id);
         });
 
         Ok(())
@@ -72,8 +72,8 @@ impl GenericConnection for MuxConnection {
         ConnectionInfo::MuxConnectionInfo(self.connection_info.clone())
     }
 
-    fn get_decoder(&self) -> Arc<Mutex<Decoder>> {
-        self.decoder.clone()
+    fn get_receiver(&self) -> Arc<Mutex<Receiver>> {
+        self.receiver.clone()
     }
 
     fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {

@@ -7,7 +7,7 @@ namespace Ximu3Examples
             // Create connection
             Ximu3.Connection connection = new(connectionInfo);
 
-            connection.AddDecodeErrorCallback(DecodeErrorCallback);
+            connection.AddReceiveErrorCallback(ReceiveErrorCallback);
             connection.AddStatisticsCallback(StatisticsCallback);
 
             if (Helpers.YesOrNo("Print data messages?"))
@@ -73,9 +73,9 @@ namespace Ximu3Examples
             return $@" ""{value}""";
         }
 
-        private static void DecodeErrorCallback(Ximu3.CApi.XIMU3_DecodeError error)
+        private static void ReceiveErrorCallback(Ximu3.CApi.XIMU3_ReceiveError error)
         {
-            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_decode_error_to_string(error)));
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_receive_error_to_string(error)));
         }
 
         private static void StatisticsCallback(Ximu3.CApi.XIMU3_Statistics statistics)

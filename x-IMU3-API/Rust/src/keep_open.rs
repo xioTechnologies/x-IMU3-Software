@@ -55,7 +55,7 @@ impl<'a> KeepOpen<'a> {
             }
 
             loop {
-                let data_total = connection.lock().unwrap().get_decoder().lock().unwrap().statistics.data_total;
+                let data_total = connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total;
 
                 for _ in 0..10 {
                     std::thread::sleep(std::time::Duration::from_millis(100)); // 10 * 100 ms = 1 second
@@ -67,21 +67,21 @@ impl<'a> KeepOpen<'a> {
                     }
                 }
 
-                if connection.lock().unwrap().get_decoder().lock().unwrap().statistics.data_total > data_total {
+                if connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total > data_total {
                     continue;
                 }
 
-                let decoder = connection.lock().unwrap().get_decoder();
+                let receiver = connection.lock().unwrap().get_receiver();
                 let write_sender = connection.lock().unwrap().get_write_sender();
 
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
                         return;
                     }
-                    Connection::ping_internal(decoder, write_sender).ok();
+                    Connection::ping_internal(receiver, write_sender).ok();
                 }
 
-                if connection.lock().unwrap().get_decoder().lock().unwrap().statistics.data_total > data_total {
+                if connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total > data_total {
                     continue;
                 }
 

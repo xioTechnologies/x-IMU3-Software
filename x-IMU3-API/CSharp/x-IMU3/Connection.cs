@@ -122,16 +122,16 @@ namespace Ximu3
             return CApi.XIMU3_connection_get_statistics(connection);
         }
 
-        public delegate void DecodeErrorCallback(CApi.XIMU3_DecodeError decodeError);
+        public delegate void ReceiveErrorCallback(CApi.XIMU3_ReceiveError receiveError);
 
-        private static void DecodeErrorCallbackInternal(CApi.XIMU3_DecodeError decodeError, IntPtr context)
+        private static void ReceiveErrorCallbackInternal(CApi.XIMU3_ReceiveError receiveError, IntPtr context)
         {
-            Marshal.GetDelegateForFunctionPointer<DecodeErrorCallback>(context)(decodeError);
+            Marshal.GetDelegateForFunctionPointer<ReceiveErrorCallback>(context)(receiveError);
         }
 
-        public UInt64 AddDecodeErrorCallback(DecodeErrorCallback callback)
+        public UInt64 AddReceiveErrorCallback(ReceiveErrorCallback callback)
         {
-            return CApi.XIMU3_connection_add_decode_error_callback(connection, DecodeErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_receive_error_callback(connection, ReceiveErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void StatisticsCallback(CApi.XIMU3_Statistics statistics);

@@ -1,4 +1,4 @@
-use crate::decode_error::*;
+use crate::receive_error::*;
 use std::fmt;
 
 #[derive(Clone)]
@@ -8,7 +8,7 @@ pub struct MuxMessage {
 }
 
 impl MuxMessage {
-    pub fn parse(bytes: &[u8]) -> Result<MuxMessage, DecodeError> {
+    pub fn parse(bytes: &[u8]) -> Result<MuxMessage, ReceiveError> {
         #[repr(C, packed)]
         struct Header {
             _id: u8,
@@ -18,7 +18,7 @@ impl MuxMessage {
         let min_message_size = size_of::<Header>() + 1; // include termination byte
 
         if bytes.len() < min_message_size {
-            return Err(DecodeError::InvalidMuxMessageLength);
+            return Err(ReceiveError::InvalidMuxMessageLength);
         }
 
         let channel = unsafe {
