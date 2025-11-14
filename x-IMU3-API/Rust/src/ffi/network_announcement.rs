@@ -94,7 +94,7 @@ impl From<Vec<NetworkAnnouncementMessage>> for NetworkAnnouncementMessages {
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_messages_free(messages: NetworkAnnouncementMessages) {
     unsafe {
-        Vec::from_raw_parts(messages.array, messages.length as usize, messages.capacity as usize);
+        let _ = Vec::from_raw_parts(messages.array, messages.length as usize, messages.capacity as usize);
     }
 }
 
