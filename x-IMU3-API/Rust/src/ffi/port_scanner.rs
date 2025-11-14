@@ -100,7 +100,7 @@ impl From<Vec<Device>> for Devices {
 #[no_mangle]
 pub extern "C" fn XIMU3_devices_free(devices: Devices) {
     unsafe {
-        Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
+        let _ = Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
     }
 }
 

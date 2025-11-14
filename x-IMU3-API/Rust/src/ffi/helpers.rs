@@ -33,7 +33,7 @@ impl From<Vec<String>> for CharArrays {
 #[no_mangle]
 pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
     unsafe {
-        Vec::from_raw_parts(char_arrays.array, char_arrays.length as usize, char_arrays.capacity as usize);
+        let _ = Vec::from_raw_parts(char_arrays.array, char_arrays.length as usize, char_arrays.capacity as usize);
     }
 }
 
