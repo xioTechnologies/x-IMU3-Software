@@ -107,6 +107,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ github.ref_name }} "x-IMU3-API-${{ matrix.target[1] }}.zip"
 
+  rust-examples:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        working-directory: Examples/Rust/
+        run: cargo build --release
+
   rust-publish:
     runs-on: ubuntu-22.04
 
@@ -140,7 +150,7 @@ jobs:
       - name: Restore NuGet Packages
         run: nuget restore Examples/CSharp/x-IMU3-Examples/x-IMU3-Examples.sln
 
-      - name: Run examples
+      - name: Build examples
         working-directory: Examples/CSharp/x-IMU3-Examples/
         run: msbuild x-IMU3-Examples.sln -property:Configuration=Release
 
