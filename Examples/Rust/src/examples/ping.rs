@@ -39,12 +39,12 @@ pub fn run() {
     connection.close();
 }
 
-fn print_ping_response(ping_response: std::io::Result<PingResponse>) {
+fn print_ping_response(ping_response: Option<PingResponse>) {
     match ping_response {
-        Ok(ping_response) => {
+        Some(ping_response) => {
             println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
             // println!("{ping_response}"); // alternative to above
         }
-        Err(error) => println!("Ping failed. {error}"),
+        None => println!("No response"),
     }
 }

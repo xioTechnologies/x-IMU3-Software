@@ -1,27 +1,23 @@
 use crate::ffi::helpers::*;
-use crate::ffi::result::*;
 use crate::ping_response::*;
 use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct PingResponseC {
-    pub result: Result,
     pub interface: [c_char; CHAR_ARRAY_SIZE],
     pub device_name: [c_char; CHAR_ARRAY_SIZE],
     pub serial_number: [c_char; CHAR_ARRAY_SIZE],
 }
 
-impl From<std::io::Result<PingResponse>> for PingResponseC {
-    fn from(result: std::io::Result<PingResponse>) -> Self {
-        match result {
-            Ok(ping_response) => Self {
-                result: Result::Ok,
+impl From<Option<PingResponse>> for PingResponseC {
+    fn from(ping_response: Option<PingResponse>) -> Self {
+        match ping_response {
+            Some(ping_response) => Self {
                 interface: str_to_char_array(&ping_response.interface),
                 device_name: str_to_char_array(&ping_response.device_name),
                 serial_number: str_to_char_array(&ping_response.serial_number),
             },
-            Err(error) => Self {
-                result: Result::from(&error),
+            None => Self {
                 interface: EMPTY_CHAR_ARRAY,
                 device_name: EMPTY_CHAR_ARRAY,
                 serial_number: EMPTY_CHAR_ARRAY,

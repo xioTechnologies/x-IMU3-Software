@@ -1,7 +1,9 @@
+use crate::command_message::*;
 use crate::connection::*;
 use crate::connection_info::*;
 use crate::data_messages::*;
 use crate::ffi::callback::*;
+use crate::ffi::command_message::*;
 use crate::ffi::connection_info::*;
 use crate::ffi::connection_type::*;
 use crate::ffi::helpers::*;
@@ -82,23 +84,39 @@ pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResp
 pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callback: Callback<PingResponseC>, context: *mut c_void) {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    let closure = Box::new(move |ping_response: std::io::Result<PingResponse>| callback(ping_response.into(), void_ptr.0));
+    let closure = Box::new(move |ping_response: Option<PingResponse>| callback(ping_response.into(), void_ptr.0));
     connection.ping_async(closure);
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_send_commands(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32) -> CharArrays {
+pub extern "C" fn XIMU3_connection_send_command(connection: *mut Connection, command: *const c_char, retries: u32, timeout: u32) -> CommandMessageC {
+    let connection = unsafe { &*connection };
+    let command = unsafe { char_ptr_to_bytes(command) };
+    connection.send_command(command, retries, timeout).into()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_send_commands(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32) -> CommandMessages {
     let connection = unsafe { &*connection };
     let commands = unsafe { char_ptr_array_to_vec_bytes(commands, length) };
     connection.send_commands(commands, retries, timeout).into()
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32, callback: Callback<CharArrays>, context: *mut c_void) {
+pub extern "C" fn XIMU3_connection_send_command_async(connection: *mut Connection, command: *const c_char, retries: u32, timeout: u32, callback: Callback<CommandMessageC>, context: *mut c_void) {
+    let connection = unsafe { &*connection };
+    let command = unsafe { char_ptr_to_bytes(command) };
+    let void_ptr = VoidPtr(context);
+    let closure = Box::new(move |response: Option<CommandMessage>| callback(response.into(), void_ptr.0));
+    connection.send_command_async(command, retries, timeout, closure);
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32, callback: Callback<CommandMessages>, context: *mut c_void) {
     let connection = unsafe { &*connection };
     let commands = unsafe { char_ptr_array_to_vec_bytes(commands, length) };
     let void_ptr = VoidPtr(context);
-    let closure = Box::new(move |responses: Vec<Vec<u8>>| callback(responses.into(), void_ptr.0));
+    let closure = Box::new(move |responses: Vec<Option<CommandMessage>>| callback(responses.into(), void_ptr.0));
     connection.send_commands_async(commands, retries, timeout, closure);
 }
 

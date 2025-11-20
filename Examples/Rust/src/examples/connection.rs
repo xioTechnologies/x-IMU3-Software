@@ -40,7 +40,7 @@ pub fn run(connection_info: &ConnectionInfo) {
     }
 
     // Send command to strobe LED
-    connection.send_commands(vec!["{\"strobe\":null}".into()], 2, 500);
+    connection.send_commands(vec!["{\"strobe\":null}".into()], DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
     // Close connection
     std::thread::sleep(std::time::Duration::from_secs(60));
