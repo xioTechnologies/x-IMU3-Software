@@ -15,6 +15,12 @@ pub struct SerialAccessoryMessage {
     pub number_of_bytes: size_t,
 }
 
+impl SerialAccessoryMessage {
+    pub fn char_array_as_string(self) -> String {
+        char_array_to_string(&self.char_array, self.number_of_bytes)
+    }
+}
+
 impl DataMessage for SerialAccessoryMessage {
     fn get_ascii_id() -> u8 {
         b'S'
