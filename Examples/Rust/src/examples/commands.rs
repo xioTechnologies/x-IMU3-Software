@@ -1,7 +1,7 @@
 use crate::helpers;
-use ximu3::command_message::*;
 use ximu3::connection::*;
 use ximu3::port_scanner::*;
+use ximu3::response::*;
 
 pub fn run() {
     // Search for connection
@@ -49,11 +49,16 @@ pub fn run() {
     connection.close();
 }
 
-fn print_responses(responses: Vec<Vec<u8>>) {
+fn print_responses(responses: Vec<Option<Response>>) {
     println!("{} responses", responses.len());
 
     for response in responses {
-        let response = CommandMessage::parse(&response);
+        if response.is_none() {
+            println!("No response");
+            continue;
+        }
+
+        let response = response.unwrap();
 
         if let Some(error) = response.error {
             println!("{error}");

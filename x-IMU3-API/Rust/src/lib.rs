@@ -2,7 +2,7 @@
 extern crate scan_fmt;
 
 pub mod charging_status;
-pub mod command_message;
+mod command;
 pub mod connection;
 pub mod connection_info;
 mod connections;
@@ -18,4 +18,5 @@ pub mod ping_response;
 pub mod port_scanner;
 pub mod receive_error;
 mod receiver;
+pub mod response;
 pub mod statistics;

@@ -1,4 +1,4 @@
-use crate::command_message::*;
+use crate::command::*;
 use crate::connection_info::*;
 use crate::connections::*;
 use crate::data_messages::*;
@@ -6,6 +6,7 @@ use crate::dispatcher::*;
 use crate::ping_response::*;
 use crate::receive_error::*;
 use crate::receiver::*;
+use crate::response::*;
 use crate::statistics::*;
 use crossbeam::channel::Sender;
 use std::ops::Drop;
@@ -116,21 +117,21 @@ impl Connection {
     pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
         let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200); // 4 retries with 200 ms timeout = 1 second
 
-        if responses.len() == 0 {
+        if responses.len() == 0 || responses[0].is_none() {
             return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "No response."));
         }
 
-        PingResponse::parse(responses[0].as_slice())
+        PingResponse::parse(&responses[0].clone().unwrap().json)
     }
 
-    pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
+    pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<Response>> {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
         Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
     }
 
-    pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Vec<u8>>) + Send>) {
+    pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Option<Response>>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
@@ -147,16 +148,16 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
+    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<Response>> {
         struct Transaction {
-            command: Option<CommandMessage>,
-            response: Option<CommandMessage>,
+            command: Option<Command>,
+            response: Option<Response>,
         }
 
         let mut transactions: Vec<Transaction> = commands
             .iter()
             .map(|command| {
-                if let Ok(command) = CommandMessage::parse_internal(command) {
+                if let Some(command) = Command::parse(command) {
                     Transaction {
                         command: Some(command),
                         response: None,
@@ -172,8 +173,8 @@ impl Connection {
 
         let (response_sender, response_receiver) = crossbeam::channel::unbounded();
 
-        let closure_id = receiver.lock().unwrap().dispatcher.add_command_closure(Box::new(move |command: CommandMessage| {
-            response_sender.send(command).ok();
+        let closure_id = receiver.lock().unwrap().dispatcher.add_response_closure(Box::new(move |response: Response| {
+            response_sender.send(response).ok();
         }));
 
         'outer: for _ in 0..(1 + retries) {
@@ -209,8 +210,7 @@ impl Connection {
 
         receiver.lock().unwrap().dispatcher.remove_closure(closure_id);
 
-        let responses: Vec<_> = transactions.iter().filter_map(|transaction| transaction.response.clone()).collect();
-        responses.iter().map(|response| response.json.clone()).collect()
+        transactions.iter().map(|transaction| transaction.response.clone()).collect()
     }
 
     pub fn get_info(&self) -> ConnectionInfo {
@@ -229,8 +229,8 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_statistics_closure(closure)
     }
 
-    pub(crate) fn add_command_closure(&self, closure: Box<dyn Fn(CommandMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_command_closure(closure)
+    pub(crate) fn add_response_closure(&self, closure: Box<dyn Fn(Response) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_response_closure(closure)
     }
 
     pub(crate) fn add_data_closure(&self, closure: Box<dyn Fn(Box<dyn DataMessage>) + Send>) -> u64 {

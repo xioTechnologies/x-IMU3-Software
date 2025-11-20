@@ -58,26 +58,30 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<std::string>&)> callback = [](const auto& responses)
+    std::function<void(const std::vector<std::optional<ximu3::Response>>&)> callback = [](const auto& responses)
     {
         printResponses(responses);
     };
 
-    static void printResponses(const std::vector<std::string>& responses)
+    static void printResponses(const std::vector<std::optional<ximu3::Response>>& responses)
     {
         std::cout << responses.size() << " responses" << std::endl;
 
-        for (const auto& response_ : responses)
+        for (const auto& response : responses)
         {
-            const auto response = ximu3::XIMU3_command_message_parse(response_.c_str());
-
-            if (std::strlen(response.error) > 0)
+            if (! response)
             {
-                std::cout << response.error << std::endl;
+                std::cout << "No response" << std::endl;
+                continue;
+            }
+
+            if (const auto error = response->error)
+            {
+                std::cout << *error << std::endl;
                 return;
             }
 
-            std::cout << response.key << " : " << response.value << std::endl;
+            std::cout << response->key << " : " << response->value << std::endl;
         }
     }
 };

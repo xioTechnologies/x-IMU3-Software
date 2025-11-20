@@ -37,12 +37,12 @@ style = "both"
 prefix = "XIMU3_"
 
 [export.rename]
-"CommandMessageC" = "CommandMessage"
 "DataLoggerC" = "DataLogger"
 "DeviceC" = "Device"
 "NetworkAnnouncementC" = "NetworkAnnouncement"
 "NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
 "PingResponseC" = "PingResponse"
+"ResponseC" = "Response"
 "UsbConnectionInfoC" = "UsbConnectionInfo"
 "SerialConnectionInfoC" = "SerialConnectionInfo"
 "TcpConnectionInfoC" = "TcpConnectionInfo"

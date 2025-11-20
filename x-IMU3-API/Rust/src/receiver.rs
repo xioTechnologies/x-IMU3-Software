@@ -1,8 +1,8 @@
-use crate::command_message::*;
 use crate::data_messages::*;
 use crate::dispatcher::*;
 use crate::mux_message::*;
 use crate::receive_error::*;
+use crate::response::*;
 use crate::statistics::*;
 
 const BUFFER_SIZE: usize = 4096;
@@ -60,8 +60,8 @@ impl Receiver {
     }
 
     fn receive_command_message(&self) -> Result<(), ReceiveError> {
-        let command = CommandMessage::parse_internal(&self.buffer[..self.index])?;
-        self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
+        let response = Response::parse(&self.buffer[..self.index])?;
+        self.dispatcher.sender.send(DispatcherData::Response(response)).ok();
         Ok(())
     }
 
