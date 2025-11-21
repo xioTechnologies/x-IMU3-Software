@@ -10,7 +10,6 @@ use crate::statistics::*;
 use crossbeam::channel::Sender;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 pub struct Connection {
     dropped: Arc<Mutex<bool>>,
@@ -34,14 +33,14 @@ impl Connection {
 
         let dropped = connection.dropped.clone();
         let decoder = connection.internal.lock().unwrap().get_decoder();
-        let initial_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros();
+        let start_time = std::time::Instant::now();
         let mut previous_statistics: Statistics = Default::default();
 
         std::thread::spawn(move || loop {
             std::thread::sleep(std::time::Duration::from_secs(1));
 
             if let Ok(mut decoder) = decoder.lock() {
-                decoder.statistics.timestamp = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros() - initial_time) as u64;
+                decoder.statistics.timestamp = start_time.elapsed().as_micros() as u64;
 
                 let delta_time = (decoder.statistics.timestamp - previous_statistics.timestamp) as f32 / 1E6;
                 let delta_data = decoder.statistics.data_total - previous_statistics.data_total;
@@ -184,9 +183,9 @@ impl Connection {
                 }
             }
 
-            let end_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() + timeout as u128;
+            let start_time = std::time::Instant::now();
 
-            while SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() < end_time {
+            while start_time.elapsed() < std::time::Duration::from_millis(timeout as u64) {
                 if let Ok(response) = response_receiver.try_recv() {
                     for transaction in transactions.iter_mut() {
                         if let Some(command) = transaction.command.as_ref() {

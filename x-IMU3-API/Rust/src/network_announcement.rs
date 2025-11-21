@@ -7,7 +7,6 @@ use std::net::{Ipv4Addr, UdpSocket};
 use std::ops::Drop;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Clone)]
 pub struct NetworkAnnouncementMessage {
@@ -20,7 +19,7 @@ pub struct NetworkAnnouncementMessage {
     pub rssi: i32,
     pub battery: i32,
     pub charging_status: ChargingStatus,
-    pub(crate) expiry: u128,
+    pub(crate) time: std::time::Instant,
 }
 
 impl From<&NetworkAnnouncementMessage> for TcpConnectionInfo {
@@ -117,7 +116,7 @@ impl NetworkAnnouncement {
                     }
                 }
 
-                messages.lock().unwrap().retain(|device| device.expiry > SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis());
+                messages.lock().unwrap().retain(|device| device.time.elapsed() < std::time::Duration::from_secs(2)); // discard messages older than 2 seconds
 
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
@@ -162,7 +161,7 @@ impl NetworkAnnouncement {
             rssi: object.rssi.unwrap_or(-1),
             battery: object.battery.unwrap_or(-1),
             charging_status: ChargingStatus::from(object.status.unwrap_or(-1)),
-            expiry: SystemTime::now().duration_since(UNIX_EPOCH).ok()?.as_millis() + 2000, // expire after 2 seconds
+            time: std::time::Instant::now(),
         })
     }
 

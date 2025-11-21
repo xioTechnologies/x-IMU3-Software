@@ -5,12 +5,10 @@ pub fn run() {
     // Search for connection
     let devices = PortScanner::scan_filter(PortType::Usb);
 
-    if devices.is_empty() {
+    let Some(device) = devices.first() else {
         println!("No USB connections available");
         return;
-    }
-
-    let device = devices.first().unwrap();
+    };
 
     println!("Found {} {}", device.device_name, device.serial_number);
 

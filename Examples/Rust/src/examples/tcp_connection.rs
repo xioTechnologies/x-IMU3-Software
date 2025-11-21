@@ -6,21 +6,20 @@ use ximu3::network_announcement::*;
 
 pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
-        let network_announcement = NetworkAnnouncement::new();
+        let network_announcement = match NetworkAnnouncement::new() {
+            Ok(network_announcement) => network_announcement,
+            Err(error) => {
+                println!("Network announcement failed. {error}");
+                return;
+            }
+        };
 
-        if let Err(error) = network_announcement {
-            println!("Network announcement failed. {error}");
-            return;
-        }
+        let messages = network_announcement.get_messages_after_short_delay();
 
-        let messages = network_announcement.unwrap().get_messages_after_short_delay();
-
-        if messages.is_empty() {
+        let Some(message) = messages.first() else {
             println!("No TCP connections available");
             return;
-        }
-
-        let message = messages.first().unwrap();
+        };
 
         println!("Found {} {}", message.device_name, message.serial_number);
 

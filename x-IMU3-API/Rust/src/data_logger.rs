@@ -34,8 +34,9 @@ impl<'a> DataLogger<'a> {
         let mut paths = Vec::new();
 
         for (index, _) in data_logger.connections.iter().enumerate() {
-            paths.push(Path::new(&root).join("Connection ".to_owned() + index.to_string().as_str()).to_str().unwrap().to_string());
-            std::fs::create_dir_all(paths.last().unwrap())?;
+            let connection_path = Path::new(&root).join(format!("Connection {}", index));
+            std::fs::create_dir_all(&connection_path)?;
+            paths.push(connection_path);
         }
 
         // Add closures
@@ -49,21 +50,21 @@ impl<'a> DataLogger<'a> {
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_decode_error_closure(Box::new(move |decode_error| {
-                sender_clone.send((Path::new(&path_clone).join("DecodeError.txt").to_str().unwrap().to_owned(), "", decode_error.to_string() + "\n")).ok();
+                sender_clone.send((path_clone.join("DecodeError.txt"), "".to_owned(), decode_error.to_string() + "\n")).ok();
             })));
 
             let sender_clone = sender.clone();
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_command_closure(Box::new(move |command| {
-                sender_clone.send((Path::new(&path_clone).join(COMMAND_FILE_NAME).to_str().unwrap().to_owned(), "[\n", "    ".to_owned() + command.json.as_str() + "\n]")).ok();
+                sender_clone.send((path_clone.join(COMMAND_FILE_NAME), "[\n".to_owned(), format!("    {}\n]", command.json))).ok();
             })));
 
             let sender_clone = sender.clone();
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_data_closure(Box::new(move |message| {
-                sender_clone.send((Path::new(&path_clone).join(message.get_csv_file_name()).to_str().unwrap().to_owned(), message.get_csv_headings(), message.to_csv_row())).ok();
+                sender_clone.send((path_clone.join(message.get_csv_file_name()), message.get_csv_headings().to_owned(), message.to_csv_row())).ok();
             })));
         }
 
@@ -72,13 +73,13 @@ impl<'a> DataLogger<'a> {
         let in_progress = data_logger.in_progress.clone();
 
         std::thread::spawn(move || {
-            let mut files: HashMap<String, File> = HashMap::new();
+            let mut files: HashMap<std::path::PathBuf, File> = HashMap::new();
 
             loop {
                 match receiver.recv() {
                     Ok((path, preamble, line)) => {
                         if let Some(mut file) = files.get(&path) {
-                            if path.contains(COMMAND_FILE_NAME) {
+                            if path.file_name().map(|name| name == COMMAND_FILE_NAME).unwrap_or(false) {
                                 file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
                                 file.write_all(",\n".as_bytes()).ok();
                             }
@@ -99,11 +100,11 @@ impl<'a> DataLogger<'a> {
 
             // Rename connection directories
             for path in &paths {
-                if let Ok(json) = std::fs::read_to_string(Path::new(&path).join(COMMAND_FILE_NAME).to_str().unwrap()) {
+                if let Ok(json) = std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
                     if let Ok(array) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
                         for element in array {
                             if let Ok(ping_response) = PingResponse::parse(&element.to_string()) {
-                                let new_path = Path::new(&root).join(ping_response.device_name + " " + ping_response.serial_number.as_str() + " (" + ping_response.interface.as_str() + ")");
+                                let new_path = Path::new(&root).join(format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface));
                                 std::fs::rename(path, new_path).ok();
                                 break;
                             }

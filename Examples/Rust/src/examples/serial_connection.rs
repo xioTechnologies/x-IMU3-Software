@@ -7,12 +7,10 @@ pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
         let devices = PortScanner::scan_filter(PortType::Serial);
 
-        if devices.is_empty() {
+        let Some(device) = devices.first() else {
             println!("No serial connections available");
             return;
-        }
-
-        let device = devices.first().unwrap();
+        };
 
         println!("Found {} {}", device.device_name, device.serial_number);
 
