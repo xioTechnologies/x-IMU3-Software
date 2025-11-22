@@ -12,6 +12,7 @@ pub enum ReceiveError {
     InvalidEscapeSequence,
     InvalidBinaryMessageLength,
     UnableToParseAsciiMessage,
+    UnknownError,
 }
 
 impl fmt::Display for ReceiveError {
@@ -26,6 +27,7 @@ impl fmt::Display for ReceiveError {
             Self::InvalidEscapeSequence => write!(formatter, "Invalid escape sequence"),
             Self::InvalidBinaryMessageLength => write!(formatter, "Invalid binary message length"),
             Self::UnableToParseAsciiMessage => write!(formatter, "Unable to parse ASCII message"),
+            Self::UnknownError => write!(formatter, "Unknown error"),
         }
     }
 }

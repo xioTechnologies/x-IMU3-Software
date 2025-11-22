@@ -100,6 +100,7 @@ typedef enum XIMU3_ReceiveError
     XIMU3_ReceiveErrorInvalidEscapeSequence,
     XIMU3_ReceiveErrorInvalidBinaryMessageLength,
     XIMU3_ReceiveErrorUnableToParseAsciiMessage,
+    XIMU3_ReceiveErrorUnknownError,
 } XIMU3_ReceiveError;
 
 typedef enum XIMU3_FileConverterStatus
