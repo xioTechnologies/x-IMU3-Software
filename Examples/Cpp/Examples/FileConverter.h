@@ -14,8 +14,8 @@ public:
     FileConverter()
     {
         const auto destination = "C:/";
-        const auto name = "File Conversion Example";
-        const std::vector<std::string> filePaths = { "C:/file.ximu3" }; // replace with actual file path
+        const auto name = "x-IMU3 File Conversion Example";
+        const std::vector<std::string> filePaths = { "C:/x-IMU3 Example File.ximu3" }; // replace with actual file path
 
         if (helpers::yesOrNo("Use async implementation?"))
         {

@@ -5,8 +5,8 @@ namespace Ximu3Examples
         public FileConverter()
         {
             string destination = "C:/";
-            string name = "File Conversion Example";
-            string[] filePaths = ["C:/file.ximu3"]; // replace with actual file path
+            string name = "x-IMU3 File Conversion Example";
+            string[] filePaths = ["C:/x-IMU3 Example File.ximu3"]; // replace with actual file path
 
             if (Helpers.YesOrNo("Use async implementation?"))
             {
