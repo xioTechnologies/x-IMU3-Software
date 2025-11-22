@@ -47,10 +47,9 @@ impl GenericConnection for TcpConnection {
                     Ok(number_of_bytes) => {
                         decoder.lock().unwrap().process_bytes(&buffer[..number_of_bytes]);
                     }
-                    Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                    Err(_) => {
                         std::thread::sleep(std::time::Duration::from_millis(1));
                     }
-                    _ => {}
                 }
                 while let Ok(data) = write_receiver.try_recv() {
                     stream.write(&data).ok();
