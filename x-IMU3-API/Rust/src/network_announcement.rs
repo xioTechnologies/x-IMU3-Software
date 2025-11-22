@@ -83,6 +83,8 @@ impl NetworkAnnouncement {
     pub fn new() -> std::io::Result<Self> {
         let socket = UdpSocket::bind("0.0.0.0:10000")?;
 
+        socket.set_nonblocking(true)?;
+
         let network_announcement = Self {
             dropped: Arc::new(Mutex::new(false)),
             closure_counter: AtomicU64::new(0),
@@ -95,16 +97,18 @@ impl NetworkAnnouncement {
         let messages = network_announcement.messages.clone();
 
         std::thread::spawn(move || {
-            socket.set_read_timeout(Some(std::time::Duration::from_millis(100))).ok();
-
             loop {
                 let mut buffer = [0_u8; 1024];
 
-                let mut message = None;
-
-                if let Ok((number_of_bytes, _)) = socket.recv_from(&mut buffer) {
-                    message = Self::parse(&buffer[..number_of_bytes]);
-                }
+                let message = {
+                    match socket.recv_from(&mut buffer) {
+                        Ok((number_of_bytes, _)) => Self::parse(&buffer[..number_of_bytes]),
+                        Err(_) => {
+                            std::thread::sleep(std::time::Duration::from_millis(1));
+                            None
+                        }
+                    }
+                };
 
                 if let Some(message) = &message {
                     if let Ok(mut messages) = messages.lock() {
