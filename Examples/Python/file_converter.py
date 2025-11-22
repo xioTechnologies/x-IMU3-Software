@@ -22,8 +22,8 @@ def callback(progress: ximu3.FileConverterProgress) -> None:
 
 
 destination = "C:/"
-name = "File Conversion Example"
-file_paths = ["C:/file.ximu3"]  # replace with actual file path
+name = "x-IMU3 File Conversion Example"
+file_paths = ["C:/x-IMU3 Example File.ximu3"]  # replace with actual file path
 
 if helpers.yes_or_no("Use async implementation?"):
     _ = ximu3.FileConverter(destination, name, file_paths, callback)

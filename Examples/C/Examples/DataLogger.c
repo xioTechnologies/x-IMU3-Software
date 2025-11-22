@@ -44,7 +44,7 @@ void DataLogger()
 
     // Log data
     const char* destination = "C:/";
-    const char* name = "Data Logger Example";
+    const char* name = "x-IMU3 Data Logger Example";
 
     if (YesOrNo("Use async implementation?"))
     {

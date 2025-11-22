@@ -10,8 +10,8 @@ static void PrintProgress(const XIMU3_FileConverterProgress progress);
 void FileConverter()
 {
     const char* destination = "C:/";
-    const char* name = "File Conversion Example";
-    const char* file_paths[] = { "C:/file.ximu3" }; // replace with actual file path
+    const char* name = "x-IMU3 File Conversion Example";
+    const char* file_paths[] = { "C:/x-IMU3 Example File.ximu3" }; // replace with actual file path
     const int numberOfFiles = sizeof(file_paths) / sizeof(file_paths[0]);
 
     if (YesOrNo("Use async implementation?"))

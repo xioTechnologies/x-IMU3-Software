@@ -26,7 +26,7 @@ pub fn run() {
 
     // Log data
     let destination = "C:/";
-    let name = "Data Logger Example";
+    let name = "x-IMU3 Data Logger Example";
 
     if helpers::yes_or_no("Use async implementation?") {
         let data_logger = DataLogger::new(destination, name, connections.iter().collect());

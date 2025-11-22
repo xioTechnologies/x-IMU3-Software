@@ -41,7 +41,7 @@ public:
 
         // Log data
         const auto destination = "C:/";
-        const auto name = "Data Logger Example";
+        const auto name = "x-IMU3 Data Logger Example";
 
         if (helpers::yesOrNo("Use async implementation?"))
         {

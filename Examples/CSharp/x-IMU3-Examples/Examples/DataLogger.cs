@@ -33,7 +33,7 @@ namespace Ximu3Examples
 
             // Log data
             string destination = "C:/";
-            string name = "Data Logger Example";
+            string name = "x-IMU3 Data Logger Example";
 
             if (Helpers.YesOrNo("Use async implementation?"))
             {

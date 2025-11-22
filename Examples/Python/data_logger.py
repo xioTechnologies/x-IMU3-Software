@@ -22,7 +22,7 @@ if not connections:
 
 # Log data
 destination = "C:/"
-name = "Data Logger Example"
+name = "x-IMU3 Data Logger Example"
 
 if helpers.yes_or_no("Use async implementation?"):
     data_logger = ximu3.DataLogger(destination, name, connections)

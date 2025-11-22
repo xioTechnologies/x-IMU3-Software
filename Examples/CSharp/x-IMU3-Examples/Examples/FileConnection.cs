@@ -4,7 +4,7 @@
     {
         public FileConnection()
         {
-            Ximu3.FileConnectionInfo connectionInfo = new("C:/file.ximu3"); // replace with actual connection info 
+            Ximu3.FileConnectionInfo connectionInfo = new("C:/x-IMU3 Example File.ximu3"); // replace with actual connection info
 
             Run(connectionInfo);
         }
