@@ -76,23 +76,26 @@ impl<'a> DataLogger<'a> {
             let mut files: HashMap<std::path::PathBuf, File> = HashMap::new();
 
             loop {
-                match receiver.recv() {
-                    Ok((path, preamble, line)) => {
-                        if let Some(mut file) = files.get(&path) {
-                            if path.file_name().map(|name| name == COMMAND_FILE_NAME).unwrap_or(false) {
-                                file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
-                                file.write_all(",\n".as_bytes()).ok();
-                            }
+                let (path, preamble, line) = match receiver.recv() {
+                    Ok(tuple) => tuple,
+                    Err(_) => break,
+                };
+
+                match files.get(&path) {
+                    Some(mut file) => {
+                        if path.file_name().map(|name| name == COMMAND_FILE_NAME).unwrap_or(false) {
+                            file.seek(SeekFrom::End(-2)).ok(); // remove trailing "\n]"
+                            file.write_all(",\n".as_bytes()).ok();
+                        }
+                        file.write_all(line.as_bytes()).ok();
+                    }
+                    None => {
+                        if let Ok(mut file) = File::create(&path) {
+                            file.write_all(preamble.as_bytes()).ok();
                             file.write_all(line.as_bytes()).ok();
-                        } else {
-                            if let Ok(mut file) = File::create(&path) {
-                                file.write_all(preamble.as_bytes()).ok();
-                                file.write_all(line.as_bytes()).ok();
-                                files.insert(path, file);
-                            }
+                            files.insert(path, file);
                         }
                     }
-                    Err(_) => break,
                 }
             }
 
@@ -100,16 +103,31 @@ impl<'a> DataLogger<'a> {
 
             // Rename connection directories
             for path in &paths {
-                if let Ok(json) = std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
-                    if let Ok(array) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
-                        for element in array {
-                            if let Ok(ping_response) = PingResponse::parse(&element.to_string()) {
-                                let new_path = Path::new(&root).join(format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface));
-                                std::fs::rename(path, new_path).ok();
-                                break;
-                            }
-                        }
-                    }
+                let json = match std::fs::read(path.join(COMMAND_FILE_NAME)) {
+                    Ok(json) => json,
+                    Err(_) => continue,
+                };
+
+                let command_messages: Vec<serde_json::Value> = match serde_json::from_slice(&json) {
+                    Ok(command_messages) => command_messages,
+                    Err(_) => continue,
+                };
+
+                for command_message in command_messages {
+                    let command_message = match serde_json::to_string(&command_message) {
+                        Ok(command_message) => command_message,
+                        Err(_) => continue,
+                    };
+
+                    let ping_response = match PingResponse::parse(&command_message) {
+                        Ok(ping_response) => ping_response,
+                        Err(_) => continue,
+                    };
+
+                    let new_path = Path::new(&root).join(format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface));
+
+                    std::fs::rename(path, new_path).ok();
+                    break;
                 }
             }
 
