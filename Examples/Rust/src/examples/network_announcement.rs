@@ -2,14 +2,13 @@ use crate::helpers;
 use ximu3::network_announcement::*;
 
 pub fn run() {
-    let network_announcement = NetworkAnnouncement::new();
-
-    if let Err(error) = network_announcement {
-        println!("Network announcement failed. {error}");
-        return;
-    }
-
-    let network_announcement = network_announcement.unwrap();
+    let network_announcement = match NetworkAnnouncement::new() {
+        Ok(network_announcement) => network_announcement,
+        Err(error) => {
+            println!("Network announcement failed. {error}");
+            return;
+        }
+    };
 
     if helpers::yes_or_no("Use async implementation?") {
         network_announcement.add_closure(Box::new(|message| {

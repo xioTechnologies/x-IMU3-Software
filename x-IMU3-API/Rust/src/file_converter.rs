@@ -80,16 +80,17 @@ impl FileConverter {
             .collect();
 
         std::thread::spawn(move || {
-            let data_logger = DataLogger::new(&destination, &name, connections.iter().collect());
-
-            if data_logger.is_err() {
-                if let Ok(dropped) = dropped.lock() {
-                    if *dropped == false {
-                        closure(progress.clone());
+            let data_logger = match DataLogger::new(&destination, &name, connections.iter().collect()) {
+                Ok(data_logger) => data_logger,
+                Err(_) => {
+                    if let Ok(dropped) = dropped.lock() {
+                        if *dropped == false {
+                            closure(progress.clone());
+                        }
                     }
+                    return;
                 }
-                return;
-            }
+            };
 
             let end_of_file_counter = Arc::new(AtomicUsize::new(0));
 
@@ -130,7 +131,7 @@ impl FileConverter {
                 std::thread::sleep(std::time::Duration::from_millis(100));
             }
 
-            drop(data_logger.unwrap());
+            drop(data_logger);
 
             progress.status = FileConverterStatus::Complete;
             if let Ok(dropped) = dropped.lock() {

@@ -2,7 +2,7 @@ use crate::connection_info::*;
 use crate::connections::*;
 use crate::decoder::*;
 use crossbeam::channel::Sender;
-use std::net::{IpAddr, SocketAddr, UdpSocket};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
 use std::sync::{Arc, Mutex};
 
 pub struct UdpConnection {
@@ -25,7 +25,7 @@ impl UdpConnection {
 
 impl GenericConnection for UdpConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let socket = UdpSocket::bind(SocketAddr::new("0.0.0.0".parse::<IpAddr>().unwrap(), self.connection_info.receive_port))?;
+        let socket = UdpSocket::bind(SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), self.connection_info.receive_port))?;
 
         socket.set_nonblocking(true)?;
 

@@ -5,7 +5,7 @@ pub fn get_key() -> char {
 
     stdin().read_line(buffer).ok();
 
-    buffer.chars().nth(0).unwrap().to_ascii_uppercase()
+    buffer.chars().nth(0).unwrap_or_default().to_ascii_uppercase()
 }
 
 pub fn yes_or_no(question: &str) -> bool {

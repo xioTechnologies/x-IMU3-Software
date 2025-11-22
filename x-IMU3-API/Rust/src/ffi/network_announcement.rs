@@ -50,7 +50,7 @@ impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
             rssi: message.rssi,
             battery: message.battery,
             charging_status: message.charging_status,
-            expiry: 0,
+            time: std::time::Instant::now(),
         }
     }
 }
