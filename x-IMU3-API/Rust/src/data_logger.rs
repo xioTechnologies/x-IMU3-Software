@@ -17,7 +17,7 @@ pub struct DataLogger<'a> {
 impl<'a> DataLogger<'a> {
     pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> std::io::Result<Self> {
         // Create root directory
-        Path::new(destination).read_dir()?; // check destination exists
+        Path::new(destination).read_dir()?;
 
         let root = Path::new(destination).join(name);
 
@@ -34,9 +34,9 @@ impl<'a> DataLogger<'a> {
         let mut paths = Vec::new();
 
         for (index, _) in data_logger.connections.iter().enumerate() {
-            let connection_path = Path::new(&root).join(format!("Connection {}", index));
-            std::fs::create_dir_all(&connection_path)?;
-            paths.push(connection_path);
+            let path = Path::new(&root).join(format!("Connection {}", index));
+            std::fs::create_dir_all(&path)?;
+            paths.push(path);
         }
 
         // Add closures
