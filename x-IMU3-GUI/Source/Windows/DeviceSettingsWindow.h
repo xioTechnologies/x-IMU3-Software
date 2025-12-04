@@ -54,9 +54,9 @@ private:
 
     void sendCommand(const juce::String& key, const bool silent, std::function<void()> callback);
 
-    void writeCommands(const std::vector<CommandMessage>& commands);
+    void writeCommands(const std::vector<std::string>& keys, const std::vector<std::string>& commands);
 
-    void enableInProgress(const std::vector<CommandMessage>& commands);
+    void enableInProgress(const std::vector<std::string>& keys);
 
     void disableInProgress();
 

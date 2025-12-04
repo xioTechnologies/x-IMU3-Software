@@ -2,7 +2,9 @@
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/MessageDialog.h"
 #include "Firmware/Firmware.h"
+#include "KeyCompare.h"
 #include "Widgets/PopupMenuHeader.h"
+#include <ranges>
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")
@@ -16,34 +18,33 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     readAllButton.onClick = [this]
     {
-        const auto commands = deviceSettings->getReadCommands();
+        enableInProgress(deviceSettings->getReadKeys());
 
-        enableInProgress(commands);
-
-        connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<CommandMessage>& responses)
+        connectionPanel.sendCommands(deviceSettings->getReadCommands(), this, [&, keys = deviceSettings->getReadKeys()](const auto& responses)
         {
-            for (const auto& command : commands)
+            for (size_t index = 0; index < responses.size(); index++)
             {
-                const auto response = std::find(responses.begin(), responses.end(), command);
+                const auto key = keys[index];
+                const auto& response = responses[index];
 
-                if (response == responses.end() || response->error)
+                if (response.has_value() == false || response->error.has_value())
                 {
-                    deviceSettings->setStatus(command.key, Setting::Status::warning, "Unable to Read from Device");
+                    deviceSettings->setStatus(key, Setting::Status::warning, "Unable to Read from Device");
                     continue;
                 }
 
-                deviceSettings->setValue(*response);
+                deviceSettings->setValue(key, DeviceSettings::valueToVar(response->value));
 
-                if (CommandMessage::normaliseKey(command.key) == CommandMessage::normaliseKey("firmware_version") && response->getValue() != Firmware::version)
+                if (KeyCompare::compare(key, "firmware_version") && response->value != ("\"" + Firmware::version + "\""))
                 {
-                    deviceSettings->setStatus(command.key, Setting::Status::warning, "Unexpected Firmware Version");
+                    deviceSettings->setStatus(key, Setting::Status::warning, "Unexpected Firmware Version");
                     continue;
                 }
 
                 deviceSettings->setStatus(response->key, Setting::Status::normal, {});
             }
 
-            readAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
+            readAllButton.setToggleState(keys.size() != responses.size(), juce::dontSendNotification);
 
             disableInProgress();
         });
@@ -51,7 +52,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
 
     writeAllButton.onClick = [this]
     {
-        writeCommands(deviceSettings->getWriteCommands(true));
+        writeCommands(deviceSettings->getWriteKeys(), deviceSettings->getWriteCommands(true));
     };
 
     directory.createDirectory();
@@ -76,10 +77,14 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
                 return;
             }
 
+            const auto keys = deviceSettings->getWriteKeys();
+            const auto values = deviceSettings->getWriteValues(false);
+            jassert(keys.size() == values.size());
+
             juce::DynamicObject object;
-            for (const auto& command : deviceSettings->getWriteCommands(false))
+            for (size_t index = 0; index < keys.size(); index++)
             {
-                object.setProperty(juce::String(command.key), command.getValue());
+                object.setProperty(juce::String(keys[index]), juce::String(values[index]));
             }
 
             juce::FileOutputStream stream(fileChooser->getResult());
@@ -113,13 +118,13 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_,
             {
                 for (const auto& command : object->getProperties())
                 {
-                    deviceSettings->setValue({ command.name.toString(), command.value });
+                    deviceSettings->setValue(command.name.toString().toStdString(),  command.value);
                 }
             }
 
             if (readFromValueTree().writeSettingsWhenModified)
             {
-                writeCommands(deviceSettings->getWriteCommands(true));
+                writeCommands(deviceSettings->getWriteKeys(), deviceSettings->getWriteCommands(true));
             }
         });
     };
@@ -208,24 +213,24 @@ DeviceSettingsWindow::Settings DeviceSettingsWindow::readFromValueTree()
 
 void DeviceSettingsWindow::sendCommand(const juce::String& key, const bool silent, std::function<void()> callback)
 {
-    const CommandMessage command { key, {} };
+    const std::string command = "{\"" + key.toStdString() + "\":null}";
 
-    connectionPanel.sendCommands({ command }, this, [command, silent, callback](const std::vector<CommandMessage>& responses)
+    connectionPanel.sendCommands({ command }, this, [command, silent, callback](const auto& responses)
     {
         if (silent == false)
         {
             const auto showError = [command](const std::string& error)
             {
-                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>(command.json + " command failed. " + error + (error.ends_with(".") ? "" : ".")));
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>(command + " command failed. " + error + (error.ends_with(".") ? "" : ".")));
             };
 
-            if (responses.empty())
+            if (responses.front().has_value() == false)
             {
                 showError("No response");
             }
-            else if (responses.front().error)
+            else if (responses.front()->error.has_value())
             {
-                showError(*responses.front().error);
+                showError(*responses.front()->error);
             }
         }
 
@@ -233,24 +238,25 @@ void DeviceSettingsWindow::sendCommand(const juce::String& key, const bool silen
     });
 }
 
-void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& commands)
+void DeviceSettingsWindow::writeCommands(const std::vector<std::string>& keys, const std::vector<std::string>& commands)
 {
-    enableInProgress(commands);
+    enableInProgress(keys);
 
-    connectionPanel.sendCommands(commands, this, [&, commands](const auto& responses)
+    connectionPanel.sendCommands(commands, this, [&, keys, commands](const auto& responses)
     {
-        for (const auto& command : commands)
+        for (size_t index = 0; index < responses.size(); index++)
         {
-            const auto response = std::find(responses.begin(), responses.end(), command);
+            const auto key = keys[index];
+            const auto& response = responses[index];
 
-            if (response == responses.end() || response->error)
+            if (response.has_value() == false || response->error.has_value())
             {
-                deviceSettings->setStatus(command.key, Setting::Status::warning, "Unable to Write to Device");
+                deviceSettings->setStatus(key, Setting::Status::warning, "Unable to Write to Device");
                 continue;
             }
 
-            deviceSettings->setValue(*response);
-            deviceSettings->setStatus(response->key, Setting::Status::normal, {});
+            deviceSettings->setValue(response->key, DeviceSettings::valueToVar(response->value));
+            deviceSettings->setStatus(key, Setting::Status::normal, {});
         }
 
         writeAllButton.setToggleState(commands.size() != responses.size(), juce::dontSendNotification);
@@ -265,11 +271,11 @@ void DeviceSettingsWindow::writeCommands(const std::vector<CommandMessage>& comm
     });
 }
 
-void DeviceSettingsWindow::enableInProgress(const std::vector<CommandMessage>& commands)
+void DeviceSettingsWindow::enableInProgress(const std::vector<std::string>& keys)
 {
-    for (const auto& command : commands)
+    for (const auto& key : keys)
     {
-        deviceSettings->setStatus(command.key, Setting::Status::normal, {});
+        deviceSettings->setStatus(key, Setting::Status::normal, {});
     }
     readAllButton.setToggleState(false, juce::dontSendNotification);
     writeAllButton.setToggleState(false, juce::dontSendNotification);
@@ -397,11 +403,11 @@ void DeviceSettingsWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePr
             return juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
         }();
 
-        deviceSettings = std::make_unique<DeviceSettings>(tree, [this](const CommandMessage& command)
+        deviceSettings = std::make_unique<DeviceSettings>(tree, [this](const std::string& key, const std::string& command)
         {
             if (readFromValueTree().writeSettingsWhenModified)
             {
-                writeCommands({ command });
+                writeCommands({ key }, { command });
             }
         });
         addAndMakeVisible(*deviceSettings);

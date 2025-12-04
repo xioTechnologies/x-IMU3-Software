@@ -2,6 +2,7 @@
 #include "ConnectionPanelContainer.h"
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
+#include "KeyCompare.h"
 
 ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
     : connectionPanel(connectionPanel_),
@@ -16,7 +17,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
 
     locateButton.onClick = [&]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("strobe", {}), std::vector<ConnectionPanel*> { &connectionPanel }));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"strobe\":null}", std::vector<ConnectionPanel*> { &connectionPanel }));
     };
 
     const auto addNetworkAnnouncementCallback = [&](const std::string& ipAddress)
@@ -147,22 +148,27 @@ juce::String ConnectionPanelHeader::getHeading() const
     return headingLabel.getText();
 }
 
-void ConnectionPanelHeader::updateHeading(const std::vector<CommandMessage>& responses)
+void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses)
 {
     for (const auto& response : responses)
     {
-        if (response.error)
+        if (response.has_value() == false || response->error.has_value())
         {
             continue;
         }
 
-        if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("device_name"))
+        auto trimQuotes = [] (const std::string& string)
         {
-            updateHeading(response.getValue(), serialNumber);
+            return string.substr(1, string.size() - 2);
+        };
+
+        if (KeyCompare::compare(response->key, "device_name"))
+        {
+            updateHeading(trimQuotes(response->value), serialNumber);
         }
-        else if (CommandMessage::normaliseKey(response.key) == CommandMessage::normaliseKey("serial_number"))
+        else if (KeyCompare::compare(response->key, "serial_number"))
         {
-            updateHeading(deviceName, response.getValue());
+            updateHeading(deviceName, trimQuotes(response->value));
         }
     }
 }

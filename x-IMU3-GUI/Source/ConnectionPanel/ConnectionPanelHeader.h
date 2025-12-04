@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommandMessage.h"
+#include "ResponsesConverter.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
 #include "Widgets/IconAndText.h"
@@ -31,7 +31,7 @@ public:
 
     juce::String getHeading() const;
 
-    void updateHeading(const std::vector<CommandMessage>& responses);
+    void updateHeading(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses);
 
     void updateHeading(const juce::String& deviceName_, const juce::String& serialNumber_);
 

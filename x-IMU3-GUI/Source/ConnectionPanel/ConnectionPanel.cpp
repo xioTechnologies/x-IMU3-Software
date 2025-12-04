@@ -70,17 +70,17 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
     return connection;
 }
 
-void ConnectionPanel::sendCommands(const std::vector<CommandMessage>& commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<CommandMessage>& responses)> callback)
+void ConnectionPanel::sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses)> callback)
 {
-    connection->sendCommandsAsync({ commands.begin(), commands.end() }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [&, callbackOwner, callback](auto responses)
+    connection->sendCommandsAsync(commands, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [&, commands, callbackOwner, callback](auto responses)
     {
-        juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
+        juce::MessageManager::callAsync([&, commands, callbackOwner, callback, responses]
         {
-            header.updateHeading({ responses.begin(), responses.end() });
+            header.updateHeading(ResponsesConverter::convert(commands, responses));
 
             if (callbackOwner != nullptr && callback != nullptr)
             {
-                callback({ responses.begin(), responses.end() });
+                callback(ResponsesConverter::convert(commands, responses));
             }
         });
     });

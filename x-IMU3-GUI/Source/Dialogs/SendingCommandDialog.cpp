@@ -2,8 +2,8 @@
 #include "SendingCommandDialog.h"
 #include "Widgets/SimpleLabel.h"
 
-SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels)
-    : Dialog(BinaryData::progress_svg, "Sending Command " + replaceInvalidCharacters(command.json), "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
+SendingCommandDialog::SendingCommandDialog(const std::string& command, const std::vector<ConnectionPanel*>& connectionPanels)
+    : Dialog(BinaryData::progress_svg, "Sending Command " + replaceInvalidCharacters(command), "Retry", "Cancel", &closeWhenCompleteButton, 175, true)
 {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
@@ -46,12 +46,12 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
             {
                 row_->connectionPanel.sendCommands({ command }, this, [&, row_](const auto& responses)
                 {
-                    if (responses.empty())
+                    if (responses.front().has_value() == false)
                     {
                         row_->state = Row::State::failed;
                         row_->response = "No response";
                     }
-                    else if (const auto error = responses[0].error)
+                    else if (const auto error = responses.front()->error)
                     {
                         row_->state = Row::State::failed;
                         row_->response = *error;
@@ -59,9 +59,9 @@ SendingCommandDialog::SendingCommandDialog(const CommandMessage& command, const 
                     else
                     {
                         row_->state = Row::State::complete;
-                        if (responses[0].value != "null")
+                        if (responses.front()->value != "null")
                         {
-                            row_->response = replaceInvalidCharacters(responses[0].value);
+                            row_->response = replaceInvalidCharacters(responses.front()->value);
                         }
                     }
 

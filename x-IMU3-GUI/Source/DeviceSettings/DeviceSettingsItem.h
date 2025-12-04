@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ApplicationSettings.h"
-#include "CommandMessage.h"
 #include "CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Setting/SettingEnum.h"

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ApplicationSettings.h"
-#include "CommandMessage.h"
 #include "Dialog.h"
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
@@ -15,7 +14,7 @@ public:
 
     void resized() override;
 
-    CommandMessage getCommand();
+    std::string getCommand();
 
 private:
     enum class Type
