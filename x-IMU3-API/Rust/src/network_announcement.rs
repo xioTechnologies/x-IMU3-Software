@@ -137,8 +137,6 @@ impl NetworkAnnouncement {
     }
 
     fn parse(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
-        let json = std::str::from_utf8(json).ok()?;
-
         #[derive(Deserialize)]
         struct Object {
             name: String,
@@ -152,13 +150,12 @@ impl NetworkAnnouncement {
             status: Option<i32>,
         }
 
-        let object: Object = serde_json::from_str(json).ok()?;
-        let ip_address = object.ip.parse::<Ipv4Addr>().ok()?;
+        let object = serde_json::from_slice::<Object>(json).ok()?;
 
         Some(NetworkAnnouncementMessage {
             device_name: object.name,
             serial_number: object.sn,
-            ip_address,
+            ip_address: object.ip.parse::<Ipv4Addr>().ok()?,
             tcp_port: object.port.unwrap_or(0),
             udp_send: object.send.unwrap_or(0),
             udp_receive: object.receive.unwrap_or(0),

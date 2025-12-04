@@ -156,7 +156,7 @@ impl Connection {
         let mut transactions: Vec<Transaction> = commands
             .iter()
             .map(|&command| {
-                if let Ok(command) = CommandMessage::parse_json(command) {
+                if let Ok(command) = CommandMessage::parse_internal(command.as_bytes()) {
                     Transaction {
                         command: Some(command),
                         response: None,

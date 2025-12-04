@@ -5,7 +5,6 @@ use std::fmt;
 pub enum ReceiveError {
     BufferOverrun,
     InvalidMessageIdentifier,
-    InvalidUtf8,
     InvalidJson,
     JsonIsNotAnObject,
     JsonObjectIsNotASingleKeyValuePair,
@@ -20,7 +19,6 @@ impl fmt::Display for ReceiveError {
         match *self {
             Self::BufferOverrun => write!(formatter, "Buffer overrun"),
             Self::InvalidMessageIdentifier => write!(formatter, "Invalid message identifier"),
-            Self::InvalidUtf8 => write!(formatter, "Invalid UTF-8"),
             Self::InvalidJson => write!(formatter, "Invalid JSON"),
             Self::JsonIsNotAnObject => write!(formatter, "JSON is not an object"),
             Self::JsonObjectIsNotASingleKeyValuePair => write!(formatter, "JSON object is not a single key/value pair"),
