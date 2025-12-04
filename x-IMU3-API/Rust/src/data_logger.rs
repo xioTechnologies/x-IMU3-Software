@@ -57,7 +57,7 @@ impl<'a> DataLogger<'a> {
             let path_clone = paths[index].clone();
 
             data_logger.closure_ids[index].push(connection.add_command_closure(Box::new(move |command| {
-                sender_clone.send((path_clone.join(COMMAND_FILE_NAME), "[\n".to_owned(), format!("    {}\n]", command.json))).ok();
+                sender_clone.send((path_clone.join(COMMAND_FILE_NAME), "[\n".to_owned(), format!("    {}\n]", String::from_utf8_lossy(&command.json)))).ok();
             })));
 
             let sender_clone = sender.clone();
@@ -103,7 +103,7 @@ impl<'a> DataLogger<'a> {
                 if let Ok(json) = std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
                     if let Ok(array) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
                         for element in array {
-                            if let Ok(ping_response) = PingResponse::parse(&element.to_string()) {
+                            if let Ok(ping_response) = PingResponse::parse(&element.to_string().as_bytes()) {
                                 let new_path = Path::new(&root).join(format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface));
                                 std::fs::rename(path, new_path).ok();
                                 break;
@@ -118,7 +118,7 @@ impl<'a> DataLogger<'a> {
 
         // Send commands
         for connection in data_logger.connections.iter() {
-            connection.send_commands_async(vec!["{\"ping\":null}", "{\"time\":null}"], 4, 200, Box::new(|_| {}));
+            connection.send_commands_async(vec!["{\"ping\":null}".into(), "{\"time\":null}".into()], 4, 200, Box::new(|_| {}));
         }
 
         Ok(data_logger)

@@ -24,10 +24,10 @@ pub fn run() {
 
     // Example commands
     let commands = vec![
-        "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
-        "{\"serial_number\":null}",     // read serial number
-        "{\"firmware_version\":null}",  // read firmware version
-        "{\"invalid_key\":null}",       // invalid key to demonstrate an error response
+        "{\"device_name\":\"Foobar\"}".into(), // write "Foobar" to device name
+        "{\"serial_number\":null}".into(),     // read serial number
+        "{\"firmware_version\":null}".into(),  // read firmware version
+        "{\"invalid_key\":null}".into(),       // invalid key to demonstrate an error response
     ];
 
     // Send commands
@@ -47,7 +47,7 @@ pub fn run() {
     connection.close();
 }
 
-fn print_responses(responses: Vec<String>) {
+fn print_responses(responses: Vec<Vec<u8>>) {
     println!("{} responses", responses.len());
 
     for response in responses {
@@ -58,6 +58,6 @@ fn print_responses(responses: Vec<String>) {
             continue;
         }
 
-        println!("{} : {}", response.key, response.value);
+        println!("{} : {}", String::from_utf8_lossy(&response.key), String::from_utf8_lossy(&response.value));
     }
 }
