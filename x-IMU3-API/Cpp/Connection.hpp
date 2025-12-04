@@ -2,10 +2,12 @@
 
 #include "../C/Ximu3.h"
 #include <cassert>
+#include "CommandMessage.hpp"
 #include "ConnectionInfo.hpp"
 #include <functional>
 #include "Helpers.hpp"
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -90,20 +92,20 @@ namespace ximu3
             XIMU3_connection_close(connection);
         }
 
-        XIMU3_PingResponse ping()
+        std::optional<XIMU3_PingResponse> ping()
         {
-            return XIMU3_connection_ping(connection);
+            return toOptional(XIMU3_connection_ping(connection));
         }
 
-        void pingAsync(std::function<void(XIMU3_PingResponse)> callback)
+        void pingAsync(std::function<void(std::optional<XIMU3_PingResponse>)> callback)
         {
             struct WrappedCallback
             {
-                std::function<void(const XIMU3_PingResponse)> callback;
+                std::function<void(std::optional<XIMU3_PingResponse>)> callback;
 
                 void operator()(XIMU3_PingResponse pingResponse) const
                 {
-                    callback(pingResponse);
+                    callback(toOptional(pingResponse));
                     delete this;
                 }
             };
@@ -112,28 +114,50 @@ namespace ximu3
             return XIMU3_connection_ping_async(connection, Helpers::wrapCallable<XIMU3_PingResponse>(*wrappedCallback), wrappedCallback);
         }
 
-        std::vector<std::string> sendCommands(const std::vector<std::string>& commands, const uint32_t retries, const uint32_t timeout)
+        std::optional<CommandMessage> sendCommand(const std::string& command, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT)
         {
-            const auto charPtrVector = Helpers::toCharPtrVector(commands);
-            return Helpers::toVectorAndFree(XIMU3_connection_send_commands(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout));
+            return CommandMessage::from(XIMU3_connection_send_command(connection, command.data(), retries, timeout));
         }
 
-        void sendCommandsAsync(const std::vector<std::string>& commands, const uint32_t retries, const uint32_t timeout, std::function<void(const std::vector<std::string>&)> callback)
+        std::vector<std::optional<CommandMessage>> sendCommands(const std::vector<std::string>& commands, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT)
+        {
+            const auto charPtrVector = Helpers::toCharPtrVector(commands);
+            return toVectorAndFree(XIMU3_connection_send_commands(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout));
+        }
+
+        void sendCommandAsync(const std::string& command, std::function<void(const std::optional<CommandMessage>&)> callback, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT)
         {
             struct WrappedCallback
             {
-                std::function<void(const std::vector<std::string>&)> callback;
+                std::function<void(const std::optional<CommandMessage>&)> callback;
 
-                void operator()(XIMU3_CharArrays charArrays) const
+                void operator()(XIMU3_CommandMessage response) const
                 {
-                    callback(Helpers::toVectorAndFree(charArrays));
+                    callback(CommandMessage::from(response));
+                    delete this;
+                }
+            };
+            auto* const wrappedCallback = new WrappedCallback({ callback });
+
+            XIMU3_connection_send_command_async(connection, command.data(), retries, timeout, Helpers::wrapCallable<XIMU3_CommandMessage>(*wrappedCallback), wrappedCallback);
+        }
+
+        void sendCommandsAsync(const std::vector<std::string>& commands, std::function<void(const std::vector<std::optional<CommandMessage>>&)> callback, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT)
+        {
+            struct WrappedCallback
+            {
+                std::function<void(const std::vector<std::optional<CommandMessage>>&)> callback;
+
+                void operator()(XIMU3_CommandMessages responses) const
+                {
+                    callback(toVectorAndFree(responses));
                     delete this;
                 }
             };
             auto* const wrappedCallback = new WrappedCallback({ callback });
 
             const auto charPtrVector = Helpers::toCharPtrVector(commands);
-            XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout, Helpers::wrapCallable<XIMU3_CharArrays>(*wrappedCallback), wrappedCallback);
+            XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout, Helpers::wrapCallable<XIMU3_CommandMessages>(*wrappedCallback), wrappedCallback);
         }
 
         std::unique_ptr<ConnectionInfo> getInfo()
@@ -267,5 +291,29 @@ namespace ximu3
         friend class MuxConnectionInfo;
 
         XIMU3_Connection* connection;
+
+        static std::optional<XIMU3_PingResponse> toOptional(const XIMU3_PingResponse& pingResponse)
+        {
+            if (std::strlen(pingResponse.interface) == 0)
+            {
+                return {};
+            }
+
+            return pingResponse;
+        }
+
+        static std::vector<std::optional<CommandMessage>> toVectorAndFree(const XIMU3_CommandMessages& responses)
+        {
+            std::vector<std::optional<CommandMessage>> vector;
+
+            for (const auto& response : Helpers::toVector<XIMU3_CommandMessage>(responses))
+            {
+                vector.push_back(CommandMessage::from(response));
+            }
+
+            XIMU3_command_messages_free(responses);
+
+            return vector;
+        }
     };
 } // namespace ximu3

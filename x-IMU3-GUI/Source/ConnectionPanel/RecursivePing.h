@@ -14,7 +14,7 @@ public:
     {
         const juce::WeakReference weakReference(this);
 
-        connection->pingAsync([&, connection_ = connection, weakReference](ximu3::XIMU3_PingResponse pingResponse)
+        connection->pingAsync([&, connection_ = connection, weakReference](std::optional<ximu3::XIMU3_PingResponse> pingResponse)
         {
             juce::MessageManager::callAsync([&, connection_, pingResponse, weakReference]
             {
@@ -23,9 +23,9 @@ public:
                     return;
                 }
 
-                if (pingResponse.result == ximu3::XIMU3_ResultOk)
+                if (pingResponse.has_value())
                 {
-                    callback(pingResponse.device_name, pingResponse.serial_number);
+                    callback(pingResponse->device_name, pingResponse->serial_number);
                     return;
                 }
 

@@ -55,6 +55,8 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_ON_HOLD", XIMU3_ChargingStatusChargingOnHold) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_CONNECTED", XIMU3_ConnectionStatusConnected) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_RECONNECTING", XIMU3_ConnectionStatusReconnecting) == 0) &&
+        (PyModule_AddIntConstant(module, "DEFAULT_RETRIES", XIMU3_DEFAULT_RETRIES) == 0) &&
+        (PyModule_AddIntConstant(module, "DEFAULT_TIMEOUT", XIMU3_DEFAULT_TIMEOUT) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_FAILED", XIMU3_FileConverterStatusFailed) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_IN_PROGRESS", XIMU3_FileConverterStatusInProgress) == 0) &&

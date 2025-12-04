@@ -16,11 +16,6 @@ static void ping_response_free(PingResponse* self)
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* ping_response_get_result(PingResponse* self)
-{
-    return Py_BuildValue("i", self->ping_response.result);
-}
-
 static PyObject* ping_response_get_interface(PingResponse* self)
 {
     return Py_BuildValue("s", self->ping_response.interface);
@@ -42,7 +37,6 @@ static PyObject* ping_response_to_string(PingResponse* self, PyObject* args)
 }
 
 static PyGetSetDef ping_response_get_set[] = {
-    { "result", (getter) ping_response_get_result, NULL, "", NULL },
     { "interface", (getter) ping_response_get_interface, NULL, "", NULL },
     { "device_name", (getter) ping_response_get_device_name, NULL, "", NULL },
     { "serial_number", (getter) ping_response_get_serial_number, NULL, "", NULL },
@@ -65,6 +59,11 @@ static PyTypeObject ping_response_object = {
 
 static PyObject* ping_response_from(const XIMU3_PingResponse* const ping_response)
 {
+    if (strlen(ping_response->interface) == 0)
+    {
+        Py_RETURN_NONE;
+    }
+
     PingResponse* const self = (PingResponse*) ping_response_object.tp_alloc(&ping_response_object, 0);
     self->ping_response = *ping_response;
     return (PyObject*) self;

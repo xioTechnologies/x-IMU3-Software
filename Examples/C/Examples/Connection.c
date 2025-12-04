@@ -83,9 +83,7 @@ void Run(XIMU3_Connection* const connection, const char* const connectionInfoStr
     }
 
     // Send command to strobe LED
-    const char* const commands[] = { "{\"strobe\":null}" };
-    const XIMU3_CharArrays responses = XIMU3_connection_send_commands(connection, commands, 1, 2, 500);
-    XIMU3_char_arrays_free(responses);
+    XIMU3_connection_send_command(connection, "{\"strobe\":null}", XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
     // Close connection
     Wait(60);

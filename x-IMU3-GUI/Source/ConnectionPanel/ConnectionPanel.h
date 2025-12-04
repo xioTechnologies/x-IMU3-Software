@@ -6,7 +6,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "RecursivePing.h"
-#include "ResponsesConverter.h"
 #include "Widgets/DisabledOverlay.h"
 #include "WindowContainer.h"
 #include "Windows/Window.h"
@@ -35,7 +34,7 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    void sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses)> callback = nullptr);
+    void sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ximu3::CommandMessage>>& responses)> callback = nullptr);
 
     const juce::Colour& getTag() const;
 

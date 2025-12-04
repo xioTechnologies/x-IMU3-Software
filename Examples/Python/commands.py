@@ -30,11 +30,11 @@ commands = [
 # Send commands
 
 
-def print_responses(responses: list[str]) -> None:
-    print(f"{str(len(responses))} responses")
-
+def print_responses(responses: list[ximu3.CommandMessage | None]) -> None:
     for response in responses:
-        response = ximu3.CommandMessage.parse(response)
+        if response is None:
+            print("No response")
+            continue
 
         if response.error:
             print(response.error)
@@ -43,15 +43,15 @@ def print_responses(responses: list[str]) -> None:
         print(f"{response.key} : {response.value}")
 
 
-def callback(responses: list[str]) -> None:
+def callback(responses: list[ximu3.CommandMessage | None]) -> None:
     print_responses(responses)
 
 
 if helpers.yes_or_no("Use async implementation?"):
-    connection.send_commands_async(commands, 2, 500, callback)
+    connection.send_commands_async(commands, callback)
     time.sleep(3)
 else:
-    print_responses(connection.send_commands(commands, 2, 500))
+    print_responses(connection.send_commands(commands))
 
 # Close connection
 connection.close()

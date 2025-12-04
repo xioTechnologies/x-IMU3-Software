@@ -37,39 +37,41 @@ namespace Ximu3Examples
             // Send commands
             if (Helpers.YesOrNo("Use async implementation?"))
             {
-                connection.SendCommandsAsync(commands, 2, 500, Callback);
+                connection.SendCommandsAsync(commands, Callback);
 
                 System.Threading.Thread.Sleep(3000);
             }
             else
             {
-                PrintResponses(connection.SendCommands(commands, 2, 500));
+                PrintResponses(connection.SendCommands(commands));
             }
 
             // Close connection
             connection.Close();
         }
 
-        private void Callback(string[] responses)
+        private void Callback(Ximu3.CommandMessage?[] responses)
         {
             PrintResponses(responses);
         }
 
-        private static void PrintResponses(string[] responses)
+        private static void PrintResponses(Ximu3.CommandMessage?[] responses)
         {
-            Console.WriteLine(responses.Length + " responses");
-
-            foreach (string response_ in responses)
+            foreach (Ximu3.CommandMessage? response in responses)
             {
-                Ximu3.CApi.XIMU3_CommandMessage response = Ximu3.CApi.XIMU3_command_message_parse(Ximu3.Helpers.ToPointer(response_));
-
-                if (Ximu3.Helpers.ToString(response.error).Length > 0)
+                if (response == null)
                 {
-                    Console.WriteLine(Ximu3.Helpers.ToString(response.error));
+                    Console.WriteLine("No response");
                     continue;
                 }
 
-                Console.WriteLine(Ximu3.Helpers.ToString(response.key) + " : " + Ximu3.Helpers.ToString(response.value));
+                if (response.Error != null)
+                {
+                    Console.WriteLine(response.Error);
+                    continue;
+                }
+
+                Console.WriteLine(response.Key + " : " + response.Value);
             }
         }
     }

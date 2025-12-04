@@ -70,20 +70,20 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection()
     return connection;
 }
 
-void ConnectionPanel::sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses)> callback)
+void ConnectionPanel::sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ximu3::CommandMessage>>& responses)> callback)
 {
-    connection->sendCommandsAsync(commands, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout, [&, commands, callbackOwner, callback](auto responses)
+    connection->sendCommandsAsync(commands, [&, callbackOwner, callback](const auto& responses)
     {
-        juce::MessageManager::callAsync([&, commands, callbackOwner, callback, responses]
+        juce::MessageManager::callAsync([&, callbackOwner, callback, responses]
         {
-            header.updateHeading(ResponsesConverter::convert(commands, responses));
+            header.updateHeading(responses);
 
             if (callbackOwner != nullptr && callback != nullptr)
             {
-                callback(ResponsesConverter::convert(commands, responses));
+                callback(responses);
             }
         });
-    });
+    }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
 }
 
 const juce::Colour& ConnectionPanel::getTag() const

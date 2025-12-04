@@ -40,8 +40,7 @@ namespace Ximu3Examples
             }
 
             // Send command to strobe LED
-            string[] commands = ["{\"strobe\":null}"];
-            connection.SendCommands(commands, 2, 500);
+            connection.SendCommand("{\"strobe\":null}");
 
             // Close connection
             System.Threading.Thread.Sleep(60000);

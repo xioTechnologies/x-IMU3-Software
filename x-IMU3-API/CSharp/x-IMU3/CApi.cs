@@ -5,6 +5,8 @@ namespace Ximu3
 {
     public static class CApi
     {
+        public const int XIMU3_DEFAULT_RETRIES = 2;
+        public const int XIMU3_DEFAULT_TIMEOUT = 500;
         public const int XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE = 256;
         public const int XIMU3_CHAR_ARRAY_SIZE = 256;
 
@@ -116,6 +118,13 @@ namespace Ximu3
             public byte[] error;
         }
         [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_CommandMessages
+        {
+            public IntPtr array;
+            public UInt32 length;
+            public UInt32 capacity;
+        }
+        [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_UsbConnectionInfo
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
@@ -159,7 +168,6 @@ namespace Ximu3
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_PingResponse
         {
-            public XIMU3_Result result;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] interface_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
@@ -369,7 +377,9 @@ namespace Ximu3
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackPingResponseC(XIMU3_PingResponse data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void XIMU3_CallbackCharArrays(XIMU3_CharArrays data, IntPtr context);
+        public delegate void XIMU3_CallbackCommandMessage(XIMU3_CommandMessage data, IntPtr context);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackCommandMessages(XIMU3_CommandMessages data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackReceiveError(XIMU3_ReceiveError data, IntPtr context);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -421,7 +431,7 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus charging_status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_CommandMessage XIMU3_command_message_parse(IntPtr json);
+        public static extern void XIMU3_command_messages_free(XIMU3_CommandMessages messages);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_usb(XIMU3_UsbConnectionInfo connection_info);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -449,9 +459,13 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_ping_async(IntPtr connection, XIMU3_CallbackPingResponseC callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_CharArrays XIMU3_connection_send_commands(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout);
+        public static extern XIMU3_CommandMessage XIMU3_connection_send_command(IntPtr connection, IntPtr command, UInt32 retries, UInt32 timeout);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_connection_send_commands_async(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout, XIMU3_CallbackCharArrays callback, IntPtr context);
+        public static extern XIMU3_CommandMessages XIMU3_connection_send_commands(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_connection_send_command_async(IntPtr connection, IntPtr command, UInt32 retries, UInt32 timeout, XIMU3_CallbackCommandMessage callback, IntPtr context);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_connection_send_commands_async(IntPtr connection, IntPtr commands, UInt32 length, UInt32 retries, UInt32 timeout, XIMU3_CallbackCommandMessages callback, IntPtr context);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_ConnectionType XIMU3_connection_get_type(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

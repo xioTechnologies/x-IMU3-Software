@@ -2,7 +2,7 @@
 #define CONNECTION_H
 
 #include "../../C/Ximu3.h"
-#include "CharArraysCallback.h"
+#include "CommandMessage.h"
 #include "ConnectionInfo.h"
 #include "DataMessages/DataMessages.h"
 #include "Helpers.h"
@@ -148,13 +148,32 @@ static PyObject* connection_ping_async(Connection* self, PyObject* args)
     Py_RETURN_NONE;
 }
 
+static PyObject* connection_send_command(Connection* self, PyObject* args)
+{
+    const char* command;
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
+
+    if (PyArg_ParseTuple(args, "s|kk", &command, &retries, &timeout) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    XIMU3_CommandMessage response;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+         response = XIMU3_connection_send_command(self->connection, command, (uint32_t) retries, (uint32_t) timeout);
+    Py_END_ALLOW_THREADS
+    return command_message_from(&response);
+}
+
 static PyObject* connection_send_commands(Connection* self, PyObject* args)
 {
     PyObject* commands_sequence;
-    unsigned long retries;
-    unsigned long timeout;
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "Okk", &commands_sequence, &retries, &timeout) == 0)
+    if (PyArg_ParseTuple(args, "O|kk", &commands_sequence, &retries, &timeout) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
@@ -188,21 +207,47 @@ static PyObject* connection_send_commands(Connection* self, PyObject* args)
         commands_char_ptr_array[index] = (char*) PyUnicode_AsUTF8(command);
     }
 
-    XIMU3_CharArrays char_arrays;
+    XIMU3_CommandMessages responses;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        char_arrays = XIMU3_connection_send_commands(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout);
+        responses = XIMU3_connection_send_commands(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout);
     Py_END_ALLOW_THREADS
-    return char_arrays_to_list_and_free(char_arrays);
+    return command_messages_to_list_and_free(responses);
+}
+
+static PyObject* connection_send_command_async(Connection* self, PyObject* args)
+{
+    const char* command;
+    PyObject* callable;
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
+
+    if (PyArg_ParseTuple(args, "sO:set_callback|kk", &command, &callable, &retries, &timeout) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    if (PyCallable_Check(callable) == 0)
+    {
+        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        return NULL;
+    }
+
+    Py_INCREF(callable); // this will never be destroyed (memory leak)
+
+    XIMU3_connection_send_command_async(self->connection, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callable);
+
+    Py_RETURN_NONE;
 }
 
 static PyObject* connection_send_commands_async(Connection* self, PyObject* args)
 {
     PyObject* commands_sequence;
-    unsigned long retries;
-    unsigned long timeout;
     PyObject* callable;
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "OkkO:set_callback", &commands_sequence, &retries, &timeout, &callable) == 0)
+    if (PyArg_ParseTuple(args, "OO:set_callback|kk", &commands_sequence, &callable, &retries, &timeout) == 0)
     {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
@@ -244,7 +289,7 @@ static PyObject* connection_send_commands_async(Connection* self, PyObject* args
 
     Py_INCREF(callable); // this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_commands_async(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout, char_arrays_callback, callable);
+    XIMU3_connection_send_commands_async(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callable);
 
     Py_RETURN_NONE;
 }
@@ -785,7 +830,9 @@ static PyMethodDef connection_methods[] = {
     { "close", (PyCFunction) connection_close, METH_NOARGS, "" },
     { "ping", (PyCFunction) connection_ping, METH_NOARGS, "" },
     { "ping_async", (PyCFunction) connection_ping_async, METH_VARARGS, "" },
+    { "send_command", (PyCFunction) connection_send_command, METH_VARARGS, "" },
     { "send_commands", (PyCFunction) connection_send_commands, METH_VARARGS, "" },
+    { "send_command_async", (PyCFunction) connection_send_command_async, METH_VARARGS, "" },
     { "send_commands_async", (PyCFunction) connection_send_commands_async, METH_VARARGS, "" },
     { "get_info", (PyCFunction) connection_get_info, METH_NOARGS, "" },
     { "get_statistics", (PyCFunction) connection_get_statistics, METH_NOARGS, "" },

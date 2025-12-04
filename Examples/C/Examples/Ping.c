@@ -56,13 +56,12 @@ static void Callback(const XIMU3_PingResponse pingResponse, void* context)
 
 static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
 {
-    if (pingResponse.result == XIMU3_ResultOk)
+    if (strlen(pingResponse.interface) == 0)
     {
-        printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
-        // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
+        printf("No response");
+        return;
     }
-    else
-    {
-        printf("Ping failed. %s.\n", XIMU3_result_to_string(pingResponse.result));
-    }
+
+    printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
+    // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
 }

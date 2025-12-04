@@ -1,7 +1,6 @@
 #include "ApplicationSettings.h"
 #include "Firmware/Firmware.h"
 #include "MessageDialog.h"
-#include "ResponsesConverter.h"
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
@@ -51,7 +50,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         }
 
         // Read hardware version
-        const auto responses = ResponsesConverter::convert({"{\"hardware_version\":null}"}, connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout));
+        const auto responses = connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
         if (responses.front().has_value() == false || responses.front()->error.has_value())
         {
             showError("Unable to read hardware version.");

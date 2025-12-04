@@ -3,9 +3,9 @@
 #include <string.h>
 #include "Ximu3.h"
 
-static void Callback(const XIMU3_CharArrays responses, void* context);
+static void Callback(const XIMU3_CommandMessages responses, void* context);
 
-static void PrintResponses(const XIMU3_CharArrays responses);
+static void PrintResponses(const XIMU3_CommandMessages responses);
 
 void Commands()
 {
@@ -45,14 +45,17 @@ void Commands()
     // Send commands
     if (YesOrNo("Use async implementation?"))
     {
-        XIMU3_connection_send_commands_async(connection, commands, numberOfCommands, 2, 500, Callback, NULL);
+        XIMU3_connection_send_commands_async(connection, commands, numberOfCommands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT, Callback, NULL);
+
         Wait(3);
     }
     else
     {
-        const XIMU3_CharArrays responses = XIMU3_connection_send_commands(connection, commands, numberOfCommands, 2, 500);
+        const XIMU3_CommandMessages responses = XIMU3_connection_send_commands(connection, commands, numberOfCommands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
+
         PrintResponses(responses);
-        XIMU3_char_arrays_free(responses);
+
+        XIMU3_command_messages_free(responses);
     }
 
     // Close connection
@@ -60,23 +63,31 @@ void Commands()
     XIMU3_connection_free(connection);
 }
 
-static void Callback(const XIMU3_CharArrays responses, void* context)
+static void Callback(const XIMU3_CommandMessages responses, void* context)
 {
     PrintResponses(responses);
-    XIMU3_char_arrays_free(responses);
+
+    XIMU3_command_messages_free(responses);
 }
 
-static void PrintResponses(const XIMU3_CharArrays responses)
+static void PrintResponses(const XIMU3_CommandMessages responses)
 {
-    printf("%u responses\n", responses.length);
     for (uint32_t index = 0; index < responses.length; index++)
     {
-        const XIMU3_CommandMessage response = XIMU3_command_message_parse(responses.array[index]);
-        if (strlen(response.error) > 0)
+        const XIMU3_CommandMessage* const response = &responses.array[index];
+
+        if (strlen(response->json) == 0)
         {
-            printf("%s\n", response.error);
+            printf("No response");
             continue;
         }
-        printf("%s : %s\n", response.key, response.value);
+
+        if (strlen(response->error) > 0)
+        {
+            printf("%s\n", response->error);
+            continue;
+        }
+
+        printf("%s : %s\n", response->key, response->value);
     }
 }

@@ -127,6 +127,8 @@ namespace Ximu3
 {{
     public static class CApi
     {{
+        public const int XIMU3_DEFAULT_RETRIES = 2;
+        public const int XIMU3_DEFAULT_TIMEOUT = 500;
         public const int XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE = 256;
         public const int XIMU3_CHAR_ARRAY_SIZE = 256;
 

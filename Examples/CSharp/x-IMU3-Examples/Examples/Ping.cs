@@ -42,22 +42,21 @@ namespace Ximu3Examples
             connection.Close();
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_PingResponse pingResponse)
+        private void Callback(Ximu3.CApi.XIMU3_PingResponse? pingResponse)
         {
             PrintPingResponse(pingResponse);
         }
 
-        static private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse pingResponse)
+        static private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse? pingResponse)
         {
-            if (pingResponse.result == Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+            if (pingResponse == null)
             {
-                Console.WriteLine(Ximu3.Helpers.ToString(pingResponse.interface_) + ", " + Ximu3.Helpers.ToString(pingResponse.device_name) + ", " + Ximu3.Helpers.ToString(pingResponse.serial_number));
-                // Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_ping_response_to_string(pingResponse))); // alternative to above
+                Console.WriteLine("No response");
+                return;
             }
-            else
-            {
-                Console.WriteLine("Ping failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(pingResponse.result)) + ".");
-            }
+
+            Console.WriteLine(Ximu3.Helpers.ToString(pingResponse.Value.interface_) + ", " + Ximu3.Helpers.ToString(pingResponse.Value.device_name) + ", " + Ximu3.Helpers.ToString(pingResponse.Value.serial_number));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ping_response_to_string(pingResponse.Value))); // alternative to above
         }
     }
 }

@@ -51,7 +51,7 @@ class Connection:
 
         command = f'{{"{key}":{value}}}'
 
-        responses = self.__connection.send_commands([command], 2, 500)
+        responses = self.__connection.send_commands([command])
 
         if not responses:
             raise Exception(f"No response. {command} sent to {self.__connection.get_info().to_string()}")

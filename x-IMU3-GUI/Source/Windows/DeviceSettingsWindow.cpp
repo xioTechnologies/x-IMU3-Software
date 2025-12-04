@@ -3,8 +3,8 @@
 #include "Dialogs/MessageDialog.h"
 #include "Firmware/Firmware.h"
 #include "KeyCompare.h"
-#include "Widgets/PopupMenuHeader.h"
 #include <ranges>
+#include "Widgets/PopupMenuHeader.h"
 
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu")

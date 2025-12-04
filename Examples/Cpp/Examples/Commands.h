@@ -45,12 +45,13 @@ public:
         // Send commands
         if (helpers::yesOrNo("Use async implementation?"))
         {
-            connection.sendCommandsAsync(commands, 2, 500, callback);
+            connection.sendCommandsAsync(commands, callback);
+
             std::this_thread::sleep_for(std::chrono::seconds(3));
         }
         else
         {
-            printResponses(connection.sendCommands(commands, 2, 500));
+            printResponses(connection.sendCommands(commands));
         }
 
         // Close connection
@@ -58,26 +59,28 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<std::string>&)> callback = [](const auto& responses)
+    std::function<void(const std::vector<std::optional<ximu3::CommandMessage>>&)> callback = [](const auto& responses)
     {
         printResponses(responses);
     };
 
-    static void printResponses(const std::vector<std::string>& responses)
+    static void printResponses(const std::vector<std::optional<ximu3::CommandMessage>>& responses)
     {
-        std::cout << responses.size() << " responses" << std::endl;
-
-        for (const auto& response_ : responses)
+        for (const auto& response : responses)
         {
-            const auto response = ximu3::XIMU3_command_message_parse(response_.c_str());
-
-            if (std::strlen(response.error) > 0)
+            if (response.has_value() == false)
             {
-                std::cout << response.error << std::endl;
-                return;
+                std::cout << "No response" << std::endl;
+                continue;
             }
 
-            std::cout << response.key << " : " << response.value << std::endl;
+            if (const auto error = response->error)
+            {
+                std::cout << *error << std::endl;
+                continue;
+            }
+
+            std::cout << response->key << " : " << response->value << std::endl;
         }
     }
 };
