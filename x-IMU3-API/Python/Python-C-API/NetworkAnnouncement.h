@@ -66,8 +66,7 @@ static PyObject* network_announcement_remove_callback(NetworkAnnouncement* self,
             XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
         Py_END_ALLOW_THREADS
 
-        Py_INCREF(Py_None);
-        return Py_None;
+        Py_RETURN_NONE;
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
