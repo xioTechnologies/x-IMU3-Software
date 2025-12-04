@@ -11,7 +11,14 @@ static void char_arrays_callback(XIMU3_CharArrays data, void* context)
 
     PyObject* const object = char_arrays_to_list_and_free(data);
     PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+
+    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
+    if (result == NULL)
+    {
+        PyErr_Print();
+    }
+    Py_XDECREF(result);
+
     Py_DECREF(tuple);
     Py_DECREF(object);
 

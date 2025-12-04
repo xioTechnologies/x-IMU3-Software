@@ -51,7 +51,14 @@ static void $name_snake_case$_message_callback(XIMU3_$name_pascal_case$Message d
 
     PyObject* const object = $name_snake_case$_message_from(&data);
     PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+
+    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
+    if (result == NULL)
+    {
+        PyErr_Print();
+    }
+    Py_XDECREF(result);
+
     Py_DECREF(tuple);
     Py_DECREF(object);
 
