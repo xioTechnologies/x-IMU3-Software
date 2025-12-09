@@ -6,7 +6,6 @@
 #include "ConnectionStatus.h"
 #include "DataLogger.h"
 #include "DataMessages/DataMessages.h"
-#include "DecodeError.h"
 #include "Device.h"
 #include "FileConverter.h"
 #include "FileConverterProgress.h"
@@ -18,6 +17,7 @@
 #include "PortScanner.h"
 #include "PortType.h"
 #include <Python.h>
+#include "ReceiveError.h"
 #include "Result.h"
 #include "Statistics.h"
 #include <stdio.h>
@@ -55,22 +55,22 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_ON_HOLD", XIMU3_ChargingStatusChargingOnHold) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_CONNECTED", XIMU3_ConnectionStatusConnected) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_RECONNECTING", XIMU3_ConnectionStatusReconnecting) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_BUFFER_OVERRUN", XIMU3_DecodeErrorBufferOverrun) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_MESSAGE_IDENTIFIER", XIMU3_DecodeErrorInvalidMessageIdentifier) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_UTF8", XIMU3_DecodeErrorInvalidUtf8) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_JSON", XIMU3_DecodeErrorInvalidJson) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_JSON_IS_NOT_AN_OBJECT", XIMU3_DecodeErrorJsonIsNotAnObject) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR", XIMU3_DecodeErrorJsonObjectIsNotASingleKeyValuePair) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_MUX_MESSAGE_LENGTH", XIMU3_DecodeErrorInvalidMuxMessageLength) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_ESCAPE_SEQUENCE", XIMU3_DecodeErrorInvalidEscapeSequence) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_INVALID_BINARY_MESSAGE_LENGTH", XIMU3_DecodeErrorInvalidBinaryMessageLength) == 0) &&
-        (PyModule_AddIntConstant(module, "DECODE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE", XIMU3_DecodeErrorUnableToParseAsciiMessage) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_FAILED", XIMU3_FileConverterStatusFailed) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_IN_PROGRESS", XIMU3_FileConverterStatusInProgress) == 0) &&
         (PyModule_AddIntConstant(module, "PORT_TYPE_USB", XIMU3_PortTypeUsb) == 0) &&
         (PyModule_AddIntConstant(module, "PORT_TYPE_SERIAL", XIMU3_PortTypeSerial) == 0) &&
         (PyModule_AddIntConstant(module, "PORT_TYPE_BLUETOOTH", XIMU3_PortTypeBluetooth) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_BUFFER_OVERRUN", XIMU3_ReceiveErrorBufferOverrun) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_MESSAGE_IDENTIFIER", XIMU3_ReceiveErrorInvalidMessageIdentifier) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_UTF8", XIMU3_ReceiveErrorInvalidUtf8) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_JSON", XIMU3_ReceiveErrorInvalidJson) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_IS_NOT_AN_OBJECT", XIMU3_ReceiveErrorJsonIsNotAnObject) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR", XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_MUX_MESSAGE_LENGTH", XIMU3_ReceiveErrorInvalidMuxMessageLength) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_ESCAPE_SEQUENCE", XIMU3_ReceiveErrorInvalidEscapeSequence) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_BINARY_MESSAGE_LENGTH", XIMU3_ReceiveErrorInvalidBinaryMessageLength) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE", XIMU3_ReceiveErrorUnableToParseAsciiMessage) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_OK", XIMU3_ResultOk) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_ADDR_IN_USE", XIMU3_ResultAddrInUse) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_ADDR_NOT_AVAILABLE", XIMU3_ResultAddrNotAvailable) == 0) &&
@@ -111,9 +111,9 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "RESULT_UNKNOWN_ERROR", XIMU3_ResultUnknownError) == 0) &&
         (PyModule_AddFunctions(module, charging_status_methods) == 0) &&
         (PyModule_AddFunctions(module, connection_status_methods) == 0) &&
-        (PyModule_AddFunctions(module, decode_error_methods) == 0) &&
         (PyModule_AddFunctions(module, file_converter_status_methods) == 0) &&
         (PyModule_AddFunctions(module, port_type_methods) == 0) &&
+        (PyModule_AddFunctions(module, receive_error_methods) == 0) &&
         (PyModule_AddFunctions(module, result_methods) == 0) &&
         add_object(module, &command_message_object, "CommandMessage") &&
         add_object(module, &connection_object, "Connection") &&

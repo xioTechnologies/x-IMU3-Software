@@ -6,22 +6,22 @@ CHARGING_STATUS_CHARGING_COMPLETE: int
 CHARGING_STATUS_CHARGING_ON_HOLD: int
 CONNECTION_STATUS_CONNECTED: int
 CONNECTION_STATUS_RECONNECTING: int
-DECODE_ERROR_BUFFER_OVERRUN: int
-DECODE_ERROR_INVALID_MESSAGE_IDENTIFIER: int
-DECODE_ERROR_INVALID_UTF8: int
-DECODE_ERROR_INVALID_JSON: int
-DECODE_ERROR_JSON_IS_NOT_AN_OBJECT: int
-DECODE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR: int
-DECODE_ERROR_INVALID_MUX_MESSAGE_LENGTH: int
-DECODE_ERROR_INVALID_ESCAPE_SEQUENCE: int
-DECODE_ERROR_INVALID_BINARY_MESSAGE_LENGTH: int
-DECODE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE: int
 FILE_CONVERTER_STATUS_COMPLETE: int
 FILE_CONVERTER_STATUS_FAILED: int
 FILE_CONVERTER_STATUS_IN_PROGRESS: int
 PORT_TYPE_USB: int
 PORT_TYPE_SERIAL: int
 PORT_TYPE_BLUETOOTH: int
+RECEIVE_ERROR_BUFFER_OVERRUN: int
+RECEIVE_ERROR_INVALID_MESSAGE_IDENTIFIER: int
+RECEIVE_ERROR_INVALID_UTF8: int
+RECEIVE_ERROR_INVALID_JSON: int
+RECEIVE_ERROR_JSON_IS_NOT_AN_OBJECT: int
+RECEIVE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR: int
+RECEIVE_ERROR_INVALID_MUX_MESSAGE_LENGTH: int
+RECEIVE_ERROR_INVALID_ESCAPE_SEQUENCE: int
+RECEIVE_ERROR_INVALID_BINARY_MESSAGE_LENGTH: int
+RECEIVE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE: int
 RESULT_OK: int
 RESULT_ADDR_IN_USE: int
 RESULT_ADDR_NOT_AVAILABLE: int
@@ -68,14 +68,14 @@ def charging_status_to_string(status: int) -> str: ...
 # connection_status_methods
 def connection_status_to_string(status: int) -> str: ...
 
-# decode_error_methods
-def decode_error_to_string(error: int) -> str: ...
-
 # file_converter_status_methods
 def file_converter_status_to_string(status: int) -> str: ...
 
 # port_type_methods
 def port_type_to_string(error: int) -> str: ...
+
+# receive_error_methods
+def receive_error_to_string(error: int) -> str: ...
 
 # result_methods
 def result_to_string(result: int) -> str: ...
@@ -108,7 +108,7 @@ class Connection:
     def send_commands_async(self, commands: Sequence[str], retries: int, timeout: int, callback: Callable[[list[str]], None]) -> None: ...
     def get_info(self) -> UsbConnectionInfo | SerialConnectionInfo | TcpConnectionInfo | UdpConnectionInfo | BluetoothConnectionInfo | FileConnectionInfo | MuxConnectionInfo: ...
     def get_statistics(self) -> Statistics: ...
-    def add_decode_error_callback(self, callback: Callable[[int], None]) -> int: ...
+    def add_receive_error_callback(self, callback: Callable[[int], None]) -> int: ...
     def add_statistics_callback(self, callback: Callable[[Statistics], None]) -> int: ...
     def add_inertial_callback(self, callback: Callable[[InertialMessage], None]) -> int: ...
     def add_magnetometer_callback(self, callback: Callable[[MagnetometerMessage], None]) -> int: ...
