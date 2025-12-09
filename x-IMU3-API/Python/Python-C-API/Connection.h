@@ -107,15 +107,13 @@ static PyObject* connection_open_async(Connection* self, PyObject* args)
 
     XIMU3_connection_open_async(self->connection, result_callback, callable);
 
-    Py_IncRef(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject* connection_close(Connection* self, PyObject* args)
 {
     XIMU3_connection_close(self->connection);
-    Py_INCREF(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject* connection_ping(Connection* self, PyObject* args)
@@ -147,8 +145,7 @@ static PyObject* connection_ping_async(Connection* self, PyObject* args)
 
     XIMU3_connection_ping_async(self->connection, ping_response_callback, callable);
 
-    Py_IncRef(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject* connection_send_commands(Connection* self, PyObject* args)
@@ -249,8 +246,7 @@ static PyObject* connection_send_commands_async(Connection* self, PyObject* args
 
     XIMU3_connection_send_commands_async(self->connection, commands_char_ptr_array, length, (uint32_t) retries, (uint32_t) timeout, char_arrays_callback, callable);
 
-    Py_IncRef(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject* connection_get_info(Connection* self, PyObject* args)
@@ -773,8 +769,7 @@ static PyObject* connection_remove_callback(Connection* self, PyObject* args)
             XIMU3_connection_remove_callback(self->connection, (uint64_t) callback_id);
         Py_END_ALLOW_THREADS
 
-        Py_INCREF(Py_None);
-        return Py_None;
+        Py_RETURN_NONE;
     }
 
     PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
