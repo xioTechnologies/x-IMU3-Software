@@ -70,6 +70,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_ESCAPE_SEQUENCE", XIMU3_ReceiveErrorInvalidEscapeSequence) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_BINARY_MESSAGE_LENGTH", XIMU3_ReceiveErrorInvalidBinaryMessageLength) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_UNABLE_TO_PARSE_ASCII_MESSAGE", XIMU3_ReceiveErrorUnableToParseAsciiMessage) == 0) &&
+        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_UNKNOWN_ERROR", XIMU3_ReceiveErrorUnknownError) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_OK", XIMU3_ResultOk) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_ADDR_IN_USE", XIMU3_ResultAddrInUse) == 0) &&
         (PyModule_AddIntConstant(module, "RESULT_ADDR_NOT_AVAILABLE", XIMU3_ResultAddrNotAvailable) == 0) &&

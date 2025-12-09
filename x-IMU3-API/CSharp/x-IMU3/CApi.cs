@@ -77,6 +77,7 @@ namespace Ximu3
             XIMU3_ReceiveErrorInvalidEscapeSequence,
             XIMU3_ReceiveErrorInvalidBinaryMessageLength,
             XIMU3_ReceiveErrorUnableToParseAsciiMessage,
+            XIMU3_ReceiveErrorUnknownError,
         }
         public enum XIMU3_FileConverterStatus
         {

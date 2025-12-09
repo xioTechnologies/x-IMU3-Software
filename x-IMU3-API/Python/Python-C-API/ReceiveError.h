@@ -28,6 +28,7 @@ static PyObject* receive_error_to_string(PyObject* self, PyObject* args)
         case XIMU3_ReceiveErrorInvalidEscapeSequence:
         case XIMU3_ReceiveErrorInvalidBinaryMessageLength:
         case XIMU3_ReceiveErrorUnableToParseAsciiMessage:
+        case XIMU3_ReceiveErrorUnknownError:
             return Py_BuildValue("s", XIMU3_receive_error_to_string(receive_error_enum));
     }
 

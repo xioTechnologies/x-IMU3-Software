@@ -22,13 +22,13 @@ impl CommandMessage {
 
         let (key, value) = object.iter().next().ok_or(ReceiveError::JsonObjectIsNotASingleKeyValuePair)?;
 
-        let json = serde_json::to_vec(object).map_err(|_| ReceiveError::InvalidJson)?;
+        let json = serde_json::to_vec(object).map_err(|_| ReceiveError::UnknownError)?;
 
         let mut command_message = Self {
             json: json.clone(),
             terminated_json: [json.as_slice(), &[b'\n']].concat(),
             key: key.as_bytes().to_vec(),
-            value: serde_json::to_vec(value).map_err(|_| ReceiveError::InvalidJson)?,
+            value: serde_json::to_vec(value).map_err(|_| ReceiveError::UnknownError)?,
             error: None,
         };
 
