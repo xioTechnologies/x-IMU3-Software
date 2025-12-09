@@ -71,7 +71,14 @@ static void serial_accessory_message_callback(XIMU3_SerialAccessoryMessage data,
 
     PyObject* const object = serial_accessory_message_from(&data);
     PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+
+    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
+    if (result == NULL)
+    {
+        PyErr_Print();
+    }
+    Py_XDECREF(result);
+
     Py_DECREF(tuple);
     Py_DECREF(object);
 

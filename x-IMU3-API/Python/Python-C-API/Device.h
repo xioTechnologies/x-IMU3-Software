@@ -92,7 +92,14 @@ static void devices_callback(XIMU3_Devices data, void* context)
 
     PyObject* const object = devices_to_list_and_free(data);
     PyObject* const tuple = Py_BuildValue("(O)", object);
-    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+
+    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
+    if (result == NULL)
+    {
+        PyErr_Print();
+    }
+    Py_XDECREF(result);
+
     Py_DECREF(tuple);
     Py_DECREF(object);
 

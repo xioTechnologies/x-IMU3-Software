@@ -46,7 +46,14 @@ static void decode_error_callback(XIMU3_DecodeError data, void* context)
     const PyGILState_STATE state = PyGILState_Ensure();
 
     PyObject* const tuple = Py_BuildValue("(i)", data);
-    Py_DECREF(PyObject_CallObject((PyObject*) context, tuple));
+
+    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
+    if(result == NULL)
+    {
+        PyErr_Print();
+    }
+    Py_XDECREF(result);
+
     Py_DECREF(tuple);
 
     PyGILState_Release(state);

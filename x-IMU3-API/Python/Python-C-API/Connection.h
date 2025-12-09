@@ -730,7 +730,10 @@ static void end_of_file_callback(void* context)
 {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    Py_DECREF(PyObject_CallObject((PyObject*) context, NULL));
+    PyObject* const result = PyObject_CallObject((PyObject*) context, NULL);
+    if(result == NULL)
+        PyErr_Print();
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }
