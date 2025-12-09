@@ -13,7 +13,7 @@ else:
 
 ext_modules = Extension(
     "ximu3",
-    ["x-IMU3-API/Python/Python-C-API/ximu3.c"],
+    ["x-IMU3-API/Python/ximu3/ximu3.c"],
     library_dirs=["x-IMU3-API/Rust/target/release"],
     libraries=libraries,
     define_macros=[("_CRT_SECURE_NO_WARNINGS", "")],

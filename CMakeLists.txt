@@ -16,7 +16,7 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS) # disable MSVC warnings for unsafe fu
 
 add_subdirectory("Examples/C")
 add_subdirectory("Examples/Cpp")
-add_subdirectory("x-IMU3-API/Python")
+add_subdirectory("x-IMU3-API/Python/ximu3")
 add_subdirectory("x-IMU3-Bootloader")
 add_subdirectory("x-IMU3-GUI")
 
