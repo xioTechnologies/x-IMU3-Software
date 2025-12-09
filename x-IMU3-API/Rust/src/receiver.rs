@@ -60,7 +60,7 @@ impl Receiver {
     }
 
     fn receive_command_message(&self) -> Result<(), ReceiveError> {
-        let command = CommandMessage::parse_bytes(&self.buffer[..self.index])?;
+        let command = CommandMessage::parse_internal(&self.buffer[..self.index])?;
         self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
         Ok(())
     }
