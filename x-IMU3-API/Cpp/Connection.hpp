@@ -4,6 +4,7 @@
 #include <cassert>
 #include "CommandMessage.hpp"
 #include "ConnectionInfo.hpp"
+#include <cstring>
 #include <functional>
 #include "Helpers.hpp"
 #include <memory>
