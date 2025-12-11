@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Ximu3.hpp"
 
 class ApplicationSettings : private juce::DeletedAtShutdown, private juce::ValueTree::Listener
 {
@@ -21,8 +22,8 @@ public:
     struct
     {
         juce::ValueTree tree;
-        juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, 2 };
-        juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, 500 };
+        juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, XIMU3_DEFAULT_RETRIES };
+        juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, XIMU3_DEFAULT_TIMEOUT };
         juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
     } commands { tree.getOrCreateChildWithName("Commands", nullptr) };
 

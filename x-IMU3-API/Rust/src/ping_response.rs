@@ -9,7 +9,7 @@ pub struct PingResponse {
 }
 
 impl PingResponse {
-    pub(crate) fn parse(json: &[u8]) -> std::io::Result<Self> {
+    pub(crate) fn parse(json: &[u8]) -> Option<Self> {
         #[derive(Deserialize)]
         struct ParentObject {
             ping: ChildObject,
@@ -24,9 +24,9 @@ impl PingResponse {
             sn: String,
         }
 
-        let object = serde_json::from_slice::<ParentObject>(json).map_err(|_| std::io::Error::new(std::io::ErrorKind::InvalidData, "Unable to parse JSON."))?;
+        let object = serde_json::from_slice::<ParentObject>(json).ok()?;
 
-        Ok(Self {
+        Some(Self {
             interface: object.ping.interface,
             device_name: object.ping.name,
             serial_number: object.ping.sn,

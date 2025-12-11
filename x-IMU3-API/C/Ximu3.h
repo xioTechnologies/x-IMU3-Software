@@ -20,6 +20,10 @@
 namespace ximu3 {
 #endif  // __cplusplus
 
+#define XIMU3_DEFAULT_RETRIES 2
+
+#define XIMU3_DEFAULT_TIMEOUT 500
+
 #define XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE 256
 
 #define XIMU3_CHAR_ARRAY_SIZE 256
@@ -148,6 +152,13 @@ typedef struct XIMU3_CommandMessage
     char error[XIMU3_CHAR_ARRAY_SIZE];
 } XIMU3_CommandMessage;
 
+typedef struct XIMU3_CommandMessages
+{
+    struct XIMU3_CommandMessage *array;
+    uint32_t length;
+    uint32_t capacity;
+} XIMU3_CommandMessages;
+
 typedef struct XIMU3_UsbConnectionInfo
 {
     char port_name[XIMU3_CHAR_ARRAY_SIZE];
@@ -187,7 +198,6 @@ typedef void (*XIMU3_CallbackResult)(enum XIMU3_Result data, void *context);
 
 typedef struct XIMU3_PingResponse
 {
-    enum XIMU3_Result result;
     char interface[XIMU3_CHAR_ARRAY_SIZE];
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
@@ -195,7 +205,9 @@ typedef struct XIMU3_PingResponse
 
 typedef void (*XIMU3_CallbackPingResponseC)(struct XIMU3_PingResponse data, void *context);
 
-typedef void (*XIMU3_CallbackCharArrays)(struct XIMU3_CharArrays data, void *context);
+typedef void (*XIMU3_CallbackCommandMessage)(struct XIMU3_CommandMessage data, void *context);
+
+typedef void (*XIMU3_CallbackCommandMessages)(struct XIMU3_CommandMessages data, void *context);
 
 typedef struct XIMU3_Statistics
 {
@@ -438,7 +450,7 @@ enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status
 
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_status);
 
-struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
+void XIMU3_command_messages_free(struct XIMU3_CommandMessages messages);
 
 struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionInfo connection_info);
 
@@ -466,9 +478,13 @@ struct XIMU3_PingResponse XIMU3_connection_ping(struct XIMU3_Connection *connect
 
 void XIMU3_connection_ping_async(struct XIMU3_Connection *connection, XIMU3_CallbackPingResponseC callback, void *context);
 
-struct XIMU3_CharArrays XIMU3_connection_send_commands(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout);
+struct XIMU3_CommandMessage XIMU3_connection_send_command(struct XIMU3_Connection *connection, const char *command, uint32_t retries, uint32_t timeout);
 
-void XIMU3_connection_send_commands_async(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout, XIMU3_CallbackCharArrays callback, void *context);
+struct XIMU3_CommandMessages XIMU3_connection_send_commands(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout);
+
+void XIMU3_connection_send_command_async(struct XIMU3_Connection *connection, const char *command, uint32_t retries, uint32_t timeout, XIMU3_CallbackCommandMessage callback, void *context);
+
+void XIMU3_connection_send_commands_async(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout, XIMU3_CallbackCommandMessages callback, void *context);
 
 enum XIMU3_ConnectionType XIMU3_connection_get_type(struct XIMU3_Connection *connection);
 

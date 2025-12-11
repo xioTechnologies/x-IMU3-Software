@@ -36,22 +36,23 @@ pub fn run() {
             print_responses(responses);
         });
 
-        connection.send_commands_async(commands, 2, 500, closure);
+        connection.send_commands_async(commands, DEFAULT_RETRIES, DEFAULT_TIMEOUT, closure);
 
         std::thread::sleep(std::time::Duration::from_secs(3));
     } else {
-        print_responses(connection.send_commands(commands, 2, 500));
+        print_responses(connection.send_commands(commands, DEFAULT_RETRIES, DEFAULT_TIMEOUT));
     }
 
     // Close connection
     connection.close();
 }
 
-fn print_responses(responses: Vec<Vec<u8>>) {
-    println!("{} responses", responses.len());
-
+fn print_responses(responses: Vec<Option<CommandMessage>>) {
     for response in responses {
-        let response = CommandMessage::parse(&response);
+        let Some(response) = response else {
+            println!("No response");
+            continue;
+        };
 
         if let Some(error) = response.error {
             println!("{error}");

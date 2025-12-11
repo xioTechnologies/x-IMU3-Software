@@ -37,6 +37,7 @@ style = "both"
 prefix = "XIMU3_"
 
 [export.rename]
+"CallbackCommandMessageC" = "CallbackCommandMessage"
 "CommandMessageC" = "CommandMessage"
 "DataLoggerC" = "DataLogger"
 "DeviceC" = "Device"

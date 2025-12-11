@@ -74,10 +74,16 @@ namespace Ximu3
             return CApi.XIMU3_connection_ping(connection);
         }
 
-        public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse pingResponse);
+        public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse? pingResponse);
 
         private static void PingAsyncCallbackInternal(CApi.XIMU3_PingResponse pingResponse, IntPtr context)
         {
+            if (Helpers.ToString(pingResponse.interface_).Length == 0)
+            {
+                Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(null);
+                return;
+            }
+
             Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(pingResponse);
         }
 
@@ -86,18 +92,33 @@ namespace Ximu3
             CApi.XIMU3_connection_ping_async(connection, PingAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
-        public string[] SendCommands(string[] commands, UInt32 retries, UInt32 timeout)
+        public CommandMessage? SendCommand(string command, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            return Helpers.ToArrayAndFree(CApi.XIMU3_connection_send_commands(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout));
+            return CommandMessage.From(CApi.XIMU3_connection_send_command(connection, Helpers.ToPointer(command), retries, timeout));
         }
 
-        public delegate void SendCommandsAsyncCallback(string[] responses);
-
-        private static void SendCommandsAsyncCallbackInternal(CApi.XIMU3_CharArrays data, IntPtr context)
+        public CommandMessage?[] SendCommands(string[] commands, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            Marshal.GetDelegateForFunctionPointer<SendCommandsAsyncCallback>(context)(Helpers.ToArrayAndFree(data));
+            return ToArrayAndFree(CApi.XIMU3_connection_send_commands(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout));
         }
-        public void SendCommandsAsync(string[] commands, UInt32 retries, UInt32 timeout, SendCommandsAsyncCallback callback)
+
+        public delegate void SendCommandAsyncCallback(CommandMessage? responses);
+        private static void SendCommandAsyncCallbackInternal(CApi.XIMU3_CommandMessage data, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<SendCommandAsyncCallback>(context)(CommandMessage.From(data));
+        }
+        public void SendCommandAsync(string command, SendCommandsAsyncCallback callback, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
+        {
+            CApi.XIMU3_connection_send_command_async(connection, Helpers.ToPointer(command), retries, timeout, SendCommandAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void SendCommandsAsyncCallback(CommandMessage?[] responses);
+
+        private static void SendCommandsAsyncCallbackInternal(CApi.XIMU3_CommandMessages data, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<SendCommandsAsyncCallback>(context)(ToArrayAndFree(data));
+        }
+        public void SendCommandsAsync(string[] commands, SendCommandsAsyncCallback callback, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
             CApi.XIMU3_connection_send_commands_async(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout, SendCommandsAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
@@ -329,6 +350,17 @@ namespace Ximu3
         public void RemoveCallback(UInt64 callbackId)
         {
             CApi.XIMU3_connection_remove_callback(connection, callbackId);
+        }
+
+        private static CommandMessage?[] ToArrayAndFree(CApi.XIMU3_CommandMessages responses_)
+        {
+            CommandMessage?[] array = new CommandMessage?[responses_.length];
+            for (int i = 0; i < responses_.length; i++)
+            {
+                array[i] = CommandMessage.From(Marshal.PtrToStructure<CApi.XIMU3_CommandMessage>(responses_.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_CommandMessage))));
+            }
+            CApi.XIMU3_command_messages_free(responses_);
+            return array;
         }
 
         internal IntPtr connection;

@@ -148,7 +148,7 @@ juce::String ConnectionPanelHeader::getHeading() const
     return headingLabel.getText();
 }
 
-void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ResponsesConverter::CommandMessage>>& responses)
+void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ximu3::CommandMessage>>& responses)
 {
     for (const auto& response : responses)
     {

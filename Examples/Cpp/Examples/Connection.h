@@ -55,8 +55,7 @@ protected:
         }
 
         // Send command to strobe LED
-        const std::vector<std::string> commands { "{\"strobe\":null}" };
-        connection.sendCommands(commands, 2, 500);
+        connection.sendCommand("{\"strobe\":null}");
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(60));

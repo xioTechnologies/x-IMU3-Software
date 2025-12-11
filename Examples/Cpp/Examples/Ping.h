@@ -51,21 +51,20 @@ public:
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_PingResponse)> callback = [](const auto pingResponse)
+    std::function<void(std::optional<ximu3::XIMU3_PingResponse>)> callback = [](const auto pingResponse)
     {
         printPingResponse(pingResponse);
     };
 
-    static void printPingResponse(const ximu3::XIMU3_PingResponse& pingResponse)
+    static void printPingResponse(const std::optional<ximu3::XIMU3_PingResponse>& pingResponse)
     {
-        if (pingResponse.result == ximu3::XIMU3_ResultOk)
+        if (pingResponse.has_value() == false)
         {
-            std::cout << pingResponse.interface << ", " << pingResponse.device_name << ", " << pingResponse.serial_number << std::endl;
-            // std::cout << ximu3::XIMU3_ping_response_to_string(pingResponse) << std::endl; // alternative to above
+            printf("No response");
+            return;
         }
-        else
-        {
-            std::cout << "Ping failed. " << XIMU3_result_to_string(pingResponse.result) << "." << std::endl;
-        }
+
+        std::cout << pingResponse->interface << ", " << pingResponse->device_name << ", " << pingResponse->serial_number << std::endl;
+        // std::cout << ximu3::XIMU3_ping_response_to_string(*pingResponse) << std::endl; // alternative to above
     }
 };

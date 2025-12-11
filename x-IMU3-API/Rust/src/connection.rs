@@ -11,6 +11,10 @@ use crossbeam::channel::Sender;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
 
+pub const DEFAULT_RETRIES: u32 = 2;
+
+pub const DEFAULT_TIMEOUT: u32 = 500; // milliseconds
+
 pub struct Connection {
     dropped: Arc<Mutex<bool>>,
     pub(crate) internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
@@ -88,14 +92,14 @@ impl Connection {
         self.internal.lock().unwrap().close();
     }
 
-    pub fn ping(&self) -> std::io::Result<PingResponse> {
+    pub fn ping(&self) -> Option<PingResponse> {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
         Self::ping_internal(receiver, write_sender)
     }
 
-    pub fn ping_async(&self, closure: Box<dyn FnOnce(std::io::Result<PingResponse>) + Send>) {
+    pub fn ping_async(&self, closure: Box<dyn FnOnce(Option<PingResponse>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
@@ -112,24 +116,28 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> std::io::Result<PingResponse> {
-        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200); // 4 retries with 200 ms timeout = 1 second
+    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> Option<PingResponse> {
+        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200);
 
-        if responses.len() == 0 {
-            return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "No response."));
-        }
-
-        PingResponse::parse(responses[0].as_slice())
+        PingResponse::parse(&responses.first()?.as_ref()?.json)
     }
 
-    pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
+    pub fn send_command(&self, command: Vec<u8>, retries: u32, timeout: u32) -> Option<CommandMessage> {
+        self.send_commands(vec![command], retries, timeout).first()?.clone()
+    }
+
+    pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
 
         Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
     }
 
-    pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Vec<u8>>) + Send>) {
+    pub fn send_command_async(&self, command: Vec<u8>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Option<CommandMessage>) + Send>) {
+        self.send_commands_async(vec![command], retries, timeout, Box::new(move |responses: Vec<Option<CommandMessage>>| closure(responses.first().cloned().flatten())));
+    }
+
+    pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Option<CommandMessage>>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
         let write_sender = self.internal.lock().unwrap().get_write_sender();
         let dropped = self.dropped.clone();
@@ -146,7 +154,7 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Vec<u8>> {
+    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
         struct Transaction {
             command: Option<CommandMessage>,
             response: Option<CommandMessage>,
@@ -154,18 +162,9 @@ impl Connection {
 
         let mut transactions: Vec<Transaction> = commands
             .iter()
-            .map(|command| {
-                if let Ok(command) = CommandMessage::parse_internal(command) {
-                    Transaction {
-                        command: Some(command),
-                        response: None,
-                    }
-                } else {
-                    Transaction {
-                        command: None,
-                        response: None,
-                    }
-                }
+            .map(|command| Transaction {
+                command: CommandMessage::parse(command).map(|message| Some(message)).unwrap_or(None),
+                response: None,
             })
             .collect();
 
@@ -178,7 +177,7 @@ impl Connection {
         'outer: for _ in 0..(1 + retries) {
             for command in transactions.iter().filter_map(|transaction| transaction.command.clone()) {
                 if let Some(write_sender) = &write_sender {
-                    write_sender.send(command.terminated_json).ok();
+                    write_sender.send([command.json.as_slice(), &[b'\n']].concat()).ok();
                 }
             }
 
@@ -208,8 +207,7 @@ impl Connection {
 
         receiver.lock().unwrap().dispatcher.remove_closure(closure_id);
 
-        let responses: Vec<_> = transactions.iter().filter_map(|transaction| transaction.response.clone()).collect();
-        responses.iter().map(|response| response.json.clone()).collect()
+        transactions.iter().map(|transaction| transaction.response.clone()).collect()
     }
 
     pub fn get_info(&self) -> ConnectionInfo {
