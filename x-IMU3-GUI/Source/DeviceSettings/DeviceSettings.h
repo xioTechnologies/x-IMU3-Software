@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CommandMessage.h"
 #include "DeviceSettingsItem.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -8,13 +7,21 @@ class DeviceSettings : public juce::TreeView,
                        private juce::ValueTree::Listener
 {
 public:
-    DeviceSettings(juce::ValueTree tree, std::function<void(const CommandMessage&)> onSettingModified_);
+    using OnSettingModified = std::function<void(const std::string& key, const std::string& command)>;
 
-    std::vector<CommandMessage> getReadCommands() const;
+    DeviceSettings(juce::ValueTree tree, const OnSettingModified& onSettingModified_);
 
-    std::vector<CommandMessage> getWriteCommands(const bool replaceReadOnlyValuesWithNull) const;
+    std::vector<std::string> getReadKeys() const;
 
-    void setValue(const CommandMessage& response);
+    std::vector<std::string> getReadCommands() const;
+
+    std::vector<std::string> getWriteKeys() const;
+
+    std::vector<std::string> getWriteValues(const bool replaceReadOnlyValuesWithNull) const;
+
+    std::vector<std::string> getWriteCommands(const bool replaceReadOnlyValuesWithNull) const;
+
+    void setValue(const std::string& key, const juce::var& value);
 
     juce::var getValue(const juce::String& key) const;
 
@@ -22,8 +29,12 @@ public:
 
     void setHideUnusedSettings(const bool hide);
 
+    static juce::var valueToVar(const std::string& value);
+
+    static std::string varToValue(const juce::var& var);
+
 private:
-    const std::function<void(const CommandMessage&)> onSettingModified;
+    const OnSettingModified onSettingModified;
     juce::ValueTree settingsTree;
     const std::vector<juce::ValueTree> settingsFlattened = flatten(settingsTree);
     bool hideUnusedSettings = true;
@@ -33,7 +44,9 @@ private:
 
     static std::vector<juce::ValueTree> flatten(const juce::ValueTree& parent);
 
-    static CommandMessage getWriteCommand(juce::ValueTree setting);
+    static std::string getValue(juce::ValueTree setting);
+
+    static std::string getWriteCommand(juce::ValueTree setting);
 
     juce::ValueTree getSetting(const juce::String& key) const;
 

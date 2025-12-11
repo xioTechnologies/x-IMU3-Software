@@ -62,14 +62,14 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this]
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("shutdown", {}), connectionPanelContainer.getConnectionPanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"shutdown\":null}", connectionPanelContainer.getConnectionPanels()));
             return true;
         });
     };
 
     zeroHeadingButton.onClick = [this]
     {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("heading", 0), connectionPanelContainer.getConnectionPanels()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"heading\":0}", connectionPanelContainer.getConnectionPanels()));
     };
 
     noteButton.onClick = [this]
@@ -78,7 +78,7 @@ MenuStrip::MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPoo
         {
             if (auto* dialog = dynamic_cast<SendNoteCommandDialog*>(DialogQueue::getSingleton().getActive()))
             {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("note", dialog->getNote()), connectionPanelContainer.getConnectionPanels()));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"note\":\"" + dialog->getNote().toStdString() +"\"}", connectionPanelContainer.getConnectionPanels()));
             }
             return true;
         });
@@ -598,7 +598,7 @@ juce::PopupMenu MenuStrip::getToolsMenu()
     {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&]
         {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(CommandMessage("time", juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S")), connectionPanelContainer.getConnectionPanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"time\":\"" + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S").toStdString() + "\"}", connectionPanelContainer.getConnectionPanels()));
             return true;
         });
     });

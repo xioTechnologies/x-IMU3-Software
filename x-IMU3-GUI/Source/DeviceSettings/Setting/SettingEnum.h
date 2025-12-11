@@ -14,7 +14,14 @@ public:
 
         value.onChange = [&]
         {
-            setValue(value.getSelectedId() - 1);
+            if (isToggle())
+            {
+                setValue(value.getSelectedId() == 2);
+            }
+            else
+            {
+                setValue(value.getSelectedId() - 1);
+            }
         };
 
         value.setEnabled(!isReadOnly());
@@ -42,6 +49,11 @@ protected:
             id = (int) getValue() + 1;
         }
         value.setSelectedId(id, juce::dontSendNotification);
+    }
+
+    virtual bool isToggle() const
+    {
+        return false;
     }
 
 private:

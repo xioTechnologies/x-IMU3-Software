@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CommandMessage.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialog.h"
 #include "Widgets/CustomToggleButton.h"
@@ -10,7 +9,7 @@ class SendingCommandDialog : public Dialog,
                              private juce::Timer
 {
 public:
-    SendingCommandDialog(const CommandMessage& command, const std::vector<ConnectionPanel*>& connectionPanels);
+    SendingCommandDialog(const std::string& command, const std::vector<ConnectionPanel*>& connectionPanels);
 
     void resized() override;
 

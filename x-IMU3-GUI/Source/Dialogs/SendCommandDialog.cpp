@@ -30,7 +30,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
 
-        setOkButton((keyValue.isEmpty() == false) && (CommandMessage(commandValue.getText().toStdString()).json.empty() == false));
+        setOkButton((keyValue.isEmpty() == false) && (juce::JSON::parse(commandValue.getText()).isVoid() == false));
     };
 
     selectCommand(previousCommands.getChild(0));
@@ -69,7 +69,7 @@ void SendCommandDialog::resized()
     commandValue.setBounds(commandRow);
 }
 
-CommandMessage SendCommandDialog::getCommand()
+std::string SendCommandDialog::getCommand()
 {
     juce::ValueTree newCommand { "Command", { { "key", keyValue.getText() }, { "type", typeValue.getSelectedItemIndex() } } };
     switch (static_cast<Type>(typeValue.getSelectedItemIndex()))
@@ -105,7 +105,7 @@ CommandMessage SendCommandDialog::getCommand()
     previousCommands.addChild(newCommand, 0, nullptr);
     file.replaceWithText(previousCommands.toXmlString());
 
-    return CommandMessage { commandValue.getText().toStdString() };
+    return commandValue.getText().toStdString();
 }
 
 juce::String SendCommandDialog::toString(const Type type)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ApplicationSettings.h"
-#include "CommandMessage.h"
 #include "Dialog.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"

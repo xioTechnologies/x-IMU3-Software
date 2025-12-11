@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
-#include "CommandMessage.h"
 #include "Firmware/Firmware.h"
 #include "MessageDialog.h"
+#include "ResponsesConverter.h"
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
@@ -51,17 +51,17 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         }
 
         // Read hardware version
-        const auto responses = connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
-        if (responses.empty() || CommandMessage(responses[0]).error.has_value())
+        const auto responses = ResponsesConverter::convert({"{\"hardware_version\":null}"}, connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout));
+        if (responses.front().has_value() == false || responses.front()->error.has_value())
         {
             showError("Unable to read hardware version.");
             return;
         }
-        const auto hardwareVersion = CommandMessage(responses[0]).getValue().toString();
+        const auto hardwareVersion = responses.front()->value;
 
         // Check compatibility
         const auto firmwareIsV2 = hexFile.getFileName().startsWith("x-IMU3-Firmware-v2.");
-        const auto hardwareIsV2 = hardwareVersion.startsWith("v2.");
+        const auto hardwareIsV2 = hardwareVersion.starts_with("\"v2.");
         if (firmwareIsV2 != hardwareIsV2)
         {
             showError("The detected " + hardwareVersion + " hardware is " + (firmwareIsV2 ? "not" : "only") + " compatible with v2.x.x firmware.", false);
