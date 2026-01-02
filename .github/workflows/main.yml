@@ -169,10 +169,7 @@ jobs:
           - [ ubuntu-22.04, x86_64-unknown-linux-gnu, manylinux_x86_64 ]
           - [ windows-latest, x86_64-pc-windows-msvc, win_amd64 ]
           - [ windows-latest, aarch64-pc-windows-msvc, win_arm64 ]
-        python-version: [ "cp38-", "cp39-", "cp310-", "cp311-", "cp312-", "cp313-", "cp314-" ]
-        exclude:
-          - target: [ windows-latest, aarch64-pc-windows-msvc, win_arm64 ]
-            python-version: "cp38-"
+        python-version: [ "cp39-", "cp310-", "cp311-", "cp312-", "cp313-", "cp314-" ]
 
     steps:
       - uses: actions/checkout@v4
