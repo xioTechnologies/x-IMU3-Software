@@ -12,7 +12,7 @@ typedef struct {
     XIMU3_KeepOpen *keep_open;
 } KeepOpen;
 
-static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection;
     PyObject *callable;
 

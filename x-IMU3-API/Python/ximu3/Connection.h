@@ -19,7 +19,7 @@ typedef struct {
     XIMU3_Connection *connection;
 } Connection;
 
-static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection_info;
 
     if (PyArg_ParseTuple(args, "O", &connection_info)) {

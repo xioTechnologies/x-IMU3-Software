@@ -12,7 +12,7 @@ typedef struct {
     XIMU3_DataLogger *data_logger;
 } DataLogger;
 
-static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
     PyObject *connections_sequence;

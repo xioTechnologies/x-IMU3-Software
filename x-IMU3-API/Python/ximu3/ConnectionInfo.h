@@ -13,7 +13,7 @@ typedef struct {
     XIMU3_UsbConnectionInfo connection_info;
 } UsbConnectionInfo;
 
-static PyObject *usb_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *usb_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
 
     if (PyArg_ParseTuple(args, "s", &port_name) == 0) {
@@ -73,7 +73,7 @@ typedef struct {
     XIMU3_SerialConnectionInfo connection_info;
 } SerialConnectionInfo;
 
-static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
     unsigned long baud_rate;
     bool rts_cts_enabled;
@@ -147,7 +147,7 @@ typedef struct {
     XIMU3_TcpConnectionInfo connection_info;
 } TcpConnectionInfo;
 
-static PyObject *tcp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *tcp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *ip_address;
     unsigned int port;
 
@@ -214,7 +214,7 @@ typedef struct {
     XIMU3_UdpConnectionInfo connection_info;
 } UdpConnectionInfo;
 
-static PyObject *udp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *udp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *ip_address;
     unsigned int send_port;
     unsigned int receive_port;
@@ -288,7 +288,7 @@ typedef struct {
     XIMU3_BluetoothConnectionInfo connection_info;
 } BluetoothConnectionInfo;
 
-static PyObject *bluetooth_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *bluetooth_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
 
     if (PyArg_ParseTuple(args, "s", &port_name) == 0) {
@@ -348,7 +348,7 @@ typedef struct {
     XIMU3_FileConnectionInfo connection_info;
 } FileConnectionInfo;
 
-static PyObject *file_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *file_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *file_path;
 
     if (PyArg_ParseTuple(args, "s", &file_path) == 0) {
@@ -408,7 +408,7 @@ typedef struct {
     XIMU3_MuxConnectionInfo *connection_info;
 } MuxConnectionInfo;
 
-PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords);
+PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds);
 
 static void mux_connection_info_free(MuxConnectionInfo *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks

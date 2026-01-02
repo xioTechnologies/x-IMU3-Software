@@ -11,7 +11,7 @@ typedef struct {
     XIMU3_NetworkAnnouncement *network_announcement;
 } NetworkAnnouncement;
 
-static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     NetworkAnnouncement *const self = (NetworkAnnouncement *) subtype->tp_alloc(subtype, 0);
     self->network_announcement = XIMU3_network_announcement_new();
     return (PyObject *) self;

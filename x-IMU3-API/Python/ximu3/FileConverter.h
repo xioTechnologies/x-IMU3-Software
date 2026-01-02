@@ -11,7 +11,7 @@ typedef struct {
     XIMU3_FileConverter *file_converter;
 } FileConverter;
 
-static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
     PyObject *files_sequence;

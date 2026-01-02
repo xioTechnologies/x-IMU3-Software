@@ -11,7 +11,7 @@ typedef struct {
     XIMU3_PortScanner *port_scanner;
 } PortScanner;
 
-static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *callable;
     if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);

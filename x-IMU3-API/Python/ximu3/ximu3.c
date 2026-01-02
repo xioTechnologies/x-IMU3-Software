@@ -159,7 +159,7 @@ PyMODINIT_FUNC PyInit_ximu3() {
 }
 
 // This function cannot be in ConnectionInfo.h because this results in a circular reference
-PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     unsigned char channel;
     PyObject *connection;
 
