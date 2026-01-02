@@ -1,8 +1,8 @@
 #include "../../../x-IMU3-API/C/Ximu3.h"
-#include "Connection.h"
+#include "connection.h"
 #include <stdio.h>
 
-void MuxConnection()
+void mux_connection()
 {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -31,7 +31,7 @@ void MuxConnection()
 
     XIMU3_Connection* const mux_connection = XIMU3_connection_new_mux(mux_connection_info);
 
-    Run(mux_connection, XIMU3_mux_connection_info_to_string(mux_connection_info));
+    run(mux_connection, XIMU3_mux_connection_info_to_string(mux_connection_info));
 
     XIMU3_mux_connection_info_free(mux_connection_info);
 

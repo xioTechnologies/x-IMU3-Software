@@ -1,10 +1,10 @@
-#include "../Helpers.h"
+#include "../helpers.h"
 #include <stdio.h>
 #include "Ximu3.h"
 
-static void Callback(const XIMU3_Result result, void* context);
+static void callback(const XIMU3_Result result, void* context);
 
-void OpenAsync()
+void open_async()
 {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -21,15 +21,15 @@ void OpenAsync()
 
     XIMU3_devices_free(devices);
 
-    XIMU3_connection_open_async(connection, Callback, NULL);
+    XIMU3_connection_open_async(connection, callback, NULL);
 
     // Close connection
-    Wait(3);
+    sleep(3);
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }
 
-static void Callback(const XIMU3_Result result, void* context)
+static void callback(const XIMU3_Result result, void* context)
 {
     printf("%s\n", XIMU3_result_to_string(result));
 }

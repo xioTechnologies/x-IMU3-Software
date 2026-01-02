@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 
-static char GetKey()
+static char get_key()
 {
     fflush(stdout);
     char string[256];
@@ -19,12 +19,12 @@ static char GetKey()
     return toupper(string[0]);
 }
 
-static bool YesOrNo(const char* question)
+static bool yes_or_no(const char* question)
 {
     while (true)
     {
         printf("%s [Y/N]\n", question);
-        switch (GetKey())
+        switch (get_key())
         {
             case 'Y':
                 return true;
@@ -36,7 +36,7 @@ static bool YesOrNo(const char* question)
     }
 }
 
-static void Wait(const time_t seconds)
+static void sleep(const time_t seconds)
 {
     const time_t timeout = time(NULL) + seconds;
     while (time(NULL) < timeout)
