@@ -3,22 +3,19 @@
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
-ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_)
+ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree &windowLayout_, OpenGLRenderer &openGLRenderer_)
     : windowLayout(windowLayout_),
-      openGLRenderer(openGLRenderer_)
-{
+      openGLRenderer(openGLRenderer_) {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
 }
 
-void ConnectionPanelContainer::resized()
-{
+void ConnectionPanelContainer::resized() {
     noConnectionsLabel.setBounds(getLocalBounds());
 
     int numberOfRows = 0, numberOfColumns = 0; // initialisation to avoid compiler warning
 
-    switch (getLayoutInternal())
-    {
+    switch (getLayoutInternal()) {
         case Layout::rows:
             numberOfRows = (int) connectionPanels.size();
             numberOfColumns = 1;
@@ -32,18 +29,14 @@ void ConnectionPanelContainer::resized()
             numberOfColumns = (int) std::ceil(std::sqrt(connectionPanels.size()));
             break;
         case Layout::accordion:
-            for (size_t index = 0; index < connectionPanels.size(); index++)
-            {
-                auto& connectionPanel = connectionPanels[index];
+            for (size_t index = 0; index < connectionPanels.size(); index++) {
+                auto &connectionPanel = connectionPanels[index];
                 const auto y = (index == 0) ? 0 : (connectionPanels[index - 1]->getBottom() + UILayout::panelMargin);
 
-                if (expandedConnectionPanel == connectionPanel.get())
-                {
+                if (expandedConnectionPanel == connectionPanel.get()) {
                     connectionPanel->setBounds(0, y, getWidth(), expandedPanelHeight);
                     accordionResizeBar.setBounds(0, connectionPanel->getBottom(), getWidth(), UILayout::panelMargin);
-                }
-                else
-                {
+                } else {
                     connectionPanel->setBounds(0, y, getWidth(), ConnectionPanel::collapsedHeight);
                 }
             }
@@ -56,14 +49,12 @@ void ConnectionPanelContainer::resized()
 
     size_t connectionPanelIndex = 0;
     int top = 0;
-    for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++)
-    {
+    for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
         auto rowBounds = panelsBounds.removeFromTop(rowHeight).withTop((float) top);
         panelsBounds.removeFromTop(UILayout::panelMargin);
 
         int left = 0;
-        for (int columnIndex = 0; columnIndex < numberOfColumns && connectionPanelIndex < connectionPanels.size(); columnIndex++)
-        {
+        for (int columnIndex = 0; columnIndex < numberOfColumns && connectionPanelIndex < connectionPanels.size(); columnIndex++) {
             const auto bounds = rowBounds.removeFromLeft(columnWidth).toNearestInt().withLeft(left);
             rowBounds.removeFromLeft(UILayout::panelMargin);
 
@@ -76,36 +67,30 @@ void ConnectionPanelContainer::resized()
     }
 }
 
-void ConnectionPanelContainer::updateSize()
-{
-    auto* const viewport = findParentComponentOfClass<juce::Viewport>();
-    if (viewport == nullptr)
-    {
+void ConnectionPanelContainer::updateSize() {
+    auto *const viewport = findParentComponentOfClass<juce::Viewport>();
+    if (viewport == nullptr) {
         return;
     }
 
     auto bounds = viewport->getLocalBounds();
 
-    switch (getLayoutInternal())
-    {
-        case Layout::rows:
-            {
-                static constexpr int minimumRowHeight = 175;
-                bounds.setHeight(std::max(bounds.getHeight(), (int) connectionPanels.size() * minimumRowHeight + (int) connectionPanels.size() * UILayout::panelMargin));
-                break;
-            }
-        case Layout::columns:
-            {
-                static constexpr int minimumColumnWidth = 100;
-                bounds.setWidth(std::max(bounds.getWidth(), (int) connectionPanels.size() * minimumColumnWidth + (int) connectionPanels.size() * UILayout::panelMargin));
-                break;
-            }
+    switch (getLayoutInternal()) {
+        case Layout::rows: {
+            static constexpr int minimumRowHeight = 175;
+            bounds.setHeight(std::max(bounds.getHeight(), (int) connectionPanels.size() * minimumRowHeight + (int) connectionPanels.size() * UILayout::panelMargin));
+            break;
+        }
+        case Layout::columns: {
+            static constexpr int minimumColumnWidth = 100;
+            bounds.setWidth(std::max(bounds.getWidth(), (int) connectionPanels.size() * minimumColumnWidth + (int) connectionPanels.size() * UILayout::panelMargin));
+            break;
+        }
         case Layout::grid:
             break;
         case Layout::accordion:
             bounds.setHeight(0);
-            for (size_t index = 0; index < connectionPanels.size(); index++)
-            {
+            for (size_t index = 0; index < connectionPanels.size(); index++) {
                 bounds.setHeight(bounds.getHeight() + UILayout::panelMargin + (expandedConnectionPanel == connectionPanels[index].get() ? expandedPanelHeight : ConnectionPanel::collapsedHeight));
             }
             break;
@@ -114,8 +99,7 @@ void ConnectionPanelContainer::updateSize()
     setBounds(bounds); // Update the visibility of the scrollbars
 
     // Prevent scrollbar overlap
-    switch (getLayoutInternal())
-    {
+    switch (getLayoutInternal()) {
         case Layout::rows:
             bounds.removeFromRight((bounds.getHeight() <= viewport->getMaximumVisibleHeight()) ? 0 : viewport->getScrollBarThickness());
             break;
@@ -133,24 +117,19 @@ void ConnectionPanelContainer::updateSize()
     resized();
 }
 
-void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& connectionInfo, const bool keepOpen)
-{
-    for (const auto& connectionPanel : connectionPanels)
-    {
-        if (connectionPanel->getConnection()->getInfo()->toString() == connectionInfo.toString())
-        {
+void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo &connectionInfo, const bool keepOpen) {
+    for (const auto &connectionPanel: connectionPanels) {
+        if (connectionPanel->getConnection()->getInfo()->toString() == connectionInfo.toString()) {
             DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + connectionInfo.toString() + "."));
             return;
         }
     }
 
     auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
-    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&]
-    {
+    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&] {
         static unsigned int counter;
 
-        if (connectionPanels.empty() || (++counter >= UIColours::tags.size()))
-        {
+        if (connectionPanels.empty() || (++counter >= UIColours::tags.size())) {
             counter = 0;
         }
 
@@ -160,28 +139,22 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo& conn
     connectionPanelsSizeChanged();
 }
 
-std::vector<ConnectionPanel*> ConnectionPanelContainer::getConnectionPanels() const
-{
-    std::vector<ConnectionPanel*> vector;
-    for (auto& connectionPanel : connectionPanels)
-    {
+std::vector<ConnectionPanel *> ConnectionPanelContainer::getConnectionPanels() const {
+    std::vector<ConnectionPanel *> vector;
+    for (auto &connectionPanel: connectionPanels) {
         vector.push_back(connectionPanel.get());
     }
     return vector;
 }
 
-void ConnectionPanelContainer::removeAllPanels()
-{
+void ConnectionPanelContainer::removeAllPanels() {
     connectionPanels.clear();
     connectionPanelsSizeChanged();
 }
 
-void ConnectionPanelContainer::removePanel(const ConnectionPanel& panel)
-{
-    for (size_t index = 0; index < connectionPanels.size(); index++)
-    {
-        if (connectionPanels[index].get() == &panel)
-        {
+void ConnectionPanelContainer::removePanel(const ConnectionPanel &panel) {
+    for (size_t index = 0; index < connectionPanels.size(); index++) {
+        if (connectionPanels[index].get() == &panel) {
             connectionPanels.erase(connectionPanels.begin() + (int) index);
             break;
         }
@@ -189,32 +162,24 @@ void ConnectionPanelContainer::removePanel(const ConnectionPanel& panel)
     connectionPanelsSizeChanged();
 }
 
-void ConnectionPanelContainer::movePanel(ConnectionPanel& move, ConnectionPanel& target)
-{
-    for (size_t index = 0; index < connectionPanels.size(); index++)
-    {
-        if (connectionPanels[index].get() == &move)
-        {
+void ConnectionPanelContainer::movePanel(ConnectionPanel &move, ConnectionPanel &target) {
+    for (size_t index = 0; index < connectionPanels.size(); index++) {
+        if (connectionPanels[index].get() == &move) {
             auto moving = std::move(connectionPanels[index]);
-            for (; index < connectionPanels.size() - 1; index++)
-            {
+            for (; index < connectionPanels.size() - 1; index++) {
                 connectionPanels[index] = std::move(connectionPanels[index + 1]);
-                if (connectionPanels[index].get() == &target)
-                {
+                if (connectionPanels[index].get() == &target) {
                     connectionPanels[index + 1] = std::move(moving);
                     resized();
                     return;
                 }
             }
         }
-        if (connectionPanels[index].get() == &target)
-        {
-            auto& targetPointer = connectionPanels[index++];
-            for (; index < connectionPanels.size(); index++)
-            {
+        if (connectionPanels[index].get() == &target) {
+            auto &targetPointer = connectionPanels[index++];
+            for (; index < connectionPanels.size(); index++) {
                 std::swap(connectionPanels[index], targetPointer);
-                if (targetPointer.get() == &move)
-                {
+                if (targetPointer.get() == &move) {
                     resized();
                     return;
                 }
@@ -223,10 +188,8 @@ void ConnectionPanelContainer::movePanel(ConnectionPanel& move, ConnectionPanel&
     }
 }
 
-void ConnectionPanelContainer::showDragOverlayAtComponent(juce::Component& component, DragOverlay::Side side)
-{
-    if (dragOverlay == nullptr || dragOverlay->getTarget() != &component)
-    {
+void ConnectionPanelContainer::showDragOverlayAtComponent(juce::Component &component, DragOverlay::Side side) {
+    if (dragOverlay == nullptr || dragOverlay->getTarget() != &component) {
         dragOverlay.reset();
         dragOverlay = std::make_unique<DragOverlay>(component);
         component.addAndMakeVisible(*dragOverlay);
@@ -235,20 +198,16 @@ void ConnectionPanelContainer::showDragOverlayAtComponent(juce::Component& compo
     dragOverlay->setSide(side);
 }
 
-void ConnectionPanelContainer::hideDragOverlay()
-{
+void ConnectionPanelContainer::hideDragOverlay() {
     dragOverlay.reset();
 }
 
-DragOverlay* ConnectionPanelContainer::getCurrentlyShowingDragOverlay()
-{
+DragOverlay *ConnectionPanelContainer::getCurrentlyShowingDragOverlay() {
     return dragOverlay.get();
 }
 
-void ConnectionPanelContainer::setLayout(Layout layout_)
-{
-    if (layout == layout_)
-    {
+void ConnectionPanelContainer::setLayout(Layout layout_) {
+    if (layout == layout_) {
         return;
     }
 
@@ -260,52 +219,43 @@ void ConnectionPanelContainer::setLayout(Layout layout_)
     updateSize();
 }
 
-ConnectionPanelContainer::Layout ConnectionPanelContainer::getLayout()
-{
+ConnectionPanelContainer::Layout ConnectionPanelContainer::getLayout() {
     return layout;
 }
 
-void ConnectionPanelContainer::setExpandedConnectionPanel(ConnectionPanel* const connectionPanel)
-{
+void ConnectionPanelContainer::setExpandedConnectionPanel(ConnectionPanel *const connectionPanel) {
     expandedConnectionPanel = connectionPanel;
 
-    for (auto& panel : connectionPanels)
-    {
+    for (auto &panel: connectionPanels) {
         panel->setOverlayVisible(getLayoutInternal() == Layout::accordion && expandedConnectionPanel != nullptr && panel.get() != expandedConnectionPanel);
     }
 
     updateSize();
 }
 
-const ConnectionPanel* ConnectionPanelContainer::getExpandedConnectionPanel() const
-{
+const ConnectionPanel *ConnectionPanelContainer::getExpandedConnectionPanel() const {
     return expandedConnectionPanel;
 }
 
-ConnectionPanelContainer::AccordionResizeBar::AccordionResizeBar()
-{
+ConnectionPanelContainer::AccordionResizeBar::AccordionResizeBar() {
     setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
 }
 
-void ConnectionPanelContainer::AccordionResizeBar::mouseDrag(const juce::MouseEvent& mouseEvent)
-{
-    auto* const connectionPanelContainer = static_cast<ConnectionPanelContainer*>(getParentComponent());
+void ConnectionPanelContainer::AccordionResizeBar::mouseDrag(const juce::MouseEvent &mouseEvent) {
+    auto *const connectionPanelContainer = static_cast<ConnectionPanelContainer *>(getParentComponent());
     const auto newHeight = mouseEvent.getEventRelativeTo(connectionPanelContainer->expandedConnectionPanel).getPosition().getY() - getHeight() / 2;
     connectionPanelContainer->expandedPanelHeight = juce::jmax(ConnectionPanel::collapsedHeight, newHeight);
     connectionPanelContainer->updateSize();
 }
 
-ConnectionPanelContainer::Layout ConnectionPanelContainer::getLayoutInternal() const
-{
-    if (connectionPanels.size() <= 1)
-    {
+ConnectionPanelContainer::Layout ConnectionPanelContainer::getLayoutInternal() const {
+    if (connectionPanels.size() <= 1) {
         return Layout::rows;
     }
     return layout;
 }
 
-void ConnectionPanelContainer::connectionPanelsSizeChanged()
-{
+void ConnectionPanelContainer::connectionPanelsSizeChanged() {
     noConnectionsLabel.setVisible(connectionPanels.empty());
     setExpandedConnectionPanel(expandedConnectionPanel);
     onConnectionPanelsSizeChanged();

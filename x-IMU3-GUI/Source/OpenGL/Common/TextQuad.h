@@ -2,11 +2,9 @@
 
 #include <juce_opengl/juce_opengl.h>
 
-class TextQuad
-{
+class TextQuad {
 public:
-    explicit TextQuad()
-    {
+    explicit TextQuad() {
         using namespace ::juce::gl;
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &ebo);
@@ -15,16 +13,14 @@ public:
         loadVertices();
     }
 
-    ~TextQuad()
-    {
+    ~TextQuad() {
         using namespace ::juce::gl;
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &ebo);
         glDeleteBuffers(1, &vbo);
     }
 
-    void draw() const
-    {
+    void draw() const {
         using namespace ::juce::gl;
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, (GLsizei) indicesCount, GL_UNSIGNED_INT, nullptr);
@@ -32,8 +28,7 @@ public:
     }
 
 private:
-    void loadVertices()
-    {
+    void loadVertices() {
         using namespace ::juce::gl;
 
         // Make quad geometry on the XY plane of OpenGL's default coordinate system
@@ -77,7 +72,7 @@ private:
 
         // Texture coordinate attribute (2 float)
         const GLuint textureCoordIndex = 1;
-        glVertexAttribPointer(textureCoordIndex, textureCoordDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) (positionDimension * sizeof(GLfloat)));
+        glVertexAttribPointer(textureCoordIndex, textureCoordDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) (positionDimension * sizeof(GLfloat)));
         glEnableVertexAttribArray(textureCoordIndex);
 
         // Unbind buffers
@@ -86,9 +81,9 @@ private:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // unbind EBO
     }
 
-    GLuint vao {};
-    GLuint ebo {};
-    GLuint vbo {};
+    GLuint vao{};
+    GLuint ebo{};
+    GLuint vbo{};
 
     GLuint indicesCount = 0;
 

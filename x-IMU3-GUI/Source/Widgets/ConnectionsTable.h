@@ -6,11 +6,9 @@
 #include "Ximu3.hpp"
 
 class ConnectionsTable : public juce::Component,
-                         private juce::TableListBoxModel
-{
+                         private juce::TableListBoxModel {
 public:
-    struct Row
-    {
+    struct Row {
         bool selected;
         juce::String descriptor;
         std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
@@ -19,8 +17,7 @@ public:
         std::optional<ximu3::XIMU3_ChargingStatus> batteryStatus;
         bool unavailable;
 
-        bool operator==(const Row& row) const
-        {
+        bool operator==(const Row &row) const {
             return connectionInfo->toString() == row.connectionInfo->toString();
         }
     };
@@ -31,11 +28,10 @@ public:
 
     void setRows(std::vector<Row> rows_);
 
-    const std::vector<Row>& getRows() const;
+    const std::vector<Row> &getRows() const;
 
 private:
-    enum class ColumnIds
-    {
+    enum class ColumnIds {
         selected = 1,
         descriptor,
         connection,
@@ -46,25 +42,23 @@ private:
 
     std::vector<Row> rows;
 
-    CustomToggleButton selectAllButton { "" };
-    SimpleLabel selectAllLabel { "Select All" };
-    juce::TableListBox table { "", this };
+    CustomToggleButton selectAllButton{""};
+    SimpleLabel selectAllLabel{"Select All"};
+    juce::TableListBox table{"", this};
 
-    SimpleLabel noConnectionsFoundLabel { "No Connections Found", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel noConnectionsFoundLabel{"No Connections Found", UIFonts::getDefaultFont(), juce::Justification::centred};
 
     int getNumRows() override;
 
-    void paintRowBackground(juce::Graphics&, int, int, int, bool) override
-    {
+    void paintRowBackground(juce::Graphics &, int, int, int, bool) override {
     }
 
-    void paintCell(juce::Graphics&, int, int, int, int, bool) override
-    {
+    void paintCell(juce::Graphics &, int, int, int, int, bool) override {
     }
 
-    juce::Component* refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate) override;
+    juce::Component *refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component *existingComponentToUpdate) override;
 
-    void cellClicked(int rowNumber, int, const juce::MouseEvent&) override;
+    void cellClicked(int rowNumber, int, const juce::MouseEvent &) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionsTable)
 };

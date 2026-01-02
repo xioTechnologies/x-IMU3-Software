@@ -10,11 +10,9 @@
 #include "Widgets/DisabledOverlay.h"
 #include "Windows/WindowIds.h"
 
-class MainComponent : public juce::Component, private juce::ChangeListener
-{
+class MainComponent : public juce::Component, private juce::ChangeListener {
 public:
-    MainComponent()
-    {
+    MainComponent() {
         addAndMakeVisible(menuStrip);
         addAndMakeVisible(connectionPanelViewport);
         addChildComponent(disabledOverlay);
@@ -27,14 +25,12 @@ public:
         tooltipWindow.setOpaque(false);
 
         DialogQueue::getSingleton().addChangeListener(this);
-        if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk)
-        {
+        if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk) {
             DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to access the network announcement socket. Please close all other x-IMU3 applications and restart the x-IMU3 GUI."));
         }
     }
 
-    void resized() override
-    {
+    void resized() override {
         auto bounds = getLocalBounds();
         disabledOverlay.setBounds(bounds);
 
@@ -45,21 +41,17 @@ public:
         connectionPanelContainer.updateSize();
     }
 
-    int getMinimumWidth() const
-    {
+    int getMinimumWidth() const {
         return menuStrip.getMinimumWidth();
     }
 
-    int getMinimumHeight() const
-    {
+    int getMinimumHeight() const {
         return juce::roundToInt(menuStrip.getMinimumWidth() / (1024.0f / 768.0f));
     }
 
 private:
-    struct DefaultLookAndFeelSetter
-    {
-        DefaultLookAndFeelSetter()
-        {
+    struct DefaultLookAndFeelSetter {
+        DefaultLookAndFeelSetter() {
             juce::LookAndFeel::setDefaultLookAndFeel(&lookAndFeel);
         }
 
@@ -67,19 +59,18 @@ private:
     };
 
     const DefaultLookAndFeelSetter defaultLookAndFeelSetter;
-    juce::ValueTree windowLayout { WindowIds::Row };
+    juce::ValueTree windowLayout{WindowIds::Row};
     juce::ThreadPool threadPool;
-    OpenGLRenderer openGLRenderer { *this, threadPool };
-    ConnectionPanelContainer connectionPanelContainer { windowLayout, openGLRenderer };
+    OpenGLRenderer openGLRenderer{*this, threadPool};
+    ConnectionPanelContainer connectionPanelContainer{windowLayout, openGLRenderer};
     juce::Viewport connectionPanelViewport;
-    MenuStrip menuStrip { windowLayout, threadPool, connectionPanelContainer };
-    juce::TooltipWindow tooltipWindow { nullptr, 300 };
+    MenuStrip menuStrip{windowLayout, threadPool, connectionPanelContainer};
+    juce::TooltipWindow tooltipWindow{nullptr, 300};
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
     DisabledOverlay disabledOverlay;
 
-    void changeListenerCallback(juce::ChangeBroadcaster*) override
-    {
+    void changeListenerCallback(juce::ChangeBroadcaster *) override {
         disabledOverlay.setVisible(DialogQueue::getSingleton().getActive() != nullptr);
     }
 

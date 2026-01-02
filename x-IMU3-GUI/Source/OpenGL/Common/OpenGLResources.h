@@ -18,19 +18,18 @@
 #include "Text.h"
 #include "TextQuad.h"
 
-class OpenGLResources
-{
-    juce::OpenGLContext& context;
+class OpenGLResources {
+    juce::OpenGLContext &context;
 
 public:
     static constexpr int graphBufferSize = 1 << 16;
 
-    OpenGLResources(juce::OpenGLContext& context_, juce::ThreadPool& threadPool);
+    OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool &threadPool);
 
     // Text
-    Text& getGraphTickText();
+    Text &getGraphTickText();
 
-    Text& get3DViewAxesText();
+    Text &get3DViewAxesText();
 
     // Geometry
     Model arrow;
@@ -39,18 +38,18 @@ public:
     Model custom;
     PlaneModel plane;
     TextQuad textQuad;
-    LineBuffer graphGridBuffer { true };
-    LineBuffer graphDataBuffer { false };
+    LineBuffer graphGridBuffer{true};
+    LineBuffer graphDataBuffer{false};
 
     // Shaders
-    const GraphDataShader graphDataShader { context };
-    const GraphGridShader graphGridShader { context };
-    const GraphGridShader gridLinesShader { context };
-    const WorldGridShader grid3DShader { context };
-    const TextShader textShader { context };
-    const LitShader threeDViewShader { context };
-    const UnlitShader unlitShader { context };
-    const ScreenSpaceLitShader screenSpaceLitShader { context };
+    const GraphDataShader graphDataShader{context};
+    const GraphGridShader graphGridShader{context};
+    const GraphGridShader gridLinesShader{context};
+    const WorldGridShader grid3DShader{context};
+    const TextShader textShader{context};
+    const LitShader threeDViewShader{context};
+    const UnlitShader unlitShader{context};
+    const ScreenSpaceLitShader screenSpaceLitShader{context};
 
     // Textures
     juce::OpenGLTexture compassTexture;

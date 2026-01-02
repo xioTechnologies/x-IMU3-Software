@@ -3,32 +3,27 @@
 #include <juce_opengl/juce_opengl.h>
 #include <span>
 
-class LineBuffer
-{
+class LineBuffer {
 public:
-    explicit LineBuffer(bool includeBrightnessAttribute_) : includeBrightnessAttribute(includeBrightnessAttribute_)
-    {
+    explicit LineBuffer(bool includeBrightnessAttribute_) : includeBrightnessAttribute(includeBrightnessAttribute_) {
         using namespace ::juce::gl;
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
     }
 
-    ~LineBuffer()
-    {
+    ~LineBuffer() {
         using namespace ::juce::gl;
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
     }
 
-    void fillBuffers(const std::span<const juce::Point<GLfloat>>& vertices)
-    {
+    void fillBuffers(const std::span<const juce::Point<GLfloat>> &vertices) {
         static constexpr int floatsInPoint = 2;
         static_assert(sizeof(juce::Point<GLfloat>) == sizeof(float) * floatsInPoint); // if this fails, use contiguous raw float sequence instead
-        fillBuffers({ reinterpret_cast<const GLfloat*>(vertices.data()), vertices.size() * floatsInPoint });
+        fillBuffers({reinterpret_cast<const GLfloat *>(vertices.data()), vertices.size() * floatsInPoint});
     }
 
-    void fillBuffers(const std::span<const GLfloat>& vertices)
-    {
+    void fillBuffers(const std::span<const GLfloat> &vertices) {
         using namespace ::juce::gl;
 
         // Define that our vertices are laid out as groups of 3 GLfloats (2 for position (XY), 1 for brightness)
@@ -50,11 +45,10 @@ public:
         glVertexAttribPointer(positionIndex, positionDimension, GL_FLOAT, GL_FALSE, vertexDataLength, nullptr);
         glEnableVertexAttribArray(positionIndex);
 
-        if (includeBrightnessAttribute)
-        {
+        if (includeBrightnessAttribute) {
             // Brightness attribute (1 float)
             const GLuint brightnessIndex = 1;
-            glVertexAttribPointer(brightnessIndex, brightnessDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) (positionDimension * sizeof(GLfloat)));
+            glVertexAttribPointer(brightnessIndex, brightnessDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) (positionDimension * sizeof(GLfloat)));
             glEnableVertexAttribArray(brightnessIndex);
         }
 
@@ -63,8 +57,7 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind VBO
     }
 
-    void draw(GLenum glDrawMode) const
-    {
+    void draw(GLenum glDrawMode) const {
         using namespace ::juce::gl;
         glBindVertexArray(vao);
         glDrawArrays(glDrawMode, 0, verticesCount);
@@ -72,8 +65,8 @@ public:
     }
 
 private:
-    GLuint vao {}; // vertex array object
-    GLuint vbo {}; // vertex buffer object
+    GLuint vao{}; // vertex array object
+    GLuint vbo{}; // vertex buffer object
 
     GLsizei verticesCount = 0;
 

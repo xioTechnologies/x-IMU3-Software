@@ -7,16 +7,13 @@
 #include <thread>
 #include "Ximu3.hpp"
 
-class Commands
-{
+class Commands {
 public:
-    Commands()
-    {
+    Commands() {
         // Search for connection
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
-        if (devices.empty())
-        {
+        if (devices.empty()) {
             std::cout << "No USB connections available" << std::endl;
             return;
         }
@@ -28,14 +25,13 @@ public:
 
         const auto result = connection.open();
 
-        if (result != ximu3::XIMU3_ResultOk)
-        {
+        if (result != ximu3::XIMU3_ResultOk) {
             std::cout << "Unable to open connection. " << XIMU3_result_to_string(result) << "." << std::endl;
             return;
         }
 
         // Example commands
-        const std::vector<std::string> commands {
+        const std::vector<std::string> commands{
             "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
             "{\"serial_number\":null}", // read serial number
             "{\"firmware_version\":null}", // read firmware version
@@ -43,14 +39,11 @@ public:
         };
 
         // Send commands
-        if (helpers::yesOrNo("Use async implementation?"))
-        {
+        if (helpers::yesOrNo("Use async implementation?")) {
             connection.sendCommandsAsync(commands, callback);
 
             std::this_thread::sleep_for(std::chrono::seconds(3));
-        }
-        else
-        {
+        } else {
             printResponses(connection.sendCommands(commands));
         }
 
@@ -59,23 +52,18 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<std::optional<ximu3::CommandMessage>>&)> callback = [](const auto& responses)
-    {
+    std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &)> callback = [](const auto &responses) {
         printResponses(responses);
     };
 
-    static void printResponses(const std::vector<std::optional<ximu3::CommandMessage>>& responses)
-    {
-        for (const auto& response : responses)
-        {
-            if (response.has_value() == false)
-            {
+    static void printResponses(const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+        for (const auto &response: responses) {
+            if (response.has_value() == false) {
                 std::cout << "No response" << std::endl;
                 continue;
             }
 
-            if (const auto error = response->error)
-            {
+            if (const auto error = response->error) {
                 std::cout << *error << std::endl;
                 continue;
             }

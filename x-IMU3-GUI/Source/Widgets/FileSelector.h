@@ -3,22 +3,21 @@
 #include "CustomTextEditor.h"
 #include "IconButton.h"
 
-class FileSelector : public juce::Component, public juce::FileDragAndDropTarget
-{
+class FileSelector : public juce::Component, public juce::FileDragAndDropTarget {
 public:
-    FileSelector(const juce::String& tooltip, const std::optional<juce::String>& extension_);
+    FileSelector(const juce::String &tooltip, const std::optional<juce::String> &extension_);
 
     void resized() override;
 
-    bool isInterestedInFileDrag(const juce::StringArray&) override;
+    bool isInterestedInFileDrag(const juce::StringArray &) override;
 
-    void filesDropped(const juce::StringArray& files, int, int) override;
+    void filesDropped(const juce::StringArray &files, int, int) override;
 
     juce::Array<juce::File> getFiles() const;
 
-    void setFiles(const juce::Array<juce::File>& files);
+    void setFiles(const juce::Array<juce::File> &files);
 
-    void setFilesWhenEmpty(const juce::Array<juce::File>& files);
+    void setFilesWhenEmpty(const juce::Array<juce::File> &files);
 
     bool isValid() const;
 
@@ -36,9 +35,9 @@ private:
 
     juce::String getText() const;
 
-    juce::StringArray toStringArray(const juce::Array<juce::File>& files) const;
+    juce::StringArray toStringArray(const juce::Array<juce::File> &files) const;
 
-    static bool exists(const juce::String& path);
+    static bool exists(const juce::String &path);
 
-    static juce::Array<juce::File> toFileArray(const juce::StringArray& strings);
+    static juce::Array<juce::File> toFileArray(const juce::StringArray &strings);
 };

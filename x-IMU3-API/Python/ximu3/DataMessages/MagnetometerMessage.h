@@ -6,53 +6,46 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_MagnetometerMessage message;
 } MagnetometerMessage;
 
-static void magnetometer_message_free(MagnetometerMessage* self)
-{
+static void magnetometer_message_free(MagnetometerMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* magnetometer_message_get_timestamp(MagnetometerMessage* self)
-{
+static PyObject *magnetometer_message_get_timestamp(MagnetometerMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* magnetometer_message_get_x(MagnetometerMessage* self)
-{
+static PyObject *magnetometer_message_get_x(MagnetometerMessage *self) {
     return Py_BuildValue("f", self->message.x);
 }
 
-static PyObject* magnetometer_message_get_y(MagnetometerMessage* self)
-{
+static PyObject *magnetometer_message_get_y(MagnetometerMessage *self) {
     return Py_BuildValue("f", self->message.y);
 }
 
-static PyObject* magnetometer_message_get_z(MagnetometerMessage* self)
-{
+static PyObject *magnetometer_message_get_z(MagnetometerMessage *self) {
     return Py_BuildValue("f", self->message.z);
 }
 
-static PyObject* magnetometer_message_to_string(MagnetometerMessage* self, PyObject* args)
-{
+static PyObject *magnetometer_message_to_string(MagnetometerMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_magnetometer_message_to_string(self->message));
 }
 
 static PyGetSetDef magnetometer_message_get_set[] = {
-    { "timestamp", (getter) magnetometer_message_get_timestamp, NULL, "", NULL },
-    { "x", (getter) magnetometer_message_get_x, NULL, "", NULL },
-    { "y", (getter) magnetometer_message_get_y, NULL, "", NULL },
-    { "z", (getter) magnetometer_message_get_z, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) magnetometer_message_get_timestamp, NULL, "", NULL},
+    {"x", (getter) magnetometer_message_get_x, NULL, "", NULL},
+    {"y", (getter) magnetometer_message_get_y, NULL, "", NULL},
+    {"z", (getter) magnetometer_message_get_z, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef magnetometer_message_methods[] = {
-    { "to_string", (PyCFunction) magnetometer_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) magnetometer_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject magnetometer_message_object = {
@@ -64,23 +57,20 @@ static PyTypeObject magnetometer_message_object = {
     .tp_methods = magnetometer_message_methods,
 };
 
-static PyObject* magnetometer_message_from(const XIMU3_MagnetometerMessage* const message)
-{
-    MagnetometerMessage* const self = (MagnetometerMessage*) magnetometer_message_object.tp_alloc(&magnetometer_message_object, 0);
+static PyObject *magnetometer_message_from(const XIMU3_MagnetometerMessage *const message) {
+    MagnetometerMessage *const self = (MagnetometerMessage *) magnetometer_message_object.tp_alloc(&magnetometer_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void magnetometer_message_callback(XIMU3_MagnetometerMessage data, void* context)
-{
+static void magnetometer_message_callback(XIMU3_MagnetometerMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = magnetometer_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = magnetometer_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

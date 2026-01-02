@@ -3,25 +3,20 @@
 #include <regex>
 #include <sstream>
 
-std::string EscapedStrings::printableToBytes(const std::string& printable)
-{
+std::string EscapedStrings::printableToBytes(const std::string &printable) {
     std::string bytes;
 
-    for (size_t index = 0; index < printable.length(); index++)
-    {
-        if (printable[index] != '\\')
-        {
+    for (size_t index = 0; index < printable.length(); index++) {
+        if (printable[index] != '\\') {
             bytes += printable[index];
             continue;
         }
 
-        if (++index == printable.length())
-        {
+        if (++index == printable.length()) {
             break;
         }
 
-        switch (printable[index])
-        {
+        switch (printable[index]) {
             case '\\':
                 bytes += '\\';
                 continue;
@@ -35,14 +30,10 @@ std::string EscapedStrings::printableToBytes(const std::string& printable)
                 continue;
 
             case 'x':
-                if ((index + 2) < printable.length())
-                {
-                    try
-                    {
+                if ((index + 2) < printable.length()) {
+                    try {
                         bytes += static_cast<char>(std::stoi(printable.substr(index + 1, 2), nullptr, 16));
-                    }
-                    catch (...)
-                    {
+                    } catch (...) {
                     }
 
                     index += 2;
@@ -56,14 +47,11 @@ std::string EscapedStrings::printableToBytes(const std::string& printable)
     return bytes;
 }
 
-std::string EscapedStrings::bytesToPrintable(const std::string& bytes)
-{
+std::string EscapedStrings::bytesToPrintable(const std::string &bytes) {
     std::string printable;
 
-    for (char byte : bytes)
-    {
-        switch (byte)
-        {
+    for (char byte: bytes) {
+        switch (byte) {
             case '\\':
                 printable += "\\\\";
                 continue;
@@ -81,8 +69,7 @@ std::string EscapedStrings::bytesToPrintable(const std::string& bytes)
         }
 
         const auto byteUnsigned = (unsigned char) byte;
-        if (byteUnsigned < 0x20 || byteUnsigned > 0x7E)
-        {
+        if (byteUnsigned < 0x20 || byteUnsigned > 0x7E) {
             std::ostringstream stream;
             stream << "\\x" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) byteUnsigned;
             printable += stream.str();
@@ -95,31 +82,25 @@ std::string EscapedStrings::bytesToPrintable(const std::string& bytes)
     return printable;
 }
 
-std::string EscapedStrings::jsonToBytes(std::string json)
-{
-    if ((json.length()) < 2 || (json.front() != '"') || (json.back() != '"'))
-    {
+std::string EscapedStrings::jsonToBytes(std::string json) {
+    if ((json.length()) < 2 || (json.front() != '"') || (json.back() != '"')) {
         return {};
     }
     json = json.substr(1, json.length() - 2);
 
     std::string bytes;
 
-    for (size_t index = 0; index < json.length(); index++)
-    {
-        if (json[index] != '\\')
-        {
+    for (size_t index = 0; index < json.length(); index++) {
+        if (json[index] != '\\') {
             bytes += json[index];
             continue;
         }
 
-        if (++index == json.length())
-        {
+        if (++index == json.length()) {
             break;
         }
 
-        switch (json[index])
-        {
+        switch (json[index]) {
             case '"':
                 bytes += '"';
                 continue;
@@ -149,14 +130,10 @@ std::string EscapedStrings::jsonToBytes(std::string json)
                 continue;
 
             case 'u':
-                if ((index + 4) < json.length())
-                {
-                    try
-                    {
+                if ((index + 4) < json.length()) {
+                    try {
                         bytes += static_cast<char>(std::stoi(json.substr(index + 1, 4), nullptr, 16) & 0xFF);
-                    }
-                    catch (...)
-                    {
+                    } catch (...) {
                     }
 
                     index += 4;
@@ -170,14 +147,11 @@ std::string EscapedStrings::jsonToBytes(std::string json)
     return bytes;
 }
 
-std::string EscapedStrings::bytesToJson(const std::string& bytes)
-{
+std::string EscapedStrings::bytesToJson(const std::string &bytes) {
     std::string json;
 
-    for (char byte : bytes)
-    {
-        switch (byte)
-        {
+    for (char byte: bytes) {
+        switch (byte) {
             case '"':
                 json += "\\\"";
                 continue;
@@ -211,8 +185,7 @@ std::string EscapedStrings::bytesToJson(const std::string& bytes)
         }
 
         const auto byteUnsigned = (unsigned char) byte;
-        if (byteUnsigned < 0x20)
-        {
+        if (byteUnsigned < 0x20) {
             std::ostringstream stream;
             stream << "\\u" << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) byteUnsigned;
             json += stream.str();
@@ -225,25 +198,21 @@ std::string EscapedStrings::bytesToJson(const std::string& bytes)
     return "\"" + json + "\"";
 }
 
-std::vector<std::string> EscapedStrings::splitPrintable(const std::string& printable)
-{
+std::vector<std::string> EscapedStrings::splitPrintable(const std::string &printable) {
     static const std::regex regex(R"((\\\\|\\n|\\r|\\x[0-9A-Fa-f]{2}))");
 
     std::vector<std::string> output;
 
     size_t position = 0;
-    for (std::sregex_iterator it(printable.cbegin(), printable.cend(), regex); it != std::sregex_iterator(); ++it)
-    {
-        if (it->position() != 0)
-        {
+    for (std::sregex_iterator it(printable.cbegin(), printable.cend(), regex); it != std::sregex_iterator(); ++it) {
+        if (it->position() != 0) {
             output.push_back(printable.substr(position, (size_t) it->position() - position));
         }
         output.push_back(it->str());
         position = size_t(it->position() + it->length());
     }
 
-    if (position < printable.length())
-    {
+    if (position < printable.length()) {
         output.push_back(printable.substr(position));
     }
 

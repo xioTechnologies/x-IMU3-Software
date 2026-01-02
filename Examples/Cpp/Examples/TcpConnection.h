@@ -2,17 +2,13 @@
 
 #include "Connection.h"
 
-class TcpConnection : public Connection
-{
+class TcpConnection : public Connection {
 public:
-    TcpConnection()
-    {
-        if (helpers::yesOrNo("Search for connections?"))
-        {
+    TcpConnection() {
+        if (helpers::yesOrNo("Search for connections?")) {
             const auto messages = ximu3::NetworkAnnouncement().getMessagesAfterShortDelay();
 
-            if (messages.empty())
-            {
+            if (messages.empty()) {
                 std::cout << "No TCP connections available" << std::endl;
                 return;
             }
@@ -22,9 +18,7 @@ public:
             const ximu3::TcpConnectionInfo connectionInfo(messages[0]);
 
             run(connectionInfo);
-        }
-        else
-        {
+        } else {
             const ximu3::TcpConnectionInfo connectionInfo("192.168.1.1", 7000); // replace with actual connection info
 
             run(connectionInfo);

@@ -6,92 +6,79 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_RotationMatrixMessage message;
 } RotationMatrixMessage;
 
-static void rotation_matrix_message_free(RotationMatrixMessage* self)
-{
+static void rotation_matrix_message_free(RotationMatrixMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* rotation_matrix_message_get_timestamp(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_timestamp(RotationMatrixMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* rotation_matrix_message_get_xx(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_xx(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.xx);
 }
 
-static PyObject* rotation_matrix_message_get_xy(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_xy(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.xy);
 }
 
-static PyObject* rotation_matrix_message_get_xz(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_xz(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.xz);
 }
 
-static PyObject* rotation_matrix_message_get_yx(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_yx(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.yx);
 }
 
-static PyObject* rotation_matrix_message_get_yy(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_yy(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.yy);
 }
 
-static PyObject* rotation_matrix_message_get_yz(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_yz(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.yz);
 }
 
-static PyObject* rotation_matrix_message_get_zx(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_zx(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.zx);
 }
 
-static PyObject* rotation_matrix_message_get_zy(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_zy(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.zy);
 }
 
-static PyObject* rotation_matrix_message_get_zz(RotationMatrixMessage* self)
-{
+static PyObject *rotation_matrix_message_get_zz(RotationMatrixMessage *self) {
     return Py_BuildValue("f", self->message.zz);
 }
 
-static PyObject* rotation_matrix_message_to_string(RotationMatrixMessage* self, PyObject* args)
-{
+static PyObject *rotation_matrix_message_to_string(RotationMatrixMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_rotation_matrix_message_to_string(self->message));
 }
 
-static PyObject* rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage* self, PyObject* args);
+static PyObject *rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage *self, PyObject *args);
 
 static PyGetSetDef rotation_matrix_message_get_set[] = {
-    { "timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL },
-    { "xx", (getter) rotation_matrix_message_get_xx, NULL, "", NULL },
-    { "xy", (getter) rotation_matrix_message_get_xy, NULL, "", NULL },
-    { "xz", (getter) rotation_matrix_message_get_xz, NULL, "", NULL },
-    { "yx", (getter) rotation_matrix_message_get_yx, NULL, "", NULL },
-    { "yy", (getter) rotation_matrix_message_get_yy, NULL, "", NULL },
-    { "yz", (getter) rotation_matrix_message_get_yz, NULL, "", NULL },
-    { "zx", (getter) rotation_matrix_message_get_zx, NULL, "", NULL },
-    { "zy", (getter) rotation_matrix_message_get_zy, NULL, "", NULL },
-    { "zz", (getter) rotation_matrix_message_get_zz, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) rotation_matrix_message_get_timestamp, NULL, "", NULL},
+    {"xx", (getter) rotation_matrix_message_get_xx, NULL, "", NULL},
+    {"xy", (getter) rotation_matrix_message_get_xy, NULL, "", NULL},
+    {"xz", (getter) rotation_matrix_message_get_xz, NULL, "", NULL},
+    {"yx", (getter) rotation_matrix_message_get_yx, NULL, "", NULL},
+    {"yy", (getter) rotation_matrix_message_get_yy, NULL, "", NULL},
+    {"yz", (getter) rotation_matrix_message_get_yz, NULL, "", NULL},
+    {"zx", (getter) rotation_matrix_message_get_zx, NULL, "", NULL},
+    {"zy", (getter) rotation_matrix_message_get_zy, NULL, "", NULL},
+    {"zz", (getter) rotation_matrix_message_get_zz, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef rotation_matrix_message_methods[] = {
-    { "to_string", (PyCFunction) rotation_matrix_message_to_string, METH_NOARGS, "" },
-    { "to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) rotation_matrix_message_to_string, METH_NOARGS, ""},
+    {"to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject rotation_matrix_message_object = {
@@ -103,23 +90,20 @@ static PyTypeObject rotation_matrix_message_object = {
     .tp_methods = rotation_matrix_message_methods,
 };
 
-static PyObject* rotation_matrix_message_from(const XIMU3_RotationMatrixMessage* const message)
-{
-    RotationMatrixMessage* const self = (RotationMatrixMessage*) rotation_matrix_message_object.tp_alloc(&rotation_matrix_message_object, 0);
+static PyObject *rotation_matrix_message_from(const XIMU3_RotationMatrixMessage *const message) {
+    RotationMatrixMessage *const self = (RotationMatrixMessage *) rotation_matrix_message_object.tp_alloc(&rotation_matrix_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void rotation_matrix_message_callback(XIMU3_RotationMatrixMessage data, void* context)
-{
+static void rotation_matrix_message_callback(XIMU3_RotationMatrixMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = rotation_matrix_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = rotation_matrix_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

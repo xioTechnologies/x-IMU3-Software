@@ -6,24 +6,23 @@
 
 class ConnectionPanel;
 
-class WindowHeader : public juce::Component
-{
+class WindowHeader : public juce::Component {
 public:
-    WindowHeader(ConnectionPanel& connectionPanel_, const juce::ValueTree& windowLayout_, const juce::Identifier& type_, const juce::String& menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
+    WindowHeader(ConnectionPanel &connectionPanel_, const juce::ValueTree &windowLayout_, const juce::Identifier &type_, const juce::String &menuButtonTooltip, std::function<juce::PopupMenu()> getPopup);
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
     void resized() override;
 
-    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+    void mouseDown(const juce::MouseEvent &mouseEvent) override;
 
-    void mouseDrag(const juce::MouseEvent& mouseEvent) override;
+    void mouseDrag(const juce::MouseEvent &mouseEvent) override;
 
-    void mouseUp(const juce::MouseEvent& mouseEvent) override;
+    void mouseUp(const juce::MouseEvent &mouseEvent) override;
 
 private:
-    ConnectionPanel& connectionPanel;
-    const juce::ValueTree& windowLayout;
+    ConnectionPanel &connectionPanel;
+    const juce::ValueTree &windowLayout;
     const juce::Identifier type;
     IconButton menuButton;
     SimpleLabel title;

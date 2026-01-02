@@ -10,14 +10,13 @@
 
 class OpenGLResources;
 
-class Text
-{
+class Text {
 public:
-    Text(const std::unordered_set<unsigned char>& charactersToLoad_);
+    Text(const std::unordered_set<unsigned char> &charactersToLoad_);
 
     virtual ~Text();
 
-    bool loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_);
+    bool loadFont(const char *data, size_t dataSize, int fontSizeJucePixels_);
 
     void unloadFont();
 
@@ -25,13 +24,13 @@ public:
 
     int getFontSizeJucePixels() const;
 
-    float getStringWidthGLPixels(const juce::String& string) const;
+    float getStringWidthGLPixels(const juce::String &string) const;
 
-    float getStringWidthJucePixels(const juce::String& string) const;
+    float getStringWidthJucePixels(const juce::String &string) const;
 
-    void draw(OpenGLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
+    void draw(OpenGLResources &resources, const juce::String &text, const juce::Colour &colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const;
 
-    void drawChar3D(OpenGLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const;
+    void drawChar3D(OpenGLResources &resources, unsigned char character, const juce::Colour &colour, const glm::mat4 &transform, juce::Rectangle<int> viewportBounds) const;
 
     static int toGLPixels(int jucePixels);
 
@@ -40,13 +39,11 @@ private:
         Freetype glyph units can optionally be represented in raw pixels by calling FT_Load_Char with the FT_LOAD_NO_SCALE flag.
         Refs: https://freetype.org/freetype2/docs/tutorial/step2.html https://freetype.org/freetype1/docs/api/freetype1.txt
     */
-    static float toPixels(float f26Dot6Units)
-    {
+    static float toPixels(float f26Dot6Units) {
         return f26Dot6Units / 64.0f;
     }
 
-    class FreeTypeLibrary
-    {
+    class FreeTypeLibrary {
     public:
         FreeTypeLibrary();
 
@@ -62,8 +59,7 @@ private:
 
     juce::SharedResourcePointer<FreeTypeLibrary> freeTypeLibrary;
 
-    struct Glyph
-    {
+    struct Glyph {
         GLuint textureId; // texture freetypeTextureId for each letter
         glm::ivec2 size; // width/height of glyph
         glm::ivec2 bearing; // offset from origin to top left of glyph

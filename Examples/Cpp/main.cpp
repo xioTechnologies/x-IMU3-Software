@@ -19,8 +19,7 @@
 #include "Helpers.hpp"
 #include <iostream>
 
-int main(int argc, const char* argv[])
-{
+int main(int argc, const char *argv[]) {
     setbuf(stdout, NULL);
 
     std::cout << "Select example " << std::endl;
@@ -41,8 +40,7 @@ int main(int argc, const char* argv[])
     std::cout << "O. UdpConnection.h" << std::endl;
     std::cout << "P. UsbConnection.h" << std::endl;
 
-    switch (helpers::getKey())
-    {
+    switch (helpers::getKey()) {
         case 'A':
             BluetoothConnection();
             break;

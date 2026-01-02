@@ -1,34 +1,28 @@
 #include "CustomComboBox.h"
 #include "CustomLookAndFeel.h"
 
-class CustomComboBox::LookAndFeel : public CustomLookAndFeel
-{
+class CustomComboBox::LookAndFeel : public CustomLookAndFeel {
 public:
-    LookAndFeel()
-    {
+    LookAndFeel() {
         setColour(juce::PopupMenu::backgroundColourId, UIColours::foreground);
         setColour(juce::PopupMenu::textColourId, UIColours::backgroundDark);
     }
 
-    void drawLabel(juce::Graphics& g, juce::Label& label_) override
-    {
+    void drawLabel(juce::Graphics &g, juce::Label &label_) override {
         const auto cornerSize = 3.0f;
         const auto lineThickness = 1.0f;
 
         g.setColour(label_.findColour(juce::Label::backgroundColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
         g.fillRoundedRectangle(label_.getLocalBounds().toFloat(), cornerSize);
 
-        if (label_.isBeingEdited() == false)
-        {
+        if (label_.isBeingEdited() == false) {
             g.setColour(label_.findColour(juce::Label::textColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
             g.setFont(getLabelFont(label_));
             const auto textArea = getLabelBorderSize(label_).subtractedFrom(label_.getLocalBounds());
             g.drawText(label_.getText(), textArea, label_.getJustificationType(), false);
 
             g.setColour(label_.findColour(juce::Label::outlineColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
-        }
-        else if (label_.isEnabled())
-        {
+        } else if (label_.isEnabled()) {
             g.setColour(label_.findColour(juce::Label::outlineColourId).withMultipliedAlpha(label_.isEnabled() ? 1.0f : 0.5f));
         }
 
@@ -39,8 +33,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LookAndFeel)
 };
 
-CustomComboBox::CustomComboBox(const juce::String& emptyText)
-{
+CustomComboBox::CustomComboBox(const juce::String &emptyText) {
     lookAndFeel = std::make_unique<LookAndFeel>();
     setLookAndFeel(lookAndFeel.get());
 
@@ -48,13 +41,11 @@ CustomComboBox::CustomComboBox(const juce::String& emptyText)
     setTextWhenNoChoicesAvailable("");
 }
 
-CustomComboBox::~CustomComboBox()
-{
+CustomComboBox::~CustomComboBox() {
     setLookAndFeel(nullptr);
 }
 
-bool CustomComboBox::keyPressed(const juce::KeyPress& key)
-{
+bool CustomComboBox::keyPressed(const juce::KeyPress &key) {
     if (key == juce::KeyPress::returnKey) // forward to parent
     {
         return false;

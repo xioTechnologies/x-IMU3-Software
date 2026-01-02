@@ -3,10 +3,8 @@
 #include "NotificationsAndErrorsDialog.h"
 #include "Widgets/Icon.h"
 
-juce::String NotificationsAndErrorsDialog::Message::getIcon() const
-{
-    switch (type)
-    {
+juce::String NotificationsAndErrorsDialog::Message::getIcon() const {
+    switch (type) {
         case Type::notification:
             return unread ? BinaryData::speech_white_svg : BinaryData::speech_grey_svg;
         case Type::error:
@@ -15,10 +13,8 @@ juce::String NotificationsAndErrorsDialog::Message::getIcon() const
     return {}; // avoid compiler warning
 }
 
-juce::String NotificationsAndErrorsDialog::Message::getTooltip() const
-{
-    switch (type)
-    {
+juce::String NotificationsAndErrorsDialog::Message::getTooltip() const {
+    switch (type) {
         case Type::notification:
             return "Notification";
         case Type::error:
@@ -27,10 +23,8 @@ juce::String NotificationsAndErrorsDialog::Message::getTooltip() const
     return {}; // avoid compiler warning
 }
 
-juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
-{
-    switch (type)
-    {
+juce::Colour NotificationsAndErrorsDialog::Message::getColour() const {
+    switch (type) {
         case Type::notification:
             return UIColours::foreground;
         case Type::error:
@@ -39,10 +33,9 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const
     return {}; // avoid compiler warning
 }
 
-NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>& messages_, const std::function<void()>& onClear, const ConnectionPanel& connectionPanel)
+NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message> &messages_, const std::function<void()> &onClear, const ConnectionPanel &connectionPanel)
     : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getHeading(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
-      messages(messages_)
-{
+      messages(messages_) {
     addAndMakeVisible(clearButton);
     addAndMakeVisible(typeLabel);
     addAndMakeVisible(timestampLabel);
@@ -50,8 +43,7 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>&
     addAndMakeVisible(table);
     addAndMakeVisible(noNotificationsOrErrorsLabel);
 
-    clearButton.onClick = [&, onClear_ = onClear]
-    {
+    clearButton.onClick = [&, onClear_ = onClear] {
         messages.clear();
         onClear_();
     };
@@ -69,8 +61,7 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message>&
     setSize(800, 480);
 }
 
-void NotificationsAndErrorsDialog::resized()
-{
+void NotificationsAndErrorsDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds(true);
@@ -85,52 +76,43 @@ void NotificationsAndErrorsDialog::resized()
     noNotificationsOrErrorsLabel.setBounds(bounds);
 }
 
-void NotificationsAndErrorsDialog::messagesChanged()
-{
+void NotificationsAndErrorsDialog::messagesChanged() {
     table.updateContent();
     noNotificationsOrErrorsLabel.setVisible(messages.empty());
 }
 
-int NotificationsAndErrorsDialog::getNumRows()
-{
+int NotificationsAndErrorsDialog::getNumRows() {
     return (int) messages.size();
 }
 
-juce::Component* NotificationsAndErrorsDialog::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component* existingComponentToUpdate)
-{
-    if (rowNumber >= (int) messages.size())
-    {
+juce::Component *NotificationsAndErrorsDialog::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component *existingComponentToUpdate) {
+    if (rowNumber >= (int) messages.size()) {
         return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
     }
 
     delete existingComponentToUpdate;
 
-    const auto& message = messages[messages.size() - 1 - (size_t) rowNumber];
+    const auto &message = messages[messages.size() - 1 - (size_t) rowNumber];
 
-    switch ((ColumnId) columnId)
-    {
+    switch ((ColumnId) columnId) {
         case ColumnId::type:
             return new Icon(message.getIcon(), message.getTooltip(), 0.6f);
 
-        case ColumnId::timestamp:
-            {
-                auto* label = new SimpleLabel(juce::String(1E-6f * (float) message.timestamp, 3));
-                if (message.unread == false)
-                {
-                    label->setColour(juce::Label::textColourId, juce::Colours::grey);
-                }
-                return label;
+        case ColumnId::timestamp: {
+            auto *label = new SimpleLabel(juce::String(1E-6f * (float) message.timestamp, 3));
+            if (message.unread == false) {
+                label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
+            return label;
+        }
 
-        case ColumnId::message:
-            {
-                auto* label = new SimpleLabel(message.message);
-                if (message.unread == false)
-                {
-                    label->setColour(juce::Label::textColourId, juce::Colours::grey);
-                }
-                return label;
+        case ColumnId::message: {
+            auto *label = new SimpleLabel(message.message);
+            if (message.unread == false) {
+                label->setColour(juce::Label::textColourId, juce::Colours::grey);
             }
+            return label;
+        }
 
         default:
             return nullptr;

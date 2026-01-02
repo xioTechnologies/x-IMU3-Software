@@ -1,23 +1,19 @@
 #include "Model.h"
 #include "OpenGL/Common/OpenGLResources.h"
 
-Model::Model(juce::OpenGLContext& context_, juce::ThreadPool& threadPool_) : context(context_), threadPool(threadPool_)
-{
+Model::Model(juce::OpenGLContext &context_, juce::ThreadPool &threadPool_) : context(context_), threadPool(threadPool_) {
 }
 
-void Model::render()
-{
+void Model::render() {
     // Initialize buffers if they have not yet been initialized
     std::lock_guard _(objectLock);
-    if (object != nullptr && fillBuffersPending)
-    {
+    if (object != nullptr && fillBuffersPending) {
         fillBuffers();
         fillBuffersPending = false;
     }
 
     // Render all OpenGL buffers
-    for (const auto& glBuffer : glBuffers)
-    {
+    for (const auto &glBuffer: glBuffers) {
         using namespace ::juce::gl;
         glBindVertexArray(glBuffer->vao); // Bind VAO for all vertex data (VBO, EBO, attributes)
         glDrawElements(GL_TRIANGLES, (GLsizei) glBuffer->indicesSize, GL_UNSIGNED_INT, nullptr);
@@ -25,22 +21,19 @@ void Model::render()
     }
 }
 
-void Model::renderWithMaterials(const LitShader& shader)
-{
+void Model::renderWithMaterials(const LitShader &shader) {
     // Initialize buffers if they have not yet been initialized
     std::lock_guard _(objectLock);
-    if (object != nullptr && fillBuffersPending)
-    {
+    if (object != nullptr && fillBuffersPending) {
         fillBuffers();
         fillBuffersPending = false;
     }
 
     // Render all OpenGL buffers
-    for (const auto& glBuffer : glBuffers)
-    {
+    for (const auto &glBuffer: glBuffers) {
         using namespace ::juce::gl;
 
-        const auto& material = glBuffer->associatedShape.material;
+        const auto &material = glBuffer->associatedShape.material;
         shader.materialColour.set(glm::vec4(material.diffuse, 1.0f));
 
         glBindVertexArray(glBuffer->vao); // bind VAO for all vertex data (VBO, EBO, attributes)
@@ -49,18 +42,14 @@ void Model::renderWithMaterials(const LitShader& shader)
     }
 }
 
-void Model::setModel(const juce::String& objFileContent, const juce::String& mtlFileContent)
-{
+void Model::setModel(const juce::String &objFileContent, const juce::String &mtlFileContent) {
     loading = true;
-    threadPool.addJob([&, self = juce::WeakReference(this), objFileContent, mtlFileContent]
-    {
+    threadPool.addJob([&, self = juce::WeakReference(this), objFileContent, mtlFileContent] {
         auto newObject = std::make_shared<WavefrontObjFile>();
         newObject->load(objFileContent, mtlFileContent);
 
-        juce::MessageManager::callAsync([&, self, newObject]() mutable
-        {
-            if (self == nullptr)
-            {
+        juce::MessageManager::callAsync([&, self, newObject]() mutable {
+            if (self == nullptr) {
                 return;
             }
 
@@ -72,24 +61,19 @@ void Model::setModel(const juce::String& objFileContent, const juce::String& mtl
     });
 }
 
-void Model::setModel(const juce::File& objFile_)
-{
-    if (objFile_ == juce::File() || objFile == objFile_)
-    {
+void Model::setModel(const juce::File &objFile_) {
+    if (objFile_ == juce::File() || objFile == objFile_) {
         return;
     }
     objFile = objFile_;
 
     loading = true;
-    threadPool.addJob([&, self = juce::WeakReference(this), objFile_]
-    {
+    threadPool.addJob([&, self = juce::WeakReference(this), objFile_] {
         auto newObject = std::make_shared<WavefrontObjFile>();
         newObject->load(objFile_);
 
-        juce::MessageManager::callAsync([&, self, newObject]() mutable
-        {
-            if (self == nullptr)
-            {
+        juce::MessageManager::callAsync([&, self, newObject]() mutable {
+            if (self == nullptr) {
                 return;
             }
 
@@ -101,24 +85,20 @@ void Model::setModel(const juce::File& objFile_)
     });
 }
 
-bool Model::isLoading() const
-{
+bool Model::isLoading() const {
     return loading;
 }
 
-void Model::fillBuffers()
-{
+void Model::fillBuffers() {
     glBuffers.clear();
 
-    for (const auto& shape : object->shapes)
-    {
+    for (const auto &shape: object->shapes) {
         auto glBuffer = std::make_unique<GLBuffer>(*shape);
         glBuffers.push_back(std::move(glBuffer));
     }
 }
 
-Model::GLBuffer::GLBuffer(const WavefrontObjFile::Shape& shape) : associatedShape(shape)
-{
+Model::GLBuffer::GLBuffer(const WavefrontObjFile::Shape &shape) : associatedShape(shape) {
     using namespace ::juce::gl;
 
     // Generate IDs for OpenGL vertex objects
@@ -129,8 +109,7 @@ Model::GLBuffer::GLBuffer(const WavefrontObjFile::Shape& shape) : associatedShap
     fillBuffers();
 }
 
-Model::GLBuffer::~GLBuffer()
-{
+Model::GLBuffer::~GLBuffer() {
     using namespace ::juce::gl;
 
     // Delete OpenGL buffer objects
@@ -139,11 +118,10 @@ Model::GLBuffer::~GLBuffer()
     glDeleteBuffers(1, &vbo);
 }
 
-void Model::GLBuffer::fillBuffers()
-{
+void Model::GLBuffer::fillBuffers() {
     using namespace ::juce::gl;
 
-    const auto& mesh = associatedShape.mesh;
+    const auto &mesh = associatedShape.mesh;
 
     glBindVertexArray(vao); // bind VAO to cache all VBO, EBO, and vertex attribute state
 
@@ -169,12 +147,12 @@ void Model::GLBuffer::fillBuffers()
 
     // Normal attribute (3 floats)
     const GLuint normalIndex = 1;
-    glVertexAttribPointer(normalIndex, normalDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) (positionDimension * sizeof(GLfloat)));
+    glVertexAttribPointer(normalIndex, normalDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) (positionDimension * sizeof(GLfloat)));
     glEnableVertexAttribArray(normalIndex);
 
     // Texture coordinate attribute (2 floats)
     const GLuint textureCoordinateIndex = 2;
-    glVertexAttribPointer(textureCoordinateIndex, textureCoordinateDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) ((positionDimension + normalDimension) * sizeof(GLfloat)));
+    glVertexAttribPointer(textureCoordinateIndex, textureCoordinateDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) ((positionDimension + normalDimension) * sizeof(GLfloat)));
     glEnableVertexAttribArray(textureCoordinateIndex);
 
     // Unbind buffers

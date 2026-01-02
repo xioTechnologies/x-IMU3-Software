@@ -3,12 +3,11 @@
 #include "ApplicationSettings.h"
 #include "CustomTextEditor.h"
 
-class SerialAccessoryTextEditor : public CustomTextEditor
-{
+class SerialAccessoryTextEditor : public CustomTextEditor {
 public:
     SerialAccessoryTextEditor();
 
-    bool keyPressed (const juce::KeyPress& key) override;
+    bool keyPressed(const juce::KeyPress &key) override;
 
     int x() { return 0; }
 

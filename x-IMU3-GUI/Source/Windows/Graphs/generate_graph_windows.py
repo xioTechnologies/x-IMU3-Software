@@ -24,12 +24,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
         horizontal_autoscale="false",
         y_axis='Angular Rate (" + degreeSymbol + "/s)',
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+        update(message.timestamp, {message.gyroscope_x, message.gyroscope_y, message.gyroscope_z});
     }));""",
     ),
     Window(
@@ -37,12 +36,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
         horizontal_autoscale="false",
         y_axis="Acceleration (g)",
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+        update(message.timestamp, {message.accelerometer_x, message.accelerometer_y, message.accelerometer_z});
     }));""",
     ),
     Window(
@@ -50,12 +48,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_MagnetometerMessage)> magnetometerCallback;",
         horizontal_autoscale="false",
         y_axis="Intensity (a.u.)",
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.x, message.y, message.z });
+    callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message) {
+        update(message.timestamp, {message.x, message.y, message.z});
     }));""",
     ),
     Window(
@@ -68,36 +65,31 @@ windows = [
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;""",
         horizontal_autoscale="false",
         y_axis='Angle (" + degreeSymbol + ")',
-        legend_strings='{ "Roll", "Pitch", "Yaw" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"Roll", "Pitch", "Yaw"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
-    {
+    callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
-        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
+        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
-    {
+    callbackIds.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message) {
         const auto eulerAngles = ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message);
-        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
+        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.roll, message.pitch, message.yaw });
+    callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
+        update(message.timestamp, {message.roll, message.pitch, message.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
-    {
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
         const auto eulerAngles = ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });
+        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
-    {
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
         const auto eulerAngles = ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, { eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw });\n\
+        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));""",
     ),
     Window(
@@ -105,12 +97,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;",
         horizontal_autoscale="false",
         y_axis="Acceleration (g)",
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
+        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));""",
     ),
     Window(
@@ -118,12 +109,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
         horizontal_autoscale="false",
         y_axis="Acceleration (g)",
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
+        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));""",
     ),
     Window(
@@ -131,12 +121,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
         horizontal_autoscale="false",
         y_axis="Acceleration (g)",
-        legend_strings='{ "X", "Y", "Z" }',
-        legend_colours="{ UIColours::graphX, UIColours::graphY, UIColours::graphZ }",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.x, message.y, message.z });
+    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
+        update(message.timestamp, {message.x, message.y, message.z});
     }));""",
     ),
     Window(
@@ -144,12 +133,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_TemperatureMessage)> temperatureCallback;",
         horizontal_autoscale="true",
         y_axis='Temperature (" + degreeSymbol + "C)',
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.temperature });
+    callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message) {
+        update(message.timestamp, {message.temperature});
     }));""",
     ),
     Window(
@@ -157,12 +145,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
         horizontal_autoscale="true",
         y_axis="Percentage (%)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.percentage });
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
+        update(message.timestamp, {message.percentage});
     }));""",
     ),
     Window(
@@ -170,12 +157,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
         horizontal_autoscale="true",
         y_axis="Voltage (V)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.voltage });
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
+        update(message.timestamp, {message.voltage});
     }));""",
     ),
     Window(
@@ -183,12 +169,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
         horizontal_autoscale="true",
         y_axis="Percentage (%)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.percentage });
+    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+        update(message.timestamp, {message.percentage});
     }));""",
     ),
     Window(
@@ -196,12 +181,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
         horizontal_autoscale="true",
         y_axis="Power (dBm)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.power });
+    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+        update(message.timestamp, {message.power});
     }));""",
     ),
     Window(
@@ -209,14 +193,12 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback;",
         horizontal_autoscale="false",
         y_axis="CSV",
-        legend_strings='{ "1", "2", "3", "4", "5", "6", "7", "8" }',
-        legend_colours="{ UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 }",
+        legend_strings='{"1", "2", "3", "4", "5", "6", "7", "8"}',
+        legend_colours="{UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)
-    {
+    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message) {
         std::vector<float> values;
-        for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", ""))
-        {
+        for (const auto &string: juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", "")) {
             values.push_back(string.getFloatValue());
         }
         update(message.timestamp, values);
@@ -227,12 +209,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
         horizontal_autoscale="true",
         y_axis="Throughput (messages/s)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
-    {
-        update(message.timestamp, { (float) message.message_rate });
+    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
+        update(message.timestamp, {(float) message.message_rate});
     }));""",
     ),
     Window(
@@ -240,12 +221,11 @@ windows = [
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
         horizontal_autoscale="true",
         y_axis="Throughput (kB/s)",
-        legend_strings='{ "" }',
-        legend_colours="{ UIColours::graphChannel1 }",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message)
-    {
-        update(message.timestamp, { (float) message.data_rate / 1000.0f });
+    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
+        update(message.timestamp, {(float) message.data_rate / 1000.0f});
     }));""",
     ),
 ]
@@ -283,8 +263,7 @@ code = "".join(['#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w 
 helpers.insert(file_path, code, "0")
 
 template = """\
-    if (type == WindowIds::$name$)
-    {
+    if (type == WindowIds::$name$) {
         return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, openGLRenderer);
     }\n"""
 

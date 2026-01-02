@@ -6,59 +6,51 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_AhrsStatusMessage message;
 } AhrsStatusMessage;
 
-static void ahrs_status_message_free(AhrsStatusMessage* self)
-{
+static void ahrs_status_message_free(AhrsStatusMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* ahrs_status_message_get_timestamp(AhrsStatusMessage* self)
-{
+static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* ahrs_status_message_get_initialising(AhrsStatusMessage* self)
-{
+static PyObject *ahrs_status_message_get_initialising(AhrsStatusMessage *self) {
     return Py_BuildValue("f", self->message.initialising);
 }
 
-static PyObject* ahrs_status_message_get_angular_rate_recovery(AhrsStatusMessage* self)
-{
+static PyObject *ahrs_status_message_get_angular_rate_recovery(AhrsStatusMessage *self) {
     return Py_BuildValue("f", self->message.angular_rate_recovery);
 }
 
-static PyObject* ahrs_status_message_get_acceleration_recovery(AhrsStatusMessage* self)
-{
+static PyObject *ahrs_status_message_get_acceleration_recovery(AhrsStatusMessage *self) {
     return Py_BuildValue("f", self->message.acceleration_recovery);
 }
 
-static PyObject* ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage* self)
-{
+static PyObject *ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage *self) {
     return Py_BuildValue("f", self->message.magnetic_recovery);
 }
 
-static PyObject* ahrs_status_message_to_string(AhrsStatusMessage* self, PyObject* args)
-{
+static PyObject *ahrs_status_message_to_string(AhrsStatusMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_ahrs_status_message_to_string(self->message));
 }
 
 static PyGetSetDef ahrs_status_message_get_set[] = {
-    { "timestamp", (getter) ahrs_status_message_get_timestamp, NULL, "", NULL },
-    { "initialising", (getter) ahrs_status_message_get_initialising, NULL, "", NULL },
-    { "angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL },
-    { "acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL },
-    { "magnetic_recovery", (getter) ahrs_status_message_get_magnetic_recovery, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) ahrs_status_message_get_timestamp, NULL, "", NULL},
+    {"initialising", (getter) ahrs_status_message_get_initialising, NULL, "", NULL},
+    {"angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL},
+    {"acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL},
+    {"magnetic_recovery", (getter) ahrs_status_message_get_magnetic_recovery, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef ahrs_status_message_methods[] = {
-    { "to_string", (PyCFunction) ahrs_status_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) ahrs_status_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject ahrs_status_message_object = {
@@ -70,23 +62,20 @@ static PyTypeObject ahrs_status_message_object = {
     .tp_methods = ahrs_status_message_methods,
 };
 
-static PyObject* ahrs_status_message_from(const XIMU3_AhrsStatusMessage* const message)
-{
-    AhrsStatusMessage* const self = (AhrsStatusMessage*) ahrs_status_message_object.tp_alloc(&ahrs_status_message_object, 0);
+static PyObject *ahrs_status_message_from(const XIMU3_AhrsStatusMessage *const message) {
+    AhrsStatusMessage *const self = (AhrsStatusMessage *) ahrs_status_message_object.tp_alloc(&ahrs_status_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void ahrs_status_message_callback(XIMU3_AhrsStatusMessage data, void* context)
-{
+static void ahrs_status_message_callback(XIMU3_AhrsStatusMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = ahrs_status_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = ahrs_status_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

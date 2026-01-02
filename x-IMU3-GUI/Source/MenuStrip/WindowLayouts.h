@@ -3,12 +3,11 @@
 #include "ApplicationSettings.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class WindowLayouts
-{
+class WindowLayouts {
 public:
-    bool exists(const juce::String& name) const;
+    bool exists(const juce::String &name) const;
 
-    void save(const juce::String& name, juce::ValueTree tree) const;
+    void save(const juce::String &name, juce::ValueTree tree) const;
 
     std::map<juce::String, juce::ValueTree> load() const;
 

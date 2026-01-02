@@ -3,8 +3,7 @@
 #include "UpdateFirmwareDialog.h"
 #include "UpdatingFirmwareDialog.h"
 
-UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update", "Cancel", &warningIcon, iconButtonWidth)
-{
+UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Update Firmware", "Update", "Cancel", &warningIcon, iconButtonWidth) {
     addAndMakeVisible(deviceLabel);
     addAndMakeVisible(deviceValue);
     addAndMakeVisible(hexFileLabel);
@@ -14,10 +13,9 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
 
     const auto hexFile = ApplicationSettings::getDirectory().getChildFile(Firmware::hexFile);
     hexFile.replaceWithData(Firmware::memoryBlock.getData(), Firmware::memoryBlock.getSize());
-    hexFileSelector.setFiles({ hexFile });
+    hexFileSelector.setFiles({hexFile});
 
-    deviceValue.onChange = hexFileSelector.onChange = [&]
-    {
+    deviceValue.onChange = hexFileSelector.onChange = [&] {
         setOkButton(getConnectionInfo() != nullptr && hexFileSelector.isValid());
     };
     setOkButton(false);
@@ -25,8 +23,7 @@ UpdateFirmwareDialog::UpdateFirmwareDialog() : Dialog(BinaryData::tools_svg, "Up
     setSize(600, calculateHeight(2));
 }
 
-void UpdateFirmwareDialog::resized()
-{
+void UpdateFirmwareDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds();
@@ -44,27 +41,21 @@ void UpdateFirmwareDialog::resized()
     warningLabel.setBounds(warningIcon.getRight(), warningIcon.getY(), (int) std::ceil(warningLabel.getTextWidth()), warningIcon.getHeight());
 }
 
-std::shared_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const
-{
-    if (deviceValue.getSelectedId() == 0)
-    {
+std::shared_ptr<ximu3::ConnectionInfo> UpdateFirmwareDialog::getConnectionInfo() const {
+    if (deviceValue.getSelectedId() == 0) {
         return nullptr;
     }
 
     return ximu3::ConnectionInfo::from(devices[(size_t) deviceValue.getSelectedId() - 1]);
 }
 
-juce::File UpdateFirmwareDialog::getHexFile() const
-{
+juce::File UpdateFirmwareDialog::getHexFile() const {
     return hexFileSelector.getFiles()[0];
 }
 
-void UpdateFirmwareDialog::launch(juce::ThreadPool& threadPool)
-{
-    DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), [&threadPool]
-    {
-        if (const auto* const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog*>(DialogQueue::getSingleton().getActive()))
-        {
+void UpdateFirmwareDialog::launch(juce::ThreadPool &threadPool) {
+    DialogQueue::getSingleton().pushFront(std::make_unique<UpdateFirmwareDialog>(), [&threadPool] {
+        if (const auto *const updateFirmwareDialog = dynamic_cast<UpdateFirmwareDialog *>(DialogQueue::getSingleton().getActive())) {
             DialogQueue::getSingleton().pushFront(std::make_unique<UpdatingFirmwareDialog>(updateFirmwareDialog->getConnectionInfo(), updateFirmwareDialog->getHexFile(), threadPool));
         }
         return true;

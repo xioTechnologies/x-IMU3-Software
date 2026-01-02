@@ -3,15 +3,14 @@
 #include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class IconButton : public juce::DrawableButton
-{
+class IconButton : public juce::DrawableButton {
 public:
-    IconButton(const juce::String& icon, const juce::String& tooltip_,
+    IconButton(const juce::String &icon, const juce::String &tooltip_,
                std::function<juce::PopupMenu()> getPopup_ = nullptr,
                const bool showPopupArrow = true,
-               const juce::String& iconOn = {}, const juce::String& tooltipOn_ = {});
+               const juce::String &iconOn = {}, const juce::String &tooltipOn_ = {});
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
     juce::Rectangle<float> getImageBounds() const override;
 
@@ -23,7 +22,7 @@ public:
 
     juce::String getTooltip() override;
 
-    void setIcon(const juce::String& icon, const juce::String& iconOn);
+    void setIcon(const juce::String &icon, const juce::String &iconOn);
 
 private:
     const juce::String tooltip, tooltipOn;

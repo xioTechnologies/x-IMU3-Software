@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class BatteryVoltageGraphWindow : public GraphWindow
-{
+class BatteryVoltageGraphWindow : public GraphWindow {
 public:
-    BatteryVoltageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    BatteryVoltageGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~BatteryVoltageGraphWindow() override;
 

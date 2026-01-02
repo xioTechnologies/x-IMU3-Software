@@ -4,34 +4,27 @@
 #include "Dialogs/SendingCommandDialog.h"
 #include "KeyCompare.h"
 
-ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, ConnectionPanelContainer& connectionPanelContainer_)
+ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, ConnectionPanelContainer &connectionPanelContainer_)
     : connectionPanel(connectionPanel_),
       connectionPanelContainer(connectionPanelContainer_),
-      connection(connectionPanel.getConnection())
-{
+      connection(connectionPanel.getConnection()) {
     addChildComponent(retryButton);
     addChildComponent(locateButton);
     addAndMakeVisible(headingLabel);
     addAndMakeVisible(rssiIcon);
     addAndMakeVisible(batteryIcon);
 
-    locateButton.onClick = [&]
-    {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"strobe\":null}", std::vector<ConnectionPanel*> { &connectionPanel }));
+    locateButton.onClick = [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"strobe\":null}", std::vector<ConnectionPanel *>{&connectionPanel}));
     };
 
-    const auto addNetworkAnnouncementCallback = [&](const std::string& ipAddress)
-    {
-        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message)
-        {
-            if (std::string(message.ip_address) == ipAddress)
-            {
-                if (message.rssi != -1)
-                {
+    const auto addNetworkAnnouncementCallback = [&](const std::string &ipAddress) {
+        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message) {
+            if (std::string(message.ip_address) == ipAddress) {
+                if (message.rssi != -1) {
                     rssiIcon.update(message.rssi);
                 }
-                if (message.battery != -1)
-                {
+                if (message.battery != -1) {
                     batteryIcon.update(message.battery, message.charging_status);
                 }
             }
@@ -39,22 +32,18 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     };
 
     const auto connectionInfo = connection->getInfo();
-    if (const auto* const tcpConnectionInfo = dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo*>(connectionInfo.get()))
-    {
+    if (const auto *const tcpConnectionInfo = dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo *>(connectionInfo.get())) {
         addNetworkAnnouncementCallback(tcpConnectionInfo->ip_address);
     }
-    if (const auto* const udpConnectionInfo = dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo*>(connectionInfo.get()))
-    {
+    if (const auto *const udpConnectionInfo = dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo *>(connectionInfo.get())) {
         addNetworkAnnouncementCallback(udpConnectionInfo->ip_address);
     }
 
-    rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
+    rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
         rssiIcon.update((int) message.percentage);
     });
 
-    batteryCallbackId = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
-    {
+    batteryCallbackId = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
         batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float(message.charging_status));
     });
 
@@ -62,10 +51,8 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel& connectionPanel_, 
     setOpaque(true);
 }
 
-ConnectionPanelHeader::~ConnectionPanelHeader()
-{
-    if (networkAnnouncementCallbackId)
-    {
+ConnectionPanelHeader::~ConnectionPanelHeader() {
+    if (networkAnnouncementCallbackId) {
         networkAnnouncement->removeCallback(*networkAnnouncementCallbackId);
     }
 
@@ -73,27 +60,23 @@ ConnectionPanelHeader::~ConnectionPanelHeader()
     connectionPanel.getConnection()->removeCallback(batteryCallbackId);
 }
 
-void ConnectionPanelHeader::paint(juce::Graphics& g)
-{
+void ConnectionPanelHeader::paint(juce::Graphics &g) {
     g.fillAll(UIColours::backgroundLightest);
     g.setColour(connectionPanel.getTag());
     g.fillRect(getLocalBounds().removeFromLeft(UILayout::tagWidth));
 }
 
-void ConnectionPanelHeader::resized()
-{
+void ConnectionPanelHeader::resized() {
     static constexpr int margin = 7;
 
     auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20);
 
     bounds.removeFromLeft(UILayout::tagWidth);
 
-    if (retryButton.isVisible())
-    {
+    if (retryButton.isVisible()) {
         retryButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     }
-    if (locateButton.isVisible())
-    {
+    if (locateButton.isVisible()) {
         locateButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));
     }
     bounds.removeFromLeft(margin);
@@ -108,17 +91,13 @@ void ConnectionPanelHeader::resized()
     headingLabel.setBounds(bounds);
 }
 
-void ConnectionPanelHeader::mouseDown(const juce::MouseEvent& mouseEvent)
-{
+void ConnectionPanelHeader::mouseDown(const juce::MouseEvent &mouseEvent) {
     mouseDrag(mouseEvent);
 }
 
-void ConnectionPanelHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
-{
-    if (auto* componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition()))
-    {
-        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>())
-        {
+void ConnectionPanelHeader::mouseDrag(const juce::MouseEvent &mouseEvent) {
+    if (auto *componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition())) {
+        if (auto *targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>()) {
             connectionPanelContainer.showDragOverlayAtComponent(*targetPanel, DragOverlay::Side::all);
             return;
         }
@@ -126,73 +105,57 @@ void ConnectionPanelHeader::mouseDrag(const juce::MouseEvent& mouseEvent)
     connectionPanelContainer.hideDragOverlay();
 }
 
-void ConnectionPanelHeader::mouseUp(const juce::MouseEvent& mouseEvent)
-{
+void ConnectionPanelHeader::mouseUp(const juce::MouseEvent &mouseEvent) {
     connectionPanelContainer.hideDragOverlay();
-    if (auto* componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition()))
-    {
-        if (auto* targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>(); targetPanel != nullptr && targetPanel != &connectionPanel)
-        {
+    if (auto *componentUnderMouse = juce::Desktop::getInstance().findComponentAt(mouseEvent.getScreenPosition())) {
+        if (auto *targetPanel = componentUnderMouse->findParentComponentOfClass<ConnectionPanel>(); targetPanel != nullptr && targetPanel != &connectionPanel) {
             connectionPanelContainer.movePanel(connectionPanel, *targetPanel);
         }
     }
 
-    if (mouseEvent.mouseWasClicked() && connectionPanelContainer.getLayout() == ConnectionPanelContainer::Layout::accordion)
-    {
+    if (mouseEvent.mouseWasClicked() && connectionPanelContainer.getLayout() == ConnectionPanelContainer::Layout::accordion) {
         connectionPanelContainer.setExpandedConnectionPanel((connectionPanelContainer.getExpandedConnectionPanel() == &connectionPanel) ? nullptr : &connectionPanel);
     }
 }
 
-juce::String ConnectionPanelHeader::getHeading() const
-{
+juce::String ConnectionPanelHeader::getHeading() const {
     return headingLabel.getText();
 }
 
-void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ximu3::CommandMessage>>& responses)
-{
-    for (const auto& response : responses)
-    {
-        if (response.has_value() == false || response->error.has_value())
-        {
+void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+    for (const auto &response: responses) {
+        if (response.has_value() == false || response->error.has_value()) {
             continue;
         }
 
-        auto trimQuotes = [] (const std::string& string)
-        {
+        auto trimQuotes = [](const std::string &string) {
             return string.substr(1, string.size() - 2);
         };
 
-        if (KeyCompare::compare(response->key, "device_name"))
-        {
+        if (KeyCompare::compare(response->key, "device_name")) {
             updateHeading(trimQuotes(response->value), serialNumber);
-        }
-        else if (KeyCompare::compare(response->key, "serial_number"))
-        {
+        } else if (KeyCompare::compare(response->key, "serial_number")) {
             updateHeading(deviceName, trimQuotes(response->value));
         }
     }
 }
 
-void ConnectionPanelHeader::updateHeading(const juce::String& deviceName_, const juce::String& serialNumber_)
-{
+void ConnectionPanelHeader::updateHeading(const juce::String &deviceName_, const juce::String &serialNumber_) {
     deviceName = deviceName_;
     serialNumber = serialNumber_;
     updateHeading(deviceName + " " + serialNumber);
 }
 
-void ConnectionPanelHeader::updateHeading(const juce::String& descriptor_)
-{
+void ConnectionPanelHeader::updateHeading(const juce::String &descriptor_) {
     descriptor = descriptor_;
     headingLabel.setText(descriptor + "    " + connectionInfoString);
 }
 
-juce::String ConnectionPanelHeader::getDescriptor() const
-{
+juce::String ConnectionPanelHeader::getDescriptor() const {
     return descriptor;
 }
 
-void ConnectionPanelHeader::showRetry(std::function<void()> onClick)
-{
+void ConnectionPanelHeader::showRetry(std::function<void()> onClick) {
     retryButton.setVisible(true);
     retryButton.setEnabled(onClick != nullptr);
     retryButton.onClick = onClick;
@@ -201,8 +164,7 @@ void ConnectionPanelHeader::showRetry(std::function<void()> onClick)
     resized();
 }
 
-void ConnectionPanelHeader::showLocate()
-{
+void ConnectionPanelHeader::showLocate() {
     retryButton.setVisible(false);
     locateButton.setVisible(true);
 

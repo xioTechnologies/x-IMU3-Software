@@ -6,8 +6,7 @@
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/SimpleLabel.h"
 
-class SaveWindowLayoutDialog : public Dialog
-{
+class SaveWindowLayoutDialog : public Dialog {
 public:
     SaveWindowLayoutDialog();
 
@@ -16,7 +15,7 @@ public:
     juce::String getLayoutName() const;
 
 private:
-    SimpleLabel nameLabel { "Name:" };
+    SimpleLabel nameLabel{"Name:"};
     CustomTextEditor nameValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SaveWindowLayoutDialog)

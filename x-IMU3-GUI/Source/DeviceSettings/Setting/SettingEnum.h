@@ -5,54 +5,43 @@
 #include "Setting.h"
 #include "Widgets/CustomComboBox.h"
 
-class SettingEnum : public Setting
-{
+class SettingEnum : public Setting {
 public:
-    SettingEnum(const juce::ValueTree& settingTree, const juce::ValueTree& typeTree) : Setting(settingTree)
-    {
+    SettingEnum(const juce::ValueTree &settingTree, const juce::ValueTree &typeTree) : Setting(settingTree) {
         addAndMakeVisible(value);
 
-        value.onChange = [&]
-        {
-            if (isToggle())
-            {
+        value.onChange = [&] {
+            if (isToggle()) {
                 setValue(value.getSelectedId() == 2);
-            }
-            else
-            {
+            } else {
                 setValue(value.getSelectedId() - 1);
             }
         };
 
         value.setEnabled(!isReadOnly());
 
-        for (auto child : typeTree)
-        {
+        for (auto child: typeTree) {
             value.addItem(child[DeviceSettingsIds::name], (int) child.getProperty(DeviceSettingsIds::value) + 1);
         }
 
         valueChanged();
     }
 
-    void resized() override
-    {
+    void resized() override {
         Setting::resized();
         value.setBounds(getValueBounds());
     }
 
 protected:
-    void valueChanged() override
-    {
+    void valueChanged() override {
         int id = 0;
-        if (! getValue().isVoid())
-        {
+        if (!getValue().isVoid()) {
             id = (int) getValue() + 1;
         }
         value.setSelectedId(id, juce::dontSendNotification);
     }
 
-    virtual bool isToggle() const
-    {
+    virtual bool isToggle() const {
         return false;
     }
 

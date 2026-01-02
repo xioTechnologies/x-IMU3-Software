@@ -10,11 +10,9 @@
 class DeviceSettingsItem;
 
 class Setting : public juce::Component,
-                private juce::ValueTree::Listener
-{
+                private juce::ValueTree::Listener {
 public:
-    enum class Status
-    {
+    enum class Status {
         normal,
         modified,
         warning,
@@ -22,39 +20,38 @@ public:
 
     static constexpr int rowMargin = 4;
 
-    explicit Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentIfExpandable_ = nullptr);
+    explicit Setting(const juce::ValueTree &tree_, DeviceSettingsItem *const parentIfExpandable_ = nullptr);
 
     ~Setting() override;
 
     void resized() override;
 
-    void mouseDown(const juce::MouseEvent&) override;
+    void mouseDown(const juce::MouseEvent &) override;
 
 protected:
     juce::ValueTree tree;
 
     bool isReadOnly() const;
 
-    const juce::Rectangle<int>& getValueBounds() const;
+    const juce::Rectangle<int> &getValueBounds() const;
 
     juce::var getValue() const;
 
-    void setValue(const juce::var& value);
+    void setValue(const juce::var &value);
 
-    virtual void valueChanged()
-    {
+    virtual void valueChanged() {
     }
 
 private:
     SimpleLabel name;
-    Icon modifiedIcon { BinaryData::modify_svg, {} };
-    Icon warningIcon { BinaryData::warning_orange_svg, {} };
+    Icon modifiedIcon{BinaryData::modify_svg, {}};
+    Icon warningIcon{BinaryData::warning_orange_svg, {}};
     juce::Rectangle<int> valueBounds;
     juce::WeakReference<DeviceSettingsItem> parentIfExpandable;
 
     void updateIcon();
 
-    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
+    void valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Setting)
 };

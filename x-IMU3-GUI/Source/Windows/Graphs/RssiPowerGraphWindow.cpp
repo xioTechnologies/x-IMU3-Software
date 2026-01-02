@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "RssiPowerGraphWindow.h"
 
-RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Power (dBm)",
-                  { "" },
-                  { UIColours::graphChannel1 },
-                  true)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.power });
+                  {""},
+                  {UIColours::graphChannel1},
+                  true) {
+    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+        update(message.timestamp, {message.power});
     }));
 }
 
-RssiPowerGraphWindow::~RssiPowerGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+RssiPowerGraphWindow::~RssiPowerGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

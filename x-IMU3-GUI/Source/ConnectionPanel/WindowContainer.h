@@ -5,37 +5,36 @@
 #include "Windows/WindowIds.h"
 
 class WindowContainer : public juce::Component,
-                        private juce::ValueTree::Listener
-{
+                        private juce::ValueTree::Listener {
 public:
-    WindowContainer(ConnectionPanel& connectionPanel_, juce::ValueTree layoutTree_);
+    WindowContainer(ConnectionPanel &connectionPanel_, juce::ValueTree layoutTree_);
 
     ~WindowContainer() override;
 
     void resized() override;
 
 private:
-    ConnectionPanel& connectionPanel;
+    ConnectionPanel &connectionPanel;
     juce::ValueTree layoutTree;
     const bool isVertical = layoutTree.hasType(WindowIds::Column);
 
-    std::vector<std::shared_ptr<juce::Component>> childComponents;
+    std::vector<std::shared_ptr<juce::Component> > childComponents;
 
     class ResizeBar;
 
-    std::vector<std::unique_ptr<ResizeBar>> resizeBars;
+    std::vector<std::unique_ptr<ResizeBar> > resizeBars;
 
     int totalWindowSize = 0;
 
     void componentAddedOrRemoved();
 
-    void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
+    void valueTreePropertyChanged(juce::ValueTree &tree, const juce::Identifier &property) override;
 
-    void valueTreeChildAdded(juce::ValueTree& parentTree, juce::ValueTree& childWhichHasBeenAdded) override;
+    void valueTreeChildAdded(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenAdded) override;
 
-    void valueTreeChildRemoved(juce::ValueTree& parentTree, juce::ValueTree& childWhichHasBeenRemoved, int) override;
+    void valueTreeChildRemoved(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenRemoved, int) override;
 
-    void valueTreeChildOrderChanged(juce::ValueTree&, int, int) override;
+    void valueTreeChildOrderChanged(juce::ValueTree &, int, int) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WindowContainer)
 };

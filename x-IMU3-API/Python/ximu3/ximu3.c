@@ -29,13 +29,10 @@ static struct PyModuleDef config = {
     -1,
 };
 
-bool add_object(PyObject* const module, PyTypeObject* const type_object, const char* const name)
-{
-    if (PyType_Ready(type_object) == 0)
-    {
+bool add_object(PyObject *const module, PyTypeObject *const type_object, const char *const name) {
+    if (PyType_Ready(type_object) == 0) {
         Py_INCREF(type_object);
-        if (PyModule_AddObject(module, name, (PyObject*) type_object) == 0)
-        {
+        if (PyModule_AddObject(module, name, (PyObject *) type_object) == 0) {
             return true;
         }
         Py_DECREF(type_object);
@@ -44,9 +41,8 @@ bool add_object(PyObject* const module, PyTypeObject* const type_object, const c
     return false;
 }
 
-PyMODINIT_FUNC PyInit_ximu3()
-{
-    PyObject* const module = PyModule_Create(&config);
+PyMODINIT_FUNC PyInit_ximu3() {
+    PyObject *const module = PyModule_Create(&config);
 
     if (module != NULL &&
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_NOT_CONNECTED", XIMU3_ChargingStatusNotConnected) == 0) &&
@@ -152,8 +148,7 @@ PyMODINIT_FUNC PyInit_ximu3()
         add_object(module, &udp_connection_info_object, "UdpConnectionInfo") &&
         add_object(module, &bluetooth_connection_info_object, "BluetoothConnectionInfo") &&
         add_object(module, &file_connection_info_object, "FileConnectionInfo") &&
-        add_object(module, &mux_connection_info_object, "MuxConnectionInfo"))
-    {
+        add_object(module, &mux_connection_info_object, "MuxConnectionInfo")) {
         return module;
     }
 
@@ -163,19 +158,17 @@ PyMODINIT_FUNC PyInit_ximu3()
 }
 
 // This function cannot be in ConnectionInfo.h because this results in a circular reference
-PyObject* mux_connection_info_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
-{
+PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
     unsigned char channel;
-    PyObject* connection;
+    PyObject *connection;
 
-    if (PyArg_ParseTuple(args, "bO!", &channel, &connection_object, &connection) == 0)
-    {
+    if (PyArg_ParseTuple(args, "bO!", &channel, &connection_object, &connection) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    MuxConnectionInfo* const self = (MuxConnectionInfo*) subtype->tp_alloc(subtype, 0);
-    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection*) connection)->connection);
+    MuxConnectionInfo *const self = (MuxConnectionInfo *) subtype->tp_alloc(subtype, 0);
+    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection *) connection)->connection);
 
-    return (PyObject*) self;
+    return (PyObject *) self;
 }

@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "HighGAccelerometerGraphWindow.h"
 
-HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Acceleration (g)",
-                  { "X", "Y", "Z" },
-                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.x, message.y, message.z });
+                  {"X", "Y", "Z"},
+                  {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
+        update(message.timestamp, {message.x, message.y, message.z});
     }));
 }
 
-HighGAccelerometerGraphWindow::~HighGAccelerometerGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+HighGAccelerometerGraphWindow::~HighGAccelerometerGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

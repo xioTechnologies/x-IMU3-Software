@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class GyroscopeGraphWindow : public GraphWindow
-{
+class GyroscopeGraphWindow : public GraphWindow {
 public:
-    GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    GyroscopeGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~GyroscopeGraphWindow() override;
 

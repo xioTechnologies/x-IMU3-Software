@@ -1,8 +1,7 @@
 #include "CustomLookAndFeel.h"
 #include "DataLoggerSettingsDialog.h"
 
-DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start")
-{
+DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings &settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start") {
     addAndMakeVisible(destinationLabel);
     addAndMakeVisible(destinationSelector);
     addAndMakeVisible(nameLabel);
@@ -13,21 +12,19 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
 
     settings.destination.createDirectory();
 
-    destinationSelector.setFiles({ settings.destination });
+    destinationSelector.setFiles({settings.destination});
     nameValue.setDefaultText("Logged Data " + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S"));
     nameValue.setText(settings.nameEmpty ? "" : settings.name, false);
     timeValue.setText(juce::String(settings.timeValue), false);
-    timeUnit.addItemList({ "Unlimited", "Hours", "Minutes", "Seconds" }, 1);
+    timeUnit.addItemList({"Unlimited", "Hours", "Minutes", "Seconds"}, 1);
     timeUnit.setSelectedItemIndex(static_cast<int>(settings.timeUnit), juce::dontSendNotification);
 
-    destinationSelector.onChange = nameValue.onTextChange = [&]
-    {
+    destinationSelector.onChange = nameValue.onTextChange = [&] {
         setOkButton(destinationSelector.isValid());
     };
     destinationSelector.onChange();
 
-    timeUnit.onChange = [&]
-    {
+    timeUnit.onChange = [&] {
         timeValue.setEnabled(timeUnit.getSelectedItemIndex() > 0);
         timeValue.applyColourToAllText(timeUnit.getSelectedItemIndex() > 0 ? findColour(juce::TextEditor::textColourId) : juce::Colour());
     };
@@ -36,8 +33,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings& settings) : D
     setSize(600, calculateHeight(3));
 }
 
-void DataLoggerSettingsDialog::resized()
-{
+void DataLoggerSettingsDialog::resized() {
     Dialog::resized();
     auto bounds = getContentBounds();
 
@@ -60,8 +56,7 @@ void DataLoggerSettingsDialog::resized()
     timeUnit.setBounds(secondsRow.removeFromLeft(columnWidth));
 }
 
-DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const
-{
+DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const {
     Settings settings;
     settings.destination = destinationSelector.getFiles()[0];
     settings.name = nameValue.getTextOrDefault().trim();

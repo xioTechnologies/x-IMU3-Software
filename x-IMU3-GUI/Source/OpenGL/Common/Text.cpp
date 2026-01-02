@@ -1,17 +1,14 @@
 #include "OpenGL/Common/OpenGLResources.h"
 #include "Text.h"
 
-Text::Text(const std::unordered_set<unsigned char>& charactersToLoad_) : charactersToLoad(charactersToLoad_)
-{
+Text::Text(const std::unordered_set<unsigned char> &charactersToLoad_) : charactersToLoad(charactersToLoad_) {
 }
 
-Text::~Text()
-{
+Text::~Text() {
     unloadFont();
 }
 
-bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
-{
+bool Text::loadFont(const char *data, size_t dataSize, int fontSizeJucePixels_) {
     using namespace ::juce::gl;
 
     unloadFont();
@@ -20,8 +17,7 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
     fontSizeGLPixels = (GLuint) toGLPixels(fontSizeJucePixels);
 
     FT_Face face = nullptr;
-    if (FT_New_Memory_Face(freeTypeLibrary->get(), reinterpret_cast<const FT_Byte*>(data), (FT_Long) dataSize, 0, &face))
-    {
+    if (FT_New_Memory_Face(freeTypeLibrary->get(), reinterpret_cast<const FT_Byte *>(data), (FT_Long) dataSize, 0, &face)) {
         return false;
     }
 
@@ -32,8 +28,7 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
     // Create OpenGL Textures for every font character that will be used
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable OpenGL default 4-byte alignment restriction since we store grayscale data with 1 byte per pixel
     glActiveTexture(GL_TEXTURE0); // use first texture unit for all textures bound below because shader only uses 1 texture at a time
-    for (const auto& character : charactersToLoad)
-    {
+    for (const auto &character: charactersToLoad) {
         if (FT_Load_Char(face, (FT_ULong) character, FT_LOAD_RENDER)) // if freetype fails to load the current glyph index
         {
             continue;
@@ -74,35 +69,28 @@ bool Text::loadFont(const char* data, size_t dataSize, int fontSizeJucePixels_)
     return true;
 }
 
-void Text::unloadFont()
-{
-    for (auto& glyph : glyphs)
-    {
+void Text::unloadFont() {
+    for (auto &glyph: glyphs) {
         juce::gl::glDeleteTextures(1, &(glyph.second.textureId));
     }
 
     glyphs.clear();
 }
 
-int Text::getFontSizeGLPixels() const
-{
+int Text::getFontSizeGLPixels() const {
     return (int) fontSizeGLPixels;
 }
 
-int Text::getFontSizeJucePixels() const
-{
+int Text::getFontSizeJucePixels() const {
     return fontSizeJucePixels;
 }
 
-float Text::getStringWidthGLPixels(const juce::String& string) const
-{
+float Text::getStringWidthGLPixels(const juce::String &string) const {
     float width = 0.0f;
 
-    for (const auto& character : string)
-    {
+    for (const auto &character: string) {
         auto glyphSearch = glyphs.find(static_cast<unsigned char>(character));
-        if (glyphSearch == glyphs.end())
-        {
+        if (glyphSearch == glyphs.end()) {
             continue;
         }
         const Glyph glyph = glyphSearch->second;
@@ -112,40 +100,32 @@ float Text::getStringWidthGLPixels(const juce::String& string) const
     return width;
 }
 
-float Text::getStringWidthJucePixels(const juce::String& string) const
-{
+float Text::getStringWidthJucePixels(const juce::String &string) const {
     auto context = juce::OpenGLContext::getCurrentContext();
     return (float) ((double) getStringWidthGLPixels(string) / (context ? context->getRenderingScale() : 1.0));
 }
 
-void Text::draw(OpenGLResources& resources, const juce::String& text, const juce::Colour& colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const
-{
-    if (justification.testFlags(juce::Justification::horizontallyCentred))
-    {
+void Text::draw(OpenGLResources &resources, const juce::String &text, const juce::Colour &colour, juce::Justification justification, glm::vec2 screenPosition, juce::Rectangle<int> viewport) const {
+    if (justification.testFlags(juce::Justification::horizontallyCentred)) {
         screenPosition.x -= getStringWidthGLPixels(text) / 2.0f;
-    }
-    else if (justification.testFlags(juce::Justification::right))
-    {
+    } else if (justification.testFlags(juce::Justification::right)) {
         screenPosition.x -= getStringWidthGLPixels(text);
     }
 
-    if (justification.testFlags(juce::Justification::verticallyCentred))
-    {
+    if (justification.testFlags(juce::Justification::verticallyCentred)) {
         const auto offset = (GLfloat) getFontSizeGLPixels() / 2.0f + descender;
         screenPosition.y -= offset;
     }
 
     const auto projection = glm::ortho((float) viewport.getX(), (float) viewport.getRight(), (float) viewport.getY(), (float) viewport.getY() + (float) viewport.getHeight());
 
-    const auto& textShader = resources.textShader;
+    const auto &textShader = resources.textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
     auto textOrigin = screenPosition;
-    for (size_t index = 0; index < (size_t) text.length(); index++)
-    {
+    for (size_t index = 0; index < (size_t) text.length(); index++) {
         auto glyphSearch = glyphs.find(static_cast<unsigned char>(text[(int) index]));
-        if (glyphSearch == glyphs.end())
-        {
+        if (glyphSearch == glyphs.end()) {
             continue;
         }
         const Glyph glyph = glyphSearch->second;
@@ -162,11 +142,9 @@ void Text::draw(OpenGLResources& resources, const juce::String& text, const juce
     }
 }
 
-void Text::drawChar3D(OpenGLResources& resources, unsigned char character, const juce::Colour& colour, const glm::mat4& transform, juce::Rectangle<int> viewportBounds) const
-{
+void Text::drawChar3D(OpenGLResources &resources, unsigned char character, const juce::Colour &colour, const glm::mat4 &transform, juce::Rectangle<int> viewportBounds) const {
     auto glyphSearch = glyphs.find(character);
-    if (glyphSearch == glyphs.end())
-    {
+    if (glyphSearch == glyphs.end()) {
         return;
     }
     const Glyph glyph = glyphSearch->second;
@@ -176,7 +154,7 @@ void Text::drawChar3D(OpenGLResources& resources, unsigned char character, const
     const auto zTranslation = transform[3][2]; // use z of matrix translation so 2D elements have proper layering
     const auto ndcMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(ndcCoord, zTranslation));
 
-    const auto& textShader = resources.textShader;
+    const auto &textShader = resources.textShader;
     textShader.use();
     textShader.colour.setRGBA(colour);
 
@@ -188,23 +166,19 @@ void Text::drawChar3D(OpenGLResources& resources, unsigned char character, const
     resources.textQuad.draw();
 }
 
-int Text::toGLPixels(int jucePixels)
-{
+int Text::toGLPixels(int jucePixels) {
     auto context = juce::OpenGLContext::getCurrentContext();
     return juce::roundToInt((double) jucePixels * (context ? context->getRenderingScale() : 1.0));
 }
 
-Text::FreeTypeLibrary::FreeTypeLibrary()
-{
+Text::FreeTypeLibrary::FreeTypeLibrary() {
     FT_Init_FreeType(&freetypeLibrary);
 }
 
-Text::FreeTypeLibrary::~FreeTypeLibrary()
-{
+Text::FreeTypeLibrary::~FreeTypeLibrary() {
     FT_Done_FreeType(freetypeLibrary);
 }
 
-FT_Library Text::FreeTypeLibrary::get() const
-{
+FT_Library Text::FreeTypeLibrary::get() const {
     return freetypeLibrary;
 }

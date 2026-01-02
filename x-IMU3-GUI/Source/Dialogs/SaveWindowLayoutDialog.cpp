@@ -1,13 +1,11 @@
 #include <BinaryData.h>
 #include "SaveWindowLayoutDialog.h"
 
-SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, "Save Window Layout", "Save")
-{
+SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, "Save Window Layout", "Save") {
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
 
-    nameValue.onTextChange = [this]
-    {
+    nameValue.onTextChange = [this] {
         setOkButton(getLayoutName().isNotEmpty() && juce::File::createLegalFileName(getLayoutName()) == getLayoutName());
     };
 
@@ -16,8 +14,7 @@ SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, 
     setSize(dialogWidth, calculateHeight(1));
 }
 
-void SaveWindowLayoutDialog::resized()
-{
+void SaveWindowLayoutDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds().removeFromTop(UILayout::textComponentHeight);
@@ -26,7 +23,6 @@ void SaveWindowLayoutDialog::resized()
     nameValue.setBounds(bounds);
 }
 
-juce::String SaveWindowLayoutDialog::getLayoutName() const
-{
+juce::String SaveWindowLayoutDialog::getLayoutName() const {
     return nameValue.getText().trim();
 }

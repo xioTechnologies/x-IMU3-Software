@@ -5,33 +5,26 @@
 #include "Ximu3.hpp"
 
 class Icon : public juce::Component,
-             public juce::SettableTooltipClient
-{
+             public juce::SettableTooltipClient {
 public:
-    Icon(const juce::String& icon_, const juce::String& tooltip, const float scale_ = 1.0f)
-        : scale(scale_)
-    {
+    Icon(const juce::String &icon_, const juce::String &tooltip, const float scale_ = 1.0f)
+        : scale(scale_) {
         setIcon(icon_);
         setTooltip(tooltip);
     }
 
-    void paint(juce::Graphics& g) override
-    {
-        if (drawable != nullptr)
-        {
+    void paint(juce::Graphics &g) override {
+        if (drawable != nullptr) {
             drawable->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
-                             juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.5f);
+                                 juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.5f);
         }
     }
 
-    void setIcon(const juce::String& icon_)
-    {
-        if (icon != icon_)
-        {
+    void setIcon(const juce::String &icon_) {
+        if (icon != icon_) {
             icon = icon_;
 
-            if (auto xml = juce::XmlDocument::parse(icon_))
-            {
+            if (auto xml = juce::XmlDocument::parse(icon_)) {
                 drawable = juce::Drawable::createFromSVG(*xml);
             }
 
@@ -47,63 +40,42 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Icon)
 };
 
-class RssiIcon : public Icon
-{
+class RssiIcon : public Icon {
 public:
     const juce::String title = "Wi-Fi RSSI";
 
-    RssiIcon(const float scale_ = 1.0f) : Icon("", "", scale_)
-    {
+    RssiIcon(const float scale_ = 1.0f) : Icon("", "", scale_) {
         unavailable();
     }
 
-    void unavailable()
-    {
+    void unavailable() {
         setIcon(BinaryData::wifi_unavailable_svg);
         setTooltip(title + " (Unavailable)");
     }
 
-    void update(const int percentage)
-    {
-        setIcon(percentage <= 25 ?
-                    BinaryData::wifi_25_svg :
-                    percentage <= 50 ?
-                    BinaryData::wifi_50_svg :
-                    percentage <= 75 ?
-                    BinaryData::wifi_75_svg :
-                    BinaryData::wifi_100_svg);
+    void update(const int percentage) {
+        setIcon(percentage <= 25 ? BinaryData::wifi_25_svg : percentage <= 50 ? BinaryData::wifi_50_svg : percentage <= 75 ? BinaryData::wifi_75_svg : BinaryData::wifi_100_svg);
         setTooltip(title + " (" + juce::String(percentage) + "%)");
     }
 };
 
-class BatteryIcon : public Icon
-{
+class BatteryIcon : public Icon {
 public:
     const juce::String title = "Battery Level";
 
-    BatteryIcon(const float scale_ = 1.0f) : Icon("", "", scale_)
-    {
+    BatteryIcon(const float scale_ = 1.0f) : Icon("", "", scale_) {
         unavailable();
     }
 
-    void unavailable()
-    {
+    void unavailable() {
         setIcon(BinaryData::battery_unavailable_svg);
         setTooltip(title + " (Unavailable)");
     }
 
-    void update(const int percentage, const ximu3::XIMU3_ChargingStatus status)
-    {
-        switch (status)
-        {
+    void update(const int percentage, const ximu3::XIMU3_ChargingStatus status) {
+        switch (status) {
             case ximu3::XIMU3_ChargingStatusNotConnected:
-                setIcon(percentage <= 25 ?
-                            BinaryData::battery_25_svg :
-                            percentage <= 50 ?
-                            BinaryData::battery_50_svg :
-                            percentage <= 75 ?
-                            BinaryData::battery_75_svg :
-                            BinaryData::battery_100_svg);
+                setIcon(percentage <= 25 ? BinaryData::battery_25_svg : percentage <= 50 ? BinaryData::battery_50_svg : percentage <= 75 ? BinaryData::battery_75_svg : BinaryData::battery_100_svg);
                 setTooltip(title + " (" + juce::String(percentage) + "%)");
                 break;
 

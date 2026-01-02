@@ -1,15 +1,13 @@
 #include "Dialog.h"
 
-Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const juce::String& okButtonText, const juce::String& cancelButtonText, juce::Component* const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_, const std::optional<juce::Colour>& tag_)
+Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const juce::String &okButtonText, const juce::String &cancelButtonText, juce::Component *const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_, const std::optional<juce::Colour> &tag_)
     : juce::Component(dialogTitle),
       icon(icon_),
       tag(tag_),
       bottomLeftComponent(bottomLeftComponent_),
       bottomLeftComponentWidth(bottomLeftComponentWidth_),
-      resizable(resizable_)
-{
-    auto initButton = [this](auto& button, auto visible, const auto& buttonText, auto toggleState)
-    {
+      resizable(resizable_) {
+    auto initButton = [this](auto &button, auto visible, const auto &buttonText, auto toggleState) {
         addChildComponent(&button);
         button.setToggleState(toggleState, juce::dontSendNotification);
         button.setWantsKeyboardFocus(false);
@@ -22,35 +20,29 @@ Dialog::Dialog(const juce::String& icon_, const juce::String& dialogTitle, const
     initButton(okButton, okButtonText.isNotEmpty(), okButtonText, true);
     okButton.addShortcut(juce::KeyPress(juce::KeyPress::returnKey));
 
-    okButton.onClick = [this]
-    {
+    okButton.onClick = [this] {
         BailOutChecker thisDeletedChecker(this);
 
-        if (okCallback != nullptr && okCallback() == false)
-        {
+        if (okCallback != nullptr && okCallback() == false) {
             return;
         }
 
-        if (thisDeletedChecker.shouldBailOut() == false)
-        {
+        if (thisDeletedChecker.shouldBailOut() == false) {
             DialogQueue::getSingleton().pop();
         }
     };
 
-    cancelButton.onClick = []
-    {
+    cancelButton.onClick = [] {
         DialogQueue::getSingleton().pop();
     };
 
     timer.startTimerHz(25);
 }
 
-Dialog::~Dialog()
-{
+Dialog::~Dialog() {
 }
 
-void Dialog::resized()
-{
+void Dialog::resized() {
     auto bounds = getLocalBounds().removeFromBottom(UILayout::textComponentHeight + margin).reduced(margin, 0).withTrimmedBottom(margin);
     minimumWidth = 2 * margin;
 
@@ -60,107 +52,87 @@ void Dialog::resized()
     okButton.setBounds(bounds.removeFromRight(okButton.getWidth()));
     minimumWidth += okButton.getWidth();
 
-    if (cancelButton.isVisible())
-    {
+    if (cancelButton.isVisible()) {
         bounds.removeFromRight(margin);
         cancelButton.setBounds(bounds.removeFromRight(cancelButton.getWidth()));
         minimumWidth += margin + cancelButton.getWidth();
     }
 
-    if (bottomLeftComponent)
-    {
+    if (bottomLeftComponent) {
         bounds.removeFromRight(margin);
         bottomLeftComponent->setBounds(bounds.removeFromLeft(bottomLeftComponentWidth));
         minimumWidth += margin + bottomLeftComponentWidth;
     }
 }
 
-juce::Rectangle<int> Dialog::getContentBounds(bool noMargins) const noexcept
-{
+juce::Rectangle<int> Dialog::getContentBounds(bool noMargins) const noexcept {
     const auto bounds = getLocalBounds().withTrimmedBottom(UILayout::textComponentHeight + margin);
-    if (noMargins)
-    {
+    if (noMargins) {
         return bounds.withTrimmedBottom(margin);
     }
     return bounds.reduced(margin);
 }
 
-bool Dialog::isResizable() const
-{
+bool Dialog::isResizable() const {
     return resizable;
 }
 
-int Dialog::getMinimumWidth() const
-{
+int Dialog::getMinimumWidth() const {
     return minimumWidth;
 }
 
-int Dialog::calculateHeight(const int numberOfRows) const
-{
+int Dialog::calculateHeight(const int numberOfRows) const {
     // This "adjust" fixes a bug that the dialog height doesn't adjust after changing the title bar height
     static constexpr int adjust = titleBarHeight - 26; // 26 is juce default title bar height,
     return margin + (numberOfRows + 1) * (UILayout::textComponentHeight + margin) + adjust + margin;
 }
 
-void Dialog::setOkButton(const bool valid, const juce::String& buttonText)
-{
+void Dialog::setOkButton(const bool valid, const juce::String &buttonText) {
     okButton.setEnabled(valid);
-    if (buttonText.isNotEmpty())
-    {
+    if (buttonText.isNotEmpty()) {
         okButton.setButtonText(buttonText);
         resized();
     }
 }
 
-void Dialog::setCancelButton(const bool valid, const juce::String& buttonText)
-{
+void Dialog::setCancelButton(const bool valid, const juce::String &buttonText) {
     cancelButton.setEnabled(valid);
-    if (buttonText.isNotEmpty())
-    {
+    if (buttonText.isNotEmpty()) {
         cancelButton.setButtonText(buttonText);
         resized();
     }
 }
 
-Dialog* DialogQueue::getActive()
-{
-    return active ? static_cast<Dialog*>(active->getContentComponent()) : nullptr;
+Dialog *DialogQueue::getActive() {
+    return active ? static_cast<Dialog *>(active->getContentComponent()) : nullptr;
 }
 
-void DialogQueue::pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
-{
-    if (okCallback != nullptr)
-    {
+void DialogQueue::pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback) {
+    if (okCallback != nullptr) {
         content->okCallback = okCallback;
     }
 
     queue.push_front(std::move(content));
-    if (active == nullptr)
-    {
+    if (active == nullptr) {
         pop();
     }
 }
 
-void DialogQueue::pushBack(std::unique_ptr<Dialog> content, std::function<bool()> okCallback)
-{
-    if (okCallback != nullptr)
-    {
+void DialogQueue::pushBack(std::unique_ptr<Dialog> content, std::function<bool()> okCallback) {
+    if (okCallback != nullptr) {
         content->okCallback = okCallback;
     }
 
     queue.push_back(std::move(content));
-    if (active == nullptr)
-    {
+    if (active == nullptr) {
         pop();
     }
 }
 
-void DialogQueue::pop()
-{
+void DialogQueue::pop() {
     active.reset();
 
-    if (queue.empty() == false)
-    {
+    if (queue.empty() == false) {
         active = std::make_unique<juce::DialogWindow>(queue.front()->getName(), UIColours::backgroundLight, false, true);
         active->setContentOwned(queue.front().get(), true);
         active->setTitleBarHeight(Dialog::titleBarHeight);

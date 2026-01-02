@@ -1,8 +1,7 @@
 #include "SendCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optional<juce::Colour>& tag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, tag_)
-{
+SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &tag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, tag_) {
     addAndMakeVisible(keyLabel);
     addAndMakeVisible(keyValue);
     addAndMakeVisible(commandKeysButton);
@@ -15,16 +14,14 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
     addAndMakeVisible(previousCommandsButton);
 
     previousCommands = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (!previousCommands.isValid())
-    {
+    if (!previousCommands.isValid()) {
         previousCommands = juce::ValueTree("Commands");
-        previousCommands.appendChild({ "Command", { { "key", "ping" }, { "type", static_cast<int>(Type::null) } } }, nullptr);
+        previousCommands.appendChild({"Command", {{"key", "ping"}, {"type", static_cast<int>(Type::null)}}}, nullptr);
     }
 
-    typeValue.addItemList({ toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null) }, 1);
+    typeValue.addItemList({toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null)}, 1);
 
-    keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberValue.onTextChange = [&]
-    {
+    keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberValue.onTextChange = [&] {
         const auto type = static_cast<Type>(typeValue.getSelectedItemIndex());
         commandValue.setText(createCommand(keyValue.getText(), type, stringValue.getText(), numberValue.getText()), false);
         stringValue.setVisible(type == Type::string);
@@ -42,8 +39,7 @@ SendCommandDialog::SendCommandDialog(const juce::String& title, const std::optio
     setSize(600, calculateHeight(3));
 }
 
-void SendCommandDialog::resized()
-{
+void SendCommandDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds();
@@ -69,11 +65,9 @@ void SendCommandDialog::resized()
     commandValue.setBounds(commandRow);
 }
 
-std::string SendCommandDialog::getCommand()
-{
-    juce::ValueTree newCommand { "Command", { { "key", keyValue.getText() }, { "type", typeValue.getSelectedItemIndex() } } };
-    switch (static_cast<Type>(typeValue.getSelectedItemIndex()))
-    {
+std::string SendCommandDialog::getCommand() {
+    juce::ValueTree newCommand{"Command", {{"key", keyValue.getText()}, {"type", typeValue.getSelectedItemIndex()}}};
+    switch (static_cast<Type>(typeValue.getSelectedItemIndex())) {
         case Type::string:
             newCommand.setProperty("value", stringValue.getText(), nullptr);
             break;
@@ -88,17 +82,14 @@ std::string SendCommandDialog::getCommand()
             break;
     }
 
-    for (const auto command : previousCommands)
-    {
-        if (command.isEquivalentTo(newCommand))
-        {
+    for (const auto command: previousCommands) {
+        if (command.isEquivalentTo(newCommand)) {
             previousCommands.removeChild(command, nullptr);
             break;
         }
     }
 
-    while (previousCommands.getNumChildren() >= 18)
-    {
+    while (previousCommands.getNumChildren() >= 18) {
         previousCommands.removeChild(previousCommands.getChild(previousCommands.getNumChildren() - 1), nullptr);
     }
 
@@ -108,10 +99,8 @@ std::string SendCommandDialog::getCommand()
     return commandValue.getText().toStdString();
 }
 
-juce::String SendCommandDialog::toString(const Type type)
-{
-    switch (type)
-    {
+juce::String SendCommandDialog::toString(const Type type) {
+    switch (type) {
         case Type::string:
             return "string";
         case Type::number:
@@ -126,11 +115,9 @@ juce::String SendCommandDialog::toString(const Type type)
     return {}; // avoid compiler warning
 }
 
-juce::String SendCommandDialog::createCommand(const juce::String& key, const Type type, const juce::String& string, const juce::String& number)
-{
+juce::String SendCommandDialog::createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number) {
     juce::String text = "{\"" + key + "\":";
-    switch (type)
-    {
+    switch (type) {
         case Type::string:
             text += "\"" + string + "\"";
             break;
@@ -146,8 +133,7 @@ juce::String SendCommandDialog::createCommand(const juce::String& key, const Typ
     return text + "}";
 }
 
-void SendCommandDialog::selectCommand(const juce::ValueTree command)
-{
+void SendCommandDialog::selectCommand(const juce::ValueTree command) {
     keyValue.setText(command["key"], false);
     typeValue.setSelectedItemIndex(command["type"], juce::dontSendNotification);
     stringValue.setText(static_cast<Type>((int) command["type"]) == Type::string ? command["value"] : "", false);
@@ -155,23 +141,17 @@ void SendCommandDialog::selectCommand(const juce::ValueTree command)
     keyValue.onTextChange();
 }
 
-juce::PopupMenu SendCommandDialog::getCommandKeysMenu()
-{
+juce::PopupMenu SendCommandDialog::getCommandKeysMenu() {
     juce::PopupMenu menu;
-    for (const auto command : commandKeys)
-    {
-        if (command.hasType("Command"))
-        {
-            menu.addItem(command["key"], [&, command]
-            {
+    for (const auto command: commandKeys) {
+        if (command.hasType("Command")) {
+            menu.addItem(command["key"], [&, command] {
                 keyValue.setText(command["key"], juce::sendNotification);
                 typeValue.setSelectedItemIndex(command["type"], juce::sendNotification);
                 stringValue.setText({}, juce::sendNotification);
                 numberValue.setText({}, juce::sendNotification);
             });
-        }
-        else if (command.hasType("Separator"))
-        {
+        } else if (command.hasType("Separator")) {
             menu.addSeparator();
             menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(command["header"]), nullptr);
         }
@@ -179,13 +159,10 @@ juce::PopupMenu SendCommandDialog::getCommandKeysMenu()
     return menu;
 }
 
-juce::PopupMenu SendCommandDialog::getPreviousCommandsMenu()
-{
+juce::PopupMenu SendCommandDialog::getPreviousCommandsMenu() {
     juce::PopupMenu menu;
-    for (const auto command : previousCommands)
-    {
-        menu.addItem(createCommand(command["key"], static_cast<Type>((int) command["type"]), command["value"], command["value"]), [&, command]
-        {
+    for (const auto command: previousCommands) {
+        menu.addItem(createCommand(command["key"], static_cast<Type>((int) command["type"]), command["value"], command["value"]), [&, command] {
             selectCommand(command);
         });
     }

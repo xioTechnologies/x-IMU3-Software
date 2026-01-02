@@ -11,36 +11,35 @@
 #include "Ximu3.hpp"
 
 class ThreeDViewWindow : public Window,
-                         private juce::Timer
-{
+                         private juce::Timer {
 public:
-    ThreeDViewWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    ThreeDViewWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~ThreeDViewWindow() override;
 
     void resized() override;
 
-    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+    void mouseDown(const juce::MouseEvent &mouseEvent) override;
 
-    void mouseDrag(const juce::MouseEvent& mouseEvent) override;
+    void mouseDrag(const juce::MouseEvent &mouseEvent) override;
 
-    void mouseDoubleClick(const juce::MouseEvent& mouseEvent) override;
+    void mouseDoubleClick(const juce::MouseEvent &mouseEvent) override;
 
-    void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override;
+    void mouseWheelMove(const juce::MouseEvent &, const juce::MouseWheelDetails &wheel) override;
 
 private:
     ThreeDView threeDView;
 
-    SimpleLabel rollLabel { "Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-                rollValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-                pitchLabel { "Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-                pitchValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-                yawLabel { "Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft },
-                yawValue { "", UIFonts::getDefaultFont(), juce::Justification::topLeft };
+    SimpleLabel rollLabel{"Roll:", UIFonts::getDefaultFont(), juce::Justification::topLeft},
+            rollValue{"", UIFonts::getDefaultFont(), juce::Justification::topLeft},
+            pitchLabel{"Pitch:", UIFonts::getDefaultFont(), juce::Justification::topLeft},
+            pitchValue{"", UIFonts::getDefaultFont(), juce::Justification::topLeft},
+            yawLabel{"Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft},
+            yawValue{"", UIFonts::getDefaultFont(), juce::Justification::topLeft};
 
-    std::atomic<float> roll { 0.0f }, pitch { 0.0f }, yaw { 0.0f };
+    std::atomic<float> roll{0.0f}, pitch{0.0f}, yaw{0.0f};
 
-    SimpleLabel loadingLabel { "", UIFonts::getDefaultFont(), juce::Justification::bottomRight };
+    SimpleLabel loadingLabel{"", UIFonts::getDefaultFont(), juce::Justification::bottomRight};
 
     juce::Point<int> lastMousePosition;
 
@@ -64,13 +63,13 @@ private:
 
     bool compactView = false;
 
-    std::atomic<bool> angularRateRecoveryState { false };
-    std::atomic<bool> accelerationRecoveryState { false };
-    std::atomic<bool> magneticRecoveryState { false };
+    std::atomic<bool> angularRateRecoveryState{false};
+    std::atomic<bool> accelerationRecoveryState{false};
+    std::atomic<bool> magneticRecoveryState{false};
 
-    Icon angularRateRecoveryIcon { BinaryData::speed_grey_svg, "Angular Rate Recovery" };
-    Icon accelerationRecoveryIcon { BinaryData::vibration_grey_svg, "Acceleration Recovery" };
-    Icon magneticRecoveryIcon { BinaryData::magnet_grey_svg, "Magnetic Recovery" };
+    Icon angularRateRecoveryIcon{BinaryData::speed_grey_svg, "Angular Rate Recovery"};
+    Icon accelerationRecoveryIcon{BinaryData::vibration_grey_svg, "Acceleration Recovery"};
+    Icon magneticRecoveryIcon{BinaryData::magnet_grey_svg, "Magnetic Recovery"};
 
     const juce::File customModelsDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Models");
 
@@ -78,7 +77,7 @@ private:
 
     static float wrapAngle(float angle);
 
-    void writeToValueTree(const ThreeDView::Settings& settings);
+    void writeToValueTree(const ThreeDView::Settings &settings);
 
     ThreeDView::Settings readFromValueTree() const;
 
@@ -90,7 +89,7 @@ private:
 
     void timerCallback() override;
 
-    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& property) override;
+    void valueTreePropertyChanged(juce::ValueTree &, const juce::Identifier &property) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThreeDViewWindow)
 };

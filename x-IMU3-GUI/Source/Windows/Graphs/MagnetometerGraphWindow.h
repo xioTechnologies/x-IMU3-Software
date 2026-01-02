@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class MagnetometerGraphWindow : public GraphWindow
-{
+class MagnetometerGraphWindow : public GraphWindow {
 public:
-    MagnetometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    MagnetometerGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~MagnetometerGraphWindow() override;
 

@@ -13,53 +13,52 @@
 class ConnectionPanelContainer;
 
 class MenuStrip : public juce::Component,
-                  private juce::Timer
-{
+                  private juce::Timer {
 public:
-    MenuStrip(juce::ValueTree& windowLayout_, juce::ThreadPool& threadPool_, ConnectionPanelContainer& connectionPanelContainer_);
+    MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPool_, ConnectionPanelContainer &connectionPanelContainer_);
 
     ~MenuStrip() override;
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
     void resized() override;
 
     int getMinimumWidth() const;
 
 private:
-    juce::ValueTree& windowLayout;
-    juce::ThreadPool& threadPool;
-    ConnectionPanelContainer& connectionPanelContainer;
+    juce::ValueTree &windowLayout;
+    juce::ThreadPool &threadPool;
+    ConnectionPanelContainer &connectionPanelContainer;
 
-    IconButton availableConnectionsButton { BinaryData::search_svg, "Available Connections" };
-    IconButton manualConnectionButton { BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectionMenu, this) };
-    IconButton disconnectButton { BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this) };
-    IconButton connectionLayoutButton { BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this) };
-    IconButton windowsButton { BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this) };
-    IconButton shutdownButton { BinaryData::shutdown_svg, "Send Shutdown Command to All" };
-    IconButton zeroHeadingButton { BinaryData::north_svg, "Send Zero Heading Command to All" };
-    IconButton noteButton { BinaryData::note_svg, "Send Note Command to All" };
-    IconButton sendCommandButton { BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this) };
-    IconButton dataLoggerStartStopButton { BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger" };
+    IconButton availableConnectionsButton{BinaryData::search_svg, "Available Connections"};
+    IconButton manualConnectionButton{BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectionMenu, this)};
+    IconButton disconnectButton{BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this)};
+    IconButton connectionLayoutButton{BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this)};
+    IconButton windowsButton{BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this)};
+    IconButton shutdownButton{BinaryData::shutdown_svg, "Send Shutdown Command to All"};
+    IconButton zeroHeadingButton{BinaryData::north_svg, "Send Zero Heading Command to All"};
+    IconButton noteButton{BinaryData::note_svg, "Send Note Command to All"};
+    IconButton sendCommandButton{BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this)};
+    IconButton dataLoggerStartStopButton{BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger"};
     Stopwatch dataLoggerTime;
-    IconButton toolsButton { BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this) };
-    IconButton mainSettingsButton { BinaryData::settings_svg, "Application Settings" };
-    IconButton aboutButton { BinaryData::xio_icon_svg, "About", nullptr, false, BinaryData::xio_icon_update_svg, "About (Update Available)" };
+    IconButton toolsButton{BinaryData::tools_svg, "Tools", std::bind(&MenuStrip::getToolsMenu, this)};
+    IconButton mainSettingsButton{BinaryData::settings_svg, "Application Settings"};
+    IconButton aboutButton{BinaryData::xio_icon_svg, "About", nullptr, false, BinaryData::xio_icon_update_svg, "About (Update Available)"};
 
-    const std::vector<std::vector<juce::Button*>> buttonGroups {
-        { &availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton },
-        { &windowsButton },
-        { &shutdownButton, &zeroHeadingButton, &noteButton, &sendCommandButton },
-        { &dataLoggerStartStopButton, &dataLoggerTime },
-        { &toolsButton },
-        { &mainSettingsButton, &aboutButton },
+    const std::vector<std::vector<juce::Button *> > buttonGroups{
+        {&availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton},
+        {&windowsButton},
+        {&shutdownButton, &zeroHeadingButton, &noteButton, &sendCommandButton},
+        {&dataLoggerStartStopButton, &dataLoggerTime},
+        {&toolsButton},
+        {&mainSettingsButton, &aboutButton},
     };
 
-    const std::map<ConnectionPanelContainer::Layout, juce::String> layoutIcons {
-        { ConnectionPanelContainer::Layout::rows, BinaryData::rows_svg },
-        { ConnectionPanelContainer::Layout::columns, BinaryData::columns_svg },
-        { ConnectionPanelContainer::Layout::grid, BinaryData::grid_svg },
-        { ConnectionPanelContainer::Layout::accordion, BinaryData::accordion_svg },
+    const std::map<ConnectionPanelContainer::Layout, juce::String> layoutIcons{
+        {ConnectionPanelContainer::Layout::rows, BinaryData::rows_svg},
+        {ConnectionPanelContainer::Layout::columns, BinaryData::columns_svg},
+        {ConnectionPanelContainer::Layout::grid, BinaryData::grid_svg},
+        {ConnectionPanelContainer::Layout::accordion, BinaryData::accordion_svg},
     };
 
     DataLoggerSettingsDialog::Settings dataLoggerSettings;
@@ -75,9 +74,9 @@ private:
 
     void openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channels);
 
-    void addDevices(juce::PopupMenu& menu, std::function<void(ConnectionPanel&)> action);
+    void addDevices(juce::PopupMenu &menu, std::function<void(ConnectionPanel &)> action);
 
-    void disconnect(const ConnectionPanel* const);
+    void disconnect(const ConnectionPanel *const);
 
     juce::PopupMenu getManualConnectionMenu();
 

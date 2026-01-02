@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "BatteryPercentageGraphWindow.h"
 
-BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Percentage (%)",
-                  { "" },
-                  { UIColours::graphChannel1 },
-                  true)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.percentage });
+                  {""},
+                  {UIColours::graphChannel1},
+                  true) {
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
+        update(message.timestamp, {message.percentage});
     }));
 }
 
-BatteryPercentageGraphWindow::~BatteryPercentageGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+BatteryPercentageGraphWindow::~BatteryPercentageGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

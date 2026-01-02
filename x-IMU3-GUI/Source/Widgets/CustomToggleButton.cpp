@@ -1,14 +1,12 @@
 #include "CustomLookAndFeel.h"
 #include "CustomToggleButton.h"
 
-class CustomToggleButton::LookAndFeel : public CustomLookAndFeel
-{
+class CustomToggleButton::LookAndFeel : public CustomLookAndFeel {
 public:
     using CustomLookAndFeel::CustomLookAndFeel;
 
-    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& button,
-                          bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
-    {
+    void drawToggleButton(juce::Graphics &g, juce::ToggleButton &button,
+                          bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {
         const auto font = UIFonts::getDefaultFont();
         const auto fontSize = font.getHeight();
         const auto tickWidth = fontSize * 1.1f;
@@ -29,8 +27,8 @@ public:
                    juce::Justification::centredLeft, true);
     }
 
-    void drawTickBox(juce::Graphics& g,
-                     juce::Component& component,
+    void drawTickBox(juce::Graphics &g,
+                     juce::Component &component,
                      float x,
                      float y,
                      float w,
@@ -38,8 +36,7 @@ public:
                      const bool ticked,
                      const bool isEnabled,
                      const bool shouldDrawButtonAsHighlighted,
-                     const bool shouldDrawButtonAsDown) override
-    {
+                     const bool shouldDrawButtonAsDown) override {
         juce::ignoreUnused(isEnabled, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
 
         const auto tickBounds = juce::Rectangle<float>(x, y, w, h).reduced(2.0f);
@@ -48,12 +45,9 @@ public:
 
         g.setOpacity(component.isEnabled() ? 1.0f : 0.5f);
 
-        if (!ticked)
-        {
+        if (!ticked) {
             g.drawRoundedRectangle(tickBounds.reduced(1.0f), 2.0f, 1.5f);
-        }
-        else
-        {
+        } else {
             g.fillRoundedRectangle(tickBounds, 3.0f);
 
             g.setColour(component.findColour(juce::ToggleButton::tickColourId));
@@ -66,14 +60,12 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LookAndFeel)
 };
 
-CustomToggleButton::CustomToggleButton(const juce::String& buttonName) : juce::ToggleButton(buttonName)
-{
+CustomToggleButton::CustomToggleButton(const juce::String &buttonName) : juce::ToggleButton(buttonName) {
     lookAndFeel = std::make_unique<LookAndFeel>();
     setLookAndFeel(lookAndFeel.get());
     setWantsKeyboardFocus(false);
 }
 
-CustomToggleButton::~CustomToggleButton()
-{
+CustomToggleButton::~CustomToggleButton() {
     setLookAndFeel(nullptr);
 }

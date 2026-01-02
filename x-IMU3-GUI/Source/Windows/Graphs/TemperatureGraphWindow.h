@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class TemperatureGraphWindow : public GraphWindow
-{
+class TemperatureGraphWindow : public GraphWindow {
 public:
-    TemperatureGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    TemperatureGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~TemperatureGraphWindow() override;
 

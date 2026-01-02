@@ -2,35 +2,29 @@
 #include "CustomLookAndFeel.h"
 #include "Dialogs/Dialog.h"
 
-juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium()
-{
+juce::Typeface::Ptr UIFonts::Typefaces::getMontserratMedium() {
     static const auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::MontserratMedium_ttf, BinaryData::MontserratMedium_ttfSize);
     return typeface;
 }
 
-juce::Typeface::Ptr UIFonts::Typefaces::getRobotoMonoRegular()
-{
+juce::Typeface::Ptr UIFonts::Typefaces::getRobotoMonoRegular() {
     static const auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::RobotoMonoRegular_ttf, BinaryData::RobotoMonoRegular_ttfSize);
     return typeface;
 }
 
-juce::Font UIFonts::getDefaultFont()
-{
+juce::Font UIFonts::getDefaultFont() {
     return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(15.0f);
 }
 
-juce::Font UIFonts::getSmallFont()
-{
+juce::Font UIFonts::getSmallFont() {
     return juce::FontOptions(Typefaces::getMontserratMedium()).withHeight(13.0f);
 }
 
-juce::Font UIFonts::getTerminalFeedFont()
-{
+juce::Font UIFonts::getTerminalFeedFont() {
     return juce::FontOptions(Typefaces::getRobotoMonoRegular()).withHeight(15.0f);
 }
 
-CustomLookAndFeel::CustomLookAndFeel()
-{
+CustomLookAndFeel::CustomLookAndFeel() {
     setDefaultSansSerifTypeface(UIFonts::Typefaces::getMontserratMedium()); // progress bar only
 
     setColour(juce::CaretComponent::caretColourId, UIColours::backgroundDark);
@@ -72,18 +66,14 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour(juce::TooltipWindow::outlineColourId, juce::Colours::grey);
 }
 
-void CustomLookAndFeel::drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height,
-                                      bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool, bool)
-{
+void CustomLookAndFeel::drawScrollbar(juce::Graphics &g, juce::ScrollBar &scrollbar, int x, int y, int width, int height,
+                                      bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool, bool) {
     juce::Rectangle<int> thumbBounds;
 
-    if (isScrollbarVertical)
-    {
-        thumbBounds = { x, thumbStartPosition, width, thumbSize };
-    }
-    else
-    {
-        thumbBounds = { thumbStartPosition, y, thumbSize, height };
+    if (isScrollbarVertical) {
+        thumbBounds = {x, thumbStartPosition, width, thumbSize};
+    } else {
+        thumbBounds = {thumbStartPosition, y, thumbSize, height};
     }
 
     g.setColour(scrollbar.findColour(juce::ScrollBar::ColourIds::backgroundColourId));
@@ -92,37 +82,32 @@ void CustomLookAndFeel::drawScrollbar(juce::Graphics& g, juce::ScrollBar& scroll
     g.fillRoundedRectangle(thumbBounds.reduced(2).toFloat(), 1.0f);
 }
 
-int CustomLookAndFeel::getDefaultScrollbarWidth()
-{
+int CustomLookAndFeel::getDefaultScrollbarWidth() {
     return 10;
 }
 
-void CustomLookAndFeel::drawButtonBackground(juce::Graphics& g,
-                                             juce::Button& button,
-                                             const juce::Colour& backgroundColour,
+void CustomLookAndFeel::drawButtonBackground(juce::Graphics &g,
+                                             juce::Button &button,
+                                             const juce::Colour &backgroundColour,
                                              bool shouldDrawButtonAsHighlighted,
-                                             bool shouldDrawButtonAsDown)
-{
+                                             bool shouldDrawButtonAsDown) {
     auto cornerSize = 3.0f;
     auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 
     auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
-                                      .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.1f);
+            .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.1f);
 
-    if (shouldDrawButtonAsDown && button.isEnabled())
-    {
+    if (shouldDrawButtonAsDown && button.isEnabled()) {
         baseColour = baseColour.contrasting(0.1f);
     }
 
-    if (shouldDrawButtonAsHighlighted)
-    {
+    if (shouldDrawButtonAsHighlighted) {
         baseColour = baseColour.contrasting(0.1f);
     }
 
     g.setColour(baseColour);
 
-    if (button.isConnectedOnLeft() || button.isConnectedOnRight())
-    {
+    if (button.isConnectedOnLeft() || button.isConnectedOnRight()) {
         juce::Path path;
         path.addRoundedRectangle(bounds.getX(),
                                  bounds.getY(),
@@ -136,80 +121,66 @@ void CustomLookAndFeel::drawButtonBackground(juce::Graphics& g,
                                  !button.isConnectedOnRight());
 
         g.fillPath(path);
-    }
-    else
-    {
+    } else {
         g.fillRoundedRectangle(bounds, cornerSize);
     }
 }
 
-juce::Font CustomLookAndFeel::getTextButtonFont(juce::TextButton&, int)
-{
+juce::Font CustomLookAndFeel::getTextButtonFont(juce::TextButton &, int) {
     return UIFonts::getDefaultFont();
 }
 
-void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& textEditor)
-{
+void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics &g, int width, int height, juce::TextEditor &textEditor) {
     auto backgroundColour = textEditor.findColour(juce::TextEditor::backgroundColourId);
-    if (!textEditor.isEnabled() || textEditor.isReadOnly())
-    {
+    if (!textEditor.isEnabled() || textEditor.isReadOnly()) {
         backgroundColour = backgroundColour.withAlpha(0.5f);
     }
 
-    if (dynamic_cast<juce::AlertWindow*>(textEditor.getParentComponent()) != nullptr)
-    {
+    if (dynamic_cast<juce::AlertWindow *>(textEditor.getParentComponent()) != nullptr) {
         g.setColour(backgroundColour);
         g.fillRect(0, 0, width, height);
 
         g.setColour(textEditor.findColour(juce::TextEditor::outlineColourId));
         g.drawHorizontalLine(height - 1, 0.0f, (float) width);
-    }
-    else
-    {
+    } else {
         const auto cornerSize = 3.0f;
         g.setColour(backgroundColour);
         g.fillRoundedRectangle(0, 0, (float) width, (float) height, cornerSize);
     }
 }
 
-void CustomLookAndFeel::drawTreeviewPlusMinusBox(juce::Graphics& g, const juce::Rectangle<float>& area, juce::Colour, bool isOpen, bool isMouseOver)
-{
-    static const std::unique_ptr<juce::Drawable> arrowDownWhite { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) };
-    static const std::unique_ptr<juce::Drawable> arrowDownGrey { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg)) };
-    static const std::unique_ptr<juce::Drawable> arrowRightWhite { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_white_svg)) };
-    static const std::unique_ptr<juce::Drawable> arrowRightGrey { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_grey_svg)) };
+void CustomLookAndFeel::drawTreeviewPlusMinusBox(juce::Graphics &g, const juce::Rectangle<float> &area, juce::Colour, bool isOpen, bool isMouseOver) {
+    static const std::unique_ptr<juce::Drawable> arrowDownWhite{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg))};
+    static const std::unique_ptr<juce::Drawable> arrowDownGrey{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg))};
+    static const std::unique_ptr<juce::Drawable> arrowRightWhite{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_white_svg))};
+    static const std::unique_ptr<juce::Drawable> arrowRightGrey{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_grey_svg))};
 
-    const auto* const icon = (isOpen ? (isMouseOver ? arrowDownWhite : arrowDownGrey) : (isMouseOver ? arrowRightWhite : arrowRightGrey)).get();
+    const auto *const icon = (isOpen ? (isMouseOver ? arrowDownWhite : arrowDownGrey) : (isMouseOver ? arrowRightWhite : arrowRightGrey)).get();
     icon->drawWithin(g, area.withSizeKeepingCentre(5.0f, 5.0f), juce::RectanglePlacement::centred | juce::RectanglePlacement::fillDestination, 1.0f);
 }
 
-bool CustomLookAndFeel::areLinesDrawnForTreeView(juce::TreeView&)
-{
+bool CustomLookAndFeel::areLinesDrawnForTreeView(juce::TreeView &) {
     return true;
 }
 
-int CustomLookAndFeel::getTreeViewIndentSize(juce::TreeView&)
-{
+int CustomLookAndFeel::getTreeViewIndentSize(juce::TreeView &) {
     return 15;
 }
 
-void CustomLookAndFeel::drawPopupMenuBackground(juce::Graphics& g, int width, int height)
-{
+void CustomLookAndFeel::drawPopupMenuBackground(juce::Graphics &g, int width, int height) {
     g.fillAll(findColour(juce::PopupMenu::backgroundColourId));
     g.setColour(UIColours::backgroundLightest);
     g.drawRect(0, 0, width, height);
 }
 
 // This file is copied from juce_juce::LookAndFeel_V4.cpp with minor modifications
-void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectangle<int>& area,
+void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics &g, const juce::Rectangle<int> &area,
                                           const bool isSeparator, const bool isActive,
                                           const bool isHighlighted, const bool isTicked,
-                                          const bool hasSubMenu, const juce::String& text,
-                                          const juce::String& shortcutKeyText,
-                                          const juce::Drawable* icon, const juce::Colour* const textColourToUse)
-{
-    if (isSeparator)
-    {
+                                          const bool hasSubMenu, const juce::String &text,
+                                          const juce::String &shortcutKeyText,
+                                          const juce::Drawable *icon, const juce::Colour *const textColourToUse) {
+    if (isSeparator) {
         // Adjustment: Remove reduction
         auto r = area;
 
@@ -219,22 +190,17 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
         // Adjustment: Change colour
         g.setColour(UIColours::backgroundLightest);
         g.fillRect(r.removeFromTop(1));
-    }
-    else
-    {
+    } else {
         auto textColour = (textColourToUse == nullptr ? findColour(juce::PopupMenu::textColourId) : *textColourToUse);
 
         auto r = area.reduced(1);
 
-        if (isHighlighted && isActive)
-        {
+        if (isHighlighted && isActive) {
             g.setColour(findColour(juce::PopupMenu::highlightedBackgroundColourId));
             g.fillRect(r);
 
             g.setColour(findColour(juce::PopupMenu::highlightedTextColourId));
-        }
-        else
-        {
+        } else {
             g.setColour(textColour.withMultipliedAlpha(isActive ? 1.0f : 0.5f));
         }
 
@@ -244,8 +210,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
 
         auto maxFontHeight = r.getHeight() / 1.3f;
 
-        if (font.getHeight() > maxFontHeight)
-        {
+        if (font.getHeight() > maxFontHeight) {
             font.setHeight(maxFontHeight);
         }
 
@@ -256,15 +221,12 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
         // Adjustment: Move icon to left
         iconArea.translate(-(maxFontHeight / 5), 0);
 
-        if (icon != nullptr)
-        {
+        if (icon != nullptr) {
             // Adjustment: Change icon position to position the colour tags in disconnect menu correctly
             iconArea = icon->getDrawableBounds().withPosition(0, 0);
             icon->drawWithin(g, iconArea, juce::RectanglePlacement::centred | juce::RectanglePlacement::onlyReduceInSize, 1.0f);
             r.removeFromLeft(juce::roundToInt(maxFontHeight * 0.5f));
-        }
-        else if (isTicked)
-        {
+        } else if (isTicked) {
             auto tick = getTickShape(1.0f);
 
             // Adjustment: Change tick target bounds
@@ -272,8 +234,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
                                                                std::min(getPopupMenuFont().getHeight(), maxFontHeight) / 10).toFloat(), true));
         }
 
-        if (hasSubMenu)
-        {
+        if (hasSubMenu) {
             auto arrowH = 0.6f * getPopupMenuFont().getAscent();
 
             auto x = (float) r.removeFromRight((int) arrowH).getX();
@@ -290,8 +251,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
         r.removeFromRight(3);
         g.drawFittedText(text, r, juce::Justification::centredLeft, 1);
 
-        if (shortcutKeyText.isNotEmpty())
-        {
+        if (shortcutKeyText.isNotEmpty()) {
             auto f2 = font;
             f2.setHeight(f2.getHeight() * 0.75f);
             f2.setHorizontalScale(0.95f);
@@ -302,8 +262,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics& g, const juce::Rectang
     }
 }
 
-void CustomLookAndFeel::drawPopupMenuSectionHeader(juce::Graphics& g, const juce::Rectangle<int>& area, const juce::String& sectionName)
-{
+void CustomLookAndFeel::drawPopupMenuSectionHeader(juce::Graphics &g, const juce::Rectangle<int> &area, const juce::String &sectionName) {
     g.setFont(getPopupMenuFont());
     g.setColour(findColour(juce::PopupMenu::headerTextColourId));
     g.drawFittedText(sectionName,
@@ -311,24 +270,18 @@ void CustomLookAndFeel::drawPopupMenuSectionHeader(juce::Graphics& g, const juce
                      juce::Justification::centredLeft, 1);
 }
 
-juce::Font CustomLookAndFeel::getPopupMenuFont()
-{
+juce::Font CustomLookAndFeel::getPopupMenuFont() {
     return UIFonts::getDefaultFont();
 }
 
-void CustomLookAndFeel::getIdealPopupMenuItemSize(const juce::String& text, const bool isSeparator, int standardMenuItemHeight, int& idealWidth, int& idealHeight)
-{
-    if (isSeparator)
-    {
+void CustomLookAndFeel::getIdealPopupMenuItemSize(const juce::String &text, const bool isSeparator, int standardMenuItemHeight, int &idealWidth, int &idealHeight) {
+    if (isSeparator) {
         idealWidth = 50;
         idealHeight = standardMenuItemHeight > 0 ? standardMenuItemHeight / 10 : 10;
-    }
-    else
-    {
+    } else {
         auto font = getPopupMenuFont();
 
-        if (standardMenuItemHeight > 0 && font.getHeight() > (float) standardMenuItemHeight / 1.3f)
-        {
+        if (standardMenuItemHeight > 0 && font.getHeight() > (float) standardMenuItemHeight / 1.3f) {
             font.setHeight((float) standardMenuItemHeight / 1.3f);
         }
 
@@ -337,8 +290,7 @@ void CustomLookAndFeel::getIdealPopupMenuItemSize(const juce::String& text, cons
     }
 }
 
-void CustomLookAndFeel::drawComboBox(juce::Graphics& g, int width, int height, bool, int, int, int, int, juce::ComboBox& box)
-{
+void CustomLookAndFeel::drawComboBox(juce::Graphics &g, int width, int height, bool, int, int, int, int, juce::ComboBox &box) {
     auto cornerSize = box.findParentComponentOfClass<juce::ChoicePropertyComponent>() != nullptr ? 0.0f : 3.0f;
     juce::Rectangle<int> boxBounds(0, 0, width, height);
 
@@ -351,34 +303,29 @@ void CustomLookAndFeel::drawComboBox(juce::Graphics& g, int width, int height, b
     g.setColour(box.findColour(juce::ComboBox::arrowColourId).withAlpha((box.isEnabled() ? 0.9f : 0.2f)));
     const auto arrowZone = boxBounds.removeFromRight(boxBounds.getHeight()).reduced(boxBounds.getHeight() / 3);
 
-    static const std::unique_ptr<juce::Drawable> arrow { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg)) };
+    static const std::unique_ptr<juce::Drawable> arrow{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg))};
     arrow->drawWithin(g, arrowZone.toFloat(), juce::RectanglePlacement::centred, 1.0f);
 }
 
-juce::Font CustomLookAndFeel::getComboBoxFont(juce::ComboBox&)
-{
+juce::Font CustomLookAndFeel::getComboBoxFont(juce::ComboBox &) {
     return UIFonts::getDefaultFont();
 }
 
-void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window, juce::Graphics& g,
+void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow &window, juce::Graphics &g,
                                                    int w, int h, int, int,
-                                                   const juce::Image* icon, bool)
-{
+                                                   const juce::Image *icon, bool) {
     g.fillAll(UIColours::backgroundLightest);
 
     juce::Rectangle<int> bounds(w, h);
 
-    if (const auto* const dialogWindow = dynamic_cast<juce::DialogWindow*>(&window))
-    {
-        if (const auto tag = static_cast<Dialog*>(dialogWindow->getContentComponent())->tag)
-        {
+    if (const auto *const dialogWindow = dynamic_cast<juce::DialogWindow *>(&window)) {
+        if (const auto tag = static_cast<Dialog *>(dialogWindow->getContentComponent())->tag) {
             g.setColour(*tag);
             g.fillRect(bounds.removeFromLeft(UILayout::tagWidth));
         }
     }
 
-    if (icon != nullptr)
-    {
+    if (icon != nullptr) {
         g.drawImage(*icon, bounds.removeFromLeft(h).withSizeKeepingCentre(22, 22).toFloat(), juce::RectanglePlacement::centred);
     }
 
@@ -388,8 +335,7 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow& window,
     g.drawText(window.getName(), bounds, juce::Justification::left, true);
 }
 
-juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String& tipText, juce::Point<int> screenPos, juce::Rectangle<int> parentArea)
-{
+juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String &tipText, juce::Point<int> screenPos, juce::Rectangle<int> parentArea) {
     const juce::TextLayout tl(layoutTooltipText(tipText, juce::Colours::black));
 
     auto w = juce::roundToInt(tl.getWidth() + 24.0f);
@@ -398,11 +344,10 @@ juce::Rectangle<int> CustomLookAndFeel::getTooltipBounds(const juce::String& tip
     return juce::Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 6) : screenPos.x + 12,
                                 screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 12) : screenPos.y + 12,
                                 w, h)
-        .constrainedWithin(parentArea);
+            .constrainedWithin(parentArea);
 }
 
-void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text, int width, int height)
-{
+void CustomLookAndFeel::drawTooltip(juce::Graphics &g, const juce::String &text, int width, int height) {
     juce::Rectangle<int> bounds(width, height);
     auto cornerSize = 5.0f;
 
@@ -413,11 +358,10 @@ void CustomLookAndFeel::drawTooltip(juce::Graphics& g, const juce::String& text,
     g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 
     layoutTooltipText(text, findColour(juce::TooltipWindow::textColourId))
-        .draw(g, { (float) width, (float) height });
+            .draw(g, {(float) width, (float) height});
 }
 
-void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, int height, const juce::String& text, const juce::Justification& position, juce::GroupComponent& group)
-{
+void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics &g, int width, int height, const juce::String &text, const juce::Justification &position, juce::GroupComponent &group) {
     const float indent = 3.0f;
     const float textEdgeGap = 4.0f;
     auto cs = 5.0f;
@@ -433,19 +377,16 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     cs = juce::jmin(cs, w * 0.5f, h * 0.5f);
     auto cs2 = 2.0f * cs;
 
-    auto textW = text.isEmpty() ?
-                     0 :
-                     juce::jlimit(0.0f,
-                                  juce::jmax(0.0f, w - cs2 - textEdgeGap * 2),
-                                  juce::GlyphArrangement::getStringWidth(font, text) + textEdgeGap * 2.0f);
+    auto textW = text.isEmpty()
+                     ? 0
+                     : juce::jlimit(0.0f,
+                                    juce::jmax(0.0f, w - cs2 - textEdgeGap * 2),
+                                    juce::GlyphArrangement::getStringWidth(font, text) + textEdgeGap * 2.0f);
     auto textX = cs + textEdgeGap;
 
-    if (position.testFlags(juce::Justification::horizontallyCentred))
-    {
+    if (position.testFlags(juce::Justification::horizontallyCentred)) {
         textX = cs + (w - cs2 - textW) * 0.5f;
-    }
-    else if (position.testFlags(juce::Justification::right))
-    {
+    } else if (position.testFlags(juce::Justification::right)) {
         textX = w - cs - textW - textEdgeGap;
     }
 
@@ -467,12 +408,12 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
     auto alpha = group.isEnabled() ? 1.0f : 0.5f;
 
     g.setColour(group.findColour(juce::GroupComponent::outlineColourId)
-                     .withMultipliedAlpha(alpha));
+        .withMultipliedAlpha(alpha));
 
     g.strokePath(p, juce::PathStrokeType(2.0f));
 
     g.setColour(group.findColour(juce::GroupComponent::textColourId)
-                     .withMultipliedAlpha(alpha));
+        .withMultipliedAlpha(alpha));
     g.setFont(font);
     g.drawText(text,
                juce::roundToInt(x + textX), 0,
@@ -482,17 +423,15 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics& g, int width, 
                juce::Justification::centred, true);
 }
 
-juce::Path CustomLookAndFeel::getTickShape(float height)
-{
-    static const std::unique_ptr<juce::Drawable> icon { juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::tick_white_svg)) };
+juce::Path CustomLookAndFeel::getTickShape(float height) {
+    static const std::unique_ptr<juce::Drawable> icon{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::tick_white_svg))};
 
     juce::Path path(icon->getOutlineAsPath());
     path.scaleToFit(0, 0, height * 2.0f, height, true);
     return path;
 }
 
-juce::TextLayout CustomLookAndFeel::layoutTooltipText(const juce::String& text, const juce::Colour& colour)
-{
+juce::TextLayout CustomLookAndFeel::layoutTooltipText(const juce::String &text, const juce::Colour &colour) {
     const int maxToolTipWidth = 400;
 
     juce::AttributedString s;

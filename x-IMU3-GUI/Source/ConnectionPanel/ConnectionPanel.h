@@ -14,18 +14,17 @@
 class ConnectionPanelContainer;
 
 class ConnectionPanel : public juce::Component,
-                        private juce::AsyncUpdater
-{
+                        private juce::AsyncUpdater {
 public:
     static constexpr int headerHeight = 26;
     static constexpr int footerHeight = 20;
     static constexpr int collapsedHeight = headerHeight + UILayout::panelMargin + footerHeight + UILayout::panelMargin;
 
-    ConnectionPanel(const juce::ValueTree& windowLayout_,
+    ConnectionPanel(const juce::ValueTree &windowLayout_,
                     std::shared_ptr<ximu3::Connection> connection_,
-                    OpenGLRenderer& openGLRenderer_,
-                    ConnectionPanelContainer& connectionPanelContainer_,
-                    const juce::Colour& tag_,
+                    OpenGLRenderer &openGLRenderer_,
+                    ConnectionPanelContainer &connectionPanelContainer_,
+                    const juce::Colour &tag_,
                     const bool keepOpenEnabled_);
 
     ~ConnectionPanel() override;
@@ -34,11 +33,11 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    void sendCommands(const std::vector<std::string>& commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ximu3::CommandMessage>>& responses)> callback = nullptr);
+    void sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback = nullptr);
 
-    const juce::Colour& getTag() const;
+    const juce::Colour &getTag() const;
 
-    std::shared_ptr<Window> getOrCreateWindow(const juce::ValueTree& windowTree);
+    std::shared_ptr<Window> getOrCreateWindow(const juce::ValueTree &windowTree);
 
     void cleanupWindows();
 
@@ -46,26 +45,26 @@ public:
 
     juce::String getDescriptor() const;
 
-    ConnectionPanelContainer& getConnectionPanelContainer();
+    ConnectionPanelContainer &getConnectionPanelContainer();
 
     void setOverlayVisible(const bool visible);
 
 private:
-    const juce::ValueTree& windowLayout;
+    const juce::ValueTree &windowLayout;
     std::shared_ptr<ximu3::Connection> connection;
-    OpenGLRenderer& openGLRenderer;
-    ConnectionPanelContainer& connectionPanelContainer;
+    OpenGLRenderer &openGLRenderer;
+    ConnectionPanelContainer &connectionPanelContainer;
     const juce::Colour tag;
 
-    ConnectionPanelHeader header { *this, connectionPanelContainer };
-    ConnectionPanelFooter footer { *this };
+    ConnectionPanelHeader header{*this, connectionPanelContainer};
+    ConnectionPanelFooter footer{*this};
 
-    std::map<juce::Identifier, std::shared_ptr<Window>> windows;
+    std::map<juce::Identifier, std::shared_ptr<Window> > windows;
     std::unique_ptr<WindowContainer> windowContainer;
 
-    std::shared_ptr<std::atomic<bool>> destroyed = std::make_shared<std::atomic<bool>>(false);
+    std::shared_ptr<std::atomic<bool> > destroyed = std::make_shared<std::atomic<bool> >(false);
 
-    DisabledOverlay disabledOverlay { false };
+    DisabledOverlay disabledOverlay{false};
 
     const bool keepOpenEnabled;
     std::unique_ptr<ximu3::KeepOpen> keepOpen;

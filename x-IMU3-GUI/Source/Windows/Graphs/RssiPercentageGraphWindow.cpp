@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "RssiPercentageGraphWindow.h"
 
-RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Percentage (%)",
-                  { "" },
-                  { UIColours::graphChannel1 },
-                  true)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.percentage });
+                  {""},
+                  {UIColours::graphChannel1},
+                  true) {
+    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+        update(message.timestamp, {message.percentage});
     }));
 }
 
-RssiPercentageGraphWindow::~RssiPercentageGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+RssiPercentageGraphWindow::~RssiPercentageGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

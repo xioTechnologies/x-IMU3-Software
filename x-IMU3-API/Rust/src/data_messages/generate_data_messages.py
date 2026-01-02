@@ -253,8 +253,7 @@ insert("../ffi/data_messages.rs", template, 0)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
 template = """\
-        uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)>& callback)
-        {
+        uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)> &callback) {
             return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
         }\n\n"""
 
@@ -275,8 +274,7 @@ for message in messages:
 
         for argument_type, argument_name in zip(["K"] + ["f" for _ in message.argument_names], argument_names):
             get_function = """\
-static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case$Message* self)
-{
+static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case$Message *self) {
     return Py_BuildValue("$argument_type$", self->message.$argument_name$);
 }\n\n"""
             get_function = get_function.replace("$argument_type$", argument_type)
@@ -289,18 +287,17 @@ static PyObject* $name_snake_case$_message_get_$argument_name$($name_pascal_case
         method_names = ["to_string"]
 
         method_functions = """\
-static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* self, PyObject* args)
-{
+static PyObject *$name_snake_case$_message_to_string($name_pascal_case$Message *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_$name_snake_case$_message_to_string(self->message));
 }\n\n"""
 
         if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
             method_names = method_names + ["to_euler_angles_message"]
-            method_functions += "static PyObject* $name_snake_case$_message_to_euler_angles_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+            method_functions += "static PyObject *$name_snake_case$_message_to_euler_angles_message($name_pascal_case$Message *self, PyObject *args);\n\n"
 
         if message.name == "Euler Angles":
             method_names = method_names + ["to_quaternion_message"]
-            method_functions += "static PyObject* $name_snake_case$_message_to_quaternion_message($name_pascal_case$Message* self, PyObject* args);\n\n"
+            method_functions += "static PyObject *$name_snake_case$_message_to_quaternion_message($name_pascal_case$Message *self, PyObject *args);\n\n"
 
         template = template.replace("$method_functions$", method_functions.rstrip("\n"))
 
@@ -308,7 +305,7 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         get_set_members = ""
 
         for argument_name in argument_names:
-            get_set_member = '{ "$argument_name$", (getter) $name_snake_case$_message_get_$argument_name$, NULL, "", NULL },\n    '
+            get_set_member = '{"$argument_name$", (getter) $name_snake_case$_message_get_$argument_name$, NULL, "", NULL},\n    '
             get_set_member = get_set_member.replace("$argument_name$", helpers.snake_case(argument_name))
             get_set_members += get_set_member
 
@@ -318,7 +315,7 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         method_members = ""
 
         for method_name in method_names:
-            method_member = '{ "$method_name$", (PyCFunction) $name_snake_case$_message_$method_name$, METH_NOARGS, "" },\n    '
+            method_member = '{"$method_name$", (PyCFunction) $name_snake_case$_message_$method_name$, METH_NOARGS, ""},\n    '
             method_member = method_member.replace("$method_name$", method_name)
             method_members += method_member
 
@@ -347,18 +344,15 @@ insert("../../../Python/ximu3/ximu3.c", template, 0)
 file_path = "../../../Python/ximu3/Connection.h"
 
 template = """\
-static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)
-{
-    PyObject* callable;
+static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyObject *args) {
+    PyObject *callable;
 
-    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0)
-    {
+    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0)
-    {
+    if (PyCallable_Check(callable) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
@@ -377,7 +371,7 @@ insert(file_path, template, 0)
 code = ""
 
 for message in messages:
-    template = '    { "add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_VARARGS, "" },\n'
+    template = '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_VARARGS, ""},\n'
 
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
 

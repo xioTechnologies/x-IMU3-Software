@@ -3,16 +3,12 @@
 #include "ConnectionPanelFooter.h"
 #include "CustomLookAndFeel.h"
 
-ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) : connectionPanel(connectionPanel_)
-{
+ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel &connectionPanel_) : connectionPanel(connectionPanel_) {
     addAndMakeVisible(statisticsLabel);
 
-    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
-    {
-        juce::MessageManager::callAsync([&, self, message]
-        {
-            if (self == nullptr)
-            {
+    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+        juce::MessageManager::callAsync([&, self, message] {
+            if (self == nullptr) {
                 return;
             }
 
@@ -32,15 +28,11 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
     addAndMakeVisible(numberOfNotificationsLabel);
     addAndMakeVisible(numberOfErrorsLabel);
 
-    notificationsButton.onClick = errorsButton.onClick = [&]
-    {
-        DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&]
-        {
+    notificationsButton.onClick = errorsButton.onClick = [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<NotificationsAndErrorsDialog>(messages, [&] {
             messagesChanged();
-        }, connectionPanel), [this]
-        {
-            for (auto& message : messages)
-            {
+        }, connectionPanel), [this] {
+            for (auto &message: messages) {
                 message.unread = false;
             }
             messagesChanged();
@@ -48,32 +40,26 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
         });
     };
 
-    notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
-    {
-        juce::MessageManager::callAsync([&, self, message]
-        {
-            if (self == nullptr)
-            {
+    notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+        juce::MessageManager::callAsync([&, self, message] {
+            if (self == nullptr) {
                 return;
             }
 
-            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
+            messages.push_back({NotificationsAndErrorsDialog::Message::Type::notification, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes)});
 
             messagesChanged();
         });
     };
     notificationCallbackId = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
 
-    errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message)
-    {
-        juce::MessageManager::callAsync([&, self, message]
-        {
-            if (self == nullptr)
-            {
+    errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+        juce::MessageManager::callAsync([&, self, message] {
+            if (self == nullptr) {
                 return;
             }
 
-            messages.push_back({ NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes) });
+            messages.push_back({NotificationsAndErrorsDialog::Message::Type::error, message.timestamp, juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes)});
 
             messagesChanged();
         });
@@ -83,20 +69,17 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel& connectionPanel_) 
     setOpaque(true);
 }
 
-ConnectionPanelFooter::~ConnectionPanelFooter()
-{
+ConnectionPanelFooter::~ConnectionPanelFooter() {
     connectionPanel.getConnection()->removeCallback(statisticsCallbackId);
     connectionPanel.getConnection()->removeCallback(notificationCallbackId);
     connectionPanel.getConnection()->removeCallback(errorCallbackId);
 }
 
-void ConnectionPanelFooter::paint(juce::Graphics& g)
-{
+void ConnectionPanelFooter::paint(juce::Graphics &g) {
     g.fillAll(UIColours::backgroundDarkest);
 }
 
-void ConnectionPanelFooter::resized()
-{
+void ConnectionPanelFooter::resized() {
     auto bounds = getLocalBounds().reduced(UILayout::panelMargin, 0);
 
     const auto iconWidth = bounds.getHeight();
@@ -108,9 +91,9 @@ void ConnectionPanelFooter::resized()
     juce::FlexBox flexBox;
     flexBox.justifyContent = juce::FlexBox::JustifyContent::flexEnd;
     flexBox.items.add(juce::FlexItem(numberOfNotificationsLabel).withFlex(1.0f).withMaxWidth((float) numberOfNotificationsMaxWidth));
-    flexBox.items.add(juce::FlexItem(notificationsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
+    flexBox.items.add(juce::FlexItem(notificationsButton).withMinWidth((float) iconWidth).withMargin({(float) iconMargin}));
     flexBox.items.add(juce::FlexItem(numberOfErrorsLabel).withFlex(1.0f).withMaxWidth((float) numberOfErrorsMaxWidth));
-    flexBox.items.add(juce::FlexItem(errorsButton).withMinWidth((float) iconWidth).withMargin({ (float) iconMargin }));
+    flexBox.items.add(juce::FlexItem(errorsButton).withMinWidth((float) iconWidth).withMargin({(float) iconMargin}));
 
     const auto minWidth = 2 * iconWidth + 4 * iconMargin;
     const auto maxWidth = minWidth + numberOfNotificationsMaxWidth + numberOfErrorsMaxWidth;
@@ -121,15 +104,11 @@ void ConnectionPanelFooter::resized()
     latestMessageLabel.setBounds(bounds);
 }
 
-void ConnectionPanelFooter::messagesChanged()
-{
-    const auto getCountText = [&](const auto type)
-    {
+void ConnectionPanelFooter::messagesChanged() {
+    const auto getCountText = [&](const auto type) {
         int count = 0;
-        for (const auto& message : messages)
-        {
-            if ((message.type == type) && message.unread && (++count >= 100))
-            {
+        for (const auto &message: messages) {
+            if ((message.type == type) && message.unread && (++count >= 100)) {
                 return juce::String("99+");
             }
         }
@@ -142,27 +121,22 @@ void ConnectionPanelFooter::messagesChanged()
     numberOfErrorsLabel.setText(getCountText(NotificationsAndErrorsDialog::Message::Type::error));
     errorsButton.setToggleState(numberOfErrorsLabel.getText() != "0", juce::dontSendNotification);
 
-    if (messages.empty() == false && messages.back().unread)
-    {
+    if (messages.empty() == false && messages.back().unread) {
         latestMessageLabel.setText(messages.back().message);
         latestMessageLabel.setColour(juce::Label::textColourId, messages.back().getColour());
         startTimer(5000);
-    }
-    else
-    {
+    } else {
         timerCallback();
     }
 
-    if (auto* const dialog = dynamic_cast<NotificationsAndErrorsDialog*>(DialogQueue::getSingleton().getActive()))
-    {
+    if (auto *const dialog = dynamic_cast<NotificationsAndErrorsDialog *>(DialogQueue::getSingleton().getActive())) {
         dialog->messagesChanged();
     }
 
     resized();
 }
 
-void ConnectionPanelFooter::timerCallback()
-{
+void ConnectionPanelFooter::timerCallback() {
     latestMessageLabel.setText("");
     stopTimer();
 }

@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "AccelerometerGraphWindow.h"
 
-AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Acceleration (g)",
-                  { "X", "Y", "Z" },
-                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.accelerometer_x, message.accelerometer_y, message.accelerometer_z });
+                  {"X", "Y", "Z"},
+                  {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+        update(message.timestamp, {message.accelerometer_x, message.accelerometer_y, message.accelerometer_z});
     }));
 }
 
-AccelerometerGraphWindow::~AccelerometerGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+AccelerometerGraphWindow::~AccelerometerGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

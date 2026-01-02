@@ -1,22 +1,18 @@
 #include "PortNameComboBox.h"
 #include "Ximu3.hpp"
 
-PortNameComboBox::PortNameComboBox() : CustomComboBox("No Ports Found")
-{
+PortNameComboBox::PortNameComboBox() : CustomComboBox("No Ports Found") {
     updatePorts();
     setSelectedItemIndex(0);
 }
 
-void PortNameComboBox::mouseDown(const juce::MouseEvent& e)
-{
+void PortNameComboBox::mouseDown(const juce::MouseEvent &e) {
     updatePorts();
     juce::ComboBox::mouseDown(e);
 }
 
-const std::string& PortNameComboBox::getSelectedPortName() const
-{
-    if (previousPortNames.size() > 0 && getSelectedId() > 0)
-    {
+const std::string &PortNameComboBox::getSelectedPortName() const {
+    if (previousPortNames.size() > 0 && getSelectedId() > 0) {
         return previousPortNames[(size_t) (getSelectedId() - 1)];
     }
 
@@ -25,17 +21,14 @@ const std::string& PortNameComboBox::getSelectedPortName() const
     return fallback;
 }
 
-void PortNameComboBox::updatePorts()
-{
-    if (const auto portNames = ximu3::PortScanner::getPortNames(); previousPortNames != portNames)
-    {
+void PortNameComboBox::updatePorts() {
+    if (const auto portNames = ximu3::PortScanner::getPortNames(); previousPortNames != portNames) {
         previousPortNames = portNames;
 
         const auto id = getSelectedId();
 
         clear();
-        for (auto& portName : portNames)
-        {
+        for (auto &portName: portNames) {
             addItem(portName, getNumItems() + 1);
         }
 
