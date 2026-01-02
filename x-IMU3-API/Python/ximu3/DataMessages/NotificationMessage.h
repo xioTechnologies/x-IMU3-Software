@@ -6,47 +6,41 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_NotificationMessage message;
 } NotificationMessage;
 
-static void notification_message_free(NotificationMessage* self)
-{
+static void notification_message_free(NotificationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* notification_message_get_timestamp(NotificationMessage* self, PyObject* args)
-{
+PyObject *notification_message_get_timestamp(NotificationMessage *self, PyObject *args) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-PyObject* notification_message_get_string(NotificationMessage* self, PyObject* args)
-{
+PyObject *notification_message_get_string(NotificationMessage *self, PyObject *args) {
     return Py_BuildValue("s", self->message.char_array);
 }
 
-PyObject* notification_message_get_bytes(NotificationMessage* self, PyObject* args)
-{
+PyObject *notification_message_get_bytes(NotificationMessage *self, PyObject *args) {
     return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
 }
 
-static PyObject* notification_message_to_string(NotificationMessage* self, PyObject* args)
-{
+static PyObject *notification_message_to_string(NotificationMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_notification_message_to_string(self->message));
 }
 
 static PyGetSetDef notification_message_get_set[] = {
-    { "timestamp", (getter) notification_message_get_timestamp, NULL, "", NULL },
-    { "string", (getter) notification_message_get_string, NULL, "", NULL },
-    { "bytes", (getter) notification_message_get_bytes, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) notification_message_get_timestamp, NULL, "", NULL},
+    {"string", (getter) notification_message_get_string, NULL, "", NULL},
+    {"bytes", (getter) notification_message_get_bytes, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef notification_message_methods[] = {
-    { "to_string", (PyCFunction) notification_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) notification_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject notification_message_object = {
@@ -58,23 +52,20 @@ static PyTypeObject notification_message_object = {
     .tp_methods = notification_message_methods,
 };
 
-static PyObject* notification_message_from(const XIMU3_NotificationMessage* const message)
-{
-    NotificationMessage* const self = (NotificationMessage*) notification_message_object.tp_alloc(&notification_message_object, 0);
+static PyObject *notification_message_from(const XIMU3_NotificationMessage *const message) {
+    NotificationMessage *const self = (NotificationMessage *) notification_message_object.tp_alloc(&notification_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void notification_message_callback(XIMU3_NotificationMessage data, void* context)
-{
+static void notification_message_callback(XIMU3_NotificationMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = notification_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = notification_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);
