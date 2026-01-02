@@ -2,28 +2,30 @@
 #define PORT_TYPE_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 static PyObject *port_type_to_string(PyObject *self, PyObject *args) {
     int port_type_int;
 
     if (PyArg_ParseTuple(args, "i", &port_type_int) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_PortType port_type_enum = (XIMU3_PortType) port_type_int;
+    const XIMU3_PortType port_type = (XIMU3_PortType) port_type_int;
 
-    switch (port_type_enum) {
+    switch (port_type) {
         case XIMU3_PortTypeUsb:
         case XIMU3_PortTypeSerial:
         case XIMU3_PortTypeBluetooth:
-            return Py_BuildValue("s", XIMU3_port_type_to_string(port_type_enum));
+            break;
+        default:
+            PyErr_SetString(PyExc_ValueError, "Expected PORT_TYPE_*");
+            return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    const char *const string = XIMU3_port_type_to_string(port_type);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyMethodDef port_type_methods[] = {

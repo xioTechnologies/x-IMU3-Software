@@ -2,20 +2,18 @@
 #define RESULT_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 static PyObject *result_to_string(PyObject *self, PyObject *args) {
     int result_int;
 
     if (PyArg_ParseTuple(args, "i", &result_int) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_Result result_enum = (XIMU3_Result) result_int;
+    const XIMU3_Result result = (XIMU3_Result) result_int;
 
-    switch (result_enum) {
+    switch (result) {
         case XIMU3_ResultOk:
         case XIMU3_ResultAddrInUse:
         case XIMU3_ResultAddrNotAvailable:
@@ -54,11 +52,15 @@ static PyObject *result_to_string(PyObject *self, PyObject *args) {
         case XIMU3_ResultWouldBlock:
         case XIMU3_ResultWriteZero:
         case XIMU3_ResultUnknownError:
-            return Py_BuildValue("s", XIMU3_result_to_string(result_enum));
+            break;
+        default:
+            PyErr_SetString(PyExc_ValueError, "Expected RESULT_*");
+            return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    const char *const string = XIMU3_result_to_string(result);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyMethodDef result_methods[] = {
@@ -67,17 +69,36 @@ static PyMethodDef result_methods[] = {
 };
 
 static void result_callback(XIMU3_Result data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const tuple = Py_BuildValue("(i)", data);
+    object = PyLong_FromLong((long) data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

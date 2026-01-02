@@ -16,27 +16,29 @@ static void ahrs_status_message_free(AhrsStatusMessage *self) {
 }
 
 static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *ahrs_status_message_get_initialising(AhrsStatusMessage *self) {
-    return Py_BuildValue("f", self->message.initialising);
+    return PyFloat_FromDouble((double) self->message.initialising);
 }
 
 static PyObject *ahrs_status_message_get_angular_rate_recovery(AhrsStatusMessage *self) {
-    return Py_BuildValue("f", self->message.angular_rate_recovery);
+    return PyFloat_FromDouble((double) self->message.angular_rate_recovery);
 }
 
 static PyObject *ahrs_status_message_get_acceleration_recovery(AhrsStatusMessage *self) {
-    return Py_BuildValue("f", self->message.acceleration_recovery);
+    return PyFloat_FromDouble((double) self->message.acceleration_recovery);
 }
 
 static PyObject *ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage *self) {
-    return Py_BuildValue("f", self->message.magnetic_recovery);
+    return PyFloat_FromDouble((double) self->message.magnetic_recovery);
 }
 
 static PyObject *ahrs_status_message_to_string(AhrsStatusMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_ahrs_status_message_to_string(self->message));
+    const char *const string = XIMU3_ahrs_status_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef ahrs_status_message_get_set[] = {
@@ -58,30 +60,53 @@ static PyTypeObject ahrs_status_message_object = {
     .tp_name = "ximu3.AhrsStatusMessage",
     .tp_basicsize = sizeof(AhrsStatusMessage),
     .tp_dealloc = (destructor) ahrs_status_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = ahrs_status_message_get_set,
     .tp_methods = ahrs_status_message_methods,
 };
 
 static PyObject *ahrs_status_message_from(const XIMU3_AhrsStatusMessage *const message) {
     AhrsStatusMessage *const self = (AhrsStatusMessage *) ahrs_status_message_object.tp_alloc(&ahrs_status_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void ahrs_status_message_callback(XIMU3_AhrsStatusMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = ahrs_status_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = ahrs_status_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

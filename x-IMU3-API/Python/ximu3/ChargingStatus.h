@@ -2,29 +2,43 @@
 #define CHARGING_STATUS_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 static PyObject *charging_status_from_float(PyObject *self, PyObject *args) {
-    float charging_status;
+    float charging_status_float;
 
-    if (PyArg_ParseTuple(args, "f", &charging_status) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+    if (PyArg_ParseTuple(args, "f", &charging_status_float) == 0) {
         return NULL;
     }
 
-    return Py_BuildValue("i", (int) XIMU3_charging_status_from_float(charging_status));
+    const XIMU3_ChargingStatus charging_status = XIMU3_charging_status_from_float(charging_status_float);
+
+    return PyLong_FromLong((long) charging_status);
 }
 
 static PyObject *charging_status_to_string(PyObject *self, PyObject *args) {
-    int charging_status;
+    int charging_status_int;
 
-    if (PyArg_ParseTuple(args, "i", &charging_status) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+    if (PyArg_ParseTuple(args, "i", &charging_status_int) == 0) {
         return NULL;
     }
 
-    return Py_BuildValue("s", XIMU3_charging_status_to_string(XIMU3_charging_status_from_float((float) charging_status)));
+    const XIMU3_ChargingStatus charging_status = (XIMU3_ChargingStatus) charging_status_int;
+
+    switch (charging_status) {
+        case XIMU3_ChargingStatusNotConnected:
+        case XIMU3_ChargingStatusCharging:
+        case XIMU3_ChargingStatusChargingComplete:
+        case XIMU3_ChargingStatusChargingOnHold:
+            break;
+        default:
+            PyErr_SetString(PyExc_ValueError, "Expected CHARGING_STATUS_*");
+            return NULL;
+    }
+
+    const char *const string = XIMU3_charging_status_to_string(charging_status);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyMethodDef charging_status_methods[] = {

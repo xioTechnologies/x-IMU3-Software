@@ -2,7 +2,6 @@
 #define PING_RESPONSE_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 typedef struct {
@@ -15,19 +14,21 @@ static void ping_response_free(PingResponse *self) {
 }
 
 static PyObject *ping_response_get_interface(PingResponse *self) {
-    return Py_BuildValue("s", self->ping_response.interface);
+    return PyUnicode_FromString(self->ping_response.interface);
 }
 
 static PyObject *ping_response_get_device_name(PingResponse *self) {
-    return Py_BuildValue("s", self->ping_response.device_name);
+    return PyUnicode_FromString(self->ping_response.device_name);
 }
 
 static PyObject *ping_response_get_serial_number(PingResponse *self) {
-    return Py_BuildValue("s", self->ping_response.serial_number);
+    return PyUnicode_FromString(self->ping_response.serial_number);
 }
 
 static PyObject *ping_response_to_string(PingResponse *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_ping_response_to_string(self->ping_response));
+    const char *const string = XIMU3_ping_response_to_string(self->ping_response);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef ping_response_get_set[] = {
@@ -47,6 +48,7 @@ static PyTypeObject ping_response_object = {
     .tp_name = "ximu3.PingResponse",
     .tp_basicsize = sizeof(PingResponse),
     .tp_dealloc = (destructor) ping_response_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = ping_response_get_set,
     .tp_methods = ping_response_methods
 };
@@ -57,24 +59,46 @@ static PyObject *ping_response_from(const XIMU3_PingResponse *const ping_respons
     }
 
     PingResponse *const self = (PingResponse *) ping_response_object.tp_alloc(&ping_response_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->ping_response = *ping_response;
     return (PyObject *) self;
 }
 
 static void ping_response_callback(XIMU3_PingResponse data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = ping_response_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = ping_response_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

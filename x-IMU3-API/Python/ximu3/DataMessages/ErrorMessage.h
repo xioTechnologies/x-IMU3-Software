@@ -15,20 +15,22 @@ static void error_message_free(ErrorMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject *error_message_get_timestamp(ErrorMessage *self, PyObject *args) {
-    return Py_BuildValue("K", self->message.timestamp);
+static PyObject *error_message_get_timestamp(ErrorMessage *self, PyObject *args) {
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
-PyObject *error_message_get_string(ErrorMessage *self, PyObject *args) {
-    return Py_BuildValue("s", self->message.char_array);
+static PyObject *error_message_get_string(ErrorMessage *self, PyObject *args) {
+    return PyUnicode_FromString(self->message.char_array);
 }
 
-PyObject *error_message_get_bytes(ErrorMessage *self, PyObject *args) {
-    return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
+static PyObject *error_message_get_bytes(ErrorMessage *self, PyObject *args) {
+    return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
 }
 
 static PyObject *error_message_to_string(ErrorMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_error_message_to_string(self->message));
+    const char *const string = XIMU3_error_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef error_message_get_set[] = {
@@ -48,30 +50,53 @@ static PyTypeObject error_message_object = {
     .tp_name = "ximu3.ErrorMessage",
     .tp_basicsize = sizeof(ErrorMessage),
     .tp_dealloc = (destructor) error_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = error_message_get_set,
     .tp_methods = error_message_methods,
 };
 
 static PyObject *error_message_from(const XIMU3_ErrorMessage *const message) {
     ErrorMessage *const self = (ErrorMessage *) error_message_object.tp_alloc(&error_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void error_message_callback(XIMU3_ErrorMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = error_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = error_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

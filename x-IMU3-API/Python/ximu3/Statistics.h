@@ -14,35 +14,37 @@ static void statistics_free(Statistics *self) {
 }
 
 static PyObject *statistics_get_timestamp(Statistics *self) {
-    return Py_BuildValue("K", self->statistics.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.timestamp);
 }
 
 static PyObject *statistics_get_data_total(Statistics *self) {
-    return Py_BuildValue("K", self->statistics.data_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.data_total);
 }
 
 static PyObject *statistics_get_data_rate(Statistics *self) {
-    return Py_BuildValue("k", self->statistics.data_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->statistics.data_rate);
 }
 
 static PyObject *statistics_get_message_total(Statistics *self) {
-    return Py_BuildValue("K", self->statistics.message_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.message_total);
 }
 
 static PyObject *statistics_get_message_rate(Statistics *self) {
-    return Py_BuildValue("k", self->statistics.message_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->statistics.message_rate);
 }
 
 static PyObject *statistics_get_error_total(Statistics *self) {
-    return Py_BuildValue("K", self->statistics.error_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.error_total);
 }
 
 static PyObject *statistics_get_error_rate(Statistics *self) {
-    return Py_BuildValue("k", self->statistics.error_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->statistics.error_rate);
 }
 
 static PyObject *statistics_to_string(Statistics *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_statistics_to_string(self->statistics));
+    const char *const string = XIMU3_statistics_to_string(self->statistics);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef statistics_get_set[] = {
@@ -66,30 +68,53 @@ static PyTypeObject statistics_object = {
     .tp_name = "ximu3.Statistics",
     .tp_basicsize = sizeof(Statistics),
     .tp_dealloc = (destructor) statistics_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = statistics_get_set,
     .tp_methods = statistics_methods,
 };
 
 static PyObject *statistics_from(const XIMU3_Statistics *const statistics) {
     Statistics *const self = (Statistics *) statistics_object.tp_alloc(&statistics_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->statistics = *statistics;
     return (PyObject *) self;
 }
 
 static void statistics_callback(XIMU3_Statistics data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = statistics_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = statistics_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

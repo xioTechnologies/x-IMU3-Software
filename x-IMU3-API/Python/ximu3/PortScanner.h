@@ -3,7 +3,6 @@
 
 #include "../../C/Ximu3.h"
 #include "Device.h"
-#include "Helpers.h"
 #include <Python.h>
 
 typedef struct {
@@ -11,21 +10,26 @@ typedef struct {
     XIMU3_PortScanner *port_scanner;
 } PortScanner;
 
-static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *callable;
+
     if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     if (PyCallable_Check(callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    Py_INCREF(callable); // this will never be destroyed (memory leak)
-
     PortScanner *const self = (PortScanner *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
+    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+
     self->port_scanner = XIMU3_port_scanner_new(devices_callback, callable);
     return (PyObject *) self;
 }
@@ -49,25 +53,51 @@ static PyObject *port_scanner_scan_filter(PyObject *null, PyObject *args) {
     int port_type_int;
 
     if (PyArg_ParseTuple(args, "i", &port_type_int) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_PortType port_type_enum = (XIMU3_PortType) port_type_int;
+    const XIMU3_PortType port_type = (XIMU3_PortType) port_type_int;
 
-    switch (port_type_enum) {
+    switch (port_type) {
         case XIMU3_PortTypeUsb:
         case XIMU3_PortTypeSerial:
         case XIMU3_PortTypeBluetooth:
-            return devices_to_list_and_free(XIMU3_port_scanner_scan_filter(port_type_enum));
+            break;
+        default:
+            PyErr_SetString(PyExc_ValueError, "Expected PORT_TYPE_*");
+            return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(port_type);
+
+    return devices_to_list_and_free(devices);
 }
 
 static PyObject *port_scanner_get_port_names(PyObject *null, PyObject *args) {
-    return char_arrays_to_list_and_free(XIMU3_port_scanner_get_port_names());
+    const XIMU3_CharArrays char_arrays = XIMU3_port_scanner_get_port_names();
+
+    PyObject *list = PyList_New(char_arrays.length);
+
+    if (list == NULL) {
+        goto cleanup;
+    }
+
+    for (uint32_t index = 0; index < char_arrays.length; index++) {
+        PyObject *const item = PyUnicode_FromString(char_arrays.array[index]);
+
+        if (item == NULL) {
+            Py_DECREF(list);
+            list = NULL;
+            goto cleanup;
+        }
+
+        PyList_SetItem(list, index, item);
+    }
+
+cleanup:
+    XIMU3_char_arrays_free(char_arrays);
+
+    return list;
 }
 
 static PyMethodDef port_scanner_methods[] = {
@@ -83,6 +113,7 @@ static PyTypeObject port_scanner_object = {
     .tp_name = "ximu3.PortScanner",
     .tp_basicsize = sizeof(PortScanner),
     .tp_dealloc = (destructor) port_scanner_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = port_scanner_new,
     .tp_methods = port_scanner_methods,
 };

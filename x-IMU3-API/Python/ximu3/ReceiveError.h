@@ -2,20 +2,18 @@
 #define RECEIVE_ERROR_CALLBACK_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
     int receive_error_int;
 
     if (PyArg_ParseTuple(args, "i", &receive_error_int) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    const XIMU3_ReceiveError receive_error_enum = (XIMU3_ReceiveError) receive_error_int;
+    const XIMU3_ReceiveError receive_error = (XIMU3_ReceiveError) receive_error_int;
 
-    switch (receive_error_enum) {
+    switch (receive_error) {
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
         case XIMU3_ReceiveErrorInvalidJson:
@@ -26,11 +24,15 @@ static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
         case XIMU3_ReceiveErrorInvalidBinaryMessageLength:
         case XIMU3_ReceiveErrorUnableToParseAsciiMessage:
         case XIMU3_ReceiveErrorUnknownError:
-            return Py_BuildValue("s", XIMU3_receive_error_to_string(receive_error_enum));
+            break;
+        default:
+            PyErr_SetString(PyExc_ValueError, "Expected RECEIVE_ERROR_*");
+            return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    const char *const string = XIMU3_receive_error_to_string(receive_error);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyMethodDef receive_error_methods[] = {
@@ -39,17 +41,36 @@ static PyMethodDef receive_error_methods[] = {
 };
 
 static void receive_error_callback(XIMU3_ReceiveError data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const tuple = Py_BuildValue("(i)", data);
+    object = PyLong_FromLong((long) data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

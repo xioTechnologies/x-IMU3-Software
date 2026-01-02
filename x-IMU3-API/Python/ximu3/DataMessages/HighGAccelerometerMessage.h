@@ -16,23 +16,25 @@ static void high_g_accelerometer_message_free(HighGAccelerometerMessage *self) {
 }
 
 static PyObject *high_g_accelerometer_message_get_timestamp(HighGAccelerometerMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *high_g_accelerometer_message_get_x(HighGAccelerometerMessage *self) {
-    return Py_BuildValue("f", self->message.x);
+    return PyFloat_FromDouble((double) self->message.x);
 }
 
 static PyObject *high_g_accelerometer_message_get_y(HighGAccelerometerMessage *self) {
-    return Py_BuildValue("f", self->message.y);
+    return PyFloat_FromDouble((double) self->message.y);
 }
 
 static PyObject *high_g_accelerometer_message_get_z(HighGAccelerometerMessage *self) {
-    return Py_BuildValue("f", self->message.z);
+    return PyFloat_FromDouble((double) self->message.z);
 }
 
 static PyObject *high_g_accelerometer_message_to_string(HighGAccelerometerMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_high_g_accelerometer_message_to_string(self->message));
+    const char *const string = XIMU3_high_g_accelerometer_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef high_g_accelerometer_message_get_set[] = {
@@ -53,30 +55,53 @@ static PyTypeObject high_g_accelerometer_message_object = {
     .tp_name = "ximu3.HighGAccelerometerMessage",
     .tp_basicsize = sizeof(HighGAccelerometerMessage),
     .tp_dealloc = (destructor) high_g_accelerometer_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = high_g_accelerometer_message_get_set,
     .tp_methods = high_g_accelerometer_message_methods,
 };
 
 static PyObject *high_g_accelerometer_message_from(const XIMU3_HighGAccelerometerMessage *const message) {
     HighGAccelerometerMessage *const self = (HighGAccelerometerMessage *) high_g_accelerometer_message_object.tp_alloc(&high_g_accelerometer_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void high_g_accelerometer_message_callback(XIMU3_HighGAccelerometerMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = high_g_accelerometer_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = high_g_accelerometer_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

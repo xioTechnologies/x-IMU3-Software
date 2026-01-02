@@ -16,47 +16,49 @@ static void rotation_matrix_message_free(RotationMatrixMessage *self) {
 }
 
 static PyObject *rotation_matrix_message_get_timestamp(RotationMatrixMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *rotation_matrix_message_get_xx(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.xx);
+    return PyFloat_FromDouble((double) self->message.xx);
 }
 
 static PyObject *rotation_matrix_message_get_xy(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.xy);
+    return PyFloat_FromDouble((double) self->message.xy);
 }
 
 static PyObject *rotation_matrix_message_get_xz(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.xz);
+    return PyFloat_FromDouble((double) self->message.xz);
 }
 
 static PyObject *rotation_matrix_message_get_yx(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.yx);
+    return PyFloat_FromDouble((double) self->message.yx);
 }
 
 static PyObject *rotation_matrix_message_get_yy(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.yy);
+    return PyFloat_FromDouble((double) self->message.yy);
 }
 
 static PyObject *rotation_matrix_message_get_yz(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.yz);
+    return PyFloat_FromDouble((double) self->message.yz);
 }
 
 static PyObject *rotation_matrix_message_get_zx(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.zx);
+    return PyFloat_FromDouble((double) self->message.zx);
 }
 
 static PyObject *rotation_matrix_message_get_zy(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.zy);
+    return PyFloat_FromDouble((double) self->message.zy);
 }
 
 static PyObject *rotation_matrix_message_get_zz(RotationMatrixMessage *self) {
-    return Py_BuildValue("f", self->message.zz);
+    return PyFloat_FromDouble((double) self->message.zz);
 }
 
 static PyObject *rotation_matrix_message_to_string(RotationMatrixMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_rotation_matrix_message_to_string(self->message));
+    const char *const string = XIMU3_rotation_matrix_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyObject *rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage *self, PyObject *args);
@@ -86,30 +88,53 @@ static PyTypeObject rotation_matrix_message_object = {
     .tp_name = "ximu3.RotationMatrixMessage",
     .tp_basicsize = sizeof(RotationMatrixMessage),
     .tp_dealloc = (destructor) rotation_matrix_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = rotation_matrix_message_get_set,
     .tp_methods = rotation_matrix_message_methods,
 };
 
 static PyObject *rotation_matrix_message_from(const XIMU3_RotationMatrixMessage *const message) {
     RotationMatrixMessage *const self = (RotationMatrixMessage *) rotation_matrix_message_object.tp_alloc(&rotation_matrix_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void rotation_matrix_message_callback(XIMU3_RotationMatrixMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = rotation_matrix_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = rotation_matrix_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

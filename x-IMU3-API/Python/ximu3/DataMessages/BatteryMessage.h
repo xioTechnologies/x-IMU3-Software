@@ -16,23 +16,25 @@ static void battery_message_free(BatteryMessage *self) {
 }
 
 static PyObject *battery_message_get_timestamp(BatteryMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *battery_message_get_percentage(BatteryMessage *self) {
-    return Py_BuildValue("f", self->message.percentage);
+    return PyFloat_FromDouble((double) self->message.percentage);
 }
 
 static PyObject *battery_message_get_voltage(BatteryMessage *self) {
-    return Py_BuildValue("f", self->message.voltage);
+    return PyFloat_FromDouble((double) self->message.voltage);
 }
 
 static PyObject *battery_message_get_charging_status(BatteryMessage *self) {
-    return Py_BuildValue("f", self->message.charging_status);
+    return PyFloat_FromDouble((double) self->message.charging_status);
 }
 
 static PyObject *battery_message_to_string(BatteryMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_battery_message_to_string(self->message));
+    const char *const string = XIMU3_battery_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef battery_message_get_set[] = {
@@ -53,30 +55,53 @@ static PyTypeObject battery_message_object = {
     .tp_name = "ximu3.BatteryMessage",
     .tp_basicsize = sizeof(BatteryMessage),
     .tp_dealloc = (destructor) battery_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = battery_message_get_set,
     .tp_methods = battery_message_methods,
 };
 
 static PyObject *battery_message_from(const XIMU3_BatteryMessage *const message) {
     BatteryMessage *const self = (BatteryMessage *) battery_message_object.tp_alloc(&battery_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void battery_message_callback(XIMU3_BatteryMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = battery_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = battery_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }
