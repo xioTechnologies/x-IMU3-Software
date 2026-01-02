@@ -3,9 +3,6 @@
 
 # CLion
 /.idea/**
-!/.idea/codeStyles
-!/.idea/codeStyles/**
-!/.idea/misc.xml
 /cmake-build-debug
 /cmake-build-release
 

@@ -6,47 +6,41 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_RssiMessage message;
 } RssiMessage;
 
-static void rssi_message_free(RssiMessage* self)
-{
+static void rssi_message_free(RssiMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* rssi_message_get_timestamp(RssiMessage* self)
-{
+static PyObject *rssi_message_get_timestamp(RssiMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* rssi_message_get_percentage(RssiMessage* self)
-{
+static PyObject *rssi_message_get_percentage(RssiMessage *self) {
     return Py_BuildValue("f", self->message.percentage);
 }
 
-static PyObject* rssi_message_get_power(RssiMessage* self)
-{
+static PyObject *rssi_message_get_power(RssiMessage *self) {
     return Py_BuildValue("f", self->message.power);
 }
 
-static PyObject* rssi_message_to_string(RssiMessage* self, PyObject* args)
-{
+static PyObject *rssi_message_to_string(RssiMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_rssi_message_to_string(self->message));
 }
 
 static PyGetSetDef rssi_message_get_set[] = {
-    { "timestamp", (getter) rssi_message_get_timestamp, NULL, "", NULL },
-    { "percentage", (getter) rssi_message_get_percentage, NULL, "", NULL },
-    { "power", (getter) rssi_message_get_power, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) rssi_message_get_timestamp, NULL, "", NULL},
+    {"percentage", (getter) rssi_message_get_percentage, NULL, "", NULL},
+    {"power", (getter) rssi_message_get_power, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef rssi_message_methods[] = {
-    { "to_string", (PyCFunction) rssi_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) rssi_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject rssi_message_object = {
@@ -58,23 +52,20 @@ static PyTypeObject rssi_message_object = {
     .tp_methods = rssi_message_methods,
 };
 
-static PyObject* rssi_message_from(const XIMU3_RssiMessage* const message)
-{
-    RssiMessage* const self = (RssiMessage*) rssi_message_object.tp_alloc(&rssi_message_object, 0);
+static PyObject *rssi_message_from(const XIMU3_RssiMessage *const message) {
+    RssiMessage *const self = (RssiMessage *) rssi_message_object.tp_alloc(&rssi_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void rssi_message_callback(XIMU3_RssiMessage data, void* context)
-{
+static void rssi_message_callback(XIMU3_RssiMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = rssi_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = rssi_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

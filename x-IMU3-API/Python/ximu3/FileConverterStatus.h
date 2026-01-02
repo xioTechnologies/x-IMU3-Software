@@ -5,20 +5,17 @@
 #include "Helpers.h"
 #include <Python.h>
 
-static PyObject* file_converter_status_to_string(PyObject* self, PyObject* args)
-{
+static PyObject *file_converter_status_to_string(PyObject *self, PyObject *args) {
     int file_converter_status_int;
 
-    if (PyArg_ParseTuple(args, "i", &file_converter_status_int) == 0)
-    {
+    if (PyArg_ParseTuple(args, "i", &file_converter_status_int) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const XIMU3_FileConverterStatus file_converter_status_enum = (XIMU3_FileConverterStatus) file_converter_status_int;
 
-    switch (file_converter_status_enum)
-    {
+    switch (file_converter_status_enum) {
         case XIMU3_FileConverterStatusComplete:
         case XIMU3_FileConverterStatusFailed:
         case XIMU3_FileConverterStatusInProgress:
@@ -30,8 +27,8 @@ static PyObject* file_converter_status_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef file_converter_status_methods[] = {
-    { "file_converter_status_to_string", (PyCFunction) file_converter_status_to_string, METH_VARARGS, "" },
-    { NULL } /* sentinel */
+    {"file_converter_status_to_string", (PyCFunction) file_converter_status_to_string, METH_VARARGS, ""},
+    {NULL} /* sentinel */
 };
 
 #endif

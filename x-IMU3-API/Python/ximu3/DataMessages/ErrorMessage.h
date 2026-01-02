@@ -6,47 +6,41 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_ErrorMessage message;
 } ErrorMessage;
 
-static void error_message_free(ErrorMessage* self)
-{
+static void error_message_free(ErrorMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* error_message_get_timestamp(ErrorMessage* self, PyObject* args)
-{
+PyObject *error_message_get_timestamp(ErrorMessage *self, PyObject *args) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-PyObject* error_message_get_string(ErrorMessage* self, PyObject* args)
-{
+PyObject *error_message_get_string(ErrorMessage *self, PyObject *args) {
     return Py_BuildValue("s", self->message.char_array);
 }
 
-PyObject* error_message_get_bytes(ErrorMessage* self, PyObject* args)
-{
+PyObject *error_message_get_bytes(ErrorMessage *self, PyObject *args) {
     return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
 }
 
-static PyObject* error_message_to_string(ErrorMessage* self, PyObject* args)
-{
+static PyObject *error_message_to_string(ErrorMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_error_message_to_string(self->message));
 }
 
 static PyGetSetDef error_message_get_set[] = {
-    { "timestamp", (getter) error_message_get_timestamp, NULL, "", NULL },
-    { "string", (getter) error_message_get_string, NULL, "", NULL },
-    { "bytes", (getter) error_message_get_bytes, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) error_message_get_timestamp, NULL, "", NULL},
+    {"string", (getter) error_message_get_string, NULL, "", NULL},
+    {"bytes", (getter) error_message_get_bytes, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef error_message_methods[] = {
-    { "to_string", (PyCFunction) error_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) error_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject error_message_object = {
@@ -58,23 +52,20 @@ static PyTypeObject error_message_object = {
     .tp_methods = error_message_methods,
 };
 
-static PyObject* error_message_from(const XIMU3_ErrorMessage* const message)
-{
-    ErrorMessage* const self = (ErrorMessage*) error_message_object.tp_alloc(&error_message_object, 0);
+static PyObject *error_message_from(const XIMU3_ErrorMessage *const message) {
+    ErrorMessage *const self = (ErrorMessage *) error_message_object.tp_alloc(&error_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void error_message_callback(XIMU3_ErrorMessage data, void* context)
-{
+static void error_message_callback(XIMU3_ErrorMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = error_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = error_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

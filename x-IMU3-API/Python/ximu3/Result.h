@@ -5,20 +5,17 @@
 #include "Helpers.h"
 #include <Python.h>
 
-static PyObject* result_to_string(PyObject* self, PyObject* args)
-{
+static PyObject *result_to_string(PyObject *self, PyObject *args) {
     int result_int;
 
-    if (PyArg_ParseTuple(args, "i", &result_int) == 0)
-    {
+    if (PyArg_ParseTuple(args, "i", &result_int) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const XIMU3_Result result_enum = (XIMU3_Result) result_int;
 
-    switch (result_enum)
-    {
+    switch (result_enum) {
         case XIMU3_ResultOk:
         case XIMU3_ResultAddrInUse:
         case XIMU3_ResultAddrNotAvailable:
@@ -65,19 +62,17 @@ static PyObject* result_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef result_methods[] = {
-    { "result_to_string", (PyCFunction) result_to_string, METH_VARARGS, "" },
-    { NULL } /* sentinel */
+    {"result_to_string", (PyCFunction) result_to_string, METH_VARARGS, ""},
+    {NULL} /* sentinel */
 };
 
-static void result_callback(XIMU3_Result data, void* context)
-{
+static void result_callback(XIMU3_Result data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const tuple = Py_BuildValue("(i)", data);
+    PyObject *const tuple = Py_BuildValue("(i)", data);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

@@ -35,8 +35,7 @@ void udp_connection();
 
 void usb_connection();
 
-int main(int argc, const char* argv[])
-{
+int main(int argc, const char *argv[]) {
     printf("Select example\n");
     printf("A. bluetooth_connection.c\n");
     printf("B. commands.c\n");
@@ -55,8 +54,7 @@ int main(int argc, const char* argv[])
     printf("O. udp_connection.c\n");
     printf("P. usb_connection.c\n");
 
-    switch (get_key())
-    {
+    switch (get_key()) {
         case 'A':
             bluetooth_connection();
             break;

@@ -5,20 +5,17 @@
 #include "Helpers.h"
 #include <Python.h>
 
-static PyObject* receive_error_to_string(PyObject* self, PyObject* args)
-{
+static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
     int receive_error_int;
 
-    if (PyArg_ParseTuple(args, "i", &receive_error_int) == 0)
-    {
+    if (PyArg_ParseTuple(args, "i", &receive_error_int) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     const XIMU3_ReceiveError receive_error_enum = (XIMU3_ReceiveError) receive_error_int;
 
-    switch (receive_error_enum)
-    {
+    switch (receive_error_enum) {
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
         case XIMU3_ReceiveErrorInvalidJson:
@@ -37,19 +34,17 @@ static PyObject* receive_error_to_string(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef receive_error_methods[] = {
-    { "receive_error_to_string", (PyCFunction) receive_error_to_string, METH_VARARGS, "" },
-    { NULL } /* sentinel */
+    {"receive_error_to_string", (PyCFunction) receive_error_to_string, METH_VARARGS, ""},
+    {NULL} /* sentinel */
 };
 
-static void receive_error_callback(XIMU3_ReceiveError data, void* context)
-{
+static void receive_error_callback(XIMU3_ReceiveError data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const tuple = Py_BuildValue("(i)", data);
+    PyObject *const tuple = Py_BuildValue("(i)", data);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if(result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);
