@@ -260,8 +260,8 @@ template = """\
 
 insert("../../../Cpp/Connection.hpp", template, 0)
 
-# Generate x-IMU3-API/Python/Python-C-API/DataMessages/*Message.h
-directory = "../../../Python/Python-C-API/DataMessages/"
+# Generate x-IMU3-API/Python/ximu3/DataMessages/*Message.h
+directory = "../../../Python/ximu3/DataMessages/"
 
 for message in messages:
     if message.argument_names:
@@ -335,16 +335,16 @@ static PyObject* $name_snake_case$_message_to_string($name_pascal_case$Message* 
         file.write(helpers.preamble())
         file.write(template)
 
-# Generate x-IMU3-API/Python/Python-C-API/DataMessages/DataMessages.h
-insert("../../../Python/Python-C-API/DataMessages/DataMessages.h", '#include "$name_pascal_case$Message.h"\n', 0)
+# Generate x-IMU3-API/Python/ximu3/DataMessages/DataMessages.h
+insert("../../../Python/ximu3/DataMessages/DataMessages.h", '#include "$name_pascal_case$Message.h"\n', 0)
 
-# Insert code into x-IMU3-API/Python/Python-C-API/ximu3.c
+# Insert code into x-IMU3-API/Python/ximu3/ximu3.c
 template = '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n'
 
-insert("../../../Python/Python-C-API/ximu3.c", template, 0)
+insert("../../../Python/ximu3/ximu3.c", template, 0)
 
-# Insert code into x-IMU3-API/Python/Python-C-API/Connection.h
-file_path = "../../../Python/Python-C-API/Connection.h"
+# Insert code into x-IMU3-API/Python/ximu3/Connection.h
+file_path = "../../../Python/ximu3/Connection.h"
 
 template = """\
 static PyObject* connection_add_$name_snake_case$_callback(Connection* self, PyObject* args)
