@@ -1,18 +1,18 @@
-#include "../Helpers.h"
+#include "../helpers.h"
 #include <stdio.h>
 #include "Ximu3.h"
 
 #define MAX_NUMBER_OF_CONNECTION (8)
 
-static void PrintResult(const XIMU3_Result result);
+static void print_result(const XIMU3_Result result);
 
-void DataLogger()
+void data_logger()
 {
     // Open all USB connections
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
     XIMU3_Connection* connections[MAX_NUMBER_OF_CONNECTION];
-    uint32_t numberOfConnections = 0;
+    uint32_t number_of_connections = 0;
 
     for (uint32_t index = 0; index < devices.length; index++)
     {
@@ -26,7 +26,7 @@ void DataLogger()
 
         if (XIMU3_connection_open(connection) == XIMU3_ResultOk)
         {
-            connections[numberOfConnections++] = connection;
+            connections[number_of_connections++] = connection;
         }
         else
         {
@@ -36,7 +36,7 @@ void DataLogger()
     }
     XIMU3_devices_free(devices);
 
-    if (numberOfConnections == 0)
+    if (number_of_connections == 0)
     {
         printf("No USB connections available\n");
         return;
@@ -46,35 +46,35 @@ void DataLogger()
     const char* destination = "C:/";
     const char* name = "x-IMU3 Data Logger Example";
 
-    if (YesOrNo("Use async implementation?"))
+    if (yes_or_no("Use async implementation?"))
     {
-        XIMU3_DataLogger* const dataLogger = XIMU3_data_logger_new(destination, name, connections, numberOfConnections);
+        XIMU3_DataLogger* const data_logger = XIMU3_data_logger_new(destination, name, connections, number_of_connections);
 
-        const XIMU3_Result result = XIMU3_data_logger_get_result(dataLogger);
+        const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
 
         if (result == XIMU3_ResultOk)
         {
             Wait(3);
         }
 
-        PrintResult(result);
+        print_result(result);
 
-        XIMU3_data_logger_free(dataLogger);
+        XIMU3_data_logger_free(data_logger);
     }
     else
     {
-        PrintResult(XIMU3_data_logger_log(destination, name, connections, numberOfConnections, 3));
+        print_result(XIMU3_data_logger_log(destination, name, connections, number_of_connections, 3));
     }
 
     // Close all connections
-    for (uint32_t index = 0; index < numberOfConnections; index++)
+    for (uint32_t index = 0; index < number_of_connections; index++)
     {
         XIMU3_connection_close(connections[index]);
         XIMU3_connection_free(connections[index]);
     }
 }
 
-static void PrintResult(const XIMU3_Result result)
+static void print_result(const XIMU3_Result result)
 {
     printf("%s\n", XIMU3_result_to_string(result));
 }

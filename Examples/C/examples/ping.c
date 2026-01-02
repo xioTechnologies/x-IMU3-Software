@@ -1,12 +1,12 @@
-#include "../Helpers.h"
+#include "../helpers.h"
 #include <stdio.h>
 #include "Ximu3.h"
 
-static void Callback(const XIMU3_PingResponse pingResponse, void* context);
+static void callback(const XIMU3_PingResponse ping_response, void* context);
 
-static void PrintPingResponse(const XIMU3_PingResponse pingResponse);
+static void print_ping_response(const XIMU3_PingResponse ping_response);
 
-void Ping()
+void ping()
 {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -33,15 +33,15 @@ void Ping()
     }
 
     // Ping
-    if (YesOrNo("Use async implementation?"))
+    if (yes_or_no("Use async implementation?"))
     {
-        XIMU3_connection_ping_async(connection, Callback, NULL);
+        XIMU3_connection_ping_async(connection, callback, NULL);
 
         Wait(3);
     }
     else
     {
-        PrintPingResponse(XIMU3_connection_ping(connection));
+        print_ping_response(XIMU3_connection_ping(connection));
     }
 
     // Close connection
@@ -49,19 +49,19 @@ void Ping()
     XIMU3_connection_free(connection);
 }
 
-static void Callback(const XIMU3_PingResponse pingResponse, void* context)
+static void callback(const XIMU3_PingResponse ping_response, void* context)
 {
-    PrintPingResponse(pingResponse);
+    print_ping_response(ping_response);
 }
 
-static void PrintPingResponse(const XIMU3_PingResponse pingResponse)
+static void print_ping_response(const XIMU3_PingResponse ping_response)
 {
-    if (strlen(pingResponse.interface) == 0)
+    if (strlen(ping_response.interface) == 0)
     {
         printf("No response");
         return;
     }
 
-    printf("%s, %s, %s\n", pingResponse.interface, pingResponse.device_name, pingResponse.serial_number);
-    // printf("%s\n", XIMU3_ping_response_to_string(pingResponse)); // alternative to above
+    printf("%s, %s, %s\n", ping_response.interface, ping_response.device_name, ping_response.serial_number);
+    // printf("%s\n", XIMU3_ping_response_to_string(ping_response)); // alternative to above
 }

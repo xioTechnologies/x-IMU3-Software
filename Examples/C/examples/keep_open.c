@@ -1,12 +1,12 @@
-#include "../Helpers.h"
+#include "../helpers.h"
 #include <stdio.h>
 #include "Ximu3.h"
 
-static void Callback(const XIMU3_ConnectionStatus status, void* context);
+static void callback(const XIMU3_ConnectionStatus status, void* context);
 
-static void PrintConnectionStatus(const XIMU3_ConnectionStatus status);
+static void print_connection_status(const XIMU3_ConnectionStatus status);
 
-void KeepOpen()
+void keep_open()
 {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -23,20 +23,20 @@ void KeepOpen()
 
     XIMU3_devices_free(devices);
 
-    XIMU3_KeepOpen* const keepOpen = XIMU3_keep_open_new(connection, Callback, NULL);
+    XIMU3_KeepOpen* const keep_open = XIMU3_keep_open_new(connection, callback, NULL);
 
     // Close connection
     Wait(60);
-    XIMU3_keep_open_free(keepOpen);
+    XIMU3_keep_open_free(keep_open);
     XIMU3_connection_free(connection);
 }
 
-static void Callback(const XIMU3_ConnectionStatus status, void* context)
+static void callback(const XIMU3_ConnectionStatus status, void* context)
 {
-    PrintConnectionStatus(status);
+    print_connection_status(status);
 }
 
-static void PrintConnectionStatus(const XIMU3_ConnectionStatus status)
+static void print_connection_status(const XIMU3_ConnectionStatus status)
 {
     switch (status)
     {
