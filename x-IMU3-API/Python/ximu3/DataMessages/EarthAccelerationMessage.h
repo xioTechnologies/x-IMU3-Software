@@ -16,39 +16,41 @@ static void earth_acceleration_message_free(EarthAccelerationMessage *self) {
 }
 
 static PyObject *earth_acceleration_message_get_timestamp(EarthAccelerationMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_w(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.quaternion_w);
+    return PyFloat_FromDouble((double) self->message.quaternion_w);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_x(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.quaternion_x);
+    return PyFloat_FromDouble((double) self->message.quaternion_x);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_y(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.quaternion_y);
+    return PyFloat_FromDouble((double) self->message.quaternion_y);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_z(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.quaternion_z);
+    return PyFloat_FromDouble((double) self->message.quaternion_z);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_x(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.acceleration_x);
+    return PyFloat_FromDouble((double) self->message.acceleration_x);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_y(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.acceleration_y);
+    return PyFloat_FromDouble((double) self->message.acceleration_y);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_z(EarthAccelerationMessage *self) {
-    return Py_BuildValue("f", self->message.acceleration_z);
+    return PyFloat_FromDouble((double) self->message.acceleration_z);
 }
 
 static PyObject *earth_acceleration_message_to_string(EarthAccelerationMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_earth_acceleration_message_to_string(self->message));
+    const char *const string = XIMU3_earth_acceleration_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyObject *earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage *self, PyObject *args);
@@ -76,30 +78,53 @@ static PyTypeObject earth_acceleration_message_object = {
     .tp_name = "ximu3.EarthAccelerationMessage",
     .tp_basicsize = sizeof(EarthAccelerationMessage),
     .tp_dealloc = (destructor) earth_acceleration_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = earth_acceleration_message_get_set,
     .tp_methods = earth_acceleration_message_methods,
 };
 
 static PyObject *earth_acceleration_message_from(const XIMU3_EarthAccelerationMessage *const message) {
     EarthAccelerationMessage *const self = (EarthAccelerationMessage *) earth_acceleration_message_object.tp_alloc(&earth_acceleration_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void earth_acceleration_message_callback(XIMU3_EarthAccelerationMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = earth_acceleration_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = earth_acceleration_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

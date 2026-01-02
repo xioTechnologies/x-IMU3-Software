@@ -272,10 +272,10 @@ for message in messages:
 
         get_functions = ""
 
-        for argument_type, argument_name in zip(["K"] + ["f" for _ in message.argument_names], argument_names):
+        for argument_type, argument_name in zip(["PyLong_FromUnsignedLongLong((unsigned long long) "] + ["PyFloat_FromDouble((double) " for _ in message.argument_names], argument_names):
             get_function = """\
 static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case$Message *self) {
-    return Py_BuildValue("$argument_type$", self->message.$argument_name$);
+    return $argument_type$self->message.$argument_name$);
 }\n\n"""
             get_function = get_function.replace("$argument_type$", argument_type)
             get_function = get_function.replace("$argument_name$", helpers.snake_case(argument_name))
@@ -288,7 +288,9 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
 
         method_functions = """\
 static PyObject *$name_snake_case$_message_to_string($name_pascal_case$Message *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_$name_snake_case$_message_to_string(self->message));
+    const char *const string = XIMU3_$name_snake_case$_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }\n\n"""
 
         if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
@@ -344,26 +346,20 @@ insert("../../../Python/ximu3/ximu3.c", template, 0)
 file_path = "../../../Python/ximu3/Connection.h"
 
 template = """\
-static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyObject *args) {
-    PyObject *callable;
-
-    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        return NULL;
-    }
-
-    Py_INCREF(callable); // this will never be destroyed (memory leak)
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, callable);
+        id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, arg);
     Py_END_ALLOW_THREADS
-    return Py_BuildValue("K", id);
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }\n\n"""
 
 insert(file_path, template, 0)
@@ -371,7 +367,7 @@ insert(file_path, template, 0)
 code = ""
 
 for message in messages:
-    template = '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_VARARGS, ""},\n'
+    template = '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_O, ""},\n'
 
     template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
 

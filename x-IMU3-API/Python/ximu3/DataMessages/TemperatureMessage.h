@@ -16,15 +16,17 @@ static void temperature_message_free(TemperatureMessage *self) {
 }
 
 static PyObject *temperature_message_get_timestamp(TemperatureMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *temperature_message_get_temperature(TemperatureMessage *self) {
-    return Py_BuildValue("f", self->message.temperature);
+    return PyFloat_FromDouble((double) self->message.temperature);
 }
 
 static PyObject *temperature_message_to_string(TemperatureMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_temperature_message_to_string(self->message));
+    const char *const string = XIMU3_temperature_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef temperature_message_get_set[] = {
@@ -43,30 +45,53 @@ static PyTypeObject temperature_message_object = {
     .tp_name = "ximu3.TemperatureMessage",
     .tp_basicsize = sizeof(TemperatureMessage),
     .tp_dealloc = (destructor) temperature_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = temperature_message_get_set,
     .tp_methods = temperature_message_methods,
 };
 
 static PyObject *temperature_message_from(const XIMU3_TemperatureMessage *const message) {
     TemperatureMessage *const self = (TemperatureMessage *) temperature_message_object.tp_alloc(&temperature_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void temperature_message_callback(XIMU3_TemperatureMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = temperature_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = temperature_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

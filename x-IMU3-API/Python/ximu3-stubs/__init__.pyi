@@ -1,4 +1,4 @@
-from typing import Callable, Sequence
+from collections.abc import Callable, Sequence
 
 CHARGING_STATUS_NOT_CONNECTED: int
 CHARGING_STATUS_CHARGING: int

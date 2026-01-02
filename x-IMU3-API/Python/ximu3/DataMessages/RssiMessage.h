@@ -16,19 +16,21 @@ static void rssi_message_free(RssiMessage *self) {
 }
 
 static PyObject *rssi_message_get_timestamp(RssiMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *rssi_message_get_percentage(RssiMessage *self) {
-    return Py_BuildValue("f", self->message.percentage);
+    return PyFloat_FromDouble((double) self->message.percentage);
 }
 
 static PyObject *rssi_message_get_power(RssiMessage *self) {
-    return Py_BuildValue("f", self->message.power);
+    return PyFloat_FromDouble((double) self->message.power);
 }
 
 static PyObject *rssi_message_to_string(RssiMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_rssi_message_to_string(self->message));
+    const char *const string = XIMU3_rssi_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef rssi_message_get_set[] = {
@@ -48,30 +50,53 @@ static PyTypeObject rssi_message_object = {
     .tp_name = "ximu3.RssiMessage",
     .tp_basicsize = sizeof(RssiMessage),
     .tp_dealloc = (destructor) rssi_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = rssi_message_get_set,
     .tp_methods = rssi_message_methods,
 };
 
 static PyObject *rssi_message_from(const XIMU3_RssiMessage *const message) {
     RssiMessage *const self = (RssiMessage *) rssi_message_object.tp_alloc(&rssi_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void rssi_message_callback(XIMU3_RssiMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = rssi_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = rssi_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

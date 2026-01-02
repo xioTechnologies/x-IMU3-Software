@@ -14,23 +14,25 @@ static void file_converter_progress_free(FileConverterProgress *self) {
 }
 
 static PyObject *file_converter_progress_get_status(FileConverterProgress *self) {
-    return Py_BuildValue("i", self->progress.status);
+    return PyLong_FromLong((long) self->progress.status);
 }
 
 static PyObject *file_converter_progress_get_percentage(FileConverterProgress *self) {
-    return Py_BuildValue("f", self->progress.percentage);
+    return PyFloat_FromDouble((double) self->progress.percentage);
 }
 
 static PyObject *file_converter_progress_get_bytes_processed(FileConverterProgress *self) {
-    return Py_BuildValue("K", self->progress.bytes_processed);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->progress.bytes_processed);
 }
 
 static PyObject *file_converter_progress_get_bytes_total(FileConverterProgress *self) {
-    return Py_BuildValue("K", self->progress.bytes_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->progress.bytes_total);
 }
 
 static PyObject *file_converter_progress_to_string(FileConverterProgress *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_file_converter_progress_to_string(self->progress));
+    const char *const string = XIMU3_file_converter_progress_to_string(self->progress);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef file_converter_progress_get_set[] = {
@@ -51,30 +53,53 @@ static PyTypeObject file_converter_progress_object = {
     .tp_name = "ximu3.FileConverterProgress",
     .tp_basicsize = sizeof(FileConverterProgress),
     .tp_dealloc = (destructor) file_converter_progress_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = file_converter_progress_get_set,
     .tp_methods = file_converter_progress_methods,
 };
 
 static PyObject *file_converter_progress_from(const XIMU3_FileConverterProgress *const progress) {
     FileConverterProgress *const self = (FileConverterProgress *) file_converter_progress_object.tp_alloc(&file_converter_progress_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->progress = *progress;
     return (PyObject *) self;
 }
 
 static void file_converter_progress_callback(XIMU3_FileConverterProgress data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = file_converter_progress_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = file_converter_progress_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

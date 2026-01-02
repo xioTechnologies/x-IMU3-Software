@@ -16,35 +16,37 @@ static void inertial_message_free(InertialMessage *self) {
 }
 
 static PyObject *inertial_message_get_timestamp(InertialMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *inertial_message_get_gyroscope_x(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.gyroscope_x);
+    return PyFloat_FromDouble((double) self->message.gyroscope_x);
 }
 
 static PyObject *inertial_message_get_gyroscope_y(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.gyroscope_y);
+    return PyFloat_FromDouble((double) self->message.gyroscope_y);
 }
 
 static PyObject *inertial_message_get_gyroscope_z(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.gyroscope_z);
+    return PyFloat_FromDouble((double) self->message.gyroscope_z);
 }
 
 static PyObject *inertial_message_get_accelerometer_x(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.accelerometer_x);
+    return PyFloat_FromDouble((double) self->message.accelerometer_x);
 }
 
 static PyObject *inertial_message_get_accelerometer_y(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.accelerometer_y);
+    return PyFloat_FromDouble((double) self->message.accelerometer_y);
 }
 
 static PyObject *inertial_message_get_accelerometer_z(InertialMessage *self) {
-    return Py_BuildValue("f", self->message.accelerometer_z);
+    return PyFloat_FromDouble((double) self->message.accelerometer_z);
 }
 
 static PyObject *inertial_message_to_string(InertialMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_inertial_message_to_string(self->message));
+    const char *const string = XIMU3_inertial_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef inertial_message_get_set[] = {
@@ -68,30 +70,53 @@ static PyTypeObject inertial_message_object = {
     .tp_name = "ximu3.InertialMessage",
     .tp_basicsize = sizeof(InertialMessage),
     .tp_dealloc = (destructor) inertial_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = inertial_message_get_set,
     .tp_methods = inertial_message_methods,
 };
 
 static PyObject *inertial_message_from(const XIMU3_InertialMessage *const message) {
     InertialMessage *const self = (InertialMessage *) inertial_message_object.tp_alloc(&inertial_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void inertial_message_callback(XIMU3_InertialMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = inertial_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = inertial_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

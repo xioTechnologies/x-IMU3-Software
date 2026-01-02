@@ -4,7 +4,6 @@
 #include "../../C/Ximu3.h"
 #include "Connection.h"
 #include "ConnectionStatus.h"
-#include "Helpers.h"
 #include <Python.h>
 
 typedef struct {
@@ -12,23 +11,27 @@ typedef struct {
     XIMU3_KeepOpen *keep_open;
 } KeepOpen;
 
-static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection;
     PyObject *callable;
 
     if (PyArg_ParseTuple(args, "O!O:set_callback", &connection_object, &connection, &callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     if (PyCallable_Check(callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    Py_INCREF(callable); // this will never be destroyed (memory leak)
-
     KeepOpen *const self = (KeepOpen *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
+    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+
     self->keep_open = XIMU3_keep_open_new(((Connection *) connection)->connection, connection_status_callback, callable);
     return (PyObject *) self;
 }
@@ -45,6 +48,7 @@ static PyTypeObject keep_open_object = {
     .tp_name = "ximu3.KeepOpen",
     .tp_basicsize = sizeof(KeepOpen),
     .tp_dealloc = (destructor) keep_open_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = keep_open_new,
 };
 
