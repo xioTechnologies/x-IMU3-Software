@@ -37,7 +37,7 @@ void ping()
     {
         XIMU3_connection_ping_async(connection, callback, NULL);
 
-        Wait(3);
+        sleep(3);
     }
     else
     {

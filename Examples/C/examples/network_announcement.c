@@ -24,7 +24,7 @@ void network_announcement()
     {
         XIMU3_network_announcement_add_callback(network_announcement, callback, NULL);
 
-        Wait(60);
+        sleep(60);
     }
     else
     {

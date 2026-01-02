@@ -26,7 +26,7 @@ void keep_open()
     XIMU3_KeepOpen* const keep_open = XIMU3_keep_open_new(connection, callback, NULL);
 
     // Close connection
-    Wait(60);
+    sleep(60);
     XIMU3_keep_open_free(keep_open);
     XIMU3_connection_free(connection);
 }

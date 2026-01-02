@@ -36,7 +36,7 @@ static bool yes_or_no(const char* question)
     }
 }
 
-static void Wait(const time_t seconds)
+static void sleep(const time_t seconds)
 {
     const time_t timeout = time(NULL) + seconds;
     while (time(NULL) < timeout)

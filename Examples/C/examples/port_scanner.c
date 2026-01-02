@@ -12,7 +12,7 @@ void port_scanner()
     {
         XIMU3_PortScanner* const port_scanner = XIMU3_port_scanner_new(callback, NULL);
 
-        Wait(60);
+        sleep(60);
 
         XIMU3_port_scanner_free(port_scanner);
     }

@@ -86,7 +86,7 @@ void run(XIMU3_Connection* const connection, const char* const connection_info_s
     XIMU3_connection_send_command(connection, "{\"strobe\":null}", XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
     // Close connection
-    Wait(60);
+    sleep(60);
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }

@@ -18,7 +18,7 @@ void file_converter()
     {
         XIMU3_FileConverter* const file_converter = XIMU3_file_converter_new(destination, name, file_paths, number_of_files, callback, NULL);
 
-        Wait(60);
+        sleep(60);
 
         XIMU3_file_converter_free(file_converter);
     }

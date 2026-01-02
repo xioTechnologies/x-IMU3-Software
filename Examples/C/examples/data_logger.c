@@ -54,7 +54,7 @@ void data_logger()
 
         if (result == XIMU3_ResultOk)
         {
-            Wait(3);
+            sleep(3);
         }
 
         print_result(result);

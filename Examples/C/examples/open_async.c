@@ -24,7 +24,7 @@ void open_async()
     XIMU3_connection_open_async(connection, callback, NULL);
 
     // Close connection
-    Wait(3);
+    sleep(3);
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }

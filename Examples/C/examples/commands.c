@@ -47,7 +47,7 @@ void commands()
     {
         XIMU3_connection_send_commands_async(connection, commands, number_of_commands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT, callback, NULL);
 
-        Wait(3);
+        sleep(3);
     }
     else
     {
