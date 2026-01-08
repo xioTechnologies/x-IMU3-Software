@@ -38,7 +38,7 @@ def statistics_callback(statistics: ximu3.Statistics) -> None:
             ]
         )
     )
-    # print(statistics.to_string())  # alternative to above
+    # print(statistics)  # alternative to above
 
 
 def inertial_callback(message: ximu3.InertialMessage) -> None:

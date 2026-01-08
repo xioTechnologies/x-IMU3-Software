@@ -13,6 +13,10 @@ static void statistics_free(Statistics *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *statistics_str(Statistics *self) {
+    return PyUnicode_FromString(XIMU3_statistics_to_string(self->statistics));
+}
+
 static PyObject *statistics_get_timestamp(Statistics *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.timestamp);
 }
@@ -41,12 +45,6 @@ static PyObject *statistics_get_error_rate(Statistics *self) {
     return PyLong_FromUnsignedLong((unsigned long) self->statistics.error_rate);
 }
 
-static PyObject *statistics_to_string(Statistics *self, PyObject *args) {
-    const char *const string = XIMU3_statistics_to_string(self->statistics);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef statistics_get_set[] = {
     {"timestamp", (getter) statistics_get_timestamp, NULL, "", NULL},
     {"data_total", (getter) statistics_get_data_total, NULL, "", NULL},
@@ -58,19 +56,14 @@ static PyGetSetDef statistics_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef statistics_methods[] = {
-    {"to_string", (PyCFunction) statistics_to_string, METH_NOARGS, ""},
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject statistics_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.Statistics",
     .tp_basicsize = sizeof(Statistics),
     .tp_dealloc = (destructor) statistics_free,
+    .tp_str = (reprfunc) statistics_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = statistics_get_set,
-    .tp_methods = statistics_methods,
 };
 
 static PyObject *statistics_from(const XIMU3_Statistics *const statistics) {
