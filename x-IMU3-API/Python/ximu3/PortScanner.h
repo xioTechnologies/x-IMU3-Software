@@ -49,10 +49,10 @@ static PyObject *port_scanner_scan(PyObject *null, PyObject *args) {
     return devices_to_list_and_free(XIMU3_port_scanner_scan());
 }
 
-static PyObject *port_scanner_scan_filter(PyObject *null, PyObject *args) {
-    int port_type_int;
+static PyObject *port_scanner_scan_filter(PyObject *null, PyObject *arg) {
+    const int port_type_int = (int) PyLong_AsLong(arg);
 
-    if (PyArg_ParseTuple(args, "i", &port_type_int) == 0) {
+    if (PyErr_Occurred()) {
         return NULL;
     }
 
@@ -103,7 +103,7 @@ cleanup:
 static PyMethodDef port_scanner_methods[] = {
     {"get_devices", (PyCFunction) port_scanner_get_devices, METH_NOARGS, ""},
     {"scan", (PyCFunction) port_scanner_scan, METH_NOARGS | METH_STATIC, ""},
-    {"scan_filter", (PyCFunction) port_scanner_scan_filter, METH_VARARGS | METH_STATIC, ""},
+    {"scan_filter", (PyCFunction) port_scanner_scan_filter, METH_O | METH_STATIC, ""},
     {"get_port_names", (PyCFunction) port_scanner_get_port_names, METH_NOARGS | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
