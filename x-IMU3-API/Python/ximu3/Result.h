@@ -4,16 +4,8 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static PyObject *result_to_string(PyObject *self, PyObject *args) {
-    int result_int;
-
-    if (PyArg_ParseTuple(args, "i", &result_int) == 0) {
-        return NULL;
-    }
-
-    const XIMU3_Result result = (XIMU3_Result) result_int;
-
-    switch (result) {
+static int result_from(XIMU3_Result *const result, const int result_int) {
+    switch (result_int) {
         case XIMU3_ResultOk:
         case XIMU3_ResultAddrInUse:
         case XIMU3_ResultAddrNotAvailable:
@@ -52,10 +44,25 @@ static PyObject *result_to_string(PyObject *self, PyObject *args) {
         case XIMU3_ResultWouldBlock:
         case XIMU3_ResultWriteZero:
         case XIMU3_ResultUnknownError:
-            break;
-        default:
-            PyErr_SetString(PyExc_ValueError, "Expected RESULT_*");
-            return NULL;
+            *result = (XIMU3_Result) result_int;
+            return 0;
+    }
+
+    PyErr_SetString(PyExc_ValueError, "'result' must be RESULT_*");
+    return -1;
+}
+
+static PyObject *result_to_string(PyObject *self, PyObject *args) {
+    int result_int;
+
+    if (PyArg_ParseTuple(args, "i", &result_int) == 0) {
+        return NULL;
+    }
+
+    XIMU3_Result result;
+
+    if (result_from(&result, result_int) != 0) {
+        return NULL;
     }
 
     const char *const string = XIMU3_result_to_string(result);

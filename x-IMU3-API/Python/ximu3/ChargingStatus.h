@@ -16,6 +16,20 @@ static PyObject *charging_status_from_float(PyObject *self, PyObject *args) {
     return PyLong_FromLong((long) charging_status);
 }
 
+static int charging_status_from(XIMU3_ChargingStatus *const charging_status, const int charging_status_int) {
+    switch (charging_status_int) {
+        case XIMU3_ChargingStatusNotConnected:
+        case XIMU3_ChargingStatusCharging:
+        case XIMU3_ChargingStatusChargingComplete:
+        case XIMU3_ChargingStatusChargingOnHold:
+            *charging_status = (XIMU3_ChargingStatus) charging_status_int;
+            return 0;
+    }
+
+    PyErr_SetString(PyExc_ValueError, "'charging_status' must be CHARGING_STATUS_*");
+    return -1;
+}
+
 static PyObject *charging_status_to_string(PyObject *self, PyObject *args) {
     int charging_status_int;
 
@@ -23,17 +37,10 @@ static PyObject *charging_status_to_string(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    const XIMU3_ChargingStatus charging_status = (XIMU3_ChargingStatus) charging_status_int;
+    XIMU3_ChargingStatus charging_status;
 
-    switch (charging_status) {
-        case XIMU3_ChargingStatusNotConnected:
-        case XIMU3_ChargingStatusCharging:
-        case XIMU3_ChargingStatusChargingComplete:
-        case XIMU3_ChargingStatusChargingOnHold:
-            break;
-        default:
-            PyErr_SetString(PyExc_ValueError, "Expected CHARGING_STATUS_*");
-            return NULL;
+    if (charging_status_from(&charging_status, charging_status_int) != 0) {
+        return NULL;
     }
 
     const char *const string = XIMU3_charging_status_to_string(charging_status);

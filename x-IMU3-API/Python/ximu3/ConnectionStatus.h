@@ -4,25 +4,32 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static PyObject *connection_status_to_string(PyObject *self, PyObject *args) {
-    int status_int;
+static int connection_status_from(XIMU3_ConnectionStatus *const connection_status, const int connection_status_int) {
+    switch (connection_status_int) {
+        case XIMU3_ConnectionStatusConnected:
+        case XIMU3_ConnectionStatusReconnecting:
+            *connection_status = (XIMU3_ConnectionStatus) connection_status_int;
+            return 0;
+    }
 
-    if (PyArg_ParseTuple(args, "i", &status_int) == 0) {
+    PyErr_SetString(PyExc_ValueError, "'connection_status' must be CONNECTION_STATUS_*");
+    return -1;
+}
+
+static PyObject *connection_status_to_string(PyObject *self, PyObject *args) {
+    int connection_status_int;
+
+    if (PyArg_ParseTuple(args, "i", &connection_status_int) == 0) {
         return NULL;
     }
 
-    const XIMU3_ConnectionStatus status = (XIMU3_ConnectionStatus) status_int;
+    XIMU3_ConnectionStatus connection_status;
 
-    switch (status) {
-        case XIMU3_ConnectionStatusConnected:
-        case XIMU3_ConnectionStatusReconnecting:
-            break;
-        default:
-            PyErr_SetString(PyExc_ValueError, "Expected CONNECTION_STATUS_*");
-            return NULL;
+    if (connection_status_from(&connection_status, connection_status_int) != 0) {
+        return NULL;
     }
 
-    const char *const string = XIMU3_connection_status_to_string(status);
+    const char *const string = XIMU3_connection_status_to_string(connection_status);
 
     return PyUnicode_FromString(string);
 }

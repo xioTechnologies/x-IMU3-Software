@@ -4,16 +4,8 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
-    int receive_error_int;
-
-    if (PyArg_ParseTuple(args, "i", &receive_error_int) == 0) {
-        return NULL;
-    }
-
-    const XIMU3_ReceiveError receive_error = (XIMU3_ReceiveError) receive_error_int;
-
-    switch (receive_error) {
+static int receive_error_from(XIMU3_ReceiveError *const receive_error, const int receive_error_int) {
+    switch (receive_error_int) {
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
         case XIMU3_ReceiveErrorInvalidJson:
@@ -24,10 +16,25 @@ static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
         case XIMU3_ReceiveErrorInvalidBinaryMessageLength:
         case XIMU3_ReceiveErrorUnableToParseAsciiMessage:
         case XIMU3_ReceiveErrorUnknownError:
-            break;
-        default:
-            PyErr_SetString(PyExc_ValueError, "Expected RECEIVE_ERROR_*");
-            return NULL;
+            *receive_error = (XIMU3_ReceiveError) receive_error_int;
+            return 0;
+    }
+
+    PyErr_SetString(PyExc_ValueError, "'receive_error' must be RECEIVE_ERROR_*");
+    return -1;
+}
+
+static PyObject *receive_error_to_string(PyObject *self, PyObject *args) {
+    int receive_error_int;
+
+    if (PyArg_ParseTuple(args, "i", &receive_error_int) == 0) {
+        return NULL;
+    }
+
+    XIMU3_ReceiveError receive_error;
+
+    if (receive_error_from(&receive_error, receive_error_int) != 0) {
+        return NULL;
     }
 
     const char *const string = XIMU3_receive_error_to_string(receive_error);

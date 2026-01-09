@@ -3,6 +3,7 @@
 
 #include "../../C/Ximu3.h"
 #include "Device.h"
+#include "PortType.h"
 #include <Python.h>
 
 typedef struct {
@@ -56,16 +57,10 @@ static PyObject *port_scanner_scan_filter(PyObject *null, PyObject *args) {
         return NULL;
     }
 
-    const XIMU3_PortType port_type = (XIMU3_PortType) port_type_int;
+    XIMU3_PortType port_type;
 
-    switch (port_type) {
-        case XIMU3_PortTypeUsb:
-        case XIMU3_PortTypeSerial:
-        case XIMU3_PortTypeBluetooth:
-            break;
-        default:
-            PyErr_SetString(PyExc_ValueError, "Expected PORT_TYPE_*");
-            return NULL;
+    if (port_type_from(&port_type, port_type_int) != 0) {
+        return NULL;
     }
 
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(port_type);
