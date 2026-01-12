@@ -46,25 +46,31 @@ impl<'a> DataLogger<'a> {
         for (index, connection) in data_logger.connections.iter().enumerate() {
             data_logger.closure_ids.push(Vec::new());
 
-            let sender_clone = sender.clone();
-            let path_clone = paths[index].clone();
+            data_logger.closure_ids[index].push(connection.add_receive_error_closure(Box::new({
+                let sender = sender.clone();
+                let path = paths[index].clone();
 
-            data_logger.closure_ids[index].push(connection.add_receive_error_closure(Box::new(move |receive_error| {
-                sender_clone.send((path_clone.join("ReceiveError.txt"), "".to_owned(), receive_error.to_string() + "\n")).ok();
+                move |receive_error| {
+                    sender.send((path.join("ReceiveError.txt"), "".to_string(), receive_error.to_string() + "\n")).ok();
+                }
             })));
 
-            let sender_clone = sender.clone();
-            let path_clone = paths[index].clone();
+            data_logger.closure_ids[index].push(connection.add_command_closure(Box::new({
+                let sender = sender.clone();
+                let path = paths[index].clone();
 
-            data_logger.closure_ids[index].push(connection.add_command_closure(Box::new(move |command| {
-                sender_clone.send((path_clone.join(COMMAND_FILE_NAME), "[\n".to_owned(), format!("    {}\n]", String::from_utf8_lossy(&command.json)))).ok();
+                move |command| {
+                    sender.send((path.join(COMMAND_FILE_NAME), "[\n".to_string(), format!("    {}\n]", String::from_utf8_lossy(&command.json)))).ok();
+                }
             })));
 
-            let sender_clone = sender.clone();
-            let path_clone = paths[index].clone();
+            data_logger.closure_ids[index].push(connection.add_data_closure(Box::new({
+                let sender = sender.clone();
+                let path = paths[index].clone();
 
-            data_logger.closure_ids[index].push(connection.add_data_closure(Box::new(move |message| {
-                sender_clone.send((path_clone.join(message.get_csv_file_name()), message.get_csv_headings().to_owned(), message.to_csv_row())).ok();
+                move |message| {
+                    sender.send((path.join(message.get_csv_file_name()), message.get_csv_headings().to_string(), message.to_csv_row())).ok();
+                }
             })));
         }
 
