@@ -16,7 +16,7 @@ class Connection:
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if ping_response is None:
-            raise Exception(f"Ping failed for {connection_info.to_string()}. {ximu3.result_to_string(ping_response.result)}.")
+            raise Exception(f"Ping failed for {connection_info.to_string()}")
 
         self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
 
