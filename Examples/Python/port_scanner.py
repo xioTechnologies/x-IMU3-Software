@@ -11,7 +11,7 @@ def print_devices(devices: list[ximu3.Device]) -> None:
 
 
 def callback(devices: list[ximu3.Device]) -> None:
-    print(f"Devices updated ({len(devices)}) devices available)")
+    print(f"Devices updated ({len(devices)} devices available)")
 
     print_devices(devices)
 
