@@ -15,6 +15,12 @@ static void error_message_free(ErrorMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *error_message_str(ErrorMessage *self) {
+    const char *const string = XIMU3_error_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *error_message_get_timestamp(ErrorMessage *self, PyObject *args) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -27,21 +33,10 @@ static PyObject *error_message_get_bytes(ErrorMessage *self, PyObject *args) {
     return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
 }
 
-static PyObject *error_message_to_string(ErrorMessage *self, PyObject *args) {
-    const char *const string = XIMU3_error_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef error_message_get_set[] = {
     {"timestamp", (getter) error_message_get_timestamp, NULL, "", NULL},
     {"string", (getter) error_message_get_string, NULL, "", NULL},
     {"bytes", (getter) error_message_get_bytes, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef error_message_methods[] = {
-    {"to_string", (PyCFunction) error_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -50,9 +45,9 @@ static PyTypeObject error_message_object = {
     .tp_name = "ximu3.ErrorMessage",
     .tp_basicsize = sizeof(ErrorMessage),
     .tp_dealloc = (destructor) error_message_free,
+    .tp_str = (reprfunc) error_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = error_message_get_set,
-    .tp_methods = error_message_methods,
 };
 
 static PyObject *error_message_from(const XIMU3_ErrorMessage *const message) {

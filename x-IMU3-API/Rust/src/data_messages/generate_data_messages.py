@@ -284,14 +284,9 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
         template = template.replace("$get_functions$", get_functions.rstrip("\n"))
 
         # Method functions
-        method_names = ["to_string"]
+        method_names = []
 
-        method_functions = """\
-static PyObject *$name_snake_case$_message_to_string($name_pascal_case$Message *self, PyObject *args) {
-    const char *const string = XIMU3_$name_snake_case$_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}\n\n"""
+        method_functions = ""
 
         if message.name in ["Quaternion", "Rotation Matrix", "Linear Acceleration", "Earth Acceleration"]:
             method_names = method_names + ["to_euler_angles_message"]

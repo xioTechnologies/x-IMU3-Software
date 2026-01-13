@@ -15,6 +15,12 @@ static void linear_acceleration_message_free(LinearAccelerationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *linear_acceleration_message_str(LinearAccelerationMessage *self) {
+    const char *const string = XIMU3_linear_acceleration_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *linear_acceleration_message_get_timestamp(LinearAccelerationMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -47,12 +53,6 @@ static PyObject *linear_acceleration_message_get_acceleration_z(LinearAccelerati
     return PyFloat_FromDouble((double) self->message.acceleration_z);
 }
 
-static PyObject *linear_acceleration_message_to_string(LinearAccelerationMessage *self, PyObject *args) {
-    const char *const string = XIMU3_linear_acceleration_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyObject *linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage *self, PyObject *args);
 
 static PyGetSetDef linear_acceleration_message_get_set[] = {
@@ -68,7 +68,6 @@ static PyGetSetDef linear_acceleration_message_get_set[] = {
 };
 
 static PyMethodDef linear_acceleration_message_methods[] = {
-    {"to_string", (PyCFunction) linear_acceleration_message_to_string, METH_NOARGS, ""},
     {"to_euler_angles_message", (PyCFunction) linear_acceleration_message_to_euler_angles_message, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
@@ -78,6 +77,7 @@ static PyTypeObject linear_acceleration_message_object = {
     .tp_name = "ximu3.LinearAccelerationMessage",
     .tp_basicsize = sizeof(LinearAccelerationMessage),
     .tp_dealloc = (destructor) linear_acceleration_message_free,
+    .tp_str = (reprfunc) linear_acceleration_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = linear_acceleration_message_get_set,
     .tp_methods = linear_acceleration_message_methods,

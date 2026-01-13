@@ -15,6 +15,12 @@ static void rotation_matrix_message_free(RotationMatrixMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *rotation_matrix_message_str(RotationMatrixMessage *self) {
+    const char *const string = XIMU3_rotation_matrix_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *rotation_matrix_message_get_timestamp(RotationMatrixMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -55,12 +61,6 @@ static PyObject *rotation_matrix_message_get_zz(RotationMatrixMessage *self) {
     return PyFloat_FromDouble((double) self->message.zz);
 }
 
-static PyObject *rotation_matrix_message_to_string(RotationMatrixMessage *self, PyObject *args) {
-    const char *const string = XIMU3_rotation_matrix_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyObject *rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage *self, PyObject *args);
 
 static PyGetSetDef rotation_matrix_message_get_set[] = {
@@ -78,7 +78,6 @@ static PyGetSetDef rotation_matrix_message_get_set[] = {
 };
 
 static PyMethodDef rotation_matrix_message_methods[] = {
-    {"to_string", (PyCFunction) rotation_matrix_message_to_string, METH_NOARGS, ""},
     {"to_euler_angles_message", (PyCFunction) rotation_matrix_message_to_euler_angles_message, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
@@ -88,6 +87,7 @@ static PyTypeObject rotation_matrix_message_object = {
     .tp_name = "ximu3.RotationMatrixMessage",
     .tp_basicsize = sizeof(RotationMatrixMessage),
     .tp_dealloc = (destructor) rotation_matrix_message_free,
+    .tp_str = (reprfunc) rotation_matrix_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = rotation_matrix_message_get_set,
     .tp_methods = rotation_matrix_message_methods,

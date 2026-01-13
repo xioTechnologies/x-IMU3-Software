@@ -15,6 +15,12 @@ static void magnetometer_message_free(MagnetometerMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *magnetometer_message_str(MagnetometerMessage *self) {
+    const char *const string = XIMU3_magnetometer_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *magnetometer_message_get_timestamp(MagnetometerMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -31,12 +37,6 @@ static PyObject *magnetometer_message_get_z(MagnetometerMessage *self) {
     return PyFloat_FromDouble((double) self->message.z);
 }
 
-static PyObject *magnetometer_message_to_string(MagnetometerMessage *self, PyObject *args) {
-    const char *const string = XIMU3_magnetometer_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef magnetometer_message_get_set[] = {
     {"timestamp", (getter) magnetometer_message_get_timestamp, NULL, "", NULL},
     {"x", (getter) magnetometer_message_get_x, NULL, "", NULL},
@@ -46,7 +46,6 @@ static PyGetSetDef magnetometer_message_get_set[] = {
 };
 
 static PyMethodDef magnetometer_message_methods[] = {
-    {"to_string", (PyCFunction) magnetometer_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -55,6 +54,7 @@ static PyTypeObject magnetometer_message_object = {
     .tp_name = "ximu3.MagnetometerMessage",
     .tp_basicsize = sizeof(MagnetometerMessage),
     .tp_dealloc = (destructor) magnetometer_message_free,
+    .tp_str = (reprfunc) magnetometer_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = magnetometer_message_get_set,
     .tp_methods = magnetometer_message_methods,

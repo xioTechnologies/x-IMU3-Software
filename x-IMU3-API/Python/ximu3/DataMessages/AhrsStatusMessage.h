@@ -15,6 +15,12 @@ static void ahrs_status_message_free(AhrsStatusMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *ahrs_status_message_str(AhrsStatusMessage *self) {
+    const char *const string = XIMU3_ahrs_status_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -35,12 +41,6 @@ static PyObject *ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage *se
     return PyFloat_FromDouble((double) self->message.magnetic_recovery);
 }
 
-static PyObject *ahrs_status_message_to_string(AhrsStatusMessage *self, PyObject *args) {
-    const char *const string = XIMU3_ahrs_status_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef ahrs_status_message_get_set[] = {
     {"timestamp", (getter) ahrs_status_message_get_timestamp, NULL, "", NULL},
     {"initialising", (getter) ahrs_status_message_get_initialising, NULL, "", NULL},
@@ -51,7 +51,6 @@ static PyGetSetDef ahrs_status_message_get_set[] = {
 };
 
 static PyMethodDef ahrs_status_message_methods[] = {
-    {"to_string", (PyCFunction) ahrs_status_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -60,6 +59,7 @@ static PyTypeObject ahrs_status_message_object = {
     .tp_name = "ximu3.AhrsStatusMessage",
     .tp_basicsize = sizeof(AhrsStatusMessage),
     .tp_dealloc = (destructor) ahrs_status_message_free,
+    .tp_str = (reprfunc) ahrs_status_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = ahrs_status_message_get_set,
     .tp_methods = ahrs_status_message_methods,

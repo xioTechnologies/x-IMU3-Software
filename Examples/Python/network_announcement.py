@@ -20,7 +20,7 @@ def print_message(message: ximu3.NetworkAnnouncementMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def callback(message: ximu3.NetworkAnnouncementMessage) -> None:

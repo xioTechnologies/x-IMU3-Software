@@ -12,6 +12,12 @@ typedef struct {
     XIMU3_UsbConnectionInfo connection_info;
 } UsbConnectionInfo;
 
+static PyObject *usb_connection_info_str(UsbConnectionInfo *self) {
+    const char *const string = XIMU3_usb_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *usb_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
 
@@ -38,19 +44,8 @@ static PyObject *usb_connection_info_get_port_name(UsbConnectionInfo *self, PyOb
     return PyUnicode_FromString(self->connection_info.port_name);
 }
 
-static PyObject *usb_connection_info_to_string(UsbConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_usb_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef usb_connection_info_get_set[] = {
     {"port_name", (getter) usb_connection_info_get_port_name, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef usb_connection_info_methods[] = {
-    {"to_string", (PyCFunction) usb_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -59,10 +54,10 @@ static PyTypeObject usb_connection_info_object = {
     .tp_name = "ximu3.UsbConnectionInfo",
     .tp_basicsize = sizeof(UsbConnectionInfo),
     .tp_dealloc = (destructor) usb_connection_info_free,
+    .tp_str = (reprfunc) usb_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = usb_connection_info_new,
     .tp_getset = usb_connection_info_get_set,
-    .tp_methods = usb_connection_info_methods
 };
 
 static PyObject *usb_connection_info_from(const XIMU3_UsbConnectionInfo *const connection_info) {
@@ -83,6 +78,12 @@ typedef struct {
     PyObject_HEAD
     XIMU3_SerialConnectionInfo connection_info;
 } SerialConnectionInfo;
+
+static PyObject *serial_connection_info_str(SerialConnectionInfo *self) {
+    const char *const string = XIMU3_serial_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
 
 static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
@@ -122,21 +123,10 @@ static PyObject *serial_connection_info_get_rts_cts_enabled(SerialConnectionInfo
     return PyBool_FromLong((long) self->connection_info.rts_cts_enabled);
 }
 
-static PyObject *serial_connection_info_to_string(SerialConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_serial_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef serial_connection_info_get_set[] = {
     {"port_name", (getter) serial_connection_info_get_port_name, NULL, "", NULL},
     {"baud_rate", (getter) serial_connection_info_get_baud_rate, NULL, "", NULL},
     {"rts_cts_enabled", (getter) serial_connection_info_get_rts_cts_enabled, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef serial_connection_info_methods[] = {
-    {"to_string", (PyCFunction) serial_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -145,10 +135,10 @@ static PyTypeObject serial_connection_info_object = {
     .tp_name = "ximu3.SerialConnectionInfo",
     .tp_basicsize = sizeof(SerialConnectionInfo),
     .tp_dealloc = (destructor) serial_connection_info_free,
+    .tp_str = (reprfunc) serial_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = serial_connection_info_new,
     .tp_getset = serial_connection_info_get_set,
-    .tp_methods = serial_connection_info_methods
 };
 
 static PyObject *serial_connection_info_from(const XIMU3_SerialConnectionInfo *const connection_info) {
@@ -169,6 +159,12 @@ typedef struct {
     PyObject_HEAD
     XIMU3_TcpConnectionInfo connection_info;
 } TcpConnectionInfo;
+
+static PyObject *tcp_connection_info_str(TcpConnectionInfo *self) {
+    const char *const string = XIMU3_tcp_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
 
 static PyObject *tcp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *ip_address;
@@ -202,20 +198,9 @@ static PyObject *tcp_connection_info_get_port(TcpConnectionInfo *self, PyObject 
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.port);
 }
 
-static PyObject *tcp_connection_info_to_string(TcpConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_tcp_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef tcp_connection_info_get_set[] = {
     {"ip_address", (getter) tcp_connection_info_get_ip_address, NULL, "", NULL},
     {"port", (getter) tcp_connection_info_get_port, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef tcp_connection_info_methods[] = {
-    {"to_string", (PyCFunction) tcp_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -224,10 +209,10 @@ static PyTypeObject tcp_connection_info_object = {
     .tp_name = "ximu3.TcpConnectionInfo",
     .tp_basicsize = sizeof(TcpConnectionInfo),
     .tp_dealloc = (destructor) tcp_connection_info_free,
+    .tp_str = (reprfunc) tcp_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = tcp_connection_info_new,
     .tp_getset = tcp_connection_info_get_set,
-    .tp_methods = tcp_connection_info_methods
 };
 
 static PyObject *tcp_connection_info_from(const XIMU3_TcpConnectionInfo *const connection_info) {
@@ -248,6 +233,12 @@ typedef struct {
     PyObject_HEAD
     XIMU3_UdpConnectionInfo connection_info;
 } UdpConnectionInfo;
+
+static PyObject *udp_connection_info_str(UdpConnectionInfo *self) {
+    const char *const string = XIMU3_udp_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
 
 static PyObject *udp_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *ip_address;
@@ -287,21 +278,10 @@ static PyObject *udp_connection_info_get_receive_port(UdpConnectionInfo *self, P
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.receive_port);
 }
 
-static PyObject *udp_connection_info_to_string(UdpConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_udp_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef udp_connection_info_get_set[] = {
     {"ip_address", (getter) udp_connection_info_get_ip_address, NULL, "", NULL},
     {"send_port", (getter) udp_connection_info_get_send_port, NULL, "", NULL},
     {"receive_port", (getter) udp_connection_info_get_receive_port, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef udp_connection_info_methods[] = {
-    {"to_string", (PyCFunction) udp_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -310,10 +290,10 @@ static PyTypeObject udp_connection_info_object = {
     .tp_name = "ximu3.UdpConnectionInfo",
     .tp_basicsize = sizeof(UdpConnectionInfo),
     .tp_dealloc = (destructor) udp_connection_info_free,
+    .tp_str = (reprfunc) udp_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = udp_connection_info_new,
     .tp_getset = udp_connection_info_get_set,
-    .tp_methods = udp_connection_info_methods
 };
 
 static PyObject *udp_connection_info_from(const XIMU3_UdpConnectionInfo *const connection_info) {
@@ -334,6 +314,12 @@ typedef struct {
     PyObject_HEAD
     XIMU3_BluetoothConnectionInfo connection_info;
 } BluetoothConnectionInfo;
+
+static PyObject *bluetooth_connection_info_str(BluetoothConnectionInfo *self) {
+    const char *const string = XIMU3_bluetooth_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
 
 static PyObject *bluetooth_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
@@ -361,19 +347,8 @@ static PyObject *bluetooth_connection_info_get_port_name(BluetoothConnectionInfo
     return PyUnicode_FromString(self->connection_info.port_name);
 }
 
-static PyObject *bluetooth_connection_info_to_string(BluetoothConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_bluetooth_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef bluetooth_connection_info_get_set[] = {
     {"port_name", (getter) bluetooth_connection_info_get_port_name, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef bluetooth_connection_info_methods[] = {
-    {"to_string", (PyCFunction) bluetooth_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -382,10 +357,10 @@ static PyTypeObject bluetooth_connection_info_object = {
     .tp_name = "ximu3.BluetoothConnectionInfo",
     .tp_basicsize = sizeof(BluetoothConnectionInfo),
     .tp_dealloc = (destructor) bluetooth_connection_info_free,
+    .tp_str = (reprfunc) bluetooth_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = bluetooth_connection_info_new,
     .tp_getset = bluetooth_connection_info_get_set,
-    .tp_methods = bluetooth_connection_info_methods
 };
 
 static PyObject *bluetooth_connection_info_from(const XIMU3_BluetoothConnectionInfo *const connection_info) {
@@ -406,6 +381,12 @@ typedef struct {
     PyObject_HEAD
     XIMU3_FileConnectionInfo connection_info;
 } FileConnectionInfo;
+
+static PyObject *file_connection_info_str(FileConnectionInfo *self) {
+    const char *const string = XIMU3_file_connection_info_to_string(self->connection_info);
+
+    return PyUnicode_FromString(string);
+}
 
 static PyObject *file_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *file_path;
@@ -433,19 +414,8 @@ static PyObject *file_connection_info_get_file_path(FileConnectionInfo *self, Py
     return PyUnicode_FromString(self->connection_info.file_path);
 }
 
-static PyObject *file_connection_info_to_string(FileConnectionInfo *self, PyObject *args) {
-    const char *const string = XIMU3_file_connection_info_to_string(self->connection_info);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef file_connection_info_get_set[] = {
     {"file_path", (getter) file_connection_info_get_file_path, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef file_connection_info_methods[] = {
-    {"to_string", (PyCFunction) file_connection_info_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -454,10 +424,10 @@ static PyTypeObject file_connection_info_object = {
     .tp_name = "ximu3.FileConnectionInfo",
     .tp_basicsize = sizeof(FileConnectionInfo),
     .tp_dealloc = (destructor) file_connection_info_free,
+    .tp_str = (reprfunc) file_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = file_connection_info_new,
     .tp_getset = file_connection_info_get_set,
-    .tp_methods = file_connection_info_methods
 };
 
 static PyObject *file_connection_info_from(const XIMU3_FileConnectionInfo *const connection_info) {
@@ -488,25 +458,20 @@ static void mux_connection_info_free(MuxConnectionInfo *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject *mux_connection_info_to_string(MuxConnectionInfo *self, PyObject *args) {
+static PyObject *mux_connection_info_str(MuxConnectionInfo *self) {
     const char *const string = XIMU3_mux_connection_info_to_string(self->connection_info);
 
     return PyUnicode_FromString(string);
 }
-
-static PyMethodDef mux_connection_info_methods[] = {
-    {"to_string", (PyCFunction) mux_connection_info_to_string, METH_NOARGS, ""},
-    {NULL} /* sentinel */
-};
 
 static PyTypeObject mux_connection_info_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.MuxConnectionInfo",
     .tp_basicsize = sizeof(MuxConnectionInfo),
     .tp_dealloc = (destructor) mux_connection_info_free,
+    .tp_str = (reprfunc) mux_connection_info_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = mux_connection_info_new,
-    .tp_methods = mux_connection_info_methods
 };
 
 static PyObject *mux_connection_info_from(XIMU3_MuxConnectionInfo *const connection_info) {

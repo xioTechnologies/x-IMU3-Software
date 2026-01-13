@@ -17,7 +17,7 @@ for device in devices:
     if result == ximu3.RESULT_OK:
         connections.append(connection)
     else:
-        raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
+        raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
 
 if not connections:
     raise Exception("No USB connections available")

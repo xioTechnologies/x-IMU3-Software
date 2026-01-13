@@ -14,7 +14,7 @@ def print_progress(progress: ximu3.FileConverterProgress) -> None:
             ]
         )
     )
-    # print(progress.to_string())  # alternative to above
+    # print(progress)  # alternative to above
 
 
 def callback(progress: ximu3.FileConverterProgress) -> None:

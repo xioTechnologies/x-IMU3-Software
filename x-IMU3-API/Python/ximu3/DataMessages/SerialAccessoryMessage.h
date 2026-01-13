@@ -15,6 +15,12 @@ static void serial_accessory_message_free(SerialAccessoryMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *serial_accessory_message_str(SerialAccessoryMessage *self) {
+    const char *const string = XIMU3_serial_accessory_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *serial_accessory_message_get_timestamp(SerialAccessoryMessage *self, PyObject *args) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -27,21 +33,10 @@ static PyObject *serial_accessory_message_get_bytes(SerialAccessoryMessage *self
     return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
 }
 
-static PyObject *serial_accessory_message_to_string(SerialAccessoryMessage *self, PyObject *args) {
-    const char *const string = XIMU3_serial_accessory_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef serial_accessory_message_get_set[] = {
     {"timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL},
     {"string", (getter) serial_accessory_message_get_string, NULL, "", NULL},
     {"bytes", (getter) serial_accessory_message_get_bytes, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef serial_accessory_message_methods[] = {
-    {"to_string", (PyCFunction) serial_accessory_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -50,9 +45,9 @@ static PyTypeObject serial_accessory_message_object = {
     .tp_name = "ximu3.SerialAccessoryMessage",
     .tp_basicsize = sizeof(SerialAccessoryMessage),
     .tp_dealloc = (destructor) serial_accessory_message_free,
+    .tp_str = (reprfunc) serial_accessory_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = serial_accessory_message_get_set,
-    .tp_methods = serial_accessory_message_methods,
 };
 
 static PyObject *serial_accessory_message_from(const XIMU3_SerialAccessoryMessage *const message) {

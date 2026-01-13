@@ -15,6 +15,12 @@ static void quaternion_message_free(QuaternionMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *quaternion_message_str(QuaternionMessage *self) {
+    const char *const string = XIMU3_quaternion_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *quaternion_message_get_timestamp(QuaternionMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -35,12 +41,6 @@ static PyObject *quaternion_message_get_z(QuaternionMessage *self) {
     return PyFloat_FromDouble((double) self->message.z);
 }
 
-static PyObject *quaternion_message_to_string(QuaternionMessage *self, PyObject *args) {
-    const char *const string = XIMU3_quaternion_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyObject *quaternion_message_to_euler_angles_message(QuaternionMessage *self, PyObject *args);
 
 static PyGetSetDef quaternion_message_get_set[] = {
@@ -53,7 +53,6 @@ static PyGetSetDef quaternion_message_get_set[] = {
 };
 
 static PyMethodDef quaternion_message_methods[] = {
-    {"to_string", (PyCFunction) quaternion_message_to_string, METH_NOARGS, ""},
     {"to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
@@ -63,6 +62,7 @@ static PyTypeObject quaternion_message_object = {
     .tp_name = "ximu3.QuaternionMessage",
     .tp_basicsize = sizeof(QuaternionMessage),
     .tp_dealloc = (destructor) quaternion_message_free,
+    .tp_str = (reprfunc) quaternion_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = quaternion_message_get_set,
     .tp_methods = quaternion_message_methods,
