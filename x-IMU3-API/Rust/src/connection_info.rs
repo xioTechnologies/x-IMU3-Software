@@ -94,6 +94,7 @@ impl fmt::Display for UdpConnectionInfo {
 pub struct BluetoothConnectionInfo {
     pub port_name: String,
 }
+
 impl From<SerialConnectionInfo> for BluetoothConnectionInfo {
     fn from(connection_info: SerialConnectionInfo) -> Self {
         Self {
