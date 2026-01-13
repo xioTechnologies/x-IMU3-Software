@@ -190,6 +190,12 @@ pub extern "C" fn XIMU3_connection_get_info_mux(connection: *mut Connection) -> 
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_get_info_string(connection: *mut Connection) -> *const c_char {
+    let connection: &Connection = unsafe { &*connection };
+    str_to_char_ptr(&connection.get_info().to_string())
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_get_statistics(connection: *mut Connection) -> Statistics {
     let connection = unsafe { &*connection };
     connection.get_statistics()

@@ -13,7 +13,7 @@
                 return;
             }
 
-            Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
+            Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
             Ximu3.Connection usbConnection = new(Ximu3.ConnectionInfo.From(devices[0])!);

@@ -10,15 +10,18 @@ void mux_connection() {
         printf("No USB connections available\n");
         return;
     }
-    printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+    printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
     // Open connection
     XIMU3_Connection *const usb_connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
 
     XIMU3_devices_free(devices);
 
-    if (XIMU3_connection_open(usb_connection) != XIMU3_ResultOk) {
-        printf("Unable to open connection\n");
+    const XIMU3_Result result = XIMU3_connection_open(usb_connection);
+
+    if (result != XIMU3_ResultOk) {
+        printf("Unable to open %s. %s.\n", XIMU3_connection_get_info_string(usb_connection), XIMU3_result_to_string(result));
         XIMU3_connection_free(usb_connection);
         return;
     }
@@ -28,7 +31,7 @@ void mux_connection() {
 
     XIMU3_Connection *const mux_connection = XIMU3_connection_new_mux(mux_connection_info);
 
-    run(mux_connection, XIMU3_mux_connection_info_to_string(mux_connection_info));
+    run(mux_connection);
 
     XIMU3_mux_connection_info_free(mux_connection_info);
 

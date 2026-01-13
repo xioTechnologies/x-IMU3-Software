@@ -12,7 +12,7 @@ pub fn run() {
             return;
         };
 
-        println!("Found {} {}", device.device_name, device.serial_number);
+        println!("Found {device}");
 
         let connection_info = &device.connection_info;
 

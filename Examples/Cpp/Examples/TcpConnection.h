@@ -6,7 +6,16 @@ class TcpConnection : public Connection {
 public:
     TcpConnection() {
         if (helpers::yesOrNo("Search for connections?")) {
-            const auto messages = ximu3::NetworkAnnouncement().getMessagesAfterShortDelay();
+            ximu3::NetworkAnnouncement networkAnnouncement;
+
+            const auto result = networkAnnouncement.getResult();
+
+            if (result != ximu3::XIMU3_ResultOk) {
+                std::cout << "Network announcement failed. " << XIMU3_result_to_string(result) << "." << std::endl;
+                return;
+            }
+
+            const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
 
             if (messages.empty()) {
                 std::cout << "No TCP connections available" << std::endl;

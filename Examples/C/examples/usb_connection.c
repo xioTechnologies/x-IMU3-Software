@@ -11,7 +11,8 @@ void usb_connection() {
             printf("No USB connections available\n");
             return;
         }
-        printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+        printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
         const XIMU3_UsbConnectionInfo connection_info = devices.array[0].usb_connection_info;
 
@@ -19,7 +20,7 @@ void usb_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_usb(connection_info);
 
-        run(connection, XIMU3_usb_connection_info_to_string(connection_info));
+        run(connection);
     } else {
         const XIMU3_UsbConnectionInfo connection_info = (XIMU3_UsbConnectionInfo){
             .port_name = "COM1",
@@ -27,6 +28,6 @@ void usb_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_usb(connection_info);
 
-        run(connection, XIMU3_usb_connection_info_to_string(connection_info));
+        run(connection);
     }
 }

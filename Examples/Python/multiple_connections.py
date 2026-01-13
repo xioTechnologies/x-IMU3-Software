@@ -11,7 +11,7 @@ class Connection:
         result = self.__connection.open()
 
         if result != ximu3.RESULT_OK:
-            raise Exception(f"Unable to open {connection_info.to_string()}. {ximu3.result_to_string(result)}.")
+            raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 

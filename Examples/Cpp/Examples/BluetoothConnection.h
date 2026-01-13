@@ -13,7 +13,7 @@ public:
                 return;
             }
 
-            std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
+            std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
             const auto connectionInfo = ximu3::ConnectionInfo::from(devices[0]);
 

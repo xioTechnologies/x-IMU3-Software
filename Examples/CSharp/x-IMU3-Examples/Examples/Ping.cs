@@ -13,7 +13,7 @@ namespace Ximu3Examples
                 return;
             }
 
-            Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
+            Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
             Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(devices[0])!);
@@ -22,7 +22,7 @@ namespace Ximu3Examples
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open connection. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                Console.WriteLine("Unable to open " + connection.GetInfo() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 return;
             }
 

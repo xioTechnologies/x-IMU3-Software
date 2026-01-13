@@ -13,7 +13,7 @@
                 return;
             }
 
-            Console.WriteLine("Found " + Ximu3.Helpers.ToString(devices[0].device_name) + " " + Ximu3.Helpers.ToString(devices[0].serial_number));
+            Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
             Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(devices[0])!);
@@ -22,6 +22,7 @@
 
             // Close connection
             System.Threading.Thread.Sleep(60000);
+
             connection.Close();
         }
 

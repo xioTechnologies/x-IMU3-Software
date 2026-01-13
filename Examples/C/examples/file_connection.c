@@ -8,5 +8,5 @@ void file_connection() {
 
     XIMU3_Connection *const connection = XIMU3_connection_new_file(connection_info);
 
-    run(connection, XIMU3_file_connection_info_to_string(connection_info));
+    run(connection);
 }

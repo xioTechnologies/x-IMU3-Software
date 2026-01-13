@@ -11,7 +11,8 @@ void serial_connection() {
             printf("No Serial connections available\n");
             return;
         }
-        printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+        printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
         const XIMU3_SerialConnectionInfo connection_info = devices.array[0].serial_connection_info;
 
@@ -19,7 +20,7 @@ void serial_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_serial(connection_info);
 
-        run(connection, XIMU3_serial_connection_info_to_string(connection_info));
+        run(connection);
     } else {
         const XIMU3_SerialConnectionInfo connection_info = (XIMU3_SerialConnectionInfo){
             .port_name = "COM1",
@@ -29,6 +30,6 @@ void serial_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_serial(connection_info);
 
-        run(connection, XIMU3_serial_connection_info_to_string(connection_info));
+        run(connection);
     }
 }

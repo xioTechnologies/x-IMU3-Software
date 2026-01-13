@@ -11,7 +11,8 @@ void bluetooth_connection() {
             printf("No Bluetooth connections available\n");
             return;
         }
-        printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+        printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
         const XIMU3_BluetoothConnectionInfo connection_info = devices.array[0].bluetooth_connection_info;
 
@@ -19,7 +20,7 @@ void bluetooth_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(connection_info);
 
-        run(connection, XIMU3_bluetooth_connection_info_to_string(connection_info));
+        run(connection);
     } else {
         const XIMU3_BluetoothConnectionInfo connection_info = (XIMU3_BluetoothConnectionInfo){
             .port_name = "COM1",
@@ -27,6 +28,6 @@ void bluetooth_connection() {
 
         XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(connection_info);
 
-        run(connection, XIMU3_bluetooth_connection_info_to_string(connection_info));
+        run(connection);
     }
 }

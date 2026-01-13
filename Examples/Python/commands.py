@@ -9,7 +9,7 @@ devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 if not devices:
     raise Exception("No USB connections available")
 
-print(f"Found {devices[0].device_name} {devices[0].serial_number}")
+print(f"Found {devices[0]}")
 
 # Open connection
 connection = ximu3.Connection(devices[0].connection_info)
@@ -17,7 +17,7 @@ connection = ximu3.Connection(devices[0].connection_info)
 result = connection.open()
 
 if result != ximu3.RESULT_OK:
-    raise Exception(f"Unable to open connection. {ximu3.result_to_string(result)}.")
+    raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
 
 # Example commands
 commands = [
@@ -49,6 +49,7 @@ def callback(responses: list[ximu3.CommandMessage | None]) -> None:
 
 if helpers.yes_or_no("Use async implementation?"):
     connection.send_commands_async(commands, callback)
+
     time.sleep(3)
 else:
     print_responses(connection.send_commands(commands))

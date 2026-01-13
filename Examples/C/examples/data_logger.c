@@ -4,8 +4,6 @@
 
 #define MAX_NUMBER_OF_CONNECTION (8)
 
-static void print_result(const XIMU3_Result result);
-
 void data_logger() {
     // Open all USB connections
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -17,14 +15,17 @@ void data_logger() {
         if (index > MAX_NUMBER_OF_CONNECTION) {
             break;
         }
-        printf("%s\n", XIMU3_device_to_string(devices.array[index]));
+
+        printf("Found %s\n", XIMU3_device_to_string(devices.array[index]));
 
         XIMU3_Connection *const connection = XIMU3_connection_new_usb(devices.array[index].usb_connection_info);
 
-        if (XIMU3_connection_open(connection) == XIMU3_ResultOk) {
+        const XIMU3_Result result = XIMU3_connection_open(connection);
+
+        if (result == XIMU3_ResultOk) {
             connections[number_of_connections++] = connection;
         } else {
-            printf("Unable to open connection\n");
+            printf("Unable to open %s. %s.\n", XIMU3_connection_get_info_string(connection), XIMU3_result_to_string(result));
             XIMU3_connection_free(connection);
         }
     }
@@ -44,24 +45,26 @@ void data_logger() {
 
         const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
 
-        if (result == XIMU3_ResultOk) {
-            sleep(3);
+        if (result != XIMU3_ResultOk) {
+            printf("Data logger failed. %s.\n", XIMU3_result_to_string(result));
         }
 
-        print_result(result);
+        sleep(3);
 
         XIMU3_data_logger_free(data_logger);
     } else {
-        print_result(XIMU3_data_logger_log(destination, name, connections, number_of_connections, 3));
+        const XIMU3_Result result = XIMU3_data_logger_log(destination, name, connections, number_of_connections, 3);
+
+        if (result != XIMU3_ResultOk) {
+            printf("Data logger failed. %s.\n", XIMU3_result_to_string(result));
+        }
     }
+
+    printf("Complete\n");
 
     // Close all connections
     for (uint32_t index = 0; index < number_of_connections; index++) {
         XIMU3_connection_close(connections[index]);
         XIMU3_connection_free(connections[index]);
     }
-}
-
-static void print_result(const XIMU3_Result result) {
-    printf("%s\n", XIMU3_result_to_string(result));
 }

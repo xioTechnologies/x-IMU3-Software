@@ -45,7 +45,7 @@ void error_callback(const XIMU3_ErrorMessage message, void *context);
 
 void end_of_file_callback(void *context);
 
-void run(XIMU3_Connection *const connection, const char *const connection_info_string) {
+void run(XIMU3_Connection *const connection) {
     // Add callbacks
     XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
     XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
@@ -74,7 +74,7 @@ void run(XIMU3_Connection *const connection, const char *const connection_info_s
     const XIMU3_Result result = XIMU3_connection_open(connection);
 
     if (result != XIMU3_ResultOk) {
-        printf("Unable to open %s. %s.\n", connection_info_string, XIMU3_result_to_string(result));
+        printf("Unable to open %s. %s.\n", XIMU3_connection_get_info_string(connection), XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
     }
@@ -84,6 +84,7 @@ void run(XIMU3_Connection *const connection, const char *const connection_info_s
 
     // Close connection
     sleep(60);
+
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }
@@ -93,13 +94,7 @@ void receive_error_callback(const XIMU3_ReceiveError error, void *context) {
 }
 
 void statistics_callback(const XIMU3_Statistics statistics, void *context) {
-    printf(TIMESTAMP_FORMAT UINT64_FORMAT
-           " bytes" UINT32_FORMAT
-           " bytes/s" UINT64_FORMAT
-           " messages" UINT32_FORMAT
-           " messages/s" UINT64_FORMAT
-           " errors" UINT32_FORMAT
-           " errors/s\n",
+    printf(TIMESTAMP_FORMAT UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
            statistics.timestamp,
            statistics.data_total,
            statistics.data_rate,

@@ -483,6 +483,8 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_get_info_mux(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_connection_get_info_string(IntPtr connection);
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_receive_error_callback(IntPtr connection, XIMU3_CallbackReceiveError callback, IntPtr context);

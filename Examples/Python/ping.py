@@ -9,13 +9,15 @@ devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 if not devices:
     raise Exception("No USB connections available")
 
-print(f"Found {devices[0].device_name} {devices[0].serial_number}")
+print(f"Found {devices[0]}")
 
 # Open connection
 connection = ximu3.Connection(devices[0].connection_info)
 
-if connection.open() != ximu3.RESULT_OK:
-    raise Exception("Unable to open connection")
+result = connection.open()
+
+if result != ximu3.RESULT_OK:
+    raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
 
 # Ping
 

@@ -14,7 +14,8 @@ void keep_open() {
         printf("No USB connections available\n");
         return;
     }
-    printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
+
+    printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
     // Open connection
     XIMU3_Connection *const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
@@ -25,6 +26,7 @@ void keep_open() {
 
     // Close connection
     sleep(60);
+
     XIMU3_keep_open_free(keep_open);
     XIMU3_connection_free(connection);
 }

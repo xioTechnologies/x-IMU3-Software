@@ -5,7 +5,7 @@ pub fn run() {
     let network_announcement = match NetworkAnnouncement::new() {
         Ok(network_announcement) => network_announcement,
         Err(error) => {
-            println!("Network announcement failed. {error}");
+            println!("Network announcement failed. {error}.");
             return;
         }
     };

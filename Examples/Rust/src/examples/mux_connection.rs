@@ -12,13 +12,13 @@ pub fn run() {
         return;
     };
 
-    println!("Found {} {}", device.device_name, device.serial_number);
+    println!("Found {device}");
 
     // Open connection
     let usb_connection = Connection::new(&device.connection_info);
 
-    if usb_connection.open().is_err() {
-        println!("Unable to open connection");
+    if let Err(error) = usb_connection.open() {
+        println!("Unable to open {}. {error}.", usb_connection.get_info());
         return;
     }
 

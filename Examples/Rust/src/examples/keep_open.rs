@@ -11,7 +11,7 @@ pub fn run() {
         return;
     };
 
-    println!("Found {} {}", device.device_name, device.serial_number);
+    println!("Found {device}");
 
     // Open connection
     let connection = Connection::new(&device.connection_info);
@@ -28,5 +28,6 @@ pub fn run() {
 
     // Close connection
     std::thread::sleep(std::time::Duration::from_secs(60));
+
     drop(keep_open);
 }

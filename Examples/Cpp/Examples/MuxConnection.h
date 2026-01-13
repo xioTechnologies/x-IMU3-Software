@@ -13,13 +13,15 @@ public:
             return;
         }
 
-        std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
+        std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
         // Open connection
         ximu3::Connection usbConnection(*ximu3::ConnectionInfo::from(devices[0]));
 
-        if (usbConnection.open() != ximu3::XIMU3_ResultOk) {
-            std::cout << "Unable to open connection" << std::endl;
+        const auto result = usbConnection.open();
+
+        if (result != ximu3::XIMU3_ResultOk) {
+            std::cout << "Unable to open " << usbConnection.getInfo()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
             return;
         }
 
