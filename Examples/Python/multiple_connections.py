@@ -8,10 +8,7 @@ class Connection:
     def __init__(self, connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | ximu3.TcpConnectionInfo | ximu3.UdpConnectionInfo | ximu3.BluetoothConnectionInfo | ximu3.FileConnectionInfo | ximu3.MuxConnectionInfo) -> None:
         self.__connection = ximu3.Connection(connection_info)
 
-        result = self.__connection.open()
-
-        if result != ximu3.RESULT_OK:
-            raise Exception(f"Unable to open {self.__connection.get_info()}. {ximu3.result_to_string(result)}.")
+        self.__connection.open()
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 

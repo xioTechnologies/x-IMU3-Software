@@ -15,13 +15,27 @@ static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args,
         return NULL;
     }
 
-    NetworkAnnouncement *const self = (NetworkAnnouncement *) subtype->tp_alloc(subtype, 0);
+    XIMU3_NetworkAnnouncement *const network_announcement = XIMU3_network_announcement_new();
 
-    if (self == NULL) {
+    const XIMU3_Result result = XIMU3_network_announcement_get_result(network_announcement);
+
+    if (result != XIMU3_ResultOk) {
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_SetString(PyExc_RuntimeError, result_string);
+
+        XIMU3_network_announcement_free(network_announcement);
         return NULL;
     }
 
-    self->network_announcement = XIMU3_network_announcement_new();
+    NetworkAnnouncement *const self = (NetworkAnnouncement *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        XIMU3_network_announcement_free(network_announcement);
+        return NULL;
+    }
+
+    self->network_announcement = network_announcement;
     return (PyObject *) self;
 }
 
@@ -30,12 +44,6 @@ static void network_announcement_free(NetworkAnnouncement *self) {
         XIMU3_network_announcement_free(self->network_announcement);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
-}
-
-static PyObject *network_announcement_get_result(NetworkAnnouncement *self, PyObject *args) {
-    const XIMU3_Result result = XIMU3_network_announcement_get_result(self->network_announcement);
-
-    return PyLong_FromLong((long) result);
 }
 
 static PyObject *network_announcement_add_callback(NetworkAnnouncement *self, PyObject *arg) {
@@ -81,7 +89,6 @@ static PyObject *network_announcement_get_messages_after_short_delay(NetworkAnno
 }
 
 static PyMethodDef network_announcement_methods[] = {
-    {"get_result", (PyCFunction) network_announcement_get_result, METH_NOARGS, ""},
     {"add_callback", (PyCFunction) network_announcement_add_callback, METH_O, ""},
     {"remove_callback", (PyCFunction) network_announcement_remove_callback, METH_O, ""},
     {"get_messages", (PyCFunction) network_announcement_get_messages, METH_NOARGS, ""},

@@ -108,7 +108,15 @@ static void connection_free(Connection *self) {
 static PyObject *connection_open(Connection *self, PyObject *args) {
     const XIMU3_Result result = XIMU3_connection_open(self->connection);
 
-    return PyLong_FromLong((long) result);
+    if (result != XIMU3_ResultOk) {
+        const char *const connection_info = XIMU3_connection_get_info_string(self->connection);
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_Format(PyExc_RuntimeError, "Unable to open %s. %s.", connection_info, result_string);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *connection_open_async(Connection *self, PyObject *arg) {

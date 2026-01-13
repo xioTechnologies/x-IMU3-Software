@@ -12,12 +12,9 @@ for device in devices:
 
     connection = ximu3.Connection(device.connection_info)
 
-    result = connection.open()
+    connection.open()
 
-    if result == ximu3.RESULT_OK:
-        connections.append(connection)
-    else:
-        raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
+    connections.append(connection)
 
 if not connections:
     raise Exception("No USB connections available")
@@ -29,19 +26,11 @@ name = "x-IMU3 Data Logger Example"
 if helpers.yes_or_no("Use async implementation?"):
     data_logger = ximu3.DataLogger(destination, name, connections)
 
-    result = data_logger.get_result()
-
-    if result != ximu3.RESULT_OK:
-        raise Exception(f"Data logger failed. {ximu3.result_to_string(result)}.")
-
     time.sleep(3)
 
     del data_logger
 else:
-    result = ximu3.DataLogger.log(destination, name, connections, 3)
-
-    if result != ximu3.RESULT_OK:
-        raise Exception(f"Data logger failed. {ximu3.result_to_string(result)}.")
+    ximu3.DataLogger.log(destination, name, connections, 3)
 
 # Close all connections
 for connection in connections:

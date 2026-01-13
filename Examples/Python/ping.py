@@ -14,10 +14,7 @@ print(f"Found {devices[0]}")
 # Open connection
 connection = ximu3.Connection(devices[0].connection_info)
 
-result = connection.open()
-
-if result != ximu3.RESULT_OK:
-    raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
+connection.open()
 
 # Ping
 
