@@ -50,8 +50,8 @@ impl<'a> DataLogger<'a> {
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
-                move |receive_error| {
-                    sender.send((path.join("ReceiveError.txt"), "".to_string(), receive_error.to_string() + "\n")).ok();
+                move |error| {
+                    sender.send((path.join("ReceiveError.txt"), "".to_string(), error.to_string() + "\n")).ok();
                 }
             })));
 
@@ -109,8 +109,8 @@ impl<'a> DataLogger<'a> {
                 if let Ok(json) = std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
                     if let Ok(array) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
                         for element in array {
-                            if let Some(ping_response) = PingResponse::parse(&element.to_string().as_bytes()) {
-                                let new_path = Path::new(&root).join(format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface));
+                            if let Some(response) = PingResponse::parse(&element.to_string().as_bytes()) {
+                                let new_path = Path::new(&root).join(format!("{} {} ({})", response.device_name, response.serial_number, response.interface));
                                 std::fs::rename(path, new_path).ok();
                                 break;
                             }

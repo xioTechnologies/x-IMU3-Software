@@ -109,11 +109,11 @@ impl PortScanner {
         let connection = Connection::new(&ConnectionInfo::SerialConnectionInfo(connection_info.clone()));
 
         if let Ok(_) = connection.open() {
-            if let Some(ping_response) = connection.ping() {
+            if let Some(response) = connection.ping() {
                 let device = Device {
-                    device_name: ping_response.device_name,
-                    serial_number: ping_response.serial_number,
-                    connection_info: match ping_response.interface.as_str() {
+                    device_name: response.device_name,
+                    serial_number: response.serial_number,
+                    connection_info: match response.interface.as_str() {
                         "USB" => ConnectionInfo::UsbConnectionInfo(connection_info.into()),
                         "Serial" => ConnectionInfo::SerialConnectionInfo(connection_info),
                         "Bluetooth" => ConnectionInfo::BluetoothConnectionInfo(connection_info.into()),

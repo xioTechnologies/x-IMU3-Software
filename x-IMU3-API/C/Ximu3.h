@@ -446,9 +446,9 @@ extern "C" {
 
 void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
 
-enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
+enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float status);
 
-const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_status);
+const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus status);
 
 void XIMU3_command_messages_free(struct XIMU3_CommandMessages messages);
 
@@ -650,7 +650,7 @@ struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages
 
 struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages_after_short_delay(struct XIMU3_NetworkAnnouncement *network_announcement);
 
-const char *XIMU3_ping_response_to_string(struct XIMU3_PingResponse ping_response);
+const char *XIMU3_ping_response_to_string(struct XIMU3_PingResponse response);
 
 const char *XIMU3_device_to_string(struct XIMU3_Device device);
 
@@ -670,7 +670,7 @@ struct XIMU3_Devices XIMU3_port_scanner_scan_filter(enum XIMU3_PortType port_typ
 
 struct XIMU3_CharArrays XIMU3_port_scanner_get_port_names(void);
 
-const char *XIMU3_receive_error_to_string(enum XIMU3_ReceiveError receive_error);
+const char *XIMU3_receive_error_to_string(enum XIMU3_ReceiveError error);
 
 const char *XIMU3_result_to_string(enum XIMU3_Result result);
 

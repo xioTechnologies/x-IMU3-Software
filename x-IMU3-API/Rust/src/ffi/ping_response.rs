@@ -10,12 +10,12 @@ pub struct PingResponseC {
 }
 
 impl From<Option<PingResponse>> for PingResponseC {
-    fn from(ping_response: Option<PingResponse>) -> Self {
-        match ping_response {
-            Some(ping_response) => Self {
-                interface: str_to_char_array(&ping_response.interface),
-                device_name: str_to_char_array(&ping_response.device_name),
-                serial_number: str_to_char_array(&ping_response.serial_number),
+    fn from(response: Option<PingResponse>) -> Self {
+        match response {
+            Some(response) => Self {
+                interface: str_to_char_array(&response.interface),
+                device_name: str_to_char_array(&response.device_name),
+                serial_number: str_to_char_array(&response.serial_number),
             },
             None => Self {
                 interface: EMPTY_CHAR_ARRAY,
@@ -27,16 +27,16 @@ impl From<Option<PingResponse>> for PingResponseC {
 }
 
 impl From<PingResponseC> for PingResponse {
-    fn from(ping_response: PingResponseC) -> Self {
+    fn from(response: PingResponseC) -> Self {
         Self {
-            interface: unsafe { char_array_to_string(&ping_response.interface) },
-            device_name: unsafe { char_array_to_string(&ping_response.device_name) },
-            serial_number: unsafe { char_array_to_string(&ping_response.serial_number) },
+            interface: unsafe { char_array_to_string(&response.interface) },
+            device_name: unsafe { char_array_to_string(&response.device_name) },
+            serial_number: unsafe { char_array_to_string(&response.serial_number) },
         }
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_ping_response_to_string(ping_response: PingResponseC) -> *const c_char {
-    str_to_char_ptr(&PingResponse::from(ping_response).to_string())
+pub extern "C" fn XIMU3_ping_response_to_string(response: PingResponseC) -> *const c_char {
+    str_to_char_ptr(&PingResponse::from(response).to_string())
 }

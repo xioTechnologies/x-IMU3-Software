@@ -36,7 +36,7 @@ public:
 
             std::this_thread::sleep_for(std::chrono::seconds(3));
         } else {
-            printPingResponse(connection.ping());
+            printResponse(connection.ping());
         }
 
         // Close connection
@@ -44,17 +44,17 @@ public:
     }
 
 private:
-    std::function<void(std::optional<ximu3::XIMU3_PingResponse>)> callback = [](const auto pingResponse) {
-        printPingResponse(pingResponse);
+    std::function<void(std::optional<ximu3::XIMU3_PingResponse>)> callback = [](const auto response) {
+        printResponse(response);
     };
 
-    static void printPingResponse(const std::optional<ximu3::XIMU3_PingResponse> &pingResponse) {
-        if (pingResponse.has_value() == false) {
+    static void printResponse(const std::optional<ximu3::XIMU3_PingResponse> &response) {
+        if (response.has_value() == false) {
             printf("No response");
             return;
         }
 
-        std::cout << pingResponse->interface << ", " << pingResponse->device_name << ", " << pingResponse->serial_number << std::endl;
-        // std::cout << ximu3::XIMU3_ping_response_to_string(*pingResponse) << std::endl; // alternative to above
+        std::cout << response->interface << ", " << response->device_name << ", " << response->serial_number << std::endl;
+        // std::cout << ximu3::XIMU3_ping_response_to_string(*response) << std::endl; // alternative to above
     }
 };

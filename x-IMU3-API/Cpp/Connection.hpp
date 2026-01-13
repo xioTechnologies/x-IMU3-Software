@@ -84,8 +84,8 @@ namespace ximu3 {
             struct WrappedCallback {
                 std::function<void(std::optional<XIMU3_PingResponse>)> callback;
 
-                void operator()(XIMU3_PingResponse pingResponse) const {
-                    callback(toOptional(pingResponse));
+                void operator()(XIMU3_PingResponse response) const {
+                    callback(toOptional(response));
                     delete this;
                 }
             };
@@ -242,12 +242,12 @@ namespace ximu3 {
 
         XIMU3_Connection *connection;
 
-        static std::optional<XIMU3_PingResponse> toOptional(const XIMU3_PingResponse &pingResponse) {
-            if (std::strlen(pingResponse.interface) == 0) {
+        static std::optional<XIMU3_PingResponse> toOptional(const XIMU3_PingResponse &response) {
+            if (std::strlen(response.interface) == 0) {
                 return {};
             }
 
-            return pingResponse;
+            return response;
         }
 
         static std::vector<std::optional<CommandMessage> > toVectorAndFree(const XIMU3_CommandMessages &responses) {

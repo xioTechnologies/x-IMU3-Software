@@ -35,28 +35,28 @@ namespace Ximu3Examples
             }
             else
             {
-                PrintPingResponse(connection.Ping());
+                PrintResponse(connection.Ping());
             }
 
             // Close connection
             connection.Close();
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_PingResponse? pingResponse)
+        private void Callback(Ximu3.CApi.XIMU3_PingResponse? response)
         {
-            PrintPingResponse(pingResponse);
+            PrintResponse(response);
         }
 
-        static private void PrintPingResponse(Ximu3.CApi.XIMU3_PingResponse? pingResponse)
+        static private void PrintResponse(Ximu3.CApi.XIMU3_PingResponse? response)
         {
-            if (pingResponse == null)
+            if (response == null)
             {
                 Console.WriteLine("No response");
                 return;
             }
 
-            Console.WriteLine(Ximu3.Helpers.ToString(pingResponse.Value.interface_) + ", " + Ximu3.Helpers.ToString(pingResponse.Value.device_name) + ", " + Ximu3.Helpers.ToString(pingResponse.Value.serial_number));
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ping_response_to_string(pingResponse.Value))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(response.Value.interface_) + ", " + Ximu3.Helpers.ToString(response.Value.device_name) + ", " + Ximu3.Helpers.ToString(response.Value.serial_number));
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ping_response_to_string(response.Value))); // alternative to above
         }
     }
 }

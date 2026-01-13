@@ -74,17 +74,17 @@ namespace Ximu3
             return CApi.XIMU3_connection_ping(connection);
         }
 
-        public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse? pingResponse);
+        public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse? response);
 
-        private static void PingAsyncCallbackInternal(CApi.XIMU3_PingResponse pingResponse, IntPtr context)
+        private static void PingAsyncCallbackInternal(CApi.XIMU3_PingResponse response, IntPtr context)
         {
-            if (Helpers.ToString(pingResponse.interface_).Length == 0)
+            if (Helpers.ToString(response.interface_).Length == 0)
             {
                 Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(null);
                 return;
             }
 
-            Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(pingResponse);
+            Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(response);
         }
 
         public void PingAsync(PingAsyncCallback callback)

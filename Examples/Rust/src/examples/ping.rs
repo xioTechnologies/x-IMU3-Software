@@ -24,26 +24,26 @@ pub fn run() {
 
     // Ping
     if helpers::yes_or_no("Use async implementation?") {
-        let closure = Box::new(|ping_response| {
-            print_ping_response(ping_response);
+        let closure = Box::new(|response| {
+            print_response(response);
         });
 
         connection.ping_async(closure);
 
         std::thread::sleep(std::time::Duration::from_secs(3));
     } else {
-        print_ping_response(connection.ping());
+        print_response(connection.ping());
     }
 
     // Close connection
     connection.close();
 }
 
-fn print_ping_response(ping_response: Option<PingResponse>) {
-    match ping_response {
-        Some(ping_response) => {
-            println!("{}, {}, {}", ping_response.interface, ping_response.device_name, ping_response.serial_number);
-            // println!("{ping_response}"); // alternative to above
+fn print_response(response: Option<PingResponse>) {
+    match response {
+        Some(response) => {
+            println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
+            // println!("{response}"); // alternative to above
         }
         None => println!("No response"),
     }

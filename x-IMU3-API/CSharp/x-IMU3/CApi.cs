@@ -427,9 +427,9 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_char_arrays_free(XIMU3_CharArrays char_arrays);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
+        public static extern XIMU3_ChargingStatus XIMU3_charging_status_from_float(float status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus charging_status);
+        public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus status);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_command_messages_free(XIMU3_CommandMessages messages);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -631,7 +631,7 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages_after_short_delay(IntPtr network_announcement);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_ping_response_to_string(XIMU3_PingResponse ping_response);
+        public static extern IntPtr XIMU3_ping_response_to_string(XIMU3_PingResponse response);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_device_to_string(XIMU3_Device device);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -651,7 +651,7 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CharArrays XIMU3_port_scanner_get_port_names();
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_receive_error_to_string(XIMU3_ReceiveError receive_error);
+        public static extern IntPtr XIMU3_receive_error_to_string(XIMU3_ReceiveError error);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_result_to_string(XIMU3_Result result);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

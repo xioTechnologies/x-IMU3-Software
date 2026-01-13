@@ -137,13 +137,13 @@ static PyObject *connection_close(Connection *self, PyObject *args) {
 }
 
 static PyObject *connection_ping(Connection *self, PyObject *args) {
-    XIMU3_PingResponse ping_response;
+    XIMU3_PingResponse response;
 
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        ping_response = XIMU3_connection_ping(self->connection);
+        response = XIMU3_connection_ping(self->connection);
     Py_END_ALLOW_THREADS
 
-    return ping_response_from(&ping_response);
+    return ping_response_from(&response);
 }
 
 static PyObject *connection_ping_async(Connection *self, PyObject *arg) {
