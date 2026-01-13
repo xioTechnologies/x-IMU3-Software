@@ -15,7 +15,7 @@ class Connection:
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
-        if ping_response.result != ximu3.RESULT_OK:
+        if ping_response is None:
             raise Exception(f"Ping failed for {connection_info.to_string()}. {ximu3.result_to_string(ping_response.result)}.")
 
         self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
@@ -51,12 +51,10 @@ class Connection:
 
         command = f'{{"{key}":{value}}}'
 
-        responses = self.__connection.send_commands([command])
+        response = self.__connection.send_command(command)
 
-        if not responses:
+        if response is None:
             raise Exception(f"No response. {command} sent to {self.__connection.get_info().to_string()}")
-
-        response = ximu3.CommandMessage.parse(responses[0])
 
         if response.error:
             raise Exception(f"{response.error}. {command} sent to {self.__connection.get_info().to_string()}")
