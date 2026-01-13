@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "EarthAccelerationGraphWindow.h"
 
-EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Acceleration (g)",
-                  { "X", "Y", "Z" },
-                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
+                  {"X", "Y", "Z"},
+                  {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
+        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));
 }
 
-EarthAccelerationGraphWindow::~EarthAccelerationGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+EarthAccelerationGraphWindow::~EarthAccelerationGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

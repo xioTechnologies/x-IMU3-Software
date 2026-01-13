@@ -2,17 +2,13 @@
 
 #include "Connection.h"
 
-class UdpConnection : public Connection
-{
+class UdpConnection : public Connection {
 public:
-    UdpConnection()
-    {
-        if (helpers::yesOrNo("Search for connections?"))
-        {
+    UdpConnection() {
+        if (helpers::yesOrNo("Search for connections?")) {
             const auto messages = ximu3::NetworkAnnouncement().getMessagesAfterShortDelay();
 
-            if (messages.empty())
-            {
+            if (messages.empty()) {
                 std::cout << "No UDP connections available" << std::endl;
                 return;
             }
@@ -22,9 +18,7 @@ public:
             const ximu3::UdpConnectionInfo connectionInfo(messages[0]);
 
             run(connectionInfo);
-        }
-        else
-        {
+        } else {
             const ximu3::UdpConnectionInfo connectionInfo("192.168.1.1", 9000, 8000); // replace with actual connection info
 
             run(connectionInfo);

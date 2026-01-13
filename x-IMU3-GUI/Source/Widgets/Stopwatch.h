@@ -2,14 +2,13 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class Stopwatch : public juce::TextButton
-{
+class Stopwatch : public juce::TextButton {
 public:
     Stopwatch();
 
     ~Stopwatch() override;
 
-    void setTime(const juce::RelativeTime& time);
+    void setTime(const juce::RelativeTime &time);
 
 private:
     class LookAndFeel;
@@ -18,4 +17,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Stopwatch)
 };
-

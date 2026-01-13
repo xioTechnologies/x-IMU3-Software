@@ -10,8 +10,7 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class ManualConnectionDialog : public Dialog
-{
+class ManualConnectionDialog : public Dialog {
 public:
     ~ManualConnectionDialog() override;
 
@@ -20,16 +19,15 @@ public:
     virtual std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const = 0;
 
 protected:
-    ManualConnectionDialog(const juce::String& dialogTitle);
+    ManualConnectionDialog(const juce::String &dialogTitle);
 
 private:
-    CustomToggleButton keepOpenToggle { "Keep Open" };
+    CustomToggleButton keepOpenToggle{"Keep Open"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualConnectionDialog)
 };
 
-class ManualUsbConnectionDialog : public ManualConnectionDialog
-{
+class ManualUsbConnectionDialog : public ManualConnectionDialog {
 public:
     ManualUsbConnectionDialog();
 
@@ -40,14 +38,13 @@ public:
     std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
 
 private:
-    SimpleLabel portNameLabel { "Port Name:" };
+    SimpleLabel portNameLabel{"Port Name:"};
     PortNameComboBox portNameValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualUsbConnectionDialog)
 };
 
-class ManualSerialConnectionDialog : public ManualConnectionDialog
-{
+class ManualSerialConnectionDialog : public ManualConnectionDialog {
 public:
     ManualSerialConnectionDialog();
 
@@ -58,20 +55,19 @@ public:
     std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
 
 private:
-    SimpleLabel portNameLabel { "Port Name:" };
-    SimpleLabel baudRateLabel { "Baud Rate:" };
+    SimpleLabel portNameLabel{"Port Name:"};
+    SimpleLabel baudRateLabel{"Baud Rate:"};
 
     PortNameComboBox portNameValue;
     CustomComboBox baudRateValue;
-    CustomToggleButton rtsCtsEnabledToggle { "RTS/CTS Enabled" };
+    CustomToggleButton rtsCtsEnabledToggle{"RTS/CTS Enabled"};
 
     void validateDialog();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualSerialConnectionDialog)
 };
 
-class ManualTcpConnectionDialog : public ManualConnectionDialog
-{
+class ManualTcpConnectionDialog : public ManualConnectionDialog {
 public:
     ManualTcpConnectionDialog();
 
@@ -82,8 +78,8 @@ public:
     std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
 
 private:
-    SimpleLabel ipAddressLabel { "IP Address:" };
-    SimpleLabel portLabel { "Port:" };
+    SimpleLabel ipAddressLabel{"IP Address:"};
+    SimpleLabel portLabel{"Port:"};
 
     CustomTextEditor ipAddressValue;
     CustomTextEditor portValue;
@@ -93,8 +89,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualTcpConnectionDialog)
 };
 
-class ManualUdpConnectionDialog : public ManualConnectionDialog
-{
+class ManualUdpConnectionDialog : public ManualConnectionDialog {
 public:
     ManualUdpConnectionDialog();
 
@@ -105,17 +100,17 @@ public:
     std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
 
 private:
-    SimpleLabel ipAddressLabel { "IP Address:" };
-    SimpleLabel sendPortLabel { "Send Port:" };
-    SimpleLabel receivePortLabel { "Receive Port:" };
+    SimpleLabel ipAddressLabel{"IP Address:"};
+    SimpleLabel sendPortLabel{"Send Port:"};
+    SimpleLabel receivePortLabel{"Receive Port:"};
 
     CustomTextEditor ipAddressValue;
     CustomTextEditor ipAddressBroadcastValue;
     CustomTextEditor sendPortValue;
     CustomTextEditor receivePortValue;
     CustomTextEditor receivePortFromIpValue;
-    CustomToggleButton broadcastToggle { "Broadcast" };
-    CustomToggleButton fromIpAddressToggle { "From IP Address" };
+    CustomToggleButton broadcastToggle{"Broadcast"};
+    CustomToggleButton fromIpAddressToggle{"From IP Address"};
 
     juce::String getIpAddressValue() const;
 
@@ -126,8 +121,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualUdpConnectionDialog)
 };
 
-class ManualBluetoothConnectionDialog : public ManualConnectionDialog
-{
+class ManualBluetoothConnectionDialog : public ManualConnectionDialog {
 public:
     ManualBluetoothConnectionDialog();
 
@@ -138,36 +132,35 @@ public:
     std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
 
 private:
-    SimpleLabel portNameLabel { "Port Name:" };
+    SimpleLabel portNameLabel{"Port Name:"};
     PortNameComboBox portNameValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualBluetoothConnectionDialog)
 };
 
-class ManualMuxConnectionDialog : public Dialog
-{
+class ManualMuxConnectionDialog : public Dialog {
 public:
-    ManualMuxConnectionDialog(std::vector<ximu3::Connection*> connections_, std::pair<std::uint8_t, std::uint8_t> channels);
+    ManualMuxConnectionDialog(std::vector<ximu3::Connection *> connections_, std::pair<std::uint8_t, std::uint8_t> channels);
 
     ~ManualMuxConnectionDialog() override;
 
     void resized() override;
 
-    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo>> getConnectionInfos() const;
+    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo> > getConnectionInfos() const;
 
     std::pair<std::uint8_t, std::uint8_t> getChannels() const;
 
 private:
-    const std::vector<ximu3::Connection*> connections;
+    const std::vector<ximu3::Connection *> connections;
 
-    SimpleLabel connectionLabel { "Connection:" };
-    CustomComboBox connectionValue { "No Connections" };
+    SimpleLabel connectionLabel{"Connection:"};
+    CustomComboBox connectionValue{"No Connections"};
 
-    SimpleLabel channelsLabel { "Channels:" };
+    SimpleLabel channelsLabel{"Channels:"};
     CustomComboBox firstChannelValue;
-    SimpleLabel toLabel { "to", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel toLabel{"to", UIFonts::getDefaultFont(), juce::Justification::centred};
     CustomComboBox lastChannelValue;
-    CustomToggleButton singleToggle { "Single" };
+    CustomToggleButton singleToggle{"Single"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ManualMuxConnectionDialog)
 };

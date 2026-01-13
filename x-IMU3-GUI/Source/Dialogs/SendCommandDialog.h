@@ -7,18 +7,16 @@
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
-class SendCommandDialog : public Dialog
-{
+class SendCommandDialog : public Dialog {
 public:
-    explicit SendCommandDialog(const juce::String& title, const std::optional<juce::Colour>& tag_ = {});
+    explicit SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &tag_ = {});
 
     void resized() override;
 
     std::string getCommand();
 
 private:
-    enum class Type
-    {
+    enum class Type {
         string,
         number,
         true_,
@@ -26,19 +24,19 @@ private:
         null,
     };
 
-    SimpleLabel keyLabel { "Key:" };
+    SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
-    IconButton commandKeysButton { BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this) };
+    IconButton commandKeysButton{BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this)};
 
-    SimpleLabel valueLabel { "Value:" };
+    SimpleLabel valueLabel{"Value:"};
     CustomComboBox typeValue;
     CustomTextEditor stringValue;
     CustomTextEditor numberValue;
 
-    SimpleLabel commandLabel { "Command:" };
+    SimpleLabel commandLabel{"Command:"};
     CustomTextEditor commandValue;
 
-    IconButton previousCommandsButton { BinaryData::history_svg, "Previous Commands", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this) };
+    IconButton previousCommandsButton{BinaryData::history_svg, "Previous Commands", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this)};
 
     const juce::ValueTree commandKeys = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
@@ -47,7 +45,7 @@ private:
 
     static juce::String toString(const Type type);
 
-    static juce::String createCommand(const juce::String& key, const Type type, const juce::String& string, const juce::String& number);
+    static juce::String createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number);
 
     void selectCommand(const juce::ValueTree command);
 

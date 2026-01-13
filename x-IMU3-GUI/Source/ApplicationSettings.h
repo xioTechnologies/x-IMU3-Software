@@ -3,48 +3,41 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Ximu3.hpp"
 
-class ApplicationSettings : private juce::DeletedAtShutdown, private juce::ValueTree::Listener
-{
-    juce::ValueTree tree { "ApplicationSettings" };
+class ApplicationSettings : private juce::DeletedAtShutdown, private juce::ValueTree::Listener {
+    juce::ValueTree tree{"ApplicationSettings"};
 
 public:
-    struct
-    {
+    struct {
         juce::ValueTree tree;
-        juce::CachedValue<bool> showOnStartup { tree, "showOnStartup", nullptr, true };
-        juce::CachedValue<bool> usb { tree, "usb", nullptr, true };
-        juce::CachedValue<bool> serial { tree, "serial", nullptr, true };
-        juce::CachedValue<bool> tcp { tree, "tcp", nullptr, false };
-        juce::CachedValue<bool> udp { tree, "udp", nullptr, true };
-        juce::CachedValue<bool> bluetooth { tree, "bluetooth", nullptr, true };
-    } availableConnections { tree.getOrCreateChildWithName("AvailableConnections", nullptr) };
+        juce::CachedValue<bool> showOnStartup{tree, "showOnStartup", nullptr, true};
+        juce::CachedValue<bool> usb{tree, "usb", nullptr, true};
+        juce::CachedValue<bool> serial{tree, "serial", nullptr, true};
+        juce::CachedValue<bool> tcp{tree, "tcp", nullptr, false};
+        juce::CachedValue<bool> udp{tree, "udp", nullptr, true};
+        juce::CachedValue<bool> bluetooth{tree, "bluetooth", nullptr, true};
+    } availableConnections{tree.getOrCreateChildWithName("AvailableConnections", nullptr)};
 
-    struct
-    {
+    struct {
         juce::ValueTree tree;
-        juce::CachedValue<uint32_t> retries { tree, "retries", nullptr, XIMU3_DEFAULT_RETRIES };
-        juce::CachedValue<uint32_t> timeout { tree, "timeout", nullptr, XIMU3_DEFAULT_TIMEOUT };
-        juce::CachedValue<bool> closeSendingCommandDialogWhenComplete { tree, "closeSendingCommandDialogWhenComplete", nullptr, true };
-    } commands { tree.getOrCreateChildWithName("Commands", nullptr) };
+        juce::CachedValue<uint32_t> retries{tree, "retries", nullptr, XIMU3_DEFAULT_RETRIES};
+        juce::CachedValue<uint32_t> timeout{tree, "timeout", nullptr, XIMU3_DEFAULT_TIMEOUT};
+        juce::CachedValue<bool> closeSendingCommandDialogWhenComplete{tree, "closeSendingCommandDialogWhenComplete", nullptr, true};
+    } commands{tree.getOrCreateChildWithName("Commands", nullptr)};
 
-    static ApplicationSettings& getSingleton()
-    {
-        static auto* singleton = new ApplicationSettings();
+    static ApplicationSettings &getSingleton() {
+        static auto *singleton = new ApplicationSettings();
         return *singleton;
     }
 
-    static juce::File getDirectory()
-    {
+    static juce::File getDirectory() {
         return juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile(juce::JUCEApplication::getInstance()->getApplicationName());
     }
 
-    juce::ValueTree& getTree()
-    {
+    juce::ValueTree &getTree() {
         return tree;
     }
 
-    void restoreDefault()
-    {
+    void restoreDefault() {
         file.deleteFile();
         load();
     }
@@ -52,13 +45,11 @@ public:
 private:
     const juce::File file = getDirectory().getChildFile("Application Settings.xml");
 
-    ApplicationSettings()
-    {
+    ApplicationSettings() {
         load();
     }
 
-    void load()
-    {
+    void load() {
         tree.removeListener(this);
 
         auto rootTree = juce::ValueTree::fromXml(file.loadFileAsString());
@@ -68,8 +59,7 @@ private:
         tree.addListener(this);
     }
 
-    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override
-    {
+    void valueTreePropertyChanged(juce::ValueTree &, const juce::Identifier &) override {
         file.create();
         file.replaceWithText(tree.toXmlString());
     }
@@ -78,15 +68,12 @@ private:
 };
 
 template<>
-struct juce::VariantConverter<uint32_t>
-{
-    static uint32_t fromVar(const juce::var& value)
-    {
+struct juce::VariantConverter<uint32_t> {
+    static uint32_t fromVar(const juce::var &value) {
         return (uint32_t) ((int) value);
     }
 
-    static juce::var toVar(uint32_t value)
-    {
+    static juce::var toVar(uint32_t value) {
         return (int) value;
     }
 };

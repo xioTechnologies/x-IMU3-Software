@@ -9,18 +9,15 @@
 #include "Widgets/Icon.h"
 #include "Widgets/SimpleLabel.h"
 
-class DataLoggerSettingsDialog : public Dialog
-{
+class DataLoggerSettingsDialog : public Dialog {
 public:
-    struct Settings
-    {
+    struct Settings {
         juce::File destination = ApplicationSettings::getDirectory().getChildFile("Data Logger");
         juce::String name;
         bool nameEmpty = true;
         float timeValue = 10.0f;
 
-        enum class TimeUnit
-        {
+        enum class TimeUnit {
             unlimited,
             hours,
             minutes,
@@ -29,10 +26,8 @@ public:
 
         TimeUnit timeUnit = TimeUnit::unlimited;
 
-        std::optional<juce::RelativeTime> getTime() const
-        {
-            switch (timeUnit)
-            {
+        std::optional<juce::RelativeTime> getTime() const {
+            switch (timeUnit) {
                 case TimeUnit::unlimited:
                     return {};
                 case TimeUnit::hours:
@@ -46,18 +41,18 @@ public:
         }
     };
 
-    explicit DataLoggerSettingsDialog(const Settings& settings);
+    explicit DataLoggerSettingsDialog(const Settings &settings);
 
     void resized() override;
 
     Settings getSettings() const;
 
 private:
-    SimpleLabel destinationLabel { "Destination:" };
-    FileSelector destinationSelector { "Select Destination", {} };
-    SimpleLabel nameLabel { "Name:" };
+    SimpleLabel destinationLabel{"Destination:"};
+    FileSelector destinationSelector{"Select Destination", {}};
+    SimpleLabel nameLabel{"Name:"};
     CustomTextEditor nameValue;
-    SimpleLabel timeLabel { "Time:" };
+    SimpleLabel timeLabel{"Time:"};
     CustomTextEditor timeValue;
     CustomComboBox timeUnit;
 

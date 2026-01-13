@@ -6,62 +6,54 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_QuaternionMessage message;
 } QuaternionMessage;
 
-static void quaternion_message_free(QuaternionMessage* self)
-{
+static void quaternion_message_free(QuaternionMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* quaternion_message_get_timestamp(QuaternionMessage* self)
-{
+static PyObject *quaternion_message_get_timestamp(QuaternionMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* quaternion_message_get_w(QuaternionMessage* self)
-{
+static PyObject *quaternion_message_get_w(QuaternionMessage *self) {
     return Py_BuildValue("f", self->message.w);
 }
 
-static PyObject* quaternion_message_get_x(QuaternionMessage* self)
-{
+static PyObject *quaternion_message_get_x(QuaternionMessage *self) {
     return Py_BuildValue("f", self->message.x);
 }
 
-static PyObject* quaternion_message_get_y(QuaternionMessage* self)
-{
+static PyObject *quaternion_message_get_y(QuaternionMessage *self) {
     return Py_BuildValue("f", self->message.y);
 }
 
-static PyObject* quaternion_message_get_z(QuaternionMessage* self)
-{
+static PyObject *quaternion_message_get_z(QuaternionMessage *self) {
     return Py_BuildValue("f", self->message.z);
 }
 
-static PyObject* quaternion_message_to_string(QuaternionMessage* self, PyObject* args)
-{
+static PyObject *quaternion_message_to_string(QuaternionMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_quaternion_message_to_string(self->message));
 }
 
-static PyObject* quaternion_message_to_euler_angles_message(QuaternionMessage* self, PyObject* args);
+static PyObject *quaternion_message_to_euler_angles_message(QuaternionMessage *self, PyObject *args);
 
 static PyGetSetDef quaternion_message_get_set[] = {
-    { "timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL },
-    { "w", (getter) quaternion_message_get_w, NULL, "", NULL },
-    { "x", (getter) quaternion_message_get_x, NULL, "", NULL },
-    { "y", (getter) quaternion_message_get_y, NULL, "", NULL },
-    { "z", (getter) quaternion_message_get_z, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) quaternion_message_get_timestamp, NULL, "", NULL},
+    {"w", (getter) quaternion_message_get_w, NULL, "", NULL},
+    {"x", (getter) quaternion_message_get_x, NULL, "", NULL},
+    {"y", (getter) quaternion_message_get_y, NULL, "", NULL},
+    {"z", (getter) quaternion_message_get_z, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef quaternion_message_methods[] = {
-    { "to_string", (PyCFunction) quaternion_message_to_string, METH_NOARGS, "" },
-    { "to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) quaternion_message_to_string, METH_NOARGS, ""},
+    {"to_euler_angles_message", (PyCFunction) quaternion_message_to_euler_angles_message, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject quaternion_message_object = {
@@ -73,23 +65,20 @@ static PyTypeObject quaternion_message_object = {
     .tp_methods = quaternion_message_methods,
 };
 
-static PyObject* quaternion_message_from(const XIMU3_QuaternionMessage* const message)
-{
-    QuaternionMessage* const self = (QuaternionMessage*) quaternion_message_object.tp_alloc(&quaternion_message_object, 0);
+static PyObject *quaternion_message_from(const XIMU3_QuaternionMessage *const message) {
+    QuaternionMessage *const self = (QuaternionMessage *) quaternion_message_object.tp_alloc(&quaternion_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void quaternion_message_callback(XIMU3_QuaternionMessage data, void* context)
-{
+static void quaternion_message_callback(XIMU3_QuaternionMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = quaternion_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = quaternion_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

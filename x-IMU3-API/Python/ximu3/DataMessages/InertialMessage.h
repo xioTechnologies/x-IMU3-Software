@@ -6,71 +6,61 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_InertialMessage message;
 } InertialMessage;
 
-static void inertial_message_free(InertialMessage* self)
-{
+static void inertial_message_free(InertialMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* inertial_message_get_timestamp(InertialMessage* self)
-{
+static PyObject *inertial_message_get_timestamp(InertialMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* inertial_message_get_gyroscope_x(InertialMessage* self)
-{
+static PyObject *inertial_message_get_gyroscope_x(InertialMessage *self) {
     return Py_BuildValue("f", self->message.gyroscope_x);
 }
 
-static PyObject* inertial_message_get_gyroscope_y(InertialMessage* self)
-{
+static PyObject *inertial_message_get_gyroscope_y(InertialMessage *self) {
     return Py_BuildValue("f", self->message.gyroscope_y);
 }
 
-static PyObject* inertial_message_get_gyroscope_z(InertialMessage* self)
-{
+static PyObject *inertial_message_get_gyroscope_z(InertialMessage *self) {
     return Py_BuildValue("f", self->message.gyroscope_z);
 }
 
-static PyObject* inertial_message_get_accelerometer_x(InertialMessage* self)
-{
+static PyObject *inertial_message_get_accelerometer_x(InertialMessage *self) {
     return Py_BuildValue("f", self->message.accelerometer_x);
 }
 
-static PyObject* inertial_message_get_accelerometer_y(InertialMessage* self)
-{
+static PyObject *inertial_message_get_accelerometer_y(InertialMessage *self) {
     return Py_BuildValue("f", self->message.accelerometer_y);
 }
 
-static PyObject* inertial_message_get_accelerometer_z(InertialMessage* self)
-{
+static PyObject *inertial_message_get_accelerometer_z(InertialMessage *self) {
     return Py_BuildValue("f", self->message.accelerometer_z);
 }
 
-static PyObject* inertial_message_to_string(InertialMessage* self, PyObject* args)
-{
+static PyObject *inertial_message_to_string(InertialMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_inertial_message_to_string(self->message));
 }
 
 static PyGetSetDef inertial_message_get_set[] = {
-    { "timestamp", (getter) inertial_message_get_timestamp, NULL, "", NULL },
-    { "gyroscope_x", (getter) inertial_message_get_gyroscope_x, NULL, "", NULL },
-    { "gyroscope_y", (getter) inertial_message_get_gyroscope_y, NULL, "", NULL },
-    { "gyroscope_z", (getter) inertial_message_get_gyroscope_z, NULL, "", NULL },
-    { "accelerometer_x", (getter) inertial_message_get_accelerometer_x, NULL, "", NULL },
-    { "accelerometer_y", (getter) inertial_message_get_accelerometer_y, NULL, "", NULL },
-    { "accelerometer_z", (getter) inertial_message_get_accelerometer_z, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) inertial_message_get_timestamp, NULL, "", NULL},
+    {"gyroscope_x", (getter) inertial_message_get_gyroscope_x, NULL, "", NULL},
+    {"gyroscope_y", (getter) inertial_message_get_gyroscope_y, NULL, "", NULL},
+    {"gyroscope_z", (getter) inertial_message_get_gyroscope_z, NULL, "", NULL},
+    {"accelerometer_x", (getter) inertial_message_get_accelerometer_x, NULL, "", NULL},
+    {"accelerometer_y", (getter) inertial_message_get_accelerometer_y, NULL, "", NULL},
+    {"accelerometer_z", (getter) inertial_message_get_accelerometer_z, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef inertial_message_methods[] = {
-    { "to_string", (PyCFunction) inertial_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) inertial_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject inertial_message_object = {
@@ -82,23 +72,20 @@ static PyTypeObject inertial_message_object = {
     .tp_methods = inertial_message_methods,
 };
 
-static PyObject* inertial_message_from(const XIMU3_InertialMessage* const message)
-{
-    InertialMessage* const self = (InertialMessage*) inertial_message_object.tp_alloc(&inertial_message_object, 0);
+static PyObject *inertial_message_from(const XIMU3_InertialMessage *const message) {
+    InertialMessage *const self = (InertialMessage *) inertial_message_object.tp_alloc(&inertial_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void inertial_message_callback(XIMU3_InertialMessage data, void* context)
-{
+static void inertial_message_callback(XIMU3_InertialMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = inertial_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = inertial_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

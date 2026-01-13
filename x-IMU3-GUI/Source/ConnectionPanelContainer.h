@@ -5,33 +5,31 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Widgets/DragOverlay.h"
 
-class ConnectionPanelContainer : public juce::Component
-{
+class ConnectionPanelContainer : public juce::Component {
 public:
-    ConnectionPanelContainer(juce::ValueTree& windowLayout_, OpenGLRenderer& openGLRenderer_);
+    ConnectionPanelContainer(juce::ValueTree &windowLayout_, OpenGLRenderer &openGLRenderer_);
 
     void resized() override;
 
     void updateSize();
 
-    void connectToDevice(const ximu3::ConnectionInfo& connectionInfo, const bool keepOpen);
+    void connectToDevice(const ximu3::ConnectionInfo &connectionInfo, const bool keepOpen);
 
-    std::vector<ConnectionPanel*> getConnectionPanels() const;
+    std::vector<ConnectionPanel *> getConnectionPanels() const;
 
     void removeAllPanels();
 
-    void removePanel(const ConnectionPanel& panel);
+    void removePanel(const ConnectionPanel &panel);
 
-    void movePanel(ConnectionPanel& move, ConnectionPanel& target);
+    void movePanel(ConnectionPanel &move, ConnectionPanel &target);
 
-    void showDragOverlayAtComponent(juce::Component& component, DragOverlay::Side side);
+    void showDragOverlayAtComponent(juce::Component &component, DragOverlay::Side side);
 
     void hideDragOverlay();
 
-    DragOverlay* getCurrentlyShowingDragOverlay();
+    DragOverlay *getCurrentlyShowingDragOverlay();
 
-    enum class Layout
-    {
+    enum class Layout {
         rows,
         columns,
         grid,
@@ -42,27 +40,26 @@ public:
 
     Layout getLayout();
 
-    void setExpandedConnectionPanel(ConnectionPanel* const connectionPanel);
+    void setExpandedConnectionPanel(ConnectionPanel *const connectionPanel);
 
-    const ConnectionPanel* getExpandedConnectionPanel() const;
+    const ConnectionPanel *getExpandedConnectionPanel() const;
 
     std::function<void()> onConnectionPanelsSizeChanged;
 
 private:
-    juce::ValueTree& windowLayout;
-    OpenGLRenderer& openGLRenderer;
+    juce::ValueTree &windowLayout;
+    OpenGLRenderer &openGLRenderer;
 
-    SimpleLabel noConnectionsLabel { "No Connections", UIFonts::getDefaultFont(), juce::Justification::centred };
+    SimpleLabel noConnectionsLabel{"No Connections", UIFonts::getDefaultFont(), juce::Justification::centred};
 
-    std::vector<std::unique_ptr<ConnectionPanel>> connectionPanels;
+    std::vector<std::unique_ptr<ConnectionPanel> > connectionPanels;
     std::unique_ptr<DragOverlay> dragOverlay;
 
-    class AccordionResizeBar : public juce::Component
-    {
+    class AccordionResizeBar : public juce::Component {
     public:
         AccordionResizeBar();
 
-        void mouseDrag(const juce::MouseEvent& mouseEvent) override;
+        void mouseDrag(const juce::MouseEvent &mouseEvent) override;
 
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AccordionResizeBar)

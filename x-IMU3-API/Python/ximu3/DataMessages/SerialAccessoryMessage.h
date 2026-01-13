@@ -6,47 +6,41 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_SerialAccessoryMessage message;
 } SerialAccessoryMessage;
 
-static void serial_accessory_message_free(SerialAccessoryMessage* self)
-{
+static void serial_accessory_message_free(SerialAccessoryMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject* serial_accessory_message_get_timestamp(SerialAccessoryMessage* self, PyObject* args)
-{
+PyObject *serial_accessory_message_get_timestamp(SerialAccessoryMessage *self, PyObject *args) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-PyObject* serial_accessory_message_get_string(SerialAccessoryMessage* self, PyObject* args)
-{
+PyObject *serial_accessory_message_get_string(SerialAccessoryMessage *self, PyObject *args) {
     return Py_BuildValue("s", self->message.char_array);
 }
 
-PyObject* serial_accessory_message_get_bytes(SerialAccessoryMessage* self, PyObject* args)
-{
+PyObject *serial_accessory_message_get_bytes(SerialAccessoryMessage *self, PyObject *args) {
     return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
 }
 
-static PyObject* serial_accessory_message_to_string(SerialAccessoryMessage* self, PyObject* args)
-{
+static PyObject *serial_accessory_message_to_string(SerialAccessoryMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_serial_accessory_message_to_string(self->message));
 }
 
 static PyGetSetDef serial_accessory_message_get_set[] = {
-    { "timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL },
-    { "string", (getter) serial_accessory_message_get_string, NULL, "", NULL },
-    { "bytes", (getter) serial_accessory_message_get_bytes, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) serial_accessory_message_get_timestamp, NULL, "", NULL},
+    {"string", (getter) serial_accessory_message_get_string, NULL, "", NULL},
+    {"bytes", (getter) serial_accessory_message_get_bytes, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef serial_accessory_message_methods[] = {
-    { "to_string", (PyCFunction) serial_accessory_message_to_string, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) serial_accessory_message_to_string, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject serial_accessory_message_object = {
@@ -58,23 +52,20 @@ static PyTypeObject serial_accessory_message_object = {
     .tp_methods = serial_accessory_message_methods,
 };
 
-static PyObject* serial_accessory_message_from(const XIMU3_SerialAccessoryMessage* const message)
-{
-    SerialAccessoryMessage* const self = (SerialAccessoryMessage*) serial_accessory_message_object.tp_alloc(&serial_accessory_message_object, 0);
+static PyObject *serial_accessory_message_from(const XIMU3_SerialAccessoryMessage *const message) {
+    SerialAccessoryMessage *const self = (SerialAccessoryMessage *) serial_accessory_message_object.tp_alloc(&serial_accessory_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void serial_accessory_message_callback(XIMU3_SerialAccessoryMessage data, void* context)
-{
+static void serial_accessory_message_callback(XIMU3_SerialAccessoryMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = serial_accessory_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = serial_accessory_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

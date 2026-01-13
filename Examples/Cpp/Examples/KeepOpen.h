@@ -6,16 +6,13 @@
 #include <thread>
 #include "Ximu3.hpp"
 
-class KeepOpen
-{
+class KeepOpen {
 public:
-    KeepOpen()
-    {
+    KeepOpen() {
         // Search for connection
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
-        if (devices.empty())
-        {
+        if (devices.empty()) {
             std::cout << "No USB connections available" << std::endl;
             return;
         }
@@ -33,10 +30,8 @@ public:
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_ConnectionStatus)> callback = [](const auto status)
-    {
-        switch (status)
-        {
+    std::function<void(const ximu3::XIMU3_ConnectionStatus)> callback = [](const auto status) {
+        switch (status) {
             case ximu3::XIMU3_ConnectionStatusConnected:
                 std::cout << "Connected" << std::endl;
                 break;

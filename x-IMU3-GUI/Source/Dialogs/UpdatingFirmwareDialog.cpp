@@ -5,36 +5,29 @@
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
-UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File& hexFile_, juce::ThreadPool& threadPool)
+UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File &hexFile_, juce::ThreadPool &threadPool)
     : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
       connectionInfo(std::move(connectionInfo_)),
-      hexFile(hexFile_)
-{
+      hexFile(hexFile_) {
     addAndMakeVisible(progressBar);
 
     setOkButton(false);
 
     setSize(dialogWidth, calculateHeight(1));
 
-    threadPool.addJob([&, &threadPool_ = threadPool]
-    {
-        const auto showError = [&](const juce::String& error, const bool tryAgain = true)
-        {
-            juce::MessageManager::callAsync([&, error, tryAgain]
-            {
+    threadPool.addJob([&, &threadPool_ = threadPool] {
+        const auto showError = [&](const juce::String &error, const bool tryAgain = true) {
+            juce::MessageManager::callAsync([&, error, tryAgain] {
                 DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>(error + (tryAgain ? " Please try again." : "")));
                 DialogQueue::getSingleton().pop();
-                if (tryAgain)
-                {
+                if (tryAgain) {
                     UpdateFirmwareDialog::launch(threadPool_);
                 }
             });
         };
 
-        const auto updateProgress = [&](const auto& text, bool completed = false)
-        {
-            juce::MessageManager::callAsync([&, text, completed]
-            {
+        const auto updateProgress = [&](const auto &text, bool completed = false) {
+            juce::MessageManager::callAsync([&, text, completed] {
                 progressBarValue = completed ? 1.0 : (progressBarValue + (1.0 - progressBarValue) / 5);
                 progressBar.setTextToDisplay(text);
             });
@@ -43,16 +36,14 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         // Open connection
         updateProgress("Opening Connection");
         auto connection = std::make_unique<ximu3::Connection>(*connectionInfo);
-        if (connection->open() != ximu3::XIMU3_ResultOk)
-        {
+        if (connection->open() != ximu3::XIMU3_ResultOk) {
             showError("Unable to open connection.");
             return;
         }
 
         // Read hardware version
-        const auto responses = connection->sendCommands({ "{\"hardware_version\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
-        if (responses.front().has_value() == false || responses.front()->error.has_value())
-        {
+        const auto responses = connection->sendCommands({"{\"hardware_version\":null}"}, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
+        if (responses.front().has_value() == false || responses.front()->error.has_value()) {
             showError("Unable to read hardware version.");
             return;
         }
@@ -61,16 +52,14 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         // Check compatibility
         const auto firmwareIsV2 = hexFile.getFileName().startsWith("x-IMU3-Firmware-v2.");
         const auto hardwareIsV2 = hardwareVersion.starts_with("\"v2.");
-        if (firmwareIsV2 != hardwareIsV2)
-        {
+        if (firmwareIsV2 != hardwareIsV2) {
             showError("The detected " + hardwareVersion + " hardware is " + (firmwareIsV2 ? "not" : "only") + " compatible with v2.x.x firmware.", false);
             return;
         }
 
         // Send bootloader command
         updateProgress("Sending Bootloader Command");
-        if (connection->sendCommands({ "{\"bootloader\":null}" }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout).empty())
-        {
+        if (connection->sendCommands({"{\"bootloader\":null}"}, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout).empty()) {
             showError("Unable to confirm bootloader command.");
             return;
         }
@@ -83,20 +72,16 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
         juce::Thread::sleep(5000);
 
         auto portNames = ximu3::PortScanner::getPortNames();
-        std::stable_partition(portNames.begin(), portNames.end(), [](const auto& portName)
-        {
+        std::stable_partition(portNames.begin(), portNames.end(), [](const auto &portName) {
             return juce::String(portName).containsIgnoreCase("usb");
         }); // reorder for USB ports first
 
-        for (const auto& portName : portNames)
-        {
+        for (const auto &portName: portNames) {
             updateProgress("Attempting Upload on " + portName);
 
-            if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", hexFile.getFullPathName().toRawUTF8(), portName.data()) == 0)
-            {
+            if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", hexFile.getFullPathName().toRawUTF8(), portName.data()) == 0) {
                 updateProgress("Update Complete", true);
-                juce::Timer::callAfterDelay(1000, [&]
-                {
+                juce::Timer::callAfterDelay(1000, [&] {
                     DialogQueue::getSingleton().pop();
                 });
                 return;
@@ -107,8 +92,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
     });
 }
 
-void UpdatingFirmwareDialog::resized()
-{
+void UpdatingFirmwareDialog::resized() {
     Dialog::resized();
 
     progressBar.setBounds(getContentBounds().removeFromTop(UILayout::textComponentHeight));

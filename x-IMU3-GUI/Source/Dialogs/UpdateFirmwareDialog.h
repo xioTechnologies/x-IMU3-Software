@@ -9,8 +9,7 @@
 #include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
-class UpdateFirmwareDialog : public Dialog
-{
+class UpdateFirmwareDialog : public Dialog {
 public:
     UpdateFirmwareDialog();
 
@@ -20,37 +19,31 @@ public:
 
     juce::File getHexFile() const;
 
-    static void launch(juce::ThreadPool& threadPool);
+    static void launch(juce::ThreadPool &threadPool);
 
 private:
     std::vector<ximu3::XIMU3_Device> devices;
-    ximu3::PortScanner portScanner {
-        [this](const std::vector<ximu3::XIMU3_Device>& devices_)
-        {
+    ximu3::PortScanner portScanner{
+        [this](const std::vector<ximu3::XIMU3_Device> &devices_) {
             auto self = SafePointer<juce::Component>(this);
-            juce::MessageManager::callAsync([this, self, devices_]
-            {
-                if (self == nullptr)
-                {
+            juce::MessageManager::callAsync([this, self, devices_] {
+                if (self == nullptr) {
                     return;
                 }
 
                 devices.clear();
-                for (auto& device : devices_)
-                {
+                for (auto &device: devices_) {
                     const auto connectionInfo = ximu3::ConnectionInfo::from(device);
 
-                    if ((dynamic_cast<ximu3::UsbConnectionInfo*>(connectionInfo.get()) != nullptr) ||
-                        (dynamic_cast<ximu3::SerialConnectionInfo*>(connectionInfo.get()) != nullptr))
-                    {
+                    if ((dynamic_cast<ximu3::UsbConnectionInfo *>(connectionInfo.get()) != nullptr) ||
+                        (dynamic_cast<ximu3::SerialConnectionInfo *>(connectionInfo.get()) != nullptr)) {
                         devices.push_back(device);
                     }
                 }
 
                 const auto id = deviceValue.getSelectedId();
                 deviceValue.clear();
-                for (const auto& device : devices)
-                {
+                for (const auto &device: devices) {
                     deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::ConnectionInfo::from(device)->toString() + ")", 1 + deviceValue.getNumItems());
                 }
                 deviceValue.setSelectedId(std::max(1, id));
@@ -58,14 +51,14 @@ private:
         }
     };
 
-    SimpleLabel deviceLabel { "Device:" };
-    CustomComboBox deviceValue { "No Devices Found" };
+    SimpleLabel deviceLabel{"Device:"};
+    CustomComboBox deviceValue{"No Devices Found"};
 
-    SimpleLabel hexFileLabel { "Hex File:" };
-    FileSelector hexFileSelector { "Select Firmware File", ".hex" };
+    SimpleLabel hexFileLabel{"Hex File:"};
+    FileSelector hexFileSelector{"Select Firmware File", ".hex"};
 
-    Icon warningIcon { BinaryData::warning_white_svg, "", 0.7f };
-    SimpleLabel warningLabel { "Updating firmware will restore default settings" };
+    Icon warningIcon{BinaryData::warning_white_svg, "", 0.7f};
+    SimpleLabel warningLabel{"Updating firmware will restore default settings"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdateFirmwareDialog)
 };

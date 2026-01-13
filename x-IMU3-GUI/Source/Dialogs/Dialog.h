@@ -3,21 +3,20 @@
 #include "CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class Dialog : public juce::Component
-{
+class Dialog : public juce::Component {
 public:
     static constexpr int iconButtonWidth = 40;
     static constexpr int margin = 15;
     static constexpr int titleBarHeight = 38;
 
-    Dialog(const juce::String& icon_,
-           const juce::String& dialogTitle,
-           const juce::String& okButtonText = "OK",
-           const juce::String& cancelButtonText = "Cancel",
-           juce::Component* const bottomLeftComponent_ = nullptr,
+    Dialog(const juce::String &icon_,
+           const juce::String &dialogTitle,
+           const juce::String &okButtonText = "OK",
+           const juce::String &cancelButtonText = "Cancel",
+           juce::Component *const bottomLeftComponent_ = nullptr,
            const int bottomLeftComponentWidth_ = 0,
            const bool resizable_ = false,
-           const std::optional<juce::Colour>& tag_ = {});
+           const std::optional<juce::Colour> &tag_ = {});
 
     ~Dialog() override;
 
@@ -41,15 +40,15 @@ protected:
 
     int calculateHeight(const int numberOfRows) const;
 
-    void setOkButton(const bool valid, const juce::String& buttonText = "");
+    void setOkButton(const bool valid, const juce::String &buttonText = "");
 
-    void setCancelButton(const bool valid, const juce::String& buttonText = "");
+    void setCancelButton(const bool valid, const juce::String &buttonText = "");
 
 private:
-    juce::TextButton okButton { "OK" };
-    juce::TextButton cancelButton { "Cancel" };
+    juce::TextButton okButton{"OK"};
+    juce::TextButton cancelButton{"Cancel"};
 
-    juce::Component* const bottomLeftComponent;
+    juce::Component *const bottomLeftComponent;
     const int bottomLeftComponentWidth;
 
     const bool resizable;
@@ -58,8 +57,7 @@ private:
 
     juce::TimedCallback timer
     {
-        [&]
-        {
+        [&] {
             getTopLevelComponent()->setAlwaysOnTop(juce::Process::isForegroundProcess());
         }
     };
@@ -67,18 +65,16 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };
 
-class DialogQueue : public juce::ChangeBroadcaster, private juce::DeletedAtShutdown
-{
+class DialogQueue : public juce::ChangeBroadcaster, private juce::DeletedAtShutdown {
 public:
-    static DialogQueue& getSingleton()
-    {
-        static auto* singleton = new DialogQueue();
+    static DialogQueue &getSingleton() {
+        static auto *singleton = new DialogQueue();
         return *singleton;
     }
 
     DialogQueue() = default;
 
-    Dialog* getActive();
+    Dialog *getActive();
 
     void pushFront(std::unique_ptr<Dialog> content, std::function<bool()> okCallback = nullptr);
 
@@ -88,7 +84,7 @@ public:
 
 private:
     std::unique_ptr<juce::DialogWindow> active;
-    std::list<std::unique_ptr<Dialog>> queue;
+    std::list<std::unique_ptr<Dialog> > queue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogQueue)
 };

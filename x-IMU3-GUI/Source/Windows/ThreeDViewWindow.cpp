@@ -1,10 +1,9 @@
 #include "./ConnectionPanelContainer.h"
 #include "ThreeDViewWindow.h"
 
-ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
-      threeDView(openGLRenderer)
-{
+      threeDView(openGLRenderer) {
     addAndMakeVisible(threeDView);
 
     addAndMakeVisible(rollLabel);
@@ -19,8 +18,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
 
     addAndMakeVisible(loadingLabel);
 
-    quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message)
-    {
+    quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
         threeDView.update(message.x, message.y, message.z, message.w);
 
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
@@ -30,13 +28,11 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = eulerAngles.yaw;
     });
 
-    rotationMatrixCallbackId = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message)
-    {
+    rotationMatrixCallbackId = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message) {
         quaternionCallback(ximu3::XIMU3_euler_angles_message_to_quaternion_message(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
     });
 
-    eulerAnglesCallbackId = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message)
-    {
+    eulerAnglesCallbackId = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
         const auto quaternion = ximu3::XIMU3_euler_angles_message_to_quaternion_message(message);
 
         threeDView.update(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
@@ -46,18 +42,15 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
         yaw = message.yaw;
     });
 
-    linearAccelerationCallbackId = connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
-    {
-        quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
+    linearAccelerationCallbackId = connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
+        quaternionCallback({message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z});
     });
 
-    earthAccelerationCallbackId = connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message)
-    {
-        quaternionCallback({ message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z });
+    earthAccelerationCallbackId = connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
+        quaternionCallback({message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z});
     });
 
-    ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message)
-    {
+    ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message) {
         angularRateRecoveryState = juce::exactlyEqual(message.angular_rate_recovery, 0.0f) == false;
         accelerationRecoveryState = juce::exactlyEqual(message.acceleration_recovery, 0.0f) == false;
         magneticRecoveryState = juce::exactlyEqual(message.magnetic_recovery, 0.0f) == false;
@@ -69,8 +62,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree& windowLayout_, const j
     timerCallback();
 }
 
-ThreeDViewWindow::~ThreeDViewWindow()
-{
+ThreeDViewWindow::~ThreeDViewWindow() {
     connectionPanel.getConnection()->removeCallback(quaternionCallbackId);
     connectionPanel.getConnection()->removeCallback(rotationMatrixCallbackId);
     connectionPanel.getConnection()->removeCallback(eulerAnglesCallbackId);
@@ -79,8 +71,7 @@ ThreeDViewWindow::~ThreeDViewWindow()
     connectionPanel.getConnection()->removeCallback(ahrsStatusMessageCallbackId);
 }
 
-void ThreeDViewWindow::resized()
-{
+void ThreeDViewWindow::resized() {
     Window::resized();
     juce::Rectangle<int> bounds = getContentBounds();
 
@@ -94,8 +85,7 @@ void ThreeDViewWindow::resized()
 
     bounds.reduce(10, 10);
 
-    const auto setRow = [&](auto& label, auto& value)
-    {
+    const auto setRow = [&](auto &label, auto &value) {
         auto row = bounds.removeFromTop(20);
         label.setBounds(row.removeFromLeft(50));
         value.setBounds(row);
@@ -122,20 +112,16 @@ void ThreeDViewWindow::resized()
     magneticRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
 }
 
-void ThreeDViewWindow::mouseDown(const juce::MouseEvent& mouseEvent)
-{
+void ThreeDViewWindow::mouseDown(const juce::MouseEvent &mouseEvent) {
     lastMousePosition = mouseEvent.getPosition();
 
-    if (mouseEvent.mods.isPopupMenu())
-    {
+    if (mouseEvent.mods.isPopupMenu()) {
         getMenu().showMenuAsync({});
     }
 }
 
-void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
-{
-    if (connectionPanel.getConnectionPanelContainer().getCurrentlyShowingDragOverlay() != nullptr)
-    {
+void ThreeDViewWindow::mouseDrag(const juce::MouseEvent &mouseEvent) {
+    if (connectionPanel.getConnectionPanelContainer().getCurrentlyShowingDragOverlay() != nullptr) {
         return;
     }
 
@@ -149,8 +135,7 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent& mouseEvent)
     lastMousePosition = mouseEvent.getPosition();
 }
 
-void ThreeDViewWindow::mouseDoubleClick(const juce::MouseEvent&)
-{
+void ThreeDViewWindow::mouseDoubleClick(const juce::MouseEvent &) {
     auto settings = threeDView.getSettings();
     settings.cameraAzimuth = ThreeDView::Settings().cameraAzimuth;
     settings.cameraElevation = ThreeDView::Settings().cameraElevation;
@@ -158,30 +143,25 @@ void ThreeDViewWindow::mouseDoubleClick(const juce::MouseEvent&)
     writeToValueTree(settings);
 }
 
-void ThreeDViewWindow::mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel)
-{
+void ThreeDViewWindow::mouseWheelMove(const juce::MouseEvent &, const juce::MouseWheelDetails &wheel) {
     auto settings = threeDView.getSettings();
     settings.cameraOrbitDistance = juce::jlimit(1.0f, 4.0f, settings.cameraOrbitDistance + (0.5f * -wheel.deltaY));
     writeToValueTree(settings);
 }
 
-float ThreeDViewWindow::wrapAngle(float angle)
-{
-    while (angle > 180.0f)
-    {
+float ThreeDViewWindow::wrapAngle(float angle) {
+    while (angle > 180.0f) {
         angle -= 360.0f;
     }
 
-    while (angle < -180.0f)
-    {
+    while (angle < -180.0f) {
         angle += 360.0f;
     }
 
     return angle;
 }
 
-void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings& settings)
-{
+void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings &settings) {
     settingsTree.setProperty("cameraAzimuth", settings.cameraAzimuth, nullptr);
     settingsTree.setProperty("cameraElevation", settings.cameraElevation, nullptr);
     settingsTree.setProperty("cameraOrbitDistance", settings.cameraOrbitDistance, nullptr);
@@ -194,8 +174,7 @@ void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings& settings)
     settingsTree.setProperty("axesConvention", static_cast<int>(settings.axesConvention), nullptr);
 }
 
-ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const
-{
+ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const {
     ThreeDView::Settings settings;
     settings.cameraAzimuth = settingsTree.getProperty("cameraAzimuth", settings.cameraAzimuth);
     settings.cameraElevation = settingsTree.getProperty("cameraElevation", settings.cameraElevation);
@@ -210,8 +189,7 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const
     return settings;
 }
 
-void ThreeDViewWindow::updateEulerAnglesVisibilities()
-{
+void ThreeDViewWindow::updateEulerAnglesVisibilities() {
     const auto visible = (settingsTree.getProperty("eulerAnglesEnabled", true) && compactView == false);
 
     rollLabel.setVisible(visible);
@@ -222,8 +200,7 @@ void ThreeDViewWindow::updateEulerAnglesVisibilities()
     yawValue.setVisible(visible);
 }
 
-void ThreeDViewWindow::updateAhrsStatusVisibilities()
-{
+void ThreeDViewWindow::updateAhrsStatusVisibilities() {
     const auto visible = (settingsTree.getProperty("ahrsStatusEnabled", true) && compactView == false);
 
     angularRateRecoveryIcon.setVisible(visible);
@@ -231,50 +208,41 @@ void ThreeDViewWindow::updateAhrsStatusVisibilities()
     magneticRecoveryIcon.setVisible(visible);
 }
 
-juce::PopupMenu ThreeDViewWindow::getMenu()
-{
+juce::PopupMenu ThreeDViewWindow::getMenu() {
     juce::PopupMenu menu = Window::getMenu();
 
-    menu.addItem("Restore Defaults", true, false, [&]
-    {
+    menu.addItem("Restore Defaults", true, false, [&] {
         const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
-        if (size.isVoid() == false)
-        {
+        if (size.isVoid() == false) {
             settingsTree.setProperty(WindowIds::size, size, nullptr);
         }
     });
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
-    menu.addItem("World", true, threeDView.getSettings().worldEnabled, [&]
-    {
+    menu.addItem("World", true, threeDView.getSettings().worldEnabled, [&] {
         auto settings = threeDView.getSettings();
         settings.worldEnabled = !settings.worldEnabled;
         writeToValueTree(settings);
     });
-    menu.addItem("Model", true, threeDView.getSettings().modelEnabled, [&]
-    {
+    menu.addItem("Model", true, threeDView.getSettings().modelEnabled, [&] {
         auto settings = threeDView.getSettings();
         settings.modelEnabled = !settings.modelEnabled;
         writeToValueTree(settings);
     });
-    menu.addItem("Compass", true, threeDView.getSettings().compassEnabled, [&]
-    {
+    menu.addItem("Compass", true, threeDView.getSettings().compassEnabled, [&] {
         auto settings = threeDView.getSettings();
         settings.compassEnabled = !settings.compassEnabled;
         writeToValueTree(settings);
     });
-    menu.addItem("Euler Angles", compactView == false, settingsTree.getProperty("eulerAnglesEnabled", true) && (compactView == false), [&]
-    {
+    menu.addItem("Euler Angles", compactView == false, settingsTree.getProperty("eulerAnglesEnabled", true) && (compactView == false), [&] {
         settingsTree.setProperty("eulerAnglesEnabled", (bool) settingsTree.getProperty("eulerAnglesEnabled", true) == false, nullptr);
     });
-    menu.addItem("AHRS Status", compactView == false, settingsTree.getProperty("ahrsStatusEnabled", true) && (compactView == false), [&]
-    {
+    menu.addItem("AHRS Status", compactView == false, settingsTree.getProperty("ahrsStatusEnabled", true) && (compactView == false), [&] {
         settingsTree.setProperty("ahrsStatusEnabled", (bool) settingsTree.getProperty("ahrsStatusEnabled", true) == false, nullptr);
     });
-    menu.addItem("Axes", compactView == false, threeDView.getSettings().axesEnabled && (compactView == false), [&]
-    {
+    menu.addItem("Axes", compactView == false, threeDView.getSettings().axesEnabled && (compactView == false), [&] {
         auto settings = threeDView.getSettings();
         settings.axesEnabled = !settings.axesEnabled;
         writeToValueTree(settings);
@@ -282,27 +250,22 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("MODEL"), nullptr);
-    menu.addItem("Board", true, threeDView.getSettings().model == ThreeDView::Model::board, [&]
-    {
+    menu.addItem("Board", true, threeDView.getSettings().model == ThreeDView::Model::board, [&] {
         auto settings = threeDView.getSettings();
         settings.model = ThreeDView::Model::board;
         writeToValueTree(settings);
     });
-    menu.addItem("Housing", true, threeDView.getSettings().model == ThreeDView::Model::housing, [&]
-    {
+    menu.addItem("Housing", true, threeDView.getSettings().model == ThreeDView::Model::housing, [&] {
         auto settings = threeDView.getSettings();
         settings.model = ThreeDView::Model::housing;
         writeToValueTree(settings);
     });
 
     juce::PopupMenu customModelsMenu;
-    customModelsMenu.addItem("Load .obj File", [&]
-    {
+    customModelsMenu.addItem("Load .obj File", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto&)
-        {
-            if (fileChooser->getResult() == juce::File())
-            {
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
+            if (fileChooser->getResult() == juce::File()) {
                 return;
             }
 
@@ -323,15 +286,12 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
             writeToValueTree(settings);
         });
     });
-    if (const auto customModels = customModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); customModels.isEmpty() == false)
-    {
+    if (const auto customModels = customModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); customModels.isEmpty() == false) {
         customModelsMenu.addSeparator();
         customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
-        for (const auto& file : customModels)
-        {
+        for (const auto &file: customModels) {
             const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
-            customModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file]
-            {
+            customModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file] {
                 auto settings = threeDView.getSettings();
                 settings.model = ThreeDView::Model::custom;
                 settings.customModel = file;
@@ -345,20 +305,17 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);
-    menu.addItem("North-West-Up (NWU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::nwu, [&]
-    {
+    menu.addItem("North-West-Up (NWU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::nwu, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::nwu;
         writeToValueTree(settings);
     });
-    menu.addItem("East-North-Up (ENU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::enu, [&]
-    {
+    menu.addItem("East-North-Up (ENU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::enu, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::enu;
         writeToValueTree(settings);
     });
-    menu.addItem("North-East-Down (NED)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::ned, [&]
-    {
+    menu.addItem("North-East-Down (NED)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::ned, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::ned;
         writeToValueTree(settings);
@@ -367,18 +324,13 @@ juce::PopupMenu ThreeDViewWindow::getMenu()
     return menu;
 }
 
-void ThreeDViewWindow::timerCallback()
-{
-    static const auto formatAngle = [](const float angle)
-    {
+void ThreeDViewWindow::timerCallback() {
+    static const auto formatAngle = [](const float angle) {
         auto text = juce::String(angle, 1);
 
-        if (text == "-0.0")
-        {
+        if (text == "-0.0") {
             text = "0.0";
-        }
-        else if (text == "-180.0")
-        {
+        } else if (text == "-180.0") {
             text = "180.0";
         }
 
@@ -395,21 +347,17 @@ void ThreeDViewWindow::timerCallback()
     magneticRecoveryIcon.setIcon(magneticRecoveryState.load() ? BinaryData::magnet_white_svg : BinaryData::magnet_grey_svg);
 }
 
-void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
-{
-    if (treeWhosePropertyHasChanged != settingsTree)
-    {
+void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) {
+    if (treeWhosePropertyHasChanged != settingsTree) {
         return;
     }
 
-    if (property.toString() == "eulerAnglesEnabled")
-    {
+    if (property.toString() == "eulerAnglesEnabled") {
         updateEulerAnglesVisibilities();
         return;
     }
 
-    if (property.toString() == "ahrsStatusEnabled")
-    {
+    if (property.toString() == "ahrsStatusEnabled") {
         updateAhrsStatusVisibilities();
         return;
     }

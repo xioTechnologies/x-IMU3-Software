@@ -4,20 +4,19 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class SimpleLabel : public juce::Component,
-                    public juce::SettableTooltipClient
-{
+                    public juce::SettableTooltipClient {
 public:
-    SimpleLabel(const juce::String& text_ = {},
-                const juce::Font& font_ = UIFonts::getDefaultFont(),
+    SimpleLabel(const juce::String &text_ = {},
+                const juce::Font &font_ = UIFonts::getDefaultFont(),
                 juce::Justification justification_ = juce::Justification::centredLeft);
 
-    void setText(const juce::String& text_);
+    void setText(const juce::String &text_);
 
-    const juce::String& getText() const;
+    const juce::String &getText() const;
 
     float getTextWidth() const;
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
 private:
     juce::String text;

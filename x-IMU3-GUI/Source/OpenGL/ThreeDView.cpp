@@ -1,22 +1,19 @@
 #include "CustomLookAndFeel.h"
 #include "ThreeDView.h"
 
-ThreeDView::ThreeDView(OpenGLRenderer& renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_)
-{
+ThreeDView::ThreeDView(OpenGLRenderer &renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_) {
     renderer.addComponent(*this);
 }
 
-ThreeDView::~ThreeDView()
-{
+ThreeDView::~ThreeDView() {
     renderer.removeComponent(*this);
 }
 
-void ThreeDView::render()
-{
+void ThreeDView::render() {
     std::scoped_lock lock(settingsMutex);
 
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
-    auto& camera = renderer.getResources().orbitCamera;
+    auto &camera = renderer.getResources().orbitCamera;
 
     // Update camera for current component view settings
     camera.setViewportBounds(bounds);
@@ -36,8 +33,7 @@ void ThreeDView::render()
 
     // Create rotation matrix based on axes convention user setting
     glm::mat4 axesConventionRotation(1.0f);
-    switch (settings.axesConvention)
-    {
+    switch (settings.axesConvention) {
         case AxesConvention::nwu:
             break;
         case AxesConvention::enu:
@@ -54,50 +50,41 @@ void ThreeDView::render()
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
     const bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
-    if (renderModelBehindWorldAndCompass && settings.modelEnabled)
-    {
+    if (renderModelBehindWorldAndCompass && settings.modelEnabled) {
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    if (settings.worldEnabled)
-    {
+    if (settings.worldEnabled) {
         renderWorld(projectionMatrix, viewMatrix, axesConventionRotation, floorHeight);
     }
 
-    if (settings.compassEnabled)
-    {
+    if (settings.compassEnabled) {
         renderCompass(projectionMatrix, viewMatrix, floorHeight);
     }
 
-    if (!renderModelBehindWorldAndCompass && settings.modelEnabled)
-    {
+    if (!renderModelBehindWorldAndCompass && settings.modelEnabled) {
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
-    if (settings.axesEnabled && hudEnabled)
-    {
+    if (settings.axesEnabled && hudEnabled) {
         renderAxes(deviceRotation, axesConventionRotation);
     }
 }
 
-void ThreeDView::setSettings(Settings settings_)
-{
+void ThreeDView::setSettings(Settings settings_) {
     std::scoped_lock _(settingsMutex);
     settings = settings_;
 
     renderer.getResources().custom.setModel(settings.customModel);
 }
 
-ThreeDView::Settings ThreeDView::getSettings() const
-{
+ThreeDView::Settings ThreeDView::getSettings() const {
     std::scoped_lock _(settingsMutex);
     return settings;
 }
 
-bool ThreeDView::isLoading() const
-{
-    switch (settings.model)
-    {
+bool ThreeDView::isLoading() const {
+    switch (settings.model) {
         case Model::board:
             return renderer.getResources().board.isLoading();
         case Model::housing:
@@ -108,39 +95,35 @@ bool ThreeDView::isLoading() const
     return false;
 }
 
-void ThreeDView::setHudEnabled(const bool enabled)
-{
+void ThreeDView::setHudEnabled(const bool enabled) {
     hudEnabled = enabled;
 }
 
-void ThreeDView::update(const float x, const float y, const float z, const float w)
-{
+void ThreeDView::update(const float x, const float y, const float z, const float w) {
     quaternionX = x;
     quaternionY = y;
     quaternionZ = z;
     quaternionW = w;
 }
 
-void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation, const float modelScale) const
-{
-    const auto& camera = renderer.getResources().orbitCamera;
-    const auto rotateModelFlat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+void ThreeDView::renderModel(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::mat4 &deviceRotation, const glm::mat4 &axesConventionRotation, const float modelScale) const {
+    const auto &camera = renderer.getResources().orbitCamera;
+    const auto rotateModelFlat = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), {1.0f, 0.0f, 0.0f});
 
     const auto modelMatrix = axesConventionRotation * deviceRotation * rotateModelFlat * glm::scale(glm::mat4(1.0f), glm::vec3(modelScale));
 
-    auto& threeDViewShader = renderer.getResources().threeDViewShader;
+    auto &threeDViewShader = renderer.getResources().threeDViewShader;
     threeDViewShader.use();
     threeDViewShader.cameraPosition.set(camera.getPosition());
     threeDViewShader.modelMatrix.set(modelMatrix);
     threeDViewShader.modelMatrixInverseTranspose.set(glm::mat3(glm::inverseTranspose(modelMatrix)));
     threeDViewShader.viewMatrix.set(viewMatrix);
     threeDViewShader.projectionMatrix.set(projectionMatrix);
-    threeDViewShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
+    threeDViewShader.lightColour.set({1.0f, 1.0f, 1.0f});
     threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
     threeDViewShader.lightIntensity.set(1.0f);
 
-    switch (settings.model)
-    {
+    switch (settings.model) {
         case Model::board:
             renderer.getResources().board.renderWithMaterials(threeDViewShader);
             break;
@@ -153,8 +136,7 @@ void ThreeDView::renderModel(const glm::mat4& projectionMatrix, const glm::mat4&
     }
 }
 
-void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::mat4& axesConventionRotation, const float floorHeight) const
-{
+void ThreeDView::renderWorld(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::mat4 &axesConventionRotation, const float floorHeight) const {
     OpenGLHelpers::ScopedCapability _(juce::gl::GL_CULL_FACE, false); // allow front and back face of grid to be seen
 
     // World Grid - tiles have width/height of 1.0 OpenGL units when `gridTilingFactor` in Grid3D.frag os equivalent to the scale of the grid
@@ -165,15 +147,14 @@ void ThreeDView::renderWorld(const glm::mat4& projectionMatrix, const glm::mat4&
     renderer.getResources().plane.render();
 }
 
-void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float floorHeight) const
-{
+void ThreeDView::renderCompass(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const float floorHeight) const {
     // Compass is rendered in same plane as world grid, so to prevent z-fighting, disables depth test and performs manual depth sort for model in render()
     OpenGLHelpers::ScopedCapability disableDepthTest(juce::gl::GL_DEPTH_TEST, false); // place compass in front of all other world objects
     OpenGLHelpers::ScopedCapability disableCullFace(juce::gl::GL_CULL_FACE, false); // allow front and back face of compass to be seen
 
     const auto compassRotateScale = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     const auto compassModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, floorHeight, 0.0f)) * compassRotateScale;
-    auto& unlitShader = renderer.getResources().unlitShader;
+    auto &unlitShader = renderer.getResources().unlitShader;
     unlitShader.use();
     const auto brightness = 0.8f;
     unlitShader.colour.set(glm::vec4(glm::vec3(brightness), 1.0f)); // tint color to decrease brightness
@@ -183,17 +164,15 @@ void ThreeDView::renderCompass(const glm::mat4& projectionMatrix, const glm::mat
     renderer.getResources().compassTexture.unbind();
 }
 
-void ThreeDView::renderAxes(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
-{
+void ThreeDView::renderAxes(const glm::mat4 &deviceRotation, const glm::mat4 &axesConventionRotation) const {
     renderAxesForDeviceOrientation(deviceRotation, axesConventionRotation); // attached to model
     renderAxesForWorldOrientation(axesConventionRotation); // in HUD top right
 }
 
-void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat4& projectionMatrix) const
-{
+void ThreeDView::renderAxesInstance(const glm::mat4 &modelMatrix, const glm::mat4 &projectionMatrix) const {
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow()); // already accounts for context.getRenderingScale()
-    const auto& screenSpaceShader = renderer.getResources().screenSpaceLitShader;
-    const auto& camera = renderer.getResources().orbitCamera;
+    const auto &screenSpaceShader = renderer.getResources().screenSpaceLitShader;
+    const auto &camera = renderer.getResources().orbitCamera;
 
     const auto viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)) * camera.getRotationMatrix(); // axes not affected by zoom, so this is a custom "camera" translation of -1 on the Z axis so the objects become visible and are not clipped out of view
 
@@ -209,7 +188,7 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
 
     screenSpaceShader.use();
     screenSpaceShader.cameraPosition.set(camera.getPosition());
-    screenSpaceShader.lightColour.set({ 1.0f, 1.0f, 1.0f });
+    screenSpaceShader.lightColour.set({1.0f, 1.0f, 1.0f});
     screenSpaceShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
     screenSpaceShader.lightIntensity.set(1.0f);
 
@@ -257,19 +236,17 @@ void ThreeDView::renderAxesInstance(const glm::mat4& modelMatrix, const glm::mat
 
     const auto textTransform = projectionMatrix * viewMatrix * modelMatrix;
 
-    const auto& text = renderer.getResources().get3DViewAxesText();
+    const auto &text = renderer.getResources().get3DViewAxesText();
     text.drawChar3D(renderer.getResources(), 'X', UIColours::graphX, textTransform * xTranslate, bounds);
     text.drawChar3D(renderer.getResources(), 'Y', UIColours::graphY, textTransform * yTranslate, bounds);
     text.drawChar3D(renderer.getResources(), 'Z', UIColours::graphZ, textTransform * zTranslate, bounds);
 }
 
-void ThreeDView::renderAxesForDeviceOrientation(const glm::mat4& deviceRotation, const glm::mat4& axesConventionRotation) const
-{
+void ThreeDView::renderAxesForDeviceOrientation(const glm::mat4 &deviceRotation, const glm::mat4 &axesConventionRotation) const {
     renderAxesInstance(axesConventionRotation * deviceRotation, renderer.getResources().orbitCamera.getOrthogonalProjectionMatrix());
 }
 
-void ThreeDView::renderAxesForWorldOrientation(const glm::mat4& axesConventionRotation) const
-{
+void ThreeDView::renderAxesForWorldOrientation(const glm::mat4 &axesConventionRotation) const {
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow()); // already accounts for context.getRenderingScale()
     const double screenPixelScale = context.getRenderingScale();
 

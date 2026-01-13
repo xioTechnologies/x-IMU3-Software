@@ -8,25 +8,24 @@
 #include "Window.h"
 #include "Ximu3.hpp"
 
-class DeviceSettingsWindow : public Window
-{
+class DeviceSettingsWindow : public Window {
 public:
-    DeviceSettingsWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_);
+    DeviceSettingsWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_);
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
     void resized() override;
 
 private:
     std::unique_ptr<DeviceSettings> deviceSettings;
 
-    IconButton readAllButton { BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)" };
-    IconButton writeAllButton { BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)" };
-    IconButton saveToFileButton { BinaryData::save_svg, "Save Settings to File" };
-    IconButton loadFromFileButton { BinaryData::open_svg, "Load Settings from File" };
-    IconButton defaultsButton { BinaryData::default_svg, "Restore Defaults on Device" };
+    IconButton readAllButton{BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)"};
+    IconButton writeAllButton{BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)"};
+    IconButton saveToFileButton{BinaryData::save_svg, "Save Settings to File"};
+    IconButton loadFromFileButton{BinaryData::open_svg, "Load Settings from File"};
+    IconButton defaultsButton{BinaryData::default_svg, "Restore Defaults on Device"};
 
-    const std::vector<juce::Component*> buttons { &readAllButton, &writeAllButton, &saveToFileButton, &loadFromFileButton, &defaultsButton };
+    const std::vector<juce::Component *> buttons{&readAllButton, &writeAllButton, &saveToFileButton, &loadFromFileButton, &defaultsButton};
 
     juce::Rectangle<float> buttonBounds;
 
@@ -38,31 +37,30 @@ private:
 
     const juce::File customSchemasDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Schemas");
 
-    struct Settings
-    {
+    struct Settings {
         bool hideUnusedSettings = true;
         bool readSettingsWhenWindowOpens = true;
         bool writeSettingsWhenModified = true;
         juce::File customSchema;
     };
 
-    static void expandOrCollapseAll(juce::TreeViewItem& rootItem, const bool expand);
+    static void expandOrCollapseAll(juce::TreeViewItem &rootItem, const bool expand);
 
-    void writeToValueTree(const Settings& settings);
+    void writeToValueTree(const Settings &settings);
 
     Settings readFromValueTree();
 
-    void sendCommand(const juce::String& key, const bool silent, std::function<void()> callback);
+    void sendCommand(const juce::String &key, const bool silent, std::function<void()> callback);
 
-    void writeCommands(const std::vector<std::string>& keys, const std::vector<std::string>& commands);
+    void writeCommands(const std::vector<std::string> &keys, const std::vector<std::string> &commands);
 
-    void enableInProgress(const std::vector<std::string>& keys);
+    void enableInProgress(const std::vector<std::string> &keys);
 
     void disableInProgress();
 
     juce::PopupMenu getMenu() override;
 
-    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier& property) override;
+    void valueTreePropertyChanged(juce::ValueTree &, const juce::Identifier &property) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeviceSettingsWindow)
 };

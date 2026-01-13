@@ -8,35 +8,28 @@
 #include <thread>
 #include "Ximu3.hpp"
 
-class FileConverter
-{
+class FileConverter {
 public:
-    FileConverter()
-    {
+    FileConverter() {
         const auto destination = "C:/";
         const auto name = "x-IMU3 File Conversion Example";
-        const std::vector<std::string> filePaths = { "C:/x-IMU3 Example File.ximu3" }; // replace with actual file path
+        const std::vector<std::string> filePaths = {"C:/x-IMU3 Example File.ximu3"}; // replace with actual file path
 
-        if (helpers::yesOrNo("Use async implementation?"))
-        {
+        if (helpers::yesOrNo("Use async implementation?")) {
             ximu3::FileConverter fileConverter(destination, name, filePaths, callback);
 
             std::this_thread::sleep_for(std::chrono::seconds(60));
-        }
-        else
-        {
+        } else {
             printProgress(ximu3::FileConverter::convert(destination, name, filePaths));
         }
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_FileConverterProgress)> callback = [](const auto& progress)
-    {
+    std::function<void(const ximu3::XIMU3_FileConverterProgress)> callback = [](const auto &progress) {
         printProgress(progress);
     };
 
-    static void printProgress(const ximu3::XIMU3_FileConverterProgress& progress)
-    {
+    static void printProgress(const ximu3::XIMU3_FileConverterProgress &progress) {
         printf("%s, %0.1f%%, %" PRIu64 " of %" PRIu64 " bytes\n",
                ximu3::XIMU3_file_converter_status_to_string(progress.status),
                progress.percentage,

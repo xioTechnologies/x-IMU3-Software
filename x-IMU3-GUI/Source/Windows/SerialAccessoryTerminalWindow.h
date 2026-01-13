@@ -5,18 +5,17 @@
 #include "Widgets/SerialAccessoryTextEditor.h"
 #include "Window.h"
 
-class SerialAccessoryTerminalWindow : public Window
-{
+class SerialAccessoryTerminalWindow : public Window {
 public:
-    SerialAccessoryTerminalWindow(const juce::ValueTree& windowLayout, const juce::Identifier& type, ConnectionPanel& connectionPanel_);
+    SerialAccessoryTerminalWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_);
 
     ~SerialAccessoryTerminalWindow() override;
 
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
 
     void resized() override;
 
-    void mouseDown(const juce::MouseEvent& mouseEvent) override;
+    void mouseDown(const juce::MouseEvent &mouseEvent) override;
 
 private:
     SerialAccessoryTerminal terminal;

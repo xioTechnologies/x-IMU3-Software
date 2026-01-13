@@ -6,51 +6,49 @@
 
 class OpenGLResources;
 
-class Model
-{
+class Model {
 public:
-    Model(juce::OpenGLContext& context_, juce::ThreadPool& threadPool_);
+    Model(juce::OpenGLContext &context_, juce::ThreadPool &threadPool_);
 
     void render();
 
-    void renderWithMaterials(const LitShader& shader);
+    void renderWithMaterials(const LitShader &shader);
 
-    void setModel(const juce::String& objFileContent, const juce::String& mtlFileContent);
+    void setModel(const juce::String &objFileContent, const juce::String &mtlFileContent);
 
-    void setModel(const juce::File& objFile);
+    void setModel(const juce::File &objFile);
 
     bool isLoading() const;
 
 private:
-    juce::OpenGLContext& context;
-    juce::ThreadPool& threadPool;
+    juce::OpenGLContext &context;
+    juce::ThreadPool &threadPool;
 
     juce::File objFile;
 
     std::mutex objectLock;
     std::shared_ptr<WavefrontObjFile> object;
     bool fillBuffersPending = false;
-    std::atomic<bool> loading { false };
+    std::atomic<bool> loading{false};
 
     // A GLBuffer is used per Shape from the WavefrontObjFile to store shape data on the GPU
-    struct GLBuffer
-    {
-        explicit GLBuffer(const WavefrontObjFile::Shape& shape);
+    struct GLBuffer {
+        explicit GLBuffer(const WavefrontObjFile::Shape &shape);
 
         ~GLBuffer();
 
         void fillBuffers();
 
-        GLuint vao {}; // vertex array object
-        GLuint ebo {}; // element buffer object
-        GLuint vbo {}; // vertex buffer object
+        GLuint vao{}; // vertex array object
+        GLuint ebo{}; // element buffer object
+        GLuint vbo{}; // vertex buffer object
 
         GLuint indicesSize = 0;
 
-        const WavefrontObjFile::Shape& associatedShape;
+        const WavefrontObjFile::Shape &associatedShape;
     };
 
-    std::vector<std::unique_ptr<GLBuffer>> glBuffers;
+    std::vector<std::unique_ptr<GLBuffer> > glBuffers;
 
     void fillBuffers();
 

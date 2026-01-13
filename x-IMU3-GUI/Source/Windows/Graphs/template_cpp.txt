@@ -1,21 +1,18 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "$name$GraphWindow.h"
 
-$name$GraphWindow::$name$GraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+$name$GraphWindow::$name$GraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "$y_axis$",
                   $legend_strings$,
                   $legend_colours$,
-                  $horizontal_autoscale$)
-{
+                  $horizontal_autoscale$) {
 $callback_implementations$
 }
 
-$name$GraphWindow::~$name$GraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+$name$GraphWindow::~$name$GraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

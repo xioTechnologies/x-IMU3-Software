@@ -3,29 +3,24 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "SerialAccessoryCsvsGraphWindow.h"
 
-SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+SerialAccessoryCsvsGraphWindow::SerialAccessoryCsvsGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "CSV",
-                  { "1", "2", "3", "4", "5", "6", "7", "8" },
-                  { UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8 },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message)
-    {
+                  {"1", "2", "3", "4", "5", "6", "7", "8"},
+                  {UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message) {
         std::vector<float> values;
-        for (const auto& string : juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", ""))
-        {
+        for (const auto &string: juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", "")) {
             values.push_back(string.getFloatValue());
         }
         update(message.timestamp, values);
     }));
 }
 
-SerialAccessoryCsvsGraphWindow::~SerialAccessoryCsvsGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+SerialAccessoryCsvsGraphWindow::~SerialAccessoryCsvsGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

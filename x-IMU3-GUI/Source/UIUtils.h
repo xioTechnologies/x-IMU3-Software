@@ -2,9 +2,8 @@
 
 #ifdef __APPLE__
 
-struct UIUtils
-{
-    static void setDarkTheme(void* view);
+struct UIUtils {
+    static void setDarkTheme(void *view);
 };
 
 #endif

@@ -29,15 +29,14 @@ with open("main.c", "w") as file:
     for example in examples:
         file.write(f"void {example}();\n\n")
 
-    file.write("int main(int argc, const char* argv[])\n{\n")
+    file.write("int main(int argc, const char *argv[]) {\n")
     file.write('    printf("Select example\\n");\n')
 
     for key, example in zip(keys, examples):
         file.write(f'    printf("{key}. {example}.c\\n");\n')
 
     file.write("\n")
-    file.write("    switch (get_key())\n")
-    file.write("    {\n")
+    file.write("    switch (get_key()) {\n")
 
     for key, example in zip(keys, examples):
         file.write(f"        case '{key}':\n")

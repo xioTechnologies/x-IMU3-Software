@@ -2,28 +2,26 @@
 #include <stdio.h>
 #include "Ximu3.h"
 
-static void callback(const XIMU3_ConnectionStatus status, void* context);
+static void callback(const XIMU3_ConnectionStatus status, void *context);
 
 static void print_connection_status(const XIMU3_ConnectionStatus status);
 
-void keep_open()
-{
+void keep_open() {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
-    if (devices.length == 0)
-    {
+    if (devices.length == 0) {
         printf("No USB connections available\n");
         return;
     }
     printf("Found %s %s\n", devices.array[0].device_name, devices.array[0].serial_number);
 
     // Open connection
-    XIMU3_Connection* const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
+    XIMU3_Connection *const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
 
     XIMU3_devices_free(devices);
 
-    XIMU3_KeepOpen* const keep_open = XIMU3_keep_open_new(connection, callback, NULL);
+    XIMU3_KeepOpen *const keep_open = XIMU3_keep_open_new(connection, callback, NULL);
 
     // Close connection
     sleep(60);
@@ -31,15 +29,12 @@ void keep_open()
     XIMU3_connection_free(connection);
 }
 
-static void callback(const XIMU3_ConnectionStatus status, void* context)
-{
+static void callback(const XIMU3_ConnectionStatus status, void *context) {
     print_connection_status(status);
 }
 
-static void print_connection_status(const XIMU3_ConnectionStatus status)
-{
-    switch (status)
-    {
+static void print_connection_status(const XIMU3_ConnectionStatus status) {
+    switch (status) {
         case XIMU3_ConnectionStatusConnected:
             printf("Connected\n");
             break;

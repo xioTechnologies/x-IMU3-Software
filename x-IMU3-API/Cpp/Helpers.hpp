@@ -6,10 +6,8 @@
 #include <type_traits>
 #include <vector>
 
-namespace ximu3
-{
-    class Helpers
-    {
+namespace ximu3 {
+    class Helpers {
         friend class Connection;
 
         friend class DataLogger;
@@ -23,37 +21,30 @@ namespace ximu3
         friend class PortScanner;
 
         template<typename... T, typename Callable>
-        static auto wrapCallable(Callable const&) -> void (*)(T..., void*)
-        {
-            return +[](T... data, void* context)
-            {
-                (*static_cast<Callable*>(context))(data...);
+        static auto wrapCallable(Callable const &) -> void (*)(T..., void *) {
+            return +[](T... data, void *context) {
+                (*static_cast<Callable *>(context))(data...);
             };
         }
 
         template<typename VectorType, typename ArgumentType>
-        static auto toVector(const ArgumentType& argument)
-        {
+        static auto toVector(const ArgumentType &argument) {
             std::vector<VectorType> vector;
-            for (uint32_t index = 0; index < argument.length; index++)
-            {
+            for (uint32_t index = 0; index < argument.length; index++) {
                 vector.push_back(argument.array[index]);
             }
             return vector;
         }
 
-        static auto toVectorAndFree(const XIMU3_CharArrays& charArrays)
-        {
+        static auto toVectorAndFree(const XIMU3_CharArrays &charArrays) {
             const auto vector = toVector<std::string>(charArrays);
             XIMU3_char_arrays_free(charArrays);
             return vector;
         }
 
-        static auto toCharPtrVector(const std::vector<std::string>& stringVector)
-        {
-            std::vector<const char*> charPtrVector(stringVector.size());
-            for (size_t index = 0; index < charPtrVector.size(); index++)
-            {
+        static auto toCharPtrVector(const std::vector<std::string> &stringVector) {
+            std::vector<const char *> charPtrVector(stringVector.size());
+            for (size_t index = 0; index < charPtrVector.size(); index++) {
                 charPtrVector[index] = stringVector[index].c_str();
             }
             return charPtrVector;

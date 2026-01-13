@@ -23,15 +23,14 @@
 //
 // https://datatracker.ietf.org/doc/html/rfc8259
 
-namespace EscapedStrings
-{
-    std::string printableToBytes(const std::string& printable);
+namespace EscapedStrings {
+    std::string printableToBytes(const std::string &printable);
 
-    std::string bytesToPrintable(const std::string& bytes);
+    std::string bytesToPrintable(const std::string &bytes);
 
     std::string jsonToBytes(std::string json);
 
-    std::string bytesToJson(const std::string& bytes);
+    std::string bytesToJson(const std::string &bytes);
 
-    std::vector<std::string> splitPrintable(const std::string& printable);
+    std::vector<std::string> splitPrintable(const std::string &printable);
 }

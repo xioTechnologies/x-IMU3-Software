@@ -2,9 +2,8 @@
 #include "DeviceSettings/DeviceSettingsItem.h"
 #include "Setting.h"
 
-Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentIfExpandable_) : tree(tree_),
-                                                                                                parentIfExpandable(parentIfExpandable_)
-{
+Setting::Setting(const juce::ValueTree &tree_, DeviceSettingsItem *const parentIfExpandable_) : tree(tree_),
+                                                                                                parentIfExpandable(parentIfExpandable_) {
     addAndMakeVisible(name);
     addChildComponent(modifiedIcon);
     addChildComponent(warningIcon);
@@ -13,10 +12,8 @@ Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentI
 
     updateIcon();
 
-    if (parentIfExpandable != nullptr)
-    {
-        parentIfExpandable->onOpennessChanged = [this]
-        {
+    if (parentIfExpandable != nullptr) {
+        parentIfExpandable->onOpennessChanged = [this] {
             updateIcon();
         };
     }
@@ -24,27 +21,21 @@ Setting::Setting(const juce::ValueTree& tree_, DeviceSettingsItem* const parentI
     tree.addListener(this);
 }
 
-Setting::~Setting()
-{
-    if (parentIfExpandable != nullptr)
-    {
+Setting::~Setting() {
+    if (parentIfExpandable != nullptr) {
         parentIfExpandable->onOpennessChanged = nullptr;
     }
 }
 
-void Setting::resized()
-{
+void Setting::resized() {
     auto bounds = getLocalBounds();
 
     modifiedIcon.setBounds(bounds.removeFromRight(25).reduced(5));
     warningIcon.setBounds(modifiedIcon.getBounds());
 
-    if (auto* treeview = findParentComponentOfClass<juce::TreeView>())
-    {
+    if (auto *treeview = findParentComponentOfClass<juce::TreeView>()) {
         valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
-    }
-    else
-    {
+    } else {
         jassertfalse;
     }
 
@@ -54,66 +45,53 @@ void Setting::resized()
     name.setBounds(bounds.reduced(1, 2));
 }
 
-void Setting::mouseDown(const juce::MouseEvent&)
-{
-    if (parentIfExpandable != nullptr)
-    {
+void Setting::mouseDown(const juce::MouseEvent &) {
+    if (parentIfExpandable != nullptr) {
         parentIfExpandable->setOpen(parentIfExpandable->isOpen() == false);
     }
 }
 
-bool Setting::isReadOnly() const
-{
+bool Setting::isReadOnly() const {
     return tree[DeviceSettingsIds::readOnly];
 }
 
-const juce::Rectangle<int>& Setting::getValueBounds() const
-{
+const juce::Rectangle<int> &Setting::getValueBounds() const {
     return valueBounds;
 }
 
-juce::var Setting::getValue() const
-{
+juce::var Setting::getValue() const {
     return tree.getProperty(DeviceSettingsIds::value);
 }
 
-void Setting::setValue(const juce::var& value)
-{
+void Setting::setValue(const juce::var &value) {
     tree.setPropertyExcludingListener(this, DeviceSettingsIds::value, value, nullptr);
     tree.setProperty(DeviceSettingsIds::status, (int) Status::modified, nullptr);
     tree.setProperty(DeviceSettingsIds::statusTooltip, "Modified but Not Written to Device", nullptr);
 }
 
-void Setting::updateIcon()
-{
-    auto updateIcons = [&](auto status, auto tooltip)
-    {
+void Setting::updateIcon() {
+    auto updateIcons = [&](auto status, auto tooltip) {
         modifiedIcon.setVisible(status == Status::modified);
         warningIcon.setVisible(status == Status::warning);
         modifiedIcon.setTooltip(tooltip);
         warningIcon.setTooltip(tooltip);
     };
 
-    if (parentIfExpandable == nullptr)
-    {
+    if (parentIfExpandable == nullptr) {
         updateIcons((Status) (int) tree[DeviceSettingsIds::status], tree[DeviceSettingsIds::statusTooltip]);
         return;
     }
 
-    if (parentIfExpandable->isOpen())
-    {
+    if (parentIfExpandable->isOpen()) {
         modifiedIcon.setVisible(false);
         warningIcon.setVisible(false);
         return;
     }
 
-    const std::function<juce::ValueTree(juce::ValueTree)> getStatus = [&](auto settings)
-    {
+    const std::function<juce::ValueTree(juce::ValueTree)> getStatus = [&](auto settings) {
         juce::ValueTree status = settings;
-        for (const auto setting : settings)
-        {
-            if (getStatus(setting)[DeviceSettingsIds::status] > status[DeviceSettingsIds::status])
-            {
+        for (const auto setting: settings) {
+            if (getStatus(setting)[DeviceSettingsIds::status] > status[DeviceSettingsIds::status]) {
                 status = getStatus(setting);
             }
         }
@@ -122,29 +100,20 @@ void Setting::updateIcon()
     updateIcons((Status) (int) getStatus(tree)[DeviceSettingsIds::status], getStatus(tree)[DeviceSettingsIds::statusTooltip]);
 }
 
-void Setting::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property)
-{
-    if (parentIfExpandable != nullptr)
-    {
-        if (property == DeviceSettingsIds::status)
-        {
+void Setting::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) {
+    if (parentIfExpandable != nullptr) {
+        if (property == DeviceSettingsIds::status) {
             updateIcon();
         }
         return;
     }
 
-    if (treeWhosePropertyHasChanged == tree)
-    {
-        if (property == DeviceSettingsIds::value)
-        {
+    if (treeWhosePropertyHasChanged == tree) {
+        if (property == DeviceSettingsIds::value) {
             valueChanged();
-        }
-        else if (property == DeviceSettingsIds::status || property == DeviceSettingsIds::statusTooltip)
-        {
+        } else if (property == DeviceSettingsIds::status || property == DeviceSettingsIds::statusTooltip) {
             updateIcon();
-        }
-        else
-        {
+        } else {
             jassertfalse;
         }
     }

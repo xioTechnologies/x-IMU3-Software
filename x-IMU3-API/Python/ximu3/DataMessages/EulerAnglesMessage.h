@@ -6,56 +6,49 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_EulerAnglesMessage message;
 } EulerAnglesMessage;
 
-static void euler_angles_message_free(EulerAnglesMessage* self)
-{
+static void euler_angles_message_free(EulerAnglesMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* euler_angles_message_get_timestamp(EulerAnglesMessage* self)
-{
+static PyObject *euler_angles_message_get_timestamp(EulerAnglesMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* euler_angles_message_get_roll(EulerAnglesMessage* self)
-{
+static PyObject *euler_angles_message_get_roll(EulerAnglesMessage *self) {
     return Py_BuildValue("f", self->message.roll);
 }
 
-static PyObject* euler_angles_message_get_pitch(EulerAnglesMessage* self)
-{
+static PyObject *euler_angles_message_get_pitch(EulerAnglesMessage *self) {
     return Py_BuildValue("f", self->message.pitch);
 }
 
-static PyObject* euler_angles_message_get_yaw(EulerAnglesMessage* self)
-{
+static PyObject *euler_angles_message_get_yaw(EulerAnglesMessage *self) {
     return Py_BuildValue("f", self->message.yaw);
 }
 
-static PyObject* euler_angles_message_to_string(EulerAnglesMessage* self, PyObject* args)
-{
+static PyObject *euler_angles_message_to_string(EulerAnglesMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_euler_angles_message_to_string(self->message));
 }
 
-static PyObject* euler_angles_message_to_quaternion_message(EulerAnglesMessage* self, PyObject* args);
+static PyObject *euler_angles_message_to_quaternion_message(EulerAnglesMessage *self, PyObject *args);
 
 static PyGetSetDef euler_angles_message_get_set[] = {
-    { "timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL },
-    { "roll", (getter) euler_angles_message_get_roll, NULL, "", NULL },
-    { "pitch", (getter) euler_angles_message_get_pitch, NULL, "", NULL },
-    { "yaw", (getter) euler_angles_message_get_yaw, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) euler_angles_message_get_timestamp, NULL, "", NULL},
+    {"roll", (getter) euler_angles_message_get_roll, NULL, "", NULL},
+    {"pitch", (getter) euler_angles_message_get_pitch, NULL, "", NULL},
+    {"yaw", (getter) euler_angles_message_get_yaw, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef euler_angles_message_methods[] = {
-    { "to_string", (PyCFunction) euler_angles_message_to_string, METH_NOARGS, "" },
-    { "to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) euler_angles_message_to_string, METH_NOARGS, ""},
+    {"to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject euler_angles_message_object = {
@@ -67,23 +60,20 @@ static PyTypeObject euler_angles_message_object = {
     .tp_methods = euler_angles_message_methods,
 };
 
-static PyObject* euler_angles_message_from(const XIMU3_EulerAnglesMessage* const message)
-{
-    EulerAnglesMessage* const self = (EulerAnglesMessage*) euler_angles_message_object.tp_alloc(&euler_angles_message_object, 0);
+static PyObject *euler_angles_message_from(const XIMU3_EulerAnglesMessage *const message) {
+    EulerAnglesMessage *const self = (EulerAnglesMessage *) euler_angles_message_object.tp_alloc(&euler_angles_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void euler_angles_message_callback(XIMU3_EulerAnglesMessage data, void* context)
-{
+static void euler_angles_message_callback(XIMU3_EulerAnglesMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = euler_angles_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = euler_angles_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

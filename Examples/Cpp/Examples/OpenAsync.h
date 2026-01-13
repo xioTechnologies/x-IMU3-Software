@@ -6,16 +6,13 @@
 #include <thread>
 #include "Ximu3.hpp"
 
-class OpenAsync
-{
+class OpenAsync {
 public:
-    OpenAsync()
-    {
+    OpenAsync() {
         // Search for connection
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
-        if (devices.empty())
-        {
+        if (devices.empty()) {
             std::cout << "No USB connections available" << std::endl;
             return;
         }
@@ -33,8 +30,7 @@ public:
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_Result)> callback = [](const auto result)
-    {
+    std::function<void(const ximu3::XIMU3_Result)> callback = [](const auto result) {
         std::cout << XIMU3_result_to_string(result) << std::endl;
     };
 };

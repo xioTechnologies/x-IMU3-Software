@@ -380,7 +380,7 @@ jobs:
 
       - name: Rename installer
         run: Rename-Item -Path x-IMU3-GUI-Setup.exe -NewName x-IMU3-GUI-Setup-${{ matrix.target[1] }}.exe
-        working-directory:  cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
+        working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
 
       - uses: actions/upload-artifact@v4
         name: Upload to artifacts

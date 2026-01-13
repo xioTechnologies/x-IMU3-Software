@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int XIMU3_upload_firmware(const char* deviceName, const char* fileName, const char* portName);
+int XIMU3_upload_firmware(const char *deviceName, const char *fileName, const char *portName);
 
 #ifdef __cplusplus
 }

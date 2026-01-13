@@ -3,17 +3,16 @@
 #include "Dialog.h"
 #include "Widgets/IconButton.h"
 
-class ApplicationSettingsDialog : public Dialog
-{
+class ApplicationSettingsDialog : public Dialog {
 public:
     ApplicationSettingsDialog();
 
     void resized() override;
 
 private:
-    std::vector<std::unique_ptr<juce::Component>> groups;
+    std::vector<std::unique_ptr<juce::Component> > groups;
 
-    IconButton defaultsButton { BinaryData::default_svg, "Restore Defaults" };
+    IconButton defaultsButton{BinaryData::default_svg, "Restore Defaults"};
 
     void initialiseGroups();
 

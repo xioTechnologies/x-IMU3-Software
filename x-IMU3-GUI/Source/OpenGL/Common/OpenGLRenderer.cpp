@@ -1,44 +1,37 @@
 #include "CustomLookAndFeel.h"
 #include "OpenGLRenderer.h"
 
-OpenGLRenderer::OpenGLRenderer(juce::Component& attachTo, juce::ThreadPool& threadPool_) : threadPool(threadPool_)
-{
+OpenGLRenderer::OpenGLRenderer(juce::Component &attachTo, juce::ThreadPool &threadPool_) : threadPool(threadPool_) {
     context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
     context.setRenderer(this);
     context.setContinuousRepainting(true);
     context.attachTo(attachTo);
 }
 
-OpenGLRenderer::~OpenGLRenderer()
-{
+OpenGLRenderer::~OpenGLRenderer() {
     context.detach();
 }
 
-juce::OpenGLContext& OpenGLRenderer::getContext()
-{
+juce::OpenGLContext &OpenGLRenderer::getContext() {
     return context;
 }
 
-void OpenGLRenderer::addComponent(OpenGLComponent& component)
-{
+void OpenGLRenderer::addComponent(OpenGLComponent &component) {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
     components.push_back(&component);
 }
 
-void OpenGLRenderer::removeComponent(OpenGLComponent& component)
-{
+void OpenGLRenderer::removeComponent(OpenGLComponent &component) {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
     components.erase(std::remove(components.begin(), components.end(), &component), components.end());
 }
 
-OpenGLResources& OpenGLRenderer::getResources()
-{
+OpenGLResources &OpenGLRenderer::getResources() {
     jassert(resources != nullptr);
     return *resources;
 }
 
-void OpenGLRenderer::resetDefaultOpenGLState()
-{
+void OpenGLRenderer::resetDefaultOpenGLState() {
     // Blend settings
     juce::gl::glEnable(juce::gl::GL_BLEND);
     juce::gl::glBlendFunc(juce::gl::GL_SRC_ALPHA, juce::gl::GL_ONE_MINUS_SRC_ALPHA); // alpha value of top fragment determines blend
@@ -56,16 +49,14 @@ void OpenGLRenderer::resetDefaultOpenGLState()
     juce::gl::glEnable(juce::gl::GL_MULTISAMPLE);
 }
 
-void OpenGLRenderer::newOpenGLContextCreated()
-{
+void OpenGLRenderer::newOpenGLContextCreated() {
     std::lock_guard<std::mutex> _(sharedGLDataLock);
 
     // All texture, shader, model and buffer resources are created here
     resources = std::make_unique<OpenGLResources>(context, threadPool);
 }
 
-void OpenGLRenderer::renderOpenGL()
-{
+void OpenGLRenderer::renderOpenGL() {
     resetDefaultOpenGLState(); // JUCE paint() modifies OpenGL state, so we must set default state every render loop
 
     // Clear entire OpenGL screen with the background color and clear depth/stencil buffers
@@ -75,8 +66,7 @@ void OpenGLRenderer::renderOpenGL()
     // Render components
     {
         std::lock_guard<std::mutex> _(sharedGLDataLock);
-        for (auto& component : components)
-        {
+        for (auto &component: components) {
             component->render();
         }
 
@@ -98,9 +88,7 @@ void OpenGLRenderer::renderOpenGL()
     juce::gl::glDisable(juce::gl::GL_CULL_FACE); // prevent cull interference with JUCE Component paint() via OpenGL
 }
 
-void OpenGLRenderer::openGLContextClosing()
-{
-    {
+void OpenGLRenderer::openGLContextClosing() { {
         std::lock_guard<std::mutex> _(sharedGLDataLock);
         components.clear();
     }

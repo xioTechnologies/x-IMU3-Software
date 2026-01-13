@@ -3,11 +3,9 @@
 #include "Icon.h"
 
 template<typename IconType>
-class IconAndText : public juce::Component, protected juce::Timer
-{
+class IconAndText : public juce::Component, protected juce::Timer {
 public:
-    IconAndText()
-    {
+    IconAndText() {
         addAndMakeVisible(icon);
         addAndMakeVisible(text);
 
@@ -15,36 +13,30 @@ public:
         startTimer(3000);
     }
 
-    void resized() override
-    {
+    void resized() override {
         auto bounds = getLocalBounds();
         icon.setBounds(bounds.removeFromLeft(iconWidth));
         bounds.removeFromLeft(5);
         text.setBounds(bounds);
     }
 
-    int getWidth(const bool showText) const
-    {
+    int getWidth(const bool showText) const {
         return iconWidth + ((showText && text.getText().isNotEmpty()) ? 40 : 0);
     }
 
 protected:
     IconType icon;
 
-    void setText(const juce::String& text_)
-    {
-        if (text.getText() != text_)
-        {
+    void setText(const juce::String &text_) {
+        if (text.getText() != text_) {
             text.setText(text_);
-            if (getParentComponent() != nullptr)
-            {
+            if (getParentComponent() != nullptr) {
                 getParentComponent()->resized();
             }
         }
     }
 
-    void timerCallback() override
-    {
+    void timerCallback() override {
         icon.unavailable();
         setText("");
     }
@@ -55,15 +47,11 @@ private:
     SimpleLabel text;
 };
 
-class RssiIconAndText : public IconAndText<RssiIcon>
-{
+class RssiIconAndText : public IconAndText<RssiIcon> {
 public:
-    void update(const int percentage)
-    {
-        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage]
-        {
-            if (self == nullptr)
-            {
+    void update(const int percentage) {
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage] {
+            if (self == nullptr) {
                 return;
             }
 
@@ -74,21 +62,16 @@ public:
     }
 };
 
-class BatteryIconAndText : public IconAndText<BatteryIcon>
-{
+class BatteryIconAndText : public IconAndText<BatteryIcon> {
 public:
-    void update(const int percentage, const ximu3::XIMU3_ChargingStatus status)
-    {
-        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage, status]
-        {
-            if (self == nullptr)
-            {
+    void update(const int percentage, const ximu3::XIMU3_ChargingStatus status) {
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), percentage, status] {
+            if (self == nullptr) {
                 return;
             }
 
             icon.update(percentage, status);
-            switch (status)
-            {
+            switch (status) {
                 case ximu3::XIMU3_ChargingStatusNotConnected:
                     setText(juce::String(percentage) + "%");
                     break;

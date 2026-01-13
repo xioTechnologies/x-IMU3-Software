@@ -5,63 +5,54 @@
 #include "UIUtils.h"
 
 //==============================================================================
-class xIMU3GUIApplication : public juce::JUCEApplication
-{
+class xIMU3GUIApplication : public juce::JUCEApplication {
 public:
     //==============================================================================
-    xIMU3GUIApplication()
-    {
+    xIMU3GUIApplication() {
     }
 
     // We inject these as compile definitions from the CMakeLists.txt
     // If you've enabled the juce header with `juce_generate_juce_header(<thisTarget>)`
     // you could `#include <JuceHeader.h>` and use `ProjectInfo::projectName` etc. instead.
-    const juce::String getApplicationName() override
-    {
+    const juce::String getApplicationName() override {
         return JUCE_APPLICATION_NAME_STRING;
     }
 
-    const juce::String getApplicationVersion() override
-    {
+    const juce::String getApplicationVersion() override {
         return JUCE_APPLICATION_VERSION_STRING;
     }
 
-    bool moreThanOneInstanceAllowed() override
-    {
+    bool moreThanOneInstanceAllowed() override {
         return true;
     }
 
     //==============================================================================
-    void initialise(const juce::String& commandLine) override
-    {
+    void initialise(const juce::String &commandLine) override {
         // This method is where you should put your application's initialisation code..
         juce::ignoreUnused(commandLine);
 
         mainWindow.reset(new MainWindow(getApplicationName()));
 
 #if JUCE_MAC
-        auto* windowHandle = mainWindow->getWindowHandle();
+        auto *windowHandle = mainWindow->getWindowHandle();
         UIUtils::setDarkTheme(windowHandle);
 #endif
     }
 
-    void shutdown() override
-    {
+    void shutdown() override {
         // Add your application's shutdown code here..
 
         mainWindow = nullptr; // (deletes our window)
     }
 
     //==============================================================================
-    void systemRequestedQuit() override
-    {
+    void systemRequestedQuit() override {
         // This is called when the app is being asked to quit: you can ignore this
         // request and let the app carry on running, or call quit() to allow the app to close.
         quit();
     }
 
-    void anotherInstanceStarted(const juce::String& commandLine) override
-    {
+    void anotherInstanceStarted(const juce::String &commandLine) override {
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
@@ -73,29 +64,26 @@ public:
         This class implements the desktop window that contains an instance of
         our MainComponent class.
     */
-    class MainWindow : public juce::DocumentWindow
-    {
+    class MainWindow : public juce::DocumentWindow {
     public:
         explicit MainWindow(juce::String name) : juce::DocumentWindow(name,
                                                                       UIColours::backgroundDark,
-                                                                      juce::DocumentWindow::allButtons)
-        {
+                                                                      juce::DocumentWindow::allButtons) {
             setUsingNativeTitleBar(true);
             setContentOwned(new MainComponent(), true);
 
 #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
+            setFullScreen(true);
 #else
             setResizable(true, true);
-            setResizeLimits(static_cast<MainComponent*>(getContentComponent())->getMinimumWidth(), static_cast<MainComponent*>(getContentComponent())->getMinimumHeight(), getConstrainer()->getMaximumWidth(), getConstrainer()->getMaximumHeight());
+            setResizeLimits(static_cast<MainComponent *>(getContentComponent())->getMinimumWidth(), static_cast<MainComponent *>(getContentComponent())->getMinimumHeight(), getConstrainer()->getMaximumWidth(), getConstrainer()->getMaximumHeight());
             centreWithSize(getWidth(), getHeight());
 #endif
 
             setVisible(true);
         }
 
-        void closeButtonPressed() override
-        {
+        void closeButtonPressed() override {
             // This is called when the user tries to close this window. Here, we'll just
             // ask the app to quit when this happens, but you can change this to do
             // whatever you need.

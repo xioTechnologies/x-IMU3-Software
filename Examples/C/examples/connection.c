@@ -9,50 +9,48 @@
 #define FLOAT_FORMAT " %8.3f"
 #define STRING_FORMAT " \"%s\""
 
-void receive_error_callback(const XIMU3_ReceiveError error, void* context);
+void receive_error_callback(const XIMU3_ReceiveError error, void *context);
 
-void statistics_callback(const XIMU3_Statistics statistics, void* context);
+void statistics_callback(const XIMU3_Statistics statistics, void *context);
 
-void inertial_callback(const XIMU3_InertialMessage message, void* context);
+void inertial_callback(const XIMU3_InertialMessage message, void *context);
 
-void magnetometer_callback(const XIMU3_MagnetometerMessage message, void* context);
+void magnetometer_callback(const XIMU3_MagnetometerMessage message, void *context);
 
-void quaternion_callback(const XIMU3_QuaternionMessage message, void* context);
+void quaternion_callback(const XIMU3_QuaternionMessage message, void *context);
 
-void rotation_matrix_callback(const XIMU3_RotationMatrixMessage message, void* context);
+void rotation_matrix_callback(const XIMU3_RotationMatrixMessage message, void *context);
 
-void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void* context);
+void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void *context);
 
-void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message, void* context);
+void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message, void *context);
 
-void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, void* context);
+void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, void *context);
 
-void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void* context);
+void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void *context);
 
-void high_g_accelerometer_callback(const XIMU3_HighGAccelerometerMessage message, void* context);
+void high_g_accelerometer_callback(const XIMU3_HighGAccelerometerMessage message, void *context);
 
-void temperature_callback(const XIMU3_TemperatureMessage message, void* context);
+void temperature_callback(const XIMU3_TemperatureMessage message, void *context);
 
-void battery_callback(const XIMU3_BatteryMessage message, void* context);
+void battery_callback(const XIMU3_BatteryMessage message, void *context);
 
-void rssi_callback(const XIMU3_RssiMessage message, void* context);
+void rssi_callback(const XIMU3_RssiMessage message, void *context);
 
-void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void* context);
+void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void *context);
 
-void notification_callback(const XIMU3_NotificationMessage message, void* context);
+void notification_callback(const XIMU3_NotificationMessage message, void *context);
 
-void error_callback(const XIMU3_ErrorMessage message, void* context);
+void error_callback(const XIMU3_ErrorMessage message, void *context);
 
-void end_of_file_callback(void* context);
+void end_of_file_callback(void *context);
 
-void run(XIMU3_Connection* const connection, const char* const connection_info_string)
-{
+void run(XIMU3_Connection *const connection, const char *const connection_info_string) {
     // Add callbacks
     XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
     XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
 
-    if (yes_or_no("Print data messages?"))
-    {
+    if (yes_or_no("Print data messages?")) {
         XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
         XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
         XIMU3_connection_add_quaternion_callback(connection, quaternion_callback, NULL);
@@ -75,8 +73,7 @@ void run(XIMU3_Connection* const connection, const char* const connection_info_s
     // Open connection
     const XIMU3_Result result = XIMU3_connection_open(connection);
 
-    if (result != XIMU3_ResultOk)
-    {
+    if (result != XIMU3_ResultOk) {
         printf("Unable to open %s. %s.\n", connection_info_string, XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
@@ -91,13 +88,11 @@ void run(XIMU3_Connection* const connection, const char* const connection_info_s
     XIMU3_connection_free(connection);
 }
 
-void receive_error_callback(const XIMU3_ReceiveError error, void* context)
-{
+void receive_error_callback(const XIMU3_ReceiveError error, void *context) {
     printf("%s\n", XIMU3_receive_error_to_string(error));
 }
 
-void statistics_callback(const XIMU3_Statistics statistics, void* context)
-{
+void statistics_callback(const XIMU3_Statistics statistics, void *context) {
     printf(TIMESTAMP_FORMAT UINT64_FORMAT
            " bytes" UINT32_FORMAT
            " bytes/s" UINT64_FORMAT
@@ -115,8 +110,7 @@ void statistics_callback(const XIMU3_Statistics statistics, void* context)
     // printf("%s\n", XIMU3_statistics_to_string(statistics)); // alternative to above
 }
 
-void inertial_callback(const XIMU3_InertialMessage message, void* context)
-{
+void inertial_callback(const XIMU3_InertialMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
            message.gyroscope_x,
@@ -128,8 +122,7 @@ void inertial_callback(const XIMU3_InertialMessage message, void* context)
     // printf("%s\n", XIMU3_inertial_message_to_string(message)); // alternative to above
 }
 
-void magnetometer_callback(const XIMU3_MagnetometerMessage message, void* context)
-{
+void magnetometer_callback(const XIMU3_MagnetometerMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " a.u." FLOAT_FORMAT " a.u." FLOAT_FORMAT " a.u.\n",
            message.timestamp,
            message.x,
@@ -138,8 +131,7 @@ void magnetometer_callback(const XIMU3_MagnetometerMessage message, void* contex
     // printf("%s\n", XIMU3_magnetometer_message_to_string(message)); // alternative to above
 }
 
-void quaternion_callback(const XIMU3_QuaternionMessage message, void* context)
-{
+void quaternion_callback(const XIMU3_QuaternionMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
            message.timestamp,
            message.w,
@@ -150,8 +142,7 @@ void quaternion_callback(const XIMU3_QuaternionMessage message, void* context)
     printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_quaternion_message_to_euler_angles_message(message)));
 }
 
-void rotation_matrix_callback(const XIMU3_RotationMatrixMessage message, void* context)
-{
+void rotation_matrix_callback(const XIMU3_RotationMatrixMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
            message.timestamp,
            message.xx,
@@ -167,8 +158,7 @@ void rotation_matrix_callback(const XIMU3_RotationMatrixMessage message, void* c
     printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
 }
 
-void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void* context)
-{
+void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " deg" FLOAT_FORMAT " deg" FLOAT_FORMAT " deg\n",
            message.timestamp,
            message.roll,
@@ -178,8 +168,7 @@ void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void* context
     printf("%s\n", XIMU3_quaternion_message_to_string(XIMU3_euler_angles_message_to_quaternion_message(message)));
 }
 
-void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message, void* context)
-{
+void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
            message.quaternion_w,
@@ -193,8 +182,7 @@ void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message,
     printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_linear_acceleration_message_to_euler_angles_message(message)));
 }
 
-void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, void* context)
-{
+void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
            message.quaternion_w,
@@ -208,8 +196,7 @@ void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, v
     printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_earth_acceleration_message_to_euler_angles_message(message)));
 }
 
-void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void* context)
-{
+void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
            message.timestamp,
            message.initialising,
@@ -219,8 +206,7 @@ void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void* context)
     // printf("%s\n", XIMU3_ahrs_status_message_to_string(message)); // alternative to above
 }
 
-void high_g_accelerometer_callback(const XIMU3_HighGAccelerometerMessage message, void* context)
-{
+void high_g_accelerometer_callback(const XIMU3_HighGAccelerometerMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
            message.x,
@@ -229,16 +215,14 @@ void high_g_accelerometer_callback(const XIMU3_HighGAccelerometerMessage message
     // printf("%s\n", XIMU3_high_g_accelerometer_message_to_string(message)); // alternative to above
 }
 
-void temperature_callback(const XIMU3_TemperatureMessage message, void* context)
-{
+void temperature_callback(const XIMU3_TemperatureMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " degC\n",
            message.timestamp,
            message.temperature);
     // printf("%s\n", XIMU3_temperature_message_to_string(message)); // alternative to above
 }
 
-void battery_callback(const XIMU3_BatteryMessage message, void* context)
-{
+void battery_callback(const XIMU3_BatteryMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT " (%s)\n",
            message.timestamp,
            message.percentage,
@@ -248,8 +232,7 @@ void battery_callback(const XIMU3_BatteryMessage message, void* context)
     // printf("%s (%s)\n", XIMU3_battery_message_to_string(message), XIMU3_charging_status_to_string(XIMU3_charging_status_from_float(message.charging_status))); // alternative to above
 }
 
-void rssi_callback(const XIMU3_RssiMessage message, void* context)
-{
+void rssi_callback(const XIMU3_RssiMessage message, void *context) {
     printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " dBm\n",
            message.timestamp,
            message.percentage,
@@ -257,31 +240,27 @@ void rssi_callback(const XIMU3_RssiMessage message, void* context)
     // printf("%s\n", XIMU3_rssi_message_to_string(message)); // alternative to above
 }
 
-void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void* context)
-{
+void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void *context) {
     printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_serial_accessory_message_to_string(message)); // alternative to above
 }
 
-void notification_callback(const XIMU3_NotificationMessage message, void* context)
-{
+void notification_callback(const XIMU3_NotificationMessage message, void *context) {
     printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_notification_message_to_string(message)); // alternative to above
 }
 
-void error_callback(const XIMU3_ErrorMessage message, void* context)
-{
+void error_callback(const XIMU3_ErrorMessage message, void *context) {
     printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_error_message_to_string(message)); // alternative to above
 }
 
-void end_of_file_callback(void* context)
-{
+void end_of_file_callback(void *context) {
     printf("End of file\n");
 }

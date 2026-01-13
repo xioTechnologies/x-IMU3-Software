@@ -3,14 +3,13 @@
 #include "CustomComboBox.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class PortNameComboBox : public CustomComboBox
-{
+class PortNameComboBox : public CustomComboBox {
 public:
     PortNameComboBox();
 
-    void mouseDown(const juce::MouseEvent& e) override;
+    void mouseDown(const juce::MouseEvent &e) override;
 
-    const std::string& getSelectedPortName() const;
+    const std::string &getSelectedPortName() const;
 
 private:
     std::vector<std::string> previousPortNames;

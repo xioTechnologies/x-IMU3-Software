@@ -29,7 +29,7 @@ with open("main.cpp", "w") as file:
     file.write('#include "Helpers.hpp"\n')
     file.write("#include <iostream>\n\n")
 
-    file.write("int main(int argc, const char* argv[])\n{\n")
+    file.write("int main(int argc, const char *argv[]) {\n")
     file.write("    setbuf(stdout, NULL);\n\n")
     file.write('    std::cout << "Select example " << std::endl;\n')
 
@@ -37,8 +37,7 @@ with open("main.cpp", "w") as file:
         file.write(f'    std::cout << "{key}. {example}.h" << std::endl;\n')
 
     file.write("\n")
-    file.write("    switch (helpers::getKey())\n")
-    file.write("    {\n")
+    file.write("    switch (helpers::getKey()) {\n")
 
     for key, example in zip(keys, examples):
         file.write(f"        case '{key}':\n")

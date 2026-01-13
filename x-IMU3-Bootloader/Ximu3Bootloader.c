@@ -6,10 +6,8 @@
 
 #include <inttypes.h>
 
-static void callback(const void* const ds30_options, const ds30_event_t event, const bool boolean, const void* const voidPointer)
-{
-    switch (event)
-    {
+static void callback(const void *const ds30_options, const ds30_event_t event, const bool boolean, const void *const voidPointer) {
+    switch (event) {
         case EV_OP_START:
             printf("EV_OP_START\n");
             break;
@@ -60,19 +58,19 @@ static void callback(const void* const ds30_options, const ds30_event_t event, c
             break;
         case EV_INFO_LIB:
             printf("EV_INFO_LIB\n");
-            printf("%s\n", (char*) voidPointer);
+            printf("%s\n", (char *) voidPointer);
             break;
         case EV_INFO_FW:
             printf("EV_INFO_FW\n");
-            printf("%s\n", (char*) voidPointer);
+            printf("%s\n", (char *) voidPointer);
             break;
         case EV_INFO_PROGRESS_START:
             printf("EV_INFO_PROGRESS_START\n");
-            printf("%" PRIu32 "\n", *((uint32_t*) voidPointer));
+            printf("%" PRIu32 "\n", *((uint32_t *) voidPointer));
             break;
         case EV_INFO_PROGRESS:
             printf("EV_INFO_PROGRESS\n");
-            printf("%" PRIu32 "\n", *((uint32_t*) voidPointer));
+            printf("%" PRIu32 "\n", *((uint32_t *) voidPointer));
             break;
         case EV_FAIL_COMM_TX:
             printf("EV_FAIL_COMM_TX\n");
@@ -125,8 +123,7 @@ static void callback(const void* const ds30_options, const ds30_event_t event, c
 
 #endif
 
-int XIMU3_upload_firmware(const char* deviceName, const char* fileName, const char* portName)
-{
+int XIMU3_upload_firmware(const char *deviceName, const char *fileName, const char *portName) {
     ds30_init();
 
     ds30_options_t options;

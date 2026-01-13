@@ -1,21 +1,18 @@
 #include "SendNoteCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog(BinaryData::note_svg, title, "Send", "Cancel", &previousNotesButton, iconButtonWidth)
-{
+SendNoteCommandDialog::SendNoteCommandDialog(const juce::String &title) : Dialog(BinaryData::note_svg, title, "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
     addAndMakeVisible(previousNotesButton);
 
     previousNotes = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (!previousNotes.isValid())
-    {
+    if (!previousNotes.isValid()) {
         previousNotes = juce::ValueTree("Notes");
-        previousNotes.appendChild({ "Note", { { "note", "This message will be echoed as a timestamped notification" } } }, nullptr);
+        previousNotes.appendChild({"Note", {{"note", "This message will be echoed as a timestamped notification"}}}, nullptr);
     }
 
-    value.onTextChange = [&]
-    {
+    value.onTextChange = [&] {
         setOkButton(value.isEmpty() == false);
     };
 
@@ -26,8 +23,7 @@ SendNoteCommandDialog::SendNoteCommandDialog(const juce::String& title) : Dialog
     setSize(600, calculateHeight(1));
 }
 
-void SendNoteCommandDialog::resized()
-{
+void SendNoteCommandDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds().removeFromTop(UILayout::textComponentHeight);
@@ -35,21 +31,17 @@ void SendNoteCommandDialog::resized()
     value.setBounds(bounds);
 }
 
-juce::String SendNoteCommandDialog::getNote()
-{
-    juce::ValueTree newNote { "Note", { { "note", value.getText() } } };
+juce::String SendNoteCommandDialog::getNote() {
+    juce::ValueTree newNote{"Note", {{"note", value.getText()}}};
 
-    for (const auto note : previousNotes)
-    {
-        if (note.isEquivalentTo(newNote))
-        {
+    for (const auto note: previousNotes) {
+        if (note.isEquivalentTo(newNote)) {
             previousNotes.removeChild(note, nullptr);
             break;
         }
     }
 
-    while (previousNotes.getNumChildren() >= 18)
-    {
+    while (previousNotes.getNumChildren() >= 18) {
         previousNotes.removeChild(previousNotes.getChild(previousNotes.getNumChildren() - 1), nullptr);
     }
 
@@ -59,13 +51,10 @@ juce::String SendNoteCommandDialog::getNote()
     return value.getText();
 }
 
-juce::PopupMenu SendNoteCommandDialog::getPreviousNotesMenu()
-{
+juce::PopupMenu SendNoteCommandDialog::getPreviousNotesMenu() {
     juce::PopupMenu menu;
-    for (const auto note : previousNotes)
-    {
-        menu.addItem(note["note"], [&, note]
-        {
+    for (const auto note: previousNotes) {
+        menu.addItem(note["note"], [&, note] {
             value.setText(note["note"], juce::sendNotification);
         });
     }

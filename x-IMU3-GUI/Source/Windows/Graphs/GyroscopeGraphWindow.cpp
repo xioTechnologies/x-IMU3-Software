@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "GyroscopeGraphWindow.h"
 
-GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Angular Rate (" + degreeSymbol + "/s)",
-                  { "X", "Y", "Z" },
-                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.gyroscope_x, message.gyroscope_y, message.gyroscope_z });
+                  {"X", "Y", "Z"},
+                  {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+        update(message.timestamp, {message.gyroscope_x, message.gyroscope_y, message.gyroscope_z});
     }));
 }
 
-GyroscopeGraphWindow::~GyroscopeGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+GyroscopeGraphWindow::~GyroscopeGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

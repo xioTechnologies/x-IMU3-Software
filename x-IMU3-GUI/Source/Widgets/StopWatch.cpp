@@ -1,18 +1,16 @@
 #include "CustomLookAndFeel.h"
 #include "Stopwatch.h"
 
-class Stopwatch::LookAndFeel : public CustomLookAndFeel
-{
+class Stopwatch::LookAndFeel : public CustomLookAndFeel {
 public:
     using CustomLookAndFeel::CustomLookAndFeel;
 
-    void drawButtonText(juce::Graphics& g, juce::TextButton& button,
-                        bool /*shouldDrawButtonAsHighlighted*/, bool /*shouldDrawButtonAsDown*/) override
-    {
+    void drawButtonText(juce::Graphics &g, juce::TextButton &button,
+                        bool /*shouldDrawButtonAsHighlighted*/, bool /*shouldDrawButtonAsDown*/) override {
         const auto font = getTextButtonFont(button, button.getHeight());
         g.setFont(font);
         g.setColour(button.findColour(button.getToggleState() ? juce::TextButton::textColourOnId : juce::TextButton::textColourOffId)
-                          .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+            .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
         g.drawText(button.getButtonText(), button.getLocalBounds().withSizeKeepingCentre(juce::GlyphArrangement::getStringWidthInt(font, "00:00:00.000"), (int) std::ceil(font.getHeight())), juce::Justification::centredLeft);
     }
@@ -21,8 +19,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LookAndFeel)
 };
 
-Stopwatch::Stopwatch()
-{
+Stopwatch::Stopwatch() {
     lookAndFeel = std::make_unique<LookAndFeel>();
     setLookAndFeel(lookAndFeel.get());
 
@@ -31,13 +28,11 @@ Stopwatch::Stopwatch()
     setTime(juce::RelativeTime());
 }
 
-Stopwatch::~Stopwatch()
-{
+Stopwatch::~Stopwatch() {
     setLookAndFeel(nullptr);
 }
 
-void Stopwatch::setTime(const juce::RelativeTime& time)
-{
+void Stopwatch::setTime(const juce::RelativeTime &time) {
     juce::String buttonText;
     buttonText += juce::String((int) std::floor(time.inHours()) % 100).paddedLeft('0', 2) + ":";
     buttonText += juce::String((int) std::floor(time.inMinutes()) % 60).paddedLeft('0', 2) + ":";

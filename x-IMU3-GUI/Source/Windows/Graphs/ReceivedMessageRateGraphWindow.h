@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class ReceivedMessageRateGraphWindow : public GraphWindow
-{
+class ReceivedMessageRateGraphWindow : public GraphWindow {
 public:
-    ReceivedMessageRateGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    ReceivedMessageRateGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~ReceivedMessageRateGraphWindow() override;
 

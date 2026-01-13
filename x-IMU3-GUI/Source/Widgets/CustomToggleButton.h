@@ -2,10 +2,9 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class CustomToggleButton : public juce::ToggleButton
-{
+class CustomToggleButton : public juce::ToggleButton {
 public:
-    explicit CustomToggleButton(const juce::String& buttonName);
+    explicit CustomToggleButton(const juce::String &buttonName);
 
     ~CustomToggleButton() override;
 

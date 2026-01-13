@@ -6,44 +6,37 @@
 #include "NetworkAnnouncementMessage.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
-    XIMU3_NetworkAnnouncement* network_announcement;
+    XIMU3_NetworkAnnouncement *network_announcement;
 } NetworkAnnouncement;
 
-static PyObject* network_announcement_new(PyTypeObject* subtype, PyObject* args, PyObject* keywords)
-{
-    NetworkAnnouncement* const self = (NetworkAnnouncement*) subtype->tp_alloc(subtype, 0);
+static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+    NetworkAnnouncement *const self = (NetworkAnnouncement *) subtype->tp_alloc(subtype, 0);
     self->network_announcement = XIMU3_network_announcement_new();
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void network_announcement_free(NetworkAnnouncement* self)
-{
+static void network_announcement_free(NetworkAnnouncement *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
         XIMU3_network_announcement_free(self->network_announcement);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* network_announcement_get_result(NetworkAnnouncement* self, PyObject* args)
-{
+static PyObject *network_announcement_get_result(NetworkAnnouncement *self, PyObject *args) {
     return Py_BuildValue("i", XIMU3_network_announcement_get_result(self->network_announcement));
 }
 
-static PyObject* network_announcement_add_callback(NetworkAnnouncement* self, PyObject* args)
-{
-    PyObject* callable;
+static PyObject *network_announcement_add_callback(NetworkAnnouncement *self, PyObject *args) {
+    PyObject *callable;
 
-    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0)
-    {
+    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0)
-    {
+    if (PyCallable_Check(callable) == 0) {
         PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
@@ -57,11 +50,9 @@ static PyObject* network_announcement_add_callback(NetworkAnnouncement* self, Py
     return Py_BuildValue("K", id);
 }
 
-static PyObject* network_announcement_remove_callback(NetworkAnnouncement* self, PyObject* args)
-{
+static PyObject *network_announcement_remove_callback(NetworkAnnouncement *self, PyObject *args) {
     unsigned long long callback_id;
-    if (PyArg_ParseTuple(args, "K", &callback_id))
-    {
+    if (PyArg_ParseTuple(args, "K", &callback_id)) {
         Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
             XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
         Py_END_ALLOW_THREADS
@@ -73,23 +64,21 @@ static PyObject* network_announcement_remove_callback(NetworkAnnouncement* self,
     return NULL;
 }
 
-static PyObject* network_announcement_get_messages(NetworkAnnouncement* self, PyObject* args)
-{
+static PyObject *network_announcement_get_messages(NetworkAnnouncement *self, PyObject *args) {
     return network_announcement_messages_to_list_and_free(XIMU3_network_announcement_get_messages(self->network_announcement));
 }
 
-static PyObject* network_announcement_get_messages_after_short_delay(NetworkAnnouncement* self, PyObject* args)
-{
+static PyObject *network_announcement_get_messages_after_short_delay(NetworkAnnouncement *self, PyObject *args) {
     return network_announcement_messages_to_list_and_free(XIMU3_network_announcement_get_messages_after_short_delay(self->network_announcement));
 }
 
 static PyMethodDef network_announcement_methods[] = {
-    { "get_result", (PyCFunction) network_announcement_get_result, METH_NOARGS, "" },
-    { "add_callback", (PyCFunction) network_announcement_add_callback, METH_VARARGS, "" },
-    { "remove_callback", (PyCFunction) network_announcement_remove_callback, METH_VARARGS, "" },
-    { "get_messages", (PyCFunction) network_announcement_get_messages, METH_NOARGS, "" },
-    { "get_messages_after_short_delay", (PyCFunction) network_announcement_get_messages_after_short_delay, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"get_result", (PyCFunction) network_announcement_get_result, METH_NOARGS, ""},
+    {"add_callback", (PyCFunction) network_announcement_add_callback, METH_VARARGS, ""},
+    {"remove_callback", (PyCFunction) network_announcement_remove_callback, METH_VARARGS, ""},
+    {"get_messages", (PyCFunction) network_announcement_get_messages, METH_NOARGS, ""},
+    {"get_messages_after_short_delay", (PyCFunction) network_announcement_get_messages_after_short_delay, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject network_announcement_object = {

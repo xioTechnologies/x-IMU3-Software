@@ -1,7 +1,6 @@
 #include "ConvertFilesDialog.h"
 
-ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert")
-{
+ConvertFilesDialog::ConvertFilesDialog(const Settings &settings) : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert") {
     addAndMakeVisible(filesLabel);
     addAndMakeVisible(filesSelector);
     addAndMakeVisible(destinationLabel);
@@ -10,19 +9,16 @@ ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(Binary
     addAndMakeVisible(nameValue);
 
     filesSelector.setFiles(settings.files);
-    if (settings.destinationEmpty == false)
-    {
-        destinationSelector.setFiles({ settings.destination });
+    if (settings.destinationEmpty == false) {
+        destinationSelector.setFiles({settings.destination});
     }
-    if (settings.nameEmpty == false)
-    {
+    if (settings.nameEmpty == false) {
         nameValue.setText(settings.name);
     }
 
-    filesSelector.onChange = destinationSelector.onChange = nameValue.onTextChange = [&]
-    {
+    filesSelector.onChange = destinationSelector.onChange = nameValue.onTextChange = [&] {
         const auto files = filesSelector.getFiles();
-        destinationSelector.setFilesWhenEmpty({ files[0].getParentDirectory() });
+        destinationSelector.setFilesWhenEmpty({files[0].getParentDirectory()});
         nameValue.setDefaultText((files.size() == 1) ? files[0].getFileNameWithoutExtension() : "");
 
         setOkButton(filesSelector.isValid() && destinationSelector.isValid() && nameValue.getTextOrDefault().isNotEmpty());
@@ -33,8 +29,7 @@ ConvertFilesDialog::ConvertFilesDialog(const Settings& settings) : Dialog(Binary
     setSize(600, calculateHeight(3));
 }
 
-void ConvertFilesDialog::resized()
-{
+void ConvertFilesDialog::resized() {
     Dialog::resized();
     auto bounds = getContentBounds();
 
@@ -55,8 +50,7 @@ void ConvertFilesDialog::resized()
     nameValue.setBounds(nameRow.removeFromLeft(2 * columnWidth));
 }
 
-ConvertFilesDialog::Settings ConvertFilesDialog::getSettings() const
-{
+ConvertFilesDialog::Settings ConvertFilesDialog::getSettings() const {
     Settings settings;
     settings.files = filesSelector.getFiles();
     settings.destination = destinationSelector.getFiles()[0];

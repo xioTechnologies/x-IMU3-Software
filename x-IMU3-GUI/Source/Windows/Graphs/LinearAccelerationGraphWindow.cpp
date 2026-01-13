@@ -3,24 +3,20 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "LinearAccelerationGraphWindow.h"
 
-LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer)
+LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : GraphWindow(windowLayout_, type_, connectionPanel_,
                   openGLRenderer,
                   "Acceleration (g)",
-                  { "X", "Y", "Z" },
-                  { UIColours::graphX, UIColours::graphY, UIColours::graphZ },
-                  false)
-{
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message)
-    {
-        update(message.timestamp, { message.acceleration_x, message.acceleration_y, message.acceleration_z });
+                  {"X", "Y", "Z"},
+                  {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
+                  false) {
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
+        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));
 }
 
-LinearAccelerationGraphWindow::~LinearAccelerationGraphWindow()
-{
-    for (const auto callbackId : callbackIds)
-    {
+LinearAccelerationGraphWindow::~LinearAccelerationGraphWindow() {
+    for (const auto callbackId: callbackIds) {
         connectionPanel.getConnection()->removeCallback(callbackId);
     }
 }

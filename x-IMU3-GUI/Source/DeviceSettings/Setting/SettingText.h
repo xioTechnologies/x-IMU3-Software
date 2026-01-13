@@ -4,33 +4,23 @@
 #include "Setting.h"
 #include "Widgets/CustomTextEditor.h"
 
-class SettingText : public Setting
-{
+class SettingText : public Setting {
 public:
-    explicit SettingText(const juce::ValueTree& settingTree) : Setting(settingTree)
-    {
+    explicit SettingText(const juce::ValueTree &settingTree) : Setting(settingTree) {
         addAndMakeVisible(value);
-        value.onReturnKey = value.onEscapeKey = value.onFocusLost = [&]
-        {
-            if (value.getText() == getValueAsString())
-            {
+        value.onReturnKey = value.onEscapeKey = value.onFocusLost = [&] {
+            if (value.getText() == getValueAsString()) {
                 return; // discard if the user hasn't changed text
             }
 
             juce::var newValue; // will be interpreted as null in json
 
-            if (tree[DeviceSettingsIds::type] == "number")
-            {
-                try
-                {
+            if (tree[DeviceSettingsIds::type] == "number") {
+                try {
                     newValue = std::stof(value.getText().toStdString());
+                } catch (...) {
                 }
-                catch (...)
-                {
-                }
-            }
-            else
-            {
+            } else {
                 newValue = value.getText();
             }
 
@@ -42,8 +32,7 @@ public:
         valueChanged();
     }
 
-    void resized() override
-    {
+    void resized() override {
         Setting::resized();
         value.setBounds(getValueBounds());
     }
@@ -51,13 +40,11 @@ public:
 protected:
     CustomTextEditor value;
 
-    void updateTextToShowWhenEmpty()
-    {
+    void updateTextToShowWhenEmpty() {
         value.setDefaultText(tree.getProperty(DeviceSettingsIds::emptyValue, "Empty"));
     }
 
-    juce::String getValueAsString() const
-    {
+    juce::String getValueAsString() const {
         if (getValue().isDouble() && (std::abs((int) getValue()) >= 1000)) // do not use scientific notation
         {
             return juce::String((int) getValue());
@@ -65,10 +52,8 @@ protected:
         return getValue();
     }
 
-    void valueChanged() override
-    {
-        if (getValue().isVoid())
-        {
+    void valueChanged() override {
+        if (getValue().isVoid()) {
             return;
         }
 

@@ -6,24 +6,18 @@
 #include "Setting/SettingText.h"
 #include "Setting/SettingToggle.h"
 
-class DeviceSettingsItem : public juce::TreeViewItem
-{
+class DeviceSettingsItem : public juce::TreeViewItem {
 public:
-    DeviceSettingsItem(const juce::ValueTree settingsTree_, const std::vector<juce::ValueTree>& settingsFlattened, const juce::ValueTree enumsTree_, const bool& hideUnusedSettings_) : settingsTree(settingsTree_), enumsTree(enumsTree_), hideUnusedSettings(hideUnusedSettings_)
-    {
+    DeviceSettingsItem(const juce::ValueTree settingsTree_, const std::vector<juce::ValueTree> &settingsFlattened, const juce::ValueTree enumsTree_, const bool &hideUnusedSettings_) : settingsTree(settingsTree_), enumsTree(enumsTree_), hideUnusedSettings(hideUnusedSettings_) {
         setLinesDrawnForSubItems(false);
 
-        for (auto child : settingsTree)
-        {
+        for (auto child: settingsTree) {
             addSubItem(new DeviceSettingsItem(child, settingsFlattened, enumsTree, hideUnusedSettings));
         }
 
-        if (settingsTree.hasProperty(DeviceSettingsIds::hideKey))
-        {
-            for (const auto& setting : settingsFlattened)
-            {
-                if (setting[DeviceSettingsIds::key] == settingsTree[DeviceSettingsIds::hideKey])
-                {
+        if (settingsTree.hasProperty(DeviceSettingsIds::hideKey)) {
+            for (const auto &setting: settingsFlattened) {
+                if (setting[DeviceSettingsIds::key] == settingsTree[DeviceSettingsIds::hideKey]) {
                     hideSetting = setting;
                     break;
                 }
@@ -33,27 +27,21 @@ public:
         setOpen(settingsTree[DeviceSettingsIds::expand]);
     }
 
-    bool mightContainSubItems() override
-    {
+    bool mightContainSubItems() override {
         return settingsTree.getNumChildren() > 0;
     }
 
-    int getItemHeight() const override
-    {
-        if (settingsTree.getType() == DeviceSettingsIds::Margin)
-        {
+    int getItemHeight() const override {
+        if (settingsTree.getType() == DeviceSettingsIds::Margin) {
             return Setting::rowMargin / 2;
         }
 
-        if (hideUnusedSettings && (isStatusSet(settingsTree) == false))
-        {
-            if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0)
-            {
+        if (hideUnusedSettings && (isStatusSet(settingsTree) == false)) {
+            if (getParentItem() != nullptr && getParentItem()->getItemHeight() == 0) {
                 return 0;
             }
 
-            if (juce::StringArray::fromTokens(settingsTree[DeviceSettingsIds::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIds::value].toString()))
-            {
+            if (juce::StringArray::fromTokens(settingsTree[DeviceSettingsIds::hideValues].toString(), " ", {}).contains(hideSetting[DeviceSettingsIds::value].toString())) {
                 return 0;
             }
         }
@@ -61,37 +49,30 @@ public:
         return UILayout::textComponentHeight + Setting::rowMargin;
     }
 
-    std::unique_ptr<juce::Component> createItemComponent() override
-    {
-        if (settingsTree.getType() == DeviceSettingsIds::Group)
-        {
+    std::unique_ptr<juce::Component> createItemComponent() override {
+        if (settingsTree.getType() == DeviceSettingsIds::Group) {
             return std::make_unique<Setting>(settingsTree, this);
         }
 
-        if (settingsTree.getType() == DeviceSettingsIds::Margin)
-        {
+        if (settingsTree.getType() == DeviceSettingsIds::Margin) {
             return nullptr;
         }
 
         const auto type = settingsTree[DeviceSettingsIds::type];
 
-        if (type == "string" || type == "number")
-        {
+        if (type == "string" || type == "number") {
             return std::make_unique<SettingText>(settingsTree);
         }
 
-        if (type == "bool")
-        {
+        if (type == "bool") {
             return std::make_unique<SettingToggle>(settingsTree);
         }
 
         return std::make_unique<SettingEnum>(settingsTree, enumsTree.getChildWithProperty(DeviceSettingsIds::name, type));
     }
 
-    void itemOpennessChanged(bool) override
-    {
-        if (onOpennessChanged != nullptr)
-        {
+    void itemOpennessChanged(bool) override {
+        if (onOpennessChanged != nullptr) {
             onOpennessChanged();
         }
     }
@@ -102,14 +83,11 @@ private:
     const juce::ValueTree settingsTree;
     const juce::ValueTree enumsTree;
     juce::ValueTree hideSetting;
-    const bool& hideUnusedSettings;
+    const bool &hideUnusedSettings;
 
-    static bool isStatusSet(juce::ValueTree tree_)
-    {
-        for (auto child : tree_)
-        {
-            if (isStatusSet(child))
-            {
+    static bool isStatusSet(juce::ValueTree tree_) {
+        for (auto child: tree_) {
+            if (isStatusSet(child)) {
                 return true;
             }
         }

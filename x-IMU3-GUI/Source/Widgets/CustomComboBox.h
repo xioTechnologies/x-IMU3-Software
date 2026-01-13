@@ -2,14 +2,13 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class CustomComboBox : public juce::ComboBox
-{
+class CustomComboBox : public juce::ComboBox {
 public:
-    CustomComboBox(const juce::String& emptyText = "");
+    CustomComboBox(const juce::String &emptyText = "");
 
     ~CustomComboBox() override;
 
-    bool keyPressed(const juce::KeyPress& key) override;
+    bool keyPressed(const juce::KeyPress &key) override;
 
 private:
     class LookAndFeel;

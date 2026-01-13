@@ -6,80 +6,69 @@
 #include "../../../C/Ximu3.h"
 #include <Python.h>
 
-typedef struct
-{
+typedef struct {
     PyObject_HEAD
     XIMU3_LinearAccelerationMessage message;
 } LinearAccelerationMessage;
 
-static void linear_acceleration_message_free(LinearAccelerationMessage* self)
-{
+static void linear_acceleration_message_free(LinearAccelerationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* linear_acceleration_message_get_timestamp(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_timestamp(LinearAccelerationMessage *self) {
     return Py_BuildValue("K", self->message.timestamp);
 }
 
-static PyObject* linear_acceleration_message_get_quaternion_w(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_quaternion_w(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.quaternion_w);
 }
 
-static PyObject* linear_acceleration_message_get_quaternion_x(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_quaternion_x(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.quaternion_x);
 }
 
-static PyObject* linear_acceleration_message_get_quaternion_y(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_quaternion_y(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.quaternion_y);
 }
 
-static PyObject* linear_acceleration_message_get_quaternion_z(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_quaternion_z(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.quaternion_z);
 }
 
-static PyObject* linear_acceleration_message_get_acceleration_x(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_acceleration_x(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.acceleration_x);
 }
 
-static PyObject* linear_acceleration_message_get_acceleration_y(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_acceleration_y(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.acceleration_y);
 }
 
-static PyObject* linear_acceleration_message_get_acceleration_z(LinearAccelerationMessage* self)
-{
+static PyObject *linear_acceleration_message_get_acceleration_z(LinearAccelerationMessage *self) {
     return Py_BuildValue("f", self->message.acceleration_z);
 }
 
-static PyObject* linear_acceleration_message_to_string(LinearAccelerationMessage* self, PyObject* args)
-{
+static PyObject *linear_acceleration_message_to_string(LinearAccelerationMessage *self, PyObject *args) {
     return Py_BuildValue("s", XIMU3_linear_acceleration_message_to_string(self->message));
 }
 
-static PyObject* linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage* self, PyObject* args);
+static PyObject *linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage *self, PyObject *args);
 
 static PyGetSetDef linear_acceleration_message_get_set[] = {
-    { "timestamp", (getter) linear_acceleration_message_get_timestamp, NULL, "", NULL },
-    { "quaternion_w", (getter) linear_acceleration_message_get_quaternion_w, NULL, "", NULL },
-    { "quaternion_x", (getter) linear_acceleration_message_get_quaternion_x, NULL, "", NULL },
-    { "quaternion_y", (getter) linear_acceleration_message_get_quaternion_y, NULL, "", NULL },
-    { "quaternion_z", (getter) linear_acceleration_message_get_quaternion_z, NULL, "", NULL },
-    { "acceleration_x", (getter) linear_acceleration_message_get_acceleration_x, NULL, "", NULL },
-    { "acceleration_y", (getter) linear_acceleration_message_get_acceleration_y, NULL, "", NULL },
-    { "acceleration_z", (getter) linear_acceleration_message_get_acceleration_z, NULL, "", NULL },
-    { NULL } /* sentinel */
+    {"timestamp", (getter) linear_acceleration_message_get_timestamp, NULL, "", NULL},
+    {"quaternion_w", (getter) linear_acceleration_message_get_quaternion_w, NULL, "", NULL},
+    {"quaternion_x", (getter) linear_acceleration_message_get_quaternion_x, NULL, "", NULL},
+    {"quaternion_y", (getter) linear_acceleration_message_get_quaternion_y, NULL, "", NULL},
+    {"quaternion_z", (getter) linear_acceleration_message_get_quaternion_z, NULL, "", NULL},
+    {"acceleration_x", (getter) linear_acceleration_message_get_acceleration_x, NULL, "", NULL},
+    {"acceleration_y", (getter) linear_acceleration_message_get_acceleration_y, NULL, "", NULL},
+    {"acceleration_z", (getter) linear_acceleration_message_get_acceleration_z, NULL, "", NULL},
+    {NULL} /* sentinel */
 };
 
 static PyMethodDef linear_acceleration_message_methods[] = {
-    { "to_string", (PyCFunction) linear_acceleration_message_to_string, METH_NOARGS, "" },
-    { "to_euler_angles_message", (PyCFunction) linear_acceleration_message_to_euler_angles_message, METH_NOARGS, "" },
-    { NULL } /* sentinel */
+    {"to_string", (PyCFunction) linear_acceleration_message_to_string, METH_NOARGS, ""},
+    {"to_euler_angles_message", (PyCFunction) linear_acceleration_message_to_euler_angles_message, METH_NOARGS, ""},
+    {NULL} /* sentinel */
 };
 
 static PyTypeObject linear_acceleration_message_object = {
@@ -91,23 +80,20 @@ static PyTypeObject linear_acceleration_message_object = {
     .tp_methods = linear_acceleration_message_methods,
 };
 
-static PyObject* linear_acceleration_message_from(const XIMU3_LinearAccelerationMessage* const message)
-{
-    LinearAccelerationMessage* const self = (LinearAccelerationMessage*) linear_acceleration_message_object.tp_alloc(&linear_acceleration_message_object, 0);
+static PyObject *linear_acceleration_message_from(const XIMU3_LinearAccelerationMessage *const message) {
+    LinearAccelerationMessage *const self = (LinearAccelerationMessage *) linear_acceleration_message_object.tp_alloc(&linear_acceleration_message_object, 0);
     self->message = *message;
-    return (PyObject*) self;
+    return (PyObject *) self;
 }
 
-static void linear_acceleration_message_callback(XIMU3_LinearAccelerationMessage data, void* context)
-{
+static void linear_acceleration_message_callback(XIMU3_LinearAccelerationMessage data, void *context) {
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject* const object = linear_acceleration_message_from(&data);
-    PyObject* const tuple = Py_BuildValue("(O)", object);
+    PyObject *const object = linear_acceleration_message_from(&data);
+    PyObject *const tuple = Py_BuildValue("(O)", object);
 
-    PyObject* const result = PyObject_CallObject((PyObject*) context, tuple);
-    if (result == NULL)
-    {
+    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (result == NULL) {
         PyErr_Print();
     }
     Py_XDECREF(result);

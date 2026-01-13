@@ -2,8 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace DeviceSettingsIds
-{
+namespace DeviceSettingsIds {
 #define DECLARE_ID(name) static const juce::Identifier name (#name);
 
     DECLARE_ID(Settings)

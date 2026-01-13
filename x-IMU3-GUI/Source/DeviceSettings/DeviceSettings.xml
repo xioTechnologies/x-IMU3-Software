@@ -105,8 +105,8 @@
         <Group name="Power">
             <Setting key="usb_power_on_enabled" name="USB Power On" type="bool"/>
             <Setting key="shipping_mode_enabled" name="Shipping Mode" type="bool"/>
-            <Setting key="battery_max_charging_temperature" name="Max Charging (&#176;C)" type="number" />
-            <Setting key="battery_max_discharging_temperature" name="Max Discharging (&#176;C)" type="number" />
+            <Setting key="battery_max_charging_temperature" name="Max Charging (&#176;C)" type="number"/>
+            <Setting key="battery_max_discharging_temperature" name="Max Discharging (&#176;C)" type="number"/>
         </Group>
         <Margin/>
     </Settings>

@@ -1,18 +1,15 @@
 #include "ApplicationSettings.h"
 #include "ApplicationSettingsGroups.h"
 
-ApplicationSettingsGroup::ApplicationSettingsGroup(const juce::String& name, const int numberOfRows) : juce::GroupComponent("", name)
-{
+ApplicationSettingsGroup::ApplicationSettingsGroup(const juce::String &name, const int numberOfRows) : juce::GroupComponent("", name) {
     setSize(0, topExtraMargin + verticalMargin * 2 + numberOfRows * UILayout::textComponentHeight + (numberOfRows - 1) * rowMargin);
 }
 
-juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const
-{
+juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const {
     return getLocalBounds().reduced(10, verticalMargin).withTrimmedTop(topExtraMargin);
 }
 
-AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 2)
-{
+AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 2) {
     addAndMakeVisible(showOnStartupToggle);
     addAndMakeVisible(usbToggle);
     addAndMakeVisible(serialToggle);
@@ -20,33 +17,27 @@ AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGrou
     addAndMakeVisible(udpToggle);
     addAndMakeVisible(bluetoothToggle);
 
-    showOnStartupToggle.onClick = [this]
-    {
+    showOnStartupToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.showOnStartup = showOnStartupToggle.getToggleState();
     };
 
-    usbToggle.onClick = [this]
-    {
+    usbToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.usb = usbToggle.getToggleState();
     };
 
-    serialToggle.onClick = [this]
-    {
+    serialToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.serial = serialToggle.getToggleState();
     };
 
-    tcpToggle.onClick = [this]
-    {
+    tcpToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.tcp = tcpToggle.getToggleState();
     };
 
-    udpToggle.onClick = [this]
-    {
+    udpToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.udp = udpToggle.getToggleState();
     };
 
-    bluetoothToggle.onClick = [this]
-    {
+    bluetoothToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.bluetooth = bluetoothToggle.getToggleState();
     };
 
@@ -58,8 +49,7 @@ AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGrou
     bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.bluetooth, juce::dontSendNotification);
 }
 
-void AvailableConnectionsGroup::resized()
-{
+void AvailableConnectionsGroup::resized() {
     auto bounds = getContentBounds();
 
     showOnStartupToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
@@ -73,26 +63,22 @@ void AvailableConnectionsGroup::resized()
     bluetoothToggle.setBounds(bounds);
 }
 
-CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3)
-{
+CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3) {
     addAndMakeVisible(retriesLabel);
     addAndMakeVisible(retriesValue);
     addAndMakeVisible(timeoutLabel);
     addAndMakeVisible(timeoutValue);
     addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
 
-    retriesValue.onTextChange = [this]
-    {
+    retriesValue.onTextChange = [this] {
         ApplicationSettings::getSingleton().commands.retries = (uint32_t) retriesValue.getText().getIntValue();
     };
 
-    timeoutValue.onTextChange = [this]
-    {
+    timeoutValue.onTextChange = [this] {
         ApplicationSettings::getSingleton().commands.timeout = (uint32_t) timeoutValue.getText().getIntValue();
     };
 
-    closeSendingCommandDialogWhenCompleteButton.onClick = [this]
-    {
+    closeSendingCommandDialogWhenCompleteButton.onClick = [this] {
         ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
     };
 
@@ -101,12 +87,10 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3)
     closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
 }
 
-void CommandsGroup::resized()
-{
+void CommandsGroup::resized() {
     auto bounds = getContentBounds();
 
-    const auto setTextSettingBounds = [&](auto& label, auto& value)
-    {
+    const auto setTextSettingBounds = [&](auto &label, auto &value) {
         auto row = bounds.removeFromTop(UILayout::textComponentHeight).withTrimmedLeft(6); // align with toggle checkbox, from CustomToggleButtonLookAndFeel
         label.setBounds(row.removeFromLeft(100));
         row.removeFromLeft(15);

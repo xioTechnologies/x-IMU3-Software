@@ -6,10 +6,9 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Ximu3.hpp"
 
-class SerialAccessoryCsvsGraphWindow : public GraphWindow
-{
+class SerialAccessoryCsvsGraphWindow : public GraphWindow {
 public:
-    SerialAccessoryCsvsGraphWindow(const juce::ValueTree& windowLayout_, const juce::Identifier& type_, ConnectionPanel& connectionPanel_, OpenGLRenderer& openGLRenderer);
+    SerialAccessoryCsvsGraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~SerialAccessoryCsvsGraphWindow() override;
 

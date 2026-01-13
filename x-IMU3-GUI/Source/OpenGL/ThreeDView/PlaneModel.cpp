@@ -1,17 +1,14 @@
 #include "PlaneModel.h"
 
-PlaneModel::PlaneModel()
-{
+PlaneModel::PlaneModel() {
     initGLData();
 }
 
-PlaneModel::~PlaneModel()
-{
+PlaneModel::~PlaneModel() {
     deinitGLData();
 }
 
-void PlaneModel::initGLData()
-{
+void PlaneModel::initGLData() {
     using namespace ::juce::gl;
 
     makePlaneGeometry(1.0f, vertices, indices);
@@ -44,12 +41,12 @@ void PlaneModel::initGLData()
 
     // Normal attribute (3 floats)
     const GLuint normalIndex = 1;
-    glVertexAttribPointer(normalIndex, normalDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) (positionDimension * sizeof(GLfloat)));
+    glVertexAttribPointer(normalIndex, normalDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) (positionDimension * sizeof(GLfloat)));
     glEnableVertexAttribArray(normalIndex);
 
     // Texture coordinate attribute (2 floats)
     const GLuint textureCoordinateIndex = 2;
-    glVertexAttribPointer(textureCoordinateIndex, textureDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void*) ((positionDimension + normalDimension) * sizeof(GLfloat)));
+    glVertexAttribPointer(textureCoordinateIndex, textureDimension, GL_FLOAT, GL_FALSE, vertexDataLength, (void *) ((positionDimension + normalDimension) * sizeof(GLfloat)));
     glEnableVertexAttribArray(textureCoordinateIndex);
 
     // Unbind buffers
@@ -58,8 +55,7 @@ void PlaneModel::initGLData()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // unbind EBO
 }
 
-void PlaneModel::deinitGLData()
-{
+void PlaneModel::deinitGLData() {
     using namespace ::juce::gl;
 
     glDeleteVertexArrays(1, &VAO);
@@ -67,8 +63,7 @@ void PlaneModel::deinitGLData()
     glDeleteBuffers(1, &EBO);
 }
 
-void PlaneModel::render() const
-{
+void PlaneModel::render() const {
     using namespace ::juce::gl;
 
     // Draw vertices
@@ -77,8 +72,7 @@ void PlaneModel::render() const
     glBindVertexArray(0); // unbind VAO to prevent modification by subsequent GL calls
 }
 
-void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat>& verticesOut, std::vector<GLuint>& indicesOut)
-{
+void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat> &verticesOut, std::vector<GLuint> &indicesOut) {
     // Oriented flat on the XZ plane of OpenGL's default coordinate system, where "near" means
     // +z direction (out of the screen), and "far" means -z direction (into the screen).
     const auto numberOfVertices = 4;
@@ -90,7 +84,7 @@ void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat>& ver
     };
 
     // All vertices have the same normal vector pointing up
-    const glm::vec3 normal = { 0.0f, 1.0f, 0.0f };
+    const glm::vec3 normal = {0.0f, 1.0f, 0.0f};
 
     std::array<glm::vec2, numberOfVertices> textureCoordinates = {
         glm::vec2(1.0f, 1.0f), // far right
@@ -108,8 +102,7 @@ void PlaneModel::makePlaneGeometry(const float extent, std::vector<GLfloat>& ver
     // Consolidate data into a GLfloat array for use by OpenGL
     const auto numVertices = positions.size();
     verticesOut.clear();
-    for (size_t index = 0; index < numVertices; index++)
-    {
+    for (size_t index = 0; index < numVertices; index++) {
         // Position
         const auto position = positions[index];
         verticesOut.push_back(position.x);
