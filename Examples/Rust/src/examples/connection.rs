@@ -35,7 +35,7 @@ pub fn run(connection_info: &ConnectionInfo) {
 
     // Open connection
     if let Err(error) = connection.open() {
-        println!("Unable to open {}. {error}", connection_info.to_string());
+        println!("Unable to open {}. {error}.", connection.get_info());
         return;
     }
 
@@ -44,6 +44,7 @@ pub fn run(connection_info: &ConnectionInfo) {
 
     // Close connection
     std::thread::sleep(std::time::Duration::from_secs(60));
+
     connection.close();
 }
 

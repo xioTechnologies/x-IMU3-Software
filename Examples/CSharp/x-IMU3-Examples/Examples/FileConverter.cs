@@ -31,7 +31,7 @@ namespace Ximu3Examples
                   progress.percentage.ToString("0.0") + "%, " +
                   progress.bytes_processed + " of " +
                   progress.bytes_total + " bytes");
-            // Console.WriteLine((Ximu3.Helpers.ToString(CApi.XIMU3_file_converter_progress_to_string(progress))); // alternative to above
+            // Console.WriteLine((Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_file_converter_progress_to_string(progress))); // alternative to above
         }
     }
 }

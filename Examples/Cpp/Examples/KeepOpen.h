@@ -17,7 +17,7 @@ public:
             return;
         }
 
-        std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
+        std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionInfo::from(devices[0]));
@@ -26,6 +26,7 @@ public:
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(60));
+
         connection.close();
     }
 

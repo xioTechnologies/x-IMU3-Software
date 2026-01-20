@@ -8,7 +8,7 @@ if helpers.yes_or_no("Search for connections?"):
     if not devices:
         raise Exception("No serial connections available")
 
-    print(f"Found {devices[0].device_name} {devices[0].serial_number}")
+    print(f"Found {devices[0]}")
 
     connection_info = devices[0].connection_info
 

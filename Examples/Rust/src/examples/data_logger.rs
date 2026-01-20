@@ -8,14 +8,14 @@ pub fn run() {
     let mut connections = vec![];
 
     for device in PortScanner::scan_filter(PortType::Usb) {
-        println!("{device}");
+        println!("Found {device}");
 
         let connection = Connection::new(&device.connection_info);
 
-        if connection.open().is_ok() {
-            connections.push(connection);
+        if let Err(error) = connection.open() {
+            println!("Unable to open {}. {error}.", connection.get_info());
         } else {
-            println!("Unable to open connection");
+            connections.push(connection);
         }
     }
 
@@ -31,26 +31,27 @@ pub fn run() {
     if helpers::yes_or_no("Use async implementation?") {
         let data_logger = DataLogger::new(destination, name, connections.iter().collect());
 
-        if data_logger.is_ok() {
-            std::thread::sleep(std::time::Duration::from_secs(3));
+        if let Err(error) = data_logger {
+            println!("Data logger failed. {error}.");
+            return;
         }
 
-        print_result(&data_logger);
+        std::thread::sleep(std::time::Duration::from_secs(3));
 
         drop(data_logger);
     } else {
-        print_result(&DataLogger::log(destination, name, connections.iter().collect(), 3));
+        let result = DataLogger::log(destination, name, connections.iter().collect(), 3);
+
+        if let Err(error) = result {
+            println!("Data logger failed. {error}.");
+            return;
+        }
     }
+
+    println!("Complete");
 
     // Close all connections
     for connection in connections.iter() {
         connection.close();
-    }
-}
-
-fn print_result<T>(result: &std::io::Result<T>) {
-    match result {
-        Ok(_) => println!("Ok"),
-        Err(error) => println!("{error}"),
     }
 }

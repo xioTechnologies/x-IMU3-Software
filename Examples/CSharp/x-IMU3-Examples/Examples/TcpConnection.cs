@@ -6,7 +6,17 @@ namespace Ximu3Examples
         {
             if (Helpers.YesOrNo("Search for connections?"))
             {
-                Ximu3.CApi.XIMU3_NetworkAnnouncementMessage[] messages = new Ximu3.NetworkAnnouncement().GetMessagesAfterShortDelay();
+                Ximu3.NetworkAnnouncement networkAnnouncement = new();
+
+                Ximu3.CApi.XIMU3_Result result = networkAnnouncement.GetResult();
+
+                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+                {
+                    Console.WriteLine("Network announcement failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                    return;
+                }
+
+                Ximu3.CApi.XIMU3_NetworkAnnouncementMessage[] messages = networkAnnouncement.GetMessagesAfterShortDelay();
 
                 if (messages.Length == 0)
                 {

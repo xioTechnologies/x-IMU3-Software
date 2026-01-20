@@ -16,14 +16,16 @@ public:
         std::vector<std::unique_ptr<ximu3::Connection> > connections;
 
         for (auto device: devices) {
-            std::cout << ximu3::XIMU3_device_to_string(device) << std::endl;
+            std::cout << "Found " << ximu3::XIMU3_device_to_string(device) << std::endl;
 
             auto connection = std::make_unique<ximu3::Connection>(*ximu3::ConnectionInfo::from(device));
 
-            if (connection->open() == ximu3::XIMU3_ResultOk) {
+            const auto result = connection->open();
+
+            if (result == ximu3::XIMU3_ResultOk) {
                 connections.push_back(std::move(connection));
             } else {
-                std::cout << "Unable to open connection" << std::endl;
+                std::cout << "Unable to open " << connection->getInfo()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
             }
         }
 
@@ -41,14 +43,20 @@ public:
 
             const auto result = dataLogger.getResult();
 
-            if (result == ximu3::XIMU3_ResultOk) {
-                std::this_thread::sleep_for(std::chrono::seconds(3));
+            if (result != ximu3::XIMU3_ResultOk) {
+                std::cout << "Data logger failed. " << XIMU3_result_to_string(result) << "." << std::endl;
             }
 
-            printResult(result);
+            std::this_thread::sleep_for(std::chrono::seconds(3));
         } else {
-            printResult(ximu3::DataLogger::log(destination, name, toRawPointers(connections), 3));
+            const auto result = ximu3::DataLogger::log(destination, name, toRawPointers(connections), 3);
+
+            if (result != ximu3::XIMU3_ResultOk) {
+                std::cout << "Data logger failed. " << XIMU3_result_to_string(result) << "." << std::endl;
+            }
         }
+
+        std::cout << "Complete" << std::endl;
 
         // Close all connections
         for (auto &connection: connections) {
@@ -65,9 +73,5 @@ private:
         }
 
         return rawPointers;
-    }
-
-    static void printResult(const ximu3::XIMU3_Result result) {
-        std::cout << ximu3::XIMU3_result_to_string(result) << std::endl;
     }
 };

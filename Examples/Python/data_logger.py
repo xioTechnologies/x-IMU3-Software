@@ -8,14 +8,16 @@ devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 connections = []
 
 for device in devices:
-    print(device.to_string())
+    print(f"Found {device}")
 
     connection = ximu3.Connection(device.connection_info)
 
-    if connection.open() == ximu3.RESULT_OK:
+    result = connection.open()
+
+    if result == ximu3.RESULT_OK:
         connections.append(connection)
     else:
-        raise Exception("Unable to open connection")
+        raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
 
 if not connections:
     raise Exception("No USB connections available")
@@ -29,14 +31,17 @@ if helpers.yes_or_no("Use async implementation?"):
 
     result = data_logger.get_result()
 
-    if result == ximu3.RESULT_OK:
-        time.sleep(3)
+    if result != ximu3.RESULT_OK:
+        raise Exception(f"Data logger failed. {ximu3.result_to_string(result)}.")
 
-    print(ximu3.result_to_string(result))
+    time.sleep(3)
 
     del data_logger
 else:
-    print(ximu3.result_to_string(ximu3.DataLogger.log(destination, name, connections, 3)))
+    result = ximu3.DataLogger.log(destination, name, connections, 3)
+
+    if result != ximu3.RESULT_OK:
+        raise Exception(f"Data logger failed. {ximu3.result_to_string(result)}.")
 
 # Close all connections
 for connection in connections:

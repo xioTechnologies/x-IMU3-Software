@@ -12,13 +12,13 @@ pub fn run() {
         return;
     };
 
-    println!("Found {} {}", device.device_name, device.serial_number);
+    println!("Found {device}");
 
     // Open connection
     let connection = Connection::new(&device.connection_info);
 
     if let Err(error) = connection.open() {
-        println!("Unable to open connection. {error}");
+        println!("Unable to open {}. {error}.", connection.get_info());
         return;
     }
 

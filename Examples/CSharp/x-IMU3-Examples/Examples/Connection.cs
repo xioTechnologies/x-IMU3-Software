@@ -35,7 +35,7 @@ namespace Ximu3Examples
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open " + connectionInfo + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                Console.WriteLine("Unable to open " + connection.GetInfo() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 return;
             }
 
@@ -44,6 +44,7 @@ namespace Ximu3Examples
 
             // Close connection
             System.Threading.Thread.Sleep(60000);
+
             connection.Close();
         }
 
@@ -86,7 +87,7 @@ namespace Ximu3Examples
                               IntFormat(statistics.message_rate) + " messages/s" +
                               IntFormat(statistics.error_total) + " errors" +
                               IntFormat(statistics.error_rate) + " errors/s");
-            // Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_statistics_to_string(statistics))); // alternative to above
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_statistics_to_string(statistics))); // alternative to above
         }
 
         private static void InertialCallback(Ximu3.CApi.XIMU3_InertialMessage message)

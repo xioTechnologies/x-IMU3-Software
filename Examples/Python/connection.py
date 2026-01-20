@@ -277,7 +277,7 @@ def run(connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | 
     result = connection.open()
 
     if result != ximu3.RESULT_OK:
-        raise Exception(f"Unable to open {connection_info.to_string()}. {ximu3.result_to_string(result)}.")
+        raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
 
     connection.send_command('{"strobe":null}')  # send command to strobe LED
 

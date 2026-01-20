@@ -11,17 +11,19 @@ namespace Ximu3Examples
 
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
-                Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
+                Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
+
                 Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(device)!);
-                try
+
+                Ximu3.CApi.XIMU3_Result result = connection.Open();
+
+                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
-                    connection.Open();
-                    connections.Add(connection);
+                    Console.WriteLine("Unable to open " + connection.GetInfo() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 }
-                catch
+                else
                 {
-                    Console.WriteLine("Unable to open connection");
-                    return;
+                    connections.Add(connection);
                 }
             }
 
@@ -41,28 +43,30 @@ namespace Ximu3Examples
 
                 Ximu3.CApi.XIMU3_Result result = dataLogger.GetResult();
 
-                if (result == Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
-                    System.Threading.Thread.Sleep(3000);
+                    Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 }
 
-                PrintResult(result);
+                System.Threading.Thread.Sleep(3000);
             }
             else
             {
-                PrintResult(Ximu3.DataLogger.Log(destination, name, [.. connections], 3));
+                Ximu3.CApi.XIMU3_Result result = Ximu3.DataLogger.Log(destination, name, [.. connections], 3);
+
+                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
+                {
+                    Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                }
             }
+
+            Console.WriteLine("Complete");
 
             // Close all connections
             foreach (Ximu3.Connection connection in connections)
             {
                 connection.Close();
             }
-        }
-
-        private static void PrintResult(Ximu3.CApi.XIMU3_Result result)
-        {
-            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
         }
     }
 }

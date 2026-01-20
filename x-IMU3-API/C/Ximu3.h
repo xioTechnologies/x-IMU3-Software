@@ -502,6 +502,8 @@ struct XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(struct XIMU3_Conn
 
 struct XIMU3_MuxConnectionInfo *XIMU3_connection_get_info_mux(struct XIMU3_Connection *connection);
 
+const char *XIMU3_connection_get_info_string(struct XIMU3_Connection *connection);
+
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
 uint64_t XIMU3_connection_add_receive_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackReceiveError callback, void *context);

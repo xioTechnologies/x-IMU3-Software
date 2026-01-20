@@ -17,20 +17,25 @@ public:
             return;
         }
 
-        std::cout << "Found " << devices[0].device_name << " " << devices[0].serial_number << std::endl;
+        std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionInfo::from(devices[0]));
+
+        const auto callback = [&connection](const auto result) {
+            if (result != ximu3::XIMU3_ResultOk) {
+                std::cout << "Unable to open " << connection.getInfo()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
+                return;
+            }
+
+            std::cout << XIMU3_result_to_string(result) << std::endl;
+        };
 
         connection.openAsync(callback);
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(3));
+
         connection.close();
     }
-
-private:
-    std::function<void(const ximu3::XIMU3_Result)> callback = [](const auto result) {
-        std::cout << XIMU3_result_to_string(result) << std::endl;
-    };
 };

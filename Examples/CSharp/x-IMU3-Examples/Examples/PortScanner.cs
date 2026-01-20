@@ -32,7 +32,7 @@ namespace Ximu3Examples
             foreach (Ximu3.CApi.XIMU3_Device device in devices)
             {
                 Console.WriteLine(Ximu3.Helpers.ToString(device.device_name) + ", " + Ximu3.Helpers.ToString(device.serial_number) + ", " + Ximu3.ConnectionInfo.From(device));
-                //Console.WriteLine(Ximu3.Helpers.ToString(CApi.XIMU3_device_to_string(device))); // alternative to above
+                //Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device))); // alternative to above
             }
         }
     }
