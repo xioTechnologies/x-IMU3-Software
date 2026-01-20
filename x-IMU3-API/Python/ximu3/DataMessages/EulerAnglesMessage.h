@@ -16,23 +16,25 @@ static void euler_angles_message_free(EulerAnglesMessage *self) {
 }
 
 static PyObject *euler_angles_message_get_timestamp(EulerAnglesMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *euler_angles_message_get_roll(EulerAnglesMessage *self) {
-    return Py_BuildValue("f", self->message.roll);
+    return PyFloat_FromDouble((double) self->message.roll);
 }
 
 static PyObject *euler_angles_message_get_pitch(EulerAnglesMessage *self) {
-    return Py_BuildValue("f", self->message.pitch);
+    return PyFloat_FromDouble((double) self->message.pitch);
 }
 
 static PyObject *euler_angles_message_get_yaw(EulerAnglesMessage *self) {
-    return Py_BuildValue("f", self->message.yaw);
+    return PyFloat_FromDouble((double) self->message.yaw);
 }
 
 static PyObject *euler_angles_message_to_string(EulerAnglesMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_euler_angles_message_to_string(self->message));
+    const char *const string = XIMU3_euler_angles_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyObject *euler_angles_message_to_quaternion_message(EulerAnglesMessage *self, PyObject *args);
@@ -56,30 +58,53 @@ static PyTypeObject euler_angles_message_object = {
     .tp_name = "ximu3.EulerAnglesMessage",
     .tp_basicsize = sizeof(EulerAnglesMessage),
     .tp_dealloc = (destructor) euler_angles_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = euler_angles_message_get_set,
     .tp_methods = euler_angles_message_methods,
 };
 
 static PyObject *euler_angles_message_from(const XIMU3_EulerAnglesMessage *const message) {
     EulerAnglesMessage *const self = (EulerAnglesMessage *) euler_angles_message_object.tp_alloc(&euler_angles_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void euler_angles_message_callback(XIMU3_EulerAnglesMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = euler_angles_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = euler_angles_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

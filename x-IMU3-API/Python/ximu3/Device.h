@@ -14,11 +14,11 @@ static void device_free(Device *self) {
 }
 
 static PyObject *device_get_device_name(Device *self) {
-    return Py_BuildValue("s", self->device.device_name);
+    return PyUnicode_FromString(self->device.device_name);
 }
 
 static PyObject *device_get_serial_number(Device *self) {
-    return Py_BuildValue("s", self->device.serial_number);
+    return PyUnicode_FromString(self->device.serial_number);
 }
 
 static PyObject *device_get_connection_info(Device *self) {
@@ -35,7 +35,9 @@ static PyObject *device_get_connection_info(Device *self) {
 }
 
 static PyObject *device_to_string(Device *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_device_to_string(self->device));
+    const char *const string = XIMU3_device_to_string(self->device);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef device_get_set[] = {
@@ -55,41 +57,78 @@ static PyTypeObject device_object = {
     .tp_name = "ximu3.Device",
     .tp_basicsize = sizeof(Device),
     .tp_dealloc = (destructor) device_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = device_get_set,
     .tp_methods = device_methods,
 };
 
 static PyObject *device_from(const XIMU3_Device *const device) {
     Device *const self = (Device *) device_object.tp_alloc(&device_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->device = *device;
     return (PyObject *) self;
 }
 
 static PyObject *devices_to_list_and_free(const XIMU3_Devices devices) {
-    PyObject *const devices_list = PyList_New(devices.length);
+    PyObject *list = PyList_New(devices.length);
 
-    for (uint32_t index = 0; index < devices.length; index++) {
-        PyList_SetItem(devices_list, index, device_from(&devices.array[index]));
+    if (list == NULL) {
+        goto cleanup;
     }
 
+    for (uint32_t index = 0; index < devices.length; index++) {
+        PyObject *const item = device_from(&devices.array[index]);
+
+        if (item == NULL) {
+            Py_DECREF(list);
+            list = NULL;
+            goto cleanup;
+        }
+
+        PyList_SetItem(list, index, item);
+    }
+
+cleanup:
     XIMU3_devices_free(devices);
-    return devices_list;
+
+    return list;
 }
 
 static void devices_callback(XIMU3_Devices data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = devices_to_list_and_free(data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = devices_to_list_and_free(data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

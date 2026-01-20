@@ -14,19 +14,19 @@ static void command_message_free(CommandMessage *self) {
 }
 
 static PyObject *command_message_get_json(CommandMessage *self) {
-    return Py_BuildValue("s", self->command_message.json);
+    return PyUnicode_FromString(self->command_message.json);
 }
 
 static PyObject *command_message_get_key(CommandMessage *self) {
-    return Py_BuildValue("s", self->command_message.key);
+    return PyUnicode_FromString(self->command_message.key);
 }
 
 static PyObject *command_message_get_value(CommandMessage *self) {
-    return Py_BuildValue("s", self->command_message.value);
+    return PyUnicode_FromString(self->command_message.value);
 }
 
 static PyObject *command_message_get_error(CommandMessage *self) {
-    return Py_BuildValue("s", self->command_message.error);
+    return PyUnicode_FromString(self->command_message.error);
 }
 
 static PyGetSetDef command_message_get_set[] = {
@@ -42,6 +42,7 @@ static PyTypeObject command_message_object = {
     .tp_name = "ximu3.CommandMessage",
     .tp_basicsize = sizeof(CommandMessage),
     .tp_dealloc = (destructor) command_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = command_message_get_set,
 };
 
@@ -51,53 +52,106 @@ static PyObject *command_message_from(const XIMU3_CommandMessage *const message)
     }
 
     CommandMessage *const self = (CommandMessage *) command_message_object.tp_alloc(&command_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->command_message = *message;
     return (PyObject *) self;
 }
 
 static PyObject *command_messages_to_list_and_free(const XIMU3_CommandMessages responses) {
-    PyObject *const py_object = PyList_New(responses.length);
+    PyObject *list = PyList_New(responses.length);
 
-    for (uint32_t index = 0; index < responses.length; index++) {
-        PyList_SetItem(py_object, index, command_message_from(&responses.array[index]));
+    if (list == NULL) {
+        goto cleanup;
     }
 
+    for (uint32_t index = 0; index < responses.length; index++) {
+        PyObject *const item = command_message_from(&responses.array[index]);
+
+        if (item == NULL) {
+            Py_DECREF(list);
+            list = NULL;
+            goto cleanup;
+        }
+
+        PyList_SetItem(list, index, item);
+    }
+
+cleanup:
     XIMU3_command_messages_free(responses);
-    return py_object;
+
+    return list;
 }
 
 static void command_message_callback(const XIMU3_CommandMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = command_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = command_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }
 
 static void command_messages_callback(const XIMU3_CommandMessages data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = command_messages_to_list_and_free(data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = command_messages_to_list_and_free(data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

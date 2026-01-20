@@ -14,53 +14,57 @@ static void network_announcement_message_free(NetworkAnnouncementMessage *self) 
 }
 
 static PyObject *network_announcement_message_get_device_name(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("s", self->message.device_name);
+    return PyUnicode_FromString(self->message.device_name);
 }
 
 static PyObject *network_announcement_message_get_serial_number(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("s", self->message.serial_number);
+    return PyUnicode_FromString(self->message.serial_number);
 }
 
 static PyObject *network_announcement_message_get_ip_address(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("s", self->message.ip_address);
+    return PyUnicode_FromString(self->message.ip_address);
 }
 
 static PyObject *network_announcement_message_get_tcp_port(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("H", self->message.tcp_port);
+    return PyLong_FromUnsignedLong((unsigned long) self->message.tcp_port);
 }
 
 static PyObject *network_announcement_message_get_udp_send(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("H", self->message.udp_send);
+    return PyLong_FromUnsignedLong((unsigned long) self->message.udp_send);
 }
 
 static PyObject *network_announcement_message_get_udp_receive(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("H", self->message.udp_receive);
+    return PyLong_FromUnsignedLong((unsigned long) self->message.udp_receive);
 }
 
 static PyObject *network_announcement_message_get_rssi(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("i", self->message.rssi);
+    return PyLong_FromLong((long) self->message.rssi);
 }
 
 static PyObject *network_announcement_message_get_battery(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("i", self->message.battery);
+    return PyLong_FromLong((long) self->message.battery);
 }
 
 static PyObject *network_announcement_message_get_charging_status(NetworkAnnouncementMessage *self) {
-    return Py_BuildValue("I", self->message.charging_status);
+    return PyLong_FromLong((long) self->message.charging_status);
 }
 
 static PyObject *network_announcement_message_to_tcp_connection_info(NetworkAnnouncementMessage *self) {
     const XIMU3_TcpConnectionInfo connection_info = XIMU3_network_announcement_message_to_tcp_connection_info(self->message);
+
     return tcp_connection_info_from(&connection_info);
 }
 
 static PyObject *network_announcement_message_to_udp_connection_info(NetworkAnnouncementMessage *self) {
     const XIMU3_UdpConnectionInfo connection_info = XIMU3_network_announcement_message_to_udp_connection_info(self->message);
+
     return udp_connection_info_from(&connection_info);
 }
 
 static PyObject *network_announcement_message_to_string(NetworkAnnouncementMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_network_announcement_message_to_string(self->message));
+    const char *const string = XIMU3_network_announcement_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef network_announcement_message_get_set[] = {
@@ -88,41 +92,78 @@ static PyTypeObject network_announcement_message_object = {
     .tp_name = "ximu3.NetworkAnnouncementMessage",
     .tp_basicsize = sizeof(NetworkAnnouncementMessage),
     .tp_dealloc = (destructor) network_announcement_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = network_announcement_message_get_set,
     .tp_methods = network_announcement_message_methods,
 };
 
 static PyObject *network_announcement_message_from(const XIMU3_NetworkAnnouncementMessage *const message) {
     NetworkAnnouncementMessage *const self = (NetworkAnnouncementMessage *) network_announcement_message_object.tp_alloc(&network_announcement_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static PyObject *network_announcement_messages_to_list_and_free(const XIMU3_NetworkAnnouncementMessages messages) {
-    PyObject *const messages_list = PyList_New(messages.length);
+    PyObject *list = PyList_New(messages.length);
 
-    for (uint32_t index = 0; index < messages.length; index++) {
-        PyList_SetItem(messages_list, index, network_announcement_message_from(&messages.array[index]));
+    if (list == NULL) {
+        goto cleanup;
     }
 
+    for (uint32_t index = 0; index < messages.length; index++) {
+        PyObject *const item = network_announcement_message_from(&messages.array[index]);
+
+        if (item == NULL) {
+            Py_DECREF(list);
+            list = NULL;
+            goto cleanup;
+        }
+
+        PyList_SetItem(list, index, item);
+    }
+
+cleanup:
     XIMU3_network_announcement_messages_free(messages);
-    return messages_list;
+
+    return list;
 }
 
 static void network_announcement_message_callback(XIMU3_NetworkAnnouncementMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = network_announcement_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = network_announcement_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

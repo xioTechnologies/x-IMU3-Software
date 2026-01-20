@@ -2,46 +2,74 @@
 #define CONNECTION_STATUS_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
-static PyObject *connection_status_to_string(PyObject *self, PyObject *args) {
-    int connection_status_int;
+static int connection_status_from(XIMU3_ConnectionStatus *const connection_status, const int connection_status_int) {
+    switch (connection_status_int) {
+        case XIMU3_ConnectionStatusConnected:
+        case XIMU3_ConnectionStatusReconnecting:
+            *connection_status = (XIMU3_ConnectionStatus) connection_status_int;
+            return 0;
+    }
 
-    if (PyArg_ParseTuple(args, "i", &connection_status_int) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+    PyErr_SetString(PyExc_ValueError, "'connection_status' must be ximu3.CONNECTION_STATUS_*");
+    return -1;
+}
+
+static PyObject *connection_status_to_string(PyObject *null, PyObject *arg) {
+    const int connection_status_int = (int) PyLong_AsLong(arg);
+
+    if (PyErr_Occurred()) {
         return NULL;
     }
 
-    const XIMU3_ConnectionStatus connection_status_enum = (XIMU3_ConnectionStatus) connection_status_int;
+    XIMU3_ConnectionStatus connection_status;
 
-    switch (connection_status_enum) {
-        case XIMU3_ConnectionStatusConnected:
-        case XIMU3_ConnectionStatusReconnecting:
-            return Py_BuildValue("s", XIMU3_connection_status_to_string(connection_status_enum));
+    if (connection_status_from(&connection_status, connection_status_int) != 0) {
+        return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    const char *const string = XIMU3_connection_status_to_string(connection_status);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyMethodDef connection_status_methods[] = {
-    {"connection_status_to_string", (PyCFunction) connection_status_to_string, METH_VARARGS, ""},
+    {"connection_status_to_string", (PyCFunction) connection_status_to_string, METH_O, ""},
     {NULL} /* sentinel */
 };
 
 static void connection_status_callback(XIMU3_ConnectionStatus data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const tuple = Py_BuildValue("(i)", data);
+    object = PyLong_FromLong((long) data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

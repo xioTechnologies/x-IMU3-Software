@@ -2,7 +2,6 @@
 #define NETWORK_ANNOUNCEMENT_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include "NetworkAnnouncementMessage.h"
 #include <Python.h>
 
@@ -11,8 +10,17 @@ typedef struct {
     XIMU3_NetworkAnnouncement *network_announcement;
 } NetworkAnnouncement;
 
-static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
+    if (PyArg_ParseTuple(args, "") == 0) {
+        return NULL;
+    }
+
     NetworkAnnouncement *const self = (NetworkAnnouncement *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->network_announcement = XIMU3_network_announcement_new();
     return (PyObject *) self;
 }
@@ -25,57 +33,57 @@ static void network_announcement_free(NetworkAnnouncement *self) {
 }
 
 static PyObject *network_announcement_get_result(NetworkAnnouncement *self, PyObject *args) {
-    return Py_BuildValue("i", XIMU3_network_announcement_get_result(self->network_announcement));
+    const XIMU3_Result result = XIMU3_network_announcement_get_result(self->network_announcement);
+
+    return PyLong_FromLong((long) result);
 }
 
-static PyObject *network_announcement_add_callback(NetworkAnnouncement *self, PyObject *args) {
-    PyObject *callable;
-
-    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+static PyObject *network_announcement_add_callback(NetworkAnnouncement *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-        return NULL;
-    }
-
-    Py_INCREF(callable); // this will never be destroyed (memory leak)
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_network_announcement_add_callback(self->network_announcement, network_announcement_message_callback, callable);
+        id = XIMU3_network_announcement_add_callback(self->network_announcement, network_announcement_message_callback, arg);
     Py_END_ALLOW_THREADS
-    return Py_BuildValue("K", id);
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }
 
-static PyObject *network_announcement_remove_callback(NetworkAnnouncement *self, PyObject *args) {
-    unsigned long long callback_id;
-    if (PyArg_ParseTuple(args, "K", &callback_id)) {
-        Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-            XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
-        Py_END_ALLOW_THREADS
+static PyObject *network_announcement_remove_callback(NetworkAnnouncement *self, PyObject *arg) {
+    const unsigned long long callback_id = PyLong_AsUnsignedLongLong(arg);
 
-        Py_RETURN_NONE;
+    if (PyErr_Occurred()) {
+        return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-    return NULL;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_network_announcement_remove_callback(self->network_announcement, (uint64_t) callback_id);
+    Py_END_ALLOW_THREADS
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *network_announcement_get_messages(NetworkAnnouncement *self, PyObject *args) {
-    return network_announcement_messages_to_list_and_free(XIMU3_network_announcement_get_messages(self->network_announcement));
+    const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages(self->network_announcement);
+
+    return network_announcement_messages_to_list_and_free(messages);
 }
 
 static PyObject *network_announcement_get_messages_after_short_delay(NetworkAnnouncement *self, PyObject *args) {
-    return network_announcement_messages_to_list_and_free(XIMU3_network_announcement_get_messages_after_short_delay(self->network_announcement));
+    const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(self->network_announcement);
+
+    return network_announcement_messages_to_list_and_free(messages);
 }
 
 static PyMethodDef network_announcement_methods[] = {
     {"get_result", (PyCFunction) network_announcement_get_result, METH_NOARGS, ""},
-    {"add_callback", (PyCFunction) network_announcement_add_callback, METH_VARARGS, ""},
-    {"remove_callback", (PyCFunction) network_announcement_remove_callback, METH_VARARGS, ""},
+    {"add_callback", (PyCFunction) network_announcement_add_callback, METH_O, ""},
+    {"remove_callback", (PyCFunction) network_announcement_remove_callback, METH_O, ""},
     {"get_messages", (PyCFunction) network_announcement_get_messages, METH_NOARGS, ""},
     {"get_messages_after_short_delay", (PyCFunction) network_announcement_get_messages_after_short_delay, METH_NOARGS, ""},
     {NULL} /* sentinel */
@@ -86,6 +94,7 @@ static PyTypeObject network_announcement_object = {
     .tp_name = "ximu3.NetworkAnnouncement",
     .tp_basicsize = sizeof(NetworkAnnouncement),
     .tp_dealloc = (destructor) network_announcement_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = network_announcement_new,
     .tp_methods = network_announcement_methods,
 };

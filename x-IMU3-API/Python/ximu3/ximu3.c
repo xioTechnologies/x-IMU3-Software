@@ -20,7 +20,6 @@
 #include "ReceiveError.h"
 #include "Result.h"
 #include "Statistics.h"
-#include <stdio.h>
 
 static struct PyModuleDef config = {
     PyModuleDef_HEAD_INIT,
@@ -30,14 +29,17 @@ static struct PyModuleDef config = {
 };
 
 bool add_object(PyObject *const module, PyTypeObject *const type_object, const char *const name) {
-    if (PyType_Ready(type_object) == 0) {
-        Py_INCREF(type_object);
-        if (PyModule_AddObject(module, name, (PyObject *) type_object) == 0) {
-            return true;
-        }
-        Py_DECREF(type_object);
+    if (PyType_Ready(type_object) != 0) {
         return false;
     }
+
+    Py_INCREF(type_object);
+
+    if (PyModule_AddObject(module, name, (PyObject *) type_object) == 0) {
+        return true;
+    }
+
+    Py_DECREF(type_object);
     return false;
 }
 
@@ -153,22 +155,24 @@ PyMODINIT_FUNC PyInit_ximu3() {
     }
 
     Py_DECREF(module);
-
     return NULL;
 }
 
 // This function cannot be in ConnectionInfo.h because this results in a circular reference
-PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     unsigned char channel;
     PyObject *connection;
 
     if (PyArg_ParseTuple(args, "bO!", &channel, &connection_object, &connection) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     MuxConnectionInfo *const self = (MuxConnectionInfo *) subtype->tp_alloc(subtype, 0);
-    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection *) connection)->connection);
 
+    if (self == NULL) {
+        return NULL;
+    }
+
+    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection *) connection)->connection);
     return (PyObject *) self;
 }

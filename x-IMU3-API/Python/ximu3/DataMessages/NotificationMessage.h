@@ -15,20 +15,22 @@ static void notification_message_free(NotificationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-PyObject *notification_message_get_timestamp(NotificationMessage *self, PyObject *args) {
-    return Py_BuildValue("K", self->message.timestamp);
+static PyObject *notification_message_get_timestamp(NotificationMessage *self, PyObject *args) {
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
-PyObject *notification_message_get_string(NotificationMessage *self, PyObject *args) {
-    return Py_BuildValue("s", self->message.char_array);
+static PyObject *notification_message_get_string(NotificationMessage *self, PyObject *args) {
+    return PyUnicode_FromString(self->message.char_array);
 }
 
-PyObject *notification_message_get_bytes(NotificationMessage *self, PyObject *args) {
-    return PyByteArray_FromStringAndSize(self->message.char_array, self->message.number_of_bytes);
+static PyObject *notification_message_get_bytes(NotificationMessage *self, PyObject *args) {
+    return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
 }
 
 static PyObject *notification_message_to_string(NotificationMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_notification_message_to_string(self->message));
+    const char *const string = XIMU3_notification_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyGetSetDef notification_message_get_set[] = {
@@ -48,30 +50,53 @@ static PyTypeObject notification_message_object = {
     .tp_name = "ximu3.NotificationMessage",
     .tp_basicsize = sizeof(NotificationMessage),
     .tp_dealloc = (destructor) notification_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = notification_message_get_set,
     .tp_methods = notification_message_methods,
 };
 
 static PyObject *notification_message_from(const XIMU3_NotificationMessage *const message) {
     NotificationMessage *const self = (NotificationMessage *) notification_message_object.tp_alloc(&notification_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void notification_message_callback(XIMU3_NotificationMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = notification_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = notification_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

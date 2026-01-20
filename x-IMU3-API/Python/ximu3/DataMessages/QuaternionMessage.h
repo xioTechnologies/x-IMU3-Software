@@ -16,27 +16,29 @@ static void quaternion_message_free(QuaternionMessage *self) {
 }
 
 static PyObject *quaternion_message_get_timestamp(QuaternionMessage *self) {
-    return Py_BuildValue("K", self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
 
 static PyObject *quaternion_message_get_w(QuaternionMessage *self) {
-    return Py_BuildValue("f", self->message.w);
+    return PyFloat_FromDouble((double) self->message.w);
 }
 
 static PyObject *quaternion_message_get_x(QuaternionMessage *self) {
-    return Py_BuildValue("f", self->message.x);
+    return PyFloat_FromDouble((double) self->message.x);
 }
 
 static PyObject *quaternion_message_get_y(QuaternionMessage *self) {
-    return Py_BuildValue("f", self->message.y);
+    return PyFloat_FromDouble((double) self->message.y);
 }
 
 static PyObject *quaternion_message_get_z(QuaternionMessage *self) {
-    return Py_BuildValue("f", self->message.z);
+    return PyFloat_FromDouble((double) self->message.z);
 }
 
 static PyObject *quaternion_message_to_string(QuaternionMessage *self, PyObject *args) {
-    return Py_BuildValue("s", XIMU3_quaternion_message_to_string(self->message));
+    const char *const string = XIMU3_quaternion_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
 }
 
 static PyObject *quaternion_message_to_euler_angles_message(QuaternionMessage *self, PyObject *args);
@@ -61,30 +63,53 @@ static PyTypeObject quaternion_message_object = {
     .tp_name = "ximu3.QuaternionMessage",
     .tp_basicsize = sizeof(QuaternionMessage),
     .tp_dealloc = (destructor) quaternion_message_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = quaternion_message_get_set,
     .tp_methods = quaternion_message_methods,
 };
 
 static PyObject *quaternion_message_from(const XIMU3_QuaternionMessage *const message) {
     QuaternionMessage *const self = (QuaternionMessage *) quaternion_message_object.tp_alloc(&quaternion_message_object, 0);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
     self->message = *message;
     return (PyObject *) self;
 }
 
 static void quaternion_message_callback(XIMU3_QuaternionMessage data, void *context) {
+    PyObject *object = NULL;
+    PyObject *tuple = NULL;
+    PyObject *result = NULL;
+
     const PyGILState_STATE state = PyGILState_Ensure();
 
-    PyObject *const object = quaternion_message_from(&data);
-    PyObject *const tuple = Py_BuildValue("(O)", object);
+    object = quaternion_message_from(&data);
 
-    PyObject *const result = PyObject_CallObject((PyObject *) context, tuple);
+    if (object == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    tuple = PyTuple_Pack(1, object);
+
+    if (tuple == NULL) {
+        PyErr_Print();
+        goto cleanup;
+    }
+
+    result = PyObject_CallObject((PyObject *) context, tuple);
+
     if (result == NULL) {
         PyErr_Print();
     }
-    Py_XDECREF(result);
 
-    Py_DECREF(tuple);
-    Py_DECREF(object);
+cleanup:
+    Py_XDECREF(object);
+    Py_XDECREF(tuple);
+    Py_XDECREF(result);
 
     PyGILState_Release(state);
 }

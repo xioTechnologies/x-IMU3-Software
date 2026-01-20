@@ -2,7 +2,6 @@
 #define DATA_LOGGER_H
 
 #include "../../C/Ximu3.h"
-#include "Helpers.h"
 #include <Python.h>
 
 #define CONNECTIONS_ARRAY_LENGTH 256
@@ -12,42 +11,47 @@ typedef struct {
     XIMU3_DataLogger *data_logger;
 } DataLogger;
 
-static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject *keywords) {
+static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
     PyObject *connections_sequence;
 
     if (PyArg_ParseTuple(args, "ssO", &destination, &name, &connections_sequence) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     if (PySequence_Check(connections_sequence) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        PyErr_SetString(PyExc_TypeError, "'connections' must be a sequence");
         return NULL;
     }
 
-    XIMU3_Connection *connections_array[CONNECTIONS_ARRAY_LENGTH];
     const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
+    if (length > CONNECTIONS_ARRAY_LENGTH) {
+        PyErr_Format(PyExc_ValueError, "'connections' has too many items. Cannot exceed %d.", CONNECTIONS_ARRAY_LENGTH);
+        return NULL;
+    }
+
+    XIMU3_Connection *connections[CONNECTIONS_ARRAY_LENGTH];
+
     for (uint32_t index = 0; index < length; index++) {
-        if (index >= CONNECTIONS_ARRAY_LENGTH) {
-            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        PyObject *connection = PySequence_GetItem(connections_sequence, index); // TODO: this will never be destroyed (memory leak)
+
+        if (PyObject_TypeCheck(connection, &connection_object) == 0) {
+            PyErr_Format(PyExc_ValueError, "'connections' item must be %s", connection_object.tp_name);
             return NULL;
         }
 
-        PyObject *connection = PySequence_GetItem(connections_sequence, index);
-
-        if (PyObject_IsInstance(connection, (PyObject *) &connection_object) != 1) {
-            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-            return NULL;
-        }
-
-        connections_array[index] = ((Connection *) connection)->connection;
+        connections[index] = ((Connection *) connection)->connection;
     }
 
     DataLogger *const self = (DataLogger *) subtype->tp_alloc(subtype, 0);
-    self->data_logger = XIMU3_data_logger_new(destination, name, connections_array, length);
+
+    if (self == NULL) {
+        return NULL;
+    }
+
+    self->data_logger = XIMU3_data_logger_new(destination, name, connections, length);
     return (PyObject *) self;
 }
 
@@ -59,7 +63,9 @@ static void data_logger_free(DataLogger *self) {
 }
 
 static PyObject *data_logger_get_result(DataLogger *self, PyObject *args) {
-    return Py_BuildValue("i", XIMU3_data_logger_get_result(self->data_logger));
+    const XIMU3_Result result = XIMU3_data_logger_get_result(self->data_logger);
+
+    return PyLong_FromLong((long) result);
 }
 
 static PyObject *data_logger_log(PyObject *null, PyObject *args) {
@@ -69,35 +75,37 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args) {
     unsigned long seconds;
 
     if (PyArg_ParseTuple(args, "ssOk", &destination, &name, &connections_sequence, &seconds) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
         return NULL;
     }
 
     if (PySequence_Check(connections_sequence) == 0) {
-        PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
+        PyErr_SetString(PyExc_TypeError, "'connections' must be a sequence");
         return NULL;
     }
 
-    XIMU3_Connection *connections_array[CONNECTIONS_ARRAY_LENGTH];
     const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
-    for (uint32_t index = 0; index < length; index++) {
-        if (index >= CONNECTIONS_ARRAY_LENGTH) {
-            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-            return NULL;
-        }
-
-        PyObject *connection = PySequence_GetItem(connections_sequence, index);
-
-        if (PyObject_IsInstance(connection, (PyObject *) &connection_object) != 1) {
-            PyErr_SetString(PyExc_TypeError, INVALID_ARGUMENTS_STRING);
-            return NULL;
-        }
-
-        connections_array[index] = ((Connection *) connection)->connection;
+    if (length > CONNECTIONS_ARRAY_LENGTH) {
+        PyErr_Format(PyExc_ValueError, "'connections' has too many items. Cannot exceed %d.", CONNECTIONS_ARRAY_LENGTH);
+        return NULL;
     }
 
-    return Py_BuildValue("i", XIMU3_data_logger_log(destination, name, connections_array, length, (uint32_t) seconds));
+    XIMU3_Connection *connections[CONNECTIONS_ARRAY_LENGTH];
+
+    for (uint32_t index = 0; index < length; index++) {
+        PyObject *connection = PySequence_GetItem(connections_sequence, index); // TODO: this will never be destroyed (memory leak)
+
+        if (PyObject_TypeCheck(connection, &connection_object) == 0) {
+            PyErr_Format(PyExc_ValueError, "'connections' item must be %s", connection_object.tp_name);
+            return NULL;
+        }
+
+        connections[index] = ((Connection *) connection)->connection;
+    }
+
+    const XIMU3_Result result = XIMU3_data_logger_log(destination, name, connections, length, (uint32_t) seconds);
+
+    return PyLong_FromLong((long) result);
 }
 
 static PyMethodDef data_logger_methods[] = {
@@ -111,6 +119,7 @@ static PyTypeObject data_logger_object = {
     .tp_name = "ximu3.DataLogger",
     .tp_basicsize = sizeof(DataLogger),
     .tp_dealloc = (destructor) data_logger_free,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = data_logger_new,
     .tp_methods = data_logger_methods,
 };
