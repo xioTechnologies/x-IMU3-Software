@@ -16,7 +16,14 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
     const char *name;
     PyObject *connections_sequence;
 
-    if (PyArg_ParseTuple(args, "ssO", &destination, &name, &connections_sequence) == 0) {
+    static char *kwlist[] = {
+        "destination",
+        "name",
+        "connections",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssO", kwlist, &destination, &name, &connections_sequence) == 0) {
         return NULL;
     }
 
@@ -76,13 +83,21 @@ static void data_logger_free(DataLogger *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject *data_logger_log(PyObject *null, PyObject *args) {
+static PyObject *data_logger_log(PyObject *null, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
     PyObject *connections_sequence;
     unsigned long seconds;
 
-    if (PyArg_ParseTuple(args, "ssOk", &destination, &name, &connections_sequence, &seconds) == 0) {
+    static char *kwlist[] = {
+        "destination",
+        "name",
+        "connections",
+        "seconds",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOk", kwlist, &destination, &name, &connections_sequence, &seconds) == 0) {
         return NULL;
     }
 
@@ -124,7 +139,7 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args) {
 }
 
 static PyMethodDef data_logger_methods[] = {
-    {"log", (PyCFunction) data_logger_log, METH_VARARGS | METH_STATIC, ""},
+    {"log", (PyCFunction) data_logger_log, METH_VARARGS | METH_KEYWORDS | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
 

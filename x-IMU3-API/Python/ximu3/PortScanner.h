@@ -12,13 +12,18 @@ typedef struct {
 } PortScanner;
 
 static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
-    PyObject *callable;
+    PyObject *callback;
 
-    if (PyArg_ParseTuple(args, "O:set_callback", &callable) == 0) {
+    static char *kwlist[] = {
+        "callback",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O:set_callback", kwlist, &callback) == 0) {
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0) {
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
@@ -29,9 +34,9 @@ static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObjec
         return NULL;
     }
 
-    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->port_scanner = XIMU3_port_scanner_new(devices_callback, callable);
+    self->port_scanner = XIMU3_port_scanner_new(devices_callback, callback);
     return (PyObject *) self;
 }
 

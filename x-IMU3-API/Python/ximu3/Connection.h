@@ -21,7 +21,12 @@ typedef struct {
 static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection_info;
 
-    if (PyArg_ParseTuple(args, "O", &connection_info)) {
+    static char *kwlist[] = {
+        "connection_info",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &connection_info)) {
         if (PyObject_TypeCheck(connection_info, &usb_connection_info_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
@@ -158,12 +163,19 @@ static PyObject *connection_ping_async(Connection *self, PyObject *arg) {
     Py_RETURN_NONE;
 }
 
-static PyObject *connection_send_command(Connection *self, PyObject *args) {
+static PyObject *connection_send_command(Connection *self, PyObject *args, PyObject *kwds) {
     const char *command;
     unsigned long retries = XIMU3_DEFAULT_RETRIES;
     unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "s|kk", &command, &retries, &timeout) == 0) {
+    static char *kwlist[] = {
+        "command",
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "s|kk", kwlist, &command, &retries, &timeout) == 0) {
         return NULL;
     }
 
@@ -175,12 +187,19 @@ static PyObject *connection_send_command(Connection *self, PyObject *args) {
     return command_message_from(&response);
 }
 
-static PyObject *connection_send_commands(Connection *self, PyObject *args) {
+static PyObject *connection_send_commands(Connection *self, PyObject *args, PyObject *kwds) {
     PyObject *commands_sequence;
     unsigned long retries = XIMU3_DEFAULT_RETRIES;
     unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "O|kk", &commands_sequence, &retries, &timeout) == 0) {
+    static char *kwlist[] = {
+        "commands",
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O|kk", kwlist, &commands_sequence, &retries, &timeout) == 0) {
         return NULL;
     }
 
@@ -216,34 +235,50 @@ static PyObject *connection_send_commands(Connection *self, PyObject *args) {
     return command_messages_to_list_and_free(responses);
 }
 
-static PyObject *connection_send_command_async(Connection *self, PyObject *args) {
+static PyObject *connection_send_command_async(Connection *self, PyObject *args, PyObject *kwds) {
     const char *command;
-    PyObject *callable;
+    PyObject *callback;
     unsigned long retries = XIMU3_DEFAULT_RETRIES;
     unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "sO:set_callback|kk", &command, &callable, &retries, &timeout) == 0) {
+    static char *kwlist[] = {
+        "command",
+        "callback",
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "sO:set_callback|kk", kwlist, &command, &callback, &retries, &timeout) == 0) {
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0) {
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_command_async(self->connection, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callable);
+    XIMU3_connection_send_command_async(self->connection, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callback);
     Py_RETURN_NONE;
 }
 
-static PyObject *connection_send_commands_async(Connection *self, PyObject *args) {
+static PyObject *connection_send_commands_async(Connection *self, PyObject *args, PyObject *kwds) {
     PyObject *commands_sequence;
-    PyObject *callable;
+    PyObject *callback;
     unsigned long retries = XIMU3_DEFAULT_RETRIES;
     unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
 
-    if (PyArg_ParseTuple(args, "OO:set_callback|kk", &commands_sequence, &callable, &retries, &timeout) == 0) {
+    static char *kwlist[] = {
+        "commands",
+        "callback",
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "OO:set_callback|kk", kwlist, &commands_sequence, &callback, &retries, &timeout) == 0) {
         return NULL;
     }
 
@@ -271,14 +306,14 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
         }
     }
 
-    if (PyCallable_Check(callable) == 0) {
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_commands_async(self->connection, commands, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callable);
+    XIMU3_connection_send_commands_async(self->connection, commands, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callback);
     Py_RETURN_NONE;
 }
 
@@ -652,10 +687,10 @@ static PyMethodDef connection_methods[] = {
     {"close", (PyCFunction) connection_close, METH_NOARGS, ""},
     {"ping", (PyCFunction) connection_ping, METH_NOARGS, ""},
     {"ping_async", (PyCFunction) connection_ping_async, METH_O, ""},
-    {"send_command", (PyCFunction) connection_send_command, METH_VARARGS, ""},
-    {"send_commands", (PyCFunction) connection_send_commands, METH_VARARGS, ""},
-    {"send_command_async", (PyCFunction) connection_send_command_async, METH_VARARGS, ""},
-    {"send_commands_async", (PyCFunction) connection_send_commands_async, METH_VARARGS, ""},
+    {"send_command", (PyCFunction) connection_send_command, METH_VARARGS | METH_KEYWORDS, ""},
+    {"send_commands", (PyCFunction) connection_send_commands, METH_VARARGS | METH_KEYWORDS, ""},
+    {"send_command_async", (PyCFunction) connection_send_command_async, METH_VARARGS | METH_KEYWORDS, ""},
+    {"send_commands_async", (PyCFunction) connection_send_commands_async, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_info", (PyCFunction) connection_get_info, METH_NOARGS, ""},
     {"get_statistics", (PyCFunction) connection_get_statistics, METH_NOARGS, ""},
     {"add_receive_error_callback", (PyCFunction) connection_add_receive_error_callback, METH_O, ""},

@@ -13,13 +13,19 @@ typedef struct {
 
 static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection;
-    PyObject *callable;
+    PyObject *callback;
 
-    if (PyArg_ParseTuple(args, "O!O:set_callback", &connection_object, &connection, &callable) == 0) {
+    static char *kwlist[] = {
+        "connection",
+        "callback",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O:set_callback", kwlist, &connection_object, &connection, &callback) == 0) {
         return NULL;
     }
 
-    if (PyCallable_Check(callable) == 0) {
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
@@ -30,9 +36,9 @@ static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *
         return NULL;
     }
 
-    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->keep_open = XIMU3_keep_open_new(((Connection *) connection)->connection, connection_status_callback, callable);
+    self->keep_open = XIMU3_keep_open_new(((Connection *) connection)->connection, connection_status_callback, callback);
     return (PyObject *) self;
 }
 
