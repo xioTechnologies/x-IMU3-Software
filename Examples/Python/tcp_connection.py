@@ -3,14 +3,7 @@ import helpers
 import ximu3
 
 if helpers.yes_or_no("Search for connections?"):
-    network_announcement = ximu3.NetworkAnnouncement()
-
-    result = network_announcement.get_result()
-
-    if network_announcement.get_result() != ximu3.RESULT_OK:
-        raise Exception(f"Network announcement failed. {ximu3.result_to_string(result)}.")
-
-    messages = network_announcement.get_messages_after_short_delay()
+    messages = ximu3.NetworkAnnouncement().get_messages_after_short_delay()
 
     if not messages:
         raise Exception("No TCP connections available")

@@ -12,10 +12,7 @@ print(f"Found {devices[0]}")
 # Open connection
 usb_connection = ximu3.Connection(devices[0].connection_info)
 
-result = usb_connection.open()
-
-if result != ximu3.RESULT_OK:
-    raise Exception(f"Unable to open {usb_connection.get_info()}. {ximu3.result_to_string(result)}.")
+usb_connection.open()
 
 connection_info = ximu3.MuxConnectionInfo(0x41, usb_connection)
 

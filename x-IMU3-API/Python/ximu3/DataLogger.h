@@ -45,13 +45,27 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
         connections[index] = ((Connection *) connection)->connection;
     }
 
-    DataLogger *const self = (DataLogger *) subtype->tp_alloc(subtype, 0);
+    XIMU3_DataLogger *const data_logger = XIMU3_data_logger_new(destination, name, connections, length);
 
-    if (self == NULL) {
+    const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
+
+    if (result != XIMU3_ResultOk) {
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_SetString(PyExc_RuntimeError, result_string);
+
+        XIMU3_data_logger_free(data_logger);
         return NULL;
     }
 
-    self->data_logger = XIMU3_data_logger_new(destination, name, connections, length);
+    DataLogger *const self = (DataLogger *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        XIMU3_data_logger_free(data_logger);
+        return NULL;
+    }
+
+    self->data_logger = data_logger;
     return (PyObject *) self;
 }
 
@@ -60,12 +74,6 @@ static void data_logger_free(DataLogger *self) {
         XIMU3_data_logger_free(self->data_logger);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
-}
-
-static PyObject *data_logger_get_result(DataLogger *self, PyObject *args) {
-    const XIMU3_Result result = XIMU3_data_logger_get_result(self->data_logger);
-
-    return PyLong_FromLong((long) result);
 }
 
 static PyObject *data_logger_log(PyObject *null, PyObject *args) {
@@ -105,11 +113,17 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args) {
 
     const XIMU3_Result result = XIMU3_data_logger_log(destination, name, connections, length, (uint32_t) seconds);
 
-    return PyLong_FromLong((long) result);
+    if (result != XIMU3_ResultOk) {
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_SetString(PyExc_RuntimeError, result_string);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
 }
 
 static PyMethodDef data_logger_methods[] = {
-    {"get_result", (PyCFunction) data_logger_get_result, METH_NOARGS, ""},
     {"log", (PyCFunction) data_logger_log, METH_VARARGS | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
