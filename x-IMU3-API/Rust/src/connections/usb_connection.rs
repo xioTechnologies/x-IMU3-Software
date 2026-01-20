@@ -1,26 +1,26 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
 pub struct UsbConnection {
-    connection_info: UsbConnectionInfo,
+    config: UsbConnectionConfig,
     serial_connection: SerialConnection,
 }
 
 impl UsbConnection {
-    pub fn new(connection_info: &UsbConnectionInfo) -> Self {
-        let serial_info = SerialConnectionInfo {
-            port_name: connection_info.port_name.clone(),
+    pub fn new(config: &UsbConnectionConfig) -> Self {
+        let serial_config = SerialConnectionConfig {
+            port_name: config.port_name.clone(),
             baud_rate: 115200,
             rts_cts_enabled: false,
         };
 
-        let serial_connection = SerialConnection::new(&serial_info);
+        let serial_connection = SerialConnection::new(&serial_config);
 
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             serial_connection,
         }
     }
@@ -35,8 +35,8 @@ impl GenericConnection for UsbConnection {
         self.serial_connection.close();
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::UsbConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::UsbConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

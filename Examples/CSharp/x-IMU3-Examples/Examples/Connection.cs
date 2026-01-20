@@ -2,10 +2,10 @@ namespace Ximu3Examples
 {
     class Connection
     {
-        protected static void Run(Ximu3.ConnectionInfo connectionInfo)
+        protected static void Run(Ximu3.ConnectionConfig config)
         {
             // Create connection
-            Ximu3.Connection connection = new(connectionInfo);
+            Ximu3.Connection connection = new(config);
 
             connection.AddReceiveErrorCallback(ReceiveErrorCallback);
             connection.AddStatisticsCallback(StatisticsCallback);
@@ -35,7 +35,7 @@ namespace Ximu3Examples
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open " + connection.GetInfo() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                Console.WriteLine("Unable to open " + connection.GetConfig() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
                 return;
             }
 

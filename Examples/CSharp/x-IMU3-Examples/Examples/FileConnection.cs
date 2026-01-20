@@ -4,9 +4,9 @@
     {
         public FileConnection()
         {
-            Ximu3.FileConnectionInfo connectionInfo = new("C:/x-IMU3 Example File.ximu3"); // replace with actual connection info
+            Ximu3.FileConnectionConfig config = new("C:/x-IMU3 Example File.ximu3"); // replace with actual connection config
 
-            Run(connectionInfo);
+            Run(config);
         }
     }
 }

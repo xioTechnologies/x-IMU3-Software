@@ -16,7 +16,7 @@ public:
 
     bool keepOpen() const;
 
-    virtual std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const = 0;
+    virtual std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const = 0;
 
 protected:
     ManualConnectionDialog(const juce::String &dialogTitle);
@@ -35,7 +35,7 @@ public:
 
     void resized() override;
 
-    std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const override;
 
 private:
     SimpleLabel portNameLabel{"Port Name:"};
@@ -52,7 +52,7 @@ public:
 
     void resized() override;
 
-    std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const override;
 
 private:
     SimpleLabel portNameLabel{"Port Name:"};
@@ -75,7 +75,7 @@ public:
 
     void resized() override;
 
-    std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const override;
 
 private:
     SimpleLabel ipAddressLabel{"IP Address:"};
@@ -97,7 +97,7 @@ public:
 
     void resized() override;
 
-    std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const override;
 
 private:
     SimpleLabel ipAddressLabel{"IP Address:"};
@@ -129,7 +129,7 @@ public:
 
     void resized() override;
 
-    std::unique_ptr<ximu3::ConnectionInfo> getConnectionInfo() const override;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const override;
 
 private:
     SimpleLabel portNameLabel{"Port Name:"};
@@ -146,7 +146,7 @@ public:
 
     void resized() override;
 
-    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo> > getConnectionInfos() const;
+    std::vector<std::unique_ptr<ximu3::MuxConnectionConfig> > getConnectionConfigs() const;
 
     std::pair<std::uint8_t, std::uint8_t> getChannels() const;
 

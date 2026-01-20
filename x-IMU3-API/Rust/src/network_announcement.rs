@@ -1,5 +1,5 @@
 use crate::charging_status::*;
-use crate::connection_info::*;
+use crate::connection_config::*;
 use serde::Deserialize;
 use serde_json;
 use std::fmt;
@@ -22,18 +22,18 @@ pub struct NetworkAnnouncementMessage {
     pub(crate) time: std::time::Instant,
 }
 
-impl From<&NetworkAnnouncementMessage> for TcpConnectionInfo {
+impl From<&NetworkAnnouncementMessage> for TcpConnectionConfig {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        TcpConnectionInfo {
+        TcpConnectionConfig {
             ip_address: message.ip_address,
             port: message.tcp_port,
         }
     }
 }
 
-impl From<&NetworkAnnouncementMessage> for UdpConnectionInfo {
+impl From<&NetworkAnnouncementMessage> for UdpConnectionConfig {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        UdpConnectionInfo {
+        UdpConnectionConfig {
             ip_address: message.ip_address,
             send_port: message.udp_receive, // swap send and receive ports
             receive_port: message.udp_send,

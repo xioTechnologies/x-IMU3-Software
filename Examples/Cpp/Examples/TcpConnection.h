@@ -24,13 +24,13 @@ public:
 
             std::cout << "Found " << messages[0].device_name << " " << messages[0].serial_number << std::endl;
 
-            const ximu3::TcpConnectionInfo connectionInfo(messages[0]);
+            const ximu3::TcpConnectionConfig config(messages[0]);
 
-            run(connectionInfo);
+            run(config);
         } else {
-            const ximu3::TcpConnectionInfo connectionInfo("192.168.1.1", 7000); // replace with actual connection info
+            const ximu3::TcpConnectionConfig config("192.168.1.1", 7000); // replace with actual connection config
 
-            run(connectionInfo);
+            run(config);
         }
     }
 };

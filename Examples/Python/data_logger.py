@@ -10,7 +10,7 @@ connections = []
 for device in devices:
     print(f"Found {device}")
 
-    connection = ximu3.Connection(device.connection_info)
+    connection = ximu3.Connection(device.connection_config)
 
     connection.open()
 

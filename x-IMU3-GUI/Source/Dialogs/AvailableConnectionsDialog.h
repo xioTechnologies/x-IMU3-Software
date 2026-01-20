@@ -11,10 +11,10 @@ class AvailableConnectionsDialog : public Dialog,
 public:
     struct ExistingConnection {
         juce::String descriptor;
-        std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
+        std::shared_ptr<ximu3::ConnectionConfig> config;
 
-        bool operator==(const ximu3::ConnectionInfo &connectionInfo_) const {
-            return connectionInfo->toString() == connectionInfo_.toString();
+        bool operator==(const ximu3::ConnectionConfig &config_) const {
+            return config->toString() == config_.toString();
         }
     };
 
@@ -22,7 +22,7 @@ public:
 
     void resized() override;
 
-    std::vector<ximu3::ConnectionInfo *> getConnectionInfos() const;
+    std::vector<ximu3::ConnectionConfig *> getConnectionConfigs() const;
 
 private:
     const std::vector<ExistingConnection> existingConnections;

@@ -1,6 +1,6 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::ffi::callback::*;
-use crate::ffi::connection_info::*;
+use crate::ffi::connection_config::*;
 use crate::ffi::connection_type::*;
 use crate::ffi::helpers::*;
 use crate::port_scanner::*;
@@ -12,9 +12,9 @@ pub struct DeviceC {
     device_name: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],
     connection_type: ConnectionType,
-    usb_connection_info: UsbConnectionInfoC,
-    serial_connection_info: SerialConnectionInfoC,
-    bluetooth_connection_info: BluetoothConnectionInfoC,
+    usb_connection_config: UsbConnectionConfigC,
+    serial_connection_config: SerialConnectionConfigC,
+    bluetooth_connection_config: BluetoothConnectionConfigC,
 }
 
 impl Default for DeviceC {
@@ -23,9 +23,9 @@ impl Default for DeviceC {
             device_name: EMPTY_CHAR_ARRAY,
             serial_number: EMPTY_CHAR_ARRAY,
             connection_type: ConnectionType::Usb,
-            usb_connection_info: Default::default(),
-            serial_connection_info: Default::default(),
-            bluetooth_connection_info: Default::default(),
+            usb_connection_config: Default::default(),
+            serial_connection_config: Default::default(),
+            bluetooth_connection_config: Default::default(),
         }
     }
 }
@@ -37,18 +37,18 @@ impl From<&Device> for DeviceC {
         device_c.device_name = str_to_char_array(&device.device_name);
         device_c.serial_number = str_to_char_array(&device.serial_number);
 
-        match &device.connection_info {
-            ConnectionInfo::UsbConnectionInfo(connection_info) => {
+        match &device.connection_config {
+            ConnectionConfig::UsbConnectionConfig(config) => {
                 device_c.connection_type = ConnectionType::Usb;
-                device_c.usb_connection_info = connection_info.into();
+                device_c.usb_connection_config = config.into();
             }
-            ConnectionInfo::SerialConnectionInfo(connection_info) => {
+            ConnectionConfig::SerialConnectionConfig(config) => {
                 device_c.connection_type = ConnectionType::Serial;
-                device_c.serial_connection_info = connection_info.into();
+                device_c.serial_connection_config = config.into();
             }
-            ConnectionInfo::BluetoothConnectionInfo(connection_info) => {
+            ConnectionConfig::BluetoothConnectionConfig(config) => {
                 device_c.connection_type = ConnectionType::Bluetooth;
-                device_c.bluetooth_connection_info = connection_info.into();
+                device_c.bluetooth_connection_config = config.into();
             }
             _ => {}
         }
@@ -61,11 +61,11 @@ impl From<DeviceC> for Device {
         Self {
             device_name: unsafe { char_array_to_string(&device.device_name) },
             serial_number: unsafe { char_array_to_string(&device.serial_number) },
-            connection_info: match device.connection_type {
-                ConnectionType::Usb => ConnectionInfo::UsbConnectionInfo(device.usb_connection_info.into()),
-                ConnectionType::Serial => ConnectionInfo::SerialConnectionInfo(device.serial_connection_info.into()),
-                ConnectionType::Bluetooth => ConnectionInfo::BluetoothConnectionInfo(device.bluetooth_connection_info.into()),
-                _ => ConnectionInfo::SerialConnectionInfo(device.serial_connection_info.into()),
+            connection_config: match device.connection_type {
+                ConnectionType::Usb => ConnectionConfig::UsbConnectionConfig(device.usb_connection_config.into()),
+                ConnectionType::Serial => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
+                ConnectionType::Bluetooth => ConnectionConfig::BluetoothConnectionConfig(device.bluetooth_connection_config.into()),
+                _ => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
             },
         }
     }

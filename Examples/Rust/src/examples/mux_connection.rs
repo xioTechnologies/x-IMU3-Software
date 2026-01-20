@@ -1,6 +1,6 @@
 use super::connection;
 use ximu3::connection::*;
-use ximu3::connection_info::*;
+use ximu3::connection_config::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
@@ -15,17 +15,17 @@ pub fn run() {
     println!("Found {device}");
 
     // Open connection
-    let usb_connection = Connection::new(&device.connection_info);
+    let usb_connection = Connection::new(&device.connection_config);
 
     if let Err(error) = usb_connection.open() {
-        println!("Unable to open {}. {error}.", usb_connection.get_info());
+        println!("Unable to open {}. {error}.", usb_connection.get_config());
         return;
     }
 
     // Mux connection
-    let connection_info = &ConnectionInfo::MuxConnectionInfo(MuxConnectionInfo::new(0x41, &usb_connection)); // replace with actual connection info
+    let config = &ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig::new(0x41, &usb_connection)); // replace with actual connection config
 
-    connection::run(connection_info);
+    connection::run(config);
 
     // Close connection
     usb_connection.close();

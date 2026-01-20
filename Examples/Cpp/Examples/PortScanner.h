@@ -30,7 +30,7 @@ private:
 
     static void printDevices(const std::vector<ximu3::XIMU3_Device> &devices) {
         for (const auto &device: devices) {
-            std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::ConnectionInfo::from(device)->toString() << std::endl;
+            std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::ConnectionConfig::from(device)->toString() << std::endl;
             // std::cout << ximu3::XIMU3_device_to_string(device) << std::endl; // alternative to above
         }
     }

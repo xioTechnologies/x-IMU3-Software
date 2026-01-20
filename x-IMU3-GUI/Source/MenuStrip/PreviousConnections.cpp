@@ -7,89 +7,89 @@ PreviousConnections::PreviousConnections() {
     }
 }
 
-void PreviousConnections::update(const ximu3::ConnectionInfo &connectionInfo) {
-    if (const auto *usbConnectionInfo = dynamic_cast<const ximu3::UsbConnectionInfo *>(&connectionInfo)) {
-        update({"UsbConnectionInfo", {{"portName", usbConnectionInfo->port_name}}});
+void PreviousConnections::update(const ximu3::ConnectionConfig &config) {
+    if (const auto *usbConnectionConfig = dynamic_cast<const ximu3::UsbConnectionConfig *>(&config)) {
+        update({"UsbConnectionConfig", {{"portName", usbConnectionConfig->port_name}}});
         return;
     }
 
-    if (const auto *serialConnectionInfo = dynamic_cast<const ximu3::SerialConnectionInfo *>(&connectionInfo)) {
+    if (const auto *serialConnectionConfig = dynamic_cast<const ximu3::SerialConnectionConfig *>(&config)) {
         update({
-            "SerialConnectionInfo", {
-                {"portName", serialConnectionInfo->port_name},
-                {"baudRate", (int) serialConnectionInfo->baud_rate},
-                {"rtsCtsEnabled", serialConnectionInfo->rts_cts_enabled ? 1 : 0}
+            "SerialConnectionConfig", {
+                {"portName", serialConnectionConfig->port_name},
+                {"baudRate", (int) serialConnectionConfig->baud_rate},
+                {"rtsCtsEnabled", serialConnectionConfig->rts_cts_enabled ? 1 : 0}
             }
         });
         return;
     }
 
-    if (const auto *tcpConnectionInfo = dynamic_cast<const ximu3::TcpConnectionInfo *>(&connectionInfo)) {
+    if (const auto *tcpConnectionConfig = dynamic_cast<const ximu3::TcpConnectionConfig *>(&config)) {
         update({
-            "TcpConnectionInfo", {
-                {"ipAddress", tcpConnectionInfo->ip_address},
-                {"port", (int) tcpConnectionInfo->port}
+            "TcpConnectionConfig", {
+                {"ipAddress", tcpConnectionConfig->ip_address},
+                {"port", (int) tcpConnectionConfig->port}
             }
         });
         return;
     }
 
-    if (const auto *udpConnectionInfo = dynamic_cast<const ximu3::UdpConnectionInfo *>(&connectionInfo)) {
+    if (const auto *udpConnectionConfig = dynamic_cast<const ximu3::UdpConnectionConfig *>(&config)) {
         update({
-            "UdpConnectionInfo", {
-                {"ipAddress", udpConnectionInfo->ip_address},
-                {"sendPort", (int) udpConnectionInfo->send_port},
-                {"receivePort", (int) udpConnectionInfo->receive_port}
+            "UdpConnectionConfig", {
+                {"ipAddress", udpConnectionConfig->ip_address},
+                {"sendPort", (int) udpConnectionConfig->send_port},
+                {"receivePort", (int) udpConnectionConfig->receive_port}
             }
         });
         return;
     }
 
-    if (const auto *bluetoothConnectionInfo = dynamic_cast<const ximu3::BluetoothConnectionInfo *>(&connectionInfo)) {
-        update({"BluetoothConnectionInfo", {{"portName", bluetoothConnectionInfo->port_name}}});
+    if (const auto *bluetoothConnectionConfig = dynamic_cast<const ximu3::BluetoothConnectionConfig *>(&config)) {
+        update({"BluetoothConnectionConfig", {{"portName", bluetoothConnectionConfig->port_name}}});
     }
 }
 
 void PreviousConnections::update(std::pair<std::uint8_t, std::uint8_t> muxChannels) {
-    update({"MuxConnectionInfos", {{"firstChannel", muxChannels.first}, {"lastChannel", muxChannels.second}}});
+    update({"MuxConnectionConfigs", {{"firstChannel", muxChannels.first}, {"lastChannel", muxChannels.second}}});
 }
 
-std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t> > > PreviousConnections::get() const {
-    std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t> > > result;
+std::vector<std::variant<std::unique_ptr<ximu3::ConnectionConfig>, std::pair<std::uint8_t, std::uint8_t> > > PreviousConnections::get() const {
+    std::vector<std::variant<std::unique_ptr<ximu3::ConnectionConfig>, std::pair<std::uint8_t, std::uint8_t> > > result;
 
-    for (auto connectionInfo: connections) {
-        if (connectionInfo.hasType("UsbConnectionInfo")) {
-            result.push_back(std::make_unique<ximu3::UsbConnectionInfo>(connectionInfo["portName"].toString().toStdString()));
+    for (auto config: connections) {
+        if (config.hasType("UsbConnectionConfig")) {
+            result.push_back(std::make_unique<ximu3::UsbConnectionConfig>(config["portName"].toString().toStdString()));
             continue;
         }
 
-        if (connectionInfo.hasType("SerialConnectionInfo")) {
-            result.push_back(std::make_unique<ximu3::SerialConnectionInfo>(connectionInfo["portName"].toString().toStdString(),
-                                                                           (uint32_t) ((int) connectionInfo["baudRate"]),
-                                                                           connectionInfo["rtsCtsEnabled"]));
+        if (config.hasType("SerialConnectionConfig")) {
+            result.push_back(std::make_unique<ximu3::SerialConnectionConfig>(config["portName"].toString().toStdString(),
+                                                                             (uint32_t) ((int) config["baudRate"]),
+                                                                             config["rtsCtsEnabled"]));
             continue;
         }
 
-        if (connectionInfo.hasType("TcpConnectionInfo")) {
-            result.push_back(std::make_unique<ximu3::TcpConnectionInfo>(connectionInfo["ipAddress"].toString().toStdString(),
-                                                                        (uint16_t) ((int) connectionInfo["port"])));
+        if (config.hasType("TcpConnectionConfig")) {
+            result.push_back(std::make_unique<ximu3::TcpConnectionConfig>(config["ipAddress"].toString().toStdString(),
+                                                                          (uint16_t) ((int) config["port"])));
             continue;
         }
 
-        if (connectionInfo.hasType("UdpConnectionInfo")) {
-            result.push_back(std::make_unique<ximu3::UdpConnectionInfo>(connectionInfo["ipAddress"].toString().toStdString(),
-                                                                        (uint16_t) ((int) connectionInfo["sendPort"]),
-                                                                        (uint16_t) ((int) connectionInfo["receivePort"])));
+        if (config.hasType("UdpConnectionConfig")) {
+            result.push_back(std::make_unique<ximu3::UdpConnectionConfig>(config["ipAddress"].toString().toStdString(),
+                                                                          (uint16_t) ((int) config["sendPort"]),
+                                                                          (uint16_t) ((int) config["receivePort"])));
             continue;
         }
 
-        if (connectionInfo.hasType("BluetoothConnectionInfo")) {
-            result.push_back(std::make_unique<ximu3::BluetoothConnectionInfo>(connectionInfo["portName"].toString().toStdString()));
+        if (config.hasType("BluetoothConnectionConfig")) {
+            result.push_back(std::make_unique<ximu3::BluetoothConnectionConfig>(config["portName"].toString().toStdString()));
             continue;
         }
 
-        if (connectionInfo.hasType("MuxConnectionInfos")) {
-            result.push_back(std::pair{static_cast<std::uint8_t>((int) connectionInfo["firstChannel"]), static_cast<std::uint8_t>((int) connectionInfo["lastChannel"])});
+        if (config.hasType("MuxConnectionConfigs")) {
+            result.push_back(std::pair{static_cast<std::uint8_t>((int) config["firstChannel"]), static_cast<std::uint8_t>((int) config["lastChannel"])});
         }
     }
 

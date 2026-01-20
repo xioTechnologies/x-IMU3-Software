@@ -14,21 +14,21 @@ void serial_connection() {
 
         printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
-        const XIMU3_SerialConnectionInfo connection_info = devices.array[0].serial_connection_info;
+        const XIMU3_SerialConnectionConfig config = devices.array[0].serial_connection_config;
 
         XIMU3_devices_free(devices);
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_serial(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_serial(config);
 
         run(connection);
     } else {
-        const XIMU3_SerialConnectionInfo connection_info = (XIMU3_SerialConnectionInfo){
+        const XIMU3_SerialConnectionConfig config = (XIMU3_SerialConnectionConfig){
             .port_name = "COM1",
             .baud_rate = 115200,
             .rts_cts_enabled = false,
-        }; // replace with actual connection info
+        }; // replace with actual connection config
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_serial(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_serial(config);
 
         run(connection);
     }

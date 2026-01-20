@@ -13,7 +13,7 @@ public:
 
     void updateSize();
 
-    void connectToDevice(const ximu3::ConnectionInfo &connectionInfo, const bool keepOpen);
+    void connectToDevice(const ximu3::ConnectionConfig &config, const bool keepOpen);
 
     std::vector<ConnectionPanel *> getConnectionPanels() const;
 

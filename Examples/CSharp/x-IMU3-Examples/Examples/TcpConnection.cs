@@ -26,15 +26,15 @@ namespace Ximu3Examples
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(messages[0].device_name) + " " + Ximu3.Helpers.ToString(messages[0].serial_number));
 
-                Ximu3.TcpConnectionInfo connectionInfo = new(messages[0]);
+                Ximu3.TcpConnectionConfig config = new(messages[0]);
 
-                Run(connectionInfo);
+                Run(config);
             }
             else
             {
-                Ximu3.TcpConnectionInfo connectionInfo = new("192.168.1.1", 7000); // replace with actual connection info
+                Ximu3.TcpConnectionConfig config = new("192.168.1.1", 7000); // replace with actual connection config
 
-                Run(connectionInfo);
+                Run(config);
             }
         }
     }

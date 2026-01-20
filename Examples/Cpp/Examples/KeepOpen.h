@@ -20,7 +20,7 @@ public:
         std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
         // Open connection
-        ximu3::Connection connection(*ximu3::ConnectionInfo::from(devices[0]));
+        ximu3::Connection connection(*ximu3::ConnectionConfig::from(devices[0]));
 
         const ximu3::KeepOpen keepOpen(connection, callback);
 

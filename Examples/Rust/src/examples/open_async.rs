@@ -13,13 +13,13 @@ pub fn run() {
     println!("Found {device}");
 
     // Open connection
-    let connection = Connection::new(&device.connection_info);
+    let connection = Connection::new(&device.connection_config);
 
-    let connection_info = connection.get_info();
+    let config = connection.get_config();
 
     let closure = Box::new(move |result| {
         if let Err(error) = result {
-            println!("Unable to open {connection_info}. {error}.");
+            println!("Unable to open {config}. {error}.");
             return;
         }
 

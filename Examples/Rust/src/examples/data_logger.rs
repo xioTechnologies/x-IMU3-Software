@@ -10,10 +10,10 @@ pub fn run() {
     for device in PortScanner::scan_filter(PortType::Usb) {
         println!("Found {device}");
 
-        let connection = Connection::new(&device.connection_info);
+        let connection = Connection::new(&device.connection_config);
 
         if let Err(error) = connection.open() {
-            println!("Unable to open {}. {error}.", connection.get_info());
+            println!("Unable to open {}. {error}.", connection.get_config());
         } else {
             connections.push(connection);
         }

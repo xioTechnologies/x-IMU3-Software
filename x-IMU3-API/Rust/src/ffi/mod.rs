@@ -5,7 +5,7 @@ mod callback;
 mod charging_status;
 mod command_message;
 mod connection;
-mod connection_info;
+mod connection_config;
 mod connection_type;
 mod data_logger;
 mod data_messages;

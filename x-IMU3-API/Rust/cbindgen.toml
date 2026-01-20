@@ -44,12 +44,12 @@ prefix = "XIMU3_"
 "NetworkAnnouncementC" = "NetworkAnnouncement"
 "NetworkAnnouncementMessageC" = "NetworkAnnouncementMessage"
 "PingResponseC" = "PingResponse"
-"UsbConnectionInfoC" = "UsbConnectionInfo"
-"SerialConnectionInfoC" = "SerialConnectionInfo"
-"TcpConnectionInfoC" = "TcpConnectionInfo"
-"UdpConnectionInfoC" = "UdpConnectionInfo"
-"BluetoothConnectionInfoC" = "BluetoothConnectionInfo"
-"FileConnectionInfoC" = "FileConnectionInfo"
+"UsbConnectionConfigC" = "UsbConnectionConfig"
+"SerialConnectionConfigC" = "SerialConnectionConfig"
+"TcpConnectionConfigC" = "TcpConnectionConfig"
+"UdpConnectionConfigC" = "UdpConnectionConfig"
+"BluetoothConnectionConfigC" = "BluetoothConnectionConfig"
+"FileConnectionConfigC" = "FileConnectionConfig"
 
 [export.mangle]
 

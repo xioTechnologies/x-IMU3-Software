@@ -6,30 +6,30 @@ namespace Ximu3
 {
     public class Connection : IDisposable
     {
-        public Connection(ConnectionInfo connectionInfo)
+        public Connection(ConnectionConfig config)
         {
-            switch (connectionInfo)
+            switch (config)
             {
-                case UsbConnectionInfo usbConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_usb(usbConnectionInfo.connectionInfo);
+                case UsbConnectionConfig usbConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_usb(usbConnectionConfig.connectionConfig);
                     return;
-                case SerialConnectionInfo serialConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_serial(serialConnectionInfo.connectionInfo);
+                case SerialConnectionConfig serialConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_serial(serialConnectionConfig.connectionConfig);
                     return;
-                case TcpConnectionInfo tcpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionInfo.connectionInfo);
+                case TcpConnectionConfig tcpConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionConfig.connectionConfig);
                     return;
-                case UdpConnectionInfo udpConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_udp(udpConnectionInfo.connectionInfo);
+                case UdpConnectionConfig udpConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_udp(udpConnectionConfig.connectionConfig);
                     return;
-                case BluetoothConnectionInfo bluetoothConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionInfo.connectionInfo);
+                case BluetoothConnectionConfig bluetoothConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionConfig.connectionConfig);
                     return;
-                case FileConnectionInfo fileConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_file(fileConnectionInfo.connectionInfo);
+                case FileConnectionConfig fileConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_file(fileConnectionConfig.connectionConfig);
                     return;
-                case MuxConnectionInfo muxConnectionInfo:
-                    connection = CApi.XIMU3_connection_new_mux(muxConnectionInfo.connectionInfo);
+                case MuxConnectionConfig muxConnectionConfig:
+                    connection = CApi.XIMU3_connection_new_mux(muxConnectionConfig.connectionConfig);
                     return;
             }
             Debug.Assert(false);
@@ -123,17 +123,17 @@ namespace Ximu3
             CApi.XIMU3_connection_send_commands_async(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout, SendCommandsAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
-        public object? GetInfo()
+        public object? GetConfig()
         {
             return CApi.XIMU3_connection_get_type(connection) switch
             {
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => new UsbConnectionInfo(CApi.XIMU3_connection_get_info_usb(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => new SerialConnectionInfo(CApi.XIMU3_connection_get_info_serial(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => new TcpConnectionInfo(CApi.XIMU3_connection_get_info_tcp(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionInfo(CApi.XIMU3_connection_get_info_udp(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionInfo(CApi.XIMU3_connection_get_info_bluetooth(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionInfo(CApi.XIMU3_connection_get_info_file(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux => new MuxConnectionInfo(CApi.XIMU3_connection_get_info_mux(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => new UsbConnectionConfig(CApi.XIMU3_connection_get_config_usb(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => new SerialConnectionConfig(CApi.XIMU3_connection_get_config_serial(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => new TcpConnectionConfig(CApi.XIMU3_connection_get_config_tcp(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionConfig(CApi.XIMU3_connection_get_config_udp(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionConfig(CApi.XIMU3_connection_get_config_bluetooth(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionConfig(CApi.XIMU3_connection_get_config_file(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux => new MuxConnectionConfig(CApi.XIMU3_connection_get_config_mux(connection)),
                 _ => null,
             };
         }

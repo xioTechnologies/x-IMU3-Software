@@ -15,7 +15,7 @@ public:
 
     void resized() override;
 
-    std::shared_ptr<ximu3::ConnectionInfo> getConnectionInfo() const;
+    std::shared_ptr<ximu3::ConnectionConfig> getConnectionConfig() const;
 
     juce::File getHexFile() const;
 
@@ -33,10 +33,10 @@ private:
 
                 devices.clear();
                 for (auto &device: devices_) {
-                    const auto connectionInfo = ximu3::ConnectionInfo::from(device);
+                    const auto config = ximu3::ConnectionConfig::from(device);
 
-                    if ((dynamic_cast<ximu3::UsbConnectionInfo *>(connectionInfo.get()) != nullptr) ||
-                        (dynamic_cast<ximu3::SerialConnectionInfo *>(connectionInfo.get()) != nullptr)) {
+                    if ((dynamic_cast<ximu3::UsbConnectionConfig *>(config.get()) != nullptr) ||
+                        (dynamic_cast<ximu3::SerialConnectionConfig *>(config.get()) != nullptr)) {
                         devices.push_back(device);
                     }
                 }
@@ -44,7 +44,7 @@ private:
                 const auto id = deviceValue.getSelectedId();
                 deviceValue.clear();
                 for (const auto &device: devices) {
-                    deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::ConnectionInfo::from(device)->toString() + ")", 1 + deviceValue.getNumItems());
+                    deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::ConnectionConfig::from(device)->toString() + ")", 1 + deviceValue.getNumItems());
                 }
                 deviceValue.setSelectedId(std::max(1, id));
             });

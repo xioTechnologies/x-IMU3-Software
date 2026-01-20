@@ -5,15 +5,15 @@ import ximu3
 
 
 class Connection:
-    def __init__(self, connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | ximu3.TcpConnectionInfo | ximu3.UdpConnectionInfo | ximu3.BluetoothConnectionInfo | ximu3.FileConnectionInfo | ximu3.MuxConnectionInfo) -> None:
-        self.__connection = ximu3.Connection(connection_info)
+    def __init__(self, config: ximu3.UsbConnectionConfig | ximu3.SerialConnectionConfig | ximu3.TcpConnectionConfig | ximu3.UdpConnectionConfig | ximu3.BluetoothConnectionConfig | ximu3.FileConnectionConfig | ximu3.MuxConnectionConfig) -> None:
+        self.__connection = ximu3.Connection(config)
 
         self.__connection.open()
 
         response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if response is None:
-            raise Exception(f"Ping failed for {self.__connection.get_info()}")
+            raise Exception(f"Ping failed for {self.__connection.get_config()}")
 
         self.__prefix = f"{response.device_name} {response.serial_number}"
 
@@ -51,10 +51,10 @@ class Connection:
         response = self.__connection.send_command(command)
 
         if response is None:
-            raise Exception(f"No response. {command} sent to {self.__connection.get_info()}")
+            raise Exception(f"No response. {command} sent to {self.__connection.get_config()}")
 
         if response.error:
-            raise Exception(f"{response.error}. {command} sent to {self.__connection.get_info()}")
+            raise Exception(f"{response.error}. {command} sent to {self.__connection.get_config()}")
 
         print(f'{self.__prefix} "{response.key}" : {response.value}')
 
@@ -104,7 +104,7 @@ class Connection:
         print(f"{self.__prefix} {message}")
 
 
-connections = [Connection(m.to_udp_connection_info()) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]
+connections = [Connection(m.to_udp_connection_config()) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]
 
 if not connections:
     raise Exception("No UDP connections available")

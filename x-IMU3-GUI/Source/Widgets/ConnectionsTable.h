@@ -11,14 +11,14 @@ public:
     struct Row {
         bool selected;
         juce::String descriptor;
-        std::shared_ptr<ximu3::ConnectionInfo> connectionInfo;
+        std::shared_ptr<ximu3::ConnectionConfig> config;
         std::optional<int> rssiPercentage;
         std::optional<int> batteryPercentage;
         std::optional<ximu3::XIMU3_ChargingStatus> batteryStatus;
         bool unavailable;
 
         bool operator==(const Row &row) const {
-            return connectionInfo->toString() == row.connectionInfo->toString();
+            return config->toString() == row.config->toString();
         }
     };
 

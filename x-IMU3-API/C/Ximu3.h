@@ -131,7 +131,7 @@ typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 
 typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
 
-typedef struct XIMU3_MuxConnectionInfo XIMU3_MuxConnectionInfo;
+typedef struct XIMU3_MuxConnectionConfig XIMU3_MuxConnectionConfig;
 
 typedef struct XIMU3_NetworkAnnouncement XIMU3_NetworkAnnouncement;
 
@@ -159,40 +159,40 @@ typedef struct XIMU3_CommandMessages
     uint32_t capacity;
 } XIMU3_CommandMessages;
 
-typedef struct XIMU3_UsbConnectionInfo
+typedef struct XIMU3_UsbConnectionConfig
 {
     char port_name[XIMU3_CHAR_ARRAY_SIZE];
-} XIMU3_UsbConnectionInfo;
+} XIMU3_UsbConnectionConfig;
 
-typedef struct XIMU3_SerialConnectionInfo
+typedef struct XIMU3_SerialConnectionConfig
 {
     char port_name[XIMU3_CHAR_ARRAY_SIZE];
     uint32_t baud_rate;
     bool rts_cts_enabled;
-} XIMU3_SerialConnectionInfo;
+} XIMU3_SerialConnectionConfig;
 
-typedef struct XIMU3_TcpConnectionInfo
+typedef struct XIMU3_TcpConnectionConfig
 {
     char ip_address[XIMU3_CHAR_ARRAY_SIZE];
     uint16_t port;
-} XIMU3_TcpConnectionInfo;
+} XIMU3_TcpConnectionConfig;
 
-typedef struct XIMU3_UdpConnectionInfo
+typedef struct XIMU3_UdpConnectionConfig
 {
     char ip_address[XIMU3_CHAR_ARRAY_SIZE];
     uint16_t send_port;
     uint16_t receive_port;
-} XIMU3_UdpConnectionInfo;
+} XIMU3_UdpConnectionConfig;
 
-typedef struct XIMU3_BluetoothConnectionInfo
+typedef struct XIMU3_BluetoothConnectionConfig
 {
     char port_name[XIMU3_CHAR_ARRAY_SIZE];
-} XIMU3_BluetoothConnectionInfo;
+} XIMU3_BluetoothConnectionConfig;
 
-typedef struct XIMU3_FileConnectionInfo
+typedef struct XIMU3_FileConnectionConfig
 {
     char file_path[XIMU3_CHAR_ARRAY_SIZE];
-} XIMU3_FileConnectionInfo;
+} XIMU3_FileConnectionConfig;
 
 typedef void (*XIMU3_CallbackResult)(enum XIMU3_Result data, void *context);
 
@@ -426,9 +426,9 @@ typedef struct XIMU3_Device
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
     enum XIMU3_ConnectionType connection_type;
-    struct XIMU3_UsbConnectionInfo usb_connection_info;
-    struct XIMU3_SerialConnectionInfo serial_connection_info;
-    struct XIMU3_BluetoothConnectionInfo bluetooth_connection_info;
+    struct XIMU3_UsbConnectionConfig usb_connection_config;
+    struct XIMU3_SerialConnectionConfig serial_connection_config;
+    struct XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
 } XIMU3_Device;
 
 typedef struct XIMU3_Devices
@@ -452,19 +452,19 @@ const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus status);
 
 void XIMU3_command_messages_free(struct XIMU3_CommandMessages messages);
 
-struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_serial(struct XIMU3_SerialConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_serial(struct XIMU3_SerialConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_tcp(struct XIMU3_TcpConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_tcp(struct XIMU3_TcpConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_udp(struct XIMU3_UdpConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_udp(struct XIMU3_UdpConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_bluetooth(struct XIMU3_BluetoothConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_bluetooth(struct XIMU3_BluetoothConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_file(struct XIMU3_FileConnectionInfo connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_file(struct XIMU3_FileConnectionConfig config);
 
-struct XIMU3_Connection *XIMU3_connection_new_mux(const struct XIMU3_MuxConnectionInfo *connection_info);
+struct XIMU3_Connection *XIMU3_connection_new_mux(const struct XIMU3_MuxConnectionConfig *config);
 
 void XIMU3_connection_free(struct XIMU3_Connection *connection);
 
@@ -488,21 +488,21 @@ void XIMU3_connection_send_commands_async(struct XIMU3_Connection *connection, c
 
 enum XIMU3_ConnectionType XIMU3_connection_get_type(struct XIMU3_Connection *connection);
 
-struct XIMU3_UsbConnectionInfo XIMU3_connection_get_info_usb(struct XIMU3_Connection *connection);
+struct XIMU3_UsbConnectionConfig XIMU3_connection_get_config_usb(struct XIMU3_Connection *connection);
 
-struct XIMU3_SerialConnectionInfo XIMU3_connection_get_info_serial(struct XIMU3_Connection *connection);
+struct XIMU3_SerialConnectionConfig XIMU3_connection_get_config_serial(struct XIMU3_Connection *connection);
 
-struct XIMU3_TcpConnectionInfo XIMU3_connection_get_info_tcp(struct XIMU3_Connection *connection);
+struct XIMU3_TcpConnectionConfig XIMU3_connection_get_config_tcp(struct XIMU3_Connection *connection);
 
-struct XIMU3_UdpConnectionInfo XIMU3_connection_get_info_udp(struct XIMU3_Connection *connection);
+struct XIMU3_UdpConnectionConfig XIMU3_connection_get_config_udp(struct XIMU3_Connection *connection);
 
-struct XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(struct XIMU3_Connection *connection);
+struct XIMU3_BluetoothConnectionConfig XIMU3_connection_get_config_bluetooth(struct XIMU3_Connection *connection);
 
-struct XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(struct XIMU3_Connection *connection);
+struct XIMU3_FileConnectionConfig XIMU3_connection_get_config_file(struct XIMU3_Connection *connection);
 
-struct XIMU3_MuxConnectionInfo *XIMU3_connection_get_info_mux(struct XIMU3_Connection *connection);
+struct XIMU3_MuxConnectionConfig *XIMU3_connection_get_config_mux(struct XIMU3_Connection *connection);
 
-const char *XIMU3_connection_get_info_string(struct XIMU3_Connection *connection);
+const char *XIMU3_connection_get_config_string(struct XIMU3_Connection *connection);
 
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
@@ -544,23 +544,23 @@ uint64_t XIMU3_connection_add_end_of_file_callback(struct XIMU3_Connection *conn
 
 void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t callback_id);
 
-const char *XIMU3_usb_connection_info_to_string(struct XIMU3_UsbConnectionInfo connection_info);
+const char *XIMU3_usb_connection_config_to_string(struct XIMU3_UsbConnectionConfig config);
 
-const char *XIMU3_serial_connection_info_to_string(struct XIMU3_SerialConnectionInfo connection_info);
+const char *XIMU3_serial_connection_config_to_string(struct XIMU3_SerialConnectionConfig config);
 
-const char *XIMU3_tcp_connection_info_to_string(struct XIMU3_TcpConnectionInfo connection_info);
+const char *XIMU3_tcp_connection_config_to_string(struct XIMU3_TcpConnectionConfig config);
 
-const char *XIMU3_udp_connection_info_to_string(struct XIMU3_UdpConnectionInfo connection_info);
+const char *XIMU3_udp_connection_config_to_string(struct XIMU3_UdpConnectionConfig config);
 
-const char *XIMU3_bluetooth_connection_info_to_string(struct XIMU3_BluetoothConnectionInfo connection_info);
+const char *XIMU3_bluetooth_connection_config_to_string(struct XIMU3_BluetoothConnectionConfig config);
 
-const char *XIMU3_file_connection_info_to_string(struct XIMU3_FileConnectionInfo connection_info);
+const char *XIMU3_file_connection_config_to_string(struct XIMU3_FileConnectionConfig config);
 
-struct XIMU3_MuxConnectionInfo *XIMU3_mux_connection_info_new(uint8_t channel, struct XIMU3_Connection *connection);
+struct XIMU3_MuxConnectionConfig *XIMU3_mux_connection_config_new(uint8_t channel, struct XIMU3_Connection *connection);
 
-void XIMU3_mux_connection_info_free(struct XIMU3_MuxConnectionInfo *connection_info);
+void XIMU3_mux_connection_config_free(struct XIMU3_MuxConnectionConfig *config);
 
-const char *XIMU3_mux_connection_info_to_string(struct XIMU3_MuxConnectionInfo *connection_info);
+const char *XIMU3_mux_connection_config_to_string(struct XIMU3_MuxConnectionConfig *config);
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 
@@ -628,9 +628,9 @@ struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection, 
 
 void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
 
-struct XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
+struct XIMU3_TcpConnectionConfig XIMU3_network_announcement_message_to_tcp_connection_config(struct XIMU3_NetworkAnnouncementMessage message);
 
-struct XIMU3_UdpConnectionInfo XIMU3_network_announcement_message_to_udp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
+struct XIMU3_UdpConnectionConfig XIMU3_network_announcement_message_to_udp_connection_config(struct XIMU3_NetworkAnnouncementMessage message);
 
 const char *XIMU3_network_announcement_message_to_string(struct XIMU3_NetworkAnnouncementMessage message);
 

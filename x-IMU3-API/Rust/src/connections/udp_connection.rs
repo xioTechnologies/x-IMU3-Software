@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
@@ -6,16 +6,16 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
 use std::sync::{Arc, Mutex};
 
 pub struct UdpConnection {
-    connection_info: UdpConnectionInfo,
+    config: UdpConnectionConfig,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
 
 impl UdpConnection {
-    pub fn new(connection_info: &UdpConnectionInfo) -> Self {
+    pub fn new(config: &UdpConnectionConfig) -> Self {
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
@@ -25,11 +25,11 @@ impl UdpConnection {
 
 impl GenericConnection for UdpConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let socket = UdpSocket::bind(SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), self.connection_info.receive_port))?;
+        let socket = UdpSocket::bind(SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), self.config.receive_port))?;
 
         socket.set_nonblocking(true)?;
 
-        let socket_address = SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.send_port);
+        let socket_address = SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.send_port);
 
         let receiver = self.receiver.clone();
 
@@ -66,8 +66,8 @@ impl GenericConnection for UdpConnection {
         }
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::UdpConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::UdpConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

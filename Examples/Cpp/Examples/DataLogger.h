@@ -18,14 +18,14 @@ public:
         for (auto device: devices) {
             std::cout << "Found " << ximu3::XIMU3_device_to_string(device) << std::endl;
 
-            auto connection = std::make_unique<ximu3::Connection>(*ximu3::ConnectionInfo::from(device));
+            auto connection = std::make_unique<ximu3::Connection>(*ximu3::ConnectionConfig::from(device));
 
             const auto result = connection->open();
 
             if (result == ximu3::XIMU3_ResultOk) {
                 connections.push_back(std::move(connection));
             } else {
-                std::cout << "Unable to open " << connection->getInfo()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
+                std::cout << "Unable to open " << connection->getConfig()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
             }
         }
 

@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::ffi::helpers::*;
 use std::fmt;
 use std::os::raw::c_char;
@@ -15,16 +15,16 @@ pub enum ConnectionType {
     Mux,
 }
 
-impl From<&ConnectionInfo> for ConnectionType {
-    fn from(connection_info: &ConnectionInfo) -> Self {
-        match connection_info {
-            ConnectionInfo::UsbConnectionInfo(_) => Self::Usb,
-            ConnectionInfo::SerialConnectionInfo(_) => Self::Serial,
-            ConnectionInfo::TcpConnectionInfo(_) => Self::Tcp,
-            ConnectionInfo::UdpConnectionInfo(_) => Self::Udp,
-            ConnectionInfo::BluetoothConnectionInfo(_) => Self::Bluetooth,
-            ConnectionInfo::FileConnectionInfo(_) => Self::File,
-            ConnectionInfo::MuxConnectionInfo(_) => Self::Mux,
+impl From<&ConnectionConfig> for ConnectionType {
+    fn from(config: &ConnectionConfig) -> Self {
+        match config {
+            ConnectionConfig::UsbConnectionConfig(_) => Self::Usb,
+            ConnectionConfig::SerialConnectionConfig(_) => Self::Serial,
+            ConnectionConfig::TcpConnectionConfig(_) => Self::Tcp,
+            ConnectionConfig::UdpConnectionConfig(_) => Self::Udp,
+            ConnectionConfig::BluetoothConnectionConfig(_) => Self::Bluetooth,
+            ConnectionConfig::FileConnectionConfig(_) => Self::File,
+            ConnectionConfig::MuxConnectionConfig(_) => Self::Mux,
         }
     }
 }

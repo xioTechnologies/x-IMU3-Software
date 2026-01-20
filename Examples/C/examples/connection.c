@@ -74,7 +74,7 @@ void run(XIMU3_Connection *const connection) {
     const XIMU3_Result result = XIMU3_connection_open(connection);
 
     if (result != XIMU3_ResultOk) {
-        printf("Unable to open %s. %s.\n", XIMU3_connection_get_info_string(connection), XIMU3_result_to_string(result));
+        printf("Unable to open %s. %s.\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
     }

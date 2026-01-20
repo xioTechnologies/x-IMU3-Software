@@ -1,26 +1,26 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
 pub struct BluetoothConnection {
-    connection_info: BluetoothConnectionInfo,
+    config: BluetoothConnectionConfig,
     serial_connection: SerialConnection,
 }
 
 impl BluetoothConnection {
-    pub fn new(connection_info: &BluetoothConnectionInfo) -> Self {
-        let serial_info = SerialConnectionInfo {
-            port_name: connection_info.port_name.clone(),
+    pub fn new(config: &BluetoothConnectionConfig) -> Self {
+        let serial_config = SerialConnectionConfig {
+            port_name: config.port_name.clone(),
             baud_rate: 115200,
             rts_cts_enabled: false,
         };
 
-        let serial_connection = SerialConnection::new(&serial_info);
+        let serial_connection = SerialConnection::new(&serial_config);
 
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             serial_connection,
         }
     }
@@ -35,8 +35,8 @@ impl GenericConnection for BluetoothConnection {
         self.serial_connection.close();
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::BluetoothConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::BluetoothConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

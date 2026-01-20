@@ -16,7 +16,7 @@
             Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
-            Ximu3.Connection usbConnection = new(Ximu3.ConnectionInfo.From(devices[0])!);
+            Ximu3.Connection usbConnection = new(Ximu3.ConnectionConfig.From(devices[0])!);
 
             if (usbConnection.Open() != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
@@ -24,9 +24,9 @@
                 return;
             }
 
-            Ximu3.MuxConnectionInfo connectionInfo = new(0x41, usbConnection);
+            Ximu3.MuxConnectionConfig config = new(0x41, usbConnection);
 
-            Run(connectionInfo);
+            Run(config);
         }
     }
 }

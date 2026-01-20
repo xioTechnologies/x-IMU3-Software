@@ -31,12 +31,12 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
         });
     };
 
-    const auto connectionInfo = connection->getInfo();
-    if (const auto *const tcpConnectionInfo = dynamic_cast<const ximu3::XIMU3_TcpConnectionInfo *>(connectionInfo.get())) {
-        addNetworkAnnouncementCallback(tcpConnectionInfo->ip_address);
+    const auto config = connection->getConfig();
+    if (const auto *const tcpConnectionConfig = dynamic_cast<const ximu3::XIMU3_TcpConnectionConfig *>(config.get())) {
+        addNetworkAnnouncementCallback(tcpConnectionConfig->ip_address);
     }
-    if (const auto *const udpConnectionInfo = dynamic_cast<const ximu3::XIMU3_UdpConnectionInfo *>(connectionInfo.get())) {
-        addNetworkAnnouncementCallback(udpConnectionInfo->ip_address);
+    if (const auto *const udpConnectionConfig = dynamic_cast<const ximu3::XIMU3_UdpConnectionConfig *>(config.get())) {
+        addNetworkAnnouncementCallback(udpConnectionConfig->ip_address);
     }
 
     rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
@@ -148,7 +148,7 @@ void ConnectionPanelHeader::updateHeading(const juce::String &deviceName_, const
 
 void ConnectionPanelHeader::updateHeading(const juce::String &descriptor_) {
     descriptor = descriptor_;
-    headingLabel.setText(descriptor + "    " + connectionInfoString);
+    headingLabel.setText(descriptor + "    " + configString);
 }
 
 juce::String ConnectionPanelHeader::getDescriptor() const {
