@@ -7,7 +7,7 @@ static void callback(const XIMU3_CommandMessages responses, void *context);
 
 static void print_responses(const XIMU3_CommandMessages responses);
 
-void commands() {
+void send_commands() {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 

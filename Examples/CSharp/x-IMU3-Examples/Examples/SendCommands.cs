@@ -1,8 +1,8 @@
 namespace Ximu3Examples
 {
-    class Commands
+    class SendCommands
     {
-        public Commands()
+        public SendCommands()
         {
             // Search for connection
             Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);

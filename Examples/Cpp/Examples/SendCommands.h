@@ -7,9 +7,9 @@
 #include <thread>
 #include "Ximu3.hpp"
 
-class Commands {
+class SendCommands {
 public:
-    Commands() {
+    SendCommands() {
         // Search for connection
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
