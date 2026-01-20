@@ -5,8 +5,6 @@
 
 void bluetooth_connection();
 
-void commands();
-
 void data_logger();
 
 void file_connection();
@@ -27,6 +25,8 @@ void ping();
 
 void port_scanner();
 
+void send_commands();
+
 void serial_connection();
 
 void tcp_connection();
@@ -38,17 +38,17 @@ void usb_connection();
 int main(int argc, const char *argv[]) {
     printf("Select example\n");
     printf("A. bluetooth_connection.c\n");
-    printf("B. commands.c\n");
-    printf("C. data_logger.c\n");
-    printf("D. file_connection.c\n");
-    printf("E. file_converter.c\n");
-    printf("F. get_port_names.c\n");
-    printf("G. keep_open.c\n");
-    printf("H. mux_connection.c\n");
-    printf("I. network_announcement.c\n");
-    printf("J. open_async.c\n");
-    printf("K. ping.c\n");
-    printf("L. port_scanner.c\n");
+    printf("B. data_logger.c\n");
+    printf("C. file_connection.c\n");
+    printf("D. file_converter.c\n");
+    printf("E. get_port_names.c\n");
+    printf("F. keep_open.c\n");
+    printf("G. mux_connection.c\n");
+    printf("H. network_announcement.c\n");
+    printf("I. open_async.c\n");
+    printf("J. ping.c\n");
+    printf("K. port_scanner.c\n");
+    printf("L. send_commands.c\n");
     printf("M. serial_connection.c\n");
     printf("N. tcp_connection.c\n");
     printf("O. udp_connection.c\n");
@@ -59,37 +59,37 @@ int main(int argc, const char *argv[]) {
             bluetooth_connection();
             break;
         case 'B':
-            commands();
-            break;
-        case 'C':
             data_logger();
             break;
-        case 'D':
+        case 'C':
             file_connection();
             break;
-        case 'E':
+        case 'D':
             file_converter();
             break;
-        case 'F':
+        case 'E':
             get_port_names();
             break;
-        case 'G':
+        case 'F':
             keep_open();
             break;
-        case 'H':
+        case 'G':
             mux_connection();
             break;
-        case 'I':
+        case 'H':
             network_announcement();
             break;
-        case 'J':
+        case 'I':
             open_async();
             break;
-        case 'K':
+        case 'J':
             ping();
             break;
-        case 'L':
+        case 'K':
             port_scanner();
+            break;
+        case 'L':
+            send_commands();
             break;
         case 'M':
             serial_connection();

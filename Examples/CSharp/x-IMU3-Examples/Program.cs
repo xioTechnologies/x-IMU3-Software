@@ -8,17 +8,17 @@ namespace Ximu3Examples
         {
             Console.WriteLine("Select example");
             Console.WriteLine("A. BluetoothConnection");
-            Console.WriteLine("B. Commands");
-            Console.WriteLine("C. DataLogger");
-            Console.WriteLine("D. FileConnection");
-            Console.WriteLine("E. FileConverter");
-            Console.WriteLine("F. GetPortNames");
-            Console.WriteLine("G. KeepOpen");
-            Console.WriteLine("H. MuxConnection");
-            Console.WriteLine("I. NetworkAnnouncement");
-            Console.WriteLine("J. OpenAsync");
-            Console.WriteLine("K. Ping");
-            Console.WriteLine("L. PortScanner");
+            Console.WriteLine("B. DataLogger");
+            Console.WriteLine("C. FileConnection");
+            Console.WriteLine("D. FileConverter");
+            Console.WriteLine("E. GetPortNames");
+            Console.WriteLine("F. KeepOpen");
+            Console.WriteLine("G. MuxConnection");
+            Console.WriteLine("H. NetworkAnnouncement");
+            Console.WriteLine("I. OpenAsync");
+            Console.WriteLine("J. Ping");
+            Console.WriteLine("K. PortScanner");
+            Console.WriteLine("L. SendCommands");
             Console.WriteLine("M. SerialConnection");
             Console.WriteLine("N. TcpConnection");
             Console.WriteLine("O. UdpConnection");
@@ -30,37 +30,37 @@ namespace Ximu3Examples
                     _ = new BluetoothConnection();
                     break;
                 case 'B':
-                    _ = new Commands();
-                    break;
-                case 'C':
                     _ = new DataLogger();
                     break;
-                case 'D':
+                case 'C':
                     _ = new FileConnection();
                     break;
-                case 'E':
+                case 'D':
                     _ = new FileConverter();
                     break;
-                case 'F':
+                case 'E':
                     _ = new GetPortNames();
                     break;
-                case 'G':
+                case 'F':
                     _ = new KeepOpen();
                     break;
-                case 'H':
+                case 'G':
                     _ = new MuxConnection();
                     break;
-                case 'I':
+                case 'H':
                     _ = new NetworkAnnouncement();
                     break;
-                case 'J':
+                case 'I':
                     _ = new OpenAsync();
                     break;
-                case 'K':
+                case 'J':
                     _ = new Ping();
                     break;
-                case 'L':
+                case 'K':
                     _ = new PortScanner();
+                    break;
+                case 'L':
+                    _ = new SendCommands();
                     break;
                 case 'M':
                     _ = new SerialConnection();
