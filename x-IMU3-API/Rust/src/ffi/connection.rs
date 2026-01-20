@@ -84,7 +84,7 @@ pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResp
 pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callback: Callback<PingResponseC>, context: *mut c_void) {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    let closure = Box::new(move |ping_response: Option<PingResponse>| callback(ping_response.into(), void_ptr.0));
+    let closure = Box::new(move |response: Option<PingResponse>| callback(response.into(), void_ptr.0));
     connection.ping_async(closure);
 }
 

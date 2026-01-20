@@ -19,23 +19,23 @@ connection.open()
 # Ping
 
 
-def print_ping_response(ping_response: ximu3.PingResponse | None) -> None:
-    if ping_response is None:
+def print_response(response: ximu3.PingResponse | None) -> None:
+    if response is None:
         raise Exception("No response")
 
-    print(", ".join([ping_response.interface, ping_response.device_name, ping_response.serial_number]))
-    # print(ping_response)  # alternative to above
+    print(", ".join([response.interface, response.device_name, response.serial_number]))
+    # print(response)  # alternative to above
 
 
-def callback(ping_response: ximu3.PingResponse) -> None:
-    print_ping_response(ping_response)
+def callback(response: ximu3.PingResponse) -> None:
+    print_response(response)
 
 
 if helpers.yes_or_no("Use async implementation?"):
     connection.ping_async(callback)
     time.sleep(3)
 else:
-    print_ping_response(connection.ping())
+    print_response(connection.ping())
 
 # Close connection
 connection.close()

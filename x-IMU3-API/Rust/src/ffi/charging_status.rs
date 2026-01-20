@@ -3,11 +3,11 @@ use crate::ffi::helpers::*;
 use std::os::raw::c_char;
 
 #[no_mangle]
-pub extern "C" fn XIMU3_charging_status_from_float(charging_status: f32) -> ChargingStatus {
-    ChargingStatus::from(charging_status)
+pub extern "C" fn XIMU3_charging_status_from_float(status: f32) -> ChargingStatus {
+    ChargingStatus::from(status)
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_charging_status_to_string(charging_status: ChargingStatus) -> *const c_char {
-    str_to_char_ptr(&charging_status.to_string())
+pub extern "C" fn XIMU3_charging_status_to_string(status: ChargingStatus) -> *const c_char {
+    str_to_char_ptr(&status.to_string())
 }

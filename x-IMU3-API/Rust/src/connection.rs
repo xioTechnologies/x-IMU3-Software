@@ -105,13 +105,13 @@ impl Connection {
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let ping_response = Self::ping_internal(receiver, write_sender);
+            let response = Self::ping_internal(receiver, write_sender);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
                     return;
                 }
-                closure(ping_response);
+                closure(response);
             }
         });
     }

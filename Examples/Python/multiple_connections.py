@@ -10,12 +10,12 @@ class Connection:
 
         self.__connection.open()
 
-        ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
+        response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
-        if ping_response is None:
+        if response is None:
             raise Exception(f"Ping failed for {self.__connection.get_info()}")
 
-        self.__prefix = f"{ping_response.device_name} {ping_response.serial_number}"
+        self.__prefix = f"{response.device_name} {response.serial_number}"
 
         self.__connection.add_inertial_callback(self.__inertial_callback)
         self.__connection.add_magnetometer_callback(self.__magnetometer_callback)

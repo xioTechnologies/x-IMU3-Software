@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "Ximu3.h"
 
-static void callback(const XIMU3_PingResponse ping_response, void *context);
+static void callback(const XIMU3_PingResponse response, void *context);
 
-static void print_ping_response(const XIMU3_PingResponse ping_response);
+static void print_response(const XIMU3_PingResponse response);
 
 void ping() {
     // Search for connection
@@ -36,7 +36,7 @@ void ping() {
 
         sleep(3);
     } else {
-        print_ping_response(XIMU3_connection_ping(connection));
+        print_response(XIMU3_connection_ping(connection));
     }
 
     // Close connection
@@ -44,16 +44,16 @@ void ping() {
     XIMU3_connection_free(connection);
 }
 
-static void callback(const XIMU3_PingResponse ping_response, void *context) {
-    print_ping_response(ping_response);
+static void callback(const XIMU3_PingResponse response, void *context) {
+    print_response(response);
 }
 
-static void print_ping_response(const XIMU3_PingResponse ping_response) {
-    if (strlen(ping_response.interface) == 0) {
+static void print_response(const XIMU3_PingResponse response) {
+    if (strlen(response.interface) == 0) {
         printf("No response");
         return;
     }
 
-    printf("%s, %s, %s\n", ping_response.interface, ping_response.device_name, ping_response.serial_number);
-    // printf("%s\n", XIMU3_ping_response_to_string(ping_response)); // alternative to above
+    printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
+    // printf("%s\n", XIMU3_response_to_string(response)); // alternative to above
 }
