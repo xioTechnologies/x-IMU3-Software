@@ -44,8 +44,20 @@ static PyObject *usb_connection_info_get_port_name(UsbConnectionInfo *self, PyOb
     return PyUnicode_FromString(self->connection_info.port_name);
 }
 
+static int usb_connection_info_set_port_name(UsbConnectionInfo *self, PyObject *value, void *closure) {
+    const char *const port_name = PyUnicode_AsUTF8(value);
+
+    if (port_name == NULL) {
+        return -1;
+    }
+
+    snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
+
+    return 0;
+}
+
 static PyGetSetDef usb_connection_info_get_set[] = {
-    {"port_name", (getter) usb_connection_info_get_port_name, NULL, "", NULL},
+    {"port_name", (getter) usb_connection_info_get_port_name, (setter) usb_connection_info_set_port_name, "", NULL},
     {NULL} /* sentinel */
 };
 
@@ -88,7 +100,7 @@ static PyObject *serial_connection_info_str(SerialConnectionInfo *self) {
 static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
     unsigned long baud_rate;
-    bool rts_cts_enabled;
+    int rts_cts_enabled;
 
     if (PyArg_ParseTuple(args, "skp", &port_name, &baud_rate, &rts_cts_enabled) == 0) {
         return NULL;
@@ -102,7 +114,7 @@ static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *arg
 
     snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
     self->connection_info.baud_rate = (uint32_t) baud_rate;
-    self->connection_info.rts_cts_enabled = rts_cts_enabled;
+    self->connection_info.rts_cts_enabled = (bool) rts_cts_enabled;
 
     return (PyObject *) self;
 }
@@ -115,18 +127,54 @@ static PyObject *serial_connection_info_get_port_name(SerialConnectionInfo *self
     return PyUnicode_FromString(self->connection_info.port_name);
 }
 
+static int serial_connection_info_set_port_name(SerialConnectionInfo *self, PyObject *value, void *closure) {
+    const char *const port_name = PyUnicode_AsUTF8(value);
+
+    if (port_name == NULL) {
+        return -1;
+    }
+
+    snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
+
+    return 0;
+}
+
 static PyObject *serial_connection_info_get_baud_rate(SerialConnectionInfo *self, PyObject *args) {
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.baud_rate);
+}
+
+static int serial_connection_info_set_baud_rate(SerialConnectionInfo *self, PyObject *value, void *closure) {
+    const uint32_t baud_rate = (uint32_t) PyLong_AsUnsignedLong(value);
+
+    if (PyErr_Occurred()) {
+        return -1;
+    }
+
+    self->connection_info.baud_rate = baud_rate;
+
+    return 0;
 }
 
 static PyObject *serial_connection_info_get_rts_cts_enabled(SerialConnectionInfo *self, PyObject *args) {
     return PyBool_FromLong((long) self->connection_info.rts_cts_enabled);
 }
 
+static int serial_connection_info_set_rts_cts_enabled(SerialConnectionInfo *self, PyObject *value, void *closure) {
+    const bool rts_cts_enabled = PyObject_IsTrue(value);
+
+    if (PyErr_Occurred()) {
+        return -1;
+    }
+
+    self->connection_info.rts_cts_enabled = rts_cts_enabled;
+
+    return 0;
+}
+
 static PyGetSetDef serial_connection_info_get_set[] = {
-    {"port_name", (getter) serial_connection_info_get_port_name, NULL, "", NULL},
-    {"baud_rate", (getter) serial_connection_info_get_baud_rate, NULL, "", NULL},
-    {"rts_cts_enabled", (getter) serial_connection_info_get_rts_cts_enabled, NULL, "", NULL},
+    {"port_name", (getter) serial_connection_info_get_port_name, (setter) serial_connection_info_set_port_name, "", NULL},
+    {"baud_rate", (getter) serial_connection_info_get_baud_rate, (setter) serial_connection_info_set_baud_rate, "", NULL},
+    {"rts_cts_enabled", (getter) serial_connection_info_get_rts_cts_enabled, (setter) serial_connection_info_set_rts_cts_enabled, "", NULL},
     {NULL} /* sentinel */
 };
 
@@ -194,13 +242,37 @@ static PyObject *tcp_connection_info_get_ip_address(TcpConnectionInfo *self, PyO
     return PyUnicode_FromString(self->connection_info.ip_address);
 }
 
+static int tcp_connection_info_set_ip_address(TcpConnectionInfo *self, PyObject *value, void *closure) {
+    const char *const ip_address = PyUnicode_AsUTF8(value);
+
+    if (ip_address == NULL) {
+        return -1;
+    }
+
+    snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
+
+    return 0;
+}
+
 static PyObject *tcp_connection_info_get_port(TcpConnectionInfo *self, PyObject *args) {
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.port);
 }
 
+static int tcp_connection_info_set_port(TcpConnectionInfo *self, PyObject *value, void *closure) {
+    const uint16_t port = (uint16_t) PyLong_AsUnsignedLong(value);
+
+    if (PyErr_Occurred()) {
+        return -1;
+    }
+
+    self->connection_info.port = port;
+
+    return 0;
+}
+
 static PyGetSetDef tcp_connection_info_get_set[] = {
-    {"ip_address", (getter) tcp_connection_info_get_ip_address, NULL, "", NULL},
-    {"port", (getter) tcp_connection_info_get_port, NULL, "", NULL},
+    {"ip_address", (getter) tcp_connection_info_get_ip_address, (setter) tcp_connection_info_set_ip_address, "", NULL},
+    {"port", (getter) tcp_connection_info_get_port, (setter) tcp_connection_info_set_port, "", NULL},
     {NULL} /* sentinel */
 };
 
@@ -270,18 +342,54 @@ static PyObject *udp_connection_info_get_ip_address(UdpConnectionInfo *self, PyO
     return PyUnicode_FromString(self->connection_info.ip_address);
 }
 
+static int udp_connection_info_set_ip_address(UdpConnectionInfo *self, PyObject *value, void *closure) {
+    const char *const ip_address = PyUnicode_AsUTF8(value);
+
+    if (ip_address == NULL) {
+        return -1;
+    }
+
+    snprintf(self->connection_info.ip_address, sizeof(self->connection_info.ip_address), "%s", ip_address);
+
+    return 0;
+}
+
 static PyObject *udp_connection_info_get_send_port(UdpConnectionInfo *self, PyObject *args) {
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.send_port);
+}
+
+static int udp_connection_info_set_send_port(UdpConnectionInfo *self, PyObject *value, void *closure) {
+    const uint16_t send_port = (uint16_t) PyLong_AsUnsignedLong(value);
+
+    if (PyErr_Occurred()) {
+        return -1;
+    }
+
+    self->connection_info.send_port = send_port;
+
+    return 0;
 }
 
 static PyObject *udp_connection_info_get_receive_port(UdpConnectionInfo *self, PyObject *args) {
     return PyLong_FromUnsignedLong((unsigned long) self->connection_info.receive_port);
 }
 
+static int udp_connection_info_set_receive_port(UdpConnectionInfo *self, PyObject *value, void *closure) {
+    const uint16_t receive_port = (uint16_t) PyLong_AsUnsignedLong(value);
+
+    if (PyErr_Occurred()) {
+        return -1;
+    }
+
+    self->connection_info.receive_port = receive_port;
+
+    return 0;
+}
+
 static PyGetSetDef udp_connection_info_get_set[] = {
-    {"ip_address", (getter) udp_connection_info_get_ip_address, NULL, "", NULL},
-    {"send_port", (getter) udp_connection_info_get_send_port, NULL, "", NULL},
-    {"receive_port", (getter) udp_connection_info_get_receive_port, NULL, "", NULL},
+    {"ip_address", (getter) udp_connection_info_get_ip_address, (setter) udp_connection_info_set_ip_address, "", NULL},
+    {"send_port", (getter) udp_connection_info_get_send_port, (setter) udp_connection_info_set_send_port, "", NULL},
+    {"receive_port", (getter) udp_connection_info_get_receive_port, (setter) udp_connection_info_set_receive_port, "", NULL},
     {NULL} /* sentinel */
 };
 
@@ -347,8 +455,20 @@ static PyObject *bluetooth_connection_info_get_port_name(BluetoothConnectionInfo
     return PyUnicode_FromString(self->connection_info.port_name);
 }
 
+static int bluetooth_connection_info_set_port_name(BluetoothConnectionInfo *self, PyObject *value, void *closure) {
+    const char *const port_name = PyUnicode_AsUTF8(value);
+
+    if (port_name == NULL) {
+        return -1;
+    }
+
+    snprintf(self->connection_info.port_name, sizeof(self->connection_info.port_name), "%s", port_name);
+
+    return 0;
+}
+
 static PyGetSetDef bluetooth_connection_info_get_set[] = {
-    {"port_name", (getter) bluetooth_connection_info_get_port_name, NULL, "", NULL},
+    {"port_name", (getter) bluetooth_connection_info_get_port_name, (setter) bluetooth_connection_info_set_port_name, "", NULL},
     {NULL} /* sentinel */
 };
 
