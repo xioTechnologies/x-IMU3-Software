@@ -21,7 +21,12 @@ static PyObject *usb_connection_info_str(UsbConnectionInfo *self) {
 static PyObject *usb_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
 
-    if (PyArg_ParseTuple(args, "s", &port_name) == 0) {
+    static char *kwlist[] = {
+        "port_name",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &port_name) == 0) {
         return NULL;
     }
 
@@ -102,7 +107,14 @@ static PyObject *serial_connection_info_new(PyTypeObject *subtype, PyObject *arg
     unsigned long baud_rate;
     int rts_cts_enabled;
 
-    if (PyArg_ParseTuple(args, "skp", &port_name, &baud_rate, &rts_cts_enabled) == 0) {
+    static char *kwlist[] = {
+        "port_name",
+        "baud_rate",
+        "rts_cts_enabled",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "skp", kwlist, &port_name, &baud_rate, &rts_cts_enabled) == 0) {
         return NULL;
     }
 
@@ -218,7 +230,13 @@ static PyObject *tcp_connection_info_new(PyTypeObject *subtype, PyObject *args, 
     const char *ip_address;
     unsigned int port;
 
-    if (PyArg_ParseTuple(args, "sI", &ip_address, &port) == 0) {
+    static char *kwlist[] = {
+        "ip_address",
+        "port",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "sI", kwlist, &ip_address, &port) == 0) {
         return NULL;
     }
 
@@ -317,7 +335,14 @@ static PyObject *udp_connection_info_new(PyTypeObject *subtype, PyObject *args, 
     unsigned int send_port;
     unsigned int receive_port;
 
-    if (PyArg_ParseTuple(args, "sII", &ip_address, &send_port, &receive_port) == 0) {
+    static char *kwlist[] = {
+        "ip_address",
+        "send_port",
+        "receive_port",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "sII", kwlist, &ip_address, &send_port, &receive_port) == 0) {
         return NULL;
     }
 
@@ -432,7 +457,12 @@ static PyObject *bluetooth_connection_info_str(BluetoothConnectionInfo *self) {
 static PyObject *bluetooth_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *port_name;
 
-    if (PyArg_ParseTuple(args, "s", &port_name) == 0) {
+    static char *kwlist[] = {
+        "port_name",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &port_name) == 0) {
         return NULL;
     }
 
@@ -511,7 +541,12 @@ static PyObject *file_connection_info_str(FileConnectionInfo *self) {
 static PyObject *file_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *file_path;
 
-    if (PyArg_ParseTuple(args, "s", &file_path) == 0) {
+    static char *kwlist[] = {
+        "file_path",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &file_path) == 0) {
         return NULL;
     }
 

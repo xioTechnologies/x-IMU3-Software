@@ -163,7 +163,13 @@ PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObjec
     unsigned char channel;
     PyObject *connection;
 
-    if (PyArg_ParseTuple(args, "bO!", &channel, &connection_object, &connection) == 0) {
+    static char *kwlist[] = {
+        "channel",
+        "connection",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "bO!", kwlist, &channel, &connection_object, &connection) == 0) {
         return NULL;
     }
 

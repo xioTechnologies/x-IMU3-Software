@@ -14,9 +14,17 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
     const char *destination;
     const char *name;
     PyObject *files_sequence;
-    PyObject *callable;
+    PyObject *callback;
 
-    if (PyArg_ParseTuple(args, "ssOO:set_callback", &destination, &name, &files_sequence, &callable) == 0) {
+    static char *kwlist[] = {
+        "destination",
+        "name",
+        "files",
+        "callback",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOO:set_callback", kwlist, &destination, &name, &files_sequence, &callback) == 0) {
         return NULL;
     }
 
@@ -44,7 +52,7 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
         }
     }
 
-    if (PyCallable_Check(callable) == 0) {
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
@@ -55,9 +63,9 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
         return NULL;
     }
 
-    Py_INCREF(callable); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->file_converter = XIMU3_file_converter_new(destination, name, files, length, file_converter_progress_callback, callable);
+    self->file_converter = XIMU3_file_converter_new(destination, name, files, length, file_converter_progress_callback, callback);
     return (PyObject *) self;
 }
 
@@ -68,12 +76,19 @@ static void file_converter_free(FileConverter *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject *file_converter_convert(PyObject *null, PyObject *args) {
+static PyObject *file_converter_convert(PyObject *null, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
     PyObject *files_sequence;
 
-    if (PyArg_ParseTuple(args, "ssO", &destination, &name, &files_sequence) == 0) {
+    static char *kwlist[] = {
+        "destination",
+        "name",
+        "files",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssO", kwlist, &destination, &name, &files_sequence) == 0) {
         return NULL;
     }
 
@@ -107,7 +122,7 @@ static PyObject *file_converter_convert(PyObject *null, PyObject *args) {
 }
 
 static PyMethodDef file_converter_methods[] = {
-    {"convert", (PyCFunction) file_converter_convert, METH_VARARGS | METH_STATIC, ""},
+    {"convert", (PyCFunction) file_converter_convert, METH_VARARGS | METH_KEYWORDS | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
 
