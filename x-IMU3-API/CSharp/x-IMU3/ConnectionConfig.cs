@@ -29,7 +29,7 @@ namespace Ximu3
     {
         public UsbConnectionConfig(string portName)
         {
-            connectionConfig.port_name = Ximu3.Helpers.ToBytes(portName);
+            connectionConfig.port_name = Helpers.ToBytes(portName);
         }
 
         public UsbConnectionConfig(CApi.XIMU3_UsbConnectionConfig connectionConfig)
@@ -49,7 +49,7 @@ namespace Ximu3
     {
         public SerialConnectionConfig(string portName, UInt32 baudRate, bool rtsCtsEnabled)
         {
-            connectionConfig.port_name = Ximu3.Helpers.ToBytes(portName);
+            connectionConfig.port_name = Helpers.ToBytes(portName);
             connectionConfig.baud_rate = baudRate;
             connectionConfig.rts_cts_enabled = rtsCtsEnabled;
         }
@@ -71,7 +71,7 @@ namespace Ximu3
     {
         public TcpConnectionConfig(string ipAddress, UInt16 port)
         {
-            connectionConfig.ip_address = Ximu3.Helpers.ToBytes(ipAddress);
+            connectionConfig.ip_address = Helpers.ToBytes(ipAddress);
             connectionConfig.port = port;
         }
 
@@ -97,7 +97,7 @@ namespace Ximu3
     {
         public UdpConnectionConfig(string ipAddress, UInt16 sendPort, UInt16 receivePort)
         {
-            connectionConfig.ip_address = Ximu3.Helpers.ToBytes(ipAddress);
+            connectionConfig.ip_address = Helpers.ToBytes(ipAddress);
             connectionConfig.send_port = sendPort;
             connectionConfig.receive_port = receivePort;
         }
@@ -124,7 +124,7 @@ namespace Ximu3
     {
         public BluetoothConnectionConfig(string portName)
         {
-            connectionConfig.port_name = Ximu3.Helpers.ToBytes(portName);
+            connectionConfig.port_name = Helpers.ToBytes(portName);
         }
 
         public BluetoothConnectionConfig(CApi.XIMU3_BluetoothConnectionConfig connectionConfig)
@@ -144,7 +144,7 @@ namespace Ximu3
     {
         public FileConnectionConfig(string filePath)
         {
-            connectionConfig.file_path = Ximu3.Helpers.ToBytes(filePath);
+            connectionConfig.file_path = Helpers.ToBytes(filePath);
         }
 
         public FileConnectionConfig(CApi.XIMU3_FileConnectionConfig connectionConfig)
