@@ -32,13 +32,13 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     availableConnectionsButton.onClick = [this] {
         std::vector<AvailableConnectionsDialog::ExistingConnection> existingConnections;
         for (auto *const connectionPanel: connectionPanelContainer.getConnectionPanels()) {
-            existingConnections.push_back({connectionPanel->getDescriptor(), std::shared_ptr<ximu3::ConnectionInfo>(connectionPanel->getConnection()->getInfo().release())});
+            existingConnections.push_back({connectionPanel->getDescriptor(), std::shared_ptr<ximu3::ConnectionConfig>(connectionPanel->getConnection()->getConfig().release())});
         }
 
         DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this] {
             if (auto *dialog = dynamic_cast<AvailableConnectionsDialog *>(DialogQueue::getSingleton().getActive())) {
-                for (const auto &connectionInfo: dialog->getConnectionInfos()) {
-                    connectionPanelContainer.connectToDevice(*connectionInfo, true);
+                for (const auto &config: dialog->getConnectionConfigs()) {
+                    connectionPanelContainer.connectToDevice(*config, true);
                 }
             }
             return true;
@@ -214,8 +214,8 @@ void MenuStrip::openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channe
 
     DialogQueue::getSingleton().pushFront(std::make_unique<ManualMuxConnectionDialog>(connections, channels), [this] {
         if (auto *dialog = dynamic_cast<ManualMuxConnectionDialog *>(DialogQueue::getSingleton().getActive())) {
-            for (const auto &connectionInfo: dialog->getConnectionInfos()) {
-                connectionPanelContainer.connectToDevice(*connectionInfo, false);
+            for (const auto &config: dialog->getConnectionConfigs()) {
+                connectionPanelContainer.connectToDevice(*config, false);
             }
             PreviousConnections().update(dialog->getChannels());
         }
@@ -261,8 +261,8 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu() {
 
     const auto connectCallback = [this] {
         if (auto *dialog = dynamic_cast<ManualConnectionDialog *>(DialogQueue::getSingleton().getActive())) {
-            connectionPanelContainer.connectToDevice(*dialog->getConnectionInfo(), dialog->keepOpen());
-            PreviousConnections().update(*dialog->getConnectionInfo());
+            connectionPanelContainer.connectToDevice(*dialog->getConnectionConfig(), dialog->keepOpen());
+            PreviousConnections().update(*dialog->getConnectionConfig());
         }
         return true;
     };
@@ -290,10 +290,10 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu() {
         menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
 
         for (auto &connection: connections) {
-            if (auto *connectionInfo = std::get_if<std::unique_ptr<ximu3::ConnectionInfo> >(&connection)) {
-                const auto connectionInfoString = (*connectionInfo)->toString();
-                menu.addItem(connectionInfoString, [this, connectionInfo_ = std::shared_ptr<ximu3::ConnectionInfo>(connectionInfo->release())] {
-                    connectionPanelContainer.connectToDevice(*connectionInfo_, true);
+            if (auto *config = std::get_if<std::unique_ptr<ximu3::ConnectionConfig> >(&connection)) {
+                const auto configString = (*config)->toString();
+                menu.addItem(configString, [this, config_ = std::shared_ptr<ximu3::ConnectionConfig>(config->release())] {
+                    connectionPanelContainer.connectToDevice(*config_, true);
                 });
                 continue;
             }

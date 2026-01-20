@@ -1,10 +1,10 @@
 use crate::command_message::*;
 use crate::connection::*;
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::data_messages::*;
 use crate::ffi::callback::*;
 use crate::ffi::command_message::*;
-use crate::ffi::connection_info::*;
+use crate::ffi::connection_config::*;
 use crate::ffi::connection_type::*;
 use crate::ffi::helpers::*;
 use crate::ffi::ping_response::*;
@@ -15,39 +15,39 @@ use crate::statistics::*;
 use std::os::raw::{c_char, c_void};
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_usb(connection_info: UsbConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::UsbConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_usb(config: UsbConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::UsbConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_serial(connection_info: SerialConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::SerialConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_serial(config: SerialConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::SerialConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_tcp(connection_info: TcpConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::TcpConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_tcp(config: TcpConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::TcpConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_udp(connection_info: UdpConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::UdpConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_udp(config: UdpConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::UdpConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_bluetooth(connection_info: BluetoothConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::BluetoothConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_bluetooth(config: BluetoothConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::BluetoothConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_file(connection_info: FileConnectionInfoC) -> *mut Connection {
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::FileConnectionInfo(connection_info.into()))))
+pub extern "C" fn XIMU3_connection_new_file(config: FileConnectionConfigC) -> *mut Connection {
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::FileConnectionConfig(config.into()))))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_new_mux(connection_info: *const MuxConnectionInfo) -> *mut Connection {
-    let connection_info: &MuxConnectionInfo = unsafe { &*connection_info };
-    Box::into_raw(Box::new(Connection::new(&ConnectionInfo::MuxConnectionInfo(connection_info.clone()))))
+pub extern "C" fn XIMU3_connection_new_mux(config: *const MuxConnectionConfig) -> *mut Connection {
+    let config: &MuxConnectionConfig = unsafe { &*config };
+    Box::into_raw(Box::new(Connection::new(&ConnectionConfig::MuxConnectionConfig(config.clone()))))
 }
 
 #[no_mangle]
@@ -123,76 +123,76 @@ pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connecti
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_type(connection: *mut Connection) -> ConnectionType {
     let connection = unsafe { &*connection };
-    ConnectionType::from(&connection.get_info())
+    ConnectionType::from(&connection.get_config())
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_usb(connection: *mut Connection) -> UsbConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_usb(connection: *mut Connection) -> UsbConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::UsbConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::UsbConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_serial(connection: *mut Connection) -> SerialConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_serial(connection: *mut Connection) -> SerialConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::SerialConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::SerialConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_tcp(connection: *mut Connection) -> TcpConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_tcp(connection: *mut Connection) -> TcpConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::TcpConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::TcpConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_udp(connection: *mut Connection) -> UdpConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_udp(connection: *mut Connection) -> UdpConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::UdpConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::UdpConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_bluetooth(connection: *mut Connection) -> BluetoothConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_bluetooth(connection: *mut Connection) -> BluetoothConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::BluetoothConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::BluetoothConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_file(connection: *mut Connection) -> FileConnectionInfoC {
+pub extern "C" fn XIMU3_connection_get_config_file(connection: *mut Connection) -> FileConnectionConfigC {
     let connection = unsafe { &*connection };
-    match &connection.get_info() {
-        ConnectionInfo::FileConnectionInfo(connection_info) => connection_info.into(),
+    match &connection.get_config() {
+        ConnectionConfig::FileConnectionConfig(config) => config.into(),
         _ => Default::default(),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_mux(connection: *mut Connection) -> *mut MuxConnectionInfo {
+pub extern "C" fn XIMU3_connection_get_config_mux(connection: *mut Connection) -> *mut MuxConnectionConfig {
     let connection: &Connection = unsafe { &*connection };
-    match connection.get_info() {
-        ConnectionInfo::MuxConnectionInfo(connection_info) => Box::into_raw(Box::new(connection_info)),
-        _ => panic!("ConnectionInfo is not MuxConnectionInfo"),
+    match connection.get_config() {
+        ConnectionConfig::MuxConnectionConfig(config) => Box::into_raw(Box::new(config)),
+        _ => panic!("ConnectionConfig is not MuxConnectionConfig"),
     }
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_info_string(connection: *mut Connection) -> *const c_char {
+pub extern "C" fn XIMU3_connection_get_config_string(connection: *mut Connection) -> *const c_char {
     let connection: &Connection = unsafe { &*connection };
-    str_to_char_ptr(&connection.get_info().to_string())
+    str_to_char_ptr(&connection.get_config().to_string())
 }
 
 #[no_mangle]

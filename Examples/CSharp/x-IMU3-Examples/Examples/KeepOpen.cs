@@ -16,7 +16,7 @@
             Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
-            Ximu3.Connection connection = new(Ximu3.ConnectionInfo.From(devices[0])!);
+            Ximu3.Connection connection = new(Ximu3.ConnectionConfig.From(devices[0])!);
 
             using Ximu3.KeepOpen keepOpen = new(connection, Callback);
 

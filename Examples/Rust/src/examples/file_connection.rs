@@ -1,10 +1,10 @@
 use super::connection;
-use ximu3::connection_info::*;
+use ximu3::connection_config::*;
 
 pub fn run() {
-    let connection_info = &ConnectionInfo::FileConnectionInfo(FileConnectionInfo {
+    let config = &ConnectionConfig::FileConnectionConfig(FileConnectionConfig {
         file_path: "C:/x-IMU3 Example File.ximu3".to_owned(),
-    }); // replace with actual connection info
+    }); // replace with actual connection config
 
-    connection::run(connection_info);
+    connection::run(config);
 }

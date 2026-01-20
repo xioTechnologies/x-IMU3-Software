@@ -1,7 +1,7 @@
 use super::connection;
 use crate::helpers;
 use std::net::Ipv4Addr;
-use ximu3::connection_info::*;
+use ximu3::connection_config::*;
 use ximu3::network_announcement::*;
 
 pub fn run() {
@@ -23,15 +23,15 @@ pub fn run() {
 
         println!("Found {} {}", message.device_name, message.serial_number);
 
-        let connection_info = &ConnectionInfo::TcpConnectionInfo(message.into());
+        let config = &ConnectionConfig::TcpConnectionConfig(message.into());
 
-        connection::run(connection_info);
+        connection::run(config);
     } else {
-        let connection_info = &ConnectionInfo::TcpConnectionInfo(TcpConnectionInfo {
+        let config = &ConnectionConfig::TcpConnectionConfig(TcpConnectionConfig {
             ip_address: Ipv4Addr::new(192, 168, 1, 1),
             port: 7000,
-        }); // replace with actual connection info
+        }); // replace with actual connection config
 
-        connection::run(connection_info);
+        connection::run(config);
     }
 }

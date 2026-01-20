@@ -1,14 +1,14 @@
 use crate::helpers;
 use ximu3::charging_status::*;
 use ximu3::connection::*;
-use ximu3::connection_info::*;
+use ximu3::connection_config::*;
 use ximu3::data_messages::*;
 use ximu3::receive_error::*;
 use ximu3::statistics::*;
 
-pub fn run(connection_info: &ConnectionInfo) {
+pub fn run(config: &ConnectionConfig) {
     // Create connection
-    let connection = Connection::new(&connection_info);
+    let connection = Connection::new(&config);
 
     connection.add_receive_error_closure(Box::new(receive_error_closure));
     connection.add_statistics_closure(Box::new(statistics_closure));
@@ -35,7 +35,7 @@ pub fn run(connection_info: &ConnectionInfo) {
 
     // Open connection
     if let Err(error) = connection.open() {
-        println!("Unable to open {}. {error}.", connection.get_info());
+        println!("Unable to open {}. {error}.", connection.get_config());
         return;
     }
 

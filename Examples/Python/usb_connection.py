@@ -10,10 +10,10 @@ if helpers.yes_or_no("Search for connections?"):
 
     print(f"Found {devices[0]}")
 
-    connection_info = devices[0].connection_info
+    config = devices[0].connection_config
 
-    connection.run(connection_info)
+    connection.run(config)
 else:
-    connection_info = ximu3.UsbConnectionInfo("COM1")  # replace with actual connection info
+    config = ximu3.UsbConnectionConfig("COM1")  # replace with actual connection config
 
-    connection.run(connection_info)
+    connection.run(config)

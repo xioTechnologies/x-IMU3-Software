@@ -1,5 +1,5 @@
 #include "Connection.hpp"
-#include "ConnectionInfo.hpp"
+#include "ConnectionConfig.hpp"
 #include "DataLogger.hpp"
 #include "FileConverter.hpp"
 #include "KeepOpen.hpp"

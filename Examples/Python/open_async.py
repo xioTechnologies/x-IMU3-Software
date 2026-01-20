@@ -11,12 +11,12 @@ if not devices:
 print(f"Found {devices[0]}")
 
 # Open connection
-connection = ximu3.Connection(devices[0].connection_info)
+connection = ximu3.Connection(devices[0].connection_config)
 
 
 def callback(result: int) -> None:
     if result != ximu3.RESULT_OK:
-        raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
+        raise Exception(f"Unable to open {connection.get_config()}. {ximu3.result_to_string(result)}.")
 
     print(ximu3.result_to_string(result))
 

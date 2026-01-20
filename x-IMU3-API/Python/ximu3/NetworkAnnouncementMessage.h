@@ -55,16 +55,16 @@ static PyObject *network_announcement_message_get_charging_status(NetworkAnnounc
     return PyLong_FromLong((long) self->message.charging_status);
 }
 
-static PyObject *network_announcement_message_to_tcp_connection_info(NetworkAnnouncementMessage *self) {
-    const XIMU3_TcpConnectionInfo connection_info = XIMU3_network_announcement_message_to_tcp_connection_info(self->message);
+static PyObject *network_announcement_message_to_tcp_connection_config(NetworkAnnouncementMessage *self) {
+    const XIMU3_TcpConnectionConfig config = XIMU3_network_announcement_message_to_tcp_connection_config(self->message);
 
-    return tcp_connection_info_from(&connection_info);
+    return tcp_connection_config_from(&config);
 }
 
-static PyObject *network_announcement_message_to_udp_connection_info(NetworkAnnouncementMessage *self) {
-    const XIMU3_UdpConnectionInfo connection_info = XIMU3_network_announcement_message_to_udp_connection_info(self->message);
+static PyObject *network_announcement_message_to_udp_connection_config(NetworkAnnouncementMessage *self) {
+    const XIMU3_UdpConnectionConfig config = XIMU3_network_announcement_message_to_udp_connection_config(self->message);
 
-    return udp_connection_info_from(&connection_info);
+    return udp_connection_config_from(&config);
 }
 
 static PyGetSetDef network_announcement_message_get_set[] = {
@@ -81,8 +81,8 @@ static PyGetSetDef network_announcement_message_get_set[] = {
 };
 
 static PyMethodDef network_announcement_message_methods[] = {
-    {"to_tcp_connection_info", (PyCFunction) network_announcement_message_to_tcp_connection_info, METH_NOARGS, ""},
-    {"to_udp_connection_info", (PyCFunction) network_announcement_message_to_udp_connection_info, METH_NOARGS, ""},
+    {"to_tcp_connection_config", (PyCFunction) network_announcement_message_to_tcp_connection_config, METH_NOARGS, ""},
+    {"to_udp_connection_config", (PyCFunction) network_announcement_message_to_udp_connection_config, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 

@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::dispatcher::*;
 use crate::receiver::*;
@@ -8,15 +8,15 @@ use std::io::Read;
 use std::sync::{Arc, Mutex};
 
 pub struct FileConnection {
-    connection_info: FileConnectionInfo,
+    config: FileConnectionConfig,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
 }
 
 impl FileConnection {
-    pub fn new(connection_info: &FileConnectionInfo) -> Self {
+    pub fn new(config: &FileConnectionConfig) -> Self {
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
         }
@@ -25,7 +25,7 @@ impl FileConnection {
 
 impl GenericConnection for FileConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let mut file = OpenOptions::new().read(true).open(&self.connection_info.file_path)?;
+        let mut file = OpenOptions::new().read(true).open(&self.config.file_path)?;
 
         let receiver = self.receiver.clone();
 
@@ -56,8 +56,8 @@ impl GenericConnection for FileConnection {
         }
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::FileConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::FileConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

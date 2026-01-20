@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
@@ -8,16 +8,16 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 pub struct TcpConnection {
-    connection_info: TcpConnectionInfo,
+    config: TcpConnectionConfig,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
 
 impl TcpConnection {
-    pub fn new(connection_info: &TcpConnectionInfo) -> Self {
+    pub fn new(config: &TcpConnectionConfig) -> Self {
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
@@ -27,7 +27,7 @@ impl TcpConnection {
 
 impl GenericConnection for TcpConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.connection_info.ip_address), self.connection_info.port), Duration::new(3, 0))?;
+        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.port), Duration::new(3, 0))?;
 
         stream.set_nonblocking(true)?;
 
@@ -66,8 +66,8 @@ impl GenericConnection for TcpConnection {
         }
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::TcpConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::TcpConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

@@ -249,8 +249,8 @@ def end_of_file_callback() -> None:
     print("End of file")
 
 
-def run(connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | ximu3.TcpConnectionInfo | ximu3.UdpConnectionInfo | ximu3.BluetoothConnectionInfo | ximu3.FileConnectionInfo | ximu3.MuxConnectionInfo) -> None:
-    connection = ximu3.Connection(connection_info)
+def run(config: ximu3.UsbConnectionConfig | ximu3.SerialConnectionConfig | ximu3.TcpConnectionConfig | ximu3.UdpConnectionConfig | ximu3.BluetoothConnectionConfig | ximu3.FileConnectionConfig | ximu3.MuxConnectionConfig) -> None:
+    connection = ximu3.Connection(config)
 
     connection.add_receive_error_callback(receive_error_callback)
     connection.add_statistics_callback(statistics_callback)

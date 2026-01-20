@@ -1,7 +1,7 @@
 use crate::charging_status::*;
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::ffi::callback::*;
-use crate::ffi::connection_info::*;
+use crate::ffi::connection_config::*;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
 use crate::network_announcement::*;
@@ -56,13 +56,13 @@ impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_network_announcement_message_to_tcp_connection_info(message: NetworkAnnouncementMessageC) -> TcpConnectionInfoC {
-    TcpConnectionInfoC::from(&TcpConnectionInfo::from(&NetworkAnnouncementMessage::from(message)))
+pub extern "C" fn XIMU3_network_announcement_message_to_tcp_connection_config(message: NetworkAnnouncementMessageC) -> TcpConnectionConfigC {
+    TcpConnectionConfigC::from(&TcpConnectionConfig::from(&NetworkAnnouncementMessage::from(message)))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_info(message: NetworkAnnouncementMessageC) -> UdpConnectionInfoC {
-    UdpConnectionInfoC::from(&UdpConnectionInfo::from(&NetworkAnnouncementMessage::from(message)))
+pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_config(message: NetworkAnnouncementMessageC) -> UdpConnectionConfigC {
+    UdpConnectionConfigC::from(&UdpConnectionConfig::from(&NetworkAnnouncementMessage::from(message)))
 }
 
 #[no_mangle]

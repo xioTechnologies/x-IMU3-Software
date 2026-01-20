@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
@@ -7,16 +7,16 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 pub struct SerialConnection {
-    connection_info: SerialConnectionInfo,
+    config: SerialConnectionConfig,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
 
 impl SerialConnection {
-    pub fn new(connection_info: &SerialConnectionInfo) -> Self {
+    pub fn new(config: &SerialConnectionConfig) -> Self {
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
@@ -26,8 +26,8 @@ impl SerialConnection {
 
 impl GenericConnection for SerialConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let mut serial_port = serialport::new(&self.connection_info.port_name, self.connection_info.baud_rate)
-            .flow_control(match self.connection_info.rts_cts_enabled {
+        let mut serial_port = serialport::new(&self.config.port_name, self.config.baud_rate)
+            .flow_control(match self.config.rts_cts_enabled {
                 true => FlowControl::Hardware,
                 false => FlowControl::None,
             })
@@ -66,8 +66,8 @@ impl GenericConnection for SerialConnection {
         }
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::SerialConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::SerialConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

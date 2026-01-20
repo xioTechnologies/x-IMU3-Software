@@ -1,5 +1,5 @@
 use crate::command_message::*;
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::data_messages::*;
 use crate::dispatcher::*;
@@ -21,17 +21,17 @@ pub struct Connection {
 }
 
 impl Connection {
-    pub fn new(connection_info: &ConnectionInfo) -> Self {
+    pub fn new(config: &ConnectionConfig) -> Self {
         let connection = Self {
             dropped: Arc::new(Mutex::new(false)),
-            internal: Arc::new(Mutex::new(match connection_info {
-                ConnectionInfo::UsbConnectionInfo(connection_info) => Box::new(UsbConnection::new(connection_info)),
-                ConnectionInfo::SerialConnectionInfo(connection_info) => Box::new(SerialConnection::new(connection_info)),
-                ConnectionInfo::TcpConnectionInfo(connection_info) => Box::new(TcpConnection::new(connection_info)),
-                ConnectionInfo::UdpConnectionInfo(connection_info) => Box::new(UdpConnection::new(connection_info)),
-                ConnectionInfo::BluetoothConnectionInfo(connection_info) => Box::new(BluetoothConnection::new(connection_info)),
-                ConnectionInfo::FileConnectionInfo(connection_info) => Box::new(FileConnection::new(connection_info)),
-                ConnectionInfo::MuxConnectionInfo(connection_info) => Box::new(MuxConnection::new(connection_info)),
+            internal: Arc::new(Mutex::new(match config {
+                ConnectionConfig::UsbConnectionConfig(config) => Box::new(UsbConnection::new(config)),
+                ConnectionConfig::SerialConnectionConfig(config) => Box::new(SerialConnection::new(config)),
+                ConnectionConfig::TcpConnectionConfig(config) => Box::new(TcpConnection::new(config)),
+                ConnectionConfig::UdpConnectionConfig(config) => Box::new(UdpConnection::new(config)),
+                ConnectionConfig::BluetoothConnectionConfig(config) => Box::new(BluetoothConnection::new(config)),
+                ConnectionConfig::FileConnectionConfig(config) => Box::new(FileConnection::new(config)),
+                ConnectionConfig::MuxConnectionConfig(config) => Box::new(MuxConnection::new(config)),
             })),
         };
 
@@ -210,8 +210,8 @@ impl Connection {
         transactions.iter().map(|transaction| transaction.response.clone()).collect()
     }
 
-    pub fn get_info(&self) -> ConnectionInfo {
-        self.internal.lock().unwrap().get_info()
+    pub fn get_config(&self) -> ConnectionConfig {
+        self.internal.lock().unwrap().get_config()
     }
 
     pub fn get_statistics(&self) -> Statistics {

@@ -5,9 +5,9 @@
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
-UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionInfo> connectionInfo_, const juce::File &hexFile_, juce::ThreadPool &threadPool)
+UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionConfig> config_, const juce::File &hexFile_, juce::ThreadPool &threadPool)
     : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
-      connectionInfo(std::move(connectionInfo_)),
+      config(std::move(config_)),
       hexFile(hexFile_) {
     addAndMakeVisible(progressBar);
 
@@ -35,7 +35,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::Connection
 
         // Open connection
         updateProgress("Opening Connection");
-        auto connection = std::make_unique<ximu3::Connection>(*connectionInfo);
+        auto connection = std::make_unique<ximu3::Connection>(*config);
         if (connection->open() != ximu3::XIMU3_ResultOk) {
             showError("Unable to open connection.");
             return;

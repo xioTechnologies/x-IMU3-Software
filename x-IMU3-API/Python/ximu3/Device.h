@@ -27,14 +27,14 @@ static PyObject *device_get_serial_number(Device *self) {
     return PyUnicode_FromString(self->device.serial_number);
 }
 
-static PyObject *device_get_connection_info(Device *self) {
+static PyObject *device_get_connection_config(Device *self) {
     switch (self->device.connection_type) {
         case XIMU3_ConnectionTypeUsb:
-            return usb_connection_info_from(&self->device.usb_connection_info);
+            return usb_connection_config_from(&self->device.usb_connection_config);
         case XIMU3_ConnectionTypeSerial:
-            return serial_connection_info_from(&self->device.serial_connection_info);
+            return serial_connection_config_from(&self->device.serial_connection_config);
         case XIMU3_ConnectionTypeBluetooth:
-            return bluetooth_connection_info_from(&self->device.bluetooth_connection_info);
+            return bluetooth_connection_config_from(&self->device.bluetooth_connection_config);
         default:
             return NULL;
     }
@@ -43,7 +43,7 @@ static PyObject *device_get_connection_info(Device *self) {
 static PyGetSetDef device_get_set[] = {
     {"device_name", (getter) device_get_device_name, NULL, "", NULL},
     {"serial_number", (getter) device_get_serial_number, NULL, "", NULL},
-    {"connection_info", (getter) device_get_connection_info, NULL, "", NULL},
+    {"connection_config", (getter) device_get_connection_config, NULL, "", NULL},
     {NULL} /* sentinel */
 };
 

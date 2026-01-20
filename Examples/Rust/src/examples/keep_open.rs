@@ -14,7 +14,7 @@ pub fn run() {
     println!("Found {device}");
 
     // Open connection
-    let connection = Connection::new(&device.connection_info);
+    let connection = Connection::new(&device.connection_config);
 
     let closure = Box::new(|status| {
         match status {

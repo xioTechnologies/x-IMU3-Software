@@ -31,8 +31,8 @@ void ManualUsbConnectionDialog::resized() {
     portNameValue.setBounds(portRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> ManualUsbConnectionDialog::getConnectionInfo() const {
-    return std::make_unique<ximu3::UsbConnectionInfo>(portNameValue.getSelectedPortName());
+std::unique_ptr<ximu3::ConnectionConfig> ManualUsbConnectionDialog::getConnectionConfig() const {
+    return std::make_unique<ximu3::UsbConnectionConfig>(portNameValue.getSelectedPortName());
 }
 
 ManualSerialConnectionDialog::ManualSerialConnectionDialog() : ManualConnectionDialog("Manual Serial Connection") {
@@ -79,8 +79,8 @@ void ManualSerialConnectionDialog::resized() {
     rtsCtsEnabledToggle.setBounds(baudRateRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> ManualSerialConnectionDialog::getConnectionInfo() const {
-    return std::make_unique<ximu3::SerialConnectionInfo>(portNameValue.getSelectedPortName(),
+std::unique_ptr<ximu3::ConnectionConfig> ManualSerialConnectionDialog::getConnectionConfig() const {
+    return std::make_unique<ximu3::SerialConnectionConfig>(portNameValue.getSelectedPortName(),
                                                          (uint32_t) baudRateValue.getText().getIntValue(),
                                                          rtsCtsEnabledToggle.getToggleState());
 }
@@ -129,8 +129,8 @@ void ManualTcpConnectionDialog::resized() {
     portValue.setBounds(portRow.removeFromLeft(columnWidth));
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> ManualTcpConnectionDialog::getConnectionInfo() const {
-    return std::make_unique<ximu3::TcpConnectionInfo>(ipAddressValue.getText().toStdString(),
+std::unique_ptr<ximu3::ConnectionConfig> ManualTcpConnectionDialog::getConnectionConfig() const {
+    return std::make_unique<ximu3::TcpConnectionConfig>(ipAddressValue.getText().toStdString(),
                                                       (uint16_t) portValue.getText().getIntValue());
 }
 
@@ -214,8 +214,8 @@ void ManualUdpConnectionDialog::resized() {
     fromIpAddressToggle.setBounds(receivePortRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> ManualUdpConnectionDialog::getConnectionInfo() const {
-    return std::make_unique<ximu3::UdpConnectionInfo>(getIpAddressValue().toStdString(),
+std::unique_ptr<ximu3::ConnectionConfig> ManualUdpConnectionDialog::getConnectionConfig() const {
+    return std::make_unique<ximu3::UdpConnectionConfig>(getIpAddressValue().toStdString(),
                                                       (uint16_t) sendPortValue.getText().getIntValue(),
                                                       (uint16_t) getReceivePortValue().getIntValue());
 }
@@ -250,8 +250,8 @@ void ManualBluetoothConnectionDialog::resized() {
     portNameValue.setBounds(portRow);
 }
 
-std::unique_ptr<ximu3::ConnectionInfo> ManualBluetoothConnectionDialog::getConnectionInfo() const {
-    return std::make_unique<ximu3::BluetoothConnectionInfo>(portNameValue.getSelectedPortName());
+std::unique_ptr<ximu3::ConnectionConfig> ManualBluetoothConnectionDialog::getConnectionConfig() const {
+    return std::make_unique<ximu3::BluetoothConnectionConfig>(portNameValue.getSelectedPortName());
 }
 
 ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connection *> connections_, std::pair<std::uint8_t, std::uint8_t> channels) : Dialog(BinaryData::manual_svg, "Manual Mux Connection", "Connect", "Cancel"), connections(connections_) {
@@ -264,7 +264,7 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
     addAndMakeVisible(singleToggle);
 
     for (const auto &connection: connections) {
-        connectionValue.addItem(connection->getInfo()->toString(), 1 + connectionValue.getNumItems());
+        connectionValue.addItem(connection->getConfig()->toString(), 1 + connectionValue.getNumItems());
     }
     connectionValue.setSelectedItemIndex(0);
 
@@ -286,14 +286,14 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
             lastChannelValue.setSelectedItemIndex(firstChannelValue.getSelectedItemIndex());
         }
 
-        const auto connectionInfos = getConnectionInfos();
+        const auto configs = getConnectionConfigs();
 
-        if (connectionInfos.empty()) {
+        if (configs.empty()) {
             setOkButton(false, "Connect");
             return;
         }
 
-        setOkButton(true, "Connect (" + juce::String(connectionInfos.size()) + ")");
+        setOkButton(true, "Connect (" + juce::String(configs.size()) + ")");
     });
 
     singleToggle.onClick = [&] {
@@ -326,19 +326,19 @@ void ManualMuxConnectionDialog::resized() {
     singleToggle.setBounds(channelsRow);
 }
 
-std::vector<std::unique_ptr<ximu3::MuxConnectionInfo> > ManualMuxConnectionDialog::getConnectionInfos() const {
+std::vector<std::unique_ptr<ximu3::MuxConnectionConfig> > ManualMuxConnectionDialog::getConnectionConfigs() const {
     if (connections.empty()) {
         return {};
     }
 
-    std::vector<std::unique_ptr<ximu3::MuxConnectionInfo> > connectionInfos;
+    std::vector<std::unique_ptr<ximu3::MuxConnectionConfig> > configs;
     for (int channel = getChannels().first; channel <= getChannels().second; channel++) {
         if (channel == 0x0A) {
             continue;
         }
-        connectionInfos.push_back(std::make_unique<ximu3::MuxConnectionInfo>(static_cast<std::uint8_t>(channel), *connections[(size_t) connectionValue.getSelectedItemIndex()]));
+        configs.push_back(std::make_unique<ximu3::MuxConnectionConfig>(static_cast<std::uint8_t>(channel), *connections[(size_t) connectionValue.getSelectedItemIndex()]));
     }
-    return connectionInfos;
+    return configs;
 }
 
 std::pair<std::uint8_t, std::uint8_t> ManualMuxConnectionDialog::getChannels() const {

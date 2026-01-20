@@ -25,20 +25,20 @@ void tcp_connection() {
         }
         printf("Found %s %s\n", messages.array[0].device_name, messages.array[0].serial_number);
 
-        const XIMU3_TcpConnectionInfo connection_info = XIMU3_network_announcement_message_to_tcp_connection_info(messages.array[0]);
+        const XIMU3_TcpConnectionConfig config = XIMU3_network_announcement_message_to_tcp_connection_config(messages.array[0]);
 
         XIMU3_network_announcement_messages_free(messages);
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_tcp(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_tcp(config);
 
         run(connection);
     } else {
-        const XIMU3_TcpConnectionInfo connection_info = (XIMU3_TcpConnectionInfo){
+        const XIMU3_TcpConnectionConfig config = (XIMU3_TcpConnectionConfig){
             .ip_address = "192.168.1.1",
             .port = 7000,
-        }; // replace with actual connection info
+        }; // replace with actual connection config
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_tcp(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_tcp(config);
 
         run(connection);
     }

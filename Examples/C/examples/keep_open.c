@@ -18,7 +18,7 @@ void keep_open() {
     printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
     // Open connection
-    XIMU3_Connection *const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_info);
+    XIMU3_Connection *const connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_config);
 
     XIMU3_devices_free(devices);
 

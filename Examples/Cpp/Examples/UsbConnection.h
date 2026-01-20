@@ -15,13 +15,13 @@ public:
 
             std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
 
-            const auto connectionInfo = ximu3::ConnectionInfo::from(devices[0]);
+            const auto config = ximu3::ConnectionConfig::from(devices[0]);
 
-            run(*connectionInfo);
+            run(*config);
         } else {
-            const ximu3::UsbConnectionInfo connectionInfo("COM1"); // replace with actual connection info
+            const ximu3::UsbConnectionConfig config("COM1"); // replace with actual connection config
 
-            run(connectionInfo);
+            run(config);
         }
     }
 };

@@ -14,19 +14,19 @@ void usb_connection() {
 
         printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
-        const XIMU3_UsbConnectionInfo connection_info = devices.array[0].usb_connection_info;
+        const XIMU3_UsbConnectionConfig config = devices.array[0].usb_connection_config;
 
         XIMU3_devices_free(devices);
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_usb(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_usb(config);
 
         run(connection);
     } else {
-        const XIMU3_UsbConnectionInfo connection_info = (XIMU3_UsbConnectionInfo){
+        const XIMU3_UsbConnectionConfig config = (XIMU3_UsbConnectionConfig){
             .port_name = "COM1",
-        }; // replace with actual connection info
+        }; // replace with actual connection config
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_usb(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_usb(config);
 
         run(connection);
     }

@@ -1,4 +1,4 @@
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::connections::*;
 use crate::mux_message::*;
 use crate::receiver::*;
@@ -6,16 +6,16 @@ use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
 pub struct MuxConnection {
-    connection_info: MuxConnectionInfo,
+    config: MuxConnectionConfig,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
 }
 
 impl MuxConnection {
-    pub fn new(connection_info: &MuxConnectionInfo) -> Self {
+    pub fn new(config: &MuxConnectionConfig) -> Self {
         Self {
-            connection_info: connection_info.clone(),
+            config: config.clone(),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
@@ -25,8 +25,8 @@ impl MuxConnection {
 
 impl GenericConnection for MuxConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let channel = self.connection_info.channel;
-        let connection = self.connection_info.connection.clone();
+        let channel = self.config.channel;
+        let connection = self.config.connection.clone();
 
         let receiver = self.receiver.clone();
 
@@ -68,8 +68,8 @@ impl GenericConnection for MuxConnection {
         }
     }
 
-    fn get_info(&self) -> ConnectionInfo {
-        ConnectionInfo::MuxConnectionInfo(self.connection_info.clone())
+    fn get_config(&self) -> ConnectionConfig {
+        ConnectionConfig::MuxConnectionConfig(self.config.clone())
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

@@ -117,15 +117,15 @@ void ConnectionPanelContainer::updateSize() {
     resized();
 }
 
-void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionInfo &connectionInfo, const bool keepOpen) {
+void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionConfig &config, const bool keepOpen) {
     for (const auto &connectionPanel: connectionPanels) {
-        if (connectionPanel->getConnection()->getInfo()->toString() == connectionInfo.toString()) {
-            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + connectionInfo.toString() + "."));
+        if (connectionPanel->getConnection()->getConfig()->toString() == config.toString()) {
+            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + config.toString() + "."));
             return;
         }
     }
 
-    auto connection = std::make_shared<ximu3::Connection>(connectionInfo);
+    auto connection = std::make_shared<ximu3::Connection>(config);
     addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&] {
         static unsigned int counter;
 

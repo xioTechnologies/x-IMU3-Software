@@ -117,7 +117,7 @@ juce::Component *ConnectionsTable::refreshComponentForCell(int rowNumber, int co
                 existingComponentToUpdate = new SimpleLabel();
             }
 
-            static_cast<SimpleLabel *>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].connectionInfo->toString());
+            static_cast<SimpleLabel *>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].config->toString());
             break;
 
         case ColumnIds::rssi:

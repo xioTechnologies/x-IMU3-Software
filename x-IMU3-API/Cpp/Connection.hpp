@@ -3,7 +3,7 @@
 #include "../C/Ximu3.h"
 #include <cassert>
 #include "CommandMessage.hpp"
-#include "ConnectionInfo.hpp"
+#include "ConnectionConfig.hpp"
 #include <cstring>
 #include <functional>
 #include "Helpers.hpp"
@@ -15,36 +15,33 @@
 namespace ximu3 {
     class Connection {
     public:
-        explicit Connection(ConnectionInfo *connectionInfo) : Connection(*connectionInfo) {
-        }
-
-        explicit Connection(const ConnectionInfo &connectionInfo) {
-            if (auto *castConnectionInfo = dynamic_cast<const UsbConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_usb(*castConnectionInfo);
+        explicit Connection(const ConnectionConfig &config) {
+            if (auto *castConfig = dynamic_cast<const UsbConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_usb(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const SerialConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_serial(*castConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const SerialConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_serial(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const TcpConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_tcp(*castConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const TcpConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_tcp(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const UdpConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_udp(*castConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const UdpConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_udp(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const BluetoothConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_bluetooth(*castConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const BluetoothConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_bluetooth(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const FileConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_file(*castConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const FileConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_file(*castConfig);
                 return;
             }
-            if (auto *castConnectionInfo = dynamic_cast<const MuxConnectionInfo *>(&connectionInfo)) {
-                connection = XIMU3_connection_new_mux(castConnectionInfo->muxConnectionInfo);
+            if (auto *castConfig = dynamic_cast<const MuxConnectionConfig *>(&config)) {
+                connection = XIMU3_connection_new_mux(castConfig->muxConnectionConfig);
                 return;
             }
             assert(false);
@@ -132,22 +129,22 @@ namespace ximu3 {
             XIMU3_connection_send_commands_async(connection, charPtrVector.data(), (uint32_t) charPtrVector.size(), retries, timeout, Helpers::wrapCallable<XIMU3_CommandMessages>(*wrappedCallback), wrappedCallback);
         }
 
-        std::unique_ptr<ConnectionInfo> getInfo() {
+        std::unique_ptr<ConnectionConfig> getConfig() {
             switch (XIMU3_connection_get_type(connection)) {
                 case XIMU3_ConnectionTypeUsb:
-                    return std::make_unique<UsbConnectionInfo>(XIMU3_connection_get_info_usb(connection));
+                    return std::make_unique<UsbConnectionConfig>(XIMU3_connection_get_config_usb(connection));
                 case XIMU3_ConnectionTypeSerial:
-                    return std::make_unique<SerialConnectionInfo>(XIMU3_connection_get_info_serial(connection));
+                    return std::make_unique<SerialConnectionConfig>(XIMU3_connection_get_config_serial(connection));
                 case XIMU3_ConnectionTypeTcp:
-                    return std::make_unique<TcpConnectionInfo>(XIMU3_connection_get_info_tcp(connection));
+                    return std::make_unique<TcpConnectionConfig>(XIMU3_connection_get_config_tcp(connection));
                 case XIMU3_ConnectionTypeUdp:
-                    return std::make_unique<UdpConnectionInfo>(XIMU3_connection_get_info_udp(connection));
+                    return std::make_unique<UdpConnectionConfig>(XIMU3_connection_get_config_udp(connection));
                 case XIMU3_ConnectionTypeBluetooth:
-                    return std::make_unique<BluetoothConnectionInfo>(XIMU3_connection_get_info_bluetooth(connection));
+                    return std::make_unique<BluetoothConnectionConfig>(XIMU3_connection_get_config_bluetooth(connection));
                 case XIMU3_ConnectionTypeFile:
-                    return std::make_unique<FileConnectionInfo>(XIMU3_connection_get_info_file(connection));
+                    return std::make_unique<FileConnectionConfig>(XIMU3_connection_get_config_file(connection));
                 case XIMU3_ConnectionTypeMux:
-                    return std::make_unique<MuxConnectionInfo>(XIMU3_connection_get_info_mux(connection));
+                    return std::make_unique<MuxConnectionConfig>(XIMU3_connection_get_config_mux(connection));
             }
             return nullptr;
         }
@@ -238,7 +235,7 @@ namespace ximu3 {
     private:
         friend class DataLogger;
         friend class KeepOpen;
-        friend class MuxConnectionInfo;
+        friend class MuxConnectionConfig;
 
         XIMU3_Connection *connection;
 

@@ -125,13 +125,13 @@ namespace Ximu3
             public UInt32 capacity;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_UsbConnectionInfo
+        public struct XIMU3_UsbConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] port_name;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_SerialConnectionInfo
+        public struct XIMU3_SerialConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] port_name;
@@ -139,14 +139,14 @@ namespace Ximu3
             public bool rts_cts_enabled;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_TcpConnectionInfo
+        public struct XIMU3_TcpConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] ip_address;
             public UInt16 port;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_UdpConnectionInfo
+        public struct XIMU3_UdpConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] ip_address;
@@ -154,13 +154,13 @@ namespace Ximu3
             public UInt16 receive_port;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_BluetoothConnectionInfo
+        public struct XIMU3_BluetoothConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] port_name;
         }
         [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_FileConnectionInfo
+        public struct XIMU3_FileConnectionConfig
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] file_path;
@@ -361,9 +361,9 @@ namespace Ximu3
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] serial_number;
             public XIMU3_ConnectionType connection_type;
-            public XIMU3_UsbConnectionInfo usb_connection_info;
-            public XIMU3_SerialConnectionInfo serial_connection_info;
-            public XIMU3_BluetoothConnectionInfo bluetooth_connection_info;
+            public XIMU3_UsbConnectionConfig usb_connection_config;
+            public XIMU3_SerialConnectionConfig serial_connection_config;
+            public XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
         }
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_Devices
@@ -433,19 +433,19 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_command_messages_free(XIMU3_CommandMessages messages);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_usb(XIMU3_UsbConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_usb(XIMU3_UsbConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_serial(XIMU3_SerialConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_serial(XIMU3_SerialConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_tcp(XIMU3_TcpConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_tcp(XIMU3_TcpConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_udp(XIMU3_UdpConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_udp(XIMU3_UdpConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_bluetooth(XIMU3_BluetoothConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_bluetooth(XIMU3_BluetoothConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_file(XIMU3_FileConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_connection_new_file(XIMU3_FileConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_new_mux(IntPtr connection_info);
+        public static extern IntPtr XIMU3_connection_new_mux(IntPtr config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_free(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -469,21 +469,21 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_ConnectionType XIMU3_connection_get_type(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_UsbConnectionInfo XIMU3_connection_get_info_usb(IntPtr connection);
+        public static extern XIMU3_UsbConnectionConfig XIMU3_connection_get_config_usb(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_SerialConnectionInfo XIMU3_connection_get_info_serial(IntPtr connection);
+        public static extern XIMU3_SerialConnectionConfig XIMU3_connection_get_config_serial(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_TcpConnectionInfo XIMU3_connection_get_info_tcp(IntPtr connection);
+        public static extern XIMU3_TcpConnectionConfig XIMU3_connection_get_config_tcp(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_UdpConnectionInfo XIMU3_connection_get_info_udp(IntPtr connection);
+        public static extern XIMU3_UdpConnectionConfig XIMU3_connection_get_config_udp(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_BluetoothConnectionInfo XIMU3_connection_get_info_bluetooth(IntPtr connection);
+        public static extern XIMU3_BluetoothConnectionConfig XIMU3_connection_get_config_bluetooth(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_FileConnectionInfo XIMU3_connection_get_info_file(IntPtr connection);
+        public static extern XIMU3_FileConnectionConfig XIMU3_connection_get_config_file(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_get_info_mux(IntPtr connection);
+        public static extern IntPtr XIMU3_connection_get_config_mux(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_get_info_string(IntPtr connection);
+        public static extern IntPtr XIMU3_connection_get_config_string(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -525,23 +525,23 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_remove_callback(IntPtr connection, UInt64 callback_id);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_usb_connection_info_to_string(XIMU3_UsbConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_usb_connection_config_to_string(XIMU3_UsbConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_serial_connection_info_to_string(XIMU3_SerialConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_serial_connection_config_to_string(XIMU3_SerialConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_tcp_connection_info_to_string(XIMU3_TcpConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_tcp_connection_config_to_string(XIMU3_TcpConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_udp_connection_info_to_string(XIMU3_UdpConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_udp_connection_config_to_string(XIMU3_UdpConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_bluetooth_connection_info_to_string(XIMU3_BluetoothConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_bluetooth_connection_config_to_string(XIMU3_BluetoothConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_file_connection_info_to_string(XIMU3_FileConnectionInfo connection_info);
+        public static extern IntPtr XIMU3_file_connection_config_to_string(XIMU3_FileConnectionConfig config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_mux_connection_info_new(Byte channel, IntPtr connection);
+        public static extern IntPtr XIMU3_mux_connection_config_new(Byte channel, IntPtr connection);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_mux_connection_info_free(IntPtr connection_info);
+        public static extern void XIMU3_mux_connection_config_free(IntPtr config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_mux_connection_info_to_string(IntPtr connection_info);
+        public static extern IntPtr XIMU3_mux_connection_config_to_string(IntPtr config);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_type_to_string(XIMU3_ConnectionType connection_type);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -609,9 +609,9 @@ namespace Ximu3
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_keep_open_free(IntPtr keep_open);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(XIMU3_NetworkAnnouncementMessage message);
+        public static extern XIMU3_TcpConnectionConfig XIMU3_network_announcement_message_to_tcp_connection_config(XIMU3_NetworkAnnouncementMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_UdpConnectionInfo XIMU3_network_announcement_message_to_udp_connection_info(XIMU3_NetworkAnnouncementMessage message);
+        public static extern XIMU3_UdpConnectionConfig XIMU3_network_announcement_message_to_udp_connection_config(XIMU3_NetworkAnnouncementMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_network_announcement_message_to_string(XIMU3_NetworkAnnouncementMessage message);
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

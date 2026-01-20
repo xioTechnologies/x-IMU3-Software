@@ -10,4 +10,4 @@ if (APPLE)
     target_link_libraries(Cpp-Examples PRIVATE "-framework Cocoa" "-framework IOKit")
 endif ()
 
-target_sources(Cpp-Examples PRIVATE "../../x-IMU3-API/Cpp/ConnectionInfo.cpp")
+target_sources(Cpp-Examples PRIVATE "../../x-IMU3-API/Cpp/ConnectionConfig.cpp")

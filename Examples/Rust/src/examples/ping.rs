@@ -15,10 +15,10 @@ pub fn run() {
     println!("Found {device}");
 
     // Open connection
-    let connection = Connection::new(&device.connection_info);
+    let connection = Connection::new(&device.connection_config);
 
     if let Err(error) = connection.open() {
-        println!("Unable to open {}. {error}.", connection.get_info());
+        println!("Unable to open {}. {error}.", connection.get_config());
         return;
     }
 

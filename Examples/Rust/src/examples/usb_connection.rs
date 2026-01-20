@@ -1,6 +1,6 @@
 use super::connection;
 use crate::helpers;
-use ximu3::connection_info::*;
+use ximu3::connection_config::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
@@ -14,14 +14,14 @@ pub fn run() {
 
         println!("Found {device}");
 
-        let connection_info = &device.connection_info;
+        let config = &device.connection_config;
 
-        connection::run(connection_info);
+        connection::run(config);
     } else {
-        let connection_info = &ConnectionInfo::UsbConnectionInfo(UsbConnectionInfo {
+        let config = &ConnectionConfig::UsbConnectionConfig(UsbConnectionConfig {
             port_name: "COM1".to_owned(),
-        }); // replace with actual connection info
+        }); // replace with actual connection config
 
-        connection::run(connection_info);
+        connection::run(config);
     }
 }

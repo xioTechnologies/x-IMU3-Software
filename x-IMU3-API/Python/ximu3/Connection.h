@@ -3,7 +3,7 @@
 
 #include "../../C/Ximu3.h"
 #include "CommandMessage.h"
-#include "ConnectionInfo.h"
+#include "ConnectionConfig.h"
 #include "DataMessages/DataMessages.h"
 #include "PingResponse.h"
 #include <Python.h>
@@ -19,87 +19,87 @@ typedef struct {
 } Connection;
 
 static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
-    PyObject *connection_info;
+    PyObject *config;
 
     static char *kwlist[] = {
-        "connection_info",
+        "config",
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &connection_info)) {
-        if (PyObject_TypeCheck(connection_info, &usb_connection_info_object) != 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &config)) {
+        if (PyObject_TypeCheck(config, &usb_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_usb(((UsbConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_usb(((UsbConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &serial_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &serial_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_serial(((SerialConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_serial(((SerialConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &tcp_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &tcp_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_tcp(((TcpConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_tcp(((TcpConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &udp_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &udp_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_udp(((UdpConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_udp(((UdpConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &bluetooth_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &bluetooth_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &file_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &file_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_file(((FileConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_file(((FileConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
-        if (PyObject_TypeCheck(connection_info, &mux_connection_info_object) != 0) {
+        if (PyObject_TypeCheck(config, &mux_connection_config_object) != 0) {
             Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
 
             if (self == NULL) {
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_mux(((MuxConnectionInfo *) connection_info)->connection_info);
+            self->connection = XIMU3_connection_new_mux(((MuxConnectionConfig *) config)->connection_config);
             return (PyObject *) self;
         }
     }
 
-    PyErr_SetString(PyExc_TypeError, "'connection_info' must be ximu3.*ConnectionInfo");
+    PyErr_SetString(PyExc_TypeError, "'config' must be ximu3.*ConnectionConfig");
     return NULL;
 }
 
@@ -114,10 +114,10 @@ static PyObject *connection_open(Connection *self, PyObject *args) {
     const XIMU3_Result result = XIMU3_connection_open(self->connection);
 
     if (result != XIMU3_ResultOk) {
-        const char *const connection_info = XIMU3_connection_get_info_string(self->connection);
+        const char *const config = XIMU3_connection_get_config_string(self->connection);
         const char *const result_string = XIMU3_result_to_string(result);
 
-        PyErr_Format(PyExc_RuntimeError, "Unable to open %s. %s.", connection_info, result_string);
+        PyErr_Format(PyExc_RuntimeError, "Unable to open %s. %s.", config, result_string);
         return NULL;
     }
 
@@ -317,42 +317,42 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
     Py_RETURN_NONE;
 }
 
-static PyObject *connection_get_info(Connection *self, PyObject *args) {
+static PyObject *connection_get_config(Connection *self, PyObject *args) {
     switch (XIMU3_connection_get_type(self->connection)) {
         case XIMU3_ConnectionTypeUsb: {
-            const XIMU3_UsbConnectionInfo connection_info = XIMU3_connection_get_info_usb(self->connection);
+            const XIMU3_UsbConnectionConfig config = XIMU3_connection_get_config_usb(self->connection);
 
-            return usb_connection_info_from(&connection_info);
+            return usb_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeSerial: {
-            const XIMU3_SerialConnectionInfo connection_info = XIMU3_connection_get_info_serial(self->connection);
+            const XIMU3_SerialConnectionConfig config = XIMU3_connection_get_config_serial(self->connection);
 
-            return serial_connection_info_from(&connection_info);
+            return serial_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeTcp: {
-            const XIMU3_TcpConnectionInfo connection_info = XIMU3_connection_get_info_tcp(self->connection);
+            const XIMU3_TcpConnectionConfig config = XIMU3_connection_get_config_tcp(self->connection);
 
-            return tcp_connection_info_from(&connection_info);
+            return tcp_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeUdp: {
-            const XIMU3_UdpConnectionInfo connection_info = XIMU3_connection_get_info_udp(self->connection);
+            const XIMU3_UdpConnectionConfig config = XIMU3_connection_get_config_udp(self->connection);
 
-            return udp_connection_info_from(&connection_info);
+            return udp_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeBluetooth: {
-            const XIMU3_BluetoothConnectionInfo connection_info = XIMU3_connection_get_info_bluetooth(self->connection);
+            const XIMU3_BluetoothConnectionConfig config = XIMU3_connection_get_config_bluetooth(self->connection);
 
-            return bluetooth_connection_info_from(&connection_info);
+            return bluetooth_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeFile: {
-            const XIMU3_FileConnectionInfo connection_info = XIMU3_connection_get_info_file(self->connection);
+            const XIMU3_FileConnectionConfig config = XIMU3_connection_get_config_file(self->connection);
 
-            return file_connection_info_from(&connection_info);
+            return file_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeMux: {
-            XIMU3_MuxConnectionInfo *connection_info = XIMU3_connection_get_info_mux(self->connection);
+            XIMU3_MuxConnectionConfig *config = XIMU3_connection_get_config_mux(self->connection);
 
-            return mux_connection_info_from(connection_info);
+            return mux_connection_config_from(config);
         }
     }
     return NULL;
@@ -691,7 +691,7 @@ static PyMethodDef connection_methods[] = {
     {"send_commands", (PyCFunction) connection_send_commands, METH_VARARGS | METH_KEYWORDS, ""},
     {"send_command_async", (PyCFunction) connection_send_command_async, METH_VARARGS | METH_KEYWORDS, ""},
     {"send_commands_async", (PyCFunction) connection_send_commands_async, METH_VARARGS | METH_KEYWORDS, ""},
-    {"get_info", (PyCFunction) connection_get_info, METH_NOARGS, ""},
+    {"get_config", (PyCFunction) connection_get_config, METH_NOARGS, ""},
     {"get_statistics", (PyCFunction) connection_get_statistics, METH_NOARGS, ""},
     {"add_receive_error_callback", (PyCFunction) connection_add_receive_error_callback, METH_O, ""},
     {"add_statistics_callback", (PyCFunction) connection_add_statistics_callback, METH_O, ""},

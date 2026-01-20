@@ -1,5 +1,5 @@
 use crate::connection::*;
-use crate::connection_info::*;
+use crate::connection_config::*;
 use crate::data_logger::*;
 use std::fmt;
 use std::ops::Drop;
@@ -73,7 +73,7 @@ impl FileConverter {
         let connections: Vec<Connection> = file_paths
             .iter()
             .map(|&file_path| {
-                Connection::new(&ConnectionInfo::FileConnectionInfo(FileConnectionInfo {
+                Connection::new(&ConnectionConfig::FileConnectionConfig(FileConnectionConfig {
                     file_path: file_path.to_owned(),
                 }))
             })

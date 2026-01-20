@@ -8,11 +8,11 @@ class PreviousConnections {
 public:
     PreviousConnections();
 
-    void update(const ximu3::ConnectionInfo &connectionInfo);
+    void update(const ximu3::ConnectionConfig &config);
 
     void update(std::pair<std::uint8_t, std::uint8_t> muxChannels);
 
-    std::vector<std::variant<std::unique_ptr<ximu3::ConnectionInfo>, std::pair<std::uint8_t, std::uint8_t> > > get() const;
+    std::vector<std::variant<std::unique_ptr<ximu3::ConnectionConfig>, std::pair<std::uint8_t, std::uint8_t> > > get() const;
 
 private:
     juce::ValueTree connections;

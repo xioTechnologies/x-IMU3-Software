@@ -100,14 +100,14 @@ for line in c_code.splitlines():
     for pattern in [
         "const char *const *",
         "const char *",
-        "const XIMU3_MuxConnectionInfo *",
+        "const XIMU3_MuxConnectionConfig *",
         "void *",
         "XIMU3_Connection *const *",
         "XIMU3_Connection *",
         "XIMU3_DataLogger *",
         "XIMU3_FileConverter *",
         "XIMU3_KeepOpen *",
-        "XIMU3_MuxConnectionInfo *",
+        "XIMU3_MuxConnectionConfig *",
         "XIMU3_NetworkAnnouncement *",
         "XIMU3_PortScanner *",
     ]:

@@ -26,15 +26,15 @@ namespace Ximu3Examples
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(messages[0].device_name) + " " + Ximu3.Helpers.ToString(messages[0].serial_number));
 
-                Ximu3.UdpConnectionInfo connectionInfo = new(messages[0]);
+                Ximu3.UdpConnectionConfig config = new(messages[0]);
 
-                Run(connectionInfo);
+                Run(config);
             }
             else
             {
-                Ximu3.UdpConnectionInfo connectionInfo = new("192.168.1.1", 9000, 8000); // replace with actual connection info
+                Ximu3.UdpConnectionConfig config = new("192.168.1.1", 9000, 8000); // replace with actual connection config
 
-                Run(connectionInfo);
+                Run(config);
             }
         }
     }

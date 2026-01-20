@@ -14,19 +14,19 @@ void bluetooth_connection() {
 
         printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
 
-        const XIMU3_BluetoothConnectionInfo connection_info = devices.array[0].bluetooth_connection_info;
+        const XIMU3_BluetoothConnectionConfig config = devices.array[0].bluetooth_connection_config;
 
         XIMU3_devices_free(devices);
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(config);
 
         run(connection);
     } else {
-        const XIMU3_BluetoothConnectionInfo connection_info = (XIMU3_BluetoothConnectionInfo){
+        const XIMU3_BluetoothConnectionConfig config = (XIMU3_BluetoothConnectionConfig){
             .port_name = "COM1",
-        }; // replace with actual connection info
+        }; // replace with actual connection config
 
-        XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(connection_info);
+        XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(config);
 
         run(connection);
     }

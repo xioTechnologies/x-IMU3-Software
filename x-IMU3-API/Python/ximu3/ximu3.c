@@ -2,7 +2,7 @@
 #include "ChargingStatus.h"
 #include "CommandMessage.h"
 #include "Connection.h"
-#include "ConnectionInfo.h"
+#include "ConnectionConfig.h"
 #include "ConnectionStatus.h"
 #include "DataLogger.h"
 #include "DataMessages/DataMessages.h"
@@ -144,13 +144,13 @@ PyMODINIT_FUNC PyInit_ximu3() {
         add_object(module, &ping_response_object, "PingResponse") &&
         add_object(module, &port_scanner_object, "PortScanner") &&
         add_object(module, &statistics_object, "Statistics") &&
-        add_object(module, &usb_connection_info_object, "UsbConnectionInfo") &&
-        add_object(module, &serial_connection_info_object, "SerialConnectionInfo") &&
-        add_object(module, &tcp_connection_info_object, "TcpConnectionInfo") &&
-        add_object(module, &udp_connection_info_object, "UdpConnectionInfo") &&
-        add_object(module, &bluetooth_connection_info_object, "BluetoothConnectionInfo") &&
-        add_object(module, &file_connection_info_object, "FileConnectionInfo") &&
-        add_object(module, &mux_connection_info_object, "MuxConnectionInfo")) {
+        add_object(module, &usb_connection_config_object, "UsbConnectionConfig") &&
+        add_object(module, &serial_connection_config_object, "SerialConnectionConfig") &&
+        add_object(module, &tcp_connection_config_object, "TcpConnectionConfig") &&
+        add_object(module, &udp_connection_config_object, "UdpConnectionConfig") &&
+        add_object(module, &bluetooth_connection_config_object, "BluetoothConnectionConfig") &&
+        add_object(module, &file_connection_config_object, "FileConnectionConfig") &&
+        add_object(module, &mux_connection_config_object, "MuxConnectionConfig")) {
         return module;
     }
 
@@ -158,8 +158,8 @@ PyMODINIT_FUNC PyInit_ximu3() {
     return NULL;
 }
 
-// This function cannot be in ConnectionInfo.h because this results in a circular reference
-PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
+// This function cannot be in ConnectionConfig.h because this results in a circular reference
+PyObject *mux_connection_config_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     unsigned char channel;
     PyObject *connection;
 
@@ -173,12 +173,12 @@ PyObject *mux_connection_info_new(PyTypeObject *subtype, PyObject *args, PyObjec
         return NULL;
     }
 
-    MuxConnectionInfo *const self = (MuxConnectionInfo *) subtype->tp_alloc(subtype, 0);
+    MuxConnectionConfig *const self = (MuxConnectionConfig *) subtype->tp_alloc(subtype, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_info = XIMU3_mux_connection_info_new(channel, ((Connection *) connection)->connection);
+    self->connection_config = XIMU3_mux_connection_config_new(channel, ((Connection *) connection)->connection);
     return (PyObject *) self;
 }
