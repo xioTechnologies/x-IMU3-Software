@@ -13,6 +13,12 @@ static void device_free(Device *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *device_str(Device *self) {
+    const char *const string = XIMU3_device_to_string(self->device);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *device_get_device_name(Device *self) {
     return PyUnicode_FromString(self->device.device_name);
 }
@@ -34,21 +40,10 @@ static PyObject *device_get_connection_info(Device *self) {
     }
 }
 
-static PyObject *device_to_string(Device *self, PyObject *args) {
-    const char *const string = XIMU3_device_to_string(self->device);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef device_get_set[] = {
     {"device_name", (getter) device_get_device_name, NULL, "", NULL},
     {"serial_number", (getter) device_get_serial_number, NULL, "", NULL},
     {"connection_info", (getter) device_get_connection_info, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef device_methods[] = {
-    {"to_string", (PyCFunction) device_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -57,9 +52,9 @@ static PyTypeObject device_object = {
     .tp_name = "ximu3.Device",
     .tp_basicsize = sizeof(Device),
     .tp_dealloc = (destructor) device_free,
+    .tp_str = (reprfunc) device_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = device_get_set,
-    .tp_methods = device_methods,
 };
 
 static PyObject *device_from(const XIMU3_Device *const device) {

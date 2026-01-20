@@ -38,7 +38,7 @@ def statistics_callback(statistics: ximu3.Statistics) -> None:
             ]
         )
     )
-    # print(statistics.to_string())  # alternative to above
+    # print(statistics)  # alternative to above
 
 
 def inertial_callback(message: ximu3.InertialMessage) -> None:
@@ -55,7 +55,7 @@ def inertial_callback(message: ximu3.InertialMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def magnetometer_callback(message: ximu3.MagnetometerMessage) -> None:
@@ -69,7 +69,7 @@ def magnetometer_callback(message: ximu3.MagnetometerMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def quaternion_callback(message: ximu3.QuaternionMessage) -> None:
@@ -84,8 +84,8 @@ def quaternion_callback(message: ximu3.QuaternionMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
-    print(message.to_euler_angles_message().to_string())
+    # print(message)  # alternative to above
+    print(message.to_euler_angles_message())
 
 
 def rotation_matrix_callback(message: ximu3.RotationMatrixMessage) -> None:
@@ -105,8 +105,8 @@ def rotation_matrix_callback(message: ximu3.RotationMatrixMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
-    print(message.to_euler_angles_message().to_string())
+    # print(message)  # alternative to above
+    print(message.to_euler_angles_message())
 
 
 def euler_angles_callback(message: ximu3.EulerAnglesMessage) -> None:
@@ -120,8 +120,8 @@ def euler_angles_callback(message: ximu3.EulerAnglesMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
-    print(message.to_quaternion_message().to_string())
+    # print(message)  # alternative to above
+    print(message.to_quaternion_message())
 
 
 def linear_acceleration_callback(message: ximu3.LinearAccelerationMessage) -> None:
@@ -139,8 +139,8 @@ def linear_acceleration_callback(message: ximu3.LinearAccelerationMessage) -> No
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
-    print(message.to_euler_angles_message().to_string())
+    # print(message)  # alternative to above
+    print(message.to_euler_angles_message())
 
 
 def earth_acceleration_callback(message: ximu3.EarthAccelerationMessage) -> None:
@@ -158,8 +158,8 @@ def earth_acceleration_callback(message: ximu3.EarthAccelerationMessage) -> None
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
-    print(message.to_euler_angles_message().to_string())
+    # print(message)  # alternative to above
+    print(message.to_euler_angles_message())
 
 
 def ahrs_status_callback(message: ximu3.AhrsStatusMessage) -> None:
@@ -174,7 +174,7 @@ def ahrs_status_callback(message: ximu3.AhrsStatusMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def high_g_accelerometer_callback(message: ximu3.HighGAccelerometerMessage) -> None:
@@ -188,7 +188,7 @@ def high_g_accelerometer_callback(message: ximu3.HighGAccelerometerMessage) -> N
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def temperature_callback(message: ximu3.TemperatureMessage) -> None:
@@ -200,7 +200,7 @@ def temperature_callback(message: ximu3.TemperatureMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def battery_callback(message: ximu3.BatteryMessage) -> None:
@@ -214,7 +214,7 @@ def battery_callback(message: ximu3.BatteryMessage) -> None:
             ]
         )
     )
-    # print(message.to_string() + f" ({ximu3.charging_status_to_string(ximu3.charging_status_from_float(message.charging_status))})")  # alternative to above
+    # print(message + f" ({ximu3.charging_status_to_string(ximu3.charging_status_from_float(message.charging_status))})")  # alternative to above
 
 
 def rssi_callback(message: ximu3.RssiMessage) -> None:
@@ -227,22 +227,22 @@ def rssi_callback(message: ximu3.RssiMessage) -> None:
             ]
         )
     )
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def serial_accessory_callback(message: ximu3.SerialAccessoryMessage) -> None:
     print(timestamp_format(message.timestamp) + string_format(message.string))
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def notification_callback(message: ximu3.NotificationMessage) -> None:
     print(timestamp_format(message.timestamp) + string_format(message.string))
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def error_callback(message: ximu3.ErrorMessage) -> None:
     print(timestamp_format(message.timestamp) + string_format(message.string))
-    # print(message.to_string())  # alternative to above
+    # print(message)  # alternative to above
 
 
 def end_of_file_callback() -> None:
@@ -277,7 +277,7 @@ def run(connection_info: ximu3.UsbConnectionInfo | ximu3.SerialConnectionInfo | 
     result = connection.open()
 
     if result != ximu3.RESULT_OK:
-        raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
+        raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
 
     connection.send_command('{"strobe":null}')  # send command to strobe LED
 

@@ -11,14 +11,14 @@ class Connection:
         result = self.__connection.open()
 
         if result != ximu3.RESULT_OK:
-            raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
+            raise Exception(f"Unable to open {self.__connection.get_info()}. {ximu3.result_to_string(result)}.")
 
         ping_response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
         if ping_response is None:
-            raise Exception(f"Ping failed for {connection_info.to_string()}")
+            raise Exception(f"Ping failed for {self.__connection.get_info()}")
 
-        self.__prefix = f"{ping_response.device_name} {ping_response.serial_number} "
+        self.__prefix = f"{ping_response.device_name} {ping_response.serial_number}"
 
         self.__connection.add_inertial_callback(self.__inertial_callback)
         self.__connection.add_magnetometer_callback(self.__magnetometer_callback)
@@ -54,57 +54,57 @@ class Connection:
         response = self.__connection.send_command(command)
 
         if response is None:
-            raise Exception(f"No response. {command} sent to {self.__connection.get_info().to_string()}")
+            raise Exception(f"No response. {command} sent to {self.__connection.get_info()}")
 
         if response.error:
-            raise Exception(f"{response.error}. {command} sent to {self.__connection.get_info().to_string()}")
+            raise Exception(f"{response.error}. {command} sent to {self.__connection.get_info()}")
 
-        print(self.__prefix + f"{response.key} : {response.value}")
+        print(f'{self.__prefix} "{response.key}" : {response.value}')
 
     def __inertial_callback(self, message: ximu3.InertialMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __magnetometer_callback(self, message: ximu3.MagnetometerMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __quaternion_callback(self, message: ximu3.QuaternionMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __rotation_matrix_callback(self, message: ximu3.RotationMatrixMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __euler_angles_callback(self, message: ximu3.EulerAnglesMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __linear_acceleration_callback(self, message: ximu3.LinearAccelerationMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __earth_acceleration_callback(self, message: ximu3.EarthAccelerationMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __ahrs_status_callback(self, message: ximu3.AhrsStatusMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __high_g_accelerometer_callback(self, message: ximu3.HighGAccelerometerMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __temperature_callback(self, message: ximu3.TemperatureMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __battery_callback(self, message: ximu3.BatteryMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __rssi_callback(self, message: ximu3.RssiMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __serial_accessory_callback(self, message: ximu3.SerialAccessoryMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __notification_callback(self, message: ximu3.NotificationMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
     def __error_callback(self, message: ximu3.ErrorMessage) -> None:
-        print(self.__prefix + message.to_string())
+        print(f"{self.__prefix} {message}")
 
 
 connections = [Connection(m.to_udp_connection_info()) for m in ximu3.NetworkAnnouncement().get_messages_after_short_delay()]

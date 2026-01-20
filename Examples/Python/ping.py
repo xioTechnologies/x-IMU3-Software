@@ -17,7 +17,7 @@ connection = ximu3.Connection(devices[0].connection_info)
 result = connection.open()
 
 if result != ximu3.RESULT_OK:
-    raise Exception(f"Unable to open {connection.get_info().to_string()}. {ximu3.result_to_string(result)}.")
+    raise Exception(f"Unable to open {connection.get_info()}. {ximu3.result_to_string(result)}.")
 
 # Ping
 
@@ -27,7 +27,7 @@ def print_ping_response(ping_response: ximu3.PingResponse | None) -> None:
         raise Exception("No response")
 
     print(", ".join([ping_response.interface, ping_response.device_name, ping_response.serial_number]))
-    # print(ping_response.to_string())  # alternative to above
+    # print(ping_response)  # alternative to above
 
 
 def callback(ping_response: ximu3.PingResponse) -> None:

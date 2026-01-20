@@ -15,6 +15,12 @@ static void notification_message_free(NotificationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *notification_message_str(NotificationMessage *self) {
+    const char *const string = XIMU3_notification_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *notification_message_get_timestamp(NotificationMessage *self, PyObject *args) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -27,21 +33,10 @@ static PyObject *notification_message_get_bytes(NotificationMessage *self, PyObj
     return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
 }
 
-static PyObject *notification_message_to_string(NotificationMessage *self, PyObject *args) {
-    const char *const string = XIMU3_notification_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef notification_message_get_set[] = {
     {"timestamp", (getter) notification_message_get_timestamp, NULL, "", NULL},
     {"string", (getter) notification_message_get_string, NULL, "", NULL},
     {"bytes", (getter) notification_message_get_bytes, NULL, "", NULL},
-    {NULL} /* sentinel */
-};
-
-static PyMethodDef notification_message_methods[] = {
-    {"to_string", (PyCFunction) notification_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -50,9 +45,9 @@ static PyTypeObject notification_message_object = {
     .tp_name = "ximu3.NotificationMessage",
     .tp_basicsize = sizeof(NotificationMessage),
     .tp_dealloc = (destructor) notification_message_free,
+    .tp_str = (reprfunc) notification_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = notification_message_get_set,
-    .tp_methods = notification_message_methods,
 };
 
 static PyObject *notification_message_from(const XIMU3_NotificationMessage *const message) {

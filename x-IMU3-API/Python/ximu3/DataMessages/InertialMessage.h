@@ -15,6 +15,12 @@ static void inertial_message_free(InertialMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *inertial_message_str(InertialMessage *self) {
+    const char *const string = XIMU3_inertial_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *inertial_message_get_timestamp(InertialMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -43,12 +49,6 @@ static PyObject *inertial_message_get_accelerometer_z(InertialMessage *self) {
     return PyFloat_FromDouble((double) self->message.accelerometer_z);
 }
 
-static PyObject *inertial_message_to_string(InertialMessage *self, PyObject *args) {
-    const char *const string = XIMU3_inertial_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef inertial_message_get_set[] = {
     {"timestamp", (getter) inertial_message_get_timestamp, NULL, "", NULL},
     {"gyroscope_x", (getter) inertial_message_get_gyroscope_x, NULL, "", NULL},
@@ -61,7 +61,6 @@ static PyGetSetDef inertial_message_get_set[] = {
 };
 
 static PyMethodDef inertial_message_methods[] = {
-    {"to_string", (PyCFunction) inertial_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -70,6 +69,7 @@ static PyTypeObject inertial_message_object = {
     .tp_name = "ximu3.InertialMessage",
     .tp_basicsize = sizeof(InertialMessage),
     .tp_dealloc = (destructor) inertial_message_free,
+    .tp_str = (reprfunc) inertial_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = inertial_message_get_set,
     .tp_methods = inertial_message_methods,

@@ -15,6 +15,12 @@ static void rssi_message_free(RssiMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *rssi_message_str(RssiMessage *self) {
+    const char *const string = XIMU3_rssi_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *rssi_message_get_timestamp(RssiMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -27,12 +33,6 @@ static PyObject *rssi_message_get_power(RssiMessage *self) {
     return PyFloat_FromDouble((double) self->message.power);
 }
 
-static PyObject *rssi_message_to_string(RssiMessage *self, PyObject *args) {
-    const char *const string = XIMU3_rssi_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef rssi_message_get_set[] = {
     {"timestamp", (getter) rssi_message_get_timestamp, NULL, "", NULL},
     {"percentage", (getter) rssi_message_get_percentage, NULL, "", NULL},
@@ -41,7 +41,6 @@ static PyGetSetDef rssi_message_get_set[] = {
 };
 
 static PyMethodDef rssi_message_methods[] = {
-    {"to_string", (PyCFunction) rssi_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -50,6 +49,7 @@ static PyTypeObject rssi_message_object = {
     .tp_name = "ximu3.RssiMessage",
     .tp_basicsize = sizeof(RssiMessage),
     .tp_dealloc = (destructor) rssi_message_free,
+    .tp_str = (reprfunc) rssi_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = rssi_message_get_set,
     .tp_methods = rssi_message_methods,

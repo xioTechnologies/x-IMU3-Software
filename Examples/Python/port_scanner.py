@@ -6,8 +6,8 @@ import ximu3
 
 def print_devices(devices: list[ximu3.Device]) -> None:
     for device in devices:
-        print(", ".join([device.device_name, device.serial_number, device.connection_info.to_string()]))
-        # print(device.to_string())  # alternative to above
+        print(", ".join([device.device_name, device.serial_number, device.connection_info]))
+        # print(device)  # alternative to above
 
 
 def callback(devices: list[ximu3.Device]) -> None:

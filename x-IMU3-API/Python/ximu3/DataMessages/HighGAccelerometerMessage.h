@@ -15,6 +15,12 @@ static void high_g_accelerometer_message_free(HighGAccelerometerMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *high_g_accelerometer_message_str(HighGAccelerometerMessage *self) {
+    const char *const string = XIMU3_high_g_accelerometer_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *high_g_accelerometer_message_get_timestamp(HighGAccelerometerMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -31,12 +37,6 @@ static PyObject *high_g_accelerometer_message_get_z(HighGAccelerometerMessage *s
     return PyFloat_FromDouble((double) self->message.z);
 }
 
-static PyObject *high_g_accelerometer_message_to_string(HighGAccelerometerMessage *self, PyObject *args) {
-    const char *const string = XIMU3_high_g_accelerometer_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef high_g_accelerometer_message_get_set[] = {
     {"timestamp", (getter) high_g_accelerometer_message_get_timestamp, NULL, "", NULL},
     {"x", (getter) high_g_accelerometer_message_get_x, NULL, "", NULL},
@@ -46,7 +46,6 @@ static PyGetSetDef high_g_accelerometer_message_get_set[] = {
 };
 
 static PyMethodDef high_g_accelerometer_message_methods[] = {
-    {"to_string", (PyCFunction) high_g_accelerometer_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -55,6 +54,7 @@ static PyTypeObject high_g_accelerometer_message_object = {
     .tp_name = "ximu3.HighGAccelerometerMessage",
     .tp_basicsize = sizeof(HighGAccelerometerMessage),
     .tp_dealloc = (destructor) high_g_accelerometer_message_free,
+    .tp_str = (reprfunc) high_g_accelerometer_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = high_g_accelerometer_message_get_set,
     .tp_methods = high_g_accelerometer_message_methods,

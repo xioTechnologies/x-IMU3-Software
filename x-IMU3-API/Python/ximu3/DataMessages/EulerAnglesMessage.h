@@ -15,6 +15,12 @@ static void euler_angles_message_free(EulerAnglesMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *euler_angles_message_str(EulerAnglesMessage *self) {
+    const char *const string = XIMU3_euler_angles_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *euler_angles_message_get_timestamp(EulerAnglesMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -31,12 +37,6 @@ static PyObject *euler_angles_message_get_yaw(EulerAnglesMessage *self) {
     return PyFloat_FromDouble((double) self->message.yaw);
 }
 
-static PyObject *euler_angles_message_to_string(EulerAnglesMessage *self, PyObject *args) {
-    const char *const string = XIMU3_euler_angles_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyObject *euler_angles_message_to_quaternion_message(EulerAnglesMessage *self, PyObject *args);
 
 static PyGetSetDef euler_angles_message_get_set[] = {
@@ -48,7 +48,6 @@ static PyGetSetDef euler_angles_message_get_set[] = {
 };
 
 static PyMethodDef euler_angles_message_methods[] = {
-    {"to_string", (PyCFunction) euler_angles_message_to_string, METH_NOARGS, ""},
     {"to_quaternion_message", (PyCFunction) euler_angles_message_to_quaternion_message, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
@@ -58,6 +57,7 @@ static PyTypeObject euler_angles_message_object = {
     .tp_name = "ximu3.EulerAnglesMessage",
     .tp_basicsize = sizeof(EulerAnglesMessage),
     .tp_dealloc = (destructor) euler_angles_message_free,
+    .tp_str = (reprfunc) euler_angles_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = euler_angles_message_get_set,
     .tp_methods = euler_angles_message_methods,

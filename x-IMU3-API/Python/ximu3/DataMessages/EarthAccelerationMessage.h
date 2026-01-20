@@ -15,6 +15,12 @@ static void earth_acceleration_message_free(EarthAccelerationMessage *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *earth_acceleration_message_str(EarthAccelerationMessage *self) {
+    const char *const string = XIMU3_earth_acceleration_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *earth_acceleration_message_get_timestamp(EarthAccelerationMessage *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
 }
@@ -47,12 +53,6 @@ static PyObject *earth_acceleration_message_get_acceleration_z(EarthAcceleration
     return PyFloat_FromDouble((double) self->message.acceleration_z);
 }
 
-static PyObject *earth_acceleration_message_to_string(EarthAccelerationMessage *self, PyObject *args) {
-    const char *const string = XIMU3_earth_acceleration_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyObject *earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage *self, PyObject *args);
 
 static PyGetSetDef earth_acceleration_message_get_set[] = {
@@ -68,7 +68,6 @@ static PyGetSetDef earth_acceleration_message_get_set[] = {
 };
 
 static PyMethodDef earth_acceleration_message_methods[] = {
-    {"to_string", (PyCFunction) earth_acceleration_message_to_string, METH_NOARGS, ""},
     {"to_euler_angles_message", (PyCFunction) earth_acceleration_message_to_euler_angles_message, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
@@ -78,6 +77,7 @@ static PyTypeObject earth_acceleration_message_object = {
     .tp_name = "ximu3.EarthAccelerationMessage",
     .tp_basicsize = sizeof(EarthAccelerationMessage),
     .tp_dealloc = (destructor) earth_acceleration_message_free,
+    .tp_str = (reprfunc) earth_acceleration_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = earth_acceleration_message_get_set,
     .tp_methods = earth_acceleration_message_methods,

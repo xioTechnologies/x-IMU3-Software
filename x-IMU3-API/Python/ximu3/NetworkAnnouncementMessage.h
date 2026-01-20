@@ -13,6 +13,12 @@ static void network_announcement_message_free(NetworkAnnouncementMessage *self) 
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *network_announcement_message_str(NetworkAnnouncementMessage *self) {
+    const char *const string = XIMU3_network_announcement_message_to_string(self->message);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *network_announcement_message_get_device_name(NetworkAnnouncementMessage *self) {
     return PyUnicode_FromString(self->message.device_name);
 }
@@ -61,12 +67,6 @@ static PyObject *network_announcement_message_to_udp_connection_info(NetworkAnno
     return udp_connection_info_from(&connection_info);
 }
 
-static PyObject *network_announcement_message_to_string(NetworkAnnouncementMessage *self, PyObject *args) {
-    const char *const string = XIMU3_network_announcement_message_to_string(self->message);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef network_announcement_message_get_set[] = {
     {"device_name", (getter) network_announcement_message_get_device_name, NULL, "", NULL},
     {"serial_number", (getter) network_announcement_message_get_serial_number, NULL, "", NULL},
@@ -83,7 +83,6 @@ static PyGetSetDef network_announcement_message_get_set[] = {
 static PyMethodDef network_announcement_message_methods[] = {
     {"to_tcp_connection_info", (PyCFunction) network_announcement_message_to_tcp_connection_info, METH_NOARGS, ""},
     {"to_udp_connection_info", (PyCFunction) network_announcement_message_to_udp_connection_info, METH_NOARGS, ""},
-    {"to_string", (PyCFunction) network_announcement_message_to_string, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 
@@ -92,6 +91,7 @@ static PyTypeObject network_announcement_message_object = {
     .tp_name = "ximu3.NetworkAnnouncementMessage",
     .tp_basicsize = sizeof(NetworkAnnouncementMessage),
     .tp_dealloc = (destructor) network_announcement_message_free,
+    .tp_str = (reprfunc) network_announcement_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = network_announcement_message_get_set,
     .tp_methods = network_announcement_message_methods,
