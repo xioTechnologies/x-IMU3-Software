@@ -6,9 +6,9 @@ namespace Ximu3Examples
         {
             if (Helpers.YesOrNo("Search for connections?"))
             {
-                Ximu3.NetworkAnnouncement networkAnnouncement = new();
+                var networkAnnouncement = new Ximu3.NetworkAnnouncement();
 
-                Ximu3.CApi.XIMU3_Result result = networkAnnouncement.GetResult();
+                var result = networkAnnouncement.GetResult();
 
                 if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
@@ -16,7 +16,7 @@ namespace Ximu3Examples
                     return;
                 }
 
-                Ximu3.CApi.XIMU3_NetworkAnnouncementMessage[] messages = networkAnnouncement.GetMessagesAfterShortDelay();
+                var messages = networkAnnouncement.GetMessagesAfterShortDelay();
 
                 if (messages.Length == 0)
                 {
@@ -26,13 +26,13 @@ namespace Ximu3Examples
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(messages[0].device_name) + " " + Ximu3.Helpers.ToString(messages[0].serial_number));
 
-                Ximu3.UdpConnectionConfig config = new(messages[0]);
+                var config = new Ximu3.UdpConnectionConfig(messages[0]);
 
                 Run(config);
             }
             else
             {
-                Ximu3.UdpConnectionConfig config = new("192.168.1.1", 9000, 8000); // replace with actual connection config
+                var config = new Ximu3.UdpConnectionConfig("192.168.1.1", 9000, 8000); // replace with actual connection config
 
                 Run(config);
             }

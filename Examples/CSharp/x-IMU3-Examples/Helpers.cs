@@ -4,7 +4,7 @@
     {
         public static Char? GetKey()
         {
-            string? buffer = Console.ReadLine();
+            var buffer = Console.ReadLine();
 
             if (string.IsNullOrEmpty(buffer))
             {
@@ -19,6 +19,7 @@
             while (true)
             {
                 Console.WriteLine(question + " [Y/N]");
+
                 switch (GetKey())
                 {
                     case 'Y':

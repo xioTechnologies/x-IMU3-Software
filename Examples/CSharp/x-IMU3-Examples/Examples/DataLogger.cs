@@ -5,17 +5,17 @@ namespace Ximu3Examples
         public DataLogger()
         {
             // Open all USB connections
-            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
+            var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
             List<Ximu3.Connection> connections = [];
 
-            foreach (Ximu3.CApi.XIMU3_Device device in devices)
+            foreach (var device in devices)
             {
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
 
-                Ximu3.Connection connection = new(Ximu3.ConnectionConfig.From(device)!);
+                var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(device)!);
 
-                Ximu3.CApi.XIMU3_Result result = connection.Open();
+                var result = connection.Open();
 
                 if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
@@ -34,14 +34,14 @@ namespace Ximu3Examples
             }
 
             // Log data
-            string destination = "C:/";
-            string name = "x-IMU3 Data Logger Example";
+            var destination = "C:/";
+            var name = "x-IMU3 Data Logger Example";
 
             if (Helpers.YesOrNo("Use async implementation?"))
             {
-                using Ximu3.DataLogger dataLogger = new(destination, name, [.. connections]);
+                using var dataLogger = new Ximu3.DataLogger(destination, name, [.. connections]);
 
-                Ximu3.CApi.XIMU3_Result result = dataLogger.GetResult();
+                var result = dataLogger.GetResult();
 
                 if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
@@ -52,7 +52,7 @@ namespace Ximu3Examples
             }
             else
             {
-                Ximu3.CApi.XIMU3_Result result = Ximu3.DataLogger.Log(destination, name, [.. connections], 3);
+                var result = Ximu3.DataLogger.Log(destination, name, [.. connections], 3);
 
                 if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
@@ -63,7 +63,7 @@ namespace Ximu3Examples
             Console.WriteLine("Complete");
 
             // Close all connections
-            foreach (Ximu3.Connection connection in connections)
+            foreach (var connection in connections)
             {
                 connection.Close();
             }

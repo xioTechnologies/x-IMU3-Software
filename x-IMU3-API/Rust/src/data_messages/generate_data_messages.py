@@ -384,6 +384,6 @@ template = """\
         public UInt64 Add$name_pascal_case$Callback($name_pascal_case$Callback callback)
         {
             return CApi.XIMU3_connection_add_$name_snake_case$_callback(connection, $name_pascal_case$CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }\n"""
+        }\n\n"""
 
 insert(file_path, template, 0)

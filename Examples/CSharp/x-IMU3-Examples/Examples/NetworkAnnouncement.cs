@@ -4,9 +4,9 @@ namespace Ximu3Examples
     {
         public NetworkAnnouncement()
         {
-            Ximu3.NetworkAnnouncement networkAnnouncement = new();
+            var networkAnnouncement = new Ximu3.NetworkAnnouncement();
 
-            Ximu3.CApi.XIMU3_Result result = networkAnnouncement.GetResult();
+            var result = networkAnnouncement.GetResult();
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
@@ -22,7 +22,7 @@ namespace Ximu3Examples
             }
             else
             {
-                foreach (Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message in networkAnnouncement.GetMessages())
+                foreach (var message in networkAnnouncement.GetMessages())
                 {
                     PrintMessage(message);
                 }
@@ -36,7 +36,8 @@ namespace Ximu3Examples
 
         private static void PrintMessage(Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message)
         {
-            Console.WriteLine(Ximu3.Helpers.ToString(message.device_name) + ", " +
+            Console.WriteLine(
+                Ximu3.Helpers.ToString(message.device_name) + ", " +
                 Ximu3.Helpers.ToString(message.serial_number) + ", " +
                 Ximu3.Helpers.ToString(message.ip_address) + ", " +
                 message.tcp_port + ", " +
@@ -44,7 +45,8 @@ namespace Ximu3Examples
                 message.udp_receive + ", " +
                 message.rssi + "%, " +
                 message.battery + "%, " +
-                Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_charging_status_to_string(message.charging_status)));
+                Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_charging_status_to_string(message.charging_status))
+            );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_network_announcement_message_to_string(message))); // alternative to above
         }
     }

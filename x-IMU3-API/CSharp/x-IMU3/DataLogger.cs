@@ -7,7 +7,12 @@ namespace Ximu3
     {
         public DataLogger(string destination, string name, Connection[] connections)
         {
-            dataLogger = CApi.XIMU3_data_logger_new(Helpers.ToPointer(destination), Helpers.ToPointer(name), Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0), (UInt32)connections.Length);
+            dataLogger = CApi.XIMU3_data_logger_new(
+                Helpers.ToPointer(destination),
+                Helpers.ToPointer(name),
+                Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0),
+                (UInt32)connections.Length
+            );
         }
 
         ~DataLogger() => Dispose();
@@ -17,8 +22,10 @@ namespace Ximu3
             if (dataLogger != IntPtr.Zero)
             {
                 CApi.XIMU3_data_logger_free(dataLogger);
+
                 dataLogger = IntPtr.Zero;
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -29,16 +36,24 @@ namespace Ximu3
 
         public static CApi.XIMU3_Result Log(string destination, string name, Connection[] connections, UInt32 seconds)
         {
-            return CApi.XIMU3_data_logger_log(Helpers.ToPointer(destination), Helpers.ToPointer(name), Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0), (UInt32)connections.Length, seconds);
+            return CApi.XIMU3_data_logger_log(
+                Helpers.ToPointer(destination),
+                Helpers.ToPointer(name),
+                Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0),
+                (UInt32)connections.Length,
+                seconds
+            );
         }
 
         private static IntPtr[] ToPointers(Connection[] connections)
         {
-            IntPtr[] pointers = new IntPtr[connections.Length];
-            for (int i = 0; i < connections.Length; i++)
+            var pointers = new IntPtr[connections.Length];
+
+            for (var i = 0; i < connections.Length; i++)
             {
                 pointers[i] = connections[i].connection;
             }
+
             return pointers;
         }
 

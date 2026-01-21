@@ -4,7 +4,7 @@ namespace Ximu3Examples
     {
         public GetPortNames()
         {
-            string[] portNames = Ximu3.PortScanner.GetPortNames();
+            var portNames = Ximu3.PortScanner.GetPortNames();
 
             if (portNames.Length == 0)
             {
@@ -12,7 +12,7 @@ namespace Ximu3Examples
                 return;
             }
 
-            foreach (string portName in portNames)
+            foreach (var portName in portNames)
             {
                 Console.WriteLine(portName);
             }

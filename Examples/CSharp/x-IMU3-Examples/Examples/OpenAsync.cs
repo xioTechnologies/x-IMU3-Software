@@ -5,7 +5,7 @@
         public OpenAsync()
         {
             // Search for connection
-            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
+            var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
             if (devices.Length == 0)
             {
@@ -16,7 +16,7 @@
             Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
-            Ximu3.Connection connection = new(Ximu3.ConnectionConfig.From(devices[0])!);
+            var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(devices[0])!);
 
             Ximu3.Connection.OpenAsyncCallback callback = result =>
             {
