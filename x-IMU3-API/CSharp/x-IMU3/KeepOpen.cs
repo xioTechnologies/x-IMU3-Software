@@ -6,6 +6,7 @@ namespace Ximu3
     public class KeepOpen(Connection connection, KeepOpen.Callback callback) : IDisposable
     {
         public delegate void Callback(CApi.XIMU3_ConnectionStatus status);
+
         private static void CallbackInternal(CApi.XIMU3_ConnectionStatus status, IntPtr context)
         {
             Marshal.GetDelegateForFunctionPointer<Callback>(context)(status);
@@ -18,8 +19,10 @@ namespace Ximu3
             if (keepOpen != IntPtr.Zero)
             {
                 CApi.XIMU3_keep_open_free(keepOpen);
+
                 keepOpen = IntPtr.Zero;
             }
+
             GC.SuppressFinalize(this);
         }
 

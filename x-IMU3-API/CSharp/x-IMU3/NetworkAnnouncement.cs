@@ -17,8 +17,10 @@ namespace Ximu3
             if (networkAnnouncement != IntPtr.Zero)
             {
                 CApi.XIMU3_network_announcement_free(networkAnnouncement);
+
                 networkAnnouncement = IntPtr.Zero;
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -28,6 +30,7 @@ namespace Ximu3
         }
 
         public delegate void Callback(CApi.XIMU3_NetworkAnnouncementMessage message);
+
         private static void CallbackInternal(CApi.XIMU3_NetworkAnnouncementMessage message, IntPtr context)
         {
             Marshal.GetDelegateForFunctionPointer<Callback>(context)(message);
@@ -53,15 +56,18 @@ namespace Ximu3
             return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages_after_short_delay(networkAnnouncement));
         }
 
-        private static CApi.XIMU3_NetworkAnnouncementMessage[] ToArrayAndFree(CApi.XIMU3_NetworkAnnouncementMessages messages_)
+        private static CApi.XIMU3_NetworkAnnouncementMessage[] ToArrayAndFree(CApi.XIMU3_NetworkAnnouncementMessages messages)
         {
-            CApi.XIMU3_NetworkAnnouncementMessage[] messages = new CApi.XIMU3_NetworkAnnouncementMessage[messages_.length];
-            for (int i = 0; i < messages_.length; i++)
+            var array = new CApi.XIMU3_NetworkAnnouncementMessage[messages.length];
+
+            for (var i = 0; i < messages.length; i++)
             {
-                messages[i] = Marshal.PtrToStructure<CApi.XIMU3_NetworkAnnouncementMessage>(messages_.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_NetworkAnnouncementMessage)));
+                array[i] = Marshal.PtrToStructure<CApi.XIMU3_NetworkAnnouncementMessage>(messages.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_NetworkAnnouncementMessage)));
             }
-            CApi.XIMU3_network_announcement_messages_free(messages_);
-            return messages;
+
+            CApi.XIMU3_network_announcement_messages_free(messages);
+
+            return array;
         }
 
         private IntPtr networkAnnouncement;

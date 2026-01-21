@@ -117,7 +117,7 @@ for line in c_code.splitlines():
     cs_code += "public static extern " + line + "\n\n"
 
 # Write C# file
-cs_code = "\n".join([f"        {p}" for p in cs_code.splitlines() if p])
+cs_code = "\n".join([f"        {p}" if p else "" for p in cs_code.splitlines()])
 
 cs_code = f"""\
 using System;
@@ -134,7 +134,8 @@ namespace Ximu3
 
 {cs_code}
     }}
-}}"""
+}}
+"""
 
 with open("CApi.cs", "w") as file:
     file.write(cs_code)

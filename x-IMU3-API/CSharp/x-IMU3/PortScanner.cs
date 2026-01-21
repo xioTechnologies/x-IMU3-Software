@@ -6,6 +6,7 @@ namespace Ximu3
     public class PortScanner(PortScanner.Callback callback) : IDisposable
     {
         public delegate void Callback(CApi.XIMU3_Device[] devices);
+
         private static void CallbackInternal(CApi.XIMU3_Devices devices, IntPtr context)
         {
             Marshal.GetDelegateForFunctionPointer<Callback>(context)(ToArrayAndFree(devices));
@@ -20,6 +21,7 @@ namespace Ximu3
                 CApi.XIMU3_port_scanner_free(portScanner);
                 portScanner = IntPtr.Zero;
             }
+
             GC.SuppressFinalize(this);
         }
 
@@ -43,15 +45,18 @@ namespace Ximu3
             return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_get_port_names());
         }
 
-        private static CApi.XIMU3_Device[] ToArrayAndFree(CApi.XIMU3_Devices devices_)
+        private static CApi.XIMU3_Device[] ToArrayAndFree(CApi.XIMU3_Devices devices)
         {
-            CApi.XIMU3_Device[] devices = new CApi.XIMU3_Device[devices_.length];
-            for (int i = 0; i < devices_.length; i++)
+            var array = new CApi.XIMU3_Device[devices.length];
+
+            for (var i = 0; i < devices.length; i++)
             {
-                devices[i] = Marshal.PtrToStructure<CApi.XIMU3_Device>(devices_.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device)));
+                array[i] = Marshal.PtrToStructure<CApi.XIMU3_Device>(devices.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device)));
             }
-            CApi.XIMU3_devices_free(devices_);
-            return devices;
+
+            CApi.XIMU3_devices_free(devices);
+
+            return array;
         }
 
         private IntPtr portScanner = CApi.XIMU3_port_scanner_new(CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));

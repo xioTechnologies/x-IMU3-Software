@@ -181,6 +181,7 @@ namespace Ximu3
                 CApi.XIMU3_mux_connection_config_free(connectionConfig);
                 connectionConfig = IntPtr.Zero;
             }
+
             GC.SuppressFinalize(this);
         }
 

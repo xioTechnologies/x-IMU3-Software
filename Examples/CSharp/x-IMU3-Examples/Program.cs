@@ -78,6 +78,7 @@ namespace Ximu3Examples
 
             Console.WriteLine("Press any key to exit");
             Helpers.GetKey();
+
             return 0;
         }
     }

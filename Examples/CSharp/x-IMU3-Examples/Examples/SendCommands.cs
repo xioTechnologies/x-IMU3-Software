@@ -5,7 +5,7 @@ namespace Ximu3Examples
         public SendCommands()
         {
             // Search for connection
-            Ximu3.CApi.XIMU3_Device[] devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
+            var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
             if (devices.Length == 0)
             {
@@ -16,9 +16,9 @@ namespace Ximu3Examples
             Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(devices[0])));
 
             // Open connection
-            Ximu3.Connection connection = new(Ximu3.ConnectionConfig.From(devices[0])!);
+            var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(devices[0])!);
 
-            Ximu3.CApi.XIMU3_Result result = connection.Open();
+            var result = connection.Open();
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
@@ -27,7 +27,8 @@ namespace Ximu3Examples
             }
 
             // Example commands
-            string[] commands = [
+            string[] commands =
+            [
                 "{\"device_name\":\"Foobar\"}", // write "Foobar" to device name
                 "{\"serial_number\":null}", // read serial number
                 "{\"firmware_version\":null}", // read firmware version
@@ -57,7 +58,7 @@ namespace Ximu3Examples
 
         private static void PrintResponses(Ximu3.CommandMessage?[] responses)
         {
-            foreach (Ximu3.CommandMessage? response in responses)
+            foreach (var response in responses)
             {
                 if (response == null)
                 {
