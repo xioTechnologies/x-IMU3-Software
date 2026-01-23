@@ -12,7 +12,7 @@ class Connection:
 
         response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
-        if response is None:
+        if not response:
             raise Exception(f"Ping failed for {self.__connection.get_config()}")
 
         self.__prefix = f"{response.device_name} {response.serial_number}"
@@ -50,7 +50,7 @@ class Connection:
 
         response = self.__connection.send_command(command)
 
-        if response is None:
+        if not response:
             raise Exception(f"No response. {command} sent to {self.__connection.get_config()}")
 
         if response.error:

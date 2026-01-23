@@ -20,7 +20,7 @@ connection.open()
 
 
 def print_response(response: ximu3.PingResponse | None) -> None:
-    if response is None:
+    if not response:
         raise Exception("No response")
 
     print(", ".join([response.interface, response.device_name, response.serial_number]))

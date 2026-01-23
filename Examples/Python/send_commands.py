@@ -29,7 +29,7 @@ commands = [
 
 def print_responses(responses: list[ximu3.CommandMessage | None]) -> None:
     for response in responses:
-        if response is None:
+        if not response:
             print("No response")
             continue
 
