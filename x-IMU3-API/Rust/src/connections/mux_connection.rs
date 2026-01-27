@@ -49,6 +49,7 @@ impl GenericConnection for MuxConnection {
                         channel,
                         message: data,
                     };
+
                     if let Some(connection_write_sender) = &connection.lock().unwrap().get_write_sender() {
                         connection_write_sender.send(message.into_bytes()).ok();
                     }

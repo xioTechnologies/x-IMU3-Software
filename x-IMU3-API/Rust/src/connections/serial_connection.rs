@@ -51,6 +51,7 @@ impl GenericConnection for SerialConnection {
                 if let Ok(number_of_bytes) = serial_port.read(buffer.as_mut_slice()) {
                     receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
                 }
+
                 while let Ok(data) = write_receiver.try_recv() {
                     serial_port.write(&data).ok();
                 }

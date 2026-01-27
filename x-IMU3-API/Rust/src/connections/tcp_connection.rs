@@ -51,6 +51,7 @@ impl GenericConnection for TcpConnection {
                         std::thread::sleep(std::time::Duration::from_millis(1));
                     }
                 }
+
                 while let Ok(data) = write_receiver.try_recv() {
                     stream.write(&data).ok();
                 }

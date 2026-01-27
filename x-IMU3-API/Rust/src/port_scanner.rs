@@ -108,24 +108,27 @@ impl PortScanner {
 
         let connection = Connection::new(&ConnectionConfig::SerialConnectionConfig(config.clone()));
 
-        if let Ok(_) = connection.open() {
-            if let Some(response) = connection.ping() {
-                let device = Device {
-                    device_name: response.device_name,
-                    serial_number: response.serial_number,
-                    connection_config: match response.interface.as_str() {
-                        "USB" => ConnectionConfig::UsbConnectionConfig(config.into()),
-                        "Serial" => ConnectionConfig::SerialConnectionConfig(config),
-                        "Bluetooth" => ConnectionConfig::BluetoothConnectionConfig(config.into()),
-                        _ => ConnectionConfig::SerialConnectionConfig(config),
-                    },
-                };
-
-                devices.lock().unwrap().push(device);
-                sender.send(()).ok();
-            }
-            connection.close();
+        if connection.open().is_err() {
+            return;
         }
+
+        let Some(response) = connection.ping() else {
+            return;
+        };
+
+        let device = Device {
+            device_name: response.device_name,
+            serial_number: response.serial_number,
+            connection_config: match response.interface.as_str() {
+                "USB" => ConnectionConfig::UsbConnectionConfig(config.into()),
+                "Serial" => ConnectionConfig::SerialConnectionConfig(config),
+                "Bluetooth" => ConnectionConfig::BluetoothConnectionConfig(config.into()),
+                _ => ConnectionConfig::SerialConnectionConfig(config),
+            },
+        };
+
+        devices.lock().unwrap().push(device);
+        sender.send(()).ok();
     }
 
     pub fn get_devices(&self) -> Vec<Device> {
@@ -166,14 +169,15 @@ impl PortScanner {
     }
 
     pub fn get_port_names() -> Vec<String> {
-        if let Ok(serial_port_configs) = serialport::available_ports() {
-            let mut port_names: Vec<String> = serial_port_configs.iter().map(|config| config.port_name.to_owned()).collect();
+        let Ok(serial_port_configs) = serialport::available_ports() else {
+            return Vec::new();
+        };
 
-            port_names.retain(|port_name| port_name.contains("/dev/cu") == false);
+        let mut port_names: Vec<String> = serial_port_configs.iter().map(|config| config.port_name.to_owned()).collect();
 
-            return port_names;
-        }
-        Vec::new()
+        port_names.retain(|port_name| port_name.contains("/dev/cu") == false);
+
+        port_names
     }
 }
 

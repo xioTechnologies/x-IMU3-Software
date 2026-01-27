@@ -51,6 +51,7 @@ impl GenericConnection for UdpConnection {
                         std::thread::sleep(std::time::Duration::from_millis(1));
                     }
                 }
+
                 while let Ok(data) = write_receiver.try_recv() {
                     socket.send_to(&data, socket_address).ok();
                 }
