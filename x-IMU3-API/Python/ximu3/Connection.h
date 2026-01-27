@@ -26,81 +26,40 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &config)) {
-        if (PyObject_TypeCheck(config, &usb_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_usb(((UsbConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &serial_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_serial(((SerialConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &tcp_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_tcp(((TcpConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &udp_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_udp(((UdpConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &bluetooth_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_bluetooth(((BluetoothConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &file_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_file(((FileConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
-        if (PyObject_TypeCheck(config, &mux_connection_config_object) != 0) {
-            Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
-
-            if (self == NULL) {
-                return NULL;
-            }
-
-            self->wrapped = XIMU3_connection_new_mux(((MuxConnectionConfig *) config)->wrapped);
-            return (PyObject *) self;
-        }
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &config) == 0) {
+        return NULL;
     }
 
-    PyErr_SetString(PyExc_TypeError, "'config' must be ximu3.*ConnectionConfig");
-    return NULL;
+    XIMU3_Connection *connection;
+
+    if (PyObject_TypeCheck(config, &usb_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_usb(((UsbConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &serial_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_serial(((SerialConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &tcp_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_tcp(((TcpConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &udp_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_udp(((UdpConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &bluetooth_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &file_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_file(((FileConnectionConfig *) config)->wrapped);
+    } else if (PyObject_TypeCheck(config, &mux_connection_config_object) != 0) {
+        connection = XIMU3_connection_new_mux(((MuxConnectionConfig *) config)->wrapped);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "'config' must be ximu3.*ConnectionConfig");
+        return NULL;
+    }
+
+    Connection *self = (Connection *) subtype->tp_alloc(subtype, 0);
+
+    if (self == NULL) {
+        XIMU3_connection_free(connection);
+        return NULL;
+    }
+
+    self->wrapped = connection;
+    return (PyObject *) self;
 }
 
 static void connection_free(Connection *self) {
