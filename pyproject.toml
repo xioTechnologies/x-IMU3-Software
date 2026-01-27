@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ximu3"
-version = "1.7.2"
+version = "1.8.0"
 description = "x-IMU3 API"
 readme = { text = "See [github](https://github.com/xioTechnologies/x-IMU3-Software) for documentation and examples.", content-type = "text/markdown" }
 authors = [{ name = "x-io Technologies Limited", email = "info@x-io.co.uk" }]
