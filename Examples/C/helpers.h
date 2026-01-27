@@ -1,3 +1,6 @@
+#ifndef HELPERS_H
+#define HELPERS_H
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -42,3 +45,5 @@ static void sleep(const time_t seconds) {
         fflush(stdout);
     }
 }
+
+#endif
