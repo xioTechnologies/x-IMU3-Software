@@ -222,10 +222,10 @@ template = "        let $name_snake_case$_closures = dispatcher.$name_snake_case
 insert(file_path, template, 3)
 
 template = """\
-                        DispatcherData::$name_pascal_case$(message) => {
-                            data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
-                            $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
-                        }\n"""
+                DispatcherData::$name_pascal_case$(message) => {
+                    data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
+                    $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
+                }\n"""
 
 insert(file_path, template, 4)
 
