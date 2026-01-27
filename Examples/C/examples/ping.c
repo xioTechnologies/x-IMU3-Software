@@ -10,6 +10,8 @@ void ping() {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
+    sleep(1); // wait for OS to release port
+
     if (devices.length == 0) {
         printf("No USB connections available\n");
         return;

@@ -7,6 +7,8 @@ namespace Ximu3Examples
             // Search for connection
             var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
+            System.Threading.Thread.Sleep(1000); // wait for OS to release port
+
             if (devices.Length == 0)
             {
                 Console.WriteLine("No USB connections available");

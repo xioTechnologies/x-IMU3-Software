@@ -13,6 +13,8 @@ public:
         // Open all USB connections
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for OS to release port
+
         std::vector<std::unique_ptr<ximu3::Connection> > connections;
 
         for (auto device: devices) {

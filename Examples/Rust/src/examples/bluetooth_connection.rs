@@ -7,6 +7,8 @@ pub fn run() {
     if helpers::yes_or_no("Search for connections?") {
         let devices = PortScanner::scan_filter(PortType::Bluetooth);
 
+        std::thread::sleep(std::time::Duration::from_secs(1)); // wait for OS to release port
+
         let Some(device) = devices.first() else {
             println!("No Bluetooth connections available");
             return;

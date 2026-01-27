@@ -8,6 +8,8 @@ void data_logger() {
     // Open all USB connections
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
+    sleep(1); // wait for OS to release port
+
     XIMU3_Connection *connections[MAX_NUMBER_OF_CONNECTION];
     uint32_t number_of_connections = 0;
 

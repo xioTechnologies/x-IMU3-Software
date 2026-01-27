@@ -7,6 +7,8 @@ pub fn run() {
     // Search for connection
     let devices = PortScanner::scan_filter(PortType::Usb);
 
+    std::thread::sleep(std::time::Duration::from_secs(1)); // wait for OS to release port
+
     let Some(device) = devices.first() else {
         println!("No USB connections available");
         return;

@@ -7,6 +7,8 @@ namespace Ximu3Examples
             // Open all USB connections
             var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 
+            System.Threading.Thread.Sleep(1000); // wait for OS to release port
+
             List<Ximu3.Connection> connections = [];
 
             foreach (var device in devices)

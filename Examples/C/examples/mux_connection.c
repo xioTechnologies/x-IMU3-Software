@@ -1,10 +1,13 @@
-#include "../../../x-IMU3-API/C/Ximu3.h"
+#include "../helpers.h"
 #include "connection.h"
 #include <stdio.h>
+#include "Ximu3.h"
 
 void mux_connection() {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
+
+    sleep(1); // wait for OS to release port
 
     if (devices.length == 0) {
         printf("No USB connections available\n");
