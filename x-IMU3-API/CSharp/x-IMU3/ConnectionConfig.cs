@@ -29,157 +29,157 @@ namespace Ximu3
     {
         public UsbConnectionConfig(string portName)
         {
-            connectionConfig.port_name = Helpers.ToBytes(portName);
+            wrapped.port_name = Helpers.ToBytes(portName);
         }
 
-        public UsbConnectionConfig(CApi.XIMU3_UsbConnectionConfig connectionConfig)
+        public UsbConnectionConfig(CApi.XIMU3_UsbConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_usb_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_usb_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_UsbConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_UsbConnectionConfig wrapped = new();
     }
 
     public class SerialConnectionConfig : ConnectionConfig
     {
         public SerialConnectionConfig(string portName, UInt32 baudRate, bool rtsCtsEnabled)
         {
-            connectionConfig.port_name = Helpers.ToBytes(portName);
-            connectionConfig.baud_rate = baudRate;
-            connectionConfig.rts_cts_enabled = rtsCtsEnabled;
+            wrapped.port_name = Helpers.ToBytes(portName);
+            wrapped.baud_rate = baudRate;
+            wrapped.rts_cts_enabled = rtsCtsEnabled;
         }
 
-        public SerialConnectionConfig(CApi.XIMU3_SerialConnectionConfig connectionConfig)
+        public SerialConnectionConfig(CApi.XIMU3_SerialConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_serial_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_serial_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_SerialConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_SerialConnectionConfig wrapped = new();
     }
 
     public class TcpConnectionConfig : ConnectionConfig
     {
         public TcpConnectionConfig(string ipAddress, UInt16 port)
         {
-            connectionConfig.ip_address = Helpers.ToBytes(ipAddress);
-            connectionConfig.port = port;
+            wrapped.ip_address = Helpers.ToBytes(ipAddress);
+            wrapped.port = port;
         }
 
-        public TcpConnectionConfig(CApi.XIMU3_TcpConnectionConfig connectionConfig)
+        public TcpConnectionConfig(CApi.XIMU3_TcpConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public TcpConnectionConfig(CApi.XIMU3_NetworkAnnouncementMessage message)
         {
-            this.connectionConfig = CApi.XIMU3_network_announcement_message_to_tcp_connection_config(message);
+            this.wrapped = CApi.XIMU3_network_announcement_message_to_tcp_connection_config(message);
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_tcp_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_tcp_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_TcpConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_TcpConnectionConfig wrapped = new();
     }
 
     public class UdpConnectionConfig : ConnectionConfig
     {
         public UdpConnectionConfig(string ipAddress, UInt16 sendPort, UInt16 receivePort)
         {
-            connectionConfig.ip_address = Helpers.ToBytes(ipAddress);
-            connectionConfig.send_port = sendPort;
-            connectionConfig.receive_port = receivePort;
+            wrapped.ip_address = Helpers.ToBytes(ipAddress);
+            wrapped.send_port = sendPort;
+            wrapped.receive_port = receivePort;
         }
 
-        public UdpConnectionConfig(CApi.XIMU3_UdpConnectionConfig connectionConfig)
+        public UdpConnectionConfig(CApi.XIMU3_UdpConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public UdpConnectionConfig(CApi.XIMU3_NetworkAnnouncementMessage message)
         {
-            this.connectionConfig = CApi.XIMU3_network_announcement_message_to_udp_connection_config(message);
+            this.wrapped = CApi.XIMU3_network_announcement_message_to_udp_connection_config(message);
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_udp_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_udp_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_UdpConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_UdpConnectionConfig wrapped = new();
     }
 
     public class BluetoothConnectionConfig : ConnectionConfig
     {
         public BluetoothConnectionConfig(string portName)
         {
-            connectionConfig.port_name = Helpers.ToBytes(portName);
+            wrapped.port_name = Helpers.ToBytes(portName);
         }
 
-        public BluetoothConnectionConfig(CApi.XIMU3_BluetoothConnectionConfig connectionConfig)
+        public BluetoothConnectionConfig(CApi.XIMU3_BluetoothConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_bluetooth_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_bluetooth_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_BluetoothConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_BluetoothConnectionConfig wrapped = new();
     }
 
     public class FileConnectionConfig : ConnectionConfig
     {
         public FileConnectionConfig(string filePath)
         {
-            connectionConfig.file_path = Helpers.ToBytes(filePath);
+            wrapped.file_path = Helpers.ToBytes(filePath);
         }
 
-        public FileConnectionConfig(CApi.XIMU3_FileConnectionConfig connectionConfig)
+        public FileConnectionConfig(CApi.XIMU3_FileConnectionConfig config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_file_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_file_connection_config_to_string(wrapped));
         }
 
-        public CApi.XIMU3_FileConnectionConfig connectionConfig = new();
+        public CApi.XIMU3_FileConnectionConfig wrapped = new();
     }
 
     public class MuxConnectionConfig : ConnectionConfig, IDisposable
     {
         public MuxConnectionConfig(Byte channel, Connection connection)
         {
-            connectionConfig = CApi.XIMU3_mux_connection_config_new(channel, connection.connection);
+            wrapped = CApi.XIMU3_mux_connection_config_new(channel, connection.wrapped);
         }
 
-        public MuxConnectionConfig(IntPtr connectionConfig)
+        public MuxConnectionConfig(IntPtr config)
         {
-            this.connectionConfig = connectionConfig;
+            this.wrapped = config;
         }
 
         ~MuxConnectionConfig() => Dispose();
 
         public void Dispose()
         {
-            if (connectionConfig != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_mux_connection_config_free(connectionConfig);
-                connectionConfig = IntPtr.Zero;
+                CApi.XIMU3_mux_connection_config_free(wrapped);
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -187,9 +187,9 @@ namespace Ximu3
 
         public override string ToString()
         {
-            return Helpers.ToString(CApi.XIMU3_mux_connection_config_to_string(connectionConfig));
+            return Helpers.ToString(CApi.XIMU3_mux_connection_config_to_string(wrapped));
         }
 
-        public IntPtr connectionConfig;
+        public IntPtr wrapped;
     }
 }

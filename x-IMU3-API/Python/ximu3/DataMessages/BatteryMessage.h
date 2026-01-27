@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_BatteryMessage message;
+    XIMU3_BatteryMessage wrapped;
 } BatteryMessage;
 
 static void battery_message_free(BatteryMessage *self) {
@@ -16,25 +16,25 @@ static void battery_message_free(BatteryMessage *self) {
 }
 
 static PyObject *battery_message_str(BatteryMessage *self) {
-    const char *const string = XIMU3_battery_message_to_string(self->message);
+    const char *const string = XIMU3_battery_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *battery_message_get_timestamp(BatteryMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *battery_message_get_percentage(BatteryMessage *self) {
-    return PyFloat_FromDouble((double) self->message.percentage);
+    return PyFloat_FromDouble((double) self->wrapped.percentage);
 }
 
 static PyObject *battery_message_get_voltage(BatteryMessage *self) {
-    return PyFloat_FromDouble((double) self->message.voltage);
+    return PyFloat_FromDouble((double) self->wrapped.voltage);
 }
 
 static PyObject *battery_message_get_charging_status(BatteryMessage *self) {
-    return PyFloat_FromDouble((double) self->message.charging_status);
+    return PyFloat_FromDouble((double) self->wrapped.charging_status);
 }
 
 static PyGetSetDef battery_message_get_set[] = {
@@ -67,7 +67,7 @@ static PyObject *battery_message_from(const XIMU3_BatteryMessage *const message)
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

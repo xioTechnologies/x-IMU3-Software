@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_MagnetometerMessage message;
+    XIMU3_MagnetometerMessage wrapped;
 } MagnetometerMessage;
 
 static void magnetometer_message_free(MagnetometerMessage *self) {
@@ -16,25 +16,25 @@ static void magnetometer_message_free(MagnetometerMessage *self) {
 }
 
 static PyObject *magnetometer_message_str(MagnetometerMessage *self) {
-    const char *const string = XIMU3_magnetometer_message_to_string(self->message);
+    const char *const string = XIMU3_magnetometer_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *magnetometer_message_get_timestamp(MagnetometerMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *magnetometer_message_get_x(MagnetometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.x);
+    return PyFloat_FromDouble((double) self->wrapped.x);
 }
 
 static PyObject *magnetometer_message_get_y(MagnetometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.y);
+    return PyFloat_FromDouble((double) self->wrapped.y);
 }
 
 static PyObject *magnetometer_message_get_z(MagnetometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.z);
+    return PyFloat_FromDouble((double) self->wrapped.z);
 }
 
 static PyGetSetDef magnetometer_message_get_set[] = {
@@ -67,7 +67,7 @@ static PyObject *magnetometer_message_from(const XIMU3_MagnetometerMessage *cons
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

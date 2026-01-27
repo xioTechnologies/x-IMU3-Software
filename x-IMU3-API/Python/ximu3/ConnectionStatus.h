@@ -4,11 +4,11 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static int connection_status_from(XIMU3_ConnectionStatus *const connection_status, const int connection_status_int) {
-    switch (connection_status_int) {
+static int connection_status_from(XIMU3_ConnectionStatus *const status, const int status_int) {
+    switch (status_int) {
         case XIMU3_ConnectionStatusConnected:
         case XIMU3_ConnectionStatusReconnecting:
-            *connection_status = (XIMU3_ConnectionStatus) connection_status_int;
+            *status = (XIMU3_ConnectionStatus) status_int;
             return 0;
     }
 
@@ -17,19 +17,19 @@ static int connection_status_from(XIMU3_ConnectionStatus *const connection_statu
 }
 
 static PyObject *connection_status_to_string(PyObject *null, PyObject *arg) {
-    const int connection_status_int = (int) PyLong_AsLong(arg);
+    const int status_int = (int) PyLong_AsLong(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    XIMU3_ConnectionStatus connection_status;
+    XIMU3_ConnectionStatus status;
 
-    if (connection_status_from(&connection_status, connection_status_int) != 0) {
+    if (connection_status_from(&status, status_int) != 0) {
         return NULL;
     }
 
-    const char *const string = XIMU3_connection_status_to_string(connection_status);
+    const char *const string = XIMU3_connection_status_to_string(status);
 
     return PyUnicode_FromString(string);
 }

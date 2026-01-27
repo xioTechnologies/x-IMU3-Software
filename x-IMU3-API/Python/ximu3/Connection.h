@@ -15,7 +15,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_Connection *connection;
+    XIMU3_Connection *wrapped;
 } Connection;
 
 static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
@@ -34,7 +34,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_usb(((UsbConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_usb(((UsbConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &serial_connection_config_object) != 0) {
@@ -44,7 +44,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_serial(((SerialConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_serial(((SerialConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &tcp_connection_config_object) != 0) {
@@ -54,7 +54,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_tcp(((TcpConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_tcp(((TcpConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &udp_connection_config_object) != 0) {
@@ -64,7 +64,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_udp(((UdpConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_udp(((UdpConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &bluetooth_connection_config_object) != 0) {
@@ -74,7 +74,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_bluetooth(((BluetoothConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_bluetooth(((BluetoothConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &file_connection_config_object) != 0) {
@@ -84,7 +84,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_file(((FileConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_file(((FileConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
         if (PyObject_TypeCheck(config, &mux_connection_config_object) != 0) {
@@ -94,7 +94,7 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
                 return NULL;
             }
 
-            self->connection = XIMU3_connection_new_mux(((MuxConnectionConfig *) config)->connection_config);
+            self->wrapped = XIMU3_connection_new_mux(((MuxConnectionConfig *) config)->wrapped);
             return (PyObject *) self;
         }
     }
@@ -105,16 +105,16 @@ static PyObject *connection_new(PyTypeObject *subtype, PyObject *args, PyObject 
 
 static void connection_free(Connection *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_connection_free(self->connection);
+        XIMU3_connection_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject *connection_open(Connection *self, PyObject *args) {
-    const XIMU3_Result result = XIMU3_connection_open(self->connection);
+    const XIMU3_Result result = XIMU3_connection_open(self->wrapped);
 
     if (result != XIMU3_ResultOk) {
-        const char *const config = XIMU3_connection_get_config_string(self->connection);
+        const char *const config = XIMU3_connection_get_config_string(self->wrapped);
         const char *const result_string = XIMU3_result_to_string(result);
 
         PyErr_Format(PyExc_RuntimeError, "Unable to open %s. %s.", config, result_string);
@@ -132,12 +132,12 @@ static PyObject *connection_open_async(Connection *self, PyObject *arg) {
 
     Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_open_async(self->connection, result_callback, arg);
+    XIMU3_connection_open_async(self->wrapped, result_callback, arg);
     Py_RETURN_NONE;
 }
 
 static PyObject *connection_close(Connection *self, PyObject *args) {
-    XIMU3_connection_close(self->connection);
+    XIMU3_connection_close(self->wrapped);
     Py_RETURN_NONE;
 }
 
@@ -145,7 +145,7 @@ static PyObject *connection_ping(Connection *self, PyObject *args) {
     XIMU3_PingResponse response;
 
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        response = XIMU3_connection_ping(self->connection);
+        response = XIMU3_connection_ping(self->wrapped);
     Py_END_ALLOW_THREADS
 
     return ping_response_from(&response);
@@ -159,7 +159,7 @@ static PyObject *connection_ping_async(Connection *self, PyObject *arg) {
 
     Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_ping_async(self->connection, ping_response_callback, arg);
+    XIMU3_connection_ping_async(self->wrapped, ping_response_callback, arg);
     Py_RETURN_NONE;
 }
 
@@ -181,7 +181,7 @@ static PyObject *connection_send_command(Connection *self, PyObject *args, PyObj
 
     XIMU3_CommandMessage response;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        response = XIMU3_connection_send_command(self->connection, command, (uint32_t) retries, (uint32_t) timeout);
+        response = XIMU3_connection_send_command(self->wrapped, command, (uint32_t) retries, (uint32_t) timeout);
     Py_END_ALLOW_THREADS
 
     return command_message_from(&response);
@@ -229,7 +229,7 @@ static PyObject *connection_send_commands(Connection *self, PyObject *args, PyOb
 
     XIMU3_CommandMessages responses;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        responses = XIMU3_connection_send_commands(self->connection, commands, length, (uint32_t) retries, (uint32_t) timeout);
+        responses = XIMU3_connection_send_commands(self->wrapped, commands, length, (uint32_t) retries, (uint32_t) timeout);
     Py_END_ALLOW_THREADS
 
     return command_messages_to_list_and_free(responses);
@@ -260,7 +260,7 @@ static PyObject *connection_send_command_async(Connection *self, PyObject *args,
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_command_async(self->connection, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callback);
+    XIMU3_connection_send_command_async(self->wrapped, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callback);
     Py_RETURN_NONE;
 }
 
@@ -313,44 +313,44 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_send_commands_async(self->connection, commands, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callback);
+    XIMU3_connection_send_commands_async(self->wrapped, commands, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callback);
     Py_RETURN_NONE;
 }
 
 static PyObject *connection_get_config(Connection *self, PyObject *args) {
-    switch (XIMU3_connection_get_type(self->connection)) {
+    switch (XIMU3_connection_get_type(self->wrapped)) {
         case XIMU3_ConnectionTypeUsb: {
-            const XIMU3_UsbConnectionConfig config = XIMU3_connection_get_config_usb(self->connection);
+            const XIMU3_UsbConnectionConfig config = XIMU3_connection_get_config_usb(self->wrapped);
 
             return usb_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeSerial: {
-            const XIMU3_SerialConnectionConfig config = XIMU3_connection_get_config_serial(self->connection);
+            const XIMU3_SerialConnectionConfig config = XIMU3_connection_get_config_serial(self->wrapped);
 
             return serial_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeTcp: {
-            const XIMU3_TcpConnectionConfig config = XIMU3_connection_get_config_tcp(self->connection);
+            const XIMU3_TcpConnectionConfig config = XIMU3_connection_get_config_tcp(self->wrapped);
 
             return tcp_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeUdp: {
-            const XIMU3_UdpConnectionConfig config = XIMU3_connection_get_config_udp(self->connection);
+            const XIMU3_UdpConnectionConfig config = XIMU3_connection_get_config_udp(self->wrapped);
 
             return udp_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeBluetooth: {
-            const XIMU3_BluetoothConnectionConfig config = XIMU3_connection_get_config_bluetooth(self->connection);
+            const XIMU3_BluetoothConnectionConfig config = XIMU3_connection_get_config_bluetooth(self->wrapped);
 
             return bluetooth_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeFile: {
-            const XIMU3_FileConnectionConfig config = XIMU3_connection_get_config_file(self->connection);
+            const XIMU3_FileConnectionConfig config = XIMU3_connection_get_config_file(self->wrapped);
 
             return file_connection_config_from(&config);
         }
         case XIMU3_ConnectionTypeMux: {
-            XIMU3_MuxConnectionConfig *config = XIMU3_connection_get_config_mux(self->connection);
+            XIMU3_MuxConnectionConfig *config = XIMU3_connection_get_config_mux(self->wrapped);
 
             return mux_connection_config_from(config);
         }
@@ -359,7 +359,7 @@ static PyObject *connection_get_config(Connection *self, PyObject *args) {
 }
 
 static PyObject *connection_get_statistics(Connection *self, PyObject *args) {
-    const XIMU3_Statistics statistics = XIMU3_connection_get_statistics(self->connection);
+    const XIMU3_Statistics statistics = XIMU3_connection_get_statistics(self->wrapped);
 
     return statistics_from(&statistics);
 }
@@ -374,7 +374,7 @@ static PyObject *connection_add_receive_error_callback(Connection *self, PyObjec
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_receive_error_callback(self->connection, receive_error_callback, arg);
+        id = XIMU3_connection_add_receive_error_callback(self->wrapped, receive_error_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -390,7 +390,7 @@ static PyObject *connection_add_statistics_callback(Connection *self, PyObject *
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_statistics_callback(self->connection, statistics_callback, arg);
+        id = XIMU3_connection_add_statistics_callback(self->wrapped, statistics_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -407,7 +407,7 @@ static PyObject *connection_add_inertial_callback(Connection *self, PyObject *ar
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_inertial_callback(self->connection, inertial_message_callback, arg);
+        id = XIMU3_connection_add_inertial_callback(self->wrapped, inertial_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -423,7 +423,7 @@ static PyObject *connection_add_magnetometer_callback(Connection *self, PyObject
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_magnetometer_callback(self->connection, magnetometer_message_callback, arg);
+        id = XIMU3_connection_add_magnetometer_callback(self->wrapped, magnetometer_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -439,7 +439,7 @@ static PyObject *connection_add_quaternion_callback(Connection *self, PyObject *
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_quaternion_callback(self->connection, quaternion_message_callback, arg);
+        id = XIMU3_connection_add_quaternion_callback(self->wrapped, quaternion_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -455,7 +455,7 @@ static PyObject *connection_add_rotation_matrix_callback(Connection *self, PyObj
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_rotation_matrix_callback(self->connection, rotation_matrix_message_callback, arg);
+        id = XIMU3_connection_add_rotation_matrix_callback(self->wrapped, rotation_matrix_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -471,7 +471,7 @@ static PyObject *connection_add_euler_angles_callback(Connection *self, PyObject
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_euler_angles_callback(self->connection, euler_angles_message_callback, arg);
+        id = XIMU3_connection_add_euler_angles_callback(self->wrapped, euler_angles_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -487,7 +487,7 @@ static PyObject *connection_add_linear_acceleration_callback(Connection *self, P
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_linear_acceleration_callback(self->connection, linear_acceleration_message_callback, arg);
+        id = XIMU3_connection_add_linear_acceleration_callback(self->wrapped, linear_acceleration_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -503,7 +503,7 @@ static PyObject *connection_add_earth_acceleration_callback(Connection *self, Py
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_earth_acceleration_callback(self->connection, earth_acceleration_message_callback, arg);
+        id = XIMU3_connection_add_earth_acceleration_callback(self->wrapped, earth_acceleration_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -519,7 +519,7 @@ static PyObject *connection_add_ahrs_status_callback(Connection *self, PyObject 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_ahrs_status_callback(self->connection, ahrs_status_message_callback, arg);
+        id = XIMU3_connection_add_ahrs_status_callback(self->wrapped, ahrs_status_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -535,7 +535,7 @@ static PyObject *connection_add_high_g_accelerometer_callback(Connection *self, 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_high_g_accelerometer_callback(self->connection, high_g_accelerometer_message_callback, arg);
+        id = XIMU3_connection_add_high_g_accelerometer_callback(self->wrapped, high_g_accelerometer_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -551,7 +551,7 @@ static PyObject *connection_add_temperature_callback(Connection *self, PyObject 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_temperature_callback(self->connection, temperature_message_callback, arg);
+        id = XIMU3_connection_add_temperature_callback(self->wrapped, temperature_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -567,7 +567,7 @@ static PyObject *connection_add_battery_callback(Connection *self, PyObject *arg
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_battery_callback(self->connection, battery_message_callback, arg);
+        id = XIMU3_connection_add_battery_callback(self->wrapped, battery_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -583,7 +583,7 @@ static PyObject *connection_add_rssi_callback(Connection *self, PyObject *arg) {
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_rssi_callback(self->connection, rssi_message_callback, arg);
+        id = XIMU3_connection_add_rssi_callback(self->wrapped, rssi_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -599,7 +599,7 @@ static PyObject *connection_add_serial_accessory_callback(Connection *self, PyOb
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_serial_accessory_callback(self->connection, serial_accessory_message_callback, arg);
+        id = XIMU3_connection_add_serial_accessory_callback(self->wrapped, serial_accessory_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -615,7 +615,7 @@ static PyObject *connection_add_notification_callback(Connection *self, PyObject
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_notification_callback(self->connection, notification_message_callback, arg);
+        id = XIMU3_connection_add_notification_callback(self->wrapped, notification_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -631,7 +631,7 @@ static PyObject *connection_add_error_callback(Connection *self, PyObject *arg) 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_error_callback(self->connection, error_message_callback, arg);
+        id = XIMU3_connection_add_error_callback(self->wrapped, error_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -662,7 +662,7 @@ static PyObject *connection_add_end_of_file_callback(Connection *self, PyObject 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_end_of_file_callback(self->connection, end_of_file_callback, arg);
+        id = XIMU3_connection_add_end_of_file_callback(self->wrapped, end_of_file_callback, arg);
     Py_END_ALLOW_THREADS
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }
@@ -675,7 +675,7 @@ static PyObject *connection_remove_callback(Connection *self, PyObject *arg) {
     }
 
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_connection_remove_callback(self->connection, (uint64_t) callback_id);
+        XIMU3_connection_remove_callback(self->wrapped, (uint64_t) callback_id);
     Py_END_ALLOW_THREADS
 
     Py_RETURN_NONE;

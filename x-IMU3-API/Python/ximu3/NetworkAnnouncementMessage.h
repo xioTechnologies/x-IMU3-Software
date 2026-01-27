@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_NetworkAnnouncementMessage message;
+    XIMU3_NetworkAnnouncementMessage wrapped;
 } NetworkAnnouncementMessage;
 
 static void network_announcement_message_free(NetworkAnnouncementMessage *self) {
@@ -14,55 +14,55 @@ static void network_announcement_message_free(NetworkAnnouncementMessage *self) 
 }
 
 static PyObject *network_announcement_message_str(NetworkAnnouncementMessage *self) {
-    const char *const string = XIMU3_network_announcement_message_to_string(self->message);
+    const char *const string = XIMU3_network_announcement_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *network_announcement_message_get_device_name(NetworkAnnouncementMessage *self) {
-    return PyUnicode_FromString(self->message.device_name);
+    return PyUnicode_FromString(self->wrapped.device_name);
 }
 
 static PyObject *network_announcement_message_get_serial_number(NetworkAnnouncementMessage *self) {
-    return PyUnicode_FromString(self->message.serial_number);
+    return PyUnicode_FromString(self->wrapped.serial_number);
 }
 
 static PyObject *network_announcement_message_get_ip_address(NetworkAnnouncementMessage *self) {
-    return PyUnicode_FromString(self->message.ip_address);
+    return PyUnicode_FromString(self->wrapped.ip_address);
 }
 
 static PyObject *network_announcement_message_get_tcp_port(NetworkAnnouncementMessage *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->message.tcp_port);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.tcp_port);
 }
 
 static PyObject *network_announcement_message_get_udp_send(NetworkAnnouncementMessage *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->message.udp_send);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.udp_send);
 }
 
 static PyObject *network_announcement_message_get_udp_receive(NetworkAnnouncementMessage *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->message.udp_receive);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.udp_receive);
 }
 
 static PyObject *network_announcement_message_get_rssi(NetworkAnnouncementMessage *self) {
-    return PyLong_FromLong((long) self->message.rssi);
+    return PyLong_FromLong((long) self->wrapped.rssi);
 }
 
 static PyObject *network_announcement_message_get_battery(NetworkAnnouncementMessage *self) {
-    return PyLong_FromLong((long) self->message.battery);
+    return PyLong_FromLong((long) self->wrapped.battery);
 }
 
 static PyObject *network_announcement_message_get_charging_status(NetworkAnnouncementMessage *self) {
-    return PyLong_FromLong((long) self->message.charging_status);
+    return PyLong_FromLong((long) self->wrapped.charging_status);
 }
 
 static PyObject *network_announcement_message_to_tcp_connection_config(NetworkAnnouncementMessage *self) {
-    const XIMU3_TcpConnectionConfig config = XIMU3_network_announcement_message_to_tcp_connection_config(self->message);
+    const XIMU3_TcpConnectionConfig config = XIMU3_network_announcement_message_to_tcp_connection_config(self->wrapped);
 
     return tcp_connection_config_from(&config);
 }
 
 static PyObject *network_announcement_message_to_udp_connection_config(NetworkAnnouncementMessage *self) {
-    const XIMU3_UdpConnectionConfig config = XIMU3_network_announcement_message_to_udp_connection_config(self->message);
+    const XIMU3_UdpConnectionConfig config = XIMU3_network_announcement_message_to_udp_connection_config(self->wrapped);
 
     return udp_connection_config_from(&config);
 }
@@ -104,7 +104,7 @@ static PyObject *network_announcement_message_from(const XIMU3_NetworkAnnounceme
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

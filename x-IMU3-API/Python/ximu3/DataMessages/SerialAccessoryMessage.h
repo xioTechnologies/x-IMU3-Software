@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_SerialAccessoryMessage message;
+    XIMU3_SerialAccessoryMessage wrapped;
 } SerialAccessoryMessage;
 
 static void serial_accessory_message_free(SerialAccessoryMessage *self) {
@@ -16,21 +16,21 @@ static void serial_accessory_message_free(SerialAccessoryMessage *self) {
 }
 
 static PyObject *serial_accessory_message_str(SerialAccessoryMessage *self) {
-    const char *const string = XIMU3_serial_accessory_message_to_string(self->message);
+    const char *const string = XIMU3_serial_accessory_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *serial_accessory_message_get_timestamp(SerialAccessoryMessage *self, PyObject *args) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *serial_accessory_message_get_string(SerialAccessoryMessage *self, PyObject *args) {
-    return PyUnicode_FromString(self->message.char_array);
+    return PyUnicode_FromString(self->wrapped.char_array);
 }
 
 static PyObject *serial_accessory_message_get_bytes(SerialAccessoryMessage *self, PyObject *args) {
-    return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
+    return PyByteArray_FromStringAndSize(self->wrapped.char_array, (Py_ssize_t) self->wrapped.number_of_bytes);
 }
 
 static PyGetSetDef serial_accessory_message_get_set[] = {
@@ -57,7 +57,7 @@ static PyObject *serial_accessory_message_from(const XIMU3_SerialAccessoryMessag
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

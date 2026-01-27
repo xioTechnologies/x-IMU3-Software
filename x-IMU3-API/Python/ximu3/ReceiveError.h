@@ -4,8 +4,8 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static int receive_error_from(XIMU3_ReceiveError *const receive_error, const int receive_error_int) {
-    switch (receive_error_int) {
+static int receive_error_from(XIMU3_ReceiveError *const error, const int error_int) {
+    switch (error_int) {
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
         case XIMU3_ReceiveErrorInvalidJson:
@@ -16,7 +16,7 @@ static int receive_error_from(XIMU3_ReceiveError *const receive_error, const int
         case XIMU3_ReceiveErrorInvalidBinaryMessageLength:
         case XIMU3_ReceiveErrorUnableToParseAsciiMessage:
         case XIMU3_ReceiveErrorUnknownError:
-            *receive_error = (XIMU3_ReceiveError) receive_error_int;
+            *error = (XIMU3_ReceiveError) error_int;
             return 0;
     }
 
@@ -25,19 +25,19 @@ static int receive_error_from(XIMU3_ReceiveError *const receive_error, const int
 }
 
 static PyObject *receive_error_to_string(PyObject *null, PyObject *arg) {
-    const int receive_error_int = (int) PyLong_AsLong(arg);
+    const int error_int = (int) PyLong_AsLong(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    XIMU3_ReceiveError receive_error;
+    XIMU3_ReceiveError error;
 
-    if (receive_error_from(&receive_error, receive_error_int) != 0) {
+    if (receive_error_from(&error, error_int) != 0) {
         return NULL;
     }
 
-    const char *const string = XIMU3_receive_error_to_string(receive_error);
+    const char *const string = XIMU3_receive_error_to_string(error);
 
     return PyUnicode_FromString(string);
 }

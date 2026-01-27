@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_RssiMessage message;
+    XIMU3_RssiMessage wrapped;
 } RssiMessage;
 
 static void rssi_message_free(RssiMessage *self) {
@@ -16,21 +16,21 @@ static void rssi_message_free(RssiMessage *self) {
 }
 
 static PyObject *rssi_message_str(RssiMessage *self) {
-    const char *const string = XIMU3_rssi_message_to_string(self->message);
+    const char *const string = XIMU3_rssi_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *rssi_message_get_timestamp(RssiMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *rssi_message_get_percentage(RssiMessage *self) {
-    return PyFloat_FromDouble((double) self->message.percentage);
+    return PyFloat_FromDouble((double) self->wrapped.percentage);
 }
 
 static PyObject *rssi_message_get_power(RssiMessage *self) {
-    return PyFloat_FromDouble((double) self->message.power);
+    return PyFloat_FromDouble((double) self->wrapped.power);
 }
 
 static PyGetSetDef rssi_message_get_set[] = {
@@ -62,7 +62,7 @@ static PyObject *rssi_message_from(const XIMU3_RssiMessage *const message) {
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

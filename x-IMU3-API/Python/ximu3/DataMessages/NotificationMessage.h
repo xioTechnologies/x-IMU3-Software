@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_NotificationMessage message;
+    XIMU3_NotificationMessage wrapped;
 } NotificationMessage;
 
 static void notification_message_free(NotificationMessage *self) {
@@ -16,21 +16,21 @@ static void notification_message_free(NotificationMessage *self) {
 }
 
 static PyObject *notification_message_str(NotificationMessage *self) {
-    const char *const string = XIMU3_notification_message_to_string(self->message);
+    const char *const string = XIMU3_notification_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *notification_message_get_timestamp(NotificationMessage *self, PyObject *args) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *notification_message_get_string(NotificationMessage *self, PyObject *args) {
-    return PyUnicode_FromString(self->message.char_array);
+    return PyUnicode_FromString(self->wrapped.char_array);
 }
 
 static PyObject *notification_message_get_bytes(NotificationMessage *self, PyObject *args) {
-    return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
+    return PyByteArray_FromStringAndSize(self->wrapped.char_array, (Py_ssize_t) self->wrapped.number_of_bytes);
 }
 
 static PyGetSetDef notification_message_get_set[] = {
@@ -57,7 +57,7 @@ static PyObject *notification_message_from(const XIMU3_NotificationMessage *cons
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

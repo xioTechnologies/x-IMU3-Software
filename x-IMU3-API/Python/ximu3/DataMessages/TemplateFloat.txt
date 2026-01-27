@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_$name_pascal_case$Message message;
+    XIMU3_$name_pascal_case$Message wrapped;
 } $name_pascal_case$Message;
 
 static void $name_snake_case$_message_free($name_pascal_case$Message *self) {
@@ -14,7 +14,7 @@ static void $name_snake_case$_message_free($name_pascal_case$Message *self) {
 }
 
 static PyObject *$name_snake_case$_message_str($name_pascal_case$Message *self) {
-    const char *const string = XIMU3_$name_snake_case$_message_to_string(self->message);
+    const char *const string = XIMU3_$name_snake_case$_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -51,7 +51,7 @@ static PyObject *$name_snake_case$_message_from(const XIMU3_$name_pascal_case$Me
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

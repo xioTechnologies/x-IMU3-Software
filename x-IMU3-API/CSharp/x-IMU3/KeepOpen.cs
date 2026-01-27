@@ -16,16 +16,16 @@ namespace Ximu3
 
         public void Dispose()
         {
-            if (keepOpen != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_keep_open_free(keepOpen);
+                CApi.XIMU3_keep_open_free(wrapped);
 
-                keepOpen = IntPtr.Zero;
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
         }
 
-        private IntPtr keepOpen = CApi.XIMU3_keep_open_new(connection.connection, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        private IntPtr wrapped = CApi.XIMU3_keep_open_new(connection.wrapped, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
     }
 }

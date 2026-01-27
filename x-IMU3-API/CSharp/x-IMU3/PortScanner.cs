@@ -16,10 +16,10 @@ namespace Ximu3
 
         public void Dispose()
         {
-            if (portScanner != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_port_scanner_free(portScanner);
-                portScanner = IntPtr.Zero;
+                CApi.XIMU3_port_scanner_free(wrapped);
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -27,7 +27,7 @@ namespace Ximu3
 
         public CApi.XIMU3_Device[] GetDevices()
         {
-            return ToArrayAndFree(CApi.XIMU3_port_scanner_get_devices(portScanner));
+            return ToArrayAndFree(CApi.XIMU3_port_scanner_get_devices(wrapped));
         }
 
         public static CApi.XIMU3_Device[] Scan()
@@ -59,6 +59,6 @@ namespace Ximu3
             return array;
         }
 
-        private IntPtr portScanner = CApi.XIMU3_port_scanner_new(CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        private IntPtr wrapped = CApi.XIMU3_port_scanner_new(CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
     }
 }

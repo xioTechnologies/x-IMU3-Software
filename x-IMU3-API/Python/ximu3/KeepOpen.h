@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_KeepOpen *keep_open;
+    XIMU3_KeepOpen *wrapped;
 } KeepOpen;
 
 static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
@@ -38,13 +38,13 @@ static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->keep_open = XIMU3_keep_open_new(((Connection *) connection)->connection, connection_status_callback, callback);
+    self->wrapped = XIMU3_keep_open_new(((Connection *) connection)->wrapped, connection_status_callback, callback);
     return (PyObject *) self;
 }
 
 static void keep_open_free(KeepOpen *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_keep_open_free(self->keep_open);
+        XIMU3_keep_open_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }

@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_HighGAccelerometerMessage message;
+    XIMU3_HighGAccelerometerMessage wrapped;
 } HighGAccelerometerMessage;
 
 static void high_g_accelerometer_message_free(HighGAccelerometerMessage *self) {
@@ -16,25 +16,25 @@ static void high_g_accelerometer_message_free(HighGAccelerometerMessage *self) {
 }
 
 static PyObject *high_g_accelerometer_message_str(HighGAccelerometerMessage *self) {
-    const char *const string = XIMU3_high_g_accelerometer_message_to_string(self->message);
+    const char *const string = XIMU3_high_g_accelerometer_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *high_g_accelerometer_message_get_timestamp(HighGAccelerometerMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *high_g_accelerometer_message_get_x(HighGAccelerometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.x);
+    return PyFloat_FromDouble((double) self->wrapped.x);
 }
 
 static PyObject *high_g_accelerometer_message_get_y(HighGAccelerometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.y);
+    return PyFloat_FromDouble((double) self->wrapped.y);
 }
 
 static PyObject *high_g_accelerometer_message_get_z(HighGAccelerometerMessage *self) {
-    return PyFloat_FromDouble((double) self->message.z);
+    return PyFloat_FromDouble((double) self->wrapped.z);
 }
 
 static PyGetSetDef high_g_accelerometer_message_get_set[] = {
@@ -67,7 +67,7 @@ static PyObject *high_g_accelerometer_message_from(const XIMU3_HighGAcceleromete
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

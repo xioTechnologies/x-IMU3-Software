@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_TemperatureMessage message;
+    XIMU3_TemperatureMessage wrapped;
 } TemperatureMessage;
 
 static void temperature_message_free(TemperatureMessage *self) {
@@ -16,17 +16,17 @@ static void temperature_message_free(TemperatureMessage *self) {
 }
 
 static PyObject *temperature_message_str(TemperatureMessage *self) {
-    const char *const string = XIMU3_temperature_message_to_string(self->message);
+    const char *const string = XIMU3_temperature_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *temperature_message_get_timestamp(TemperatureMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *temperature_message_get_temperature(TemperatureMessage *self) {
-    return PyFloat_FromDouble((double) self->message.temperature);
+    return PyFloat_FromDouble((double) self->wrapped.temperature);
 }
 
 static PyGetSetDef temperature_message_get_set[] = {
@@ -57,7 +57,7 @@ static PyObject *temperature_message_from(const XIMU3_TemperatureMessage *const 
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

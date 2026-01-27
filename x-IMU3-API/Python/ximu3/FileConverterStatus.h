@@ -4,12 +4,12 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
-static int file_converter_status_from(XIMU3_FileConverterStatus *const file_converter_status, const int file_converter_status_int) {
-    switch (file_converter_status_int) {
+static int file_converter_status_from(XIMU3_FileConverterStatus *const status, const int status_int) {
+    switch (status_int) {
         case XIMU3_FileConverterStatusComplete:
         case XIMU3_FileConverterStatusFailed:
         case XIMU3_FileConverterStatusInProgress:
-            *file_converter_status = (XIMU3_FileConverterStatus) file_converter_status_int;
+            *status = (XIMU3_FileConverterStatus) status_int;
             return 0;
     }
 
@@ -18,19 +18,19 @@ static int file_converter_status_from(XIMU3_FileConverterStatus *const file_conv
 }
 
 static PyObject *file_converter_status_to_string(PyObject *null, PyObject *arg) {
-    const int file_converter_status_int = (int) PyLong_AsLong(arg);
+    const int status_int = (int) PyLong_AsLong(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    XIMU3_FileConverterStatus file_converter_status;
+    XIMU3_FileConverterStatus status;
 
-    if (file_converter_status_from(&file_converter_status, file_converter_status_int) != 0) {
+    if (file_converter_status_from(&status, status_int) != 0) {
         return NULL;
     }
 
-    const char *const string = XIMU3_file_converter_status_to_string(file_converter_status);
+    const char *const string = XIMU3_file_converter_status_to_string(status);
 
     return PyUnicode_FromString(string);
 }

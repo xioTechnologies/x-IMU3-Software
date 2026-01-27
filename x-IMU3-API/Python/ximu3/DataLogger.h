@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_DataLogger *data_logger;
+    XIMU3_DataLogger *wrapped;
 } DataLogger;
 
 static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
@@ -49,7 +49,7 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
             return NULL;
         }
 
-        connections[index] = ((Connection *) connection)->connection;
+        connections[index] = ((Connection *) connection)->wrapped;
     }
 
     XIMU3_DataLogger *const data_logger = XIMU3_data_logger_new(destination, name, connections, length);
@@ -72,13 +72,13 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
         return NULL;
     }
 
-    self->data_logger = data_logger;
+    self->wrapped = data_logger;
     return (PyObject *) self;
 }
 
 static void data_logger_free(DataLogger *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_data_logger_free(self->data_logger);
+        XIMU3_data_logger_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
@@ -123,7 +123,7 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args, PyObject *kwds)
             return NULL;
         }
 
-        connections[index] = ((Connection *) connection)->connection;
+        connections[index] = ((Connection *) connection)->wrapped;
     }
 
     const XIMU3_Result result = XIMU3_data_logger_log(destination, name, connections, length, (uint32_t) seconds);

@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_CommandMessage command_message;
+    XIMU3_CommandMessage wrapped;
 } CommandMessage;
 
 static void command_message_free(CommandMessage *self) {
@@ -14,19 +14,19 @@ static void command_message_free(CommandMessage *self) {
 }
 
 static PyObject *command_message_get_json(CommandMessage *self) {
-    return PyUnicode_FromString(self->command_message.json);
+    return PyUnicode_FromString(self->wrapped.json);
 }
 
 static PyObject *command_message_get_key(CommandMessage *self) {
-    return PyUnicode_FromString(self->command_message.key);
+    return PyUnicode_FromString(self->wrapped.key);
 }
 
 static PyObject *command_message_get_value(CommandMessage *self) {
-    return PyUnicode_FromString(self->command_message.value);
+    return PyUnicode_FromString(self->wrapped.value);
 }
 
 static PyObject *command_message_get_error(CommandMessage *self) {
-    return PyUnicode_FromString(self->command_message.error);
+    return PyUnicode_FromString(self->wrapped.error);
 }
 
 static PyGetSetDef command_message_get_set[] = {
@@ -57,7 +57,7 @@ static PyObject *command_message_from(const XIMU3_CommandMessage *const message)
         return NULL;
     }
 
-    self->command_message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

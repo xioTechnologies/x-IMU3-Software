@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_Statistics statistics;
+    XIMU3_Statistics wrapped;
 } Statistics;
 
 static void statistics_free(Statistics *self) {
@@ -14,35 +14,35 @@ static void statistics_free(Statistics *self) {
 }
 
 static PyObject *statistics_str(Statistics *self) {
-    return PyUnicode_FromString(XIMU3_statistics_to_string(self->statistics));
+    return PyUnicode_FromString(XIMU3_statistics_to_string(self->wrapped));
 }
 
 static PyObject *statistics_get_timestamp(Statistics *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *statistics_get_data_total(Statistics *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.data_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.data_total);
 }
 
 static PyObject *statistics_get_data_rate(Statistics *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->statistics.data_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.data_rate);
 }
 
 static PyObject *statistics_get_message_total(Statistics *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.message_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.message_total);
 }
 
 static PyObject *statistics_get_message_rate(Statistics *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->statistics.message_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.message_rate);
 }
 
 static PyObject *statistics_get_error_total(Statistics *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->statistics.error_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.error_total);
 }
 
 static PyObject *statistics_get_error_rate(Statistics *self) {
-    return PyLong_FromUnsignedLong((unsigned long) self->statistics.error_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.error_rate);
 }
 
 static PyGetSetDef statistics_get_set[] = {
@@ -73,7 +73,7 @@ static PyObject *statistics_from(const XIMU3_Statistics *const statistics) {
         return NULL;
     }
 
-    self->statistics = *statistics;
+    self->wrapped = *statistics;
     return (PyObject *) self;
 }
 
