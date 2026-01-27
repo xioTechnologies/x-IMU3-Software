@@ -133,9 +133,11 @@ impl Receiver {
             } else {
                 message[destination_index] = message[source_index];
             }
+
             source_index += 1;
             destination_index += 1;
         }
+
         Ok(&message[..destination_index])
     }
 }
