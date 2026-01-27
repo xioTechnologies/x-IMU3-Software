@@ -1,9 +1,13 @@
+import time
+
 import connection
 import helpers
 import ximu3
 
 if helpers.yes_or_no("Search for connections?"):
     devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
+
+    time.sleep(1)  # wait for OS to release port
 
     if not devices:
         raise Exception("No USB connections available")

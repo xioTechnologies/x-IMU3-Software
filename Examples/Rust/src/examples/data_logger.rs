@@ -7,7 +7,11 @@ pub fn run() {
     // Open all USB connections
     let mut connections = vec![];
 
-    for device in PortScanner::scan_filter(PortType::Usb) {
+    let devices = PortScanner::scan_filter(PortType::Usb);
+
+    std::thread::sleep(std::time::Duration::from_secs(1)); // wait for OS to release port
+
+    for device in devices {
         println!("Found {device}");
 
         let connection = Connection::new(&device.connection_config);

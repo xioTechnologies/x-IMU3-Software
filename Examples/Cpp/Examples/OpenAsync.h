@@ -12,6 +12,8 @@ public:
         // Search for connection
         const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for OS to release port
+
         if (devices.empty()) {
             std::cout << "No USB connections available" << std::endl;
             return;

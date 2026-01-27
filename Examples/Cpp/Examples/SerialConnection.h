@@ -8,6 +8,8 @@ public:
         if (helpers::yesOrNo("Search for connections?")) {
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeSerial);
 
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for OS to release port
+
             if (devices.empty()) {
                 std::cout << "No serial connections available" << std::endl;
                 return;

@@ -5,6 +5,9 @@ import ximu3
 
 # Open all USB connections
 devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
+
+time.sleep(1)  # wait for OS to release port
+
 connections = []
 
 for device in devices:
