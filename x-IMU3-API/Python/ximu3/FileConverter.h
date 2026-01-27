@@ -24,7 +24,7 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOO:set_callback", kwlist, &destination, &name, &files_sequence, &callback) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOO", kwlist, &destination, &name, &files_sequence, &callback) == 0) {
         return NULL;
     }
 

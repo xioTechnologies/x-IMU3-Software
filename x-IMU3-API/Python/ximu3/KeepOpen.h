@@ -21,7 +21,7 @@ static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O:set_callback", kwlist, &connection_object, &connection, &callback) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O", kwlist, &connection_object, &connection, &callback) == 0) {
         return NULL;
     }
 

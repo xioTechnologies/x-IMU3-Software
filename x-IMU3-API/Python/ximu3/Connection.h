@@ -249,7 +249,7 @@ static PyObject *connection_send_command_async(Connection *self, PyObject *args,
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "sO|kk:set_callback", kwlist, &command, &callback, &retries, &timeout) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "sO|kk", kwlist, &command, &callback, &retries, &timeout) == 0) {
         return NULL;
     }
 
@@ -278,7 +278,7 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "OO|kk:set_callback", kwlist, &commands_sequence, &callback, &retries, &timeout) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "OO|kk", kwlist, &commands_sequence, &callback, &retries, &timeout) == 0) {
         return NULL;
     }
 
