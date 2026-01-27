@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_EarthAccelerationMessage message;
+    XIMU3_EarthAccelerationMessage wrapped;
 } EarthAccelerationMessage;
 
 static void earth_acceleration_message_free(EarthAccelerationMessage *self) {
@@ -16,41 +16,41 @@ static void earth_acceleration_message_free(EarthAccelerationMessage *self) {
 }
 
 static PyObject *earth_acceleration_message_str(EarthAccelerationMessage *self) {
-    const char *const string = XIMU3_earth_acceleration_message_to_string(self->message);
+    const char *const string = XIMU3_earth_acceleration_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *earth_acceleration_message_get_timestamp(EarthAccelerationMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_w(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_w);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_w);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_x(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_x);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_x);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_y(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_y);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_y);
 }
 
 static PyObject *earth_acceleration_message_get_quaternion_z(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_z);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_z);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_x(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_x);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_x);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_y(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_y);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_y);
 }
 
 static PyObject *earth_acceleration_message_get_acceleration_z(EarthAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_z);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_z);
 }
 
 static PyObject *earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage *self, PyObject *args);
@@ -90,7 +90,7 @@ static PyObject *earth_acceleration_message_from(const XIMU3_EarthAccelerationMe
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

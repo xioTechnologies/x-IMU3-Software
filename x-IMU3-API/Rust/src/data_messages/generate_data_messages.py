@@ -254,7 +254,7 @@ insert("../ffi/data_messages.rs", template, 0)
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
 template = """\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)> &callback) {
-            return XIMU3_connection_add_$name_snake_case$_callback(connection, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
+            return XIMU3_connection_add_$name_snake_case$_callback(wrapped, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
         }\n\n"""
 
 insert("../../../Cpp/Connection.hpp", template, 0)
@@ -275,7 +275,7 @@ for message in messages:
         for argument_type, argument_name in zip(["PyLong_FromUnsignedLongLong((unsigned long long) "] + ["PyFloat_FromDouble((double) " for _ in message.argument_names], argument_names):
             get_function = """\
 static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case$Message *self) {
-    return $argument_type$self->message.$argument_name$);
+    return $argument_type$self->wrapped.$argument_name$);
 }\n\n"""
             get_function = get_function.replace("$argument_type$", argument_type)
             get_function = get_function.replace("$argument_name$", helpers.snake_case(argument_name))
@@ -351,7 +351,7 @@ static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyO
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_$name_snake_case$_callback(self->connection, $name_snake_case$_message_callback, arg);
+        id = XIMU3_connection_add_$name_snake_case$_callback(self->wrapped, $name_snake_case$_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -383,7 +383,7 @@ template = """\
 
         public UInt64 Add$name_pascal_case$Callback($name_pascal_case$Callback callback)
         {
-            return CApi.XIMU3_connection_add_$name_snake_case$_callback(connection, $name_pascal_case$CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_$name_snake_case$_callback(wrapped, $name_pascal_case$CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }\n\n"""
 
 insert(file_path, template, 0)

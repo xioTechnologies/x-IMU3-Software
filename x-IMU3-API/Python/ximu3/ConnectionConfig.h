@@ -9,11 +9,11 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_UsbConnectionConfig connection_config;
+    XIMU3_UsbConnectionConfig wrapped;
 } UsbConnectionConfig;
 
 static PyObject *usb_connection_config_str(UsbConnectionConfig *self) {
-    const char *const string = XIMU3_usb_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_usb_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -36,7 +36,7 @@ static PyObject *usb_connection_config_new(PyTypeObject *subtype, PyObject *args
         return NULL;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
 
     return (PyObject *) self;
 }
@@ -46,7 +46,7 @@ static void usb_connection_config_free(UsbConnectionConfig *self) {
 }
 
 static PyObject *usb_connection_config_get_port_name(UsbConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.port_name);
+    return PyUnicode_FromString(self->wrapped.port_name);
 }
 
 static int usb_connection_config_set_port_name(UsbConnectionConfig *self, PyObject *value, void *closure) {
@@ -56,7 +56,7 @@ static int usb_connection_config_set_port_name(UsbConnectionConfig *self, PyObje
         return -1;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
 
     return 0;
 }
@@ -77,14 +77,14 @@ static PyTypeObject usb_connection_config_object = {
     .tp_getset = usb_connection_config_get_set,
 };
 
-static PyObject *usb_connection_config_from(const XIMU3_UsbConnectionConfig *const connection_config) {
+static PyObject *usb_connection_config_from(const XIMU3_UsbConnectionConfig *const config) {
     UsbConnectionConfig *const self = (UsbConnectionConfig *) usb_connection_config_object.tp_alloc(&usb_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -93,11 +93,11 @@ static PyObject *usb_connection_config_from(const XIMU3_UsbConnectionConfig *con
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_SerialConnectionConfig connection_config;
+    XIMU3_SerialConnectionConfig wrapped;
 } SerialConnectionConfig;
 
 static PyObject *serial_connection_config_str(SerialConnectionConfig *self) {
-    const char *const string = XIMU3_serial_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_serial_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -124,9 +124,9 @@ static PyObject *serial_connection_config_new(PyTypeObject *subtype, PyObject *a
         return NULL;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
-    self->connection_config.baud_rate = (uint32_t) baud_rate;
-    self->connection_config.rts_cts_enabled = (bool) rts_cts_enabled;
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
+    self->wrapped.baud_rate = (uint32_t) baud_rate;
+    self->wrapped.rts_cts_enabled = (bool) rts_cts_enabled;
 
     return (PyObject *) self;
 }
@@ -136,7 +136,7 @@ static void serial_connection_config_free(SerialConnectionConfig *self) {
 }
 
 static PyObject *serial_connection_config_get_port_name(SerialConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.port_name);
+    return PyUnicode_FromString(self->wrapped.port_name);
 }
 
 static int serial_connection_config_set_port_name(SerialConnectionConfig *self, PyObject *value, void *closure) {
@@ -146,13 +146,13 @@ static int serial_connection_config_set_port_name(SerialConnectionConfig *self, 
         return -1;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
 
     return 0;
 }
 
 static PyObject *serial_connection_config_get_baud_rate(SerialConnectionConfig *self, PyObject *args) {
-    return PyLong_FromUnsignedLong((unsigned long) self->connection_config.baud_rate);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.baud_rate);
 }
 
 static int serial_connection_config_set_baud_rate(SerialConnectionConfig *self, PyObject *value, void *closure) {
@@ -162,13 +162,13 @@ static int serial_connection_config_set_baud_rate(SerialConnectionConfig *self, 
         return -1;
     }
 
-    self->connection_config.baud_rate = baud_rate;
+    self->wrapped.baud_rate = baud_rate;
 
     return 0;
 }
 
 static PyObject *serial_connection_config_get_rts_cts_enabled(SerialConnectionConfig *self, PyObject *args) {
-    return PyBool_FromLong((long) self->connection_config.rts_cts_enabled);
+    return PyBool_FromLong((long) self->wrapped.rts_cts_enabled);
 }
 
 static int serial_connection_config_set_rts_cts_enabled(SerialConnectionConfig *self, PyObject *value, void *closure) {
@@ -178,7 +178,7 @@ static int serial_connection_config_set_rts_cts_enabled(SerialConnectionConfig *
         return -1;
     }
 
-    self->connection_config.rts_cts_enabled = rts_cts_enabled;
+    self->wrapped.rts_cts_enabled = rts_cts_enabled;
 
     return 0;
 }
@@ -201,14 +201,14 @@ static PyTypeObject serial_connection_config_object = {
     .tp_getset = serial_connection_config_get_set,
 };
 
-static PyObject *serial_connection_config_from(const XIMU3_SerialConnectionConfig *const connection_config) {
+static PyObject *serial_connection_config_from(const XIMU3_SerialConnectionConfig *const config) {
     SerialConnectionConfig *const self = (SerialConnectionConfig *) serial_connection_config_object.tp_alloc(&serial_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -217,11 +217,11 @@ static PyObject *serial_connection_config_from(const XIMU3_SerialConnectionConfi
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_TcpConnectionConfig connection_config;
+    XIMU3_TcpConnectionConfig wrapped;
 } TcpConnectionConfig;
 
 static PyObject *tcp_connection_config_str(TcpConnectionConfig *self) {
-    const char *const string = XIMU3_tcp_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_tcp_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -246,8 +246,8 @@ static PyObject *tcp_connection_config_new(PyTypeObject *subtype, PyObject *args
         return NULL;
     }
 
-    snprintf(self->connection_config.ip_address, sizeof(self->connection_config.ip_address), "%s", ip_address);
-    self->connection_config.port = (uint16_t) port;
+    snprintf(self->wrapped.ip_address, sizeof(self->wrapped.ip_address), "%s", ip_address);
+    self->wrapped.port = (uint16_t) port;
 
     return (PyObject *) self;
 }
@@ -257,7 +257,7 @@ static void tcp_connection_config_free(TcpConnectionConfig *self) {
 }
 
 static PyObject *tcp_connection_config_get_ip_address(TcpConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.ip_address);
+    return PyUnicode_FromString(self->wrapped.ip_address);
 }
 
 static int tcp_connection_config_set_ip_address(TcpConnectionConfig *self, PyObject *value, void *closure) {
@@ -267,13 +267,13 @@ static int tcp_connection_config_set_ip_address(TcpConnectionConfig *self, PyObj
         return -1;
     }
 
-    snprintf(self->connection_config.ip_address, sizeof(self->connection_config.ip_address), "%s", ip_address);
+    snprintf(self->wrapped.ip_address, sizeof(self->wrapped.ip_address), "%s", ip_address);
 
     return 0;
 }
 
 static PyObject *tcp_connection_config_get_port(TcpConnectionConfig *self, PyObject *args) {
-    return PyLong_FromUnsignedLong((unsigned long) self->connection_config.port);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.port);
 }
 
 static int tcp_connection_config_set_port(TcpConnectionConfig *self, PyObject *value, void *closure) {
@@ -283,7 +283,7 @@ static int tcp_connection_config_set_port(TcpConnectionConfig *self, PyObject *v
         return -1;
     }
 
-    self->connection_config.port = port;
+    self->wrapped.port = port;
 
     return 0;
 }
@@ -305,14 +305,14 @@ static PyTypeObject tcp_connection_config_object = {
     .tp_getset = tcp_connection_config_get_set,
 };
 
-static PyObject *tcp_connection_config_from(const XIMU3_TcpConnectionConfig *const connection_config) {
+static PyObject *tcp_connection_config_from(const XIMU3_TcpConnectionConfig *const config) {
     TcpConnectionConfig *const self = (TcpConnectionConfig *) tcp_connection_config_object.tp_alloc(&tcp_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -321,11 +321,11 @@ static PyObject *tcp_connection_config_from(const XIMU3_TcpConnectionConfig *con
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_UdpConnectionConfig connection_config;
+    XIMU3_UdpConnectionConfig wrapped;
 } UdpConnectionConfig;
 
 static PyObject *udp_connection_config_str(UdpConnectionConfig *self) {
-    const char *const string = XIMU3_udp_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_udp_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -352,9 +352,9 @@ static PyObject *udp_connection_config_new(PyTypeObject *subtype, PyObject *args
         return NULL;
     }
 
-    snprintf(self->connection_config.ip_address, sizeof(self->connection_config.ip_address), "%s", ip_address);
-    self->connection_config.send_port = (uint16_t) send_port;
-    self->connection_config.receive_port = (uint16_t) receive_port;
+    snprintf(self->wrapped.ip_address, sizeof(self->wrapped.ip_address), "%s", ip_address);
+    self->wrapped.send_port = (uint16_t) send_port;
+    self->wrapped.receive_port = (uint16_t) receive_port;
 
     return (PyObject *) self;
 }
@@ -364,7 +364,7 @@ static void udp_connection_config_free(UdpConnectionConfig *self) {
 }
 
 static PyObject *udp_connection_config_get_ip_address(UdpConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.ip_address);
+    return PyUnicode_FromString(self->wrapped.ip_address);
 }
 
 static int udp_connection_config_set_ip_address(UdpConnectionConfig *self, PyObject *value, void *closure) {
@@ -374,13 +374,13 @@ static int udp_connection_config_set_ip_address(UdpConnectionConfig *self, PyObj
         return -1;
     }
 
-    snprintf(self->connection_config.ip_address, sizeof(self->connection_config.ip_address), "%s", ip_address);
+    snprintf(self->wrapped.ip_address, sizeof(self->wrapped.ip_address), "%s", ip_address);
 
     return 0;
 }
 
 static PyObject *udp_connection_config_get_send_port(UdpConnectionConfig *self, PyObject *args) {
-    return PyLong_FromUnsignedLong((unsigned long) self->connection_config.send_port);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.send_port);
 }
 
 static int udp_connection_config_set_send_port(UdpConnectionConfig *self, PyObject *value, void *closure) {
@@ -390,13 +390,13 @@ static int udp_connection_config_set_send_port(UdpConnectionConfig *self, PyObje
         return -1;
     }
 
-    self->connection_config.send_port = send_port;
+    self->wrapped.send_port = send_port;
 
     return 0;
 }
 
 static PyObject *udp_connection_config_get_receive_port(UdpConnectionConfig *self, PyObject *args) {
-    return PyLong_FromUnsignedLong((unsigned long) self->connection_config.receive_port);
+    return PyLong_FromUnsignedLong((unsigned long) self->wrapped.receive_port);
 }
 
 static int udp_connection_config_set_receive_port(UdpConnectionConfig *self, PyObject *value, void *closure) {
@@ -406,7 +406,7 @@ static int udp_connection_config_set_receive_port(UdpConnectionConfig *self, PyO
         return -1;
     }
 
-    self->connection_config.receive_port = receive_port;
+    self->wrapped.receive_port = receive_port;
 
     return 0;
 }
@@ -429,14 +429,14 @@ static PyTypeObject udp_connection_config_object = {
     .tp_getset = udp_connection_config_get_set,
 };
 
-static PyObject *udp_connection_config_from(const XIMU3_UdpConnectionConfig *const connection_config) {
+static PyObject *udp_connection_config_from(const XIMU3_UdpConnectionConfig *const config) {
     UdpConnectionConfig *const self = (UdpConnectionConfig *) udp_connection_config_object.tp_alloc(&udp_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -445,11 +445,11 @@ static PyObject *udp_connection_config_from(const XIMU3_UdpConnectionConfig *con
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_BluetoothConnectionConfig connection_config;
+    XIMU3_BluetoothConnectionConfig wrapped;
 } BluetoothConnectionConfig;
 
 static PyObject *bluetooth_connection_config_str(BluetoothConnectionConfig *self) {
-    const char *const string = XIMU3_bluetooth_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_bluetooth_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -472,7 +472,7 @@ static PyObject *bluetooth_connection_config_new(PyTypeObject *subtype, PyObject
         return NULL;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
 
     return (PyObject *) self;
 }
@@ -482,7 +482,7 @@ static void bluetooth_connection_config_free(BluetoothConnectionConfig *self) {
 }
 
 static PyObject *bluetooth_connection_config_get_port_name(BluetoothConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.port_name);
+    return PyUnicode_FromString(self->wrapped.port_name);
 }
 
 static int bluetooth_connection_config_set_port_name(BluetoothConnectionConfig *self, PyObject *value, void *closure) {
@@ -492,7 +492,7 @@ static int bluetooth_connection_config_set_port_name(BluetoothConnectionConfig *
         return -1;
     }
 
-    snprintf(self->connection_config.port_name, sizeof(self->connection_config.port_name), "%s", port_name);
+    snprintf(self->wrapped.port_name, sizeof(self->wrapped.port_name), "%s", port_name);
 
     return 0;
 }
@@ -513,14 +513,14 @@ static PyTypeObject bluetooth_connection_config_object = {
     .tp_getset = bluetooth_connection_config_get_set,
 };
 
-static PyObject *bluetooth_connection_config_from(const XIMU3_BluetoothConnectionConfig *const connection_config) {
+static PyObject *bluetooth_connection_config_from(const XIMU3_BluetoothConnectionConfig *const config) {
     BluetoothConnectionConfig *const self = (BluetoothConnectionConfig *) bluetooth_connection_config_object.tp_alloc(&bluetooth_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -529,11 +529,11 @@ static PyObject *bluetooth_connection_config_from(const XIMU3_BluetoothConnectio
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_FileConnectionConfig connection_config;
+    XIMU3_FileConnectionConfig wrapped;
 } FileConnectionConfig;
 
 static PyObject *file_connection_config_str(FileConnectionConfig *self) {
-    const char *const string = XIMU3_file_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_file_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -556,7 +556,7 @@ static PyObject *file_connection_config_new(PyTypeObject *subtype, PyObject *arg
         return NULL;
     }
 
-    snprintf(self->connection_config.file_path, sizeof(self->connection_config.file_path), "%s", file_path);
+    snprintf(self->wrapped.file_path, sizeof(self->wrapped.file_path), "%s", file_path);
 
     return (PyObject *) self;
 }
@@ -566,7 +566,7 @@ static void file_connection_config_free(FileConnectionConfig *self) {
 }
 
 static PyObject *file_connection_config_get_file_path(FileConnectionConfig *self, PyObject *args) {
-    return PyUnicode_FromString(self->connection_config.file_path);
+    return PyUnicode_FromString(self->wrapped.file_path);
 }
 
 static PyGetSetDef file_connection_config_get_set[] = {
@@ -585,14 +585,14 @@ static PyTypeObject file_connection_config_object = {
     .tp_getset = file_connection_config_get_set,
 };
 
-static PyObject *file_connection_config_from(const XIMU3_FileConnectionConfig *const connection_config) {
+static PyObject *file_connection_config_from(const XIMU3_FileConnectionConfig *const config) {
     FileConnectionConfig *const self = (FileConnectionConfig *) file_connection_config_object.tp_alloc(&file_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = *connection_config;
+    self->wrapped = *config;
     return (PyObject *) self;
 }
 
@@ -601,20 +601,20 @@ static PyObject *file_connection_config_from(const XIMU3_FileConnectionConfig *c
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_MuxConnectionConfig *connection_config;
+    XIMU3_MuxConnectionConfig *wrapped;
 } MuxConnectionConfig;
 
 PyObject *mux_connection_config_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds);
 
 static void mux_connection_config_free(MuxConnectionConfig *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_mux_connection_config_free(self->connection_config);
+        XIMU3_mux_connection_config_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject *mux_connection_config_str(MuxConnectionConfig *self) {
-    const char *const string = XIMU3_mux_connection_config_to_string(self->connection_config);
+    const char *const string = XIMU3_mux_connection_config_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -629,14 +629,14 @@ static PyTypeObject mux_connection_config_object = {
     .tp_new = mux_connection_config_new,
 };
 
-static PyObject *mux_connection_config_from(XIMU3_MuxConnectionConfig *const connection_config) {
+static PyObject *mux_connection_config_from(XIMU3_MuxConnectionConfig *const config) {
     MuxConnectionConfig *const self = (MuxConnectionConfig *) mux_connection_config_object.tp_alloc(&mux_connection_config_object, 0);
 
     if (self == NULL) {
         return NULL;
     }
 
-    self->connection_config = connection_config;
+    self->wrapped = config;
     return (PyObject *) self;
 }
 

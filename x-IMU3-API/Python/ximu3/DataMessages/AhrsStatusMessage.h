@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_AhrsStatusMessage message;
+    XIMU3_AhrsStatusMessage wrapped;
 } AhrsStatusMessage;
 
 static void ahrs_status_message_free(AhrsStatusMessage *self) {
@@ -16,29 +16,29 @@ static void ahrs_status_message_free(AhrsStatusMessage *self) {
 }
 
 static PyObject *ahrs_status_message_str(AhrsStatusMessage *self) {
-    const char *const string = XIMU3_ahrs_status_message_to_string(self->message);
+    const char *const string = XIMU3_ahrs_status_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *ahrs_status_message_get_initialising(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->message.initialising);
+    return PyFloat_FromDouble((double) self->wrapped.initialising);
 }
 
 static PyObject *ahrs_status_message_get_angular_rate_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->message.angular_rate_recovery);
+    return PyFloat_FromDouble((double) self->wrapped.angular_rate_recovery);
 }
 
 static PyObject *ahrs_status_message_get_acceleration_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_recovery);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_recovery);
 }
 
 static PyObject *ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->message.magnetic_recovery);
+    return PyFloat_FromDouble((double) self->wrapped.magnetic_recovery);
 }
 
 static PyGetSetDef ahrs_status_message_get_set[] = {
@@ -72,7 +72,7 @@ static PyObject *ahrs_status_message_from(const XIMU3_AhrsStatusMessage *const m
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

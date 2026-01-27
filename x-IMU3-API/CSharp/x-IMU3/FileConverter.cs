@@ -16,11 +16,11 @@ namespace Ximu3
 
         public void Dispose()
         {
-            if (fileConverter != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_file_converter_free(fileConverter);
+                CApi.XIMU3_file_converter_free(wrapped);
 
-                fileConverter = IntPtr.Zero;
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -36,7 +36,7 @@ namespace Ximu3
             );
         }
 
-        private IntPtr fileConverter = CApi.XIMU3_file_converter_new(
+        private IntPtr wrapped = CApi.XIMU3_file_converter_new(
             Helpers.ToPointer(destination),
             Helpers.ToPointer(name),
             Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(files), 0),

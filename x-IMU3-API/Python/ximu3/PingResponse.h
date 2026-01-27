@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_PingResponse ping_response;
+    XIMU3_PingResponse wrapped;
 } PingResponse;
 
 static void ping_response_free(PingResponse *self) {
@@ -14,21 +14,21 @@ static void ping_response_free(PingResponse *self) {
 }
 
 static PyObject *ping_response_str(PingResponse *self) {
-    const char *const string = XIMU3_ping_response_to_string(self->ping_response);
+    const char *const string = XIMU3_ping_response_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *ping_response_get_interface(PingResponse *self) {
-    return PyUnicode_FromString(self->ping_response.interface);
+    return PyUnicode_FromString(self->wrapped.interface);
 }
 
 static PyObject *ping_response_get_device_name(PingResponse *self) {
-    return PyUnicode_FromString(self->ping_response.device_name);
+    return PyUnicode_FromString(self->wrapped.device_name);
 }
 
 static PyObject *ping_response_get_serial_number(PingResponse *self) {
-    return PyUnicode_FromString(self->ping_response.serial_number);
+    return PyUnicode_FromString(self->wrapped.serial_number);
 }
 
 static PyGetSetDef ping_response_get_set[] = {
@@ -48,8 +48,8 @@ static PyTypeObject ping_response_object = {
     .tp_getset = ping_response_get_set,
 };
 
-static PyObject *ping_response_from(const XIMU3_PingResponse *const ping_response) {
-    if (strlen(ping_response->interface) == 0) {
+static PyObject *ping_response_from(const XIMU3_PingResponse *const response) {
+    if (strlen(response->interface) == 0) {
         Py_RETURN_NONE;
     }
 
@@ -59,7 +59,7 @@ static PyObject *ping_response_from(const XIMU3_PingResponse *const ping_respons
         return NULL;
     }
 
-    self->ping_response = *ping_response;
+    self->wrapped = *response;
     return (PyObject *) self;
 }
 

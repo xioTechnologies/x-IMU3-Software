@@ -11,25 +11,25 @@ namespace Ximu3
             switch (config)
             {
                 case UsbConnectionConfig usbConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_usb(usbConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_usb(usbConnectionConfig.wrapped);
                     return;
                 case SerialConnectionConfig serialConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_serial(serialConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_serial(serialConnectionConfig.wrapped);
                     return;
                 case TcpConnectionConfig tcpConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_tcp(tcpConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_tcp(tcpConnectionConfig.wrapped);
                     return;
                 case UdpConnectionConfig udpConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_udp(udpConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_udp(udpConnectionConfig.wrapped);
                     return;
                 case BluetoothConnectionConfig bluetoothConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_bluetooth(bluetoothConnectionConfig.wrapped);
                     return;
                 case FileConnectionConfig fileConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_file(fileConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_file(fileConnectionConfig.wrapped);
                     return;
                 case MuxConnectionConfig muxConnectionConfig:
-                    connection = CApi.XIMU3_connection_new_mux(muxConnectionConfig.connectionConfig);
+                    wrapped = CApi.XIMU3_connection_new_mux(muxConnectionConfig.wrapped);
                     return;
             }
 
@@ -40,11 +40,11 @@ namespace Ximu3
 
         public void Dispose()
         {
-            if (connection != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_connection_free(connection);
+                CApi.XIMU3_connection_free(wrapped);
 
-                connection = IntPtr.Zero;
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -52,7 +52,7 @@ namespace Ximu3
 
         public CApi.XIMU3_Result Open()
         {
-            return CApi.XIMU3_connection_open(connection);
+            return CApi.XIMU3_connection_open(wrapped);
         }
 
         public delegate void OpenAsyncCallback(CApi.XIMU3_Result result);
@@ -64,17 +64,17 @@ namespace Ximu3
 
         public void OpenAsync(OpenAsyncCallback callback)
         {
-            CApi.XIMU3_connection_open_async(connection, OpenAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            CApi.XIMU3_connection_open_async(wrapped, OpenAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public void Close()
         {
-            CApi.XIMU3_connection_close(connection);
+            CApi.XIMU3_connection_close(wrapped);
         }
 
         public CApi.XIMU3_PingResponse Ping()
         {
-            return CApi.XIMU3_connection_ping(connection);
+            return CApi.XIMU3_connection_ping(wrapped);
         }
 
         public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse? response);
@@ -92,17 +92,17 @@ namespace Ximu3
 
         public void PingAsync(PingAsyncCallback callback)
         {
-            CApi.XIMU3_connection_ping_async(connection, PingAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            CApi.XIMU3_connection_ping_async(wrapped, PingAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public CommandMessage? SendCommand(string command, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            return CommandMessage.From(CApi.XIMU3_connection_send_command(connection, Helpers.ToPointer(command), retries, timeout));
+            return CommandMessage.From(CApi.XIMU3_connection_send_command(wrapped, Helpers.ToPointer(command), retries, timeout));
         }
 
         public CommandMessage?[] SendCommands(string[] commands, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            return ToArrayAndFree(CApi.XIMU3_connection_send_commands(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout));
+            return ToArrayAndFree(CApi.XIMU3_connection_send_commands(wrapped, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout));
         }
 
         public delegate void SendCommandAsyncCallback(CommandMessage? responses);
@@ -114,7 +114,7 @@ namespace Ximu3
 
         public void SendCommandAsync(string command, SendCommandsAsyncCallback callback, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            CApi.XIMU3_connection_send_command_async(connection, Helpers.ToPointer(command), retries, timeout, SendCommandAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            CApi.XIMU3_connection_send_command_async(wrapped, Helpers.ToPointer(command), retries, timeout, SendCommandAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void SendCommandsAsyncCallback(CommandMessage?[] responses);
@@ -126,27 +126,27 @@ namespace Ximu3
 
         public void SendCommandsAsync(string[] commands, SendCommandsAsyncCallback callback, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            CApi.XIMU3_connection_send_commands_async(connection, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout, SendCommandsAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            CApi.XIMU3_connection_send_commands_async(wrapped, Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(commands), 0), (UInt32)commands.Length, retries, timeout, SendCommandsAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public object? GetConfig()
         {
-            return CApi.XIMU3_connection_get_type(connection) switch
+            return CApi.XIMU3_connection_get_type(wrapped) switch
             {
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => new UsbConnectionConfig(CApi.XIMU3_connection_get_config_usb(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => new SerialConnectionConfig(CApi.XIMU3_connection_get_config_serial(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => new TcpConnectionConfig(CApi.XIMU3_connection_get_config_tcp(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionConfig(CApi.XIMU3_connection_get_config_udp(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionConfig(CApi.XIMU3_connection_get_config_bluetooth(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionConfig(CApi.XIMU3_connection_get_config_file(connection)),
-                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux => new MuxConnectionConfig(CApi.XIMU3_connection_get_config_mux(connection)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb => new UsbConnectionConfig(CApi.XIMU3_connection_get_config_usb(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial => new SerialConnectionConfig(CApi.XIMU3_connection_get_config_serial(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp => new TcpConnectionConfig(CApi.XIMU3_connection_get_config_tcp(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp => new UdpConnectionConfig(CApi.XIMU3_connection_get_config_udp(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth => new BluetoothConnectionConfig(CApi.XIMU3_connection_get_config_bluetooth(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile => new FileConnectionConfig(CApi.XIMU3_connection_get_config_file(wrapped)),
+                CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux => new MuxConnectionConfig(CApi.XIMU3_connection_get_config_mux(wrapped)),
                 _ => null,
             };
         }
 
         public CApi.XIMU3_Statistics GetStatistics()
         {
-            return CApi.XIMU3_connection_get_statistics(connection);
+            return CApi.XIMU3_connection_get_statistics(wrapped);
         }
 
         public delegate void ReceiveErrorCallback(CApi.XIMU3_ReceiveError receiveError);
@@ -158,7 +158,7 @@ namespace Ximu3
 
         public UInt64 AddReceiveErrorCallback(ReceiveErrorCallback callback)
         {
-            return CApi.XIMU3_connection_add_receive_error_callback(connection, ReceiveErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_receive_error_callback(wrapped, ReceiveErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void StatisticsCallback(CApi.XIMU3_Statistics statistics);
@@ -170,7 +170,7 @@ namespace Ximu3
 
         public UInt64 AddStatisticsCallback(StatisticsCallback callback)
         {
-            return CApi.XIMU3_connection_add_statistics_callback(connection, StatisticsCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_statistics_callback(wrapped, StatisticsCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         // Start of code block #0 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
@@ -183,7 +183,7 @@ namespace Ximu3
 
         public UInt64 AddInertialCallback(InertialCallback callback)
         {
-            return CApi.XIMU3_connection_add_inertial_callback(connection, InertialCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_inertial_callback(wrapped, InertialCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void MagnetometerCallback(CApi.XIMU3_MagnetometerMessage message);
@@ -195,7 +195,7 @@ namespace Ximu3
 
         public UInt64 AddMagnetometerCallback(MagnetometerCallback callback)
         {
-            return CApi.XIMU3_connection_add_magnetometer_callback(connection, MagnetometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_magnetometer_callback(wrapped, MagnetometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void QuaternionCallback(CApi.XIMU3_QuaternionMessage message);
@@ -207,7 +207,7 @@ namespace Ximu3
 
         public UInt64 AddQuaternionCallback(QuaternionCallback callback)
         {
-            return CApi.XIMU3_connection_add_quaternion_callback(connection, QuaternionCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_quaternion_callback(wrapped, QuaternionCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void RotationMatrixCallback(CApi.XIMU3_RotationMatrixMessage message);
@@ -219,7 +219,7 @@ namespace Ximu3
 
         public UInt64 AddRotationMatrixCallback(RotationMatrixCallback callback)
         {
-            return CApi.XIMU3_connection_add_rotation_matrix_callback(connection, RotationMatrixCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_rotation_matrix_callback(wrapped, RotationMatrixCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void EulerAnglesCallback(CApi.XIMU3_EulerAnglesMessage message);
@@ -231,7 +231,7 @@ namespace Ximu3
 
         public UInt64 AddEulerAnglesCallback(EulerAnglesCallback callback)
         {
-            return CApi.XIMU3_connection_add_euler_angles_callback(connection, EulerAnglesCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_euler_angles_callback(wrapped, EulerAnglesCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void LinearAccelerationCallback(CApi.XIMU3_LinearAccelerationMessage message);
@@ -243,7 +243,7 @@ namespace Ximu3
 
         public UInt64 AddLinearAccelerationCallback(LinearAccelerationCallback callback)
         {
-            return CApi.XIMU3_connection_add_linear_acceleration_callback(connection, LinearAccelerationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_linear_acceleration_callback(wrapped, LinearAccelerationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void EarthAccelerationCallback(CApi.XIMU3_EarthAccelerationMessage message);
@@ -255,7 +255,7 @@ namespace Ximu3
 
         public UInt64 AddEarthAccelerationCallback(EarthAccelerationCallback callback)
         {
-            return CApi.XIMU3_connection_add_earth_acceleration_callback(connection, EarthAccelerationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_earth_acceleration_callback(wrapped, EarthAccelerationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void AhrsStatusCallback(CApi.XIMU3_AhrsStatusMessage message);
@@ -267,7 +267,7 @@ namespace Ximu3
 
         public UInt64 AddAhrsStatusCallback(AhrsStatusCallback callback)
         {
-            return CApi.XIMU3_connection_add_ahrs_status_callback(connection, AhrsStatusCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_ahrs_status_callback(wrapped, AhrsStatusCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void HighGAccelerometerCallback(CApi.XIMU3_HighGAccelerometerMessage message);
@@ -279,7 +279,7 @@ namespace Ximu3
 
         public UInt64 AddHighGAccelerometerCallback(HighGAccelerometerCallback callback)
         {
-            return CApi.XIMU3_connection_add_high_g_accelerometer_callback(connection, HighGAccelerometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_high_g_accelerometer_callback(wrapped, HighGAccelerometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void TemperatureCallback(CApi.XIMU3_TemperatureMessage message);
@@ -291,7 +291,7 @@ namespace Ximu3
 
         public UInt64 AddTemperatureCallback(TemperatureCallback callback)
         {
-            return CApi.XIMU3_connection_add_temperature_callback(connection, TemperatureCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_temperature_callback(wrapped, TemperatureCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void BatteryCallback(CApi.XIMU3_BatteryMessage message);
@@ -303,7 +303,7 @@ namespace Ximu3
 
         public UInt64 AddBatteryCallback(BatteryCallback callback)
         {
-            return CApi.XIMU3_connection_add_battery_callback(connection, BatteryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_battery_callback(wrapped, BatteryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void RssiCallback(CApi.XIMU3_RssiMessage message);
@@ -315,7 +315,7 @@ namespace Ximu3
 
         public UInt64 AddRssiCallback(RssiCallback callback)
         {
-            return CApi.XIMU3_connection_add_rssi_callback(connection, RssiCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_rssi_callback(wrapped, RssiCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void SerialAccessoryCallback(CApi.XIMU3_SerialAccessoryMessage message);
@@ -327,7 +327,7 @@ namespace Ximu3
 
         public UInt64 AddSerialAccessoryCallback(SerialAccessoryCallback callback)
         {
-            return CApi.XIMU3_connection_add_serial_accessory_callback(connection, SerialAccessoryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_serial_accessory_callback(wrapped, SerialAccessoryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void NotificationCallback(CApi.XIMU3_NotificationMessage message);
@@ -339,7 +339,7 @@ namespace Ximu3
 
         public UInt64 AddNotificationCallback(NotificationCallback callback)
         {
-            return CApi.XIMU3_connection_add_notification_callback(connection, NotificationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_notification_callback(wrapped, NotificationCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void ErrorCallback(CApi.XIMU3_ErrorMessage message);
@@ -351,7 +351,7 @@ namespace Ximu3
 
         public UInt64 AddErrorCallback(ErrorCallback callback)
         {
-            return CApi.XIMU3_connection_add_error_callback(connection, ErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_error_callback(wrapped, ErrorCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         // End of code block #0 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
@@ -365,12 +365,12 @@ namespace Ximu3
 
         public UInt64 AddEndOfFileCallback(EndOfFileCallback callback)
         {
-            return CApi.XIMU3_connection_add_end_of_file_callback(connection, EndOfFileCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_end_of_file_callback(wrapped, EndOfFileCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public void RemoveCallback(UInt64 callbackId)
         {
-            CApi.XIMU3_connection_remove_callback(connection, callbackId);
+            CApi.XIMU3_connection_remove_callback(wrapped, callbackId);
         }
 
         private static CommandMessage?[] ToArrayAndFree(CApi.XIMU3_CommandMessages responses_)
@@ -387,6 +387,6 @@ namespace Ximu3
             return array;
         }
 
-        internal IntPtr connection;
+        internal IntPtr wrapped;
     }
 }

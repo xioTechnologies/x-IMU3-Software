@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_EulerAnglesMessage message;
+    XIMU3_EulerAnglesMessage wrapped;
 } EulerAnglesMessage;
 
 static void euler_angles_message_free(EulerAnglesMessage *self) {
@@ -16,25 +16,25 @@ static void euler_angles_message_free(EulerAnglesMessage *self) {
 }
 
 static PyObject *euler_angles_message_str(EulerAnglesMessage *self) {
-    const char *const string = XIMU3_euler_angles_message_to_string(self->message);
+    const char *const string = XIMU3_euler_angles_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *euler_angles_message_get_timestamp(EulerAnglesMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *euler_angles_message_get_roll(EulerAnglesMessage *self) {
-    return PyFloat_FromDouble((double) self->message.roll);
+    return PyFloat_FromDouble((double) self->wrapped.roll);
 }
 
 static PyObject *euler_angles_message_get_pitch(EulerAnglesMessage *self) {
-    return PyFloat_FromDouble((double) self->message.pitch);
+    return PyFloat_FromDouble((double) self->wrapped.pitch);
 }
 
 static PyObject *euler_angles_message_get_yaw(EulerAnglesMessage *self) {
-    return PyFloat_FromDouble((double) self->message.yaw);
+    return PyFloat_FromDouble((double) self->wrapped.yaw);
 }
 
 static PyObject *euler_angles_message_to_quaternion_message(EulerAnglesMessage *self, PyObject *args);
@@ -70,7 +70,7 @@ static PyObject *euler_angles_message_from(const XIMU3_EulerAnglesMessage *const
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

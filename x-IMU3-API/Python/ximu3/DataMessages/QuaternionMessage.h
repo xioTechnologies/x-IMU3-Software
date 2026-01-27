@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_QuaternionMessage message;
+    XIMU3_QuaternionMessage wrapped;
 } QuaternionMessage;
 
 static void quaternion_message_free(QuaternionMessage *self) {
@@ -16,29 +16,29 @@ static void quaternion_message_free(QuaternionMessage *self) {
 }
 
 static PyObject *quaternion_message_str(QuaternionMessage *self) {
-    const char *const string = XIMU3_quaternion_message_to_string(self->message);
+    const char *const string = XIMU3_quaternion_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *quaternion_message_get_timestamp(QuaternionMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *quaternion_message_get_w(QuaternionMessage *self) {
-    return PyFloat_FromDouble((double) self->message.w);
+    return PyFloat_FromDouble((double) self->wrapped.w);
 }
 
 static PyObject *quaternion_message_get_x(QuaternionMessage *self) {
-    return PyFloat_FromDouble((double) self->message.x);
+    return PyFloat_FromDouble((double) self->wrapped.x);
 }
 
 static PyObject *quaternion_message_get_y(QuaternionMessage *self) {
-    return PyFloat_FromDouble((double) self->message.y);
+    return PyFloat_FromDouble((double) self->wrapped.y);
 }
 
 static PyObject *quaternion_message_get_z(QuaternionMessage *self) {
-    return PyFloat_FromDouble((double) self->message.z);
+    return PyFloat_FromDouble((double) self->wrapped.z);
 }
 
 static PyObject *quaternion_message_to_euler_angles_message(QuaternionMessage *self, PyObject *args);
@@ -75,7 +75,7 @@ static PyObject *quaternion_message_from(const XIMU3_QuaternionMessage *const me
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

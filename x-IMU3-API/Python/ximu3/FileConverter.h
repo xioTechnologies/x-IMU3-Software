@@ -7,7 +7,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_FileConverter *file_converter;
+    XIMU3_FileConverter *wrapped;
 } FileConverter;
 
 static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
@@ -65,13 +65,13 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->file_converter = XIMU3_file_converter_new(destination, name, files, length, file_converter_progress_callback, callback);
+    self->wrapped = XIMU3_file_converter_new(destination, name, files, length, file_converter_progress_callback, callback);
     return (PyObject *) self;
 }
 
 static void file_converter_free(FileConverter *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_file_converter_free(self->file_converter);
+        XIMU3_file_converter_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }

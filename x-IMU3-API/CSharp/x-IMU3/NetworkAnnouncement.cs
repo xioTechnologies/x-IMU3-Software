@@ -7,18 +7,18 @@ namespace Ximu3
     {
         public NetworkAnnouncement()
         {
-            networkAnnouncement = CApi.XIMU3_network_announcement_new();
+            wrapped = CApi.XIMU3_network_announcement_new();
         }
 
         ~NetworkAnnouncement() => Dispose();
 
         public void Dispose()
         {
-            if (networkAnnouncement != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_network_announcement_free(networkAnnouncement);
+                CApi.XIMU3_network_announcement_free(wrapped);
 
-                networkAnnouncement = IntPtr.Zero;
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -26,7 +26,7 @@ namespace Ximu3
 
         public CApi.XIMU3_Result GetResult()
         {
-            return CApi.XIMU3_network_announcement_get_result(networkAnnouncement);
+            return CApi.XIMU3_network_announcement_get_result(wrapped);
         }
 
         public delegate void Callback(CApi.XIMU3_NetworkAnnouncementMessage message);
@@ -38,22 +38,22 @@ namespace Ximu3
 
         public UInt64 AddCallback(Callback callback)
         {
-            return CApi.XIMU3_network_announcement_add_callback(networkAnnouncement, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_network_announcement_add_callback(wrapped, CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public void RemoveCallback(UInt64 callbackId)
         {
-            CApi.XIMU3_network_announcement_remove_callback(networkAnnouncement, callbackId);
+            CApi.XIMU3_network_announcement_remove_callback(wrapped, callbackId);
         }
 
         public CApi.XIMU3_NetworkAnnouncementMessage[] GetMessages()
         {
-            return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages(networkAnnouncement));
+            return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages(wrapped));
         }
 
         public CApi.XIMU3_NetworkAnnouncementMessage[] GetMessagesAfterShortDelay()
         {
-            return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages_after_short_delay(networkAnnouncement));
+            return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages_after_short_delay(wrapped));
         }
 
         private static CApi.XIMU3_NetworkAnnouncementMessage[] ToArrayAndFree(CApi.XIMU3_NetworkAnnouncementMessages messages)
@@ -70,6 +70,6 @@ namespace Ximu3
             return array;
         }
 
-        private IntPtr networkAnnouncement;
+        private IntPtr wrapped;
     }
 }

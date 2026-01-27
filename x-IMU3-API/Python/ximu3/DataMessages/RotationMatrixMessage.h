@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_RotationMatrixMessage message;
+    XIMU3_RotationMatrixMessage wrapped;
 } RotationMatrixMessage;
 
 static void rotation_matrix_message_free(RotationMatrixMessage *self) {
@@ -16,49 +16,49 @@ static void rotation_matrix_message_free(RotationMatrixMessage *self) {
 }
 
 static PyObject *rotation_matrix_message_str(RotationMatrixMessage *self) {
-    const char *const string = XIMU3_rotation_matrix_message_to_string(self->message);
+    const char *const string = XIMU3_rotation_matrix_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *rotation_matrix_message_get_timestamp(RotationMatrixMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *rotation_matrix_message_get_xx(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.xx);
+    return PyFloat_FromDouble((double) self->wrapped.xx);
 }
 
 static PyObject *rotation_matrix_message_get_xy(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.xy);
+    return PyFloat_FromDouble((double) self->wrapped.xy);
 }
 
 static PyObject *rotation_matrix_message_get_xz(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.xz);
+    return PyFloat_FromDouble((double) self->wrapped.xz);
 }
 
 static PyObject *rotation_matrix_message_get_yx(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.yx);
+    return PyFloat_FromDouble((double) self->wrapped.yx);
 }
 
 static PyObject *rotation_matrix_message_get_yy(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.yy);
+    return PyFloat_FromDouble((double) self->wrapped.yy);
 }
 
 static PyObject *rotation_matrix_message_get_yz(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.yz);
+    return PyFloat_FromDouble((double) self->wrapped.yz);
 }
 
 static PyObject *rotation_matrix_message_get_zx(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.zx);
+    return PyFloat_FromDouble((double) self->wrapped.zx);
 }
 
 static PyObject *rotation_matrix_message_get_zy(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.zy);
+    return PyFloat_FromDouble((double) self->wrapped.zy);
 }
 
 static PyObject *rotation_matrix_message_get_zz(RotationMatrixMessage *self) {
-    return PyFloat_FromDouble((double) self->message.zz);
+    return PyFloat_FromDouble((double) self->wrapped.zz);
 }
 
 static PyObject *rotation_matrix_message_to_euler_angles_message(RotationMatrixMessage *self, PyObject *args);
@@ -100,7 +100,7 @@ static PyObject *rotation_matrix_message_from(const XIMU3_RotationMatrixMessage 
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

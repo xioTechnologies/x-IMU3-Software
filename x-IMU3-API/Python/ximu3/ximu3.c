@@ -179,6 +179,6 @@ PyObject *mux_connection_config_new(PyTypeObject *subtype, PyObject *args, PyObj
         return NULL;
     }
 
-    self->connection_config = XIMU3_mux_connection_config_new(channel, ((Connection *) connection)->connection);
+    self->wrapped = XIMU3_mux_connection_config_new(channel, ((Connection *) connection)->wrapped);
     return (PyObject *) self;
 }

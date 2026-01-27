@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_ErrorMessage message;
+    XIMU3_ErrorMessage wrapped;
 } ErrorMessage;
 
 static void error_message_free(ErrorMessage *self) {
@@ -16,21 +16,21 @@ static void error_message_free(ErrorMessage *self) {
 }
 
 static PyObject *error_message_str(ErrorMessage *self) {
-    const char *const string = XIMU3_error_message_to_string(self->message);
+    const char *const string = XIMU3_error_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *error_message_get_timestamp(ErrorMessage *self, PyObject *args) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *error_message_get_string(ErrorMessage *self, PyObject *args) {
-    return PyUnicode_FromString(self->message.char_array);
+    return PyUnicode_FromString(self->wrapped.char_array);
 }
 
 static PyObject *error_message_get_bytes(ErrorMessage *self, PyObject *args) {
-    return PyByteArray_FromStringAndSize(self->message.char_array, (Py_ssize_t) self->message.number_of_bytes);
+    return PyByteArray_FromStringAndSize(self->wrapped.char_array, (Py_ssize_t) self->wrapped.number_of_bytes);
 }
 
 static PyGetSetDef error_message_get_set[] = {
@@ -57,7 +57,7 @@ static PyObject *error_message_from(const XIMU3_ErrorMessage *const message) {
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_InertialMessage message;
+    XIMU3_InertialMessage wrapped;
 } InertialMessage;
 
 static void inertial_message_free(InertialMessage *self) {
@@ -16,37 +16,37 @@ static void inertial_message_free(InertialMessage *self) {
 }
 
 static PyObject *inertial_message_str(InertialMessage *self) {
-    const char *const string = XIMU3_inertial_message_to_string(self->message);
+    const char *const string = XIMU3_inertial_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *inertial_message_get_timestamp(InertialMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *inertial_message_get_gyroscope_x(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.gyroscope_x);
+    return PyFloat_FromDouble((double) self->wrapped.gyroscope_x);
 }
 
 static PyObject *inertial_message_get_gyroscope_y(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.gyroscope_y);
+    return PyFloat_FromDouble((double) self->wrapped.gyroscope_y);
 }
 
 static PyObject *inertial_message_get_gyroscope_z(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.gyroscope_z);
+    return PyFloat_FromDouble((double) self->wrapped.gyroscope_z);
 }
 
 static PyObject *inertial_message_get_accelerometer_x(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.accelerometer_x);
+    return PyFloat_FromDouble((double) self->wrapped.accelerometer_x);
 }
 
 static PyObject *inertial_message_get_accelerometer_y(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.accelerometer_y);
+    return PyFloat_FromDouble((double) self->wrapped.accelerometer_y);
 }
 
 static PyObject *inertial_message_get_accelerometer_z(InertialMessage *self) {
-    return PyFloat_FromDouble((double) self->message.accelerometer_z);
+    return PyFloat_FromDouble((double) self->wrapped.accelerometer_z);
 }
 
 static PyGetSetDef inertial_message_get_set[] = {
@@ -82,7 +82,7 @@ static PyObject *inertial_message_from(const XIMU3_InertialMessage *const messag
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

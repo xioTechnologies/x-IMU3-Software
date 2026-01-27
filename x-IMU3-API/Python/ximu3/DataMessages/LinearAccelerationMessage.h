@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_LinearAccelerationMessage message;
+    XIMU3_LinearAccelerationMessage wrapped;
 } LinearAccelerationMessage;
 
 static void linear_acceleration_message_free(LinearAccelerationMessage *self) {
@@ -16,41 +16,41 @@ static void linear_acceleration_message_free(LinearAccelerationMessage *self) {
 }
 
 static PyObject *linear_acceleration_message_str(LinearAccelerationMessage *self) {
-    const char *const string = XIMU3_linear_acceleration_message_to_string(self->message);
+    const char *const string = XIMU3_linear_acceleration_message_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
 
 static PyObject *linear_acceleration_message_get_timestamp(LinearAccelerationMessage *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->message.timestamp);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
 static PyObject *linear_acceleration_message_get_quaternion_w(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_w);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_w);
 }
 
 static PyObject *linear_acceleration_message_get_quaternion_x(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_x);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_x);
 }
 
 static PyObject *linear_acceleration_message_get_quaternion_y(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_y);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_y);
 }
 
 static PyObject *linear_acceleration_message_get_quaternion_z(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.quaternion_z);
+    return PyFloat_FromDouble((double) self->wrapped.quaternion_z);
 }
 
 static PyObject *linear_acceleration_message_get_acceleration_x(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_x);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_x);
 }
 
 static PyObject *linear_acceleration_message_get_acceleration_y(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_y);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_y);
 }
 
 static PyObject *linear_acceleration_message_get_acceleration_z(LinearAccelerationMessage *self) {
-    return PyFloat_FromDouble((double) self->message.acceleration_z);
+    return PyFloat_FromDouble((double) self->wrapped.acceleration_z);
 }
 
 static PyObject *linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage *self, PyObject *args);
@@ -90,7 +90,7 @@ static PyObject *linear_acceleration_message_from(const XIMU3_LinearAcceleration
         return NULL;
     }
 
-    self->message = *message;
+    self->wrapped = *message;
     return (PyObject *) self;
 }
 

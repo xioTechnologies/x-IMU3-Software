@@ -6,7 +6,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_FileConverterProgress progress;
+    XIMU3_FileConverterProgress wrapped;
 } FileConverterProgress;
 
 static void file_converter_progress_free(FileConverterProgress *self) {
@@ -14,23 +14,23 @@ static void file_converter_progress_free(FileConverterProgress *self) {
 }
 
 static PyObject *file_converter_progress_get_status(FileConverterProgress *self) {
-    return PyLong_FromLong((long) self->progress.status);
+    return PyLong_FromLong((long) self->wrapped.status);
 }
 
 static PyObject *file_converter_progress_get_percentage(FileConverterProgress *self) {
-    return PyFloat_FromDouble((double) self->progress.percentage);
+    return PyFloat_FromDouble((double) self->wrapped.percentage);
 }
 
 static PyObject *file_converter_progress_get_bytes_processed(FileConverterProgress *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->progress.bytes_processed);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.bytes_processed);
 }
 
 static PyObject *file_converter_progress_get_bytes_total(FileConverterProgress *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->progress.bytes_total);
+    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.bytes_total);
 }
 
 static PyObject *file_converter_progress_to_string(FileConverterProgress *self, PyObject *args) {
-    const char *const string = XIMU3_file_converter_progress_to_string(self->progress);
+    const char *const string = XIMU3_file_converter_progress_to_string(self->wrapped);
 
     return PyUnicode_FromString(string);
 }
@@ -65,7 +65,7 @@ static PyObject *file_converter_progress_from(const XIMU3_FileConverterProgress 
         return NULL;
     }
 
-    self->progress = *progress;
+    self->wrapped = *progress;
     return (PyObject *) self;
 }
 

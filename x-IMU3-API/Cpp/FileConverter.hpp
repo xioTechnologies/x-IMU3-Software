@@ -7,14 +7,14 @@
 namespace ximu3 {
     class FileConverter {
     public:
-        FileConverter(const std::string &destination, const std::string &name, const std::vector<std::string> &files, std::function<void(XIMU3_FileConverterProgress)> callback) {
+        FileConverter(const std::string &destination, const std::string &name, const std::vector<std::string> &files, std::function<void(XIMU3_FileConverterProgress)> callback_) {
             const auto charPtrVector = Helpers::toCharPtrVector(files);
-            internalCallback = std::move(callback);
-            fileConverter = XIMU3_file_converter_new(destination.c_str(), name.c_str(), charPtrVector.data(), (uint32_t) charPtrVector.size(), Helpers::wrapCallable<XIMU3_FileConverterProgress>(internalCallback), &internalCallback);
+            callback = std::move(callback_);
+            wrapped = XIMU3_file_converter_new(destination.c_str(), name.c_str(), charPtrVector.data(), (uint32_t) charPtrVector.size(), Helpers::wrapCallable<XIMU3_FileConverterProgress>(callback), &callback);
         }
 
         ~FileConverter() {
-            XIMU3_file_converter_free(fileConverter);
+            XIMU3_file_converter_free(wrapped);
         }
 
         static XIMU3_FileConverterProgress convert(const std::string &destination, const std::string &name, const std::vector<std::string> &files) {
@@ -23,7 +23,7 @@ namespace ximu3 {
         }
 
     private:
-        XIMU3_FileConverter *fileConverter;
-        std::function<void(XIMU3_FileConverterProgress)> internalCallback;
+        XIMU3_FileConverter *wrapped;
+        std::function<void(XIMU3_FileConverterProgress)> callback;
     };
 } // namespace ximu3

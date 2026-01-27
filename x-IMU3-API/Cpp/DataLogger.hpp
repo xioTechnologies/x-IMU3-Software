@@ -9,15 +9,15 @@ namespace ximu3 {
     public:
         DataLogger(const std::string &destination, const std::string &name, const std::vector<ximu3::Connection *> &connections) {
             const auto connectionsC = toConnectionsC(connections);
-            dataLogger = XIMU3_data_logger_new(destination.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size());
+            wrapped = XIMU3_data_logger_new(destination.c_str(), name.c_str(), connectionsC.data(), (uint32_t) connectionsC.size());
         }
 
         ~DataLogger() {
-            XIMU3_data_logger_free(dataLogger);
+            XIMU3_data_logger_free(wrapped);
         }
 
         XIMU3_Result getResult() {
-            return XIMU3_data_logger_get_result(dataLogger);
+            return XIMU3_data_logger_get_result(wrapped);
         }
 
         static XIMU3_Result log(const std::string &destination, const std::string &name, const std::vector<ximu3::Connection *> &connections, const uint32_t seconds) {
@@ -26,12 +26,12 @@ namespace ximu3 {
         }
 
     private:
-        XIMU3_DataLogger *dataLogger;
+        XIMU3_DataLogger *wrapped;
 
         static std::vector<XIMU3_Connection *> toConnectionsC(const std::vector<ximu3::Connection *> &connections) {
             std::vector<XIMU3_Connection *> connectionsC;
             for (auto connection: connections) {
-                connectionsC.push_back(connection->connection);
+                connectionsC.push_back(connection->wrapped);
             }
             return connectionsC;
         }

@@ -7,7 +7,7 @@ namespace Ximu3
     {
         public DataLogger(string destination, string name, Connection[] connections)
         {
-            dataLogger = CApi.XIMU3_data_logger_new(
+            wrapped = CApi.XIMU3_data_logger_new(
                 Helpers.ToPointer(destination),
                 Helpers.ToPointer(name),
                 Marshal.UnsafeAddrOfPinnedArrayElement(ToPointers(connections), 0),
@@ -19,11 +19,11 @@ namespace Ximu3
 
         public void Dispose()
         {
-            if (dataLogger != IntPtr.Zero)
+            if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_data_logger_free(dataLogger);
+                CApi.XIMU3_data_logger_free(wrapped);
 
-                dataLogger = IntPtr.Zero;
+                wrapped = IntPtr.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -31,7 +31,7 @@ namespace Ximu3
 
         public CApi.XIMU3_Result GetResult()
         {
-            return CApi.XIMU3_data_logger_get_result(dataLogger);
+            return CApi.XIMU3_data_logger_get_result(wrapped);
         }
 
         public static CApi.XIMU3_Result Log(string destination, string name, Connection[] connections, UInt32 seconds)
@@ -51,12 +51,12 @@ namespace Ximu3
 
             for (var i = 0; i < connections.Length; i++)
             {
-                pointers[i] = connections[i].connection;
+                pointers[i] = connections[i].wrapped;
             }
 
             return pointers;
         }
 
-        private IntPtr dataLogger;
+        private IntPtr wrapped;
     }
 }

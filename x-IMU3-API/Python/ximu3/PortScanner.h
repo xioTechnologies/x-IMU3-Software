@@ -8,7 +8,7 @@
 
 typedef struct {
     PyObject_HEAD
-    XIMU3_PortScanner *port_scanner;
+    XIMU3_PortScanner *wrapped;
 } PortScanner;
 
 static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
@@ -36,19 +36,19 @@ static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObjec
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->port_scanner = XIMU3_port_scanner_new(devices_callback, callback);
+    self->wrapped = XIMU3_port_scanner_new(devices_callback, callback);
     return (PyObject *) self;
 }
 
 static void port_scanner_free(PortScanner *self) {
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_port_scanner_free(self->port_scanner);
+        XIMU3_port_scanner_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject *port_scanner_get_devices(PortScanner *self, PyObject *args) {
-    return devices_to_list_and_free(XIMU3_port_scanner_get_devices(self->port_scanner));
+    return devices_to_list_and_free(XIMU3_port_scanner_get_devices(self->wrapped));
 }
 
 static PyObject *port_scanner_scan(PyObject *null, PyObject *args) {

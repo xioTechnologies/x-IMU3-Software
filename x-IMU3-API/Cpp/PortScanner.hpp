@@ -9,19 +9,19 @@
 namespace ximu3 {
     class PortScanner {
     public:
-        explicit PortScanner(std::function<void(const std::vector<XIMU3_Device> &)> callback) {
-            internalCallback = [callback](XIMU3_Devices devices) {
-                callback(toVectorAndFree(devices));
+        explicit PortScanner(std::function<void(const std::vector<XIMU3_Device> &)> callback_) {
+            callback = [callback_](XIMU3_Devices devices) {
+                callback_(toVectorAndFree(devices));
             };
-            portScanner = XIMU3_port_scanner_new(Helpers::wrapCallable<XIMU3_Devices>(internalCallback), &internalCallback);
+            wrapped = XIMU3_port_scanner_new(Helpers::wrapCallable<XIMU3_Devices>(callback), &callback);
         }
 
         ~PortScanner() {
-            XIMU3_port_scanner_free(portScanner);
+            XIMU3_port_scanner_free(wrapped);
         }
 
         std::vector<XIMU3_Device> getDevices() {
-            return toVectorAndFree(XIMU3_port_scanner_get_devices(portScanner));
+            return toVectorAndFree(XIMU3_port_scanner_get_devices(wrapped));
         }
 
         static std::vector<XIMU3_Device> scan() {
@@ -37,8 +37,8 @@ namespace ximu3 {
         }
 
     private:
-        XIMU3_PortScanner *portScanner;
-        std::function<void(XIMU3_Devices)> internalCallback;
+        XIMU3_PortScanner *wrapped;
+        std::function<void(XIMU3_Devices)> callback;
 
         static std::vector<XIMU3_Device> toVectorAndFree(const XIMU3_Devices &devices) {
             const std::vector<XIMU3_Device> vector = Helpers::toVector<XIMU3_Device>(devices);

@@ -5,24 +5,24 @@
 #include <Python.h>
 
 static PyObject *charging_status_from_float(PyObject *self, PyObject *arg) {
-    const float charging_status_float = (float) PyFloat_AsDouble(arg);
+    const float status_float = (float) PyFloat_AsDouble(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    const XIMU3_ChargingStatus charging_status = XIMU3_charging_status_from_float(charging_status_float);
+    const XIMU3_ChargingStatus status = XIMU3_charging_status_from_float(status_float);
 
-    return PyLong_FromLong((long) charging_status);
+    return PyLong_FromLong((long) status);
 }
 
-static int charging_status_from(XIMU3_ChargingStatus *const charging_status, const int charging_status_int) {
-    switch (charging_status_int) {
+static int charging_status_from(XIMU3_ChargingStatus *const status, const int status_int) {
+    switch (status_int) {
         case XIMU3_ChargingStatusNotConnected:
         case XIMU3_ChargingStatusCharging:
         case XIMU3_ChargingStatusChargingComplete:
         case XIMU3_ChargingStatusChargingOnHold:
-            *charging_status = (XIMU3_ChargingStatus) charging_status_int;
+            *status = (XIMU3_ChargingStatus) status_int;
             return 0;
     }
 
@@ -31,19 +31,19 @@ static int charging_status_from(XIMU3_ChargingStatus *const charging_status, con
 }
 
 static PyObject *charging_status_to_string(PyObject *null, PyObject *arg) {
-    const int charging_status_int = (int) PyLong_AsLong(arg);
+    const int status_int = (int) PyLong_AsLong(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
-    XIMU3_ChargingStatus charging_status;
+    XIMU3_ChargingStatus status;
 
-    if (charging_status_from(&charging_status, charging_status_int) != 0) {
+    if (charging_status_from(&status, status_int) != 0) {
         return NULL;
     }
 
-    const char *const string = XIMU3_charging_status_to_string(charging_status);
+    const char *const string = XIMU3_charging_status_to_string(status);
 
     return PyUnicode_FromString(string);
 }
