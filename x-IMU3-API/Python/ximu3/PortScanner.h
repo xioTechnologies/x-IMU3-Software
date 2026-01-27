@@ -19,7 +19,7 @@ static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObjec
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O:set_callback", kwlist, &callback) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &callback) == 0) {
         return NULL;
     }
 
