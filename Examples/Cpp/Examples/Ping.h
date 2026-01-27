@@ -50,7 +50,7 @@ private:
 
     static void printResponse(const std::optional<ximu3::XIMU3_PingResponse> &response) {
         if (response.has_value() == false) {
-            printf("No response");
+            std::cout << "No response" << std::endl;
             return;
         }
 

@@ -16,8 +16,6 @@ void port_scanner() {
     } else {
         const XIMU3_Devices devices = XIMU3_port_scanner_scan();
 
-        printf("Found %u devices\n", devices.length);
-
         print_devices(devices);
 
         XIMU3_devices_free(devices);
@@ -25,14 +23,14 @@ void port_scanner() {
 }
 
 static void callback(const XIMU3_Devices devices, void *context) {
-    printf("Devices updated (%u devices available)\n", devices.length);
-
     print_devices(devices);
 
     XIMU3_devices_free(devices);
 }
 
 static void print_devices(const XIMU3_Devices devices) {
+    printf("%u device(s) found\n", devices.length);
+
     for (uint32_t index = 0; index < devices.length; index++) {
         const XIMU3_Device *const device = &devices.array[index];
         const char *connection_config;

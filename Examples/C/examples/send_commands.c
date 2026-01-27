@@ -69,7 +69,7 @@ static void print_responses(const XIMU3_CommandMessages responses) {
         const XIMU3_CommandMessage *const response = &responses.array[index];
 
         if (strlen(response->json) == 0) {
-            printf("No response");
+            printf("No response\n");
             continue;
         }
 

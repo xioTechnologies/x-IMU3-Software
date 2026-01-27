@@ -32,6 +32,8 @@ if helpers.yes_or_no("Use async implementation?"):
 else:
     ximu3.DataLogger.log(destination, name, connections, 3)
 
+print("Complete")
+
 # Close all connections
 for connection in connections:
     connection.close()
