@@ -14,21 +14,19 @@ namespace Ximu3Examples
             {
                 var devices = Ximu3.PortScanner.Scan();
 
-                Console.WriteLine("Devices updated (" + devices.Length + " devices available)");
-
                 PrintDevices(devices);
             }
         }
 
         private void Callback(Ximu3.CApi.XIMU3_Device[] devices)
         {
-            Console.WriteLine("Found " + devices.Length + " devices");
-
             PrintDevices(devices);
         }
 
         private static void PrintDevices(Ximu3.CApi.XIMU3_Device[] devices)
         {
+            Console.WriteLine(devices.Length + " device(s) found");
+
             foreach (var device in devices)
             {
                 Console.WriteLine(

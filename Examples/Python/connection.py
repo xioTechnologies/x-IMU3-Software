@@ -214,7 +214,7 @@ def battery_callback(message: ximu3.BatteryMessage) -> None:
             ]
         )
     )
-    # print(message + f" ({ximu3.charging_status_to_string(ximu3.charging_status_from_float(message.charging_status))})")  # alternative to above
+    # print(message)  # alternative to above
 
 
 def rssi_callback(message: ximu3.RssiMessage) -> None:

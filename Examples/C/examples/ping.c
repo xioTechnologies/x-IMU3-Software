@@ -50,10 +50,10 @@ static void callback(const XIMU3_PingResponse response, void *context) {
 
 static void print_response(const XIMU3_PingResponse response) {
     if (strlen(response.interface) == 0) {
-        printf("No response");
+        printf("No response\n");
         return;
     }
 
     printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
-    // printf("%s\n", XIMU3_response_to_string(response)); // alternative to above
+    // printf("%s\n", XIMU3_ping_response_to_string(response)); // alternative to above
 }
