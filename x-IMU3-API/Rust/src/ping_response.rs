@@ -1,4 +1,3 @@
-use serde::Deserialize;
 use serde_json;
 use std::fmt;
 
@@ -10,26 +9,21 @@ pub struct PingResponse {
 
 impl PingResponse {
     pub(crate) fn parse(json: &[u8]) -> Option<Self> {
-        #[derive(Deserialize)]
-        struct ParentObject {
-            ping: ChildObject,
-        }
+        let object: serde_json::Value = serde_json::from_slice(json).ok()?;
+        let ping = &object["ping"];
 
-        #[derive(Deserialize)]
-        struct ChildObject {
-            interface: String,
-            #[serde(alias = "deviceName")]
-            name: String,
-            #[serde(alias = "serialNumber")]
-            sn: String,
+        if ping.is_object() == false {
+            return Some(Self {
+                interface: "".to_string(),
+                device_name: "".to_string(),
+                serial_number: "".to_string(),
+            });
         }
-
-        let object = serde_json::from_slice::<ParentObject>(json).ok()?;
 
         Some(Self {
-            interface: object.ping.interface,
-            device_name: object.ping.name,
-            serial_number: object.ping.sn,
+            interface: ping.get("interface").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            device_name: ping.get("name").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            serial_number: ping.get("sn").and_then(|value| value.as_str()).unwrap_or("").to_string(),
         })
     }
 }
