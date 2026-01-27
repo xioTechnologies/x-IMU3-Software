@@ -13,6 +13,12 @@ static void file_converter_progress_free(FileConverterProgress *self) {
     Py_TYPE(self)->tp_free(self);
 }
 
+static PyObject *file_converter_progress_str(FileConverterProgress *self, PyObject *args) {
+    const char *const string = XIMU3_file_converter_progress_to_string(self->wrapped);
+
+    return PyUnicode_FromString(string);
+}
+
 static PyObject *file_converter_progress_get_status(FileConverterProgress *self) {
     return PyLong_FromLong((long) self->wrapped.status);
 }
@@ -29,12 +35,6 @@ static PyObject *file_converter_progress_get_bytes_total(FileConverterProgress *
     return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.bytes_total);
 }
 
-static PyObject *file_converter_progress_to_string(FileConverterProgress *self, PyObject *args) {
-    const char *const string = XIMU3_file_converter_progress_to_string(self->wrapped);
-
-    return PyUnicode_FromString(string);
-}
-
 static PyGetSetDef file_converter_progress_get_set[] = {
     {"status", (getter) file_converter_progress_get_status, NULL, "", NULL},
     {"percentage", (getter) file_converter_progress_get_percentage, NULL, "", NULL},
@@ -43,19 +43,14 @@ static PyGetSetDef file_converter_progress_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef file_converter_progress_methods[] = {
-    {"to_string", (PyCFunction) file_converter_progress_to_string, METH_NOARGS, ""},
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject file_converter_progress_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.FileConverterProgress",
     .tp_basicsize = sizeof(FileConverterProgress),
     .tp_dealloc = (destructor) file_converter_progress_free,
+    .tp_str = (reprfunc) file_converter_progress_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = file_converter_progress_get_set,
-    .tp_methods = file_converter_progress_methods,
 };
 
 static PyObject *file_converter_progress_from(const XIMU3_FileConverterProgress *const progress) {
