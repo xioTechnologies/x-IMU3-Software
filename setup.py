@@ -21,6 +21,12 @@ ext_modules = Extension(
 
 setup(
     ext_modules=[ext_modules],
-    packages=["ximu3-stubs"],
-    package_dir={"ximu3-stubs": "x-IMU3-API/Python/ximu3-stubs"},
+    packages=[
+        "ximu3-stubs",
+        "ximu3_helpers",
+    ],
+    package_dir={
+        "ximu3-stubs": "x-IMU3-API/Python/ximu3-stubs",
+        "ximu3_helpers": "x-IMU3-API/Python/ximu3_helpers",
+    },
 )
