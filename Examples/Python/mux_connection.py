@@ -14,9 +14,7 @@ if not devices:
 print(f"Found {devices[0]}")
 
 # Open connection
-usb_connection = ximu3.Connection(devices[0].connection_config)
-
-usb_connection.open()
+usb_connection = ximu3.Connection(devices[0].connection_config).open()
 
 config = ximu3.MuxConnectionConfig(0x41, usb_connection)
 

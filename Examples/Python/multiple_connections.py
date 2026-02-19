@@ -6,9 +6,7 @@ import ximu3
 
 class Connection:
     def __init__(self, config: ximu3.UsbConnectionConfig | ximu3.SerialConnectionConfig | ximu3.TcpConnectionConfig | ximu3.UdpConnectionConfig | ximu3.BluetoothConnectionConfig | ximu3.FileConnectionConfig | ximu3.MuxConnectionConfig) -> None:
-        self.__connection = ximu3.Connection(config)
-
-        self.__connection.open()
+        self.__connection = ximu3.Connection(config).open()
 
         response = self.__connection.ping()  # send ping so that device starts sending to computer's IP address
 
