@@ -350,8 +350,8 @@ insert(
 )
 
 
-# Generate x-IMU3-API/Python/ximu3/DataMessages/*Message.h
-directory = Path("../../../Python/ximu3/DataMessages")
+# Generate x-IMU3-API/Python/ximu3/src/DataMessages/*Message.h
+directory = Path("../../../Python/ximu3/src/DataMessages")
 
 for message in messages:
     if message.name in ("Quaternion", "Rotation Matrix", "Euler Angles", "Linear Acceleration", "Earth Acceleration"):
@@ -413,22 +413,22 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
 
     (directory / f"{helpers.pascal_case(message.name)}Message.h").write_text(f"{helpers.preamble()}{code}")
 
-# Generate x-IMU3-API/Python/ximu3/DataMessages/DataMessages.h
+# Generate x-IMU3-API/Python/ximu3/src/DataMessages/DataMessages.h
 insert(
-    Path("../../../Python/ximu3/DataMessages/DataMessages.h"),
+    Path("../../../Python/ximu3/src/DataMessages/DataMessages.h"),
     0,
     '#include "$name_pascal_case$Message.h"\n',
 )
 
-# Insert code into x-IMU3-API/Python/ximu3/ximu3.c
+# Insert code into x-IMU3-API/Python/ximu3/src/_core.c
 insert(
-    Path("../../../Python/ximu3/ximu3.c"),
+    Path("../../../Python/ximu3/src/_core.c"),
     0,
     '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n',
 )
 
-# Insert code into x-IMU3-API/Python/ximu3/Connection.h
-path = Path("../../../Python/ximu3/Connection.h")
+# Insert code into x-IMU3-API/Python/ximu3/src/Connection.h
+path = Path("../../../Python/ximu3/src/Connection.h")
 
 insert(
     path,

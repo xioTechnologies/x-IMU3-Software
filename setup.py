@@ -11,16 +11,14 @@ elif platform.system() == "Linux":
 else:
     libraries = ["ximu3", "ws2_32", "userenv", "setupapi", "advapi32"]
 
-ext_modules = Extension(
-    "ximu3",
-    ["x-IMU3-API/Python/ximu3/ximu3.c"],
-    library_dirs=["x-IMU3-API/Rust/target/release"],
-    libraries=libraries,
-    define_macros=[("_CRT_SECURE_NO_WARNINGS", "")],
-)
-
 setup(
-    ext_modules=[ext_modules],
-    packages=["ximu3-stubs"],
-    package_dir={"ximu3-stubs": "x-IMU3-API/Python/ximu3-stubs"},
+    ext_modules=[
+        Extension(
+            "ximu3._core",
+            ["x-IMU3-API/Python/ximu3/src/_core.c"],
+            library_dirs=["x-IMU3-API/Rust/target/release"],
+            libraries=libraries,
+            define_macros=[("_CRT_SECURE_NO_WARNINGS", "")],
+        )
+    ],
 )
