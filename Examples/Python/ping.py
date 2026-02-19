@@ -14,9 +14,7 @@ if not devices:
 print(f"Found {devices[0]}")
 
 # Open connection
-connection = ximu3.Connection(devices[0].connection_config)
-
-connection.open()
+connection = ximu3.Connection(devices[0].connection_config).open()
 
 # Ping
 

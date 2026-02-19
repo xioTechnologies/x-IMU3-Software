@@ -80,7 +80,8 @@ static PyObject *connection_open(Connection *self, PyObject *args) {
         return NULL;
     }
 
-    Py_RETURN_NONE;
+    Py_INCREF(self);
+    return (PyObject *)self;
 }
 
 static PyObject *connection_open_async(Connection *self, PyObject *arg) {
