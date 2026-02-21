@@ -1,22 +1,10 @@
 use crate::connection::*;
 use crate::connection_config::*;
+use crate::device::*;
 use crossbeam::channel::Sender;
 use std::fmt;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
-
-#[derive(Clone)]
-pub struct Device {
-    pub device_name: String,
-    pub serial_number: String,
-    pub connection_config: ConnectionConfig,
-}
-
-impl fmt::Display for Device {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {}, {}", self.device_name, self.serial_number, self.connection_config.to_string())
-    }
-}
 
 #[repr(C)]
 #[derive(Clone, Copy)]

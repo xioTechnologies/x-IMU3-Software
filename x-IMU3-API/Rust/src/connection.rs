@@ -3,6 +3,7 @@ use crate::connection_config::*;
 use crate::connections::*;
 use crate::data_messages::*;
 use crate::dispatcher::*;
+use crate::mux_message::*;
 use crate::ping_response::*;
 use crate::receive_error::*;
 use crate::receiver::*;
@@ -228,6 +229,10 @@ impl Connection {
 
     pub(crate) fn add_command_closure(&self, closure: Box<dyn Fn(CommandMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_command_closure(closure)
+    }
+
+    pub(crate) fn add_mux_closure(&self, closure: Box<dyn Fn(MuxMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_mux_closure(closure)
     }
 
     pub(crate) fn add_data_closure(&self, closure: Box<dyn Fn(Box<dyn DataMessage>) + Send>) -> u64 {
