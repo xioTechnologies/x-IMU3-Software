@@ -14,7 +14,7 @@ if helpers.yes_or_no("Search for connections?"):
 
     print(f"Found {devices[0]}")
 
-    config = devices[0].config
+    config = devices[0].connection_config
 
     connection.run(config)
 else:
