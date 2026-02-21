@@ -8,7 +8,7 @@ devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_USB)
 
 time.sleep(1)  # wait for OS to release port
 
-connections = []
+connections: list[ximu3.Connection] = []
 
 for device in devices:
     print(f"Found {device}")
