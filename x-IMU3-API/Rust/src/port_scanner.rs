@@ -169,15 +169,9 @@ impl PortScanner {
     }
 
     pub fn get_port_names() -> Vec<String> {
-        let Ok(serial_port_configs) = serialport::available_ports() else {
-            return Vec::new();
-        };
+        let infos = serialport::available_ports().unwrap_or_default();
 
-        let mut port_names: Vec<String> = serial_port_configs.iter().map(|config| config.port_name.to_owned()).collect();
-
-        port_names.retain(|port_name| port_name.contains("/dev/cu") == false);
-
-        port_names
+        infos.into_iter().map(|info| info.port_name).filter(|name| name.contains("/dev/cu") == false).collect()
     }
 }
 
