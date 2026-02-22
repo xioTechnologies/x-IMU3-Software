@@ -144,6 +144,7 @@ PyMODINIT_FUNC PyInit_ximu3() {
         add_object(module, &ping_response_object, "PingResponse") &&
         add_object(module, &port_scanner_object, "PortScanner") &&
         add_object(module, &statistics_object, "Statistics") &&
+        add_object(module, &connection_config_object, "ConnectionConfig") && /* abstract base class must be added before concrete subclasses */
         add_object(module, &usb_connection_config_object, "UsbConnectionConfig") &&
         add_object(module, &serial_connection_config_object, "SerialConnectionConfig") &&
         add_object(module, &tcp_connection_config_object, "TcpConnectionConfig") &&
