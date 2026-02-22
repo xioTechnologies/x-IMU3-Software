@@ -4,11 +4,22 @@
 #include "../../C/Ximu3.h"
 #include <Python.h>
 
+typedef struct {
+    PyObject_HEAD
+} ConnectionConfig;
+
+static PyTypeObject connection_config_object = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "ximu3.ConnectionConfig",
+    .tp_basicsize = sizeof(ConnectionConfig),
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 // USB connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_UsbConnectionConfig wrapped;
 } UsbConnectionConfig;
 
@@ -72,9 +83,10 @@ static PyTypeObject usb_connection_config_object = {
     .tp_basicsize = sizeof(UsbConnectionConfig),
     .tp_dealloc = (destructor) usb_connection_config_free,
     .tp_str = (reprfunc) usb_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = usb_connection_config_new,
     .tp_getset = usb_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *usb_connection_config_from(const XIMU3_UsbConnectionConfig *const config) {
@@ -92,7 +104,7 @@ static PyObject *usb_connection_config_from(const XIMU3_UsbConnectionConfig *con
 // Serial connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_SerialConnectionConfig wrapped;
 } SerialConnectionConfig;
 
@@ -196,9 +208,10 @@ static PyTypeObject serial_connection_config_object = {
     .tp_basicsize = sizeof(SerialConnectionConfig),
     .tp_dealloc = (destructor) serial_connection_config_free,
     .tp_str = (reprfunc) serial_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = serial_connection_config_new,
     .tp_getset = serial_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *serial_connection_config_from(const XIMU3_SerialConnectionConfig *const config) {
@@ -216,7 +229,7 @@ static PyObject *serial_connection_config_from(const XIMU3_SerialConnectionConfi
 // TCP connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_TcpConnectionConfig wrapped;
 } TcpConnectionConfig;
 
@@ -300,9 +313,10 @@ static PyTypeObject tcp_connection_config_object = {
     .tp_basicsize = sizeof(TcpConnectionConfig),
     .tp_dealloc = (destructor) tcp_connection_config_free,
     .tp_str = (reprfunc) tcp_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = tcp_connection_config_new,
     .tp_getset = tcp_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *tcp_connection_config_from(const XIMU3_TcpConnectionConfig *const config) {
@@ -320,7 +334,7 @@ static PyObject *tcp_connection_config_from(const XIMU3_TcpConnectionConfig *con
 // UDP connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_UdpConnectionConfig wrapped;
 } UdpConnectionConfig;
 
@@ -424,9 +438,10 @@ static PyTypeObject udp_connection_config_object = {
     .tp_basicsize = sizeof(UdpConnectionConfig),
     .tp_dealloc = (destructor) udp_connection_config_free,
     .tp_str = (reprfunc) udp_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = udp_connection_config_new,
     .tp_getset = udp_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *udp_connection_config_from(const XIMU3_UdpConnectionConfig *const config) {
@@ -444,7 +459,7 @@ static PyObject *udp_connection_config_from(const XIMU3_UdpConnectionConfig *con
 // Bluetooth connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_BluetoothConnectionConfig wrapped;
 } BluetoothConnectionConfig;
 
@@ -508,9 +523,10 @@ static PyTypeObject bluetooth_connection_config_object = {
     .tp_basicsize = sizeof(BluetoothConnectionConfig),
     .tp_dealloc = (destructor) bluetooth_connection_config_free,
     .tp_str = (reprfunc) bluetooth_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = bluetooth_connection_config_new,
     .tp_getset = bluetooth_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *bluetooth_connection_config_from(const XIMU3_BluetoothConnectionConfig *const config) {
@@ -528,7 +544,7 @@ static PyObject *bluetooth_connection_config_from(const XIMU3_BluetoothConnectio
 // File connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_FileConnectionConfig wrapped;
 } FileConnectionConfig;
 
@@ -580,9 +596,10 @@ static PyTypeObject file_connection_config_object = {
     .tp_basicsize = sizeof(FileConnectionConfig),
     .tp_dealloc = (destructor) file_connection_config_free,
     .tp_str = (reprfunc) file_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = file_connection_config_new,
     .tp_getset = file_connection_config_get_set,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *file_connection_config_from(const XIMU3_FileConnectionConfig *const config) {
@@ -600,7 +617,7 @@ static PyObject *file_connection_config_from(const XIMU3_FileConnectionConfig *c
 // Mux connection config
 
 typedef struct {
-    PyObject_HEAD
+    ConnectionConfig base;
     XIMU3_MuxConnectionConfig *wrapped;
 } MuxConnectionConfig;
 
@@ -625,8 +642,9 @@ static PyTypeObject mux_connection_config_object = {
     .tp_basicsize = sizeof(MuxConnectionConfig),
     .tp_dealloc = (destructor) mux_connection_config_free,
     .tp_str = (reprfunc) mux_connection_config_str,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = mux_connection_config_new,
+    .tp_base = &connection_config_object,
 };
 
 static PyObject *mux_connection_config_from(XIMU3_MuxConnectionConfig *const config) {
