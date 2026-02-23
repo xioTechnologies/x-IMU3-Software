@@ -20,25 +20,6 @@ protected:
         // Create connection
         ximu3::Connection connection(config);
 
-        connection.addReceiveErrorCallback(receiveErrorCallback);
-        connection.addStatisticsCallback(statisticsCallback);
-        connection.addInertialCallback(inertialCallback);
-        connection.addMagnetometerCallback(magnetometerCallback);
-        connection.addQuaternionCallback(quaternionCallback);
-        connection.addRotationMatrixCallback(rotationMatrixCallback);
-        connection.addEulerAnglesCallback(eulerAnglesCallback);
-        connection.addLinearAccelerationCallback(linearAccelerationCallback);
-        connection.addEarthAccelerationCallback(earthAccelerationCallback);
-        connection.addAhrsStatusCallback(ahrsStatusCallback);
-        connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
-        connection.addTemperatureCallback(temperatureCallback);
-        connection.addBatteryCallback(batteryCallback);
-        connection.addRssiCallback(rssiCallback);
-        connection.addSerialAccessoryCallback(serialAccessoryCallback);
-        connection.addNotificationCallback(notificationCallback);
-        connection.addErrorCallback(errorCallback);
-        connection.addEndOfFileCallback(endOfFileCallback);
-
         // Open connection
         const auto result = connection.open();
 
@@ -50,9 +31,52 @@ protected:
         // Send command to strobe LED
         connection.sendCommand("{\"strobe\":null}");
 
-        // Close connection
-        std::this_thread::sleep_for(std::chrono::seconds(60));
+        // Print data messages
+        if (helpers::yesOrNo("Use callbacks?")) {
+            connection.addReceiveErrorCallback(receiveErrorCallback);
+            connection.addStatisticsCallback(statisticsCallback);
+            connection.addInertialCallback(inertialCallback);
+            connection.addMagnetometerCallback(magnetometerCallback);
+            connection.addQuaternionCallback(quaternionCallback);
+            connection.addRotationMatrixCallback(rotationMatrixCallback);
+            connection.addEulerAnglesCallback(eulerAnglesCallback);
+            connection.addLinearAccelerationCallback(linearAccelerationCallback);
+            connection.addEarthAccelerationCallback(earthAccelerationCallback);
+            connection.addAhrsStatusCallback(ahrsStatusCallback);
+            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
+            connection.addTemperatureCallback(temperatureCallback);
+            connection.addBatteryCallback(batteryCallback);
+            connection.addRssiCallback(rssiCallback);
+            connection.addSerialAccessoryCallback(serialAccessoryCallback);
+            connection.addNotificationCallback(notificationCallback);
+            connection.addErrorCallback(errorCallback);
+            connection.addEndOfFileCallback(endOfFileCallback);
 
+            std::this_thread::sleep_for(std::chrono::seconds(60));
+        } else {
+            for (int count = 0; count < 60000; count++) {
+                std::cout << ximu3::XIMU3_statistics_to_string(connection.getStatistics()) << std::endl;
+                std::cout << ximu3::XIMU3_inertial_message_to_string(connection.getInertialMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_magnetometer_message_to_string(connection.getMagnetometerMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_quaternion_message_to_string(connection.getQuaternionMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_rotation_matrix_message_to_string(connection.getRotationMatrixMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_euler_angles_message_to_string(connection.getEulerAnglesMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(connection.getLinearAccelerationMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(connection.getEarthAccelerationMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_ahrs_status_message_to_string(connection.getAhrsStatusMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(connection.getHighGAccelerometerMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_temperature_message_to_string(connection.getTemperatureMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_battery_message_to_string(connection.getBatteryMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_rssi_message_to_string(connection.getRssiMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_serial_accessory_message_to_string(connection.getSerialAccessoryMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_notification_message_to_string(connection.getNotificationMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_error_message_to_string(connection.getErrorMessage()) << std::endl;
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
+        }
+
+        // Close connection
         connection.close();
     }
 

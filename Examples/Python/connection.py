@@ -1,5 +1,6 @@
 import time
 
+import helpers
 import ximu3
 
 
@@ -251,29 +252,50 @@ def end_of_file_callback() -> None:
 def run(config: ximu3.ConnectionConfig) -> None:
     connection = ximu3.Connection(config)
 
-    connection.add_receive_error_callback(receive_error_callback)
-    connection.add_statistics_callback(statistics_callback)
-    connection.add_inertial_callback(inertial_callback)
-    connection.add_magnetometer_callback(magnetometer_callback)
-    connection.add_quaternion_callback(quaternion_callback)
-    connection.add_rotation_matrix_callback(rotation_matrix_callback)
-    connection.add_euler_angles_callback(euler_angles_callback)
-    connection.add_linear_acceleration_callback(linear_acceleration_callback)
-    connection.add_earth_acceleration_callback(earth_acceleration_callback)
-    connection.add_ahrs_status_callback(ahrs_status_callback)
-    connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
-    connection.add_temperature_callback(temperature_callback)
-    connection.add_battery_callback(battery_callback)
-    connection.add_rssi_callback(rssi_callback)
-    connection.add_serial_accessory_callback(serial_accessory_callback)
-    connection.add_notification_callback(notification_callback)
-    connection.add_error_callback(error_callback)
-    connection.add_end_of_file_callback(end_of_file_callback)
-
     connection.open()
 
     connection.send_command('{"strobe":null}')  # send command to strobe LED
 
-    time.sleep(60)
+    if helpers.yes_or_no("Use callbacks?"):
+        connection.add_receive_error_callback(receive_error_callback)
+        connection.add_statistics_callback(statistics_callback)
+        connection.add_inertial_callback(inertial_callback)
+        connection.add_magnetometer_callback(magnetometer_callback)
+        connection.add_quaternion_callback(quaternion_callback)
+        connection.add_rotation_matrix_callback(rotation_matrix_callback)
+        connection.add_euler_angles_callback(euler_angles_callback)
+        connection.add_linear_acceleration_callback(linear_acceleration_callback)
+        connection.add_earth_acceleration_callback(earth_acceleration_callback)
+        connection.add_ahrs_status_callback(ahrs_status_callback)
+        connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
+        connection.add_temperature_callback(temperature_callback)
+        connection.add_battery_callback(battery_callback)
+        connection.add_rssi_callback(rssi_callback)
+        connection.add_serial_accessory_callback(serial_accessory_callback)
+        connection.add_notification_callback(notification_callback)
+        connection.add_error_callback(error_callback)
+        connection.add_end_of_file_callback(end_of_file_callback)
+
+        time.sleep(60)
+    else:
+        for _ in range(60000):
+            print(connection.get_statistics())
+            print(connection.get_inertial_message())
+            print(connection.get_magnetometer_message())
+            print(connection.get_quaternion_message())
+            print(connection.get_rotation_matrix_message())
+            print(connection.get_euler_angles_message())
+            print(connection.get_linear_acceleration_message())
+            print(connection.get_earth_acceleration_message())
+            print(connection.get_ahrs_status_message())
+            print(connection.get_high_g_accelerometer_message())
+            print(connection.get_temperature_message())
+            print(connection.get_battery_message())
+            print(connection.get_rssi_message())
+            print(connection.get_serial_accessory_message())
+            print(connection.get_notification_message())
+            print(connection.get_error_message())
+
+            time.sleep(0.001)
 
     connection.close()

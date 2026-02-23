@@ -10,6 +10,15 @@ pub struct $name_pascal_case$Message {
     $arguments_struct_declare$
 }
 
+impl Default for $name_pascal_case$Message {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            $arguments_struct_default$
+        }
+    }
+}
+
 impl DataMessage for $name_pascal_case$Message {
     fn get_ascii_id() -> u8 {
         b'$ascii_id$'

@@ -46,26 +46,6 @@ void error_callback(const XIMU3_ErrorMessage message, void *context);
 void end_of_file_callback(void *context);
 
 void run(XIMU3_Connection *const connection) {
-    // Add callbacks
-    XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
-    XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
-    XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
-    XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
-    XIMU3_connection_add_quaternion_callback(connection, quaternion_callback, NULL);
-    XIMU3_connection_add_rotation_matrix_callback(connection, rotation_matrix_callback, NULL);
-    XIMU3_connection_add_euler_angles_callback(connection, euler_angles_callback, NULL);
-    XIMU3_connection_add_linear_acceleration_callback(connection, linear_acceleration_callback, NULL);
-    XIMU3_connection_add_earth_acceleration_callback(connection, earth_acceleration_callback, NULL);
-    XIMU3_connection_add_ahrs_status_callback(connection, ahrs_status_callback, NULL);
-    XIMU3_connection_add_high_g_accelerometer_callback(connection, high_g_accelerometer_callback, NULL);
-    XIMU3_connection_add_temperature_callback(connection, temperature_callback, NULL);
-    XIMU3_connection_add_battery_callback(connection, battery_callback, NULL);
-    XIMU3_connection_add_rssi_callback(connection, rssi_callback, NULL);
-    XIMU3_connection_add_serial_accessory_callback(connection, serial_accessory_callback, NULL);
-    XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
-    XIMU3_connection_add_error_callback(connection, error_callback, NULL);
-    XIMU3_connection_add_end_of_file_callback(connection, end_of_file_callback, NULL);
-
     // Open connection
     const XIMU3_Result result = XIMU3_connection_open(connection);
 
@@ -78,9 +58,53 @@ void run(XIMU3_Connection *const connection) {
     // Send command to strobe LED
     XIMU3_connection_send_command(connection, "{\"strobe\":null}", XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
-    // Close connection
-    sleep(60);
+    // Print data messages
+    if (yes_or_no("Use callbacks?")) {
+        XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
+        XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
+        XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
+        XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
+        XIMU3_connection_add_quaternion_callback(connection, quaternion_callback, NULL);
+        XIMU3_connection_add_rotation_matrix_callback(connection, rotation_matrix_callback, NULL);
+        XIMU3_connection_add_euler_angles_callback(connection, euler_angles_callback, NULL);
+        XIMU3_connection_add_linear_acceleration_callback(connection, linear_acceleration_callback, NULL);
+        XIMU3_connection_add_earth_acceleration_callback(connection, earth_acceleration_callback, NULL);
+        XIMU3_connection_add_ahrs_status_callback(connection, ahrs_status_callback, NULL);
+        XIMU3_connection_add_high_g_accelerometer_callback(connection, high_g_accelerometer_callback, NULL);
+        XIMU3_connection_add_temperature_callback(connection, temperature_callback, NULL);
+        XIMU3_connection_add_battery_callback(connection, battery_callback, NULL);
+        XIMU3_connection_add_rssi_callback(connection, rssi_callback, NULL);
+        XIMU3_connection_add_serial_accessory_callback(connection, serial_accessory_callback, NULL);
+        XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
+        XIMU3_connection_add_error_callback(connection, error_callback, NULL);
+        XIMU3_connection_add_end_of_file_callback(connection, end_of_file_callback, NULL);
 
+        sleep(60);
+    }
+    else {
+        for (int count = 0; count < 60; count++) {
+            printf("%s\n", XIMU3_statistics_to_string(XIMU3_connection_get_statistics(connection)));
+            printf("%s\n", XIMU3_inertial_message_to_string(XIMU3_connection_get_inertial_message(connection, false)));
+            printf("%s\n", XIMU3_magnetometer_message_to_string(XIMU3_connection_get_magnetometer_message(connection, false)));
+            printf("%s\n", XIMU3_quaternion_message_to_string(XIMU3_connection_get_quaternion_message(connection, false)));
+            printf("%s\n", XIMU3_rotation_matrix_message_to_string(XIMU3_connection_get_rotation_matrix_message(connection, false)));
+            printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_connection_get_euler_angles_message(connection, false)));
+            printf("%s\n", XIMU3_linear_acceleration_message_to_string(XIMU3_connection_get_linear_acceleration_message(connection, false)));
+            printf("%s\n", XIMU3_earth_acceleration_message_to_string(XIMU3_connection_get_earth_acceleration_message(connection, false)));
+            printf("%s\n", XIMU3_ahrs_status_message_to_string(XIMU3_connection_get_ahrs_status_message(connection, false)));
+            printf("%s\n", XIMU3_high_g_accelerometer_message_to_string(XIMU3_connection_get_high_g_accelerometer_message(connection, false)));
+            printf("%s\n", XIMU3_temperature_message_to_string(XIMU3_connection_get_temperature_message(connection, false)));
+            printf("%s\n", XIMU3_battery_message_to_string(XIMU3_connection_get_battery_message(connection, false)));
+            printf("%s\n", XIMU3_rssi_message_to_string(XIMU3_connection_get_rssi_message(connection, false)));
+            printf("%s\n", XIMU3_serial_accessory_message_to_string(XIMU3_connection_get_serial_accessory_message(connection, false)));
+            printf("%s\n", XIMU3_notification_message_to_string(XIMU3_connection_get_notification_message(connection, false)));
+            printf("%s\n", XIMU3_error_message_to_string(XIMU3_connection_get_error_message(connection, false)));
+
+            sleep(1);
+        }
+    }
+
+    // Close connection
     XIMU3_connection_close(connection);
     XIMU3_connection_free(connection);
 }
