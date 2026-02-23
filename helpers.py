@@ -73,7 +73,7 @@ def insert(path: str, id: int, code: str) -> None:
         for line in lines_before_start:
             file.write(line)
 
-        file.write(code)
+        file.write(code.rstrip() + "\n")
 
         for line in lines_after_end:
             file.write(line)
