@@ -21,8 +21,15 @@ static PyObject *$name_snake_case$_message_str($name_pascal_case$Message *self) 
 
 $get_functions$
 
+$method_functions$
+
 static PyGetSetDef $name_snake_case$_message_get_set[] = {
     $get_set_members$
+    {NULL} /* sentinel */
+};
+
+static PyMethodDef $name_snake_case$_message_methods[] = {
+    $method_members$
     {NULL} /* sentinel */
 };
 
@@ -34,6 +41,7 @@ static PyTypeObject $name_snake_case$_message_object = {
     .tp_str = (reprfunc) $name_snake_case$_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = $name_snake_case$_message_get_set,
+    .tp_methods = $name_snake_case$_message_methods,
 };
 
 static PyObject *$name_snake_case$_message_from(const XIMU3_$name_pascal_case$Message *const message) {

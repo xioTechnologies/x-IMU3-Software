@@ -45,10 +45,6 @@ static PyGetSetDef magnetometer_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef magnetometer_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject magnetometer_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.MagnetometerMessage",
@@ -57,7 +53,6 @@ static PyTypeObject magnetometer_message_object = {
     .tp_str = (reprfunc) magnetometer_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = magnetometer_message_get_set,
-    .tp_methods = magnetometer_message_methods,
 };
 
 static PyObject *magnetometer_message_from(const XIMU3_MagnetometerMessage *const message) {

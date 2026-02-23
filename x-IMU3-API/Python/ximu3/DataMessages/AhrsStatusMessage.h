@@ -50,10 +50,6 @@ static PyGetSetDef ahrs_status_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef ahrs_status_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject ahrs_status_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.AhrsStatusMessage",
@@ -62,7 +58,6 @@ static PyTypeObject ahrs_status_message_object = {
     .tp_str = (reprfunc) ahrs_status_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = ahrs_status_message_get_set,
-    .tp_methods = ahrs_status_message_methods,
 };
 
 static PyObject *ahrs_status_message_from(const XIMU3_AhrsStatusMessage *const message) {
