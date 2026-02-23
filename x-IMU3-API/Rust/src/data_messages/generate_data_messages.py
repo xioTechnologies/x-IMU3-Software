@@ -114,13 +114,13 @@ for message in messages:
         with open("template_float.txt") as file:
             template = file.read()
 
-        arguments_struct_declare = "".join(["pub " + helpers.snake_case(n) + ": f32,\n    " for n in message.argument_names]).rstrip("\n    ")
+        arguments_struct_declare = "".join(["pub " + helpers.snake_case(n) + ": f32,\n    " for n in message.argument_names]).rstrip()
         arguments_scan_fmt = "".join(["{f}," for _ in message.argument_names]).rstrip(",")
         arguments_types = "".join(["f32, " for _ in message.argument_names]).rstrip(", ")
         arguments_scan_result = "".join([helpers.snake_case(n) + ", " for n in message.argument_names]).rstrip(", ")
-        arguments_struct_asign = "".join([helpers.snake_case(n) + ",\n                " for n in message.argument_names]).rstrip("\n                ")
-        arguments_packed_struct = "".join([helpers.snake_case(n) + ": f32,\n            " for n in message.argument_names]).rstrip("\n            ")
-        arguments_assign_struct = "".join([helpers.snake_case(n) + ": binary_message." + helpers.snake_case(n) + ",\n            " for n in message.argument_names]).rstrip("\n            ")
+        arguments_struct_asign = "".join([helpers.snake_case(n) + ",\n                " for n in message.argument_names]).rstrip()
+        arguments_packed_struct = "".join([helpers.snake_case(n) + ": f32,\n            " for n in message.argument_names]).rstrip()
+        arguments_assign_struct = "".join([helpers.snake_case(n) + ": binary_message." + helpers.snake_case(n) + ",\n            " for n in message.argument_names]).rstrip()
         arguments_csv_heading = "".join([n + ("," if u == "" else " (" + u + "),") for n, u in zip(message.argument_names, message.argument_units)]).rstrip(",")
         arguments_csv_format = "".join(["{:.6}," for _ in message.argument_names]).rstrip(",")
         arguments_ascii_format = "".join(["{:.4}," for _ in message.argument_names]).rstrip(",")
@@ -152,7 +152,7 @@ for message in messages:
         file.write(template)
 
 
-def insert(file_path: str, template: str, id: int) -> None:
+def insert(path: str, id: int, template: str) -> None:
     code = ""
 
     for message in messages:
@@ -164,100 +164,128 @@ def insert(file_path: str, template: str, id: int) -> None:
 
         code += modified
 
-    helpers.insert(file_path, code, id)
+    helpers.insert(path, id, code)
 
 
 # Insert code into mod.rs
-file_path = "mod.rs"
+path = "mod.rs"
 
-template = "pub use self::$name_snake_case$_message::*;\n"
+insert(
+    path,
+    0,
+    "pub use self::$name_snake_case$_message::*;\n",
+)
 
-insert(file_path, template, 0)
-
-template = "pub mod $name_snake_case$_message;\n"
-
-insert(file_path, template, 1)
+insert(
+    path,
+    1,
+    "pub mod $name_snake_case$_message;\n",
+)
 
 # Insert code into x-IMU3-API/Rust/src/connection.rs
-template = """
+insert(
+    "../connection.rs",
+    0,
+    """
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)
-    }\n"""
-
-insert("../connection.rs", template, 0)
+    }\n""",
+)
 
 # Insert code into x-IMU3-API/Rust/src/ffi/connection.rs
-template = """
+insert(
+    "../ffi/connection.rs",
+    0,
+    """
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     connection.add_$name_snake_case$_closure(Box::new(move |message| callback(message, void_ptr.0)))
-}\n"""
-
-insert("../ffi/connection.rs", template, 0)
+}\n""",
+)
 
 # Insert code into x-IMU3-API/Rust/src/receiver.rs
-template = "        parse!($name_pascal_case$Message, $name_pascal_case$);\n"
-
-insert("../receiver.rs", template, 0)
+insert(
+    "../receiver.rs",
+    0,
+    "        parse!($name_pascal_case$Message, $name_pascal_case$);\n",
+)
 
 # Insert code into x-IMU3-API/Rust/src/dispatcher.rs
-file_path = "../dispatcher.rs"
+path = "../dispatcher.rs"
 
-template = "    $name_pascal_case$($name_pascal_case$Message),\n"
+insert(
+    path,
+    0,
+    "    $name_pascal_case$($name_pascal_case$Message),\n",
+)
 
-insert(file_path, template, 0)
+insert(
+    path,
+    1,
+    "    $name_snake_case$_closures: Arc<Mutex<Vec<(Box<dyn Fn($name_pascal_case$Message) + Send>, u64)>>>,\n",
+)
 
-template = "    $name_snake_case$_closures: Arc<Mutex<Vec<(Box<dyn Fn($name_pascal_case$Message) + Send>, u64)>>>,\n"
+insert(
+    path,
+    2,
+    "            $name_snake_case$_closures: Arc::new(Mutex::new(Vec::new())),\n",
+)
 
-insert(file_path, template, 1)
+insert(
+    path,
+    3,
+    "        let $name_snake_case$_closures = dispatcher.$name_snake_case$_closures.clone();\n",
+)
 
-template = "            $name_snake_case$_closures: Arc::new(Mutex::new(Vec::new())),\n"
-
-insert(file_path, template, 2)
-
-template = "        let $name_snake_case$_closures = dispatcher.$name_snake_case$_closures.clone();\n"
-
-insert(file_path, template, 3)
-
-template = """\
+insert(
+    path,
+    4,
+    """\
                 DispatcherData::$name_pascal_case$(message) => {
                     data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
                     $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
-                }\n"""
+                }\n""",
+)
 
-insert(file_path, template, 4)
-
-template = """
+insert(
+    path,
+    5,
+    """
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
         let id = self.get_closure_id();
         self.$name_snake_case$_closures.lock().unwrap().push((closure, id));
         id
-    }\n"""
+    }\n""",
+)
 
-insert(file_path, template, 5)
-
-template = "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);\n"
-
-insert(file_path, template, 6)
+insert(
+    path,
+    6,
+    "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);\n",
+)
 
 # Insert code into x-IMU3-API/Rust/src/ffi/data_messages.rs
-template = """
+insert(
+    "../ffi/data_messages.rs",
+    0,
+    """
 #[no_mangle]
 pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pascal_case$Message) -> *const c_char {
     str_to_char_ptr(&message.to_string())
-}\n"""
-
-insert("../ffi/data_messages.rs", template, 0)
+}\n""",
+)
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
-template = """\
+insert(
+    "../../../Cpp/Connection.hpp",
+    0,
+    """\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)> &callback) {
             return XIMU3_connection_add_$name_snake_case$_callback(wrapped, Helpers::wrapCallable<XIMU3_$name_pascal_case$Message>(callback), &callback);
-        }\n\n"""
-
-insert("../../../Cpp/Connection.hpp", template, 0)
+        }\n\n""",
+)
 
 # Generate x-IMU3-API/Python/ximu3/DataMessages/*Message.h
 directory = "../../../Python/ximu3/DataMessages/"
@@ -281,7 +309,7 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
             get_function = get_function.replace("$argument_name$", helpers.snake_case(argument_name))
             get_functions += get_function
 
-        template = template.replace("$get_functions$", get_functions.rstrip("\n"))
+        template = template.replace("$get_functions$", get_functions.rstrip())
 
         # Method functions
         method_names = []
@@ -296,7 +324,7 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
             method_names = method_names + ["to_quaternion_message"]
             method_functions += "static PyObject *$name_snake_case$_message_to_quaternion_message($name_pascal_case$Message *self, PyObject *args);\n\n"
 
-        template = template.replace("$method_functions$", method_functions.rstrip("\n"))
+        template = template.replace("$method_functions$", method_functions.rstrip())
 
         # Get set members
         get_set_members = ""
@@ -306,7 +334,7 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
             get_set_member = get_set_member.replace("$argument_name$", helpers.snake_case(argument_name))
             get_set_members += get_set_member
 
-        template = template.replace("$get_set_members$", get_set_members.rstrip("\n    "))
+        template = template.replace("$get_set_members$", get_set_members.rstrip())
 
         # Get method members
         method_members = ""
@@ -316,7 +344,7 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
             method_member = method_member.replace("$method_name$", method_name)
             method_members += method_member
 
-        template = template.replace("$method_members$", method_members.rstrip("\n    "))
+        template = template.replace("$method_members$", method_members.rstrip())
     else:
         with open(directory + "TemplateCharArray.txt") as file:
             template = file.read()
@@ -330,17 +358,26 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
         file.write(template)
 
 # Generate x-IMU3-API/Python/ximu3/DataMessages/DataMessages.h
-insert("../../../Python/ximu3/DataMessages/DataMessages.h", '#include "$name_pascal_case$Message.h"\n', 0)
+insert(
+    "../../../Python/ximu3/DataMessages/DataMessages.h",
+    0,
+    '#include "$name_pascal_case$Message.h"\n',
+)
 
 # Insert code into x-IMU3-API/Python/ximu3/ximu3.c
-template = '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n'
-
-insert("../../../Python/ximu3/ximu3.c", template, 0)
+insert(
+    "../../../Python/ximu3/ximu3.c",
+    0,
+    '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n',
+)
 
 # Insert code into x-IMU3-API/Python/ximu3/Connection.h
-file_path = "../../../Python/ximu3/Connection.h"
+path = "../../../Python/ximu3/Connection.h"
 
-template = """\
+insert(
+    path,
+    0,
+    """\
 static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyObject *arg) {
     if (PyCallable_Check(arg) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
@@ -355,25 +392,20 @@ static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyO
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
-}\n\n"""
+}\n\n""",
+)
 
-insert(file_path, template, 0)
-
-code = ""
-
-for message in messages:
-    template = '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_O, ""},\n'
-
-    template = template.replace("$name_snake_case$", helpers.snake_case(message.name))
-
-    code += template
-
-helpers.insert(file_path, code, 1)
+insert(
+    path,
+    1,
+    '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_O, ""},\n',
+)
 
 # Insert code into x-IMU3-API/CSharp/x-IMU3/Connection.h
-file_path = "../../../CSharp/x-IMU3/Connection.cs"
-
-template = """\
+insert(
+    "../../../CSharp/x-IMU3/Connection.cs",
+    0,
+    """\
         public delegate void $name_pascal_case$Callback(CApi.XIMU3_$name_pascal_case$Message message);
 
         private static void $name_pascal_case$CallbackInternal(CApi.XIMU3_$name_pascal_case$Message message, IntPtr context)
@@ -384,6 +416,5 @@ template = """\
         public UInt64 Add$name_pascal_case$Callback($name_pascal_case$Callback callback)
         {
             return CApi.XIMU3_connection_add_$name_snake_case$_callback(wrapped, $name_pascal_case$CallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }\n\n"""
-
-insert(file_path, template, 0)
+        }\n\n""",
+)

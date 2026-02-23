@@ -257,10 +257,13 @@ for window in windows:
         file.write(template_cpp)
 
 # Insert code into x-IMU3-GUI/Source/ConnectionPanel/ConnectionPanel.cpp
-file_path = "../../ConnectionPanel/ConnectionPanel.cpp"
+path = "../../ConnectionPanel/ConnectionPanel.cpp"
 
-code = "".join(['#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w in windows])
-helpers.insert(file_path, code, "0")
+helpers.insert(
+    path,
+    0,
+    "".join(['#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w in windows]),
+)
 
 template = """\
     if (type == WindowIds::$name$) {
@@ -268,4 +271,5 @@ template = """\
     }\n"""
 
 code = "".join([template.replace("$name$", w.name) for w in windows])
-helpers.insert(file_path, code, 1)
+
+helpers.insert(path, 1, code)
