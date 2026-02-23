@@ -582,6 +582,51 @@ namespace Ximu3
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_InertialMessage XIMU3_connection_get_inertial_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_MagnetometerMessage XIMU3_connection_get_magnetometer_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_QuaternionMessage XIMU3_connection_get_quaternion_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_RotationMatrixMessage XIMU3_connection_get_rotation_matrix_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_EulerAnglesMessage XIMU3_connection_get_euler_angles_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_LinearAccelerationMessage XIMU3_connection_get_linear_acceleration_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_EarthAccelerationMessage XIMU3_connection_get_earth_acceleration_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_AhrsStatusMessage XIMU3_connection_get_ahrs_status_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_HighGAccelerometerMessage XIMU3_connection_get_high_g_accelerometer_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_TemperatureMessage XIMU3_connection_get_temperature_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_BatteryMessage XIMU3_connection_get_battery_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_RssiMessage XIMU3_connection_get_rssi_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_SerialAccessoryMessage XIMU3_connection_get_serial_accessory_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_NotificationMessage XIMU3_connection_get_notification_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_ErrorMessage XIMU3_connection_get_error_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_receive_error_callback(IntPtr connection, XIMU3_CallbackReceiveError callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

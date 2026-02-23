@@ -220,10 +220,6 @@ typedef struct XIMU3_Statistics
     uint32_t error_rate;
 } XIMU3_Statistics;
 
-typedef void (*XIMU3_CallbackReceiveError)(enum XIMU3_ReceiveError data, void *context);
-
-typedef void (*XIMU3_CallbackStatistics)(struct XIMU3_Statistics data, void *context);
-
 typedef struct XIMU3_InertialMessage
 {
     uint64_t timestamp;
@@ -235,8 +231,6 @@ typedef struct XIMU3_InertialMessage
     float accelerometer_z;
 } XIMU3_InertialMessage;
 
-typedef void (*XIMU3_CallbackInertialMessage)(struct XIMU3_InertialMessage data, void *context);
-
 typedef struct XIMU3_MagnetometerMessage
 {
     uint64_t timestamp;
@@ -244,8 +238,6 @@ typedef struct XIMU3_MagnetometerMessage
     float y;
     float z;
 } XIMU3_MagnetometerMessage;
-
-typedef void (*XIMU3_CallbackMagnetometerMessage)(struct XIMU3_MagnetometerMessage data, void *context);
 
 typedef struct XIMU3_QuaternionMessage
 {
@@ -255,8 +247,6 @@ typedef struct XIMU3_QuaternionMessage
     float y;
     float z;
 } XIMU3_QuaternionMessage;
-
-typedef void (*XIMU3_CallbackQuaternionMessage)(struct XIMU3_QuaternionMessage data, void *context);
 
 typedef struct XIMU3_RotationMatrixMessage
 {
@@ -272,8 +262,6 @@ typedef struct XIMU3_RotationMatrixMessage
     float zz;
 } XIMU3_RotationMatrixMessage;
 
-typedef void (*XIMU3_CallbackRotationMatrixMessage)(struct XIMU3_RotationMatrixMessage data, void *context);
-
 typedef struct XIMU3_EulerAnglesMessage
 {
     uint64_t timestamp;
@@ -281,8 +269,6 @@ typedef struct XIMU3_EulerAnglesMessage
     float pitch;
     float yaw;
 } XIMU3_EulerAnglesMessage;
-
-typedef void (*XIMU3_CallbackEulerAnglesMessage)(struct XIMU3_EulerAnglesMessage data, void *context);
 
 typedef struct XIMU3_LinearAccelerationMessage
 {
@@ -296,8 +282,6 @@ typedef struct XIMU3_LinearAccelerationMessage
     float acceleration_z;
 } XIMU3_LinearAccelerationMessage;
 
-typedef void (*XIMU3_CallbackLinearAccelerationMessage)(struct XIMU3_LinearAccelerationMessage data, void *context);
-
 typedef struct XIMU3_EarthAccelerationMessage
 {
     uint64_t timestamp;
@@ -310,8 +294,6 @@ typedef struct XIMU3_EarthAccelerationMessage
     float acceleration_z;
 } XIMU3_EarthAccelerationMessage;
 
-typedef void (*XIMU3_CallbackEarthAccelerationMessage)(struct XIMU3_EarthAccelerationMessage data, void *context);
-
 typedef struct XIMU3_AhrsStatusMessage
 {
     uint64_t timestamp;
@@ -321,8 +303,6 @@ typedef struct XIMU3_AhrsStatusMessage
     float magnetic_recovery;
 } XIMU3_AhrsStatusMessage;
 
-typedef void (*XIMU3_CallbackAhrsStatusMessage)(struct XIMU3_AhrsStatusMessage data, void *context);
-
 typedef struct XIMU3_HighGAccelerometerMessage
 {
     uint64_t timestamp;
@@ -331,15 +311,11 @@ typedef struct XIMU3_HighGAccelerometerMessage
     float z;
 } XIMU3_HighGAccelerometerMessage;
 
-typedef void (*XIMU3_CallbackHighGAccelerometerMessage)(struct XIMU3_HighGAccelerometerMessage data, void *context);
-
 typedef struct XIMU3_TemperatureMessage
 {
     uint64_t timestamp;
     float temperature;
 } XIMU3_TemperatureMessage;
-
-typedef void (*XIMU3_CallbackTemperatureMessage)(struct XIMU3_TemperatureMessage data, void *context);
 
 typedef struct XIMU3_BatteryMessage
 {
@@ -349,16 +325,12 @@ typedef struct XIMU3_BatteryMessage
     float charging_status;
 } XIMU3_BatteryMessage;
 
-typedef void (*XIMU3_CallbackBatteryMessage)(struct XIMU3_BatteryMessage data, void *context);
-
 typedef struct XIMU3_RssiMessage
 {
     uint64_t timestamp;
     float percentage;
     float power;
 } XIMU3_RssiMessage;
-
-typedef void (*XIMU3_CallbackRssiMessage)(struct XIMU3_RssiMessage data, void *context);
 
 typedef struct XIMU3_SerialAccessoryMessage
 {
@@ -367,8 +339,6 @@ typedef struct XIMU3_SerialAccessoryMessage
     size_t number_of_bytes;
 } XIMU3_SerialAccessoryMessage;
 
-typedef void (*XIMU3_CallbackSerialAccessoryMessage)(struct XIMU3_SerialAccessoryMessage data, void *context);
-
 typedef struct XIMU3_NotificationMessage
 {
     uint64_t timestamp;
@@ -376,14 +346,44 @@ typedef struct XIMU3_NotificationMessage
     size_t number_of_bytes;
 } XIMU3_NotificationMessage;
 
-typedef void (*XIMU3_CallbackNotificationMessage)(struct XIMU3_NotificationMessage data, void *context);
-
 typedef struct XIMU3_ErrorMessage
 {
     uint64_t timestamp;
     char char_array[XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE];
     size_t number_of_bytes;
 } XIMU3_ErrorMessage;
+
+typedef void (*XIMU3_CallbackReceiveError)(enum XIMU3_ReceiveError data, void *context);
+
+typedef void (*XIMU3_CallbackStatistics)(struct XIMU3_Statistics data, void *context);
+
+typedef void (*XIMU3_CallbackInertialMessage)(struct XIMU3_InertialMessage data, void *context);
+
+typedef void (*XIMU3_CallbackMagnetometerMessage)(struct XIMU3_MagnetometerMessage data, void *context);
+
+typedef void (*XIMU3_CallbackQuaternionMessage)(struct XIMU3_QuaternionMessage data, void *context);
+
+typedef void (*XIMU3_CallbackRotationMatrixMessage)(struct XIMU3_RotationMatrixMessage data, void *context);
+
+typedef void (*XIMU3_CallbackEulerAnglesMessage)(struct XIMU3_EulerAnglesMessage data, void *context);
+
+typedef void (*XIMU3_CallbackLinearAccelerationMessage)(struct XIMU3_LinearAccelerationMessage data, void *context);
+
+typedef void (*XIMU3_CallbackEarthAccelerationMessage)(struct XIMU3_EarthAccelerationMessage data, void *context);
+
+typedef void (*XIMU3_CallbackAhrsStatusMessage)(struct XIMU3_AhrsStatusMessage data, void *context);
+
+typedef void (*XIMU3_CallbackHighGAccelerometerMessage)(struct XIMU3_HighGAccelerometerMessage data, void *context);
+
+typedef void (*XIMU3_CallbackTemperatureMessage)(struct XIMU3_TemperatureMessage data, void *context);
+
+typedef void (*XIMU3_CallbackBatteryMessage)(struct XIMU3_BatteryMessage data, void *context);
+
+typedef void (*XIMU3_CallbackRssiMessage)(struct XIMU3_RssiMessage data, void *context);
+
+typedef void (*XIMU3_CallbackSerialAccessoryMessage)(struct XIMU3_SerialAccessoryMessage data, void *context);
+
+typedef void (*XIMU3_CallbackNotificationMessage)(struct XIMU3_NotificationMessage data, void *context);
 
 typedef void (*XIMU3_CallbackErrorMessage)(struct XIMU3_ErrorMessage data, void *context);
 
@@ -505,6 +505,36 @@ struct XIMU3_MuxConnectionConfig *XIMU3_connection_get_config_mux(struct XIMU3_C
 const char *XIMU3_connection_get_config_string(struct XIMU3_Connection *connection);
 
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
+
+struct XIMU3_InertialMessage XIMU3_connection_get_inertial_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_MagnetometerMessage XIMU3_connection_get_magnetometer_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_QuaternionMessage XIMU3_connection_get_quaternion_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_RotationMatrixMessage XIMU3_connection_get_rotation_matrix_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_EulerAnglesMessage XIMU3_connection_get_euler_angles_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_LinearAccelerationMessage XIMU3_connection_get_linear_acceleration_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_EarthAccelerationMessage XIMU3_connection_get_earth_acceleration_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_AhrsStatusMessage XIMU3_connection_get_ahrs_status_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_HighGAccelerometerMessage XIMU3_connection_get_high_g_accelerometer_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_TemperatureMessage XIMU3_connection_get_temperature_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_BatteryMessage XIMU3_connection_get_battery_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_RssiMessage XIMU3_connection_get_rssi_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_SerialAccessoryMessage XIMU3_connection_get_serial_accessory_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_NotificationMessage XIMU3_connection_get_notification_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_ErrorMessage XIMU3_connection_get_error_message(struct XIMU3_Connection *connection, bool consume);
 
 uint64_t XIMU3_connection_add_receive_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackReceiveError callback, void *context);
 

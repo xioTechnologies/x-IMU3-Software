@@ -252,10 +252,13 @@ def end_of_file_callback() -> None:
 def run(config: ximu3.ConnectionConfig) -> None:
     connection = ximu3.Connection(config)
 
-    connection.add_receive_error_callback(receive_error_callback)
-    connection.add_statistics_callback(statistics_callback)
+    connection.open()
 
-    if helpers.yes_or_no("Print data messages?"):
+    connection.send_command('{"strobe":null}')  # send command to strobe LED
+
+    if helpers.yes_or_no("Use callbacks"):
+        connection.add_receive_error_callback(receive_error_callback)
+        connection.add_statistics_callback(statistics_callback)
         connection.add_inertial_callback(inertial_callback)
         connection.add_magnetometer_callback(magnetometer_callback)
         connection.add_quaternion_callback(quaternion_callback)
@@ -271,13 +274,26 @@ def run(config: ximu3.ConnectionConfig) -> None:
         connection.add_serial_accessory_callback(serial_accessory_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
+        connection.add_end_of_file_callback(end_of_file_callback)
+    else:
+        for _ in range(1000):
+            print(connection.get_statistics())
+            print(connection.get_inertial_message())
+            print(connection.get_magnetometer_message())
+            print(connection.get_quaternion_message())
+            print(connection.get_rotation_matrix_message())
+            print(connection.get_euler_angles_message())
+            print(connection.get_linear_acceleration_message())
+            print(connection.get_earth_acceleration_message())
+            print(connection.get_ahrs_status_message())
+            print(connection.get_high_g_accelerometer_message())
+            print(connection.get_temperature_message())
+            print(connection.get_battery_message())
+            print(connection.get_rssi_message())
+            print(connection.get_serial_accessory_message())
+            print(connection.get_notification_message())
+            print(connection.get_error_message())
 
-    connection.add_end_of_file_callback(end_of_file_callback)
-
-    connection.open()
-
-    connection.send_command('{"strobe":null}')  # send command to strobe LED
-
-    time.sleep(60)
+            time.sleep(0.01)
 
     connection.close()

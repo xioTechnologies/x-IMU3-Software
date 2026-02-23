@@ -15,6 +15,18 @@ pub struct AhrsStatusMessage {
     pub magnetic_recovery: f32,
 }
 
+impl Default for AhrsStatusMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            initialising: 0.0,
+            angular_rate_recovery: 0.0,
+            acceleration_recovery: 0.0,
+            magnetic_recovery: 0.0,
+        }
+    }
+}
+
 impl DataMessage for AhrsStatusMessage {
     fn get_ascii_id() -> u8 {
         b'U'

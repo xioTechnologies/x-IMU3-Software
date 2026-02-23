@@ -20,6 +20,23 @@ pub struct RotationMatrixMessage {
     pub zz: f32,
 }
 
+impl Default for RotationMatrixMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            xx: 0.0,
+            xy: 0.0,
+            xz: 0.0,
+            yx: 0.0,
+            yy: 0.0,
+            yz: 0.0,
+            zx: 0.0,
+            zy: 0.0,
+            zz: 0.0,
+        }
+    }
+}
+
 impl DataMessage for RotationMatrixMessage {
     fn get_ascii_id() -> u8 {
         b'R'

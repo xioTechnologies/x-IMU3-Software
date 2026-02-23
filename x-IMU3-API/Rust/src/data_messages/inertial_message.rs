@@ -17,6 +17,20 @@ pub struct InertialMessage {
     pub accelerometer_z: f32,
 }
 
+impl Default for InertialMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            gyroscope_x: 0.0,
+            gyroscope_y: 0.0,
+            gyroscope_z: 0.0,
+            accelerometer_x: 0.0,
+            accelerometer_y: 0.0,
+            accelerometer_z: 0.0,
+        }
+    }
+}
+
 impl DataMessage for InertialMessage {
     fn get_ascii_id() -> u8 {
         b'I'

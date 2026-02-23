@@ -123,6 +123,7 @@ for message in messages:
             ("$name_camel_case$", helpers.camel_case(message.name)),
             ("$ascii_id$", message.ascii_id),
             ("$arguments_struct_declare$", "".join("pub " + helpers.snake_case(n) + ": f32,\n    " for n in message.argument_names).rstrip()),
+            ("$arguments_struct_default$", "".join([helpers.snake_case(n) + ": 0.0,\n            " for n in message.argument_names]).rstrip("\n    ")),
             ("$arguments_scan_fmt$", "".join("{f}," for _ in message.argument_names).rstrip(",")),
             ("$arguments_types$", "".join("f32, " for _ in message.argument_names).rstrip(", ")),
             ("$arguments_scan_result$", "".join(helpers.snake_case(n) + ", " for n in message.argument_names).rstrip(", ")),
@@ -178,6 +179,18 @@ insert(
     "../connection.rs",
     0,
     """\
+    pub fn get_$name_snake_case$_message(&self, consume: bool) -> Option<$name_pascal_case$Message> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.$name_snake_case$_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.$name_snake_case$_message.lock().unwrap().clone()
+    }\n\n""",
+)
+
+insert(
+    "../connection.rs",
+    1,
+    """\
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_$name_snake_case$_closure(closure)
     }\n\n""",
@@ -187,6 +200,17 @@ insert(
 insert(
     "../ffi/connection.rs",
     0,
+    """\
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_$name_snake_case$_message(connection: *mut Connection, consume: bool) -> $name_pascal_case$Message {
+    let connection = unsafe { &*connection };
+    connection.get_$name_snake_case$_message(consume).unwrap_or_default()
+}\n\n""",
+)
+
+insert(
+    "../ffi/connection.rs",
+    1,
     """\
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {
@@ -215,26 +239,45 @@ insert(
 insert(
     path,
     1,
-    "    $name_snake_case$_closures: Arc<Mutex<Vec<(Box<dyn Fn($name_pascal_case$Message) + Send>, u64)>>>,\n",
+    "    pub $name_snake_case$_message: Arc<Mutex<Option<$name_pascal_case$Message>>>,\n",
 )
 
 insert(
     path,
     2,
-    "            $name_snake_case$_closures: Arc::new(Mutex::new(Vec::new())),\n",
+    "    $name_snake_case$_closures: Arc<Mutex<Vec<(Box<dyn Fn($name_pascal_case$Message) + Send>, u64)>>>,\n",
 )
 
 insert(
     path,
     3,
-    "        let $name_snake_case$_closures = dispatcher.$name_snake_case$_closures.clone();\n",
+    "            $name_snake_case$_message: Arc::new(Mutex::new(None)),\n",
 )
 
 insert(
     path,
     4,
+    "            $name_snake_case$_closures: Arc::new(Mutex::new(Vec::new())),\n",
+)
+
+insert(
+    path,
+    5,
+    "        let $name_snake_case$_message = dispatcher.$name_snake_case$_message.clone();\n",
+)
+
+insert(
+    path,
+    6,
+    "        let $name_snake_case$_closures = dispatcher.$name_snake_case$_closures.clone();\n",
+)
+
+insert(
+    path,
+    7,
     """\
                 DispatcherData::$name_pascal_case$(message) => {
+                    *$name_snake_case$_message.lock().unwrap() = Some(message);                
                     data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
                     $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
                 }\n""",
@@ -242,7 +285,7 @@ insert(
 
 insert(
     path,
-    5,
+    8,
     """\
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
         let id = self.get_closure_id();
@@ -253,7 +296,7 @@ insert(
 
 insert(
     path,
-    6,
+    9,
     "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);\n",
 )
 
@@ -367,6 +410,32 @@ insert(
     path,
     0,
     """\
+static PyObject *connection_get_$name_snake_case$_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_$name_pascal_case$Message message = XIMU3_connection_get_$name_snake_case$_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return $name_snake_case$_message_from(&message);
+}\n\n""",
+)
+
+insert(
+    path,
+    1,
+    """\
 static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyObject *arg) {
     if (PyCallable_Check(arg) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
@@ -386,7 +455,13 @@ static PyObject *connection_add_$name_snake_case$_callback(Connection *self, PyO
 
 insert(
     path,
-    1,
+    2,
+    '    {"get_$name_snake_case$_message", (PyCFunction) connection_get_$name_snake_case$_message, METH_VARARGS | METH_KEYWORDS, ""},\n',
+)
+
+insert(
+    path,
+    3,
     '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_O, ""},\n',
 )
 
@@ -394,6 +469,16 @@ insert(
 insert(
     "../../../CSharp/x-IMU3/Connection.cs",
     0,
+    """\
+        public CApi.XIMU3_$name_pascal_case$Message Get$name_pascal_case$Message(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
+        }\n\n""",
+)
+
+insert(
+    "../../../CSharp/x-IMU3/Connection.cs",
+    1,
     """\
         public delegate void $name_pascal_case$Callback(CApi.XIMU3_$name_pascal_case$Message message);
 

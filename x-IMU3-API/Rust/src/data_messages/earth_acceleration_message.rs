@@ -18,6 +18,21 @@ pub struct EarthAccelerationMessage {
     pub acceleration_z: f32,
 }
 
+impl Default for EarthAccelerationMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            quaternion_w: 0.0,
+            quaternion_x: 0.0,
+            quaternion_y: 0.0,
+            quaternion_z: 0.0,
+            acceleration_x: 0.0,
+            acceleration_y: 0.0,
+            acceleration_z: 0.0,
+        }
+    }
+}
+
 impl DataMessage for EarthAccelerationMessage {
     fn get_ascii_id() -> u8 {
         b'E'
