@@ -249,7 +249,7 @@ def end_of_file_callback() -> None:
     print("End of file")
 
 
-def run(config: ximu3.UsbConnectionConfig | ximu3.SerialConnectionConfig | ximu3.TcpConnectionConfig | ximu3.UdpConnectionConfig | ximu3.BluetoothConnectionConfig | ximu3.FileConnectionConfig | ximu3.MuxConnectionConfig) -> None:
+def run(config: ximu3.ConnectionConfig) -> None:
     connection = ximu3.Connection(config)
 
     connection.add_receive_error_callback(receive_error_callback)
