@@ -4,7 +4,7 @@ use ximu3::port_scanner::*;
 
 pub fn run() {
     // Search for connection
-    let devices = PortScanner::scan_filter(PortType::Usb);
+    let devices = PortScanner::scan(Some(PortType::Usb));
 
     let Some(device) = devices.first() else {
         println!("No USB connections available");

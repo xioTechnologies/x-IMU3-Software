@@ -123,7 +123,7 @@ impl PortScanner {
         (*self.devices.lock().unwrap()).clone()
     }
 
-    pub fn scan() -> Vec<Device> {
+    pub fn scan(filter: Option<PortType>) -> Vec<Device> {
         let devices = Arc::new(Mutex::new(Vec::new()));
         let (sender, receiver) = crossbeam::channel::unbounded();
 
@@ -140,18 +140,15 @@ impl PortScanner {
 
         while let Ok(_) = receiver.recv() {} // wait for all senders to be dropped
 
+        if let Some(filter) = filter {
+            devices.lock().unwrap().retain(|device| match filter {
+                PortType::Usb => matches!(device.connection_config, ConnectionConfig::UsbConnectionConfig(_)),
+                PortType::Serial => matches!(device.connection_config, ConnectionConfig::SerialConnectionConfig(_)),
+                PortType::Bluetooth => matches!(device.connection_config, ConnectionConfig::BluetoothConnectionConfig(_)),
+            });
+        }
+
         let devices = devices.lock().unwrap().clone();
-        devices
-    }
-
-    pub fn scan_filter(port_type: PortType) -> Vec<Device> {
-        let mut devices = Self::scan();
-
-        devices.retain(|device| match port_type {
-            PortType::Usb => matches!(device.connection_config, ConnectionConfig::UsbConnectionConfig(_)),
-            PortType::Serial => matches!(device.connection_config, ConnectionConfig::SerialConnectionConfig(_)),
-            PortType::Bluetooth => matches!(device.connection_config, ConnectionConfig::BluetoothConnectionConfig(_)),
-        });
 
         devices
     }

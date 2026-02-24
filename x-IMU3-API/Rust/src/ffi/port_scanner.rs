@@ -28,12 +28,12 @@ pub extern "C" fn XIMU3_port_scanner_get_devices(port_scanner: *mut PortScanner)
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_scan() -> Devices {
-    PortScanner::scan().into()
+    PortScanner::scan(None).into()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_scan_filter(port_type: PortType) -> Devices {
-    PortScanner::scan_filter(port_type).into()
+    PortScanner::scan(Some(port_type)).into()
 }
 
 #[no_mangle]

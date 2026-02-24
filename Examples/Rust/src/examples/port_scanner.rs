@@ -10,7 +10,7 @@ pub fn run() {
 
         std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
-        let devices = PortScanner::scan();
+        let devices = PortScanner::scan(None);
 
         print_devices(devices);
     }
