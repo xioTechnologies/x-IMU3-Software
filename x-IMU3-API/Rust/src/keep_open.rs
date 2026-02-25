@@ -78,7 +78,9 @@ impl<'a> KeepOpen<'a> {
                     if *dropped {
                         return;
                     }
-                    Connection::ping_internal(receiver, write_sender);
+                    if let Some(write_sender) = write_sender {
+                        Connection::ping_internal(receiver, write_sender);
+                    };
                 }
 
                 if connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total > data_total {
