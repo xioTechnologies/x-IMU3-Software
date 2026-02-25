@@ -94,14 +94,18 @@ impl Connection {
 
     pub fn ping(&self) -> Option<PingResponse> {
         let receiver = self.internal.lock().unwrap().get_receiver();
-        let write_sender = self.internal.lock().unwrap().get_write_sender();
+        let write_sender = self.internal.lock().unwrap().get_write_sender()?;
 
         Self::ping_internal(receiver, write_sender)
     }
 
     pub fn ping_async(&self, closure: Box<dyn FnOnce(Option<PingResponse>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
-        let write_sender = self.internal.lock().unwrap().get_write_sender();
+
+        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
+            return;
+        };
+
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
@@ -116,7 +120,7 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>) -> Option<PingResponse> {
+    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Sender<Vec<u8>>) -> Option<PingResponse> {
         let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200);
 
         PingResponse::parse(&responses.first()?.as_ref()?.json)
@@ -128,7 +132,10 @@ impl Connection {
 
     pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
         let receiver = self.internal.lock().unwrap().get_receiver();
-        let write_sender = self.internal.lock().unwrap().get_write_sender();
+
+        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
+            return Vec::new();
+        };
 
         Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
     }
@@ -139,7 +146,11 @@ impl Connection {
 
     pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Option<CommandMessage>>) + Send>) {
         let receiver = self.internal.lock().unwrap().get_receiver();
-        let write_sender = self.internal.lock().unwrap().get_write_sender();
+
+        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
+            return;
+        };
+
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
@@ -154,7 +165,7 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Option<Sender<Vec<u8>>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
+    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Sender<Vec<u8>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
         struct Transaction {
             command: Option<CommandMessage>,
             response: Option<CommandMessage>,
@@ -176,9 +187,7 @@ impl Connection {
 
         'outer: for _ in 0..(1 + retries) {
             for command in transactions.iter().filter_map(|transaction| transaction.command.clone()) {
-                if let Some(write_sender) = &write_sender {
-                    write_sender.send([command.json.as_slice(), &[b'\n']].concat()).ok();
-                }
+                write_sender.send([command.json.as_slice(), &[b'\n']].concat()).ok();
             }
 
             let start_time = std::time::Instant::now();
