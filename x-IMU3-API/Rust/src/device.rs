@@ -1,7 +1,7 @@
 use crate::connection_config::*;
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Device {
     pub device_name: String,
     pub serial_number: String,

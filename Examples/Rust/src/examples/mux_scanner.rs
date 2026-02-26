@@ -1,7 +1,5 @@
-use super::connection;
-use crate::helpers;
 use ximu3::connection::*;
-use ximu3::connection_config::*;
+use ximu3::device::*;
 use ximu3::mux_scanner::*;
 use ximu3::port_scanner::*;
 
@@ -26,26 +24,30 @@ pub fn run() {
         return;
     }
 
-    // Mux connection
-    if helpers::yes_or_no("Search for connections?") {
-        let mux_devices = MuxScanner::scan(&usb_connection, MAX_NUMBER_OF_MUX_CHANNELS, DEFAULT_RETRIES, DEFAULT_TIMEOUT);
+    // Mux scanner (blocking)
+    let mux_devices = MuxScanner::scan(&usb_connection, MAX_NUMBER_OF_MUX_CHANNELS, DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
-        let Some(mux_device) = mux_devices.first() else {
-            println!("No mux connections available");
-            return;
-        };
+    print_devices(mux_devices);
 
-        println!("Found {mux_device}");
+    // Mux scanner (non-blocking)
+    let _mux_scanner = MuxScanner::new(
+        &usb_connection,
+        Box::new(|mux_devices| {
+            print_devices(mux_devices);
+        }),
+    );
 
-        let config = &mux_device.connection_config;
-
-        connection::run(config);
-    } else {
-        let config = &ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig::new(0x41, &usb_connection)); // replace with actual connection config
-
-        connection::run(config);
-    }
+    std::thread::sleep(std::time::Duration::from_secs(60));
 
     // Close connection
     usb_connection.close();
+}
+
+fn print_devices(devices: Vec<Device>) {
+    println!("{} device(s) found", devices.len());
+
+    for device in devices {
+        println!("{}, {}, {}", device.device_name, device.serial_number, device.connection_config);
+        // println!("{device}"); // alternative to above
+    }
 }

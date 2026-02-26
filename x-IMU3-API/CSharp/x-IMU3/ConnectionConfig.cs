@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Ximu3
 {
@@ -17,8 +17,9 @@ namespace Ximu3
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile:
-                case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux:
                     break;
+                case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux:
+                    return new MuxConnectionConfig(device.mux_connection_config);
             }
 
             return null;
@@ -169,7 +170,7 @@ namespace Ximu3
 
         public MuxConnectionConfig(IntPtr config)
         {
-            this.wrapped = config;
+            this.wrapped = CApi.XIMU3_mux_connection_config_clone(config);
         }
 
         ~MuxConnectionConfig() => Dispose();

@@ -14,15 +14,16 @@ namespace Ximu3Examples
             Console.WriteLine("E. GetPortNames");
             Console.WriteLine("F. KeepOpen");
             Console.WriteLine("G. MuxConnection");
-            Console.WriteLine("H. NetworkAnnouncement");
-            Console.WriteLine("I. OpenAsync");
-            Console.WriteLine("J. Ping");
-            Console.WriteLine("K. PortScanner");
-            Console.WriteLine("L. SendCommands");
-            Console.WriteLine("M. SerialConnection");
-            Console.WriteLine("N. TcpConnection");
-            Console.WriteLine("O. UdpConnection");
-            Console.WriteLine("P. UsbConnection");
+            Console.WriteLine("H. MuxScanner");
+            Console.WriteLine("I. NetworkAnnouncement");
+            Console.WriteLine("J. OpenAsync");
+            Console.WriteLine("K. Ping");
+            Console.WriteLine("L. PortScanner");
+            Console.WriteLine("M. SendCommands");
+            Console.WriteLine("N. SerialConnection");
+            Console.WriteLine("O. TcpConnection");
+            Console.WriteLine("P. UdpConnection");
+            Console.WriteLine("Q. UsbConnection");
 
             switch (Helpers.GetKey())
             {
@@ -48,30 +49,33 @@ namespace Ximu3Examples
                     _ = new MuxConnection();
                     break;
                 case 'H':
-                    _ = new NetworkAnnouncement();
+                    _ = new MuxScanner();
                     break;
                 case 'I':
-                    _ = new OpenAsync();
+                    _ = new NetworkAnnouncement();
                     break;
                 case 'J':
-                    _ = new Ping();
+                    _ = new OpenAsync();
                     break;
                 case 'K':
-                    _ = new PortScanner();
+                    _ = new Ping();
                     break;
                 case 'L':
-                    _ = new SendCommands();
+                    _ = new PortScanner();
                     break;
                 case 'M':
-                    _ = new SerialConnection();
+                    _ = new SendCommands();
                     break;
                 case 'N':
-                    _ = new TcpConnection();
+                    _ = new SerialConnection();
                     break;
                 case 'O':
-                    _ = new UdpConnection();
+                    _ = new TcpConnection();
                     break;
                 case 'P':
+                    _ = new UdpConnection();
+                    break;
+                case 'Q':
                     _ = new UsbConnection();
                     break;
             }

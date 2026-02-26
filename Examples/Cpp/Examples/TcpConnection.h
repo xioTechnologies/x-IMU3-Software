@@ -1,6 +1,9 @@
 #pragma once
 
+#include "../Helpers.hpp"
 #include "Connection.h"
+#include <iostream>
+#include "Ximu3.hpp"
 
 class TcpConnection : public Connection {
 public:

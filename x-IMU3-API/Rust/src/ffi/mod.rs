@@ -12,6 +12,7 @@ mod data_messages;
 mod device;
 mod file_converter;
 mod keep_open;
+mod mux_scanner;
 mod network_announcement;
 mod ping_response;
 mod port_scanner;

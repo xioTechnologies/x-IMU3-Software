@@ -70,6 +70,7 @@ for path in paths:
         '"type_traits"',
         '"unordered_map"',
         '"unordered_set"',
+        '"utility"',
         '"variant"',
         '"vector"',
     ]

@@ -133,18 +133,29 @@ namespace ximu3 {
             switch (XIMU3_connection_get_type(wrapped)) {
                 case XIMU3_ConnectionTypeUsb:
                     return std::make_unique<UsbConnectionConfig>(XIMU3_connection_get_config_usb(wrapped));
+
                 case XIMU3_ConnectionTypeSerial:
                     return std::make_unique<SerialConnectionConfig>(XIMU3_connection_get_config_serial(wrapped));
+
                 case XIMU3_ConnectionTypeTcp:
                     return std::make_unique<TcpConnectionConfig>(XIMU3_connection_get_config_tcp(wrapped));
+
                 case XIMU3_ConnectionTypeUdp:
                     return std::make_unique<UdpConnectionConfig>(XIMU3_connection_get_config_udp(wrapped));
+
                 case XIMU3_ConnectionTypeBluetooth:
                     return std::make_unique<BluetoothConnectionConfig>(XIMU3_connection_get_config_bluetooth(wrapped));
+
                 case XIMU3_ConnectionTypeFile:
                     return std::make_unique<FileConnectionConfig>(XIMU3_connection_get_config_file(wrapped));
-                case XIMU3_ConnectionTypeMux:
-                    return std::make_unique<MuxConnectionConfig>(XIMU3_connection_get_config_mux(wrapped));
+
+                case XIMU3_ConnectionTypeMux: {
+                    auto *const config = XIMU3_connection_get_config_mux(wrapped);
+                    auto clone = std::make_unique<MuxConnectionConfig>(*config);
+                    XIMU3_mux_connection_config_free(config);
+
+                    return clone;
+                }
             }
             return nullptr;
         }
@@ -326,6 +337,7 @@ namespace ximu3 {
         friend class DataLogger;
         friend class KeepOpen;
         friend class MuxConnectionConfig;
+        friend class MuxScanner;
 
         XIMU3_Connection *wrapped;
 

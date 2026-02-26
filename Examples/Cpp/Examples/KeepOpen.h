@@ -3,6 +3,7 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <thread>
 #include "Ximu3.hpp"
 

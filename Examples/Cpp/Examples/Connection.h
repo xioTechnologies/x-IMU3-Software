@@ -2,6 +2,7 @@
 
 #include "../Helpers.hpp"
 #include <chrono>
+#include <functional>
 #include <inttypes.h>
 #include <iostream>
 #include <stdio.h>

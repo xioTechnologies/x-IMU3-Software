@@ -28,6 +28,8 @@ namespace ximu3 {
 
 #define XIMU3_CHAR_ARRAY_SIZE 256
 
+#define XIMU3_MAX_NUMBER_OF_MUX_CHANNELS 254
+
 typedef enum XIMU3_ChargingStatus
 {
     XIMU3_ChargingStatusNotConnected,
@@ -132,6 +134,8 @@ typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
 
 typedef struct XIMU3_MuxConnectionConfig XIMU3_MuxConnectionConfig;
+
+typedef struct XIMU3_MuxScanner XIMU3_MuxScanner;
 
 typedef struct XIMU3_NetworkAnnouncement XIMU3_NetworkAnnouncement;
 
@@ -420,6 +424,7 @@ typedef struct XIMU3_Device
     struct XIMU3_UsbConnectionConfig usb_connection_config;
     struct XIMU3_SerialConnectionConfig serial_connection_config;
     struct XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+    struct XIMU3_MuxConnectionConfig *mux_connection_config;
 } XIMU3_Device;
 
 typedef struct XIMU3_Devices
@@ -440,6 +445,8 @@ typedef struct XIMU3_FileConverterProgress
 typedef void (*XIMU3_CallbackFileConverterProgress)(struct XIMU3_FileConverterProgress data, void *context);
 
 typedef void (*XIMU3_CallbackConnectionStatus)(enum XIMU3_ConnectionStatus data, void *context);
+
+typedef void (*XIMU3_CallbackDevices)(struct XIMU3_Devices data, void *context);
 
 typedef struct XIMU3_NetworkAnnouncementMessage
 {
@@ -462,8 +469,6 @@ typedef struct XIMU3_NetworkAnnouncementMessages
 } XIMU3_NetworkAnnouncementMessages;
 
 typedef void (*XIMU3_CallbackNetworkAnnouncementMessageC)(struct XIMU3_NetworkAnnouncementMessage data, void *context);
-
-typedef void (*XIMU3_CallbackDevices)(struct XIMU3_Devices data, void *context);
 
 #ifdef __cplusplus
 extern "C" {
@@ -627,6 +632,8 @@ struct XIMU3_MuxConnectionConfig *XIMU3_mux_connection_config_new(uint8_t channe
 
 void XIMU3_mux_connection_config_free(struct XIMU3_MuxConnectionConfig *config);
 
+struct XIMU3_MuxConnectionConfig *XIMU3_mux_connection_config_clone(struct XIMU3_MuxConnectionConfig *config);
+
 const char *XIMU3_mux_connection_config_to_string(struct XIMU3_MuxConnectionConfig *config);
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
@@ -704,6 +711,14 @@ const char *XIMU3_connection_status_to_string(enum XIMU3_ConnectionStatus status
 struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
 
 void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
+
+struct XIMU3_MuxScanner *XIMU3_mux_scanner_new(struct XIMU3_Connection *connection, XIMU3_CallbackDevices callback, void *context);
+
+void XIMU3_mux_scanner_free(struct XIMU3_MuxScanner *mux_scanner);
+
+struct XIMU3_Devices XIMU3_mux_scanner_get_devices(struct XIMU3_MuxScanner *mux_scanner);
+
+struct XIMU3_Devices XIMU3_mux_scanner_scan(struct XIMU3_Connection *connection, uint32_t number_of_channels, uint32_t retries, uint32_t timeout);
 
 struct XIMU3_TcpConnectionConfig XIMU3_network_announcement_message_to_tcp_connection_config(struct XIMU3_NetworkAnnouncementMessage message);
 

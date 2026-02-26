@@ -58,6 +58,8 @@ for block in get_blocks(c_code, "typedef struct"):
 
     block = block.replace("interface", "interface_")
 
+    block = block.replace("XIMU3_MuxConnectionConfig *", "IntPtr ")
+
     cs_code += "[StructLayout(LayoutKind.Sequential)]\n"
     cs_code += block + "\n"
 
@@ -108,6 +110,7 @@ for line in c_code.splitlines():
         "XIMU3_FileConverter *",
         "XIMU3_KeepOpen *",
         "XIMU3_MuxConnectionConfig *",
+        "XIMU3_MuxScanner *",
         "XIMU3_NetworkAnnouncement *",
         "XIMU3_PortScanner *",
     ):
@@ -131,6 +134,7 @@ namespace Ximu3
         public const int XIMU3_DEFAULT_TIMEOUT = 500;
         public const int XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE = 256;
         public const int XIMU3_CHAR_ARRAY_SIZE = 256;
+        public const int XIMU3_MAX_NUMBER_OF_MUX_CHANNELS = 254;
 
 {cs_code}
     }}
