@@ -14,6 +14,7 @@ mod ffi;
 pub mod file_converter;
 pub mod keep_open;
 mod mux_message;
+pub mod mux_scanner;
 pub mod network_announcement;
 pub mod ping_response;
 pub mod port_scanner;

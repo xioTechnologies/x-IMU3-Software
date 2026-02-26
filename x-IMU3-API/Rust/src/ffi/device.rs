@@ -14,6 +14,7 @@ pub struct DeviceC {
     usb_connection_config: UsbConnectionConfigC,
     serial_connection_config: SerialConnectionConfigC,
     bluetooth_connection_config: BluetoothConnectionConfigC,
+    mux_connection_config: *mut MuxConnectionConfig,
 }
 
 impl Default for DeviceC {
@@ -25,6 +26,7 @@ impl Default for DeviceC {
             usb_connection_config: Default::default(),
             serial_connection_config: Default::default(),
             bluetooth_connection_config: Default::default(),
+            mux_connection_config: Default::default(),
         }
     }
 }
@@ -49,6 +51,10 @@ impl From<&Device> for DeviceC {
                 device_c.connection_type = ConnectionType::Bluetooth;
                 device_c.bluetooth_connection_config = config.into();
             }
+            ConnectionConfig::MuxConnectionConfig(config) => {
+                device_c.connection_type = ConnectionType::Mux;
+                device_c.mux_connection_config = config.into();
+            }
             _ => {}
         }
         device_c
@@ -64,6 +70,7 @@ impl From<DeviceC> for Device {
                 ConnectionType::Usb => ConnectionConfig::UsbConnectionConfig(device.usb_connection_config.into()),
                 ConnectionType::Serial => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
                 ConnectionType::Bluetooth => ConnectionConfig::BluetoothConnectionConfig(device.bluetooth_connection_config.into()),
+                ConnectionType::Mux => ConnectionConfig::MuxConnectionConfig(device.mux_connection_config.into()),
                 _ => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
             },
         }
@@ -98,6 +105,8 @@ impl From<Vec<Device>> for Devices {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_devices_free(devices: Devices) {
+    // TODO: free each mux connection config
+
     unsafe {
         let _ = Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize);
     }

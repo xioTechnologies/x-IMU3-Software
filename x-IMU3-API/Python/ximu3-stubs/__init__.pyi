@@ -11,6 +11,7 @@ DEFAULT_TIMEOUT: int
 FILE_CONVERTER_STATUS_COMPLETE: int
 FILE_CONVERTER_STATUS_FAILED: int
 FILE_CONVERTER_STATUS_IN_PROGRESS: int
+MAX_NUMBER_OF_MUX_CHANNELS: int
 PORT_TYPE_USB: int
 PORT_TYPE_SERIAL: int
 PORT_TYPE_BLUETOOTH: int
@@ -376,6 +377,13 @@ class ErrorMessage:
 # keep_open_object
 class KeepOpen:
     def __init__(self, connection: Connection, callback: Callable[[int], None]) -> None: ...
+
+# mux_scanner_object
+class MuxScanner:
+    def __init__(self, connection: Connection, callback: Callable[[list[Device]], None]) -> None: ...
+    def get_devices(self) -> list[Device]: ...
+    @staticmethod
+    def scan(connection: Connection, number_of_channels: int = ..., retries: int = ..., timeout: int = ...) -> list[Device]: ...
 
 # network_announcement_object
 class NetworkAnnouncement:
