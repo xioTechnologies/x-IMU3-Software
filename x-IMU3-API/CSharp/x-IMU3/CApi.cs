@@ -356,6 +356,27 @@ namespace Ximu3
         }
 
         [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_Device
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
+            public byte[] device_name;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
+            public byte[] serial_number;
+            public XIMU3_ConnectionType connection_type;
+            public XIMU3_UsbConnectionConfig usb_connection_config;
+            public XIMU3_SerialConnectionConfig serial_connection_config;
+            public XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_Devices
+        {
+            public IntPtr array;
+            public UInt32 length;
+            public UInt32 capacity;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_FileConverterProgress
         {
             public XIMU3_FileConverterStatus status;
@@ -383,27 +404,6 @@ namespace Ximu3
 
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_NetworkAnnouncementMessages
-        {
-            public IntPtr array;
-            public UInt32 length;
-            public UInt32 capacity;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_Device
-        {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
-            public byte[] device_name;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
-            public byte[] serial_number;
-            public XIMU3_ConnectionType connection_type;
-            public XIMU3_UsbConnectionConfig usb_connection_config;
-            public XIMU3_SerialConnectionConfig serial_connection_config;
-            public XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct XIMU3_Devices
         {
             public IntPtr array;
             public UInt32 length;
@@ -741,6 +741,12 @@ namespace Ximu3
         public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_device_to_string(XIMU3_Device device);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_devices_free(XIMU3_Devices devices);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_file_converter_status_to_string(XIMU3_FileConverterStatus status);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -799,12 +805,6 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_ping_response_to_string(XIMU3_PingResponse response);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_device_to_string(XIMU3_Device device);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_devices_free(XIMU3_Devices devices);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_port_type_to_string(XIMU3_PortType port_type);

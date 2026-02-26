@@ -9,6 +9,7 @@ mod connection_config;
 mod connection_type;
 mod data_logger;
 mod data_messages;
+mod device;
 mod file_converter;
 mod keep_open;
 mod network_announcement;

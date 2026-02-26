@@ -40,7 +40,7 @@ namespace ximu3 {
         XIMU3_PortScanner *wrapped;
         std::function<void(XIMU3_Devices)> callback;
 
-        static std::vector<XIMU3_Device> toVectorAndFree(const XIMU3_Devices &devices) {
+        static std::vector<XIMU3_Device> toVectorAndFree(const XIMU3_Devices &devices) { // TODO: move to own file
             const std::vector<XIMU3_Device> vector = Helpers::toVector<XIMU3_Device>(devices);
             XIMU3_devices_free(devices);
             return vector;

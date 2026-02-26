@@ -1,4 +1,5 @@
 use crate::helpers;
+use ximu3::device::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
