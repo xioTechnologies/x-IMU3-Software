@@ -48,11 +48,15 @@ static void port_scanner_free(PortScanner *self) {
 }
 
 static PyObject *port_scanner_get_devices(PortScanner *self, PyObject *args) {
-    return devices_to_list_and_free(XIMU3_port_scanner_get_devices(self->wrapped));
+    const XIMU3_Devices devices = XIMU3_port_scanner_get_devices(self->wrapped);
+
+    return devices_to_list_and_free(devices);
 }
 
 static PyObject *port_scanner_scan(PyObject *null, PyObject *args) {
-    return devices_to_list_and_free(XIMU3_port_scanner_scan());
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan();
+
+    return devices_to_list_and_free(devices);
 }
 
 static PyObject *port_scanner_scan_filter(PyObject *null, PyObject *arg) {
