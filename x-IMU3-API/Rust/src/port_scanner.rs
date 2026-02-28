@@ -68,7 +68,7 @@ impl PortScanner {
 
                     std::thread::spawn(move || loop {
                         if devices.lock().unwrap().iter().any(|device| device.connection_config.to_string().contains(&port_name)) == false {
-                            Self::ping_port(&port_name, devices.clone(), sender.clone());
+                            Self::ping_port(&port_name, &devices, sender.clone());
                         } else if Self::get_port_names().contains(&port_name) == false {
                             devices.lock().unwrap().retain(|device| device.connection_config.to_string().contains(&port_name) == false);
                             sender.send(()).ok();
@@ -99,7 +99,7 @@ impl PortScanner {
         port_scanner
     }
 
-    fn ping_port(port_name: &str, devices: Arc<Mutex<Vec<Device>>>, sender: Sender<()>) {
+    fn ping_port(port_name: &str, devices: &Arc<Mutex<Vec<Device>>>, sender: Sender<()>) {
         let config = SerialConnectionConfig {
             port_name: port_name.to_string(),
             baud_rate: 115200,
@@ -144,7 +144,7 @@ impl PortScanner {
             let sender = sender.clone();
 
             std::thread::spawn(move || {
-                Self::ping_port(&port_name, devices, sender);
+                Self::ping_port(&port_name, &devices, sender);
             });
         }
 
