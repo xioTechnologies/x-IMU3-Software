@@ -35,10 +35,6 @@ static PyGetSetDef temperature_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef temperature_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject temperature_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.TemperatureMessage",
@@ -47,7 +43,6 @@ static PyTypeObject temperature_message_object = {
     .tp_str = (reprfunc) temperature_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = temperature_message_get_set,
-    .tp_methods = temperature_message_methods,
 };
 
 static PyObject *temperature_message_from(const XIMU3_TemperatureMessage *const message) {

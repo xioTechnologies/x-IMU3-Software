@@ -60,10 +60,6 @@ static PyGetSetDef inertial_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef inertial_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject inertial_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.InertialMessage",
@@ -72,7 +68,6 @@ static PyTypeObject inertial_message_object = {
     .tp_str = (reprfunc) inertial_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = inertial_message_get_set,
-    .tp_methods = inertial_message_methods,
 };
 
 static PyObject *inertial_message_from(const XIMU3_InertialMessage *const message) {

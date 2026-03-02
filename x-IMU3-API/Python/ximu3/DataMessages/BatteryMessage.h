@@ -45,10 +45,6 @@ static PyGetSetDef battery_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef battery_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject battery_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.BatteryMessage",
@@ -57,7 +53,6 @@ static PyTypeObject battery_message_object = {
     .tp_str = (reprfunc) battery_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = battery_message_get_set,
-    .tp_methods = battery_message_methods,
 };
 
 static PyObject *battery_message_from(const XIMU3_BatteryMessage *const message) {

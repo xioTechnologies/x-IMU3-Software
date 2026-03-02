@@ -45,10 +45,6 @@ static PyGetSetDef high_g_accelerometer_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef high_g_accelerometer_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject high_g_accelerometer_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.HighGAccelerometerMessage",
@@ -57,7 +53,6 @@ static PyTypeObject high_g_accelerometer_message_object = {
     .tp_str = (reprfunc) high_g_accelerometer_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = high_g_accelerometer_message_get_set,
-    .tp_methods = high_g_accelerometer_message_methods,
 };
 
 static PyObject *high_g_accelerometer_message_from(const XIMU3_HighGAccelerometerMessage *const message) {

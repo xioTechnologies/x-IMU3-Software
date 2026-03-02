@@ -233,28 +233,38 @@ windows = [
 # Generate *GraphWindow.h and *GraphWindow.cpp
 for window in windows:
     with open("template_h.txt") as file:
-        template_h = file.read()
+        code_h = file.read()
 
     with open("template_cpp.txt") as file:
-        template_cpp = file.read()
+        code_cpp = file.read()
 
-    template_h = template_h.replace("$name$", window.name)
-    template_h = template_h.replace("$callback_declarations$", window.callback_declarations)
+    code_h = helpers.replace(
+        code_h,
+        (
+            ("$name$", window.name),
+            ("$callback_declarations$", window.callback_declarations),
+        ),
+    )
 
-    template_cpp = template_cpp.replace("$name$", window.name)
-    template_cpp = template_cpp.replace("$horizontal_autoscale$", window.horizontal_autoscale)
-    template_cpp = template_cpp.replace("$y_axis$", window.y_axis)
-    template_cpp = template_cpp.replace("$legend_strings$", window.legend_strings)
-    template_cpp = template_cpp.replace("$legend_colours$", window.legend_colours)
-    template_cpp = template_cpp.replace("$callback_implementations$", window.callback_implementations)
+    code_cpp = helpers.replace(
+        code_cpp,
+        (
+            ("$name$", window.name),
+            ("$horizontal_autoscale$", window.horizontal_autoscale),
+            ("$y_axis$", window.y_axis),
+            ("$legend_strings$", window.legend_strings),
+            ("$legend_colours$", window.legend_colours),
+            ("$callback_implementations$", window.callback_implementations),
+        ),
+    )
 
     with open(window.name + "GraphWindow.h", "w") as file:
         file.write(helpers.preamble())
-        file.write(template_h)
+        file.write(code_h)
 
     with open(window.name + "GraphWindow.cpp", "w") as file:
         file.write(helpers.preamble())
-        file.write(template_cpp)
+        file.write(code_cpp)
 
 # Insert code into x-IMU3-GUI/Source/ConnectionPanel/ConnectionPanel.cpp
 path = "../../ConnectionPanel/ConnectionPanel.cpp"
@@ -262,14 +272,17 @@ path = "../../ConnectionPanel/ConnectionPanel.cpp"
 helpers.insert(
     path,
     0,
-    "".join(['#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w in windows]),
+    "".join('#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w in windows),
 )
 
-template = """\
+helpers.insert(
+    path,
+    1,
+    "".join(
+        """\
     if (type == WindowIds::$name$) {
         return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, openGLRenderer);
-    }\n"""
-
-code = "".join([template.replace("$name$", w.name) for w in windows])
-
-helpers.insert(path, 1, code)
+    }\n""".replace("$name$", w.name)
+        for w in windows
+    ),
+)

@@ -40,10 +40,6 @@ static PyGetSetDef rssi_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef rssi_message_methods[] = {
-    {NULL} /* sentinel */
-};
-
 static PyTypeObject rssi_message_object = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "ximu3.RssiMessage",
@@ -52,7 +48,6 @@ static PyTypeObject rssi_message_object = {
     .tp_str = (reprfunc) rssi_message_str,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = rssi_message_get_set,
-    .tp_methods = rssi_message_methods,
 };
 
 static PyObject *rssi_message_from(const XIMU3_RssiMessage *const message) {

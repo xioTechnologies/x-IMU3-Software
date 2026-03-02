@@ -97,7 +97,7 @@ for line in c_code.splitlines():
 
     line = line.replace("void (*callback)(void *context)", "XIMU3_CallbackEndOfFile callback")
 
-    for pattern in [
+    for pattern in (
         "const char *const *",
         "const char *",
         "const XIMU3_MuxConnectionConfig *",
@@ -110,14 +110,14 @@ for line in c_code.splitlines():
         "XIMU3_MuxConnectionConfig *",
         "XIMU3_NetworkAnnouncement *",
         "XIMU3_PortScanner *",
-    ]:
+    ):
         line = line.replace(pattern, "IntPtr ")
 
     cs_code += '[DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]\n'
     cs_code += "public static extern " + line + "\n\n"
 
 # Write C# file
-cs_code = "\n".join([f"        {p}" if p else "" for p in cs_code.splitlines()])
+cs_code = "\n".join(f"        {p}" if p else "" for p in cs_code.splitlines())
 
 cs_code = f"""\
 using System;
