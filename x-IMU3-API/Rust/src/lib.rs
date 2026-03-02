@@ -8,6 +8,7 @@ pub mod connection_config;
 mod connections;
 pub mod data_logger;
 pub mod data_messages;
+pub mod device;
 mod dispatcher;
 mod ffi;
 pub mod file_converter;

@@ -387,6 +387,23 @@ typedef struct XIMU3_ErrorMessage
 
 typedef void (*XIMU3_CallbackErrorMessage)(struct XIMU3_ErrorMessage data, void *context);
 
+typedef struct XIMU3_Device
+{
+    char device_name[XIMU3_CHAR_ARRAY_SIZE];
+    char serial_number[XIMU3_CHAR_ARRAY_SIZE];
+    enum XIMU3_ConnectionType connection_type;
+    struct XIMU3_UsbConnectionConfig usb_connection_config;
+    struct XIMU3_SerialConnectionConfig serial_connection_config;
+    struct XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+} XIMU3_Device;
+
+typedef struct XIMU3_Devices
+{
+    struct XIMU3_Device *array;
+    uint32_t length;
+    uint32_t capacity;
+} XIMU3_Devices;
+
 typedef struct XIMU3_FileConverterProgress
 {
     enum XIMU3_FileConverterStatus status;
@@ -420,23 +437,6 @@ typedef struct XIMU3_NetworkAnnouncementMessages
 } XIMU3_NetworkAnnouncementMessages;
 
 typedef void (*XIMU3_CallbackNetworkAnnouncementMessageC)(struct XIMU3_NetworkAnnouncementMessage data, void *context);
-
-typedef struct XIMU3_Device
-{
-    char device_name[XIMU3_CHAR_ARRAY_SIZE];
-    char serial_number[XIMU3_CHAR_ARRAY_SIZE];
-    enum XIMU3_ConnectionType connection_type;
-    struct XIMU3_UsbConnectionConfig usb_connection_config;
-    struct XIMU3_SerialConnectionConfig serial_connection_config;
-    struct XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
-} XIMU3_Device;
-
-typedef struct XIMU3_Devices
-{
-    struct XIMU3_Device *array;
-    uint32_t length;
-    uint32_t capacity;
-} XIMU3_Devices;
 
 typedef void (*XIMU3_CallbackDevices)(struct XIMU3_Devices data, void *context);
 
@@ -612,6 +612,10 @@ struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angle
 
 struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
 
+const char *XIMU3_device_to_string(struct XIMU3_Device device);
+
+void XIMU3_devices_free(struct XIMU3_Devices devices);
+
 const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus status);
 
 const char *XIMU3_file_converter_progress_to_string(struct XIMU3_FileConverterProgress progress);
@@ -651,10 +655,6 @@ struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages
 struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages_after_short_delay(struct XIMU3_NetworkAnnouncement *network_announcement);
 
 const char *XIMU3_ping_response_to_string(struct XIMU3_PingResponse response);
-
-const char *XIMU3_device_to_string(struct XIMU3_Device device);
-
-void XIMU3_devices_free(struct XIMU3_Devices devices);
 
 const char *XIMU3_port_type_to_string(enum XIMU3_PortType port_type);
 
