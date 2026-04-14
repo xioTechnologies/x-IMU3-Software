@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -18,14 +17,15 @@ public:
             return;
         }
 
-        if (helpers::yesOrNo("Use async implementation?")) {
-            networkAnnouncement.addCallback(callback);
-            std::this_thread::sleep_for(std::chrono::seconds(60));
-        } else {
-            for (const auto &message: networkAnnouncement.getMessagesAfterShortDelay()) {
-                printMessage(message);
-            }
+        // Blocking
+        for (const auto &message: networkAnnouncement.getMessagesAfterShortDelay()) {
+            printMessage(message);
         }
+
+        // Non-blocking
+        networkAnnouncement.addCallback(callback);
+
+        std::this_thread::sleep_for(std::chrono::seconds(60));
     }
 
 private:

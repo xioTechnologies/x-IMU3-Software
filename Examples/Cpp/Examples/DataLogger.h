@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
 #include <functional>
 #include <iostream>
@@ -36,27 +35,30 @@ public:
             return;
         }
 
-        // Log data
+        // Log data (blocking)
         const auto destination = "C:/";
-        const auto name = "x-IMU3 Data Logger Example";
+        const auto nameBlocking = "x-IMU3 Data Logger Example Blocking";
 
-        if (helpers::yesOrNo("Use async implementation?")) {
-            ximu3::DataLogger dataLogger(destination, name, toRawPointers(connections));
+        const auto resultBlocking = ximu3::DataLogger::log(destination, nameBlocking, toRawPointers(connections), 3);
 
-            const auto result = dataLogger.getResult();
-
-            if (result != ximu3::XIMU3_ResultOk) {
-                std::cout << "Data logger failed. " << XIMU3_result_to_string(result) << "." << std::endl;
-            }
-
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-        } else {
-            const auto result = ximu3::DataLogger::log(destination, name, toRawPointers(connections), 3);
-
-            if (result != ximu3::XIMU3_ResultOk) {
-                std::cout << "Data logger failed. " << XIMU3_result_to_string(result) << "." << std::endl;
-            }
+        if (resultBlocking != ximu3::XIMU3_ResultOk) {
+            std::cout << "Data logger failed. " << XIMU3_result_to_string(resultBlocking) << "." << std::endl;
         }
+
+        // Log data (non-blocking)
+        const auto nameNonBlocking = "x-IMU3 Data Logger Example Non-Blocking";
+
+        auto dataLogger = std::make_unique<ximu3::DataLogger>(destination, nameNonBlocking, toRawPointers(connections));
+
+        const auto resultNonBlocking = dataLogger->getResult();
+
+        if (resultNonBlocking != ximu3::XIMU3_ResultOk) {
+            std::cout << "Data logger failed. " << XIMU3_result_to_string(resultNonBlocking) << "." << std::endl;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+
+        dataLogger.reset(); // stop logging
 
         std::cout << "Complete" << std::endl;
 

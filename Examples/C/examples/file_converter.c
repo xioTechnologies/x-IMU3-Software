@@ -8,20 +8,24 @@ static void callback(const XIMU3_FileConverterProgress progress, void *context);
 static void print_progress(const XIMU3_FileConverterProgress progress);
 
 void file_converter() {
+    // Blocking
     const char *destination = "C:/";
-    const char *name = "x-IMU3 File Conversion Example";
+    const char *nameBlocking = "x-IMU3 File Conversion Example Blocking";
     const char *file_paths[] = {"C:/x-IMU3 Example File.ximu3"}; // replace with actual file path
     const int number_of_files = sizeof(file_paths) / sizeof(file_paths[0]);
 
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_FileConverter *const file_converter = XIMU3_file_converter_new(destination, name, file_paths, number_of_files, callback, NULL);
+    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, nameBlocking, file_paths, number_of_files);
 
-        sleep(60);
+    print_progress(progress);
 
-        XIMU3_file_converter_free(file_converter);
-    } else {
-        print_progress(XIMU3_file_converter_convert(destination, name, file_paths, number_of_files));
-    }
+    // Non-blocking
+    const char *nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+
+    XIMU3_FileConverter *const file_converter = XIMU3_file_converter_new(destination, nameNonBlocking, file_paths, number_of_files, callback, NULL);
+
+    sleep(60);
+
+    XIMU3_file_converter_free(file_converter);
 }
 
 static void callback(const XIMU3_FileConverterProgress progress, void *context) {

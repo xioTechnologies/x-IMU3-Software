@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
 #include <functional>
 #include <inttypes.h>
@@ -11,17 +10,21 @@
 class FileConverter {
 public:
     FileConverter() {
+        // Blocking
         const auto destination = "C:/";
-        const auto name = "x-IMU3 File Conversion Example";
+        const auto nameBlocking = "x-IMU3 File Conversion Example Blocking";
         const std::vector<std::string> filePaths = {"C:/x-IMU3 Example File.ximu3"}; // replace with actual file path
 
-        if (helpers::yesOrNo("Use async implementation?")) {
-            ximu3::FileConverter fileConverter(destination, name, filePaths, callback);
+        const auto progress = ximu3::FileConverter::convert(destination, nameBlocking, filePaths);
 
-            std::this_thread::sleep_for(std::chrono::seconds(60));
-        } else {
-            printProgress(ximu3::FileConverter::convert(destination, name, filePaths));
-        }
+        printProgress(progress);
+
+        // Non-blocking
+        const auto nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+
+        ximu3::FileConverter fileConverter(destination, nameNonBlocking, filePaths, callback);
+
+        std::this_thread::sleep_for(std::chrono::seconds(60));
     }
 
 private:

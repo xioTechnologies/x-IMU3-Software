@@ -9,15 +9,15 @@
 class PortScanner {
 public:
     PortScanner() {
-        if (helpers::yesOrNo("Use async implementation?")) {
-            ximu3::PortScanner portScanner(callback);
+        // Blocking
+        const auto devices = ximu3::PortScanner::scan();
 
-            std::this_thread::sleep_for(std::chrono::seconds(60));
-        } else {
-            const auto devices = ximu3::PortScanner::scan();
+        printDevices(devices);
 
-            printDevices(devices);
-        }
+        // Non-blocking
+        ximu3::PortScanner portScanner(callback);
+
+        std::this_thread::sleep_for(std::chrono::seconds(60));
     }
 
 private:

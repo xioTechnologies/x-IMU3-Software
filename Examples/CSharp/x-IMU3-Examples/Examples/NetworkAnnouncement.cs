@@ -14,19 +14,16 @@ namespace Ximu3Examples
                 return;
             }
 
-            if (Helpers.YesOrNo("Use async implementation?"))
+            // Blocking
+            foreach (var message in networkAnnouncement.GetMessagesAfterShortDelay())
             {
-                networkAnnouncement.AddCallback(Callback);
+                PrintMessage(message);
+            }
 
-                System.Threading.Thread.Sleep(60000);
-            }
-            else
-            {
-                foreach (var message in networkAnnouncement.GetMessages())
-                {
-                    PrintMessage(message);
-                }
-            }
+            // Non-blocking
+            networkAnnouncement.AddCallback(Callback);
+
+            System.Threading.Thread.Sleep(60000);
         }
 
         private void Callback(Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message)

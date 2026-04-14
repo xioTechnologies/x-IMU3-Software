@@ -22,12 +22,12 @@ public:
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionConfig::from(devices[0]));
 
-        const ximu3::KeepOpen keepOpen(connection, callback);
+        auto keepOpen = std::make_unique<ximu3::KeepOpen>(connection, callback);
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(60));
 
-        connection.close();
+        keepOpen.reset();
     }
 
 private:

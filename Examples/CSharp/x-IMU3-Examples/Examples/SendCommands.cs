@@ -37,17 +37,15 @@ namespace Ximu3Examples
                 "{\"invalid_key\":null}", // invalid key to demonstrate an error response
             ];
 
-            // Send commands
-            if (Helpers.YesOrNo("Use async implementation?"))
-            {
-                connection.SendCommandsAsync(commands, Callback);
+            // Send commands (blocking)
+            var responses = connection.SendCommands(commands);
 
-                System.Threading.Thread.Sleep(3000);
-            }
-            else
-            {
-                PrintResponses(connection.SendCommands(commands));
-            }
+            PrintResponses(responses);
+
+            // Send commands (non-blocking)
+            connection.SendCommandsAsync(commands, Callback);
+
+            System.Threading.Thread.Sleep(3000);
 
             // Close connection
             connection.Close();

@@ -1,4 +1,3 @@
-use crate::helpers;
 use ximu3::network_announcement::*;
 
 pub fn run() {
@@ -10,17 +9,17 @@ pub fn run() {
         }
     };
 
-    if helpers::yes_or_no("Use async implementation?") {
-        network_announcement.add_closure(Box::new(|message| {
-            print_message(message);
-        }));
-
-        std::thread::sleep(std::time::Duration::from_secs(60));
-    } else {
-        for message in network_announcement.get_messages() {
-            print_message(message)
-        }
+    // Blocking
+    for message in network_announcement.get_messages_after_short_delay() {
+        print_message(message);
     }
+
+    // Non-blocking
+    network_announcement.add_closure(Box::new(|message| {
+        print_message(message);
+    }));
+
+    std::thread::sleep(std::time::Duration::from_secs(60));
 }
 
 fn print_message(message: NetworkAnnouncementMessage) {

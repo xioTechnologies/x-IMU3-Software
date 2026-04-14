@@ -1,6 +1,5 @@
 import time
 
-import helpers
 import ximu3
 
 
@@ -254,24 +253,21 @@ def run(config: ximu3.ConnectionConfig) -> None:
 
     connection.add_receive_error_callback(receive_error_callback)
     connection.add_statistics_callback(statistics_callback)
-
-    if helpers.yes_or_no("Print data messages?"):
-        connection.add_inertial_callback(inertial_callback)
-        connection.add_magnetometer_callback(magnetometer_callback)
-        connection.add_quaternion_callback(quaternion_callback)
-        connection.add_rotation_matrix_callback(rotation_matrix_callback)
-        connection.add_euler_angles_callback(euler_angles_callback)
-        connection.add_linear_acceleration_callback(linear_acceleration_callback)
-        connection.add_earth_acceleration_callback(earth_acceleration_callback)
-        connection.add_ahrs_status_callback(ahrs_status_callback)
-        connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
-        connection.add_temperature_callback(temperature_callback)
-        connection.add_battery_callback(battery_callback)
-        connection.add_rssi_callback(rssi_callback)
-        connection.add_serial_accessory_callback(serial_accessory_callback)
-        connection.add_notification_callback(notification_callback)
-        connection.add_error_callback(error_callback)
-
+    connection.add_inertial_callback(inertial_callback)
+    connection.add_magnetometer_callback(magnetometer_callback)
+    connection.add_quaternion_callback(quaternion_callback)
+    connection.add_rotation_matrix_callback(rotation_matrix_callback)
+    connection.add_euler_angles_callback(euler_angles_callback)
+    connection.add_linear_acceleration_callback(linear_acceleration_callback)
+    connection.add_earth_acceleration_callback(earth_acceleration_callback)
+    connection.add_ahrs_status_callback(ahrs_status_callback)
+    connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
+    connection.add_temperature_callback(temperature_callback)
+    connection.add_battery_callback(battery_callback)
+    connection.add_rssi_callback(rssi_callback)
+    connection.add_serial_accessory_callback(serial_accessory_callback)
+    connection.add_notification_callback(notification_callback)
+    connection.add_error_callback(error_callback)
     connection.add_end_of_file_callback(end_of_file_callback)
 
     connection.open()

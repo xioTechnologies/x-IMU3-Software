@@ -1,6 +1,5 @@
 import time
 
-import helpers
 import ximu3
 
 
@@ -21,12 +20,18 @@ def callback(progress: ximu3.FileConverterProgress) -> None:
     print_progress(progress)
 
 
+# Blocking
 destination = "C:/"
-name = "x-IMU3 File Conversion Example"
+name_blocking = "x-IMU3 File Conversion Example Blocking"
 file_paths = ["C:/x-IMU3 Example File.ximu3"]  # replace with actual file path
 
-if helpers.yes_or_no("Use async implementation?"):
-    _ = ximu3.FileConverter(destination, name, file_paths, callback)
-    time.sleep(60)
-else:
-    print_progress(ximu3.FileConverter.convert(destination, name, file_paths))
+progress = ximu3.FileConverter.convert(destination, name_blocking, file_paths)
+
+print_progress(progress)
+
+# Non-blocking
+name_non_blocking = "x-IMU3 File Conversion Example Non-Blocking"
+
+_ = ximu3.FileConverter(destination, name_non_blocking, file_paths, callback)
+
+time.sleep(60)

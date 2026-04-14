@@ -32,14 +32,15 @@ void ping() {
         return;
     }
 
-    // Ping
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_connection_ping_async(connection, callback, NULL);
+    // Ping (blocking)
+    const XIMU3_PingResponse response = XIMU3_connection_ping(connection);
 
-        sleep(3);
-    } else {
-        print_response(XIMU3_connection_ping(connection));
-    }
+    print_response(response);
+
+    // Ping (non-blocking)
+    XIMU3_connection_ping_async(connection, callback, NULL);
+
+    sleep(3);
 
     // Close connection
     XIMU3_connection_close(connection);

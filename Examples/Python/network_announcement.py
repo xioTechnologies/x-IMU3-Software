@@ -1,9 +1,11 @@
 import time
 
-import helpers
 import ximu3
 
+network_announcement = ximu3.NetworkAnnouncement()
 
+
+# Blocking
 def print_message(message: ximu3.NetworkAnnouncementMessage) -> None:
     print(
         ", ".join(
@@ -23,16 +25,15 @@ def print_message(message: ximu3.NetworkAnnouncementMessage) -> None:
     # print(message)  # alternative to above
 
 
+for message in network_announcement.get_messages_after_short_delay():
+    print_message(message)
+
+
+# Non-blocking
 def callback(message: ximu3.NetworkAnnouncementMessage) -> None:
     print_message(message)
 
 
-network_announcement = ximu3.NetworkAnnouncement()
+network_announcement.add_callback(callback)
 
-if helpers.yes_or_no("Use async implementation?"):
-    network_announcement.add_callback(callback)
-
-    time.sleep(60)
-else:
-    for message in network_announcement.get_messages():
-        print_message(message)
+time.sleep(60)
