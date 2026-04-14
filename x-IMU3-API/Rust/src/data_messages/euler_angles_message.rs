@@ -14,6 +14,17 @@ pub struct EulerAnglesMessage {
     pub yaw: f32,
 }
 
+impl Default for EulerAnglesMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            roll: 0.0,
+            pitch: 0.0,
+            yaw: 0.0,
+        }
+    }
+}
+
 impl DataMessage for EulerAnglesMessage {
     fn get_ascii_id() -> u8 {
         b'A'

@@ -15,6 +15,16 @@ pub struct NotificationMessage {
     pub number_of_bytes: size_t,
 }
 
+impl Default for NotificationMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+			char_array: [0; DATA_MESSAGE_CHAR_ARRAY_SIZE],
+            number_of_bytes: 0,
+        }
+    }
+}
+
 impl NotificationMessage {
     pub fn char_array_as_string(self) -> String {
         char_array_to_string(&self.char_array, self.number_of_bytes)

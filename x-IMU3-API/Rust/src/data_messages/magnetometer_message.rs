@@ -14,6 +14,17 @@ pub struct MagnetometerMessage {
     pub z: f32,
 }
 
+impl Default for MagnetometerMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+}
+
 impl DataMessage for MagnetometerMessage {
     fn get_ascii_id() -> u8 {
         b'M'

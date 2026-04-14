@@ -12,6 +12,15 @@ pub struct TemperatureMessage {
     pub temperature: f32,
 }
 
+impl Default for TemperatureMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            temperature: 0.0,
+        }
+    }
+}
+
 impl DataMessage for TemperatureMessage {
     fn get_ascii_id() -> u8 {
         b'T'

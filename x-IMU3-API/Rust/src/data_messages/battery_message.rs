@@ -14,6 +14,17 @@ pub struct BatteryMessage {
     pub charging_status: f32,
 }
 
+impl Default for BatteryMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            percentage: 0.0,
+            voltage: 0.0,
+            charging_status: 0.0,
+        }
+    }
+}
+
 impl DataMessage for BatteryMessage {
     fn get_ascii_id() -> u8 {
         b'B'

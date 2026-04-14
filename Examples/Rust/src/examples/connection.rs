@@ -1,3 +1,4 @@
+use crate::helpers;
 use ximu3::charging_status::*;
 use ximu3::connection::*;
 use ximu3::connection_config::*;
@@ -9,25 +10,6 @@ pub fn run(config: &ConnectionConfig) {
     // Create connection
     let connection = Connection::new(&config);
 
-    connection.add_receive_error_closure(Box::new(receive_error_closure));
-    connection.add_statistics_closure(Box::new(statistics_closure));
-    connection.add_inertial_closure(Box::new(inertial_closure));
-    connection.add_magnetometer_closure(Box::new(magnetometer_closure));
-    connection.add_quaternion_closure(Box::new(quaternion_closure));
-    connection.add_rotation_matrix_closure(Box::new(rotation_matrix_closure));
-    connection.add_euler_angles_closure(Box::new(euler_angles_closure));
-    connection.add_linear_acceleration_closure(Box::new(linear_acceleration_closure));
-    connection.add_earth_acceleration_closure(Box::new(earth_acceleration_closure));
-    connection.add_ahrs_status_closure(Box::new(ahrs_status_closure));
-    connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
-    connection.add_temperature_closure(Box::new(temperature_closure));
-    connection.add_battery_closure(Box::new(battery_closure));
-    connection.add_rssi_closure(Box::new(rssi_closure));
-    connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
-    connection.add_notification_closure(Box::new(notification_closure));
-    connection.add_error_closure(Box::new(error_closure));
-    connection.add_end_of_file_closure(Box::new(end_of_file_closure));
-
     // Open connection
     if let Err(error) = connection.open() {
         println!("Unable to open {}. {error}.", connection.get_config());
@@ -37,9 +19,52 @@ pub fn run(config: &ConnectionConfig) {
     // Send command to strobe LED
     connection.send_command("{\"strobe\":null}".into(), DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
-    // Close connection
-    std::thread::sleep(std::time::Duration::from_secs(60));
+    // Print data messages
+    if helpers::yes_or_no("Use callbacks?") {
+        connection.add_receive_error_closure(Box::new(receive_error_closure));
+        connection.add_statistics_closure(Box::new(statistics_closure));
+        connection.add_inertial_closure(Box::new(inertial_closure));
+        connection.add_magnetometer_closure(Box::new(magnetometer_closure));
+        connection.add_quaternion_closure(Box::new(quaternion_closure));
+        connection.add_rotation_matrix_closure(Box::new(rotation_matrix_closure));
+        connection.add_euler_angles_closure(Box::new(euler_angles_closure));
+        connection.add_linear_acceleration_closure(Box::new(linear_acceleration_closure));
+        connection.add_earth_acceleration_closure(Box::new(earth_acceleration_closure));
+        connection.add_ahrs_status_closure(Box::new(ahrs_status_closure));
+        connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
+        connection.add_temperature_closure(Box::new(temperature_closure));
+        connection.add_battery_closure(Box::new(battery_closure));
+        connection.add_rssi_closure(Box::new(rssi_closure));
+        connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
+        connection.add_notification_closure(Box::new(notification_closure));
+        connection.add_error_closure(Box::new(error_closure));
+        connection.add_end_of_file_closure(Box::new(end_of_file_closure));
 
+        std::thread::sleep(std::time::Duration::from_secs(60));
+    } else {
+        for _ in 0..60000 {
+            println!("{}", connection.get_statistics());
+            println!("{}", connection.get_inertial_message(false).unwrap_or_default());
+            println!("{}", connection.get_magnetometer_message(false).unwrap_or_default());
+            println!("{}", connection.get_quaternion_message(false).unwrap_or_default());
+            println!("{}", connection.get_rotation_matrix_message(false).unwrap_or_default());
+            println!("{}", connection.get_euler_angles_message(false).unwrap_or_default());
+            println!("{}", connection.get_linear_acceleration_message(false).unwrap_or_default());
+            println!("{}", connection.get_earth_acceleration_message(false).unwrap_or_default());
+            println!("{}", connection.get_ahrs_status_message(false).unwrap_or_default());
+            println!("{}", connection.get_high_g_accelerometer_message(false).unwrap_or_default());
+            println!("{}", connection.get_temperature_message(false).unwrap_or_default());
+            println!("{}", connection.get_battery_message(false).unwrap_or_default());
+            println!("{}", connection.get_rssi_message(false).unwrap_or_default());
+            println!("{}", connection.get_serial_accessory_message(false).unwrap_or_default());
+            println!("{}", connection.get_notification_message(false).unwrap_or_default());
+            println!("{}", connection.get_error_message(false).unwrap_or_default());
+
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+    }
+
+    // Close connection
     connection.close();
 }
 

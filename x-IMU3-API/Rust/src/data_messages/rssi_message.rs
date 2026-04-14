@@ -13,6 +13,16 @@ pub struct RssiMessage {
     pub power: f32,
 }
 
+impl Default for RssiMessage {
+    fn default() -> Self {
+        Self {
+            timestamp: 0,
+            percentage: 0.0,
+            power: 0.0,
+        }
+    }
+}
+
 impl DataMessage for RssiMessage {
     fn get_ascii_id() -> u8 {
         b'W'
