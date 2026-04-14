@@ -10,7 +10,7 @@ void serial_connection() {
         sleep(1); // wait for OS to release port
 
         if (devices.length == 0) {
-            printf("No Serial connections available\n");
+            printf("No serial connections available\n");
             return;
         }
 

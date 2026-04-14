@@ -1,6 +1,5 @@
 import time
 
-import helpers
 import ximu3
 
 # Search for connection
@@ -24,9 +23,8 @@ commands = [
     '{"invalid_key":null}',  # invalid key to demonstrate an error response
 ]
 
-# Send commands
 
-
+# Send commands (blocking)
 def print_responses(responses: list[ximu3.CommandMessage | None]) -> None:
     for response in responses:
         if not response:
@@ -40,16 +38,19 @@ def print_responses(responses: list[ximu3.CommandMessage | None]) -> None:
         print(f"{response.key} : {response.value}")
 
 
+responses = connection.send_commands(commands)
+
+print_responses(responses)
+
+
+# Send commands (non-blocking)
 def callback(responses: list[ximu3.CommandMessage | None]) -> None:
     print_responses(responses)
 
 
-if helpers.yes_or_no("Use async implementation?"):
-    connection.send_commands_async(commands, callback)
+connection.send_commands_async(commands, callback)
 
-    time.sleep(3)
-else:
-    print_responses(connection.send_commands(commands))
+time.sleep(3)
 
 # Close connection
 connection.close()

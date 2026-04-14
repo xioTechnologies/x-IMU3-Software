@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -40,14 +39,15 @@ public:
             "{\"invalid_key\":null}", // invalid key to demonstrate an error response
         };
 
-        // Send commands
-        if (helpers::yesOrNo("Use async implementation?")) {
-            connection.sendCommandsAsync(commands, callback);
+        // Send commands (blocking)
+        const auto responses = connection.sendCommands(commands);
 
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-        } else {
-            printResponses(connection.sendCommands(commands));
-        }
+        printResponses(responses);
+
+        // Send commands (non-blocking)
+        connection.sendCommandsAsync(commands, callback);
+
+        std::this_thread::sleep_for(std::chrono::seconds(3));
 
         // Close connection
         connection.close();

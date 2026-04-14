@@ -49,25 +49,21 @@ void run(XIMU3_Connection *const connection) {
     // Add callbacks
     XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
     XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
-
-    if (yes_or_no("Print data messages?")) {
-        XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
-        XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
-        XIMU3_connection_add_quaternion_callback(connection, quaternion_callback, NULL);
-        XIMU3_connection_add_rotation_matrix_callback(connection, rotation_matrix_callback, NULL);
-        XIMU3_connection_add_euler_angles_callback(connection, euler_angles_callback, NULL);
-        XIMU3_connection_add_linear_acceleration_callback(connection, linear_acceleration_callback, NULL);
-        XIMU3_connection_add_earth_acceleration_callback(connection, earth_acceleration_callback, NULL);
-        XIMU3_connection_add_ahrs_status_callback(connection, ahrs_status_callback, NULL);
-        XIMU3_connection_add_high_g_accelerometer_callback(connection, high_g_accelerometer_callback, NULL);
-        XIMU3_connection_add_temperature_callback(connection, temperature_callback, NULL);
-        XIMU3_connection_add_battery_callback(connection, battery_callback, NULL);
-        XIMU3_connection_add_rssi_callback(connection, rssi_callback, NULL);
-        XIMU3_connection_add_serial_accessory_callback(connection, serial_accessory_callback, NULL);
-        XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
-        XIMU3_connection_add_error_callback(connection, error_callback, NULL);
-    }
-
+    XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
+    XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
+    XIMU3_connection_add_quaternion_callback(connection, quaternion_callback, NULL);
+    XIMU3_connection_add_rotation_matrix_callback(connection, rotation_matrix_callback, NULL);
+    XIMU3_connection_add_euler_angles_callback(connection, euler_angles_callback, NULL);
+    XIMU3_connection_add_linear_acceleration_callback(connection, linear_acceleration_callback, NULL);
+    XIMU3_connection_add_earth_acceleration_callback(connection, earth_acceleration_callback, NULL);
+    XIMU3_connection_add_ahrs_status_callback(connection, ahrs_status_callback, NULL);
+    XIMU3_connection_add_high_g_accelerometer_callback(connection, high_g_accelerometer_callback, NULL);
+    XIMU3_connection_add_temperature_callback(connection, temperature_callback, NULL);
+    XIMU3_connection_add_battery_callback(connection, battery_callback, NULL);
+    XIMU3_connection_add_rssi_callback(connection, rssi_callback, NULL);
+    XIMU3_connection_add_serial_accessory_callback(connection, serial_accessory_callback, NULL);
+    XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
+    XIMU3_connection_add_error_callback(connection, error_callback, NULL);
     XIMU3_connection_add_end_of_file_callback(connection, end_of_file_callback, NULL);
 
     // Open connection

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -32,14 +31,15 @@ public:
             return;
         }
 
-        // Ping
-        if (helpers::yesOrNo("Use async implementation?")) {
-            connection.pingAsync(callback);
+        // Ping (blocking)
+        const auto response = connection.ping();
 
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-        } else {
-            printResponse(connection.ping());
-        }
+        printResponse(response);
+
+        // Ping (non-blocking)
+        connection.pingAsync(callback);
+
+        std::this_thread::sleep_for(std::chrono::seconds(3));
 
         // Close connection
         connection.close();

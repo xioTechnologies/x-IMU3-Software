@@ -4,20 +4,21 @@ namespace Ximu3Examples
     {
         public FileConverter()
         {
+            // Blocking
             var destination = "C:/";
-            var name = "x-IMU3 File Conversion Example";
+            var nameBlocking = "x-IMU3 File Conversion Example Blocking";
             string[] filePaths = ["C:/x-IMU3 Example File.ximu3"]; // replace with actual file path
 
-            if (Helpers.YesOrNo("Use async implementation?"))
-            {
-                using var fileConverter = new Ximu3.FileConverter(destination, name, filePaths, Callback);
+            var progress = Ximu3.FileConverter.Convert(destination, nameBlocking, filePaths);
 
-                System.Threading.Thread.Sleep(60000);
-            }
-            else
-            {
-                PrintProgress(Ximu3.FileConverter.Convert(destination, name, filePaths));
-            }
+            PrintProgress(progress);
+
+            // Non-blocking
+            var nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+
+            using var fileConverter = new Ximu3.FileConverter(destination, nameNonBlocking, filePaths, Callback);
+
+            System.Threading.Thread.Sleep(60000);
         }
 
         private void Callback(Ximu3.CApi.XIMU3_FileConverterProgress progress)
@@ -33,7 +34,7 @@ namespace Ximu3Examples
                 progress.bytes_processed + " of " +
                 progress.bytes_total + " bytes"
             );
-            // Console.WriteLine((Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_file_converter_progress_to_string(progress))); // alternative to above
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_file_converter_progress_to_string(progress))); // alternative to above
         }
     }
 }

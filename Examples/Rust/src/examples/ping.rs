@@ -1,4 +1,3 @@
-use crate::helpers;
 use ximu3::connection::*;
 use ximu3::ping_response::*;
 use ximu3::port_scanner::*;
@@ -24,18 +23,19 @@ pub fn run() {
         return;
     }
 
-    // Ping
-    if helpers::yes_or_no("Use async implementation?") {
-        let closure = Box::new(|response| {
-            print_response(response);
-        });
+    // Ping (blocking)
+    let response = connection.ping();
 
-        connection.ping_async(closure);
+    print_response(response);
 
-        std::thread::sleep(std::time::Duration::from_secs(3));
-    } else {
-        print_response(connection.ping());
-    }
+    // Ping (non-blocking)
+    let closure = Box::new(|response| {
+        print_response(response);
+    });
+
+    connection.ping_async(closure);
+
+    std::thread::sleep(std::time::Duration::from_secs(3));
 
     // Close connection
     connection.close();

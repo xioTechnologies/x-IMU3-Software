@@ -1,6 +1,5 @@
 import time
 
-import helpers
 import ximu3
 
 # Search for connection
@@ -16,9 +15,8 @@ print(f"Found {devices[0]}")
 # Open connection
 connection = ximu3.Connection(devices[0].connection_config).open()
 
-# Ping
 
-
+# Ping (blocking)
 def print_response(response: ximu3.PingResponse | None) -> None:
     if not response:
         raise Exception("No response")
@@ -27,15 +25,19 @@ def print_response(response: ximu3.PingResponse | None) -> None:
     # print(response)  # alternative to above
 
 
+response = connection.ping()
+
+print_response(response)
+
+
+# Ping (non-blocking)
 def callback(response: ximu3.PingResponse) -> None:
     print_response(response)
 
 
-if helpers.yes_or_no("Use async implementation?"):
-    connection.ping_async(callback)
-    time.sleep(3)
-else:
-    print_response(connection.ping())
+connection.ping_async(callback)
+
+time.sleep(3)
 
 # Close connection
 connection.close()

@@ -1,4 +1,3 @@
-use crate::helpers;
 use ximu3::command_message::*;
 use ximu3::connection::*;
 use ximu3::port_scanner::*;
@@ -32,18 +31,19 @@ pub fn run() {
         "{\"invalid_key\":null}".into(),       // invalid key to demonstrate an error response
     ];
 
-    // Send commands
-    if helpers::yes_or_no("Use async implementation?") {
-        let closure = Box::new(|responses| {
-            print_responses(responses);
-        });
+    // Send commands (blocking)
+    let responses = connection.send_commands(commands.clone(), DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
-        connection.send_commands_async(commands, DEFAULT_RETRIES, DEFAULT_TIMEOUT, closure);
+    print_responses(responses);
 
-        std::thread::sleep(std::time::Duration::from_secs(3));
-    } else {
-        print_responses(connection.send_commands(commands, DEFAULT_RETRIES, DEFAULT_TIMEOUT));
-    }
+    // Send commands (non-blocking)
+    let closure = Box::new(|responses| {
+        print_responses(responses);
+    });
+
+    connection.send_commands_async(commands, DEFAULT_RETRIES, DEFAULT_TIMEOUT, closure);
+
+    std::thread::sleep(std::time::Duration::from_secs(3));
 
     // Close connection
     connection.close();

@@ -1,4 +1,3 @@
-use crate::helpers;
 use ximu3::connection::*;
 use ximu3::data_logger::*;
 use ximu3::port_scanner::*;
@@ -28,28 +27,29 @@ pub fn run() {
         return;
     }
 
-    // Log data
+    // Log data (blocking)
     let destination = "C:/";
-    let name = "x-IMU3 Data Logger Example";
+    let name_blocking = "x-IMU3 Data Logger Example Blocking";
 
-    if helpers::yes_or_no("Use async implementation?") {
-        let data_logger = DataLogger::new(destination, name, connections.iter().collect());
+    let result = DataLogger::log(destination, name_blocking, connections.iter().collect(), 3);
 
-        if let Err(error) = data_logger {
-            println!("Data logger failed. {error}.");
-            return;
-        }
+    if let Err(error) = result {
+        println!("Data logger failed. {error}.");
+    }
 
-        std::thread::sleep(std::time::Duration::from_secs(3));
+    // Log data (non-blocking)
+    let name_non_blocking = "x-IMU3 Data Logger Example Non-Blocking";
 
-        drop(data_logger);
-    } else {
-        let result = DataLogger::log(destination, name, connections.iter().collect(), 3);
+    let data_logger = DataLogger::new(destination, name_non_blocking, connections.iter().collect());
 
-        if let Err(error) = result {
-            println!("Data logger failed. {error}.");
-            return;
-        }
+    if let Err(ref error) = data_logger {
+        println!("Data logger failed. {error}.");
+    }
+
+    std::thread::sleep(std::time::Duration::from_secs(3));
+
+    if let Ok(data_logger) = data_logger {
+        drop(data_logger); // stop logging
     }
 
     println!("Complete");

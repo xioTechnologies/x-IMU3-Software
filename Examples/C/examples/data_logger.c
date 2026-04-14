@@ -14,7 +14,7 @@ void data_logger() {
     uint32_t number_of_connections = 0;
 
     for (uint32_t index = 0; index < devices.length; index++) {
-        if (index > MAX_NUMBER_OF_CONNECTION) {
+        if (index >= MAX_NUMBER_OF_CONNECTION) {
             break;
         }
 
@@ -38,29 +38,30 @@ void data_logger() {
         return;
     }
 
-    // Log data
+    // Log data (blocking)
     const char *destination = "C:/";
-    const char *name = "x-IMU3 Data Logger Example";
+    const char *name_blocking = "x-IMU3 Data Logger Example Blocking";
 
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_DataLogger *const data_logger = XIMU3_data_logger_new(destination, name, connections, number_of_connections);
+    const XIMU3_Result resultBlocking = XIMU3_data_logger_log(destination, name_blocking, connections, number_of_connections, 3);
 
-        const XIMU3_Result result = XIMU3_data_logger_get_result(data_logger);
-
-        if (result != XIMU3_ResultOk) {
-            printf("Data logger failed. %s.\n", XIMU3_result_to_string(result));
-        }
-
-        sleep(3);
-
-        XIMU3_data_logger_free(data_logger);
-    } else {
-        const XIMU3_Result result = XIMU3_data_logger_log(destination, name, connections, number_of_connections, 3);
-
-        if (result != XIMU3_ResultOk) {
-            printf("Data logger failed. %s.\n", XIMU3_result_to_string(result));
-        }
+    if (resultBlocking != XIMU3_ResultOk) {
+        printf("Data logger failed. %s.\n", XIMU3_result_to_string(resultBlocking));
     }
+
+    // Log data (non-blocking)
+    const char *name_non_blocking = "x-IMU3 Data Logger Example Non-Blocking";
+
+    XIMU3_DataLogger *const data_logger = XIMU3_data_logger_new(destination, name_non_blocking, connections, number_of_connections);
+
+    const XIMU3_Result resultNonBlocking = XIMU3_data_logger_get_result(data_logger);
+
+    if (resultNonBlocking != XIMU3_ResultOk) {
+        printf("Data logger failed. %s.\n", XIMU3_result_to_string(resultNonBlocking));
+    }
+
+    sleep(3);
+
+    XIMU3_data_logger_free(data_logger); // stop logging
 
     printf("Complete\n");
 

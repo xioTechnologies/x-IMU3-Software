@@ -18,12 +18,12 @@
             // Open connection
             var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(devices[0])!);
 
-            using var keepOpen = new Ximu3.KeepOpen(connection, Callback);
+            var keepOpen = new Ximu3.KeepOpen(connection, Callback);
 
             // Close connection
             System.Threading.Thread.Sleep(60000);
 
-            connection.Close();
+            keepOpen.Dispose();
         }
 
         private void Callback(Ximu3.CApi.XIMU3_ConnectionStatus status)

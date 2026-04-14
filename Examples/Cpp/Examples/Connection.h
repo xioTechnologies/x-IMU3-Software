@@ -22,24 +22,21 @@ protected:
 
         connection.addReceiveErrorCallback(receiveErrorCallback);
         connection.addStatisticsCallback(statisticsCallback);
-
-        if (helpers::yesOrNo("Print data messages?")) {
-            connection.addInertialCallback(inertialCallback);
-            connection.addMagnetometerCallback(magnetometerCallback);
-            connection.addQuaternionCallback(quaternionCallback);
-            connection.addRotationMatrixCallback(rotationMatrixCallback);
-            connection.addEulerAnglesCallback(eulerAnglesCallback);
-            connection.addLinearAccelerationCallback(linearAccelerationCallback);
-            connection.addEarthAccelerationCallback(earthAccelerationCallback);
-            connection.addAhrsStatusCallback(ahrsStatusCallback);
-            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
-            connection.addTemperatureCallback(temperatureCallback);
-            connection.addBatteryCallback(batteryCallback);
-            connection.addRssiCallback(rssiCallback);
-            connection.addSerialAccessoryCallback(serialAccessoryCallback);
-            connection.addNotificationCallback(notificationCallback);
-            connection.addErrorCallback(errorCallback);
-        }
+        connection.addInertialCallback(inertialCallback);
+        connection.addMagnetometerCallback(magnetometerCallback);
+        connection.addQuaternionCallback(quaternionCallback);
+        connection.addRotationMatrixCallback(rotationMatrixCallback);
+        connection.addEulerAnglesCallback(eulerAnglesCallback);
+        connection.addLinearAccelerationCallback(linearAccelerationCallback);
+        connection.addEarthAccelerationCallback(earthAccelerationCallback);
+        connection.addAhrsStatusCallback(ahrsStatusCallback);
+        connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
+        connection.addTemperatureCallback(temperatureCallback);
+        connection.addBatteryCallback(batteryCallback);
+        connection.addRssiCallback(rssiCallback);
+        connection.addSerialAccessoryCallback(serialAccessoryCallback);
+        connection.addNotificationCallback(notificationCallback);
+        connection.addErrorCallback(errorCallback);
         connection.addEndOfFileCallback(endOfFileCallback);
 
         // Open connection

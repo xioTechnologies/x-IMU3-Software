@@ -4,18 +4,15 @@ namespace Ximu3Examples
     {
         public PortScanner()
         {
-            if (Helpers.YesOrNo("Use async implementation?"))
-            {
-                using var portScanner = new Ximu3.PortScanner(Callback);
+            // Blocking
+            var devices = Ximu3.PortScanner.Scan();
 
-                System.Threading.Thread.Sleep(60000);
-            }
-            else
-            {
-                var devices = Ximu3.PortScanner.Scan();
+            PrintDevices(devices);
 
-                PrintDevices(devices);
-            }
+            // Non-blocking
+            using var portScanner = new Ximu3.PortScanner(Callback);
+
+            System.Threading.Thread.Sleep(60000);
         }
 
         private void Callback(Ximu3.CApi.XIMU3_Device[] devices)
@@ -34,7 +31,7 @@ namespace Ximu3Examples
                     Ximu3.Helpers.ToString(device.serial_number) + ", " +
                     Ximu3.ConnectionConfig.From(device)
                 );
-                //Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device))); // alternative to above
+                // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device))); // alternative to above
             }
         }
     }

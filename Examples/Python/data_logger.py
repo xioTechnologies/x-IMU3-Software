@@ -1,6 +1,5 @@
 import time
 
-import helpers
 import ximu3
 
 # Open all USB connections
@@ -20,18 +19,20 @@ for device in devices:
 if not connections:
     raise Exception("No USB connections available")
 
-# Log data
+# Log data (blocking)
 destination = "C:/"
-name = "x-IMU3 Data Logger Example"
+name_blocking = "x-IMU3 Data Logger Example Blocking"
 
-if helpers.yes_or_no("Use async implementation?"):
-    data_logger = ximu3.DataLogger(destination, name, connections)
+ximu3.DataLogger.log(destination, name_blocking, connections, 3)
 
-    time.sleep(3)
+# Log data (non-blocking)
+name_non_blocking = "x-IMU3 Data Logger Example Non-Blocking"
 
-    del data_logger
-else:
-    ximu3.DataLogger.log(destination, name, connections, 3)
+data_logger = ximu3.DataLogger(destination, name_non_blocking, connections)
+
+time.sleep(3)
+
+del data_logger  # stop logging
 
 print("Complete")
 

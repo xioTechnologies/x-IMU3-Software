@@ -35,32 +35,32 @@ namespace Ximu3Examples
                 return;
             }
 
-            // Log data
+            // Log data (blocking)
             var destination = "C:/";
-            var name = "x-IMU3 Data Logger Example";
+            var nameBlocking = "x-IMU3 Data Logger Example Blocking";
 
-            if (Helpers.YesOrNo("Use async implementation?"))
+            var resultBlocking = Ximu3.DataLogger.Log(destination, nameBlocking, [.. connections], 3);
+
+            if (resultBlocking != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                using var dataLogger = new Ximu3.DataLogger(destination, name, [.. connections]);
-
-                var result = dataLogger.GetResult();
-
-                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
-                {
-                    Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
-                }
-
-                System.Threading.Thread.Sleep(3000);
+                Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultBlocking)) + ".");
             }
-            else
+
+            // Log data (non-blocking)
+            var nameNonBlocking = "x-IMU3 Data Logger Example Non-Blocking";
+
+            var dataLogger = new Ximu3.DataLogger(destination, nameNonBlocking, [.. connections]);
+
+            var resultNonBlocking = dataLogger.GetResult();
+
+            if (resultNonBlocking != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                var result = Ximu3.DataLogger.Log(destination, name, [.. connections], 3);
-
-                if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
-                {
-                    Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
-                }
+                Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultNonBlocking)) + ".");
             }
+
+            System.Threading.Thread.Sleep(3000);
+
+            dataLogger.Dispose(); // stop logging
 
             Console.WriteLine("Complete");
 

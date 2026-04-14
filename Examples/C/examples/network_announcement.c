@@ -18,19 +18,19 @@ void network_announcement() {
         return;
     }
 
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_network_announcement_add_callback(network_announcement, callback, NULL);
+    // Blocking
+    const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages_after_short_delay(network_announcement);
 
-        sleep(60);
-    } else {
-        const XIMU3_NetworkAnnouncementMessages messages = XIMU3_network_announcement_get_messages(network_announcement);
-
-        for (uint32_t index = 0; index < messages.length; index++) {
-            print_message(messages.array[index]);
-        }
-
-        XIMU3_network_announcement_messages_free(messages);
+    for (uint32_t index = 0; index < messages.length; index++) {
+        print_message(messages.array[index]);
     }
+
+    XIMU3_network_announcement_messages_free(messages);
+
+    // Non-blocking
+    XIMU3_network_announcement_add_callback(network_announcement, callback, NULL);
+
+    sleep(60);
 
     XIMU3_network_announcement_free(network_announcement);
 }

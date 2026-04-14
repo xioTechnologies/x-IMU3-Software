@@ -1,22 +1,25 @@
-use crate::helpers;
 use ximu3::file_converter::*;
 
 pub fn run() {
+    // Blocking
     let destination = "C:/";
-    let name = "x-IMU3 File Conversion Example";
+    let name_blocking = "x-IMU3 File Conversion Example Blocking";
     let file_paths = vec!["C:/x-IMU3 Example File.ximu3"]; // replace with actual file path
 
-    if helpers::yes_or_no("Use async implementation?") {
-        let closure = Box::new(|progress| {
-            print_progress(progress);
-        });
+    let progress = FileConverter::convert(destination, name_blocking, file_paths.clone());
 
-        let _file_converter = FileConverter::new(destination, name, file_paths, closure);
+    print_progress(progress);
 
-        std::thread::sleep(std::time::Duration::from_secs(60));
-    } else {
-        print_progress(FileConverter::convert(destination, name, file_paths));
-    }
+    // Non-blocking
+    let name_non_blocking = "x-IMU3 File Conversion Example Non-Blocking";
+
+    let closure = Box::new(|progress| {
+        print_progress(progress);
+    });
+
+    let _file_converter = FileConverter::new(destination, name_non_blocking, file_paths, closure);
+
+    std::thread::sleep(std::time::Duration::from_secs(60));
 }
 
 fn print_progress(progress: FileConverterProgress) {

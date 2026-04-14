@@ -42,18 +42,17 @@ void send_commands() {
     };
     const int number_of_commands = sizeof(commands) / sizeof(commands[0]);
 
-    // Send commands
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_connection_send_commands_async(connection, commands, number_of_commands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT, callback, NULL);
+    // Send commands (blocking)
+    const XIMU3_CommandMessages responses = XIMU3_connection_send_commands(connection, commands, number_of_commands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
-        sleep(3);
-    } else {
-        const XIMU3_CommandMessages responses = XIMU3_connection_send_commands(connection, commands, number_of_commands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
+    print_responses(responses);
 
-        print_responses(responses);
+    XIMU3_command_messages_free(responses);
 
-        XIMU3_command_messages_free(responses);
-    }
+    // Send commands (non-blocking)
+    XIMU3_connection_send_commands_async(connection, commands, number_of_commands, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT, callback, NULL);
+
+    sleep(3);
 
     // Close connection
     XIMU3_connection_close(connection);

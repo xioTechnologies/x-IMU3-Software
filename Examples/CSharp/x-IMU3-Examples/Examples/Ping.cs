@@ -28,17 +28,15 @@ namespace Ximu3Examples
                 return;
             }
 
-            // Ping
-            if (Helpers.YesOrNo("Use async implementation?"))
-            {
-                connection.PingAsync(Callback);
+            // Ping (blocking)
+            var response = connection.Ping();
 
-                System.Threading.Thread.Sleep(3000);
-            }
-            else
-            {
-                PrintResponse(connection.Ping());
-            }
+            PrintResponse(response);
+
+            // Ping (non-blocking)
+            connection.PingAsync(Callback);
+
+            System.Threading.Thread.Sleep(3000);
 
             // Close connection
             connection.Close();

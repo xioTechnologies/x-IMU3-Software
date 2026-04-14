@@ -24,9 +24,9 @@ def callback(status: int) -> None:
     # print(ximu3.connection_status_to_string(status))  # alternative to above
 
 
-_ = ximu3.KeepOpen(connection, callback)
+keep_open = ximu3.KeepOpen(connection, callback)
 
 # Close connection
 time.sleep(60)
 
-connection.close()
+del keep_open

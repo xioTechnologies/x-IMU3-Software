@@ -9,25 +9,21 @@ namespace Ximu3Examples
 
             connection.AddReceiveErrorCallback(ReceiveErrorCallback);
             connection.AddStatisticsCallback(StatisticsCallback);
-
-            if (Helpers.YesOrNo("Print data messages?"))
-            {
-                connection.AddInertialCallback(InertialCallback);
-                connection.AddMagnetometerCallback(MagnetometerCallback);
-                connection.AddQuaternionCallback(QuaternionCallback);
-                connection.AddRotationMatrixCallback(RotationMatrixCallback);
-                connection.AddEulerAnglesCallback(EulerAnglesCallback);
-                connection.AddLinearAccelerationCallback(LinearAccelerationCallback);
-                connection.AddEarthAccelerationCallback(EarthAccelerationCallback);
-                connection.AddAhrsStatusCallback(AhrsStatusCallback);
-                connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
-                connection.AddTemperatureCallback(TemperatureCallback);
-                connection.AddBatteryCallback(BatteryCallback);
-                connection.AddRssiCallback(RssiCallback);
-                connection.AddSerialAccessoryCallback(SerialAccessoryCallback);
-                connection.AddNotificationCallback(NotificationCallback);
-                connection.AddErrorCallback(ErrorCallback);
-            }
+            connection.AddInertialCallback(InertialCallback);
+            connection.AddMagnetometerCallback(MagnetometerCallback);
+            connection.AddQuaternionCallback(QuaternionCallback);
+            connection.AddRotationMatrixCallback(RotationMatrixCallback);
+            connection.AddEulerAnglesCallback(EulerAnglesCallback);
+            connection.AddLinearAccelerationCallback(LinearAccelerationCallback);
+            connection.AddEarthAccelerationCallback(EarthAccelerationCallback);
+            connection.AddAhrsStatusCallback(AhrsStatusCallback);
+            connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
+            connection.AddTemperatureCallback(TemperatureCallback);
+            connection.AddBatteryCallback(BatteryCallback);
+            connection.AddRssiCallback(RssiCallback);
+            connection.AddSerialAccessoryCallback(SerialAccessoryCallback);
+            connection.AddNotificationCallback(NotificationCallback);
+            connection.AddErrorCallback(ErrorCallback);
             connection.AddEndOfFileCallback(EndOfFileCallback);
 
             // Open connection
@@ -157,6 +153,7 @@ namespace Ximu3Examples
                 FloatFormat(message.yaw) + " deg"
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(message))); // alternative to above
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_quaternion_message_to_string(Ximu3.CApi.XIMU3_euler_angles_message_to_quaternion_message(message))));
         }
 
         private static void LinearAccelerationCallback(Ximu3.CApi.XIMU3_LinearAccelerationMessage message)

@@ -7,19 +7,19 @@ static void callback(const XIMU3_Devices devices, void *context);
 static void print_devices(const XIMU3_Devices devices);
 
 void port_scanner() {
-    if (yes_or_no("Use async implementation?")) {
-        XIMU3_PortScanner *const port_scanner = XIMU3_port_scanner_new(callback, NULL);
+    // Blocking
+    const XIMU3_Devices devices = XIMU3_port_scanner_scan();
 
-        sleep(60);
+    print_devices(devices);
 
-        XIMU3_port_scanner_free(port_scanner);
-    } else {
-        const XIMU3_Devices devices = XIMU3_port_scanner_scan();
+    XIMU3_devices_free(devices);
 
-        print_devices(devices);
+    // Non-blocking
+    XIMU3_PortScanner *const port_scanner = XIMU3_port_scanner_new(callback, NULL);
 
-        XIMU3_devices_free(devices);
-    }
+    sleep(60);
+
+    XIMU3_port_scanner_free(port_scanner);
 }
 
 static void callback(const XIMU3_Devices devices, void *context) {
