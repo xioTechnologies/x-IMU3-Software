@@ -1,6 +1,5 @@
 use crate::charging_status::*;
 use crate::connection_config::*;
-use serde::Deserialize;
 use serde_json;
 use std::fmt;
 use std::net::{Ipv4Addr, UdpSocket};
@@ -137,31 +136,18 @@ impl NetworkAnnouncement {
     }
 
     fn parse(json: &[u8]) -> Option<NetworkAnnouncementMessage> {
-        #[derive(Deserialize)]
-        struct Object {
-            name: String,
-            sn: String,
-            ip: String,
-            port: Option<u16>,
-            send: Option<u16>,
-            receive: Option<u16>,
-            rssi: Option<i32>,
-            battery: Option<i32>,
-            status: Option<i32>,
-        }
-
-        let object = serde_json::from_slice::<Object>(json).ok()?;
+        let object: serde_json::Value = serde_json::from_slice(json).ok()?;
 
         Some(NetworkAnnouncementMessage {
-            device_name: object.name,
-            serial_number: object.sn,
-            ip_address: object.ip.parse::<Ipv4Addr>().ok()?,
-            tcp_port: object.port.unwrap_or(0),
-            udp_send: object.send.unwrap_or(0),
-            udp_receive: object.receive.unwrap_or(0),
-            rssi: object.rssi.unwrap_or(-1),
-            battery: object.battery.unwrap_or(-1),
-            charging_status: ChargingStatus::from(object.status.unwrap_or(-1)),
+            device_name: object.get("name").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            serial_number: object.get("sn").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            ip_address: object.get("ip").and_then(|value| value.as_str()).and_then(|s| s.parse::<Ipv4Addr>().ok()).unwrap_or(Ipv4Addr::UNSPECIFIED),
+            tcp_port: object.get("port").and_then(|value| value.as_u64()).unwrap_or(0) as u16,
+            udp_send: object.get("send").and_then(|value| value.as_u64()).unwrap_or(0) as u16,
+            udp_receive: object.get("receive").and_then(|value| value.as_u64()).unwrap_or(0) as u16,
+            rssi: object.get("rssi").and_then(|value| value.as_i64()).unwrap_or(-1) as i32,
+            battery: object.get("battery").and_then(|value| value.as_i64()).unwrap_or(-1) as i32,
+            charging_status: ChargingStatus::from(object.get("status").and_then(|value| value.as_i64()).unwrap_or(-1) as i32),
             time: std::time::Instant::now(),
         })
     }
