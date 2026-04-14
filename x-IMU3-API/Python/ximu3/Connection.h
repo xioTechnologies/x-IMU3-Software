@@ -599,6 +599,69 @@ static PyObject *connection_get_serial_accessory_message(Connection *self, PyObj
     return serial_accessory_message_from(&message);
 }
 
+static PyObject *connection_get_sync_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_SyncMessage message = XIMU3_connection_get_sync_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return sync_message_from(&message);
+}
+
+static PyObject *connection_get_ltc_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_LtcMessage message = XIMU3_connection_get_ltc_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return ltc_message_from(&message);
+}
+
+static PyObject *connection_get_button_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_ButtonMessage message = XIMU3_connection_get_button_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return button_message_from(&message);
+}
+
 static PyObject *connection_get_notification_message(Connection *self, PyObject *args, PyObject *kwds) {
     int consume = false;
 
@@ -885,6 +948,54 @@ static PyObject *connection_add_serial_accessory_callback(Connection *self, PyOb
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }
 
+static PyObject *connection_add_sync_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_sync_callback(self->wrapped, sync_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *connection_add_ltc_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_ltc_callback(self->wrapped, ltc_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *connection_add_button_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_button_callback(self->wrapped, button_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
 static PyObject *connection_add_notification_callback(Connection *self, PyObject *arg) {
     if (PyCallable_Check(arg) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
@@ -987,6 +1098,9 @@ static PyMethodDef connection_methods[] = {
     {"get_battery_message", (PyCFunction) connection_get_battery_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_rssi_message", (PyCFunction) connection_get_rssi_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_serial_accessory_message", (PyCFunction) connection_get_serial_accessory_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_sync_message", (PyCFunction) connection_get_sync_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_ltc_message", (PyCFunction) connection_get_ltc_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_button_message", (PyCFunction) connection_get_button_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_notification_message", (PyCFunction) connection_get_notification_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_error_message", (PyCFunction) connection_get_error_message, METH_VARARGS | METH_KEYWORDS, ""},
     // End of code block #2 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
@@ -1006,6 +1120,9 @@ static PyMethodDef connection_methods[] = {
     {"add_battery_callback", (PyCFunction) connection_add_battery_callback, METH_O, ""},
     {"add_rssi_callback", (PyCFunction) connection_add_rssi_callback, METH_O, ""},
     {"add_serial_accessory_callback", (PyCFunction) connection_add_serial_accessory_callback, METH_O, ""},
+    {"add_sync_callback", (PyCFunction) connection_add_sync_callback, METH_O, ""},
+    {"add_ltc_callback", (PyCFunction) connection_add_ltc_callback, METH_O, ""},
+    {"add_button_callback", (PyCFunction) connection_add_button_callback, METH_O, ""},
     {"add_notification_callback", (PyCFunction) connection_add_notification_callback, METH_O, ""},
     {"add_error_callback", (PyCFunction) connection_add_error_callback, METH_O, ""},
     // End of code block #3 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py

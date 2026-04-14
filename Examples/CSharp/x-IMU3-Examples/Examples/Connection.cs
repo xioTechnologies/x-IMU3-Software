@@ -37,6 +37,9 @@ namespace Ximu3Examples
                 connection.AddBatteryCallback(BatteryCallback);
                 connection.AddRssiCallback(RssiCallback);
                 connection.AddSerialAccessoryCallback(SerialAccessoryCallback);
+                connection.AddSyncCallback(SyncCallback);
+                connection.AddLtcCallback(LtcCallback);
+                connection.AddButtonCallback(ButtonCallback);
                 connection.AddNotificationCallback(NotificationCallback);
                 connection.AddErrorCallback(ErrorCallback);
                 connection.AddEndOfFileCallback(EndOfFileCallback);
@@ -61,6 +64,9 @@ namespace Ximu3Examples
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_battery_message_to_string(connection.GetBatteryMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(connection.GetRssiMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(connection.GetSerialAccessoryMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(connection.GetSyncMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(connection.GetLtcMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_button_message_to_string(connection.GetButtonMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_notification_message_to_string(connection.GetNotificationMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_error_message_to_string(connection.GetErrorMessage(false))));
 
@@ -276,6 +282,33 @@ namespace Ximu3Examples
                 StringFormat(Ximu3.Helpers.ToString(message.char_array))
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(message))); // alternative to above
+        }
+
+        private static void SyncCallback(Ximu3.CApi.XIMU3_SyncMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                FloatFormat(message.edge)
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(message))); // alternative to above
+        }
+
+        private static void LtcCallback(Ximu3.CApi.XIMU3_LtcMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                StringFormat(Ximu3.Helpers.ToString(message.char_array))
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(message))); // alternative to above
+        }
+
+        private static void ButtonCallback(Ximu3.CApi.XIMU3_ButtonMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                FloatFormat(message.state)
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_button_message_to_string(message))); // alternative to above
         }
 
         private static void NotificationCallback(Ximu3.CApi.XIMU3_NotificationMessage message)

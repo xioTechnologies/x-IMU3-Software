@@ -235,6 +235,21 @@ def serial_accessory_callback(message: ximu3.SerialAccessoryMessage) -> None:
     # print(message)  # alternative to above
 
 
+def sync_callback(message: ximu3.SyncMessage) -> None:
+    print(timestamp_format(message.timestamp) + float_format(message.edge))
+    # print(message)  # alternative to above
+
+
+def ltc_callback(message: ximu3.LtcMessage) -> None:
+    print(timestamp_format(message.timestamp) + string_format(message.string))
+    # print(message)  # alternative to above
+
+
+def button_callback(message: ximu3.ButtonMessage) -> None:
+    print(timestamp_format(message.timestamp) + float_format(message.state))
+    # print(message)  # alternative to above
+
+
 def notification_callback(message: ximu3.NotificationMessage) -> None:
     print(timestamp_format(message.timestamp) + string_format(message.string))
     # print(message)  # alternative to above
@@ -272,6 +287,9 @@ def run(config: ximu3.ConnectionConfig) -> None:
         connection.add_battery_callback(battery_callback)
         connection.add_rssi_callback(rssi_callback)
         connection.add_serial_accessory_callback(serial_accessory_callback)
+        connection.add_sync_callback(sync_callback)
+        connection.add_ltc_callback(ltc_callback)
+        connection.add_button_callback(button_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
         connection.add_end_of_file_callback(end_of_file_callback)
@@ -293,6 +311,9 @@ def run(config: ximu3.ConnectionConfig) -> None:
             print(connection.get_battery_message())
             print(connection.get_rssi_message())
             print(connection.get_serial_accessory_message())
+            print(connection.get_sync_message())
+            print(connection.get_ltc_message())
+            print(connection.get_button_message())
             print(connection.get_notification_message())
             print(connection.get_error_message())
 

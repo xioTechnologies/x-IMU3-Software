@@ -39,6 +39,12 @@ void rssi_callback(const XIMU3_RssiMessage message, void *context);
 
 void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void *context);
 
+void sync_callback(const XIMU3_SyncMessage message, void *context);
+
+void ltc_callback(const XIMU3_LtcMessage message, void *context);
+
+void button_callback(const XIMU3_ButtonMessage message, void *context);
+
 void notification_callback(const XIMU3_NotificationMessage message, void *context);
 
 void error_callback(const XIMU3_ErrorMessage message, void *context);
@@ -75,13 +81,15 @@ void run(XIMU3_Connection *const connection) {
         XIMU3_connection_add_battery_callback(connection, battery_callback, NULL);
         XIMU3_connection_add_rssi_callback(connection, rssi_callback, NULL);
         XIMU3_connection_add_serial_accessory_callback(connection, serial_accessory_callback, NULL);
+        XIMU3_connection_add_sync_callback(connection, sync_callback, NULL);
+        XIMU3_connection_add_ltc_callback(connection, ltc_callback, NULL);
+        XIMU3_connection_add_button_callback(connection, button_callback, NULL);
         XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
         XIMU3_connection_add_error_callback(connection, error_callback, NULL);
         XIMU3_connection_add_end_of_file_callback(connection, end_of_file_callback, NULL);
 
         sleep(60);
-    }
-    else {
+    } else {
         for (int count = 0; count < 60; count++) {
             printf("%s\n", XIMU3_statistics_to_string(XIMU3_connection_get_statistics(connection)));
             printf("%s\n", XIMU3_inertial_message_to_string(XIMU3_connection_get_inertial_message(connection, false)));
@@ -97,6 +105,9 @@ void run(XIMU3_Connection *const connection) {
             printf("%s\n", XIMU3_battery_message_to_string(XIMU3_connection_get_battery_message(connection, false)));
             printf("%s\n", XIMU3_rssi_message_to_string(XIMU3_connection_get_rssi_message(connection, false)));
             printf("%s\n", XIMU3_serial_accessory_message_to_string(XIMU3_connection_get_serial_accessory_message(connection, false)));
+            printf("%s\n", XIMU3_sync_message_to_string(XIMU3_connection_get_sync_message(connection, false)));
+            printf("%s\n", XIMU3_ltc_message_to_string(XIMU3_connection_get_ltc_message(connection, false)));
+            printf("%s\n", XIMU3_button_message_to_string(XIMU3_connection_get_button_message(connection, false)));
             printf("%s\n", XIMU3_notification_message_to_string(XIMU3_connection_get_notification_message(connection, false)));
             printf("%s\n", XIMU3_error_message_to_string(XIMU3_connection_get_error_message(connection, false)));
 
@@ -260,6 +271,27 @@ void serial_accessory_callback(const XIMU3_SerialAccessoryMessage message, void 
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_serial_accessory_message_to_string(message)); // alternative to above
+}
+
+void sync_callback(const XIMU3_SyncMessage message, void *context) {
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
+           message.timestamp,
+           message.edge);
+    // printf("%s\n", XIMU3_sync_message_to_string(message)); // alternative to above
+}
+
+void ltc_callback(const XIMU3_LtcMessage message, void *context) {
+    printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
+           message.timestamp,
+           message.char_array);
+    // printf("%s\n", XIMU3_ltc_message_to_string(message)); // alternative to above
+}
+
+void button_callback(const XIMU3_ButtonMessage message, void *context) {
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
+           message.timestamp,
+           message.state);
+    // printf("%s\n", XIMU3_button_message_to_string(message)); // alternative to above
 }
 
 void notification_callback(const XIMU3_NotificationMessage message, void *context) {

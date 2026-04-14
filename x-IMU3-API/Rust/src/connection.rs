@@ -320,6 +320,27 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.serial_accessory_message.lock().unwrap().clone()
     }
 
+    pub fn get_sync_message(&self, consume: bool) -> Option<SyncMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().clone()
+    }
+
+    pub fn get_ltc_message(&self, consume: bool) -> Option<LtcMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().clone()
+    }
+
+    pub fn get_button_message(&self, consume: bool) -> Option<ButtonMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.button_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.button_message.lock().unwrap().clone()
+    }
+
     pub fn get_notification_message(&self, consume: bool) -> Option<NotificationMessage> {
         if consume {
             return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.notification_message.lock().unwrap().take();
@@ -404,6 +425,18 @@ impl Connection {
 
     pub fn add_serial_accessory_closure(&self, closure: Box<dyn Fn(SerialAccessoryMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
+    }
+
+    pub fn add_sync_closure(&self, closure: Box<dyn Fn(SyncMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_sync_closure(closure)
+    }
+
+    pub fn add_ltc_closure(&self, closure: Box<dyn Fn(LtcMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_ltc_closure(closure)
+    }
+
+    pub fn add_button_closure(&self, closure: Box<dyn Fn(ButtonMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_button_closure(closure)
     }
 
     pub fn add_notification_closure(&self, closure: Box<dyn Fn(NotificationMessage) + Send>) -> u64 {

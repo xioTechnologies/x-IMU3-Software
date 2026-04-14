@@ -95,6 +95,24 @@ messages = [
         argument_units=(),
     ),
     Message(
+        name="Sync",
+        ascii_id="Y",
+        argument_names=("Edge",),
+        argument_units=("",),
+    ),
+    Message(
+        name="LTC",
+        ascii_id="C",
+        argument_names=(),
+        argument_units=(),
+    ),
+    Message(
+        name="Button",
+        ascii_id="O",
+        argument_names=("State",),
+        argument_units=("",),
+    ),
+    Message(
         name="Notification",
         ascii_id="N",
         argument_names=(),

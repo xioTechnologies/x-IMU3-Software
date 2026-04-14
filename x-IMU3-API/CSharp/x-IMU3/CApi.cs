@@ -338,6 +338,29 @@ namespace Ximu3
         }
 
         [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_SyncMessage
+        {
+            public UInt64 timestamp;
+            public float edge;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_LtcMessage
+        {
+            public UInt64 timestamp;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE)]
+            public byte[] char_array;
+            public UIntPtr number_of_bytes;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XIMU3_ButtonMessage
+        {
+            public UInt64 timestamp;
+            public float state;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_NotificationMessage
         {
             public UInt64 timestamp;
@@ -466,6 +489,15 @@ namespace Ximu3
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackSerialAccessoryMessage(XIMU3_SerialAccessoryMessage data, IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackSyncMessage(XIMU3_SyncMessage data, IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackLtcMessage(XIMU3_LtcMessage data, IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackButtonMessage(XIMU3_ButtonMessage data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackNotificationMessage(XIMU3_NotificationMessage data, IntPtr context);
@@ -621,6 +653,15 @@ namespace Ximu3
         public static extern XIMU3_SerialAccessoryMessage XIMU3_connection_get_serial_accessory_message(IntPtr connection, bool consume);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_SyncMessage XIMU3_connection_get_sync_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_LtcMessage XIMU3_connection_get_ltc_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_ButtonMessage XIMU3_connection_get_button_message(IntPtr connection, bool consume);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_NotificationMessage XIMU3_connection_get_notification_message(IntPtr connection, bool consume);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -670,6 +711,15 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_serial_accessory_callback(IntPtr connection, XIMU3_CallbackSerialAccessoryMessage callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_connection_add_sync_callback(IntPtr connection, XIMU3_CallbackSyncMessage callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_connection_add_ltc_callback(IntPtr connection, XIMU3_CallbackLtcMessage callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_connection_add_button_callback(IntPtr connection, XIMU3_CallbackButtonMessage callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_notification_callback(IntPtr connection, XIMU3_CallbackNotificationMessage callback, IntPtr context);
@@ -763,6 +813,15 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_serial_accessory_message_to_string(XIMU3_SerialAccessoryMessage message);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_sync_message_to_string(XIMU3_SyncMessage message);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_ltc_message_to_string(XIMU3_LtcMessage message);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_button_message_to_string(XIMU3_ButtonMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_notification_message_to_string(XIMU3_NotificationMessage message);

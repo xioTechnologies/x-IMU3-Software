@@ -282,6 +282,24 @@ pub extern "C" fn XIMU3_connection_get_serial_accessory_message(connection: *mut
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_get_sync_message(connection: *mut Connection, consume: bool) -> SyncMessage {
+    let connection = unsafe { &*connection };
+    connection.get_sync_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_ltc_message(connection: *mut Connection, consume: bool) -> LtcMessage {
+    let connection = unsafe { &*connection };
+    connection.get_ltc_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_button_message(connection: *mut Connection, consume: bool) -> ButtonMessage {
+    let connection = unsafe { &*connection };
+    connection.get_button_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_get_notification_message(connection: *mut Connection, consume: bool) -> NotificationMessage {
     let connection = unsafe { &*connection };
     connection.get_notification_message(consume).unwrap_or_default()
@@ -400,6 +418,27 @@ pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mu
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     connection.add_serial_accessory_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_sync_callback(connection: *mut Connection, callback: Callback<SyncMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_sync_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_ltc_callback(connection: *mut Connection, callback: Callback<LtcMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_ltc_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_button_callback(connection: *mut Connection, callback: Callback<ButtonMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_button_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
 #[no_mangle]
