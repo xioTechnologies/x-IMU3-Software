@@ -243,6 +243,13 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.magnetometer_message.lock().unwrap().clone()
     }
 
+    pub fn get_high_g_accelerometer_message(&self, consume: bool) -> Option<HighGAccelerometerMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.high_g_accelerometer_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.high_g_accelerometer_message.lock().unwrap().clone()
+    }
+
     pub fn get_quaternion_message(&self, consume: bool) -> Option<QuaternionMessage> {
         if consume {
             return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.quaternion_message.lock().unwrap().take();
@@ -285,11 +292,25 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ahrs_status_message.lock().unwrap().clone()
     }
 
-    pub fn get_high_g_accelerometer_message(&self, consume: bool) -> Option<HighGAccelerometerMessage> {
+    pub fn get_serial_accessory_message(&self, consume: bool) -> Option<SerialAccessoryMessage> {
         if consume {
-            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.high_g_accelerometer_message.lock().unwrap().take();
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.serial_accessory_message.lock().unwrap().take();
         }
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.high_g_accelerometer_message.lock().unwrap().clone()
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.serial_accessory_message.lock().unwrap().clone()
+    }
+
+    pub fn get_sync_message(&self, consume: bool) -> Option<SyncMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().clone()
+    }
+
+    pub fn get_ltc_message(&self, consume: bool) -> Option<LtcMessage> {
+        if consume {
+            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().take();
+        }
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().clone()
     }
 
     pub fn get_temperature_message(&self, consume: bool) -> Option<TemperatureMessage> {
@@ -311,27 +332,6 @@ impl Connection {
             return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.rssi_message.lock().unwrap().take();
         }
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.rssi_message.lock().unwrap().clone()
-    }
-
-    pub fn get_serial_accessory_message(&self, consume: bool) -> Option<SerialAccessoryMessage> {
-        if consume {
-            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.serial_accessory_message.lock().unwrap().take();
-        }
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.serial_accessory_message.lock().unwrap().clone()
-    }
-
-    pub fn get_sync_message(&self, consume: bool) -> Option<SyncMessage> {
-        if consume {
-            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().take();
-        }
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.sync_message.lock().unwrap().clone()
-    }
-
-    pub fn get_ltc_message(&self, consume: bool) -> Option<LtcMessage> {
-        if consume {
-            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().take();
-        }
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ltc_message.lock().unwrap().clone()
     }
 
     pub fn get_button_message(&self, consume: bool) -> Option<ButtonMessage> {
@@ -383,6 +383,10 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_magnetometer_closure(closure)
     }
 
+    pub fn add_high_g_accelerometer_closure(&self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
+    }
+
     pub fn add_quaternion_closure(&self, closure: Box<dyn Fn(QuaternionMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_quaternion_closure(closure)
     }
@@ -407,8 +411,16 @@ impl Connection {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_ahrs_status_closure(closure)
     }
 
-    pub fn add_high_g_accelerometer_closure(&self, closure: Box<dyn Fn(HighGAccelerometerMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_high_g_accelerometer_closure(closure)
+    pub fn add_serial_accessory_closure(&self, closure: Box<dyn Fn(SerialAccessoryMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
+    }
+
+    pub fn add_sync_closure(&self, closure: Box<dyn Fn(SyncMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_sync_closure(closure)
+    }
+
+    pub fn add_ltc_closure(&self, closure: Box<dyn Fn(LtcMessage) + Send>) -> u64 {
+        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_ltc_closure(closure)
     }
 
     pub fn add_temperature_closure(&self, closure: Box<dyn Fn(TemperatureMessage) + Send>) -> u64 {
@@ -421,18 +433,6 @@ impl Connection {
 
     pub fn add_rssi_closure(&self, closure: Box<dyn Fn(RssiMessage) + Send>) -> u64 {
         self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_rssi_closure(closure)
-    }
-
-    pub fn add_serial_accessory_closure(&self, closure: Box<dyn Fn(SerialAccessoryMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_serial_accessory_closure(closure)
-    }
-
-    pub fn add_sync_closure(&self, closure: Box<dyn Fn(SyncMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_sync_closure(closure)
-    }
-
-    pub fn add_ltc_closure(&self, closure: Box<dyn Fn(LtcMessage) + Send>) -> u64 {
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_ltc_closure(closure)
     }
 
     pub fn add_button_closure(&self, closure: Box<dyn Fn(ButtonMessage) + Send>) -> u64 {

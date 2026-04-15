@@ -216,6 +216,12 @@ pub extern "C" fn XIMU3_connection_get_magnetometer_message(connection: *mut Con
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_get_high_g_accelerometer_message(connection: *mut Connection, consume: bool) -> HighGAccelerometerMessage {
+    let connection = unsafe { &*connection };
+    connection.get_high_g_accelerometer_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_get_quaternion_message(connection: *mut Connection, consume: bool) -> QuaternionMessage {
     let connection = unsafe { &*connection };
     connection.get_quaternion_message(consume).unwrap_or_default()
@@ -252,9 +258,21 @@ pub extern "C" fn XIMU3_connection_get_ahrs_status_message(connection: *mut Conn
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_get_high_g_accelerometer_message(connection: *mut Connection, consume: bool) -> HighGAccelerometerMessage {
+pub extern "C" fn XIMU3_connection_get_serial_accessory_message(connection: *mut Connection, consume: bool) -> SerialAccessoryMessage {
     let connection = unsafe { &*connection };
-    connection.get_high_g_accelerometer_message(consume).unwrap_or_default()
+    connection.get_serial_accessory_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_sync_message(connection: *mut Connection, consume: bool) -> SyncMessage {
+    let connection = unsafe { &*connection };
+    connection.get_sync_message(consume).unwrap_or_default()
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_get_ltc_message(connection: *mut Connection, consume: bool) -> LtcMessage {
+    let connection = unsafe { &*connection };
+    connection.get_ltc_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
@@ -273,24 +291,6 @@ pub extern "C" fn XIMU3_connection_get_battery_message(connection: *mut Connecti
 pub extern "C" fn XIMU3_connection_get_rssi_message(connection: *mut Connection, consume: bool) -> RssiMessage {
     let connection = unsafe { &*connection };
     connection.get_rssi_message(consume).unwrap_or_default()
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_get_serial_accessory_message(connection: *mut Connection, consume: bool) -> SerialAccessoryMessage {
-    let connection = unsafe { &*connection };
-    connection.get_serial_accessory_message(consume).unwrap_or_default()
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_get_sync_message(connection: *mut Connection, consume: bool) -> SyncMessage {
-    let connection = unsafe { &*connection };
-    connection.get_sync_message(consume).unwrap_or_default()
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_get_ltc_message(connection: *mut Connection, consume: bool) -> LtcMessage {
-    let connection = unsafe { &*connection };
-    connection.get_ltc_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
@@ -344,6 +344,13 @@ pub extern "C" fn XIMU3_connection_add_magnetometer_callback(connection: *mut Co
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection: *mut Connection, callback: Callback<HighGAccelerometerMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_high_g_accelerometer_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_connection_add_quaternion_callback(connection: *mut Connection, callback: Callback<QuaternionMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
@@ -386,10 +393,24 @@ pub extern "C" fn XIMU3_connection_add_ahrs_status_callback(connection: *mut Con
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection: *mut Connection, callback: Callback<HighGAccelerometerMessage>, context: *mut c_void) -> u64 {
+pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mut Connection, callback: Callback<SerialAccessoryMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
-    connection.add_high_g_accelerometer_closure(Box::new(move |message| callback(message, void_ptr.0)))
+    connection.add_serial_accessory_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_sync_callback(connection: *mut Connection, callback: Callback<SyncMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_sync_closure(Box::new(move |message| callback(message, void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_connection_add_ltc_callback(connection: *mut Connection, callback: Callback<LtcMessage>, context: *mut c_void) -> u64 {
+    let connection = unsafe { &*connection };
+    let void_ptr = VoidPtr(context);
+    connection.add_ltc_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
 #[no_mangle]
@@ -411,27 +432,6 @@ pub extern "C" fn XIMU3_connection_add_rssi_callback(connection: *mut Connection
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     connection.add_rssi_closure(Box::new(move |message| callback(message, void_ptr.0)))
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mut Connection, callback: Callback<SerialAccessoryMessage>, context: *mut c_void) -> u64 {
-    let connection = unsafe { &*connection };
-    let void_ptr = VoidPtr(context);
-    connection.add_serial_accessory_closure(Box::new(move |message| callback(message, void_ptr.0)))
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_add_sync_callback(connection: *mut Connection, callback: Callback<SyncMessage>, context: *mut c_void) -> u64 {
-    let connection = unsafe { &*connection };
-    let void_ptr = VoidPtr(context);
-    connection.add_sync_closure(Box::new(move |message| callback(message, void_ptr.0)))
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_connection_add_ltc_callback(connection: *mut Connection, callback: Callback<LtcMessage>, context: *mut c_void) -> u64 {
-    let connection = unsafe { &*connection };
-    let void_ptr = VoidPtr(context);
-    connection.add_ltc_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
 #[no_mangle]

@@ -368,6 +368,27 @@ static PyObject *connection_get_magnetometer_message(Connection *self, PyObject 
     return magnetometer_message_from(&message);
 }
 
+static PyObject *connection_get_high_g_accelerometer_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_HighGAccelerometerMessage message = XIMU3_connection_get_high_g_accelerometer_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return high_g_accelerometer_message_from(&message);
+}
+
 static PyObject *connection_get_quaternion_message(Connection *self, PyObject *args, PyObject *kwds) {
     int consume = false;
 
@@ -494,7 +515,7 @@ static PyObject *connection_get_ahrs_status_message(Connection *self, PyObject *
     return ahrs_status_message_from(&message);
 }
 
-static PyObject *connection_get_high_g_accelerometer_message(Connection *self, PyObject *args, PyObject *kwds) {
+static PyObject *connection_get_serial_accessory_message(Connection *self, PyObject *args, PyObject *kwds) {
     int consume = false;
 
     static char *kwlist[] = {
@@ -506,13 +527,55 @@ static PyObject *connection_get_high_g_accelerometer_message(Connection *self, P
         return NULL;
     }
 
-    const XIMU3_HighGAccelerometerMessage message = XIMU3_connection_get_high_g_accelerometer_message(self->wrapped, (bool) consume);
+    const XIMU3_SerialAccessoryMessage message = XIMU3_connection_get_serial_accessory_message(self->wrapped, (bool) consume);
 
     if (message.timestamp == 0) {
         Py_RETURN_NONE;
     }
 
-    return high_g_accelerometer_message_from(&message);
+    return serial_accessory_message_from(&message);
+}
+
+static PyObject *connection_get_sync_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_SyncMessage message = XIMU3_connection_get_sync_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return sync_message_from(&message);
+}
+
+static PyObject *connection_get_ltc_message(Connection *self, PyObject *args, PyObject *kwds) {
+    int consume = false;
+
+    static char *kwlist[] = {
+        "consume",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
+        return NULL;
+    }
+
+    const XIMU3_LtcMessage message = XIMU3_connection_get_ltc_message(self->wrapped, (bool) consume);
+
+    if (message.timestamp == 0) {
+        Py_RETURN_NONE;
+    }
+
+    return ltc_message_from(&message);
 }
 
 static PyObject *connection_get_temperature_message(Connection *self, PyObject *args, PyObject *kwds) {
@@ -576,69 +639,6 @@ static PyObject *connection_get_rssi_message(Connection *self, PyObject *args, P
     }
 
     return rssi_message_from(&message);
-}
-
-static PyObject *connection_get_serial_accessory_message(Connection *self, PyObject *args, PyObject *kwds) {
-    int consume = false;
-
-    static char *kwlist[] = {
-        "consume",
-        NULL, /* sentinel */
-    };
-
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
-        return NULL;
-    }
-
-    const XIMU3_SerialAccessoryMessage message = XIMU3_connection_get_serial_accessory_message(self->wrapped, (bool) consume);
-
-    if (message.timestamp == 0) {
-        Py_RETURN_NONE;
-    }
-
-    return serial_accessory_message_from(&message);
-}
-
-static PyObject *connection_get_sync_message(Connection *self, PyObject *args, PyObject *kwds) {
-    int consume = false;
-
-    static char *kwlist[] = {
-        "consume",
-        NULL, /* sentinel */
-    };
-
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
-        return NULL;
-    }
-
-    const XIMU3_SyncMessage message = XIMU3_connection_get_sync_message(self->wrapped, (bool) consume);
-
-    if (message.timestamp == 0) {
-        Py_RETURN_NONE;
-    }
-
-    return sync_message_from(&message);
-}
-
-static PyObject *connection_get_ltc_message(Connection *self, PyObject *args, PyObject *kwds) {
-    int consume = false;
-
-    static char *kwlist[] = {
-        "consume",
-        NULL, /* sentinel */
-    };
-
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "|p", kwlist, &consume) == 0) {
-        return NULL;
-    }
-
-    const XIMU3_LtcMessage message = XIMU3_connection_get_ltc_message(self->wrapped, (bool) consume);
-
-    if (message.timestamp == 0) {
-        Py_RETURN_NONE;
-    }
-
-    return ltc_message_from(&message);
 }
 
 static PyObject *connection_get_button_message(Connection *self, PyObject *args, PyObject *kwds) {
@@ -772,6 +772,22 @@ static PyObject *connection_add_magnetometer_callback(Connection *self, PyObject
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }
 
+static PyObject *connection_add_high_g_accelerometer_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_high_g_accelerometer_callback(self->wrapped, high_g_accelerometer_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
 static PyObject *connection_add_quaternion_callback(Connection *self, PyObject *arg) {
     if (PyCallable_Check(arg) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
@@ -868,7 +884,7 @@ static PyObject *connection_add_ahrs_status_callback(Connection *self, PyObject 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
 }
 
-static PyObject *connection_add_high_g_accelerometer_callback(Connection *self, PyObject *arg) {
+static PyObject *connection_add_serial_accessory_callback(Connection *self, PyObject *arg) {
     if (PyCallable_Check(arg) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
@@ -878,7 +894,39 @@ static PyObject *connection_add_high_g_accelerometer_callback(Connection *self, 
 
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_high_g_accelerometer_callback(self->wrapped, high_g_accelerometer_message_callback, arg);
+        id = XIMU3_connection_add_serial_accessory_callback(self->wrapped, serial_accessory_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *connection_add_sync_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_sync_callback(self->wrapped, sync_message_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *connection_add_ltc_callback(Connection *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_connection_add_ltc_callback(self->wrapped, ltc_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -927,54 +975,6 @@ static PyObject *connection_add_rssi_callback(Connection *self, PyObject *arg) {
     uint64_t id;
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
         id = XIMU3_connection_add_rssi_callback(self->wrapped, rssi_message_callback, arg);
-    Py_END_ALLOW_THREADS
-
-    return PyLong_FromUnsignedLongLong((unsigned long long) id);
-}
-
-static PyObject *connection_add_serial_accessory_callback(Connection *self, PyObject *arg) {
-    if (PyCallable_Check(arg) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
-        return NULL;
-    }
-
-    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
-
-    uint64_t id;
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_serial_accessory_callback(self->wrapped, serial_accessory_message_callback, arg);
-    Py_END_ALLOW_THREADS
-
-    return PyLong_FromUnsignedLongLong((unsigned long long) id);
-}
-
-static PyObject *connection_add_sync_callback(Connection *self, PyObject *arg) {
-    if (PyCallable_Check(arg) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
-        return NULL;
-    }
-
-    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
-
-    uint64_t id;
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_sync_callback(self->wrapped, sync_message_callback, arg);
-    Py_END_ALLOW_THREADS
-
-    return PyLong_FromUnsignedLongLong((unsigned long long) id);
-}
-
-static PyObject *connection_add_ltc_callback(Connection *self, PyObject *arg) {
-    if (PyCallable_Check(arg) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
-        return NULL;
-    }
-
-    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
-
-    uint64_t id;
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        id = XIMU3_connection_add_ltc_callback(self->wrapped, ltc_message_callback, arg);
     Py_END_ALLOW_THREADS
 
     return PyLong_FromUnsignedLongLong((unsigned long long) id);
@@ -1087,19 +1087,19 @@ static PyMethodDef connection_methods[] = {
     // Start of code block #2 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
     {"get_inertial_message", (PyCFunction) connection_get_inertial_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_magnetometer_message", (PyCFunction) connection_get_magnetometer_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_high_g_accelerometer_message", (PyCFunction) connection_get_high_g_accelerometer_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_quaternion_message", (PyCFunction) connection_get_quaternion_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_rotation_matrix_message", (PyCFunction) connection_get_rotation_matrix_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_euler_angles_message", (PyCFunction) connection_get_euler_angles_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_linear_acceleration_message", (PyCFunction) connection_get_linear_acceleration_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_earth_acceleration_message", (PyCFunction) connection_get_earth_acceleration_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_ahrs_status_message", (PyCFunction) connection_get_ahrs_status_message, METH_VARARGS | METH_KEYWORDS, ""},
-    {"get_high_g_accelerometer_message", (PyCFunction) connection_get_high_g_accelerometer_message, METH_VARARGS | METH_KEYWORDS, ""},
-    {"get_temperature_message", (PyCFunction) connection_get_temperature_message, METH_VARARGS | METH_KEYWORDS, ""},
-    {"get_battery_message", (PyCFunction) connection_get_battery_message, METH_VARARGS | METH_KEYWORDS, ""},
-    {"get_rssi_message", (PyCFunction) connection_get_rssi_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_serial_accessory_message", (PyCFunction) connection_get_serial_accessory_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_sync_message", (PyCFunction) connection_get_sync_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_ltc_message", (PyCFunction) connection_get_ltc_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_temperature_message", (PyCFunction) connection_get_temperature_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_battery_message", (PyCFunction) connection_get_battery_message, METH_VARARGS | METH_KEYWORDS, ""},
+    {"get_rssi_message", (PyCFunction) connection_get_rssi_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_button_message", (PyCFunction) connection_get_button_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_notification_message", (PyCFunction) connection_get_notification_message, METH_VARARGS | METH_KEYWORDS, ""},
     {"get_error_message", (PyCFunction) connection_get_error_message, METH_VARARGS | METH_KEYWORDS, ""},
@@ -1109,19 +1109,19 @@ static PyMethodDef connection_methods[] = {
     // Start of code block #3 generated by x-IMU3-API/Rust/src/data_messages/generate_data_messages.py
     {"add_inertial_callback", (PyCFunction) connection_add_inertial_callback, METH_O, ""},
     {"add_magnetometer_callback", (PyCFunction) connection_add_magnetometer_callback, METH_O, ""},
+    {"add_high_g_accelerometer_callback", (PyCFunction) connection_add_high_g_accelerometer_callback, METH_O, ""},
     {"add_quaternion_callback", (PyCFunction) connection_add_quaternion_callback, METH_O, ""},
     {"add_rotation_matrix_callback", (PyCFunction) connection_add_rotation_matrix_callback, METH_O, ""},
     {"add_euler_angles_callback", (PyCFunction) connection_add_euler_angles_callback, METH_O, ""},
     {"add_linear_acceleration_callback", (PyCFunction) connection_add_linear_acceleration_callback, METH_O, ""},
     {"add_earth_acceleration_callback", (PyCFunction) connection_add_earth_acceleration_callback, METH_O, ""},
     {"add_ahrs_status_callback", (PyCFunction) connection_add_ahrs_status_callback, METH_O, ""},
-    {"add_high_g_accelerometer_callback", (PyCFunction) connection_add_high_g_accelerometer_callback, METH_O, ""},
-    {"add_temperature_callback", (PyCFunction) connection_add_temperature_callback, METH_O, ""},
-    {"add_battery_callback", (PyCFunction) connection_add_battery_callback, METH_O, ""},
-    {"add_rssi_callback", (PyCFunction) connection_add_rssi_callback, METH_O, ""},
     {"add_serial_accessory_callback", (PyCFunction) connection_add_serial_accessory_callback, METH_O, ""},
     {"add_sync_callback", (PyCFunction) connection_add_sync_callback, METH_O, ""},
     {"add_ltc_callback", (PyCFunction) connection_add_ltc_callback, METH_O, ""},
+    {"add_temperature_callback", (PyCFunction) connection_add_temperature_callback, METH_O, ""},
+    {"add_battery_callback", (PyCFunction) connection_add_battery_callback, METH_O, ""},
+    {"add_rssi_callback", (PyCFunction) connection_add_rssi_callback, METH_O, ""},
     {"add_button_callback", (PyCFunction) connection_add_button_callback, METH_O, ""},
     {"add_notification_callback", (PyCFunction) connection_add_notification_callback, METH_O, ""},
     {"add_error_callback", (PyCFunction) connection_add_error_callback, METH_O, ""},

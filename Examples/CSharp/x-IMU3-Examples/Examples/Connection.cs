@@ -26,19 +26,19 @@ namespace Ximu3Examples
                 connection.AddStatisticsCallback(StatisticsCallback);
                 connection.AddInertialCallback(InertialCallback);
                 connection.AddMagnetometerCallback(MagnetometerCallback);
+                connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
                 connection.AddQuaternionCallback(QuaternionCallback);
                 connection.AddRotationMatrixCallback(RotationMatrixCallback);
                 connection.AddEulerAnglesCallback(EulerAnglesCallback);
                 connection.AddLinearAccelerationCallback(LinearAccelerationCallback);
                 connection.AddEarthAccelerationCallback(EarthAccelerationCallback);
                 connection.AddAhrsStatusCallback(AhrsStatusCallback);
-                connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
-                connection.AddTemperatureCallback(TemperatureCallback);
-                connection.AddBatteryCallback(BatteryCallback);
-                connection.AddRssiCallback(RssiCallback);
                 connection.AddSerialAccessoryCallback(SerialAccessoryCallback);
                 connection.AddSyncCallback(SyncCallback);
                 connection.AddLtcCallback(LtcCallback);
+                connection.AddTemperatureCallback(TemperatureCallback);
+                connection.AddBatteryCallback(BatteryCallback);
+                connection.AddRssiCallback(RssiCallback);
                 connection.AddButtonCallback(ButtonCallback);
                 connection.AddNotificationCallback(NotificationCallback);
                 connection.AddErrorCallback(ErrorCallback);
@@ -53,19 +53,19 @@ namespace Ximu3Examples
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_statistics_to_string(connection.GetStatistics())));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_inertial_message_to_string(connection.GetInertialMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_magnetometer_message_to_string(connection.GetMagnetometerMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(connection.GetHighGAccelerometerMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_quaternion_message_to_string(connection.GetQuaternionMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rotation_matrix_message_to_string(connection.GetRotationMatrixMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(connection.GetEulerAnglesMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_linear_acceleration_message_to_string(connection.GetLinearAccelerationMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_earth_acceleration_message_to_string(connection.GetEarthAccelerationMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ahrs_status_message_to_string(connection.GetAhrsStatusMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(connection.GetHighGAccelerometerMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_temperature_message_to_string(connection.GetTemperatureMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_battery_message_to_string(connection.GetBatteryMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(connection.GetRssiMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(connection.GetSerialAccessoryMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(connection.GetSyncMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(connection.GetLtcMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_temperature_message_to_string(connection.GetTemperatureMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_battery_message_to_string(connection.GetBatteryMessage(false))));
+                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(connection.GetRssiMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_button_message_to_string(connection.GetButtonMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_notification_message_to_string(connection.GetNotificationMessage(false))));
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_error_message_to_string(connection.GetErrorMessage(false))));
@@ -145,6 +145,17 @@ namespace Ximu3Examples
                 FloatFormat(message.z) + " a.u."
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_magnetometer_message_to_string(message))); // alternative to above
+        }
+
+        private static void HighGAccelerometerCallback(Ximu3.CApi.XIMU3_HighGAccelerometerMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                FloatFormat(message.x) + " g" +
+                FloatFormat(message.y) + " g" +
+                FloatFormat(message.z) + " g"
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(message))); // alternative to above
         }
 
         private static void QuaternionCallback(Ximu3.CApi.XIMU3_QuaternionMessage message)
@@ -234,15 +245,31 @@ namespace Ximu3Examples
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ahrs_status_message_to_string(message))); // alternative to above
         }
 
-        private static void HighGAccelerometerCallback(Ximu3.CApi.XIMU3_HighGAccelerometerMessage message)
+        private static void SerialAccessoryCallback(Ximu3.CApi.XIMU3_SerialAccessoryMessage message)
         {
             Console.WriteLine(
                 TimestampFormat(message.timestamp) +
-                FloatFormat(message.x) + " g" +
-                FloatFormat(message.y) + " g" +
-                FloatFormat(message.z) + " g"
+                StringFormat(Ximu3.Helpers.ToString(message.char_array))
             );
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(message))); // alternative to above
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(message))); // alternative to above
+        }
+
+        private static void SyncCallback(Ximu3.CApi.XIMU3_SyncMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                FloatFormat(message.edge)
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(message))); // alternative to above
+        }
+
+        private static void LtcCallback(Ximu3.CApi.XIMU3_LtcMessage message)
+        {
+            Console.WriteLine(
+                TimestampFormat(message.timestamp) +
+                StringFormat(Ximu3.Helpers.ToString(message.char_array))
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(message))); // alternative to above
         }
 
         private static void TemperatureCallback(Ximu3.CApi.XIMU3_TemperatureMessage message)
@@ -273,33 +300,6 @@ namespace Ximu3Examples
                 FloatFormat(message.power) + " dBm"
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(message))); // alternative to above
-        }
-
-        private static void SerialAccessoryCallback(Ximu3.CApi.XIMU3_SerialAccessoryMessage message)
-        {
-            Console.WriteLine(
-                TimestampFormat(message.timestamp) +
-                StringFormat(Ximu3.Helpers.ToString(message.char_array))
-            );
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(message))); // alternative to above
-        }
-
-        private static void SyncCallback(Ximu3.CApi.XIMU3_SyncMessage message)
-        {
-            Console.WriteLine(
-                TimestampFormat(message.timestamp) +
-                FloatFormat(message.edge)
-            );
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(message))); // alternative to above
-        }
-
-        private static void LtcCallback(Ximu3.CApi.XIMU3_LtcMessage message)
-        {
-            Console.WriteLine(
-                TimestampFormat(message.timestamp) +
-                StringFormat(Ximu3.Helpers.ToString(message.char_array))
-            );
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(message))); // alternative to above
         }
 
         private static void ButtonCallback(Ximu3.CApi.XIMU3_ButtonMessage message)

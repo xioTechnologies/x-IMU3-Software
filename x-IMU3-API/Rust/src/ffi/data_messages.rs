@@ -15,6 +15,11 @@ pub extern "C" fn XIMU3_magnetometer_message_to_string(message: MagnetometerMess
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_high_g_accelerometer_message_to_string(message: HighGAccelerometerMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_quaternion_message_to_string(message: QuaternionMessage) -> *const c_char {
     str_to_char_ptr(&message.to_string())
 }
@@ -45,7 +50,17 @@ pub extern "C" fn XIMU3_ahrs_status_message_to_string(message: AhrsStatusMessage
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_high_g_accelerometer_message_to_string(message: HighGAccelerometerMessage) -> *const c_char {
+pub extern "C" fn XIMU3_serial_accessory_message_to_string(message: SerialAccessoryMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_sync_message_to_string(message: SyncMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_ltc_message_to_string(message: LtcMessage) -> *const c_char {
     str_to_char_ptr(&message.to_string())
 }
 
@@ -61,21 +76,6 @@ pub extern "C" fn XIMU3_battery_message_to_string(message: BatteryMessage) -> *c
 
 #[no_mangle]
 pub extern "C" fn XIMU3_rssi_message_to_string(message: RssiMessage) -> *const c_char {
-    str_to_char_ptr(&message.to_string())
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_serial_accessory_message_to_string(message: SerialAccessoryMessage) -> *const c_char {
-    str_to_char_ptr(&message.to_string())
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_sync_message_to_string(message: SyncMessage) -> *const c_char {
-    str_to_char_ptr(&message.to_string())
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_ltc_message_to_string(message: LtcMessage) -> *const c_char {
     str_to_char_ptr(&message.to_string())
 }
 
