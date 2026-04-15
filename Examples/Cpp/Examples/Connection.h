@@ -48,6 +48,9 @@ protected:
             connection.addBatteryCallback(batteryCallback);
             connection.addRssiCallback(rssiCallback);
             connection.addSerialAccessoryCallback(serialAccessoryCallback);
+            connection.addSyncCallback(syncCallback);
+            connection.addLtcCallback(ltcCallback);
+            connection.addButtonCallback(buttonCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
             connection.addEndOfFileCallback(endOfFileCallback);
@@ -69,6 +72,9 @@ protected:
                 std::cout << ximu3::XIMU3_battery_message_to_string(connection.getBatteryMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_rssi_message_to_string(connection.getRssiMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_serial_accessory_message_to_string(connection.getSerialAccessoryMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_sync_message_to_string(connection.getSyncMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_ltc_message_to_string(connection.getLtcMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_button_message_to_string(connection.getButtonMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_notification_message_to_string(connection.getNotificationMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_error_message_to_string(connection.getErrorMessage()) << std::endl;
 
@@ -232,6 +238,27 @@ private:
                message.timestamp,
                message.char_array);
         // std::cout << ximu3::XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_SyncMessage message)> syncCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
+               message.timestamp,
+               message.edge);
+        // std::cout << ximu3::XIMU3_sync_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_LtcMessage message)> ltcCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
+               message.timestamp,
+               message.char_array);
+        // std::cout << ximu3::XIMU3_ltc_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_ButtonMessage message)> buttonCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
+               message.timestamp,
+               message.state);
+        // std::cout << ximu3::XIMU3_button_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_NotificationMessage message)> notificationCallback = [](auto message) {

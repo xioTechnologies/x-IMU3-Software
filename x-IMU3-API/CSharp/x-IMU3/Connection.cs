@@ -216,6 +216,21 @@ namespace Ximu3
             return CApi.XIMU3_connection_get_serial_accessory_message(wrapped, consume);
         }
 
+        public CApi.XIMU3_SyncMessage GetSyncMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_sync_message(wrapped, consume);
+        }
+
+        public CApi.XIMU3_LtcMessage GetLtcMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_ltc_message(wrapped, consume);
+        }
+
+        public CApi.XIMU3_ButtonMessage GetButtonMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_button_message(wrapped, consume);
+        }
+
         public CApi.XIMU3_NotificationMessage GetNotificationMessage(bool consume=false)
         {
             return CApi.XIMU3_connection_get_notification_message(wrapped, consume);
@@ -408,6 +423,42 @@ namespace Ximu3
         public UInt64 AddSerialAccessoryCallback(SerialAccessoryCallback callback)
         {
             return CApi.XIMU3_connection_add_serial_accessory_callback(wrapped, SerialAccessoryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void SyncCallback(CApi.XIMU3_SyncMessage message);
+
+        private static void SyncCallbackInternal(CApi.XIMU3_SyncMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<SyncCallback>(context)(message);
+        }
+
+        public UInt64 AddSyncCallback(SyncCallback callback)
+        {
+            return CApi.XIMU3_connection_add_sync_callback(wrapped, SyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void LtcCallback(CApi.XIMU3_LtcMessage message);
+
+        private static void LtcCallbackInternal(CApi.XIMU3_LtcMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<LtcCallback>(context)(message);
+        }
+
+        public UInt64 AddLtcCallback(LtcCallback callback)
+        {
+            return CApi.XIMU3_connection_add_ltc_callback(wrapped, LtcCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void ButtonCallback(CApi.XIMU3_ButtonMessage message);
+
+        private static void ButtonCallbackInternal(CApi.XIMU3_ButtonMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<ButtonCallback>(context)(message);
+        }
+
+        public UInt64 AddButtonCallback(ButtonCallback callback)
+        {
+            return CApi.XIMU3_connection_add_button_callback(wrapped, ButtonCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void NotificationCallback(CApi.XIMU3_NotificationMessage message);

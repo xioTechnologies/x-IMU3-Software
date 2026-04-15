@@ -36,6 +36,9 @@ pub fn run(config: &ConnectionConfig) {
         connection.add_battery_closure(Box::new(battery_closure));
         connection.add_rssi_closure(Box::new(rssi_closure));
         connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
+        connection.add_sync_closure(Box::new(sync_closure));
+        connection.add_ltc_closure(Box::new(ltc_closure));
+        connection.add_button_closure(Box::new(button_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
         connection.add_end_of_file_closure(Box::new(end_of_file_closure));
@@ -57,6 +60,9 @@ pub fn run(config: &ConnectionConfig) {
             println!("{}", connection.get_battery_message(false).unwrap_or_default());
             println!("{}", connection.get_rssi_message(false).unwrap_or_default());
             println!("{}", connection.get_serial_accessory_message(false).unwrap_or_default());
+            println!("{}", connection.get_sync_message(false).unwrap_or_default());
+            println!("{}", connection.get_ltc_message(false).unwrap_or_default());
+            println!("{}", connection.get_button_message(false).unwrap_or_default());
             println!("{}", connection.get_notification_message(false).unwrap_or_default());
             println!("{}", connection.get_error_message(false).unwrap_or_default());
 
@@ -256,6 +262,30 @@ pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
     println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
              message.char_array_as_string());
+    // println!("{message}"); // alternative to above
+}
+
+pub fn sync_closure(message: SyncMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
+             message.timestamp,
+             message.edge);
+    // println!("{message}"); // alternative to above
+}
+
+pub fn ltc_closure(message: LtcMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
+             message.timestamp,
+             message.char_array_as_string());
+    // println!("{message}"); // alternative to above
+}
+
+pub fn button_closure(message: ButtonMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
+             message.timestamp,
+             message.state);
     // println!("{message}"); // alternative to above
 }
 

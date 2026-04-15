@@ -70,6 +70,21 @@ pub extern "C" fn XIMU3_serial_accessory_message_to_string(message: SerialAccess
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_sync_message_to_string(message: SyncMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_ltc_message_to_string(message: LtcMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_button_message_to_string(message: ButtonMessage) -> *const c_char {
+    str_to_char_ptr(&message.to_string())
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_notification_message_to_string(message: NotificationMessage) -> *const c_char {
     str_to_char_ptr(&message.to_string())
 }

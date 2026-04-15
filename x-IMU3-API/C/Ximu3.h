@@ -339,6 +339,25 @@ typedef struct XIMU3_SerialAccessoryMessage
     size_t number_of_bytes;
 } XIMU3_SerialAccessoryMessage;
 
+typedef struct XIMU3_SyncMessage
+{
+    uint64_t timestamp;
+    float edge;
+} XIMU3_SyncMessage;
+
+typedef struct XIMU3_LtcMessage
+{
+    uint64_t timestamp;
+    char char_array[XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE];
+    size_t number_of_bytes;
+} XIMU3_LtcMessage;
+
+typedef struct XIMU3_ButtonMessage
+{
+    uint64_t timestamp;
+    float state;
+} XIMU3_ButtonMessage;
+
 typedef struct XIMU3_NotificationMessage
 {
     uint64_t timestamp;
@@ -382,6 +401,12 @@ typedef void (*XIMU3_CallbackBatteryMessage)(struct XIMU3_BatteryMessage data, v
 typedef void (*XIMU3_CallbackRssiMessage)(struct XIMU3_RssiMessage data, void *context);
 
 typedef void (*XIMU3_CallbackSerialAccessoryMessage)(struct XIMU3_SerialAccessoryMessage data, void *context);
+
+typedef void (*XIMU3_CallbackSyncMessage)(struct XIMU3_SyncMessage data, void *context);
+
+typedef void (*XIMU3_CallbackLtcMessage)(struct XIMU3_LtcMessage data, void *context);
+
+typedef void (*XIMU3_CallbackButtonMessage)(struct XIMU3_ButtonMessage data, void *context);
 
 typedef void (*XIMU3_CallbackNotificationMessage)(struct XIMU3_NotificationMessage data, void *context);
 
@@ -532,6 +557,12 @@ struct XIMU3_RssiMessage XIMU3_connection_get_rssi_message(struct XIMU3_Connecti
 
 struct XIMU3_SerialAccessoryMessage XIMU3_connection_get_serial_accessory_message(struct XIMU3_Connection *connection, bool consume);
 
+struct XIMU3_SyncMessage XIMU3_connection_get_sync_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_LtcMessage XIMU3_connection_get_ltc_message(struct XIMU3_Connection *connection, bool consume);
+
+struct XIMU3_ButtonMessage XIMU3_connection_get_button_message(struct XIMU3_Connection *connection, bool consume);
+
 struct XIMU3_NotificationMessage XIMU3_connection_get_notification_message(struct XIMU3_Connection *connection, bool consume);
 
 struct XIMU3_ErrorMessage XIMU3_connection_get_error_message(struct XIMU3_Connection *connection, bool consume);
@@ -565,6 +596,12 @@ uint64_t XIMU3_connection_add_battery_callback(struct XIMU3_Connection *connecti
 uint64_t XIMU3_connection_add_rssi_callback(struct XIMU3_Connection *connection, XIMU3_CallbackRssiMessage callback, void *context);
 
 uint64_t XIMU3_connection_add_serial_accessory_callback(struct XIMU3_Connection *connection, XIMU3_CallbackSerialAccessoryMessage callback, void *context);
+
+uint64_t XIMU3_connection_add_sync_callback(struct XIMU3_Connection *connection, XIMU3_CallbackSyncMessage callback, void *context);
+
+uint64_t XIMU3_connection_add_ltc_callback(struct XIMU3_Connection *connection, XIMU3_CallbackLtcMessage callback, void *context);
+
+uint64_t XIMU3_connection_add_button_callback(struct XIMU3_Connection *connection, XIMU3_CallbackButtonMessage callback, void *context);
 
 uint64_t XIMU3_connection_add_notification_callback(struct XIMU3_Connection *connection, XIMU3_CallbackNotificationMessage callback, void *context);
 
@@ -627,6 +664,12 @@ const char *XIMU3_battery_message_to_string(struct XIMU3_BatteryMessage message)
 const char *XIMU3_rssi_message_to_string(struct XIMU3_RssiMessage message);
 
 const char *XIMU3_serial_accessory_message_to_string(struct XIMU3_SerialAccessoryMessage message);
+
+const char *XIMU3_sync_message_to_string(struct XIMU3_SyncMessage message);
+
+const char *XIMU3_ltc_message_to_string(struct XIMU3_LtcMessage message);
+
+const char *XIMU3_button_message_to_string(struct XIMU3_ButtonMessage message);
 
 const char *XIMU3_notification_message_to_string(struct XIMU3_NotificationMessage message);
 

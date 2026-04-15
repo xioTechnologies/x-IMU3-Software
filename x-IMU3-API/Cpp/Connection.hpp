@@ -215,6 +215,18 @@ namespace ximu3 {
             return XIMU3_connection_get_serial_accessory_message(wrapped, consume);
         }
 
+        XIMU3_SyncMessage getSyncMessage(bool consume = false) {
+            return XIMU3_connection_get_sync_message(wrapped, consume);
+        }
+
+        XIMU3_LtcMessage getLtcMessage(bool consume = false) {
+            return XIMU3_connection_get_ltc_message(wrapped, consume);
+        }
+
+        XIMU3_ButtonMessage getButtonMessage(bool consume = false) {
+            return XIMU3_connection_get_button_message(wrapped, consume);
+        }
+
         XIMU3_NotificationMessage getNotificationMessage(bool consume = false) {
             return XIMU3_connection_get_notification_message(wrapped, consume);
         }
@@ -278,6 +290,18 @@ namespace ximu3 {
 
         uint64_t addSerialAccessoryCallback(std::function<void(XIMU3_SerialAccessoryMessage)> &callback) {
             return XIMU3_connection_add_serial_accessory_callback(wrapped, Helpers::wrapCallable<XIMU3_SerialAccessoryMessage>(callback), &callback);
+        }
+
+        uint64_t addSyncCallback(std::function<void(XIMU3_SyncMessage)> &callback) {
+            return XIMU3_connection_add_sync_callback(wrapped, Helpers::wrapCallable<XIMU3_SyncMessage>(callback), &callback);
+        }
+
+        uint64_t addLtcCallback(std::function<void(XIMU3_LtcMessage)> &callback) {
+            return XIMU3_connection_add_ltc_callback(wrapped, Helpers::wrapCallable<XIMU3_LtcMessage>(callback), &callback);
+        }
+
+        uint64_t addButtonCallback(std::function<void(XIMU3_ButtonMessage)> &callback) {
+            return XIMU3_connection_add_button_callback(wrapped, Helpers::wrapCallable<XIMU3_ButtonMessage>(callback), &callback);
         }
 
         uint64_t addNotificationCallback(std::function<void(XIMU3_NotificationMessage)> &callback) {
