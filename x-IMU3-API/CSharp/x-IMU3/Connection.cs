@@ -161,6 +161,11 @@ namespace Ximu3
             return CApi.XIMU3_connection_get_magnetometer_message(wrapped, consume);
         }
 
+        public CApi.XIMU3_HighGAccelerometerMessage GetHighGAccelerometerMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_high_g_accelerometer_message(wrapped, consume);
+        }
+
         public CApi.XIMU3_QuaternionMessage GetQuaternionMessage(bool consume=false)
         {
             return CApi.XIMU3_connection_get_quaternion_message(wrapped, consume);
@@ -191,9 +196,19 @@ namespace Ximu3
             return CApi.XIMU3_connection_get_ahrs_status_message(wrapped, consume);
         }
 
-        public CApi.XIMU3_HighGAccelerometerMessage GetHighGAccelerometerMessage(bool consume=false)
+        public CApi.XIMU3_SerialAccessoryMessage GetSerialAccessoryMessage(bool consume=false)
         {
-            return CApi.XIMU3_connection_get_high_g_accelerometer_message(wrapped, consume);
+            return CApi.XIMU3_connection_get_serial_accessory_message(wrapped, consume);
+        }
+
+        public CApi.XIMU3_SyncMessage GetSyncMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_sync_message(wrapped, consume);
+        }
+
+        public CApi.XIMU3_LtcMessage GetLtcMessage(bool consume=false)
+        {
+            return CApi.XIMU3_connection_get_ltc_message(wrapped, consume);
         }
 
         public CApi.XIMU3_TemperatureMessage GetTemperatureMessage(bool consume=false)
@@ -209,21 +224,6 @@ namespace Ximu3
         public CApi.XIMU3_RssiMessage GetRssiMessage(bool consume=false)
         {
             return CApi.XIMU3_connection_get_rssi_message(wrapped, consume);
-        }
-
-        public CApi.XIMU3_SerialAccessoryMessage GetSerialAccessoryMessage(bool consume=false)
-        {
-            return CApi.XIMU3_connection_get_serial_accessory_message(wrapped, consume);
-        }
-
-        public CApi.XIMU3_SyncMessage GetSyncMessage(bool consume=false)
-        {
-            return CApi.XIMU3_connection_get_sync_message(wrapped, consume);
-        }
-
-        public CApi.XIMU3_LtcMessage GetLtcMessage(bool consume=false)
-        {
-            return CApi.XIMU3_connection_get_ltc_message(wrapped, consume);
         }
 
         public CApi.XIMU3_ButtonMessage GetButtonMessage(bool consume=false)
@@ -291,6 +291,18 @@ namespace Ximu3
         public UInt64 AddMagnetometerCallback(MagnetometerCallback callback)
         {
             return CApi.XIMU3_connection_add_magnetometer_callback(wrapped, MagnetometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void HighGAccelerometerCallback(CApi.XIMU3_HighGAccelerometerMessage message);
+
+        private static void HighGAccelerometerCallbackInternal(CApi.XIMU3_HighGAccelerometerMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<HighGAccelerometerCallback>(context)(message);
+        }
+
+        public UInt64 AddHighGAccelerometerCallback(HighGAccelerometerCallback callback)
+        {
+            return CApi.XIMU3_connection_add_high_g_accelerometer_callback(wrapped, HighGAccelerometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void QuaternionCallback(CApi.XIMU3_QuaternionMessage message);
@@ -365,16 +377,40 @@ namespace Ximu3
             return CApi.XIMU3_connection_add_ahrs_status_callback(wrapped, AhrsStatusCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
-        public delegate void HighGAccelerometerCallback(CApi.XIMU3_HighGAccelerometerMessage message);
+        public delegate void SerialAccessoryCallback(CApi.XIMU3_SerialAccessoryMessage message);
 
-        private static void HighGAccelerometerCallbackInternal(CApi.XIMU3_HighGAccelerometerMessage message, IntPtr context)
+        private static void SerialAccessoryCallbackInternal(CApi.XIMU3_SerialAccessoryMessage message, IntPtr context)
         {
-            Marshal.GetDelegateForFunctionPointer<HighGAccelerometerCallback>(context)(message);
+            Marshal.GetDelegateForFunctionPointer<SerialAccessoryCallback>(context)(message);
         }
 
-        public UInt64 AddHighGAccelerometerCallback(HighGAccelerometerCallback callback)
+        public UInt64 AddSerialAccessoryCallback(SerialAccessoryCallback callback)
         {
-            return CApi.XIMU3_connection_add_high_g_accelerometer_callback(wrapped, HighGAccelerometerCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            return CApi.XIMU3_connection_add_serial_accessory_callback(wrapped, SerialAccessoryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void SyncCallback(CApi.XIMU3_SyncMessage message);
+
+        private static void SyncCallbackInternal(CApi.XIMU3_SyncMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<SyncCallback>(context)(message);
+        }
+
+        public UInt64 AddSyncCallback(SyncCallback callback)
+        {
+            return CApi.XIMU3_connection_add_sync_callback(wrapped, SyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+        }
+
+        public delegate void LtcCallback(CApi.XIMU3_LtcMessage message);
+
+        private static void LtcCallbackInternal(CApi.XIMU3_LtcMessage message, IntPtr context)
+        {
+            Marshal.GetDelegateForFunctionPointer<LtcCallback>(context)(message);
+        }
+
+        public UInt64 AddLtcCallback(LtcCallback callback)
+        {
+            return CApi.XIMU3_connection_add_ltc_callback(wrapped, LtcCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void TemperatureCallback(CApi.XIMU3_TemperatureMessage message);
@@ -411,42 +447,6 @@ namespace Ximu3
         public UInt64 AddRssiCallback(RssiCallback callback)
         {
             return CApi.XIMU3_connection_add_rssi_callback(wrapped, RssiCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }
-
-        public delegate void SerialAccessoryCallback(CApi.XIMU3_SerialAccessoryMessage message);
-
-        private static void SerialAccessoryCallbackInternal(CApi.XIMU3_SerialAccessoryMessage message, IntPtr context)
-        {
-            Marshal.GetDelegateForFunctionPointer<SerialAccessoryCallback>(context)(message);
-        }
-
-        public UInt64 AddSerialAccessoryCallback(SerialAccessoryCallback callback)
-        {
-            return CApi.XIMU3_connection_add_serial_accessory_callback(wrapped, SerialAccessoryCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }
-
-        public delegate void SyncCallback(CApi.XIMU3_SyncMessage message);
-
-        private static void SyncCallbackInternal(CApi.XIMU3_SyncMessage message, IntPtr context)
-        {
-            Marshal.GetDelegateForFunctionPointer<SyncCallback>(context)(message);
-        }
-
-        public UInt64 AddSyncCallback(SyncCallback callback)
-        {
-            return CApi.XIMU3_connection_add_sync_callback(wrapped, SyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
-        }
-
-        public delegate void LtcCallback(CApi.XIMU3_LtcMessage message);
-
-        private static void LtcCallbackInternal(CApi.XIMU3_LtcMessage message, IntPtr context)
-        {
-            Marshal.GetDelegateForFunctionPointer<LtcCallback>(context)(message);
-        }
-
-        public UInt64 AddLtcCallback(LtcCallback callback)
-        {
-            return CApi.XIMU3_connection_add_ltc_callback(wrapped, LtcCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public delegate void ButtonCallback(CApi.XIMU3_ButtonMessage message);

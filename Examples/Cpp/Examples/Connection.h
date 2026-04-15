@@ -37,19 +37,19 @@ protected:
             connection.addStatisticsCallback(statisticsCallback);
             connection.addInertialCallback(inertialCallback);
             connection.addMagnetometerCallback(magnetometerCallback);
+            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
             connection.addQuaternionCallback(quaternionCallback);
             connection.addRotationMatrixCallback(rotationMatrixCallback);
             connection.addEulerAnglesCallback(eulerAnglesCallback);
             connection.addLinearAccelerationCallback(linearAccelerationCallback);
             connection.addEarthAccelerationCallback(earthAccelerationCallback);
             connection.addAhrsStatusCallback(ahrsStatusCallback);
-            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
-            connection.addTemperatureCallback(temperatureCallback);
-            connection.addBatteryCallback(batteryCallback);
-            connection.addRssiCallback(rssiCallback);
             connection.addSerialAccessoryCallback(serialAccessoryCallback);
             connection.addSyncCallback(syncCallback);
             connection.addLtcCallback(ltcCallback);
+            connection.addTemperatureCallback(temperatureCallback);
+            connection.addBatteryCallback(batteryCallback);
+            connection.addRssiCallback(rssiCallback);
             connection.addButtonCallback(buttonCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
@@ -61,19 +61,19 @@ protected:
                 std::cout << ximu3::XIMU3_statistics_to_string(connection.getStatistics()) << std::endl;
                 std::cout << ximu3::XIMU3_inertial_message_to_string(connection.getInertialMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_magnetometer_message_to_string(connection.getMagnetometerMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(connection.getHighGAccelerometerMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_quaternion_message_to_string(connection.getQuaternionMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_rotation_matrix_message_to_string(connection.getRotationMatrixMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_euler_angles_message_to_string(connection.getEulerAnglesMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(connection.getLinearAccelerationMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(connection.getEarthAccelerationMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_ahrs_status_message_to_string(connection.getAhrsStatusMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(connection.getHighGAccelerometerMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_temperature_message_to_string(connection.getTemperatureMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_battery_message_to_string(connection.getBatteryMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_rssi_message_to_string(connection.getRssiMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_serial_accessory_message_to_string(connection.getSerialAccessoryMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_sync_message_to_string(connection.getSyncMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_ltc_message_to_string(connection.getLtcMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_temperature_message_to_string(connection.getTemperatureMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_battery_message_to_string(connection.getBatteryMessage()) << std::endl;
+                std::cout << ximu3::XIMU3_rssi_message_to_string(connection.getRssiMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_button_message_to_string(connection.getButtonMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_notification_message_to_string(connection.getNotificationMessage()) << std::endl;
                 std::cout << ximu3::XIMU3_error_message_to_string(connection.getErrorMessage()) << std::endl;
@@ -122,6 +122,15 @@ private:
                message.y,
                message.z);
         // std::cout << ximu3::XIMU3_magnetometer_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+               message.timestamp,
+               message.x,
+               message.y,
+               message.z);
+        // std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_QuaternionMessage message)> quaternionCallback = [](auto message) {
@@ -199,13 +208,25 @@ private:
         // std::cout << ximu3::XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+    std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
-               message.x,
-               message.y,
-               message.z);
-        // std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
+               message.char_array);
+        // std::cout << ximu3::XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_SyncMessage message)> syncCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
+               message.timestamp,
+               message.edge);
+        // std::cout << ximu3::XIMU3_sync_message_to_string(message) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_LtcMessage message)> ltcCallback = [](auto message) {
+        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
+               message.timestamp,
+               message.char_array);
+        // std::cout << ximu3::XIMU3_ltc_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_TemperatureMessage message)> temperatureCallback = [](auto message) {
@@ -231,27 +252,6 @@ private:
                message.percentage,
                message.power);
         // std::cout << ximu3::XIMU3_rssi_message_to_string(message) << std::endl; // alternative to above
-    };
-
-    std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
-               message.timestamp,
-               message.char_array);
-        // std::cout << ximu3::XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
-    };
-
-    std::function<void(ximu3::XIMU3_SyncMessage message)> syncCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
-               message.timestamp,
-               message.edge);
-        // std::cout << ximu3::XIMU3_sync_message_to_string(message) << std::endl; // alternative to above
-    };
-
-    std::function<void(ximu3::XIMU3_LtcMessage message)> ltcCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
-               message.timestamp,
-               message.char_array);
-        // std::cout << ximu3::XIMU3_ltc_message_to_string(message) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_ButtonMessage message)> buttonCallback = [](auto message) {

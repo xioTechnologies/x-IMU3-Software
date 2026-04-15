@@ -72,6 +72,20 @@ def magnetometer_callback(message: ximu3.MagnetometerMessage) -> None:
     # print(message)  # alternative to above
 
 
+def high_g_accelerometer_callback(message: ximu3.HighGAccelerometerMessage) -> None:
+    print(
+        "".join(
+            [
+                timestamp_format(message.timestamp),
+                float_format(message.x) + " g",
+                float_format(message.y) + " g",
+                float_format(message.z) + " g",
+            ]
+        )
+    )
+    # print(message)  # alternative to above
+
+
 def quaternion_callback(message: ximu3.QuaternionMessage) -> None:
     print(
         "".join(
@@ -177,17 +191,18 @@ def ahrs_status_callback(message: ximu3.AhrsStatusMessage) -> None:
     # print(message)  # alternative to above
 
 
-def high_g_accelerometer_callback(message: ximu3.HighGAccelerometerMessage) -> None:
-    print(
-        "".join(
-            [
-                timestamp_format(message.timestamp),
-                float_format(message.x) + " g",
-                float_format(message.y) + " g",
-                float_format(message.z) + " g",
-            ]
-        )
-    )
+def serial_accessory_callback(message: ximu3.SerialAccessoryMessage) -> None:
+    print(timestamp_format(message.timestamp) + string_format(message.string))
+    # print(message)  # alternative to above
+
+
+def sync_callback(message: ximu3.SyncMessage) -> None:
+    print(timestamp_format(message.timestamp) + float_format(message.edge))
+    # print(message)  # alternative to above
+
+
+def ltc_callback(message: ximu3.LtcMessage) -> None:
+    print(timestamp_format(message.timestamp) + string_format(message.string))
     # print(message)  # alternative to above
 
 
@@ -230,21 +245,6 @@ def rssi_callback(message: ximu3.RssiMessage) -> None:
     # print(message)  # alternative to above
 
 
-def serial_accessory_callback(message: ximu3.SerialAccessoryMessage) -> None:
-    print(timestamp_format(message.timestamp) + string_format(message.string))
-    # print(message)  # alternative to above
-
-
-def sync_callback(message: ximu3.SyncMessage) -> None:
-    print(timestamp_format(message.timestamp) + float_format(message.edge))
-    # print(message)  # alternative to above
-
-
-def ltc_callback(message: ximu3.LtcMessage) -> None:
-    print(timestamp_format(message.timestamp) + string_format(message.string))
-    # print(message)  # alternative to above
-
-
 def button_callback(message: ximu3.ButtonMessage) -> None:
     print(timestamp_format(message.timestamp) + float_format(message.state))
     # print(message)  # alternative to above
@@ -276,19 +276,19 @@ def run(config: ximu3.ConnectionConfig) -> None:
         connection.add_statistics_callback(statistics_callback)
         connection.add_inertial_callback(inertial_callback)
         connection.add_magnetometer_callback(magnetometer_callback)
+        connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
         connection.add_quaternion_callback(quaternion_callback)
         connection.add_rotation_matrix_callback(rotation_matrix_callback)
         connection.add_euler_angles_callback(euler_angles_callback)
         connection.add_linear_acceleration_callback(linear_acceleration_callback)
         connection.add_earth_acceleration_callback(earth_acceleration_callback)
         connection.add_ahrs_status_callback(ahrs_status_callback)
-        connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
-        connection.add_temperature_callback(temperature_callback)
-        connection.add_battery_callback(battery_callback)
-        connection.add_rssi_callback(rssi_callback)
         connection.add_serial_accessory_callback(serial_accessory_callback)
         connection.add_sync_callback(sync_callback)
         connection.add_ltc_callback(ltc_callback)
+        connection.add_temperature_callback(temperature_callback)
+        connection.add_battery_callback(battery_callback)
+        connection.add_rssi_callback(rssi_callback)
         connection.add_button_callback(button_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
@@ -300,19 +300,19 @@ def run(config: ximu3.ConnectionConfig) -> None:
             print(connection.get_statistics())
             print(connection.get_inertial_message())
             print(connection.get_magnetometer_message())
+            print(connection.get_high_g_accelerometer_message())
             print(connection.get_quaternion_message())
             print(connection.get_rotation_matrix_message())
             print(connection.get_euler_angles_message())
             print(connection.get_linear_acceleration_message())
             print(connection.get_earth_acceleration_message())
             print(connection.get_ahrs_status_message())
-            print(connection.get_high_g_accelerometer_message())
-            print(connection.get_temperature_message())
-            print(connection.get_battery_message())
-            print(connection.get_rssi_message())
             print(connection.get_serial_accessory_message())
             print(connection.get_sync_message())
             print(connection.get_ltc_message())
+            print(connection.get_temperature_message())
+            print(connection.get_battery_message())
+            print(connection.get_rssi_message())
             print(connection.get_button_message())
             print(connection.get_notification_message())
             print(connection.get_error_message())

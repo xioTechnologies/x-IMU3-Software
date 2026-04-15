@@ -25,19 +25,19 @@ pub fn run(config: &ConnectionConfig) {
         connection.add_statistics_closure(Box::new(statistics_closure));
         connection.add_inertial_closure(Box::new(inertial_closure));
         connection.add_magnetometer_closure(Box::new(magnetometer_closure));
+        connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
         connection.add_quaternion_closure(Box::new(quaternion_closure));
         connection.add_rotation_matrix_closure(Box::new(rotation_matrix_closure));
         connection.add_euler_angles_closure(Box::new(euler_angles_closure));
         connection.add_linear_acceleration_closure(Box::new(linear_acceleration_closure));
         connection.add_earth_acceleration_closure(Box::new(earth_acceleration_closure));
         connection.add_ahrs_status_closure(Box::new(ahrs_status_closure));
-        connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
-        connection.add_temperature_closure(Box::new(temperature_closure));
-        connection.add_battery_closure(Box::new(battery_closure));
-        connection.add_rssi_closure(Box::new(rssi_closure));
         connection.add_serial_accessory_closure(Box::new(serial_accessory_closure));
         connection.add_sync_closure(Box::new(sync_closure));
         connection.add_ltc_closure(Box::new(ltc_closure));
+        connection.add_temperature_closure(Box::new(temperature_closure));
+        connection.add_battery_closure(Box::new(battery_closure));
+        connection.add_rssi_closure(Box::new(rssi_closure));
         connection.add_button_closure(Box::new(button_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
@@ -49,19 +49,19 @@ pub fn run(config: &ConnectionConfig) {
             println!("{}", connection.get_statistics());
             println!("{}", connection.get_inertial_message(false).unwrap_or_default());
             println!("{}", connection.get_magnetometer_message(false).unwrap_or_default());
+            println!("{}", connection.get_high_g_accelerometer_message(false).unwrap_or_default());
             println!("{}", connection.get_quaternion_message(false).unwrap_or_default());
             println!("{}", connection.get_rotation_matrix_message(false).unwrap_or_default());
             println!("{}", connection.get_euler_angles_message(false).unwrap_or_default());
             println!("{}", connection.get_linear_acceleration_message(false).unwrap_or_default());
             println!("{}", connection.get_earth_acceleration_message(false).unwrap_or_default());
             println!("{}", connection.get_ahrs_status_message(false).unwrap_or_default());
-            println!("{}", connection.get_high_g_accelerometer_message(false).unwrap_or_default());
-            println!("{}", connection.get_temperature_message(false).unwrap_or_default());
-            println!("{}", connection.get_battery_message(false).unwrap_or_default());
-            println!("{}", connection.get_rssi_message(false).unwrap_or_default());
             println!("{}", connection.get_serial_accessory_message(false).unwrap_or_default());
             println!("{}", connection.get_sync_message(false).unwrap_or_default());
             println!("{}", connection.get_ltc_message(false).unwrap_or_default());
+            println!("{}", connection.get_temperature_message(false).unwrap_or_default());
+            println!("{}", connection.get_battery_message(false).unwrap_or_default());
+            println!("{}", connection.get_rssi_message(false).unwrap_or_default());
             println!("{}", connection.get_button_message(false).unwrap_or_default());
             println!("{}", connection.get_notification_message(false).unwrap_or_default());
             println!("{}", connection.get_error_message(false).unwrap_or_default());
@@ -131,6 +131,16 @@ pub fn inertial_closure(message: InertialMessage) {
 pub fn magnetometer_closure(message: MagnetometerMessage) {
     #[rustfmt::skip]
     println!(concat!(timestamp_fmt!(), float_fmt!(), " a.u.", float_fmt!(), " a.u.", float_fmt!(), " a.u."),
+             message.timestamp,
+             message.x,
+             message.y,
+             message.z);
+    // println!("{message}"); // alternative to above
+}
+
+pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
              message.x,
              message.y,
@@ -219,13 +229,27 @@ pub fn ahrs_status_closure(message: AhrsStatusMessage) {
     // println!("{message}"); // alternative to above
 }
 
-pub fn high_g_accelerometer_closure(message: HighGAccelerometerMessage) {
+pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
-             message.x,
-             message.y,
-             message.z);
+             message.char_array_as_string());
+    // println!("{message}"); // alternative to above
+}
+
+pub fn sync_closure(message: SyncMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
+             message.timestamp,
+             message.edge);
+    // println!("{message}"); // alternative to above
+}
+
+pub fn ltc_closure(message: LtcMessage) {
+    #[rustfmt::skip]
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
+             message.timestamp,
+             message.char_array_as_string());
     // println!("{message}"); // alternative to above
 }
 
@@ -254,30 +278,6 @@ pub fn rssi_closure(message: RssiMessage) {
              message.timestamp,
              message.percentage,
              message.power);
-    // println!("{message}"); // alternative to above
-}
-
-pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
-    #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), string_fmt!()),
-             message.timestamp,
-             message.char_array_as_string());
-    // println!("{message}"); // alternative to above
-}
-
-pub fn sync_closure(message: SyncMessage) {
-    #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), string_fmt!()),
-             message.timestamp,
-             message.edge);
-    // println!("{message}"); // alternative to above
-}
-
-pub fn ltc_closure(message: LtcMessage) {
-    #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), string_fmt!()),
-             message.timestamp,
-             message.char_array_as_string());
     // println!("{message}"); // alternative to above
 }
 

@@ -171,6 +171,10 @@ namespace ximu3 {
             return XIMU3_connection_get_magnetometer_message(wrapped, consume);
         }
 
+        XIMU3_HighGAccelerometerMessage getHighGAccelerometerMessage(bool consume = false) {
+            return XIMU3_connection_get_high_g_accelerometer_message(wrapped, consume);
+        }
+
         XIMU3_QuaternionMessage getQuaternionMessage(bool consume = false) {
             return XIMU3_connection_get_quaternion_message(wrapped, consume);
         }
@@ -195,8 +199,16 @@ namespace ximu3 {
             return XIMU3_connection_get_ahrs_status_message(wrapped, consume);
         }
 
-        XIMU3_HighGAccelerometerMessage getHighGAccelerometerMessage(bool consume = false) {
-            return XIMU3_connection_get_high_g_accelerometer_message(wrapped, consume);
+        XIMU3_SerialAccessoryMessage getSerialAccessoryMessage(bool consume = false) {
+            return XIMU3_connection_get_serial_accessory_message(wrapped, consume);
+        }
+
+        XIMU3_SyncMessage getSyncMessage(bool consume = false) {
+            return XIMU3_connection_get_sync_message(wrapped, consume);
+        }
+
+        XIMU3_LtcMessage getLtcMessage(bool consume = false) {
+            return XIMU3_connection_get_ltc_message(wrapped, consume);
         }
 
         XIMU3_TemperatureMessage getTemperatureMessage(bool consume = false) {
@@ -209,18 +221,6 @@ namespace ximu3 {
 
         XIMU3_RssiMessage getRssiMessage(bool consume = false) {
             return XIMU3_connection_get_rssi_message(wrapped, consume);
-        }
-
-        XIMU3_SerialAccessoryMessage getSerialAccessoryMessage(bool consume = false) {
-            return XIMU3_connection_get_serial_accessory_message(wrapped, consume);
-        }
-
-        XIMU3_SyncMessage getSyncMessage(bool consume = false) {
-            return XIMU3_connection_get_sync_message(wrapped, consume);
-        }
-
-        XIMU3_LtcMessage getLtcMessage(bool consume = false) {
-            return XIMU3_connection_get_ltc_message(wrapped, consume);
         }
 
         XIMU3_ButtonMessage getButtonMessage(bool consume = false) {
@@ -248,6 +248,10 @@ namespace ximu3 {
             return XIMU3_connection_add_magnetometer_callback(wrapped, Helpers::wrapCallable<XIMU3_MagnetometerMessage>(callback), &callback);
         }
 
+        uint64_t addHighGAccelerometerCallback(std::function<void(XIMU3_HighGAccelerometerMessage)> &callback) {
+            return XIMU3_connection_add_high_g_accelerometer_callback(wrapped, Helpers::wrapCallable<XIMU3_HighGAccelerometerMessage>(callback), &callback);
+        }
+
         uint64_t addQuaternionCallback(std::function<void(XIMU3_QuaternionMessage)> &callback) {
             return XIMU3_connection_add_quaternion_callback(wrapped, Helpers::wrapCallable<XIMU3_QuaternionMessage>(callback), &callback);
         }
@@ -272,8 +276,16 @@ namespace ximu3 {
             return XIMU3_connection_add_ahrs_status_callback(wrapped, Helpers::wrapCallable<XIMU3_AhrsStatusMessage>(callback), &callback);
         }
 
-        uint64_t addHighGAccelerometerCallback(std::function<void(XIMU3_HighGAccelerometerMessage)> &callback) {
-            return XIMU3_connection_add_high_g_accelerometer_callback(wrapped, Helpers::wrapCallable<XIMU3_HighGAccelerometerMessage>(callback), &callback);
+        uint64_t addSerialAccessoryCallback(std::function<void(XIMU3_SerialAccessoryMessage)> &callback) {
+            return XIMU3_connection_add_serial_accessory_callback(wrapped, Helpers::wrapCallable<XIMU3_SerialAccessoryMessage>(callback), &callback);
+        }
+
+        uint64_t addSyncCallback(std::function<void(XIMU3_SyncMessage)> &callback) {
+            return XIMU3_connection_add_sync_callback(wrapped, Helpers::wrapCallable<XIMU3_SyncMessage>(callback), &callback);
+        }
+
+        uint64_t addLtcCallback(std::function<void(XIMU3_LtcMessage)> &callback) {
+            return XIMU3_connection_add_ltc_callback(wrapped, Helpers::wrapCallable<XIMU3_LtcMessage>(callback), &callback);
         }
 
         uint64_t addTemperatureCallback(std::function<void(XIMU3_TemperatureMessage)> &callback) {
@@ -286,18 +298,6 @@ namespace ximu3 {
 
         uint64_t addRssiCallback(std::function<void(XIMU3_RssiMessage)> &callback) {
             return XIMU3_connection_add_rssi_callback(wrapped, Helpers::wrapCallable<XIMU3_RssiMessage>(callback), &callback);
-        }
-
-        uint64_t addSerialAccessoryCallback(std::function<void(XIMU3_SerialAccessoryMessage)> &callback) {
-            return XIMU3_connection_add_serial_accessory_callback(wrapped, Helpers::wrapCallable<XIMU3_SerialAccessoryMessage>(callback), &callback);
-        }
-
-        uint64_t addSyncCallback(std::function<void(XIMU3_SyncMessage)> &callback) {
-            return XIMU3_connection_add_sync_callback(wrapped, Helpers::wrapCallable<XIMU3_SyncMessage>(callback), &callback);
-        }
-
-        uint64_t addLtcCallback(std::function<void(XIMU3_LtcMessage)> &callback) {
-            return XIMU3_connection_add_ltc_callback(wrapped, Helpers::wrapCallable<XIMU3_LtcMessage>(callback), &callback);
         }
 
         uint64_t addButtonCallback(std::function<void(XIMU3_ButtonMessage)> &callback) {

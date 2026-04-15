@@ -29,6 +29,12 @@ messages = [
         argument_units=("a.u.", "a.u.", "a.u."),
     ),
     Message(
+        name="High-g accelerometer",
+        ascii_id="H",
+        argument_names=("X", "Y", "Z"),
+        argument_units=("g", "g", "g"),
+    ),
+    Message(
         name="Quaternion",
         ascii_id="Q",
         argument_names=("W", "X", "Y", "Z"),
@@ -65,10 +71,22 @@ messages = [
         argument_units=("", "", "", ""),
     ),
     Message(
-        name="High-g accelerometer",
-        ascii_id="H",
-        argument_names=("X", "Y", "Z"),
-        argument_units=("g", "g", "g"),
+        name="Serial accessory",
+        ascii_id="S",
+        argument_names=(),
+        argument_units=(),
+    ),
+    Message(
+        name="Sync",
+        ascii_id="Y",
+        argument_names=("Edge",),
+        argument_units=("",),
+    ),
+    Message(
+        name="LTC",
+        ascii_id="C",
+        argument_names=(),
+        argument_units=(),
     ),
     Message(
         name="Temperature",
@@ -87,24 +105,6 @@ messages = [
         ascii_id="W",
         argument_names=("Percentage", "Power"),
         argument_units=("%", "dBm"),
-    ),
-    Message(
-        name="Serial accessory",
-        ascii_id="S",
-        argument_names=(),
-        argument_units=(),
-    ),
-    Message(
-        name="Sync",
-        ascii_id="Y",
-        argument_names=("Edge",),
-        argument_units=("",),
-    ),
-    Message(
-        name="LTC",
-        ascii_id="C",
-        argument_names=(),
-        argument_units=(),
     ),
     Message(
         name="Button",
