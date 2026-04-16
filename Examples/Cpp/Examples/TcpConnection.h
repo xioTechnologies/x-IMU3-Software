@@ -8,7 +8,7 @@
 class TcpConnection : public Connection {
 public:
     TcpConnection() {
-        if (helpers::yesOrNo("Search for connections?")) {
+        if (helpers::yesOrNo("Connect automatically?")) {
             ximu3::NetworkAnnouncement networkAnnouncement;
 
             const auto result = networkAnnouncement.getResult();

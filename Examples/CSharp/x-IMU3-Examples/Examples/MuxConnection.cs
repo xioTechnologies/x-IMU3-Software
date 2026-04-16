@@ -29,7 +29,7 @@
             }
 
             // Mux connection
-            if (Helpers.YesOrNo("Search for connections?"))
+            if (Helpers.YesOrNo("Connect automatically?"))
             {
                 var muxDevices = Ximu3.MuxScanner.Scan(usbConnection);
 

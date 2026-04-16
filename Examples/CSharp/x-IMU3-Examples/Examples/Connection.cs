@@ -20,7 +20,7 @@ namespace Ximu3Examples
             connection.SendCommand("{\"strobe\":null}");
 
             // Print data messages
-            if (Helpers.YesOrNo("Use callbacks?"))
+            if (Helpers.YesOrNo("Use callbacks (else poll)?"))
             {
                 connection.AddReceiveErrorCallback(ReceiveErrorCallback);
                 connection.AddStatisticsCallback(StatisticsCallback);

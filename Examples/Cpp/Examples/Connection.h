@@ -33,7 +33,7 @@ protected:
         connection.sendCommand("{\"strobe\":null}");
 
         // Print data messages
-        if (helpers::yesOrNo("Use callbacks?")) {
+        if (helpers::yesOrNo("Use callbacks (else poll)?")) {
             connection.addReceiveErrorCallback(receiveErrorCallback);
             connection.addStatisticsCallback(statisticsCallback);
             connection.addInertialCallback(inertialCallback);

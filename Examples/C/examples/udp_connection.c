@@ -4,7 +4,7 @@
 #include "Ximu3.h"
 
 void udp_connection() {
-    if (yes_or_no("Search for connections?")) {
+    if (yes_or_no("Connect automatically?")) {
         XIMU3_NetworkAnnouncement *const network_announcement = XIMU3_network_announcement_new();
 
         const XIMU3_Result result = XIMU3_network_announcement_get_result(network_announcement);

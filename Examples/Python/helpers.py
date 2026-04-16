@@ -1,6 +1,6 @@
 def yes_or_no(question: str) -> bool:
     while True:
-        key = input(f"{question} [Y/N]\n")
+        key = input(f"{question} [Y/N] ")
 
         if key == "y" or key == "Y":
             return True

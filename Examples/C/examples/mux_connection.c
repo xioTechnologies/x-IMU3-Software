@@ -30,7 +30,7 @@ void mux_connection() {
     }
 
     // Mux connection
-    if (yes_or_no("Search for connections?")) {
+    if (yes_or_no("Connect automatically?")) {
         const XIMU3_Devices mux_devices = XIMU3_mux_scanner_scan(usb_connection, XIMU3_MAX_NUMBER_OF_MUX_CHANNELS, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
         if (mux_devices.length == 0) {

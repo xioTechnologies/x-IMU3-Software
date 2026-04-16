@@ -18,7 +18,7 @@ print(f"Found {usb_devices[0]}")
 usb_connection = ximu3.Connection(usb_devices[0].connection_config).open()
 
 # Mux connection
-if helpers.yes_or_no("Search for connections?"):
+if helpers.yes_or_no("Connect automatically?"):
     mux_devices = ximu3.MuxScanner.scan(usb_connection)
 
     if not mux_devices:

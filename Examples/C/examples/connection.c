@@ -65,7 +65,7 @@ void run(XIMU3_Connection *const connection) {
     XIMU3_connection_send_command(connection, "{\"strobe\":null}", XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
     // Print data messages
-    if (yes_or_no("Use callbacks?")) {
+    if (yes_or_no("Use callbacks (else poll)?")) {
         XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
         XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
         XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);

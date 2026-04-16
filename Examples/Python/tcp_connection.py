@@ -2,7 +2,7 @@ import connection
 import helpers
 import ximu3
 
-if helpers.yes_or_no("Search for connections?"):
+if helpers.yes_or_no("Connect automatically?"):
     messages = ximu3.NetworkAnnouncement().get_messages_after_short_delay()
 
     if not messages:

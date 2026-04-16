@@ -27,7 +27,7 @@ pub fn run() {
     }
 
     // Mux connection
-    if helpers::yes_or_no("Search for connections?") {
+    if helpers::yes_or_no("Connect automatically?") {
         let mux_devices = MuxScanner::scan(&usb_connection, MAX_NUMBER_OF_MUX_CHANNELS, DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
         let Some(mux_device) = mux_devices.first() else {

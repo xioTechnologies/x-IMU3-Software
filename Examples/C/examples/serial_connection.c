@@ -4,7 +4,7 @@
 #include "Ximu3.h"
 
 void serial_connection() {
-    if (yes_or_no("Search for connections?")) {
+    if (yes_or_no("Connect automatically?")) {
         const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeSerial);
 
         sleep(1); // wait for OS to release port

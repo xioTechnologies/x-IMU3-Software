@@ -25,7 +25,7 @@ static char get_key() {
 
 static bool yes_or_no(const char *question) {
     while (true) {
-        printf("%s [Y/N]\n", question);
+        printf("%s [Y/N] ", question);
 
         switch (get_key()) {
             case 'Y':
