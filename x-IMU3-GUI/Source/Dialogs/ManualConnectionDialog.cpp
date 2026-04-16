@@ -269,13 +269,27 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
     connectionValue.setSelectedItemIndex(0);
 
     for (int channel = 0; channel < 256; channel++) {
-        firstChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + channel);
-        lastChannelValue.addItem(juce::String::formatted("0x%02X", channel), 1 + channel);
+        juce::String text = juce::String::formatted("0x%02X", channel);
+        bool enabled = true;
 
-        if (channel == 0x0A) {
-            firstChannelValue.setItemEnabled(1 + channel, false);
-            lastChannelValue.setItemEnabled(1 + channel, false);
+        if (static_cast<char>(channel) == '\n') {
+            text += " \\n";
+            enabled = false;
         }
+
+        if (static_cast<char>(channel) == '^') {
+            text += " ^";
+        }
+
+        if (static_cast<char>(channel) == '_') {
+            text += " _";
+        }
+
+        firstChannelValue.addItem(text, 1 + channel);
+        lastChannelValue.addItem(text, 1 + channel);
+
+        firstChannelValue.setItemEnabled(1 + channel, enabled);
+        lastChannelValue.setItemEnabled(1 + channel, enabled);
     }
 
     firstChannelValue.setSelectedItemIndex(channels.first);
