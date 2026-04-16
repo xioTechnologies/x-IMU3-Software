@@ -23,7 +23,7 @@ private:
     IconButton writeAllButton{BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)"};
     IconButton saveToFileButton{BinaryData::save_svg, "Save Settings to File"};
     IconButton loadFromFileButton{BinaryData::open_svg, "Load Settings from File"};
-    IconButton defaultsButton{BinaryData::default_svg, "Restore Defaults on Device"};
+    IconButton defaultsButton{BinaryData::default_svg, "Load Defaults on Device"};
 
     const std::vector<juce::Component *> buttons{&readAllButton, &writeAllButton, &saveToFileButton, &loadFromFileButton, &defaultsButton};
 

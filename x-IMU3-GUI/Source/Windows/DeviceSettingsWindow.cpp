@@ -109,7 +109,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     };
 
     defaultsButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to restore default device settings?"), [this] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to load default settings?"), [this] {
             enableInProgress(deviceSettings->getReadCommands());
 
             sendCommand("default", false, [this] {
