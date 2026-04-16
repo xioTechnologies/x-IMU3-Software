@@ -8,8 +8,8 @@ public:
     explicit SettingToggle(const juce::ValueTree &settingTree) : SettingEnum(settingTree, {
                                                                                  DeviceSettingsIds::Enum, {},
                                                                                  {
-                                                                                     {DeviceSettingsIds::Enumerator, {{DeviceSettingsIds::name, "Disabled"}, {DeviceSettingsIds::value, 0}}},
-                                                                                     {DeviceSettingsIds::Enumerator, {{DeviceSettingsIds::name, "Enabled"}, {DeviceSettingsIds::value, 1}}},
+                                                                                     {DeviceSettingsIds::Enumerator, {{DeviceSettingsIds::name, "Disabled"}, {DeviceSettingsIds::value, false}}},
+                                                                                     {DeviceSettingsIds::Enumerator, {{DeviceSettingsIds::name, "Enabled"}, {DeviceSettingsIds::value, true}}},
                                                                                  }
                                                                              }) {
     }
