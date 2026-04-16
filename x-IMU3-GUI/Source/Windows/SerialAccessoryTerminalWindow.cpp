@@ -15,7 +15,13 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(command, std::vector<ConnectionPanel *>{&connectionPanel}));
 
-        terminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::printableToBytes(textEditor.getText().toStdString())));
+        juce::AttributedString line;
+        line.append("TX ", UIColours::success);
+        for (const auto &string: EscapedStrings::splitPrintable(EscapedStrings::bytesToPrintable(EscapedStrings::printableToBytes(textEditor.getText().toStdString())))) {
+            line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
+        }
+
+        terminal.addLine(line);
     };
 
     callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message) {
@@ -24,7 +30,12 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
                 return;
             }
 
-            terminal.addRx(message.timestamp, EscapedStrings::bytesToPrintable({message.char_array, (unsigned int) message.number_of_bytes}));
+            juce::AttributedString line;
+            for (const auto &string: EscapedStrings::splitPrintable(EscapedStrings::bytesToPrintable({message.char_array, (unsigned int) message.number_of_bytes}))) {
+                line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
+            }
+
+            terminal.addLine(message.timestamp, line);
         });
     });
 

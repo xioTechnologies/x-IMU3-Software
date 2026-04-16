@@ -3,12 +3,12 @@
 #include "CustomLookAndFeel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class SerialAccessoryTerminal : public juce::Component,
-                                private juce::ScrollBar::Listener {
+class Terminal : public juce::Component,
+                 private juce::ScrollBar::Listener {
 public:
     static constexpr int maxNumberOfLines = 1024;
 
-    SerialAccessoryTerminal();
+    Terminal();
 
     void paint(juce::Graphics &g) override;
 
@@ -16,11 +16,9 @@ public:
 
     void resized() override;
 
-    void addRx(const uint64_t timestamp, const juce::String &text);
+    void addLine(const juce::AttributedString &line);
 
-    void addTx(const juce::String &text);
-
-    void addError(const juce::String &text);
+    void addLine(const uint64_t timestamp, const juce::AttributedString &line);
 
     void copyToClipboard() const;
 
@@ -35,13 +33,11 @@ private:
     float numberOfLinesOnScreen = 0.0f;
     int numberOfCharactersPerLine = 1;
 
-    void addLine(const juce::AttributedString &line);
-
     void updateScrollbarRange();
 
     std::vector<juce::AttributedString> wrapped(const juce::AttributedString &line) const;
 
     void scrollBarMoved(juce::ScrollBar *, double) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialAccessoryTerminal)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Terminal)
 };
