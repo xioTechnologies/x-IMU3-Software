@@ -190,7 +190,7 @@ void GraphWindow::zoomVertical(const float multiplier) {
 juce::PopupMenu GraphWindow::getMenu() {
     juce::PopupMenu menu = Window::getMenu();
 
-    menu.addItem("Restore Defaults", true, false, [this] {
+    menu.addItem("Default View", true, false, [this] {
         const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
         if (size.isVoid() == false) {

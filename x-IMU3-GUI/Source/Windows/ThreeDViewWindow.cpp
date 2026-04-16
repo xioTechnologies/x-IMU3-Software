@@ -211,7 +211,7 @@ void ThreeDViewWindow::updateAhrsStatusVisibilities() {
 juce::PopupMenu ThreeDViewWindow::getMenu() {
     juce::PopupMenu menu = Window::getMenu();
 
-    menu.addItem("Restore Defaults", true, false, [&] {
+    menu.addItem("Default View", true, false, [&] {
         const auto size = settingsTree.getProperty(WindowIds::size);
         settingsTree.removeAllProperties(nullptr);
         if (size.isVoid() == false) {
