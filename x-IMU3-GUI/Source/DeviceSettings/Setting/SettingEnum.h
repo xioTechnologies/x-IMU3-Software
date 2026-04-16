@@ -7,21 +7,18 @@
 
 class SettingEnum : public Setting {
 public:
-    SettingEnum(const juce::ValueTree &settingTree, const juce::ValueTree &typeTree) : Setting(settingTree) {
+    SettingEnum(const juce::ValueTree &settingTree, const juce::ValueTree &typeTree_) : Setting(settingTree), typeTree(typeTree_) {
         addAndMakeVisible(value);
 
         value.onChange = [&] {
-            if (isToggle()) {
-                setValue(value.getSelectedId() == 2);
-            } else {
-                setValue(value.getSelectedId() - 1);
-            }
+            const auto var = typeTree.getChild(value.getSelectedItemIndex())[DeviceSettingsIds::value];
+            setValue(isToggle() ? var : juce::var(static_cast<int>(var)));
         };
 
         value.setEnabled(!isReadOnly());
 
         for (auto child: typeTree) {
-            value.addItem(child[DeviceSettingsIds::name], (int) child.getProperty(DeviceSettingsIds::value) + 1);
+            value.addItem(child[DeviceSettingsIds::name], 1 + value.getNumItems());
         }
 
         valueChanged();
@@ -34,11 +31,16 @@ public:
 
 protected:
     void valueChanged() override {
-        int id = 0;
-        if (!getValue().isVoid()) {
-            id = (int) getValue() + 1;
+        for (int index = 0; index < typeTree.getNumChildren(); index++)
+        {
+            if (getValue() == typeTree.getChild(index)[DeviceSettingsIds::value])
+            {
+                value.setSelectedItemIndex(index, juce::dontSendNotification);
+                return;
+            }
         }
-        value.setSelectedId(id, juce::dontSendNotification);
+
+        value.setSelectedId(0, juce::dontSendNotification);
     }
 
     virtual bool isToggle() const {
@@ -46,6 +48,8 @@ protected:
     }
 
 private:
+    const juce::ValueTree typeTree;
+
     CustomComboBox value;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingEnum)
