@@ -11,11 +11,11 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     terminal.addMouseListener(this, true);
 
     textEditor.onReturnKey = [&] {
-        std::string command = "{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(textEditor.getText().toStdString())) + "}";
+        const std::string command = "{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(textEditor.getText().toStdString())) + "}";
 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(command, std::vector<ConnectionPanel *>{&connectionPanel}));
 
-        terminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::jsonToBytes(textEditor.getText().toStdString())));
+        terminal.addTx(EscapedStrings::bytesToPrintable(EscapedStrings::printableToBytes(textEditor.getText().toStdString())));
     };
 
     callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message) {
