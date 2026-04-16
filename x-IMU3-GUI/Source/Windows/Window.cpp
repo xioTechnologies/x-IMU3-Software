@@ -29,7 +29,7 @@ juce::PopupMenu Window::getMenu() {
     menu.addItem("Close", [&] {
         closeWindow(type);
     });
-    menu.addItem("Close Other Windows", [&] {
+    menu.addItem("Close Others", [&] {
         for (const auto &[windowType, _]: windowTitles) {
             if (windowType != type) {
                 closeWindow(windowType);
