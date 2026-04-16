@@ -11,12 +11,14 @@ namespace WindowIds {
     DECLARE_ID(Accelerometer)
     DECLARE_ID(BatteryPercentage)
     DECLARE_ID(BatteryVoltage)
+    DECLARE_ID(Button)
     DECLARE_ID(DeviceSettings)
     DECLARE_ID(EarthAcceleration)
     DECLARE_ID(EulerAngles)
     DECLARE_ID(Gyroscope)
     DECLARE_ID(HighGAccelerometer)
     DECLARE_ID(LinearAcceleration)
+    DECLARE_ID(Ltc)
     DECLARE_ID(Magnetometer)
     DECLARE_ID(ReceivedDataRate)
     DECLARE_ID(ReceivedMessageRate)
@@ -24,6 +26,7 @@ namespace WindowIds {
     DECLARE_ID(RssiPower)
     DECLARE_ID(SerialAccessoryCsvs)
     DECLARE_ID(SerialAccessoryTerminal)
+    DECLARE_ID(Sync)
     DECLARE_ID(Temperature)
     DECLARE_ID(ThreeDView)
 
@@ -37,12 +40,14 @@ static const std::map<juce::Identifier, juce::String> windowTitles
     {WindowIds::Accelerometer, "Accelerometer"},
     {WindowIds::BatteryPercentage, "Battery Percentage"},
     {WindowIds::BatteryVoltage, "Battery Voltage"},
+    {WindowIds::Button, "Button"},
     {WindowIds::DeviceSettings, "Device Settings"},
     {WindowIds::EarthAcceleration, "Earth Acceleration"},
     {WindowIds::EulerAngles, "Euler Angles"},
     {WindowIds::Gyroscope, "Gyroscope"},
     {WindowIds::HighGAccelerometer, "High-g Accelerometer"},
     {WindowIds::LinearAcceleration, "Linear Acceleration"},
+    {WindowIds::Ltc, "LTC"},
     {WindowIds::Magnetometer, "Magnetometer"},
     {WindowIds::ReceivedDataRate, "Received Data Rate"},
     {WindowIds::ReceivedMessageRate, "Received Message Rate"},
@@ -50,6 +55,7 @@ static const std::map<juce::Identifier, juce::String> windowTitles
     {WindowIds::RssiPower, "RSSI Power"},
     {WindowIds::SerialAccessoryCsvs, "Serial Accessory CSVs"},
     {WindowIds::SerialAccessoryTerminal, "Serial Accessory Terminal"},
+    {WindowIds::Sync, "Sync"},
     {WindowIds::Temperature, "Temperature"},
     {WindowIds::ThreeDView, "3D View"},
 };

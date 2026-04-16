@@ -402,58 +402,66 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
 
     menu.addSubMenu("Arrange", arrangeMenu);
 
-    const auto addWindowItem = [&](const auto &id) {
-        const auto toggled = findWindow(windowLayout, id).isValid();
-        menu.addItem(windowTitles.at(id), true, toggled, [this, id_ = id, toggled] {
-            if (toggled) {
-                for (auto child = findWindow(windowLayout, id_); child.isValid() && child.getNumChildren() == 0;) {
-                    auto parent = child.getParent();
-                    parent.removeChild(child, nullptr);
-                    child = parent;
+    const auto addWindows = [&](auto title, const std::vector<juce::Identifier> &ids) {
+        menu.addSeparator();
+        menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(title), nullptr);
+
+        for (auto id: ids) {
+            const auto toggled = findWindow(windowLayout, id).isValid();
+            menu.addItem(windowTitles.at(id), true, toggled, [this, id_ = id, toggled] {
+                if (toggled) {
+                    for (auto child = findWindow(windowLayout, id_); child.isValid() && child.getNumChildren() == 0;) {
+                        auto parent = child.getParent();
+                        parent.removeChild(child, nullptr);
+                        child = parent;
+                    }
+                    return;
                 }
-                return;
-            }
 
-            auto totalWindowSizes = 0.0f;
-            for (const auto window: windowLayout.getRoot()) {
-                totalWindowSizes += (float) window.getProperty(WindowIds::size, 1.0f);
-            }
+                auto totalWindowSizes = 0.0f;
+                for (const auto window: windowLayout.getRoot()) {
+                    totalWindowSizes += (float) window.getProperty(WindowIds::size, 1.0f);
+                }
 
-            const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
-            windowLayout.getRoot().appendChild({id_, {{WindowIds::size, newSize}}}, nullptr);
-        });
+                const auto newSize = juce::exactlyEqual(totalWindowSizes, 0.0f) ? 1.0f : (totalWindowSizes / (float) windowLayout.getRoot().getNumChildren());
+                windowLayout.getRoot().appendChild({id_, {{WindowIds::size, newSize}}}, nullptr);
+            });
+        }
     };
 
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("DEVICE SETTINGS"), nullptr);
-    addWindowItem(WindowIds::DeviceSettings);
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SENSORS"), nullptr);
-    addWindowItem(WindowIds::Gyroscope);
-    addWindowItem(WindowIds::Accelerometer);
-    addWindowItem(WindowIds::Magnetometer);
-    addWindowItem(WindowIds::HighGAccelerometer);
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AHRS"), nullptr);
-    addWindowItem(WindowIds::ThreeDView);
-    addWindowItem(WindowIds::EulerAngles);
-    addWindowItem(WindowIds::LinearAcceleration);
-    addWindowItem(WindowIds::EarthAcceleration);
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SERIAL ACCESSORY"), nullptr);
-    addWindowItem(WindowIds::SerialAccessoryTerminal);
-    addWindowItem(WindowIds::SerialAccessoryCsvs);
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("STATUS"), nullptr);
-    addWindowItem(WindowIds::Temperature);
-    addWindowItem(WindowIds::BatteryPercentage);
-    addWindowItem(WindowIds::BatteryVoltage);
-    addWindowItem(WindowIds::RssiPercentage);
-    addWindowItem(WindowIds::RssiPower);
-    menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("CONNNECTION"), nullptr);
-    addWindowItem(WindowIds::ReceivedMessageRate);
-    addWindowItem(WindowIds::ReceivedDataRate);
+    addWindows("DEVICE SETTINGS", {
+                   WindowIds::DeviceSettings,
+               });
+    addWindows("SENSORS", {
+                   WindowIds::Gyroscope,
+                   WindowIds::Accelerometer,
+                   WindowIds::Magnetometer,
+                   WindowIds::HighGAccelerometer,
+               });
+    addWindows("AHRS", {
+                   WindowIds::ThreeDView,
+                   WindowIds::EulerAngles,
+                   WindowIds::LinearAcceleration,
+                   WindowIds::EarthAcceleration,
+               });
+    addWindows("EXTERNAL", {
+                   WindowIds::SerialAccessoryTerminal,
+                   WindowIds::SerialAccessoryCsvs,
+                   WindowIds::Sync,
+                   WindowIds::Ltc,
+               });
+    addWindows("STATUS", {
+                   WindowIds::Temperature,
+                   WindowIds::BatteryPercentage,
+                   WindowIds::BatteryVoltage,
+                   WindowIds::RssiPercentage,
+                   WindowIds::RssiPower,
+                   WindowIds::Button
+               });
+    addWindows("CONNECTION", {
+                   WindowIds::ReceivedMessageRate,
+                   WindowIds::ReceivedDataRate,
+               });
 
     return menu;
 }

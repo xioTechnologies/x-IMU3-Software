@@ -1,8 +1,8 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Widgets/SerialAccessoryTerminal.h"
 #include "Widgets/SerialAccessoryTextEditor.h"
+#include "Widgets/Terminal.h"
 #include "Window.h"
 
 class SerialAccessoryTerminalWindow : public Window {
@@ -18,7 +18,7 @@ public:
     void mouseDown(const juce::MouseEvent &mouseEvent) override;
 
 private:
-    SerialAccessoryTerminal terminal;
+    Terminal terminal;
     SerialAccessoryTextEditor textEditor;
 
     std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> callback;

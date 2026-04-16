@@ -1,14 +1,14 @@
 #include "EscapedStrings.h"
-#include "SerialAccessoryTerminal.h"
+#include "Terminal.h"
 
-SerialAccessoryTerminal::SerialAccessoryTerminal() {
+Terminal::Terminal() {
     addAndMakeVisible(scrollbar);
     scrollbar.addListener(this);
 
     setOpaque(true);
 }
 
-void SerialAccessoryTerminal::paint(juce::Graphics &g) {
+void Terminal::paint(juce::Graphics &g) {
     g.fillAll(juce::Colours::black);
 
     for (auto lineIndex = (int) std::floor(scrollbar.getCurrentRangeStart()); lineIndex < (int) std::ceil(scrollbar.getCurrentRange().getEnd()); lineIndex++) {
@@ -17,13 +17,13 @@ void SerialAccessoryTerminal::paint(juce::Graphics &g) {
     }
 }
 
-void SerialAccessoryTerminal::mouseWheelMove(const juce::MouseEvent &mouseEvent, const juce::MouseWheelDetails &wheel) {
+void Terminal::mouseWheelMove(const juce::MouseEvent &mouseEvent, const juce::MouseWheelDetails &wheel) {
     auto wheelCopy = wheel;
     wheelCopy.deltaY *= 15.0f;
     scrollbar.mouseWheelMove(mouseEvent, wheelCopy);
 }
 
-void SerialAccessoryTerminal::resized() {
+void Terminal::resized() {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
     numberOfLinesOnScreen = getHeight() / font.getHeight();
     numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / juce::GlyphArrangement::getStringWidth(font, "0")));
@@ -38,45 +38,7 @@ void SerialAccessoryTerminal::resized() {
     updateScrollbarRange();
 }
 
-void SerialAccessoryTerminal::addRx(const uint64_t timestamp, const juce::String &text) {
-    juce::AttributedString line;
-    line.append(juce::String(1E-6f * (float) timestamp, 3) + " ", juce::Colours::grey);
-    for (const auto &string: EscapedStrings::splitPrintable(text.toStdString())) {
-        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
-    }
-    addLine(line);
-}
-
-void SerialAccessoryTerminal::addTx(const juce::String &text) {
-    juce::AttributedString line;
-    line.append("TX ", UIColours::success);
-    for (const auto &string: EscapedStrings::splitPrintable(text.toStdString())) {
-        line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
-    }
-    addLine(line);
-}
-
-void SerialAccessoryTerminal::addError(const juce::String &text) {
-    juce::AttributedString line;
-    line.append("Invalid JSON \"" + text + "\"", UIColours::error);
-    addLine(line);
-}
-
-void SerialAccessoryTerminal::copyToClipboard() const {
-    juce::String text;
-    for (const auto &line: lines) {
-        text += line.getText() + "\n";
-    }
-    juce::SystemClipboard::copyTextToClipboard(text);
-}
-
-void SerialAccessoryTerminal::clearAll() {
-    lines.clear();
-    wrappedLines.clear();
-    updateScrollbarRange();
-}
-
-void SerialAccessoryTerminal::addLine(const juce::AttributedString &line) {
+void Terminal::addLine(const juce::AttributedString &line) {
     lines.push_back(line);
 
     const auto wrappedLine = wrapped(line);
@@ -91,14 +53,35 @@ void SerialAccessoryTerminal::addLine(const juce::AttributedString &line) {
     updateScrollbarRange();
 }
 
-void SerialAccessoryTerminal::updateScrollbarRange() {
+void Terminal::addLine(const uint64_t timestamp, const juce::AttributedString &line) {
+    juce::AttributedString combined;
+    combined.append((juce::String(1E-6f * (float) timestamp, 3) + " s ").paddedRight(' ', 12), juce::Colours::grey);
+    combined.append(line);
+    addLine(combined);
+}
+
+void Terminal::copyToClipboard() const {
+    juce::String text;
+    for (const auto &line: lines) {
+        text += line.getText() + "\n";
+    }
+    juce::SystemClipboard::copyTextToClipboard(text);
+}
+
+void Terminal::clearAll() {
+    lines.clear();
+    wrappedLines.clear();
+    updateScrollbarRange();
+}
+
+void Terminal::updateScrollbarRange() {
     const auto wasScrolledDown = juce::roundToInt(scrollbar.getCurrentRange().getEnd()) >= scrollbar.getMaximumRangeLimit();
     scrollbar.setRangeLimits({0.0, (double) wrappedLines.size()}, juce::dontSendNotification);
     scrollbar.setCurrentRange(wasScrolledDown ? (scrollbar.getMaximumRangeLimit() - (double) numberOfLinesOnScreen) : scrollbar.getCurrentRangeStart(), (double) numberOfLinesOnScreen, juce::dontSendNotification);
     repaint();
 }
 
-std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce::AttributedString &line) const {
+std::vector<juce::AttributedString> Terminal::wrapped(const juce::AttributedString &line) const {
     std::vector<juce::AttributedString> wrappedLine;
 
     int attributeIndex = 0, characterStartIndex = 0, lineEndIndex = 0;
@@ -122,6 +105,6 @@ std::vector<juce::AttributedString> SerialAccessoryTerminal::wrapped(const juce:
     return wrappedLine;
 }
 
-void SerialAccessoryTerminal::scrollBarMoved(juce::ScrollBar *, double) {
+void Terminal::scrollBarMoved(juce::ScrollBar *, double) {
     repaint();
 }

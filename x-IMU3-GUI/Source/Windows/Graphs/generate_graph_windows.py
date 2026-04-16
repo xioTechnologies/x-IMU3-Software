@@ -56,6 +56,18 @@ windows = [
     }));""",
     ),
     Window(
+        name="HighGAccelerometer",
+        callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
+        horizontal_autoscale="false",
+        y_axis="Acceleration (g)",
+        legend_strings='{"X", "Y", "Z"}',
+        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
+        callback_implementations="""\
+    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
+        update(message.timestamp, {message.x, message.y, message.z});
+    }));""",
+    ),
+    Window(
         name="EulerAngles",
         callback_declarations="""\
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
@@ -117,15 +129,33 @@ windows = [
     }));""",
     ),
     Window(
-        name="HighGAccelerometer",
-        callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
+        name="SerialAccessoryCsvs",
+        callback_declarations="    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback;",
         horizontal_autoscale="false",
-        y_axis="Acceleration (g)",
-        legend_strings='{"X", "Y", "Z"}',
-        legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
+        y_axis="CSV",
+        legend_strings='{"1", "2", "3", "4", "5", "6", "7", "8"}',
+        legend_colours="{UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
-        update(message.timestamp, {message.x, message.y, message.z});
+    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message) {
+        std::vector<float> values;
+        for (const auto &string: juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", "")) {
+            values.push_back(string.getFloatValue());
+        }
+        update(message.timestamp, values);
+    }));""",
+    ),
+    Window(
+        name="Sync",
+        callback_declarations="    std::function<void(ximu3::XIMU3_SyncMessage)> syncCallback;",
+        horizontal_autoscale="true",
+        y_axis="Edge",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
+        callback_implementations="""\
+    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&](auto message) {
+        const auto edge = message.edge > 0.0f;
+        update(message.timestamp, { edge ? 0.0f : 1.0f });
+        update(message.timestamp, { edge ? 1.0f : 0.0f });
     }));""",
     ),
     Window(
@@ -189,19 +219,17 @@ windows = [
     }));""",
     ),
     Window(
-        name="SerialAccessoryCsvs",
-        callback_declarations="    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback;",
-        horizontal_autoscale="false",
-        y_axis="CSV",
-        legend_strings='{"1", "2", "3", "4", "5", "6", "7", "8"}',
-        legend_colours="{UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8}",
+        name="Button",
+        callback_declarations="    std::function<void(ximu3::XIMU3_ButtonMessage)> buttonCallback;",
+        horizontal_autoscale="true",
+        y_axis="State",
+        legend_strings='{""}',
+        legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message) {
-        std::vector<float> values;
-        for (const auto &string: juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", "")) {
-            values.push_back(string.getFloatValue());
-        }
-        update(message.timestamp, values);
+    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&](auto message) {
+        const auto state = message.state > 0.0f;
+        update(message.timestamp, { state ? 0.0f : 1.0f });
+        update(message.timestamp, { state ? 1.0f : 0.0f });
     }));""",
     ),
     Window(
