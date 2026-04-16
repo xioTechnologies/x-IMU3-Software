@@ -4,7 +4,7 @@ use ximu3::connection_config::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
-    if helpers::yes_or_no("Search for connections?") {
+    if helpers::yes_or_no("Connect automatically?") {
         let devices = PortScanner::scan_filter(PortType::Serial);
 
         std::thread::sleep(std::time::Duration::from_secs(1)); // wait for OS to release port

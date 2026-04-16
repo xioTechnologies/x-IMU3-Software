@@ -5,7 +5,7 @@ use ximu3::connection_config::*;
 use ximu3::network_announcement::*;
 
 pub fn run() {
-    if helpers::yes_or_no("Search for connections?") {
+    if helpers::yes_or_no("Connect automatically?") {
         let network_announcement = match NetworkAnnouncement::new() {
             Ok(network_announcement) => network_announcement,
             Err(error) => {

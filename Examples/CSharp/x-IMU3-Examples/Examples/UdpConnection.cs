@@ -4,7 +4,7 @@ namespace Ximu3Examples
     {
         public UdpConnection()
         {
-            if (Helpers.YesOrNo("Search for connections?"))
+            if (Helpers.YesOrNo("Connect automatically?"))
             {
                 var networkAnnouncement = new Ximu3.NetworkAnnouncement();
 

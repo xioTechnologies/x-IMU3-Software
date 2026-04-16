@@ -4,7 +4,7 @@ import connection
 import helpers
 import ximu3
 
-if helpers.yes_or_no("Search for connections?"):
+if helpers.yes_or_no("Connect automatically?"):
     devices = ximu3.PortScanner.scan_filter(ximu3.PORT_TYPE_SERIAL)
 
     time.sleep(1)  # wait for OS to release port

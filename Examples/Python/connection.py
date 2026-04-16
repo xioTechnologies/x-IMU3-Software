@@ -271,7 +271,7 @@ def run(config: ximu3.ConnectionConfig) -> None:
 
     connection.send_command('{"strobe":null}')  # send command to strobe LED
 
-    if helpers.yes_or_no("Use callbacks?"):
+    if helpers.yes_or_no("Use callbacks (else poll)?"):
         connection.add_receive_error_callback(receive_error_callback)
         connection.add_statistics_callback(statistics_callback)
         connection.add_inertial_callback(inertial_callback)

@@ -10,7 +10,9 @@ pub fn get_key() -> char {
 
 pub fn yes_or_no(question: &str) -> bool {
     loop {
-        println!("{question} [Y/N]");
+        print!("{question} [Y/N] ");
+
+        std::io::stdout().flush().unwrap();
 
         match get_key() {
             'Y' => return true,

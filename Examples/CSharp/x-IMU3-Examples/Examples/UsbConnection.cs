@@ -4,7 +4,7 @@ namespace Ximu3Examples
     {
         public UsbConnection()
         {
-            if (Helpers.YesOrNo("Search for connections?"))
+            if (Helpers.YesOrNo("Connect automatically?"))
             {
                 var devices = Ximu3.PortScanner.ScanFilter(Ximu3.CApi.XIMU3_PortType.XIMU3_PortTypeUsb);
 

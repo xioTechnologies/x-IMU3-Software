@@ -20,7 +20,7 @@ pub fn run(config: &ConnectionConfig) {
     connection.send_command("{\"strobe\":null}".into(), DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
     // Print data messages
-    if helpers::yes_or_no("Use callbacks?") {
+    if helpers::yes_or_no("Use callbacks (else poll)?") {
         connection.add_receive_error_closure(Box::new(receive_error_closure));
         connection.add_statistics_closure(Box::new(statistics_closure));
         connection.add_inertial_closure(Box::new(inertial_closure));

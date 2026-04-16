@@ -11,7 +11,7 @@ namespace helpers {
 
     static bool yesOrNo(const char *question) {
         while (true) {
-            std::cout << question << " [Y/N]" << std::endl;
+            std::cout << question << " [Y/N] ";
             switch (getKey()) {
                 case 'Y':
                     return true;

@@ -33,7 +33,7 @@ public:
         }
 
         // Mux connection
-        if (helpers::yesOrNo("Search for connections?")) {
+        if (helpers::yesOrNo("Connect automatically?")) {
             const auto muxDevices = ximu3::MuxScanner::scan(usbConnection);
 
             if (muxDevices.empty()) {

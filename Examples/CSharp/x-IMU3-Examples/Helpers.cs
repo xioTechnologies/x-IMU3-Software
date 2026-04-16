@@ -18,7 +18,7 @@
         {
             while (true)
             {
-                Console.WriteLine(question + " [Y/N]");
+                Console.Write(question + " [Y/N] ");
 
                 switch (GetKey())
                 {

@@ -10,7 +10,7 @@
 class UsbConnection : public Connection {
 public:
     UsbConnection() {
-        if (helpers::yesOrNo("Search for connections?")) {
+        if (helpers::yesOrNo("Connect automatically?")) {
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
             std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for OS to release port
