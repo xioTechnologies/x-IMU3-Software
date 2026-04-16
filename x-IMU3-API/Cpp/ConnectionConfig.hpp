@@ -128,8 +128,8 @@ namespace ximu3 {
     public:
         MuxConnectionConfig(const std::uint8_t channel, const Connection &connection);
 
-        MuxConnectionConfig(XIMU3_MuxConnectionConfig *config) {
-            muxConnectionConfig = config;
+        MuxConnectionConfig(XIMU3_MuxConnectionConfig &config) {
+            muxConnectionConfig = XIMU3_mux_connection_config_clone(&config);
         }
 
         ~MuxConnectionConfig() override {
@@ -157,8 +157,9 @@ namespace ximu3 {
             case XIMU3_ConnectionTypeTcp:
             case XIMU3_ConnectionTypeUdp:
             case XIMU3_ConnectionTypeFile:
-            case XIMU3_ConnectionTypeMux:
                 break;
+            case XIMU3_ConnectionTypeMux:
+                return std::make_shared<MuxConnectionConfig>(*device.mux_connection_config);
         }
         return {};
     }

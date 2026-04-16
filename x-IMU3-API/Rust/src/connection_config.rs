@@ -4,7 +4,7 @@ use std::fmt;
 use std::net::Ipv4Addr;
 use std::sync::{Arc, Mutex};
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum ConnectionConfig {
     UsbConnectionConfig(UsbConnectionConfig),
     SerialConnectionConfig(SerialConnectionConfig),
@@ -29,7 +29,7 @@ impl fmt::Display for ConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct UsbConnectionConfig {
     pub port_name: String,
 }
@@ -48,7 +48,7 @@ impl fmt::Display for UsbConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct SerialConnectionConfig {
     pub port_name: String,
     pub baud_rate: u32,
@@ -65,7 +65,7 @@ impl fmt::Display for SerialConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct TcpConnectionConfig {
     pub ip_address: Ipv4Addr,
     pub port: u16,
@@ -77,7 +77,7 @@ impl fmt::Display for TcpConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct UdpConnectionConfig {
     pub ip_address: Ipv4Addr,
     pub send_port: u16,
@@ -90,7 +90,7 @@ impl fmt::Display for UdpConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct BluetoothConnectionConfig {
     pub port_name: String,
 }
@@ -109,7 +109,7 @@ impl fmt::Display for BluetoothConnectionConfig {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct FileConnectionConfig {
     pub file_path: String,
 }
@@ -132,6 +132,15 @@ impl MuxConnectionConfig {
             channel,
             connection: connection.internal.clone(),
         }
+    }
+}
+
+impl PartialEq for MuxConnectionConfig {
+    #[rustfmt::skip]
+    fn eq(&self, other: &Self) -> bool {
+        let self_config = self.connection.lock().unwrap().get_config();
+        let other_config = other.connection.lock().unwrap().get_config();
+        self.channel == other.channel && self_config == other_config
     }
 }
 

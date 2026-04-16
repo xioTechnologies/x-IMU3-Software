@@ -1,6 +1,11 @@
 #pragma once
 
+#include "../Helpers.hpp"
+#include <chrono>
 #include "Connection.h"
+#include <iostream>
+#include <thread>
+#include "Ximu3.hpp"
 
 class UsbConnection : public Connection {
 public:

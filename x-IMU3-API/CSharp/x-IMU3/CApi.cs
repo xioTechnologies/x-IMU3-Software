@@ -9,6 +9,7 @@ namespace Ximu3
         public const int XIMU3_DEFAULT_TIMEOUT = 500;
         public const int XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE = 256;
         public const int XIMU3_CHAR_ARRAY_SIZE = 256;
+        public const int XIMU3_MAX_NUMBER_OF_MUX_CHANNELS = 254;
 
         public enum XIMU3_ChargingStatus
         {
@@ -389,6 +390,7 @@ namespace Ximu3
             public XIMU3_UsbConnectionConfig usb_connection_config;
             public XIMU3_SerialConnectionConfig serial_connection_config;
             public XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+            public IntPtr mux_connection_config;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -512,10 +514,10 @@ namespace Ximu3
         public delegate void XIMU3_CallbackConnectionStatus(XIMU3_ConnectionStatus data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void XIMU3_CallbackNetworkAnnouncementMessageC(XIMU3_NetworkAnnouncementMessage data, IntPtr context);
+        public delegate void XIMU3_CallbackDevices(XIMU3_Devices data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void XIMU3_CallbackDevices(XIMU3_Devices data, IntPtr context);
+        public delegate void XIMU3_CallbackNetworkAnnouncementMessageC(XIMU3_NetworkAnnouncementMessage data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackEndOfFile(IntPtr context);
@@ -758,6 +760,9 @@ namespace Ximu3
         public static extern void XIMU3_mux_connection_config_free(IntPtr config);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_mux_connection_config_clone(IntPtr config);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_mux_connection_config_to_string(IntPtr config);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -873,6 +878,18 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_keep_open_free(IntPtr keep_open);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_mux_scanner_new(IntPtr connection, XIMU3_CallbackDevices callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_mux_scanner_free(IntPtr mux_scanner);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Devices XIMU3_mux_scanner_get_devices(IntPtr mux_scanner);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Devices XIMU3_mux_scanner_scan(IntPtr connection, UInt32 number_of_channels, UInt32 retries, UInt32 timeout);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_TcpConnectionConfig XIMU3_network_announcement_message_to_tcp_connection_config(XIMU3_NetworkAnnouncementMessage message);

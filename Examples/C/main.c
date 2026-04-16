@@ -17,6 +17,8 @@ void keep_open();
 
 void mux_connection();
 
+void mux_scanner();
+
 void network_announcement();
 
 void open_async();
@@ -44,15 +46,16 @@ int main(int argc, const char *argv[]) {
     printf("E. get_port_names.c\n");
     printf("F. keep_open.c\n");
     printf("G. mux_connection.c\n");
-    printf("H. network_announcement.c\n");
-    printf("I. open_async.c\n");
-    printf("J. ping.c\n");
-    printf("K. port_scanner.c\n");
-    printf("L. send_commands.c\n");
-    printf("M. serial_connection.c\n");
-    printf("N. tcp_connection.c\n");
-    printf("O. udp_connection.c\n");
-    printf("P. usb_connection.c\n");
+    printf("H. mux_scanner.c\n");
+    printf("I. network_announcement.c\n");
+    printf("J. open_async.c\n");
+    printf("K. ping.c\n");
+    printf("L. port_scanner.c\n");
+    printf("M. send_commands.c\n");
+    printf("N. serial_connection.c\n");
+    printf("O. tcp_connection.c\n");
+    printf("P. udp_connection.c\n");
+    printf("Q. usb_connection.c\n");
 
     switch (get_key()) {
         case 'A':
@@ -77,30 +80,33 @@ int main(int argc, const char *argv[]) {
             mux_connection();
             break;
         case 'H':
-            network_announcement();
+            mux_scanner();
             break;
         case 'I':
-            open_async();
+            network_announcement();
             break;
         case 'J':
-            ping();
+            open_async();
             break;
         case 'K':
-            port_scanner();
+            ping();
             break;
         case 'L':
-            send_commands();
+            port_scanner();
             break;
         case 'M':
-            serial_connection();
+            send_commands();
             break;
         case 'N':
-            tcp_connection();
+            serial_connection();
             break;
         case 'O':
-            udp_connection();
+            tcp_connection();
             break;
         case 'P':
+            udp_connection();
+            break;
+        case 'Q':
             usb_connection();
             break;
     }

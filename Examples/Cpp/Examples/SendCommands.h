@@ -1,9 +1,13 @@
 #pragma once
 
 #include <chrono>
+#include <functional>
 #include <iostream>
 #include <memory>
+#include <optional>
+#include <string>
 #include <thread>
+#include <vector>
 #include "Ximu3.hpp"
 
 class SendCommands {

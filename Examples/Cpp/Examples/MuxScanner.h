@@ -1,15 +1,15 @@
 #pragma once
 
-#include "../Helpers.hpp"
 #include <chrono>
-#include "Connection.h"
+#include <functional>
 #include <iostream>
 #include <thread>
+#include <vector>
 #include "Ximu3.hpp"
 
-class MuxConnection : public Connection {
+class MuxScanner {
 public:
-    MuxConnection() {
+    MuxScanner() {
         // Search for connection
         const auto usbDevices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_PortTypeUsb);
 
@@ -32,27 +32,31 @@ public:
             return;
         }
 
-        // Mux connection
-        if (helpers::yesOrNo("Search for connections?")) {
-            const auto muxDevices = ximu3::MuxScanner::scan(usbConnection);
+        // Mux scanner (blocking)
+        const auto muxDevices = ximu3::MuxScanner::scan(usbConnection);
 
-            if (muxDevices.empty()) {
-                std::cout << "No mux connections available" << std::endl;
-                return;
-            }
+        printDevices(muxDevices);
 
-            std::cout << "Found " << ximu3::XIMU3_device_to_string(muxDevices[0]) << std::endl;
+        // Mux scanner (non-blocking)
+        const ximu3::MuxScanner muxScanner(usbConnection, callback);
 
-            const auto config = ximu3::ConnectionConfig::from(muxDevices[0]);
-
-            run(*config);
-        } else {
-            const ximu3::MuxConnectionConfig config(0x41, usbConnection); // replace with actual connection config
-
-            run(config);
-        }
+        std::this_thread::sleep_for(std::chrono::seconds(60));
 
         // Close connection
         usbConnection.close();
+    }
+
+private:
+    std::function<void(const std::vector<ximu3::XIMU3_Device> &)> callback = [](const auto &devices) {
+        printDevices(devices);
+    };
+
+    static void printDevices(const std::vector<ximu3::XIMU3_Device> &devices) {
+        std::cout << devices.size() << " device(s) found" << std::endl;
+
+        for (const auto &device: devices) {
+            std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::ConnectionConfig::from(device)->toString() << std::endl;
+            // std::cout << ximu3::XIMU3_device_to_string(device) << std::endl; // alternative to above
+        }
     }
 };

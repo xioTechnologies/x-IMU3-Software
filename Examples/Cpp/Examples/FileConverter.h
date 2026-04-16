@@ -4,6 +4,7 @@
 #include <functional>
 #include <inttypes.h>
 #include <iostream>
+#include <string>
 #include <thread>
 #include "Ximu3.hpp"
 

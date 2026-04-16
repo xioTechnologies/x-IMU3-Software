@@ -228,6 +228,26 @@ pub extern "C" fn XIMU3_file_connection_config_to_string(config: FileConnectionC
     str_to_char_ptr(&FileConnectionConfig::from(config).to_string())
 }
 
+impl From<&MuxConnectionConfig> for *mut MuxConnectionConfig {
+    fn from(config: &MuxConnectionConfig) -> Self {
+        Box::into_raw(Box::new(MuxConnectionConfig {
+            channel: config.channel,
+            connection: config.connection.clone(),
+        }))
+    }
+}
+
+impl From<*mut MuxConnectionConfig> for MuxConnectionConfig {
+    fn from(config: *mut MuxConnectionConfig) -> Self {
+        let config: &MuxConnectionConfig = unsafe { &*config };
+
+        Self {
+            channel: config.channel,
+            connection: config.connection.clone(),
+        }
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_connection_config_new(channel: u8, connection: *mut Connection) -> *mut MuxConnectionConfig {
     let connection: &Connection = unsafe { &*connection };
@@ -237,6 +257,11 @@ pub extern "C" fn XIMU3_mux_connection_config_new(channel: u8, connection: *mut 
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_connection_config_free(config: *mut MuxConnectionConfig) {
     unsafe { drop(Box::from_raw(config)) };
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_mux_connection_config_clone(config: *mut MuxConnectionConfig) -> *mut MuxConnectionConfig {
+    Box::into_raw(Box::new(config.into()))
 }
 
 #[no_mangle]

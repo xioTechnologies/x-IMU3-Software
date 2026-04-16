@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Connection.h"
+#include "Ximu3.hpp"
 
 class FileConnection : public Connection {
 public:

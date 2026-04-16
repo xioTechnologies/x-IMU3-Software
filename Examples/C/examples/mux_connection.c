@@ -5,21 +5,21 @@
 
 void mux_connection() {
     // Search for connection
-    const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
+    const XIMU3_Devices usb_devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
 
     sleep(1); // wait for OS to release port
 
-    if (devices.length == 0) {
+    if (usb_devices.length == 0) {
         printf("No USB connections available\n");
         return;
     }
 
-    printf("Found %s\n", XIMU3_device_to_string(devices.array[0]));
+    printf("Found %s\n", XIMU3_device_to_string(usb_devices.array[0]));
 
     // Open connection
-    XIMU3_Connection *const usb_connection = XIMU3_connection_new_usb(devices.array[0].usb_connection_config);
+    XIMU3_Connection *const usb_connection = XIMU3_connection_new_usb(usb_devices.array[0].usb_connection_config);
 
-    XIMU3_devices_free(devices);
+    XIMU3_devices_free(usb_devices);
 
     const XIMU3_Result result = XIMU3_connection_open(usb_connection);
 
@@ -30,15 +30,40 @@ void mux_connection() {
     }
 
     // Mux connection
-    XIMU3_MuxConnectionConfig *const config = XIMU3_mux_connection_config_new(0x41, usb_connection);
+    if (yes_or_no("Search for connections?")) {
+        const XIMU3_Devices mux_devices = XIMU3_mux_scanner_scan(usb_connection, XIMU3_MAX_NUMBER_OF_MUX_CHANNELS, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
-    XIMU3_Connection *const mux_connection = XIMU3_connection_new_mux(config);
+        if (mux_devices.length == 0) {
+            printf("No mux connections available\n");
+            XIMU3_devices_free(mux_devices);
+            goto cleanup;
+        }
 
-    run(mux_connection);
+        printf("Found %s\n", XIMU3_device_to_string(mux_devices.array[0]));
 
-    XIMU3_mux_connection_config_free(config);
+        XIMU3_MuxConnectionConfig *config = mux_devices.array[0].mux_connection_config;
+
+        XIMU3_Connection *const mux_connection = XIMU3_connection_new_mux(config);
+
+        XIMU3_devices_free(mux_devices);
+
+        run(mux_connection);
+
+        XIMU3_connection_free(mux_connection);
+    } else {
+        XIMU3_MuxConnectionConfig *const config = XIMU3_mux_connection_config_new(0x41, usb_connection); // replace with actual connection config
+
+        XIMU3_Connection *const mux_connection = XIMU3_connection_new_mux(config);
+
+        XIMU3_mux_connection_config_free(config);
+
+        run(mux_connection);
+
+        XIMU3_connection_free(mux_connection);
+    }
 
     // Close connection
+cleanup:
     XIMU3_connection_close(usb_connection);
     XIMU3_connection_free(usb_connection);
 }

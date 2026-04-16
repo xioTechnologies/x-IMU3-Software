@@ -498,7 +498,7 @@ insert(
     "../../../CSharp/x-IMU3/Connection.cs",
     0,
     """\
-        public CApi.XIMU3_$name_pascal_case$Message Get$name_pascal_case$Message(bool consume=false)
+        public CApi.XIMU3_$name_pascal_case$Message Get$name_pascal_case$Message(bool consume = false)
         {
             return CApi.XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
         }\n\n""",

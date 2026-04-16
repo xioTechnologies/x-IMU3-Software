@@ -1,8 +1,10 @@
 #pragma once
 
 #include <chrono>
+#include <functional>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <thread>
 #include "Ximu3.hpp"
 

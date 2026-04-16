@@ -16,6 +16,8 @@ namespace ximu3 {
 
         friend class KeepOpen;
 
+        friend class MuxScanner;
+
         friend class NetworkAnnouncement;
 
         friend class PortScanner;

@@ -3,7 +3,10 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <thread>
+#include <utility>
+#include <vector>
 #include "Ximu3.hpp"
 
 class DataLogger {
