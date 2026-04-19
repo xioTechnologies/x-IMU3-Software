@@ -18,7 +18,7 @@ AboutDialog::AboutDialog(const juce::String &latestVersion) : Dialog(BinaryData:
             versionUpdateLabel.addMouseListener(this, true);
             versionUpdateLabel.setMouseCursor(juce::MouseCursor::PointingHandCursor);
             versionUpdateLabel.setText(latestVersion + " available");
-            versionUpdateLabel.setColour(juce::Label::textColourId, UIColours::update);
+            versionUpdateLabel.setColour(juce::Label::textColourId, UIColours::special);
         } else {
             versionUpdateLabel.setText("No updates available");
             versionUpdateLabel.setColour(juce::Label::textColourId, juce::Colours::grey);

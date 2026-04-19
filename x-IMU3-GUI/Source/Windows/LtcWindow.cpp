@@ -17,7 +17,7 @@ LtcWindow::LtcWindow(const juce::ValueTree &windowLayout_, const juce::Identifie
 
             juce::AttributedString line;
             line.append(time.substring(0, 8), juce::Colours::white);
-            line.append(time.substring(8), (time[8] == ';') ? UIColours::update : juce::Colours::white);
+            line.append(time.substring(8), (time[8] == ';') ? UIColours::special : juce::Colours::white);
 
             terminal.addLine(message.timestamp, line);
         });

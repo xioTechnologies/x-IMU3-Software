@@ -16,6 +16,8 @@ public:
 
     float getTextWidth() const;
 
+    float getTextWidth(const juce::String &text_) const;
+
     void paint(juce::Graphics &g) override;
 
 private:

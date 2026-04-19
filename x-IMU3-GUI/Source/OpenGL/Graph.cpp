@@ -41,7 +41,7 @@ void Graph::render() {
         auto xTicksBounds = bounds.removeFromBottom(renderer.getResources().getGraphTickText().getFontSizeJucePixels() + 1); // font height
         bounds.removeFromBottom(xTickMargin);
 
-        const auto yTicks = createTicks(bounds.getHeight(), settings.axesLimits.y);
+        const auto yTicks = createTicks(bounds.getHeight(), settings.axesLimits.y, "0");
 
         const auto yTicksWidth = getMaximumStringWidth(yTicks, renderer.getResources().getGraphTickText());
         const auto yTicksBounds = bounds.removeFromLeft(yTicksWidth);
@@ -50,14 +50,14 @@ void Graph::render() {
         xTicksBounds.removeFromLeft(yTicksWidth);
         xTicksBounds.removeFromLeft(yTickMargin);
 
-        const auto xTicks = createTicks(bounds.getWidth(), settings.axesLimits.x);
+        const auto xTicks = createTicks(bounds.getWidth(), settings.axesLimits.x, "t");
 
         drawXTicks(xTicksBounds, yTicksBounds.getX(), settings.axesLimits.x, xTicks);
         drawYTicks(yTicksBounds, settings.axesLimits.y, yTicks);
         drawPlot(bounds, settings.axesLimits, xTicks, yTicks, channels, settings.enabledChannels);
     } else {
-        const auto xTicks = createTicks(bounds.getWidth(), settings.axesLimits.x);
-        const auto yTicks = createTicks(bounds.getHeight(), settings.axesLimits.y);
+        const auto xTicks = createTicks(bounds.getWidth(), settings.axesLimits.x, "t");
+        const auto yTicks = createTicks(bounds.getHeight(), settings.axesLimits.y, "0");
         drawPlot(bounds, settings.axesLimits, xTicks, yTicks, channels, settings.enabledChannels);
     }
 
@@ -255,9 +255,9 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int> &plotBounds, con
             // If labels are too close, remove every other label (halve the number of labels) until there are no overlaps
             const auto halvingCount = static_cast<int>(std::ceil(std::log2(labelsToDraw.size())));
             for (int i = 0; (i < halvingCount) && areAnyLabelsTooClose(); i++) {
-                // Erase every other element (odd indices), except for "0" if it is displayed
+                // Erase every other element (odd indices), except for "0" or "t" if it is displayed
                 labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto &tick) {
-                    return ((&tick - &*labelsToDraw.begin()) % 2) && tick.label != "0";
+                    return ((&tick - &*labelsToDraw.begin()) % 2) && tick.label != "0" && tick.label != "t";
                 }), labelsToDraw.end());
             }
         }
