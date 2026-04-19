@@ -41,7 +41,7 @@ pub fn run() {
 
         connection::run(config);
     } else {
-        let config = &ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig::new(0x41, &usb_connection)); // replace with actual connection config
+        let config = &ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig::new(0x5F, &usb_connection)); // replace with actual connection config
 
         connection::run(config);
     }

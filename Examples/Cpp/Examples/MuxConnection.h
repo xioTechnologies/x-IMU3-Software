@@ -47,7 +47,7 @@ public:
 
             run(*config);
         } else {
-            const ximu3::MuxConnectionConfig config(0x41, usbConnection); // replace with actual connection config
+            const ximu3::MuxConnectionConfig config(0x5F, usbConnection); // replace with actual connection config
 
             run(config);
         }

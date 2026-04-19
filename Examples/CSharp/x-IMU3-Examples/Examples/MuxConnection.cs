@@ -46,7 +46,7 @@
             }
             else
             {
-                var config = new Ximu3.MuxConnectionConfig(0x41, usbConnection); // replace with actual connection config
+                var config = new Ximu3.MuxConnectionConfig(0x5F, usbConnection); // replace with actual connection config
 
                 Run(config);
             }

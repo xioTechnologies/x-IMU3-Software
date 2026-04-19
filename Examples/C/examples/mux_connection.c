@@ -51,7 +51,7 @@ void mux_connection() {
 
         XIMU3_connection_free(mux_connection);
     } else {
-        XIMU3_MuxConnectionConfig *const config = XIMU3_mux_connection_config_new(0x41, usb_connection); // replace with actual connection config
+        XIMU3_MuxConnectionConfig *const config = XIMU3_mux_connection_config_new(0x5F, usb_connection); // replace with actual connection config
 
         XIMU3_Connection *const mux_connection = XIMU3_connection_new_mux(config);
 

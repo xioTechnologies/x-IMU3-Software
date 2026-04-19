@@ -30,7 +30,7 @@ if helpers.yes_or_no("Connect automatically?"):
 
     connection.run(config)
 else:
-    config = ximu3.MuxConnectionConfig(0x41, usb_connection)  # replace with actual connection config
+    config = ximu3.MuxConnectionConfig(0x5F, usb_connection)  # replace with actual connection config
 
     connection.run(config)
 
