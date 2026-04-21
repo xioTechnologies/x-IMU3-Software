@@ -91,7 +91,8 @@ for line in c_code.splitlines():
     if line.startswith("typedef"):
         continue
 
-    line = line.replace("uint8_t", "Byte")
+    line = line.replace("const uint8_t *", "byte[] ")
+    line = line.replace("uint8_t", "byte")
     line = line.replace("uint32_t", "UInt32")
     line = line.replace("uint64_t", "UInt64")
     line = line.replace("enum ", "")

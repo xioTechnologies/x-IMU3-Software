@@ -13,6 +13,7 @@
 #include "Examples/Ping.h"
 #include "Examples/PortScanner.h"
 #include "Examples/SendCommands.h"
+#include "Examples/SerialAccessory.h"
 #include "Examples/SerialConnection.h"
 #include "Examples/Settings.h"
 #include "Examples/TcpConnection.h"
@@ -38,11 +39,12 @@ int main(int argc, const char *argv[]) {
     std::cout << "K. Ping.h" << std::endl;
     std::cout << "L. PortScanner.h" << std::endl;
     std::cout << "M. SendCommands.h" << std::endl;
-    std::cout << "N. SerialConnection.h" << std::endl;
-    std::cout << "O. Settings.h" << std::endl;
-    std::cout << "P. TcpConnection.h" << std::endl;
-    std::cout << "Q. UdpConnection.h" << std::endl;
-    std::cout << "R. UsbConnection.h" << std::endl;
+    std::cout << "N. SerialAccessory.h" << std::endl;
+    std::cout << "O. SerialConnection.h" << std::endl;
+    std::cout << "P. Settings.h" << std::endl;
+    std::cout << "Q. TcpConnection.h" << std::endl;
+    std::cout << "R. UdpConnection.h" << std::endl;
+    std::cout << "S. UsbConnection.h" << std::endl;
 
     switch (helpers::getKey()) {
         case 'A':
@@ -85,18 +87,21 @@ int main(int argc, const char *argv[]) {
             SendCommands();
             break;
         case 'N':
-            SerialConnection();
+            SerialAccessory();
             break;
         case 'O':
-            Settings();
+            SerialConnection();
             break;
         case 'P':
-            TcpConnection();
+            Settings();
             break;
         case 'Q':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'R':
+            UdpConnection();
+            break;
+        case 'S':
             UsbConnection();
             break;
     }

@@ -29,6 +29,8 @@ void port_scanner();
 
 void send_commands();
 
+void serial_accessory();
+
 void serial_connection();
 
 void settings();
@@ -54,11 +56,12 @@ int main(int argc, const char *argv[]) {
     printf("K. ping.c\n");
     printf("L. port_scanner.c\n");
     printf("M. send_commands.c\n");
-    printf("N. serial_connection.c\n");
-    printf("O. settings.c\n");
-    printf("P. tcp_connection.c\n");
-    printf("Q. udp_connection.c\n");
-    printf("R. usb_connection.c\n");
+    printf("N. serial_accessory.c\n");
+    printf("O. serial_connection.c\n");
+    printf("P. settings.c\n");
+    printf("Q. tcp_connection.c\n");
+    printf("R. udp_connection.c\n");
+    printf("S. usb_connection.c\n");
 
     switch (get_key()) {
         case 'A':
@@ -101,18 +104,21 @@ int main(int argc, const char *argv[]) {
             send_commands();
             break;
         case 'N':
-            serial_connection();
+            serial_accessory();
             break;
         case 'O':
-            settings();
+            serial_connection();
             break;
         case 'P':
-            tcp_connection();
+            settings();
             break;
         case 'Q':
-            udp_connection();
+            tcp_connection();
             break;
         case 'R':
+            udp_connection();
+            break;
+        case 'S':
             usb_connection();
             break;
     }
