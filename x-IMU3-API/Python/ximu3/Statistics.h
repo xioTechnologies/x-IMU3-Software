@@ -17,10 +17,6 @@ static PyObject *statistics_str(Statistics *self) {
     return PyUnicode_FromString(XIMU3_statistics_to_string(self->wrapped));
 }
 
-static PyObject *statistics_get_timestamp(Statistics *self) {
-    return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
-}
-
 static PyObject *statistics_get_data_total(Statistics *self) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.data_total);
 }
@@ -46,7 +42,6 @@ static PyObject *statistics_get_error_rate(Statistics *self) {
 }
 
 static PyGetSetDef statistics_get_set[] = {
-    {"timestamp", (getter) statistics_get_timestamp, NULL, "", NULL},
     {"data_total", (getter) statistics_get_data_total, NULL, "", NULL},
     {"data_rate", (getter) statistics_get_data_rate, NULL, "", NULL},
     {"message_total", (getter) statistics_get_message_total, NULL, "", NULL},

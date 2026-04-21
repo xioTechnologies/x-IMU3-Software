@@ -215,7 +215,6 @@ typedef void (*XIMU3_CallbackCommandMessages)(struct XIMU3_CommandMessages data,
 
 typedef struct XIMU3_Statistics
 {
-    uint64_t timestamp;
     uint64_t data_total;
     uint32_t data_rate;
     uint64_t message_total;

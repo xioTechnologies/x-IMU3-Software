@@ -104,8 +104,7 @@ pub fn receive_error_closure(error: ReceiveError) {
 
 pub fn statistics_closure(statistics: Statistics) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), int_fmt!(), " bytes", int_fmt!(), " bytes/s", int_fmt!(), " messages", int_fmt!(), " messages/s", int_fmt!(), " errors", int_fmt!(), " errors/s"),
-             statistics.timestamp,
+    println!(concat!(int_fmt!(), " bytes", int_fmt!(), " bytes/s", int_fmt!(), " messages", int_fmt!(), " messages/s", int_fmt!(), " errors", int_fmt!(), " errors/s"),
              statistics.data_total,
              statistics.data_rate,
              statistics.message_total,

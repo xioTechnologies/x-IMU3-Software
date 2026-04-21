@@ -111,7 +111,6 @@ namespace Ximu3Examples
         private static void StatisticsCallback(Ximu3.CApi.XIMU3_Statistics statistics)
         {
             Console.WriteLine(
-                TimestampFormat(statistics.timestamp) +
                 IntFormat(statistics.data_total) + " bytes" +
                 IntFormat(statistics.data_rate) + " bytes/s" +
                 IntFormat(statistics.message_total) + " messages" +
