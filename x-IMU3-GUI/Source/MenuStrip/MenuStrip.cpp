@@ -32,7 +32,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     availableConnectionsButton.onClick = [this] {
         std::vector<AvailableConnectionsDialog::ExistingConnection> existingConnections;
         for (auto *const connectionPanel: connectionPanelContainer.getConnectionPanels()) {
-            existingConnections.push_back({connectionPanel->getDescriptor(), std::shared_ptr<ximu3::ConnectionConfig>(connectionPanel->getConnection()->getConfig().release())});
+            existingConnections.push_back({connectionPanel->getDescriptor(), connectionPanel->getConnection()});
         }
 
         DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this] {

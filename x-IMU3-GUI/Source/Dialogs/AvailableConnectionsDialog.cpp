@@ -44,6 +44,7 @@ juce::PopupMenu AvailableConnectionsDialog::getFilterMenu() {
     addFilterItem("TCP", ApplicationSettings::getSingleton().availableConnections.tcp);
     addFilterItem("UDP", ApplicationSettings::getSingleton().availableConnections.udp);
     addFilterItem("Bluetooth", ApplicationSettings::getSingleton().availableConnections.bluetooth);
+    addFilterItem("Mux", ApplicationSettings::getSingleton().availableConnections.mux);
     return menu;
 }
 
@@ -52,40 +53,46 @@ void AvailableConnectionsDialog::timerCallback() {
     std::map<juce::String, int> numberOfConnections;
 
     static const auto toString = [](const ximu3::ConnectionConfig &config) {
-        if (dynamic_cast<const ximu3::XIMU3_UsbConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::UsbConnectionConfig *>(&config) != nullptr) {
             return "USB";
         }
-        if (dynamic_cast<const ximu3::XIMU3_SerialConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::SerialConnectionConfig *>(&config) != nullptr) {
             return "Serial";
         }
-        if (dynamic_cast<const ximu3::XIMU3_TcpConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::TcpConnectionConfig *>(&config) != nullptr) {
             return "TCP";
         }
-        if (dynamic_cast<const ximu3::XIMU3_UdpConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::UdpConnectionConfig *>(&config) != nullptr) {
             return "UDP";
         }
-        if (dynamic_cast<const ximu3::XIMU3_BluetoothConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::BluetoothConnectionConfig *>(&config) != nullptr) {
             return "Bluetooth";
+        }
+        if (dynamic_cast<const ximu3::MuxConnectionConfig *>(&config) != nullptr) {
+            return "Mux";
         }
         jassertfalse;
         return "";
     };
 
     static const auto filter = [](const ximu3::ConnectionConfig &config) {
-        if (dynamic_cast<const ximu3::XIMU3_UsbConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::UsbConnectionConfig *>(&config) != nullptr) {
             return *ApplicationSettings::getSingleton().availableConnections.usb;
         }
-        if (dynamic_cast<const ximu3::XIMU3_SerialConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::SerialConnectionConfig *>(&config) != nullptr) {
             return *ApplicationSettings::getSingleton().availableConnections.serial;
         }
-        if (dynamic_cast<const ximu3::XIMU3_TcpConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::TcpConnectionConfig *>(&config) != nullptr) {
             return *ApplicationSettings::getSingleton().availableConnections.tcp;
         }
-        if (dynamic_cast<const ximu3::XIMU3_UdpConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::UdpConnectionConfig *>(&config) != nullptr) {
             return *ApplicationSettings::getSingleton().availableConnections.udp;
         }
-        if (dynamic_cast<const ximu3::XIMU3_BluetoothConnectionConfig *>(&config) != nullptr) {
+        if (dynamic_cast<const ximu3::BluetoothConnectionConfig *>(&config) != nullptr) {
             return *ApplicationSettings::getSingleton().availableConnections.bluetooth;
+        }
+        if (dynamic_cast<const ximu3::MuxConnectionConfig *>(&config) != nullptr) {
+            return *ApplicationSettings::getSingleton().availableConnections.mux;
         }
         jassertfalse;
         return false;
@@ -104,6 +111,23 @@ void AvailableConnectionsDialog::timerCallback() {
         addRow(juce::String(device.device_name) + " " + device.serial_number, ximu3::ConnectionConfig::from(device), {}, {}, {});
     }
 
+    if (ApplicationSettings::getSingleton().availableConnections.mux) {
+        if (muxScanners.empty()) {
+            for (const auto &connection: existingConnections) {
+                muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection.connection, [](const auto &) {
+                }));
+            }
+        }
+
+        for (auto &scanner: muxScanners) {
+            for (const auto &device: scanner->getDevices()) {
+                addRow(juce::String(device.device_name) + " " + device.serial_number, ximu3::ConnectionConfig::from(device), {}, {}, {});
+            }
+        }
+    } else {
+        muxScanners.clear();
+    }
+
     for (const auto &message: networkAnnouncement->getMessages()) {
         if (message.tcp_port != 0) {
             addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::TcpConnectionConfig>(message), message.rssi, message.battery, message.charging_status);
@@ -114,7 +138,7 @@ void AvailableConnectionsDialog::timerCallback() {
     }
 
     for (const auto &existingConnection: existingConnections) {
-        rows.push_back({true, existingConnection.descriptor, existingConnection.config, {}, {}, {}, true});
+        rows.push_back({true, existingConnection.descriptor, existingConnection.connection->getConfig(), {}, {}, {}, true});
     }
 
     table.setRows(rows);

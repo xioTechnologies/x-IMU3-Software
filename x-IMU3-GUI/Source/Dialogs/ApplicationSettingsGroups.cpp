@@ -9,13 +9,14 @@ juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const {
     return getLocalBounds().reduced(10, verticalMargin).withTrimmedTop(topExtraMargin);
 }
 
-AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 2) {
+AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 3) {
     addAndMakeVisible(showOnStartupToggle);
     addAndMakeVisible(usbToggle);
     addAndMakeVisible(serialToggle);
     addAndMakeVisible(tcpToggle);
     addAndMakeVisible(udpToggle);
     addAndMakeVisible(bluetoothToggle);
+    addAndMakeVisible(muxToggle);
 
     showOnStartupToggle.onClick = [this] {
         ApplicationSettings::getSingleton().availableConnections.showOnStartup = showOnStartupToggle.getToggleState();
@@ -41,12 +42,17 @@ AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGrou
         ApplicationSettings::getSingleton().availableConnections.bluetooth = bluetoothToggle.getToggleState();
     };
 
+    muxToggle.onClick = [this] {
+        ApplicationSettings::getSingleton().availableConnections.mux = muxToggle.getToggleState();
+    };
+
     showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.showOnStartup, juce::dontSendNotification);
     usbToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.usb, juce::dontSendNotification);
     serialToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.serial, juce::dontSendNotification);
     tcpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.tcp, juce::dontSendNotification);
     udpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.udp, juce::dontSendNotification);
     bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.bluetooth, juce::dontSendNotification);
+    muxToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.mux, juce::dontSendNotification);
 }
 
 void AvailableConnectionsGroup::resized() {
@@ -54,6 +60,9 @@ void AvailableConnectionsGroup::resized() {
 
     showOnStartupToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
     bounds.removeFromTop(rowMargin);
+
+    muxToggle.setBounds(bounds.removeFromBottom(UILayout::textComponentHeight));
+    bounds.removeFromBottom(rowMargin);
 
     static constexpr int toggleWidth = 80;
     usbToggle.setBounds(bounds.removeFromLeft(toggleWidth));
