@@ -15,7 +15,6 @@ GraphWindow::GraphWindow(const juce::ValueTree &windowLayout_, const juce::Ident
       legendColours(legendColours_),
       defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
       graph(openGLRenderer, legendColours_, labelHeight, rightMargin),
-      xLabel("Time (s)", UIFonts::getDefaultFont(), juce::Justification::centred),
       yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred) {
     jassert(legendStrings.size() == legendColours.size());
 
@@ -63,14 +62,18 @@ void GraphWindow::resized() {
     yLabel.setVisible(compactView == false);
 
     if (compactView == false) {
-        xLabel.setBounds(graphArea.removeFromBottom(labelHeight).withTrimmedLeft(labelHeight));
-
         // Rotate Y label vertical
         const auto yLabelBounds = graphArea.removeFromLeft(labelHeight);
         yLabel.setTransform({}); // prevent glitch on subsequent resize
         yLabel.setSize(yLabelBounds.getHeight(), yLabelBounds.getWidth()); // invert width/height
         yLabel.setCentrePosition(0, 0);
         yLabel.setTransform(juce::AffineTransform::rotation(-juce::MathConstants<float>::halfPi).translated((float) yLabelBounds.getCentreX(), (float) yLabelBounds.getCentreY()));
+
+        xLabelArea = graphArea.removeFromBottom(labelHeight).withTrimmedLeft(labelHeight);
+        startTimerHz(25);
+        timerCallback();
+    } else {
+        stopTimer();
     }
 
     graph.setBounds(graphArea);
@@ -137,6 +140,8 @@ void GraphWindow::update(const uint64_t timestamp, const std::vector<float> &arg
     if (paused) {
         return;
     }
+
+    mostRecentTimestamp = timestamp;
     graph.update(timestamp, arguments);
 }
 
@@ -323,4 +328,12 @@ void GraphWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHas
 
 void GraphWindow::handleAsyncUpdate() {
     graph.setSettings(readFromValueTree());
+}
+
+void GraphWindow::timerCallback() {
+    const auto timestamp = juce::String(1E-6f * (float) mostRecentTimestamp.load(), 3);
+    xLabel.setText("Time (t = " + timestamp + " s)");
+
+    const auto labelWidth = juce::roundToInt(xLabel.getTextWidth(xLabel.getText().replaceCharacters("123456789", "000000000")));
+    xLabel.setBounds(xLabelArea.withTrimmedLeft((xLabelArea.getWidth() - labelWidth) / 2));
 }

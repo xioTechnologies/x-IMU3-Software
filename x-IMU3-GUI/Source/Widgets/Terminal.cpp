@@ -55,7 +55,7 @@ void Terminal::addLine(const juce::AttributedString &line) {
 
 void Terminal::addLine(const uint64_t timestamp, const juce::AttributedString &line) {
     juce::AttributedString combined;
-    combined.append((juce::String(1E-6f * (float) timestamp, 3) + " s ").paddedRight(' ', 12), juce::Colours::grey);
+    combined.append((juce::String(1E-6f * (float) timestamp, 3) + " s  ").paddedRight(' ', 12), juce::Colours::grey);
     combined.append(line);
     addLine(combined);
 }

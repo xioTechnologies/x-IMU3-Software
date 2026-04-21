@@ -18,7 +18,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         juce::AttributedString line;
         line.append("TX ", UIColours::success);
         for (const auto &string: EscapedStrings::splitPrintable(EscapedStrings::bytesToPrintable(EscapedStrings::printableToBytes(textEditor.getText().toStdString())))) {
-            line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
+            line.append(string, string.starts_with("\\") ? UIColours::special : juce::Colours::white);
         }
 
         terminal.addLine(line);
@@ -32,7 +32,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
 
             juce::AttributedString line;
             for (const auto &string: EscapedStrings::splitPrintable(EscapedStrings::bytesToPrintable({message.char_array, (unsigned int) message.number_of_bytes}))) {
-                line.append(string, string.starts_with("\\") ? juce::Colours::grey : juce::Colours::white);
+                line.append(string, string.starts_with("\\") ? UIColours::special : juce::Colours::white);
             }
 
             terminal.addLine(message.timestamp, line);

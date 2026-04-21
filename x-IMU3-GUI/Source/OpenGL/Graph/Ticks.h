@@ -8,7 +8,7 @@ struct Tick {
     juce::String label;
 };
 
-static inline std::vector<Tick> createTicks(const int numberOfPixels, const AxisLimits &limits) {
+static inline std::vector<Tick> createTicks(const int numberOfPixels, const AxisLimits &limits, const juce::String& zero) {
     const float range = limits.getRange();
 
     const int oomExponent = (int) std::floor(std::log10(range)); // order of magnitude's exponent ( 10^-1 [0.1s], 10^0 [1s], 10^1 [10s], 10^2 [100s], etc)
@@ -74,7 +74,7 @@ static inline std::vector<Tick> createTicks(const int numberOfPixels, const Axis
 
         // Major ticks
         if (approximatelyEqual(majorPosition, 0.0f, majorDistance / (float) minorPerMajorDivisions)) {
-            ticks.push_back({true, 0.0f, "0"}); // ensure 0 is written properly with no rounding error
+            ticks.push_back({true, 0.0f, zero});
         } else {
             ticks.push_back({true, majorPosition, juce::String(majorPosition)});
         }

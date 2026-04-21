@@ -5,7 +5,7 @@
 #include "Windows/Window.h"
 #include "Ximu3.hpp"
 
-class GraphWindow : public Window, private juce::AsyncUpdater {
+class GraphWindow : public Window, private juce::AsyncUpdater, private juce::Timer {
 public:
     GraphWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_,
                 OpenGLRenderer &openGLRenderer,
@@ -49,10 +49,14 @@ private:
 
     bool compactView = false;
 
+    juce::Rectangle<int> xLabelArea;
+
     // Graph state for mouse dragging
     Graph::Settings graphSettingsMouseCache;
     float plotWidthJUCEPixelsMouseCache = 1.0f;
     float plotHeightJUCEPixelsMouseCache = 1.0f;
+
+    std::atomic<uint64_t> mostRecentTimestamp = 0;
 
     void writeToValueTree(const Graph::Settings &settings);
 
@@ -67,4 +71,6 @@ private:
     void valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) override;
 
     void handleAsyncUpdate() override;
+
+    void timerCallback() override;
 };
