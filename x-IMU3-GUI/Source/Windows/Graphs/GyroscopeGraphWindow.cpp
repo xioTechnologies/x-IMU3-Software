@@ -9,7 +9,8 @@ GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree &windowLayout_,
                   "Angular Rate (" + degreeSymbol + "/s)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
         update(message.timestamp, {message.gyroscope_x, message.gyroscope_y, message.gyroscope_z});
     }));

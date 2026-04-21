@@ -9,9 +9,10 @@ ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree &
                   "Throughput (kB/s)",
                   {""},
                   {UIColours::graphChannel1},
-                  true) {
+                  true,
+                  false) {
     callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
-        update(message.timestamp, {(float) message.data_rate / 1000.0f});
+        update(static_cast<uint64_t>(juce::Time::getMillisecondCounterHiRes() * 1000.0), {(float) message.data_rate / 1000.0f});
     }));
 }
 

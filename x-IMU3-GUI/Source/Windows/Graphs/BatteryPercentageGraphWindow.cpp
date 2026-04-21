@@ -9,6 +9,7 @@ BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree
                   "Percentage (%)",
                   {""},
                   {UIColours::graphChannel1},
+                  true,
                   true) {
     callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
         update(message.timestamp, {message.percentage});

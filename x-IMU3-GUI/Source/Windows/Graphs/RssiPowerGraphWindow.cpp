@@ -9,6 +9,7 @@ RssiPowerGraphWindow::RssiPowerGraphWindow(const juce::ValueTree &windowLayout_,
                   "Power (dBm)",
                   {""},
                   {UIColours::graphChannel1},
+                  true,
                   true) {
     callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
         update(message.timestamp, {message.power});

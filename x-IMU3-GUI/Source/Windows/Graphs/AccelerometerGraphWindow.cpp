@@ -9,7 +9,8 @@ AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree &window
                   "Acceleration (g)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
         update(message.timestamp, {message.accelerometer_x, message.accelerometer_y, message.accelerometer_z});
     }));

@@ -7,7 +7,8 @@ $name$GraphWindow::$name$GraphWindow(const juce::ValueTree &windowLayout_, const
                   "$y_axis$",
                   $legend_strings$,
                   $legend_colours$,
-                  $horizontal_autoscale$) {
+                  $horizontal_autoscale$,
+                  $show_timestamp$) {
 $callback_implementations$
 }
 

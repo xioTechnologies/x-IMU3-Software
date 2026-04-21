@@ -9,6 +9,7 @@ TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree &windowLayo
                   "Temperature (" + degreeSymbol + "C)",
                   {""},
                   {UIColours::graphChannel1},
+                  true,
                   true) {
     callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message) {
         update(message.timestamp, {message.temperature});

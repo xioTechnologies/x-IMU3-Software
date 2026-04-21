@@ -12,7 +12,8 @@ public:
                 const juce::String &yAxis,
                 std::vector<juce::String> legendStrings_,
                 std::vector<juce::Colour> legendColours_,
-                bool defaultHorizontalAutoscale_);
+                bool defaultHorizontalAutoscale_,
+                bool showTimestamp_);
 
     void paint(juce::Graphics &g) override;
 
@@ -38,6 +39,7 @@ private:
     const std::vector<juce::String> legendStrings;
     const std::vector<juce::Colour> legendColours;
     const bool defaultHorizontalAutoscale;
+    const bool showTimestamp;
     const int numberOfChannels = (int) legendStrings.size();
 
     Graph graph;

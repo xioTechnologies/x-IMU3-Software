@@ -9,7 +9,8 @@ LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTr
                   "Acceleration (g)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
         update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));

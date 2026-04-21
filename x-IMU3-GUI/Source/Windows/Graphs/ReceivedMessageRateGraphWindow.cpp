@@ -9,9 +9,10 @@ ReceivedMessageRateGraphWindow::ReceivedMessageRateGraphWindow(const juce::Value
                   "Throughput (messages/s)",
                   {""},
                   {UIColours::graphChannel1},
-                  true) {
+                  true,
+                  false) {
     callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
-        update(message.timestamp, {(float) message.message_rate});
+        update(static_cast<uint64_t>(juce::Time::getMillisecondCounterHiRes() * 1000.0), {(float) message.message_rate});
     }));
 }
 

@@ -9,7 +9,8 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree &windowLayo
                   "Angle (" + degreeSymbol + ")",
                   {"Roll", "Pitch", "Yaw"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
         update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});

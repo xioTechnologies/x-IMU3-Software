@@ -9,6 +9,7 @@ SyncGraphWindow::SyncGraphWindow(const juce::ValueTree &windowLayout_, const juc
                   "Edge",
                   {""},
                   {UIColours::graphChannel1},
+                  true,
                   true) {
     callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&](auto message) {
         const auto edge = message.edge > 0.0f;
