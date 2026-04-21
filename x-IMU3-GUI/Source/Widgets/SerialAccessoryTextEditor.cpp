@@ -2,6 +2,7 @@
 
 SerialAccessoryTextEditor::SerialAccessoryTextEditor() {
     setEscapeAndReturnKeysConsumed(true);
+    setTextToShowWhenEmpty(R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::Colours::grey);
 
     loadPrevious();
 }
@@ -41,7 +42,6 @@ void SerialAccessoryTextEditor::loadPrevious() {
     previousData = juce::ValueTree::fromXml(file.loadFileAsString());
     if (previousData.isValid() == false) {
         previousData = juce::ValueTree("SerialAccessoryData");
-        previousData.appendChild({"Data", {{"data", R"(Use escape sequences "\x00" to "\xFF" to send any byte value)"}}}, nullptr);
     }
 
     setText(previousData.getChild(0)["data"]);
