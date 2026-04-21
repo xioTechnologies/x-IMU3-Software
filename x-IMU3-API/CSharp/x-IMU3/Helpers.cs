@@ -31,20 +31,6 @@ namespace Ximu3
             return bytes;
         }
 
-        internal static string[] ToArrayAndFree(CApi.XIMU3_CharArrays arrays)
-        {
-            var array = new string[arrays.length];
-
-            for (var i = 0; i < arrays.length; i++)
-            {
-                array[i] = Marshal.PtrToStringAnsi(arrays.array + i * CApi.XIMU3_CHAR_ARRAY_SIZE)!;
-            }
-
-            CApi.XIMU3_char_arrays_free(arrays);
-
-            return array;
-        }
-
         public static IntPtr ToPointer(string @string)
         {
             return Marshal.StringToHGlobalAnsi(@string);
@@ -60,6 +46,20 @@ namespace Ximu3
             }
 
             return pointers;
+        }
+
+        internal static CApi.XIMU3_Device[] ToArrayAndFree(CApi.XIMU3_Devices devices)
+        {
+            var array = new CApi.XIMU3_Device[devices.length];
+
+            for (var i = 0; i < devices.length; i++)
+            {
+                array[i] = Marshal.PtrToStructure<CApi.XIMU3_Device>(devices.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device)));
+            }
+
+            CApi.XIMU3_devices_free(devices);
+
+            return array;
         }
     }
 }

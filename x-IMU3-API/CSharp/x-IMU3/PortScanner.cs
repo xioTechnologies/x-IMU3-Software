@@ -9,7 +9,7 @@ namespace Ximu3
 
         private static void CallbackInternal(CApi.XIMU3_Devices devices, IntPtr context)
         {
-            Marshal.GetDelegateForFunctionPointer<Callback>(context)(ToArrayAndFree(devices));
+            Marshal.GetDelegateForFunctionPointer<Callback>(context)(Helpers.ToArrayAndFree(devices));
         }
 
         ~PortScanner() => Dispose();
@@ -27,34 +27,34 @@ namespace Ximu3
 
         public CApi.XIMU3_Device[] GetDevices()
         {
-            return ToArrayAndFree(CApi.XIMU3_port_scanner_get_devices(wrapped));
+            return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_get_devices(wrapped));
         }
 
         public static CApi.XIMU3_Device[] Scan()
         {
-            return ToArrayAndFree(CApi.XIMU3_port_scanner_scan());
+            return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_scan());
         }
 
         public static CApi.XIMU3_Device[] ScanFilter(CApi.XIMU3_PortType portType)
         {
-            return ToArrayAndFree(CApi.XIMU3_port_scanner_scan_filter(portType));
+            return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_scan_filter(portType));
         }
 
         public static string[] GetPortNames()
         {
-            return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_get_port_names());
+            return ToArrayAndFree(CApi.XIMU3_port_scanner_get_port_names());
         }
 
-        private static CApi.XIMU3_Device[] ToArrayAndFree(CApi.XIMU3_Devices devices)
+        private static string[] ToArrayAndFree(CApi.XIMU3_CharArrays arrays)
         {
-            var array = new CApi.XIMU3_Device[devices.length];
+            var array = new string[arrays.length];
 
-            for (var i = 0; i < devices.length; i++)
+            for (var i = 0; i < arrays.length; i++)
             {
-                array[i] = Marshal.PtrToStructure<CApi.XIMU3_Device>(devices.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device)));
+                array[i] = Marshal.PtrToStringAnsi(arrays.array + i * CApi.XIMU3_CHAR_ARRAY_SIZE)!;
             }
 
-            CApi.XIMU3_devices_free(devices);
+            CApi.XIMU3_char_arrays_free(arrays);
 
             return array;
         }
