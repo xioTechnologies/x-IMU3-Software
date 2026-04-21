@@ -1,8 +1,8 @@
 #include "SerialAccessoryTextEditor.h"
 
 SerialAccessoryTextEditor::SerialAccessoryTextEditor() {
+    setDefaultText(R"(Use escape sequences "\x00" to "\xFF" to send any byte value)");
     setEscapeAndReturnKeysConsumed(true);
-    setTextToShowWhenEmpty(R"(Use escape sequences "\x00" to "\xFF" to send any byte value)", juce::Colours::grey);
 
     loadPrevious();
 }
