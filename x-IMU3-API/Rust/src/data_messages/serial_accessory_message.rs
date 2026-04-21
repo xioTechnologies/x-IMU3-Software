@@ -29,6 +29,11 @@ impl SerialAccessoryMessage {
     pub fn char_array_as_string(self) -> String {
         char_array_to_string(&self.char_array, self.number_of_bytes)
     }
+
+    pub fn char_array_as_bytes(&self) -> &[u8] {
+        // TODO: handle or document unsafe
+        unsafe { std::slice::from_raw_parts(self.char_array.as_ptr() as *const u8, self.number_of_bytes) }
+    }
 }
 
 impl DataMessage for SerialAccessoryMessage {
