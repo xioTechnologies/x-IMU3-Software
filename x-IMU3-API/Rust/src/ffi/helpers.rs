@@ -65,6 +65,12 @@ pub fn str_to_char_ptr(string: &str) -> *const c_char {
     }) // returns a pointer valid until the next call of this function on the same thread
 }
 
+/// # Safety
+/// `bytes` must be valid UTF-8.
+pub unsafe fn bytes_to_char_ptr(bytes: &[u8]) -> *const c_char {
+    str_to_char_ptr(unsafe { std::str::from_utf8_unchecked(bytes) })
+}
+
 pub fn bytes_to_char_array(bytes: &[u8]) -> [c_char; CHAR_ARRAY_SIZE] {
     let mut char_array = EMPTY_CHAR_ARRAY;
 

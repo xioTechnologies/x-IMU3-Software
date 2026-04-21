@@ -83,7 +83,7 @@ std::string EscapedStrings::bytesToPrintable(const std::string &bytes) {
 }
 
 std::string EscapedStrings::jsonToBytes(std::string json) {
-    if ((json.length()) < 2 || (json.front() != '"') || (json.back() != '"')) {
+    if ((json.length() < 2) || (json.front() != '"') || (json.back() != '"')) {
         return {};
     }
     json = json.substr(1, json.length() - 2);
@@ -138,6 +138,7 @@ std::string EscapedStrings::jsonToBytes(std::string json) {
 
                     index += 4;
                 }
+            // TODO: why is there not a continue or break here? Please test to first observe bug, then fix
 
             default:
                 break;
@@ -185,7 +186,7 @@ std::string EscapedStrings::bytesToJson(const std::string &bytes) {
         }
 
         const auto byteUnsigned = (unsigned char) byte;
-        if (byteUnsigned < 0x20) {
+        if ((byteUnsigned < 0x20) || (byteUnsigned > 0x7E)) {
             std::ostringstream stream;
             stream << "\\u" << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << (unsigned int) byteUnsigned;
             json += stream.str();

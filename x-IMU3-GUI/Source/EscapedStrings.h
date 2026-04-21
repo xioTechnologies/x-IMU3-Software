@@ -17,9 +17,9 @@
 // "\\r", "\\\\" respectively.
 //
 // JSON: Strings follow RFC 8259 with the following clarifications: UTF-8
-// characters are not supported so that all characters are limited to the range
-// 0x00 to 0xFF. The escape sequences "\b", "\f", "\n", "\r", and "\t" are
-// preferred over their 6-byte escape sequence "\\uHHHH".
+// characters are not supported. Bytes >0x7E are escaped. The 2-byte escape
+// sequences "\\b", "\\f", "\\n", "\\r", and "\\t" are preferred over their
+// equivalent 6-byte escape sequence "\\uHHHH".
 //
 // https://datatracker.ietf.org/doc/html/rfc8259
 

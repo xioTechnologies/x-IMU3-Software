@@ -13,6 +13,7 @@
 #include "Examples/Ping.h"
 #include "Examples/PortScanner.h"
 #include "Examples/SendCommands.h"
+#include "Examples/SerialAccessoryLoopback.h"
 #include "Examples/SerialConnection.h"
 #include "Examples/TcpConnection.h"
 #include "Examples/UdpConnection.h"
@@ -37,62 +38,67 @@ int main(int argc, const char *argv[]) {
     std::cout << "K. Ping.h" << std::endl;
     std::cout << "L. PortScanner.h" << std::endl;
     std::cout << "M. SendCommands.h" << std::endl;
-    std::cout << "N. SerialConnection.h" << std::endl;
-    std::cout << "O. TcpConnection.h" << std::endl;
-    std::cout << "P. UdpConnection.h" << std::endl;
-    std::cout << "Q. UsbConnection.h" << std::endl;
+    std::cout << "N. SerialAccessoryLoopback.h" << std::endl;
+    std::cout << "O. SerialConnection.h" << std::endl;
+    std::cout << "P. TcpConnection.h" << std::endl;
+    std::cout << "Q. UdpConnection.h" << std::endl;
+    std::cout << "R. UsbConnection.h" << std::endl;
 
-    switch (helpers::getKey()) {
-        case 'A':
-            BluetoothConnection();
-            break;
-        case 'B':
-            DataLogger();
-            break;
-        case 'C':
-            FileConnection();
-            break;
-        case 'D':
-            FileConverter();
-            break;
-        case 'E':
-            GetPortNames();
-            break;
-        case 'F':
-            KeepOpen();
-            break;
-        case 'G':
-            MuxConnection();
-            break;
-        case 'H':
-            MuxScanner();
-            break;
-        case 'I':
-            NetworkAnnouncement();
-            break;
-        case 'J':
-            OpenAsync();
-            break;
-        case 'K':
-            Ping();
-            break;
-        case 'L':
-            PortScanner();
-            break;
-        case 'M':
-            SendCommands();
-            break;
-        case 'N':
-            SerialConnection();
-            break;
-        case 'O':
-            TcpConnection();
-            break;
-        case 'P':
-            UdpConnection();
-            break;
-        case 'Q':
-            UsbConnection();
-            break;
+    switch (helpers::getKey())
+    {
+    case 'A':
+        BluetoothConnection();
+        break;
+    case 'B':
+        DataLogger();
+        break;
+    case 'C':
+        FileConnection();
+        break;
+    case 'D':
+        FileConverter();
+        break;
+    case 'E':
+        GetPortNames();
+        break;
+    case 'F':
+        KeepOpen();
+        break;
+    case 'G':
+        MuxConnection();
+        break;
+    case 'H':
+        MuxScanner();
+        break;
+    case 'I':
+        NetworkAnnouncement();
+        break;
+    case 'J':
+        OpenAsync();
+        break;
+    case 'K':
+        Ping();
+        break;
+    case 'L':
+        PortScanner();
+        break;
+    case 'M':
+        SendCommands();
+        break;
+    case 'N':
+        SerialAccessoryLoopback();
+        break;
+    case 'O':
+        SerialConnection();
+        break;
+    case 'P':
+        TcpConnection();
+        break;
+    case 'Q':
+        UdpConnection();
+        break;
+    case 'R':
+        UsbConnection();
+        break;
     }
 }
