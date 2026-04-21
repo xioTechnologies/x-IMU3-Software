@@ -107,6 +107,7 @@ SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const Dict
         stringValue.setVisible(type == Type::string);
         numberRawValue.setVisible(type == Type::numberRaw);
 
+        // TODO: juce::JSON::parse doesn't support \\u0000
         setOkButton((keyValue.isEmpty() == false) && ximu3::CommandMessage::parse(commandValue.getText().toStdString()).has_value());
     };
 
