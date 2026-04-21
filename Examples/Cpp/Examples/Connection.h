@@ -93,8 +93,7 @@ private:
     };
 
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics) {
-        printf(TIMESTAMP_FORMAT UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
-               statistics.timestamp,
+        printf(UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
                statistics.data_total,
                statistics.data_rate,
                statistics.message_total,

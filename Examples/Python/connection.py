@@ -28,7 +28,6 @@ def statistics_callback(statistics: ximu3.Statistics) -> None:
     print(
         "".join(
             [
-                timestamp_format(statistics.timestamp),
                 int_format(statistics.data_total) + " bytes",
                 int_format(statistics.data_rate) + " bytes/s",
                 int_format(statistics.message_total) + " messages",

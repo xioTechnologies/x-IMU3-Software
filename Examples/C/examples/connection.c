@@ -125,8 +125,7 @@ void receive_error_callback(const XIMU3_ReceiveError error, void *context) {
 }
 
 void statistics_callback(const XIMU3_Statistics statistics, void *context) {
-    printf(TIMESTAMP_FORMAT UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
-           statistics.timestamp,
+    printf(UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
            statistics.data_total,
            statistics.data_rate,
            statistics.message_total,

@@ -38,16 +38,14 @@ impl Connection {
 
         let dropped = connection.dropped.clone();
         let receiver = connection.internal.lock().unwrap().get_receiver();
-        let start_time = std::time::Instant::now();
+        let mut previous_instant = std::time::Instant::now();
         let mut previous_statistics: Statistics = Default::default();
 
         std::thread::spawn(move || loop {
             std::thread::sleep(std::time::Duration::from_secs(1));
 
             if let Ok(mut receiver) = receiver.lock() {
-                receiver.statistics.timestamp = start_time.elapsed().as_micros() as u64;
-
-                let delta_time = (receiver.statistics.timestamp - previous_statistics.timestamp) as f32 / 1E6;
+                let delta_time = previous_instant.elapsed().as_secs_f32();
                 let delta_data = receiver.statistics.data_total - previous_statistics.data_total;
                 let delta_message = receiver.statistics.message_total - previous_statistics.message_total;
                 let delta_error = receiver.statistics.error_total - previous_statistics.error_total;
@@ -56,6 +54,7 @@ impl Connection {
                 receiver.statistics.message_rate = (delta_message as f32 / delta_time).round() as u32;
                 receiver.statistics.error_rate = (delta_error as f32 / delta_time).round() as u32;
 
+                previous_instant = std::time::Instant::now();
                 previous_statistics = receiver.statistics;
 
                 receiver.dispatcher.sender.send(DispatcherData::Statistics(receiver.statistics)).ok();

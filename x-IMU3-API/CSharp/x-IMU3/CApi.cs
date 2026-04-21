@@ -196,7 +196,6 @@ namespace Ximu3
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_Statistics
         {
-            public UInt64 timestamp;
             public UInt64 data_total;
             public UInt32 data_rate;
             public UInt64 message_total;
