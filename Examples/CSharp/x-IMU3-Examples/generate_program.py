@@ -1,50 +1,43 @@
-import os
 import sys
+from pathlib import Path
 
-sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../../..")))  # location of helpers.py
 
 import helpers
 
-examples = []
-
-for _, _, file_names in os.walk("Examples"):
-    for file_name in file_names:
-        file_stem, extension = os.path.splitext(file_name)
-
-        if extension == ".cs":
-            examples.append(file_stem)
-
-examples = sorted(examples)
+examples = sorted(p.stem for p in Path("Examples").rglob("*") if p.is_file() and p.suffix == ".cs")
 
 examples = [s for s in examples if s != "Connection"]
 
 keys = [chr(ord("A") + i) for i in range(len(examples))]
 
-with open("Program.cs", "w") as file:
-    file.write(helpers.preamble())
+writelines = "\n".join(f'            Console.WriteLine("{k}. {e}");' for k, e in zip(keys, examples))
 
-    file.write("namespace Ximu3Examples\n")
-    file.write("{\n")
-    file.write("    class Program\n")
-    file.write("    {\n")
-    file.write("        static int Main()\n")
-    file.write("        {\n")
-    file.write('            Console.WriteLine("Select example");\n')
+cases = "\n".join(
+    f"""\
+                case '{k}':
+                    _ = new {e}();
+                    break;"""
+    for k, e in zip(keys, examples)
+)
 
-    for key, example in zip(keys, examples):
-        file.write(f'            Console.WriteLine("{key}. {example}");\n')
+Path("Program.cs").write_text(f"""\
+{helpers.preamble()}namespace Ximu3Examples
+{{
+    class Program
+    {{
+        static int Main()
+        {{
+            Console.WriteLine("Select example");
+{writelines}
 
-    file.write("\n")
-    file.write("            switch (Helpers.GetKey())\n")
-    file.write("            {\n")
+            switch (Helpers.GetKey())
+            {{
+{cases}
+            }}
 
-    for key, example in zip(keys, examples):
-        file.write(f"                case '{key}':\n")
-        file.write(f"                    _ = new {example}();\n")
-        file.write("                    break;\n")
-
-    file.write("            }\n\n")
-    file.write("            return 0;\n")
-    file.write("        }\n")
-    file.write("    }\n")
-    file.write("}\n")
+            return 0;
+        }}
+    }}
+}}
+""")

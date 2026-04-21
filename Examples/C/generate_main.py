@@ -1,47 +1,40 @@
-import os
 import sys
+from pathlib import Path
 
-sys.path.append(os.path.join("..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../..")))  # location of helpers.py
 
 import helpers
 
-examples = []
-
-for _, _, file_names in os.walk("examples"):
-    for file_name in file_names:
-        file_stem, extension = os.path.splitext(file_name)
-
-        if extension == ".c":
-            examples.append(file_stem)
-
-examples = sorted(examples)
+examples = sorted(p.stem for p in Path("examples").rglob("*") if p.is_file() and p.suffix == ".c")
 
 examples = [s for s in examples if s != "connection"]
 
 keys = [chr(ord("A") + i) for i in range(len(examples))]
 
-with open("main.c", "w") as file:
-    file.write(helpers.preamble())
+declarations = "\n\n".join(f"void {e}();" for e in examples)
 
-    file.write('#include "helpers.h"\n')
-    file.write("#include <stdio.h>\n\n")
+printfs = "\n".join(f'    printf("{k}. {e}.c\\n");' for k, e in zip(keys, examples))
 
-    for example in examples:
-        file.write(f"void {example}();\n\n")
+cases = "\n".join(
+    f"""\
+        case '{key}':
+            {example}();
+            break;"""
+    for key, example in zip(keys, examples)
+)
 
-    file.write("int main(int argc, const char *argv[]) {\n")
-    file.write('    printf("Select example\\n");\n')
+Path("main.c").write_text(f"""\
+{helpers.preamble()}#include "helpers.h"
+#include <stdio.h>
 
-    for key, example in zip(keys, examples):
-        file.write(f'    printf("{key}. {example}.c\\n");\n')
+{declarations}
 
-    file.write("\n")
-    file.write("    switch (get_key()) {\n")
+int main(int argc, const char *argv[]) {{
+    printf("Select example\\n");
+{printfs}
 
-    for key, example in zip(keys, examples):
-        file.write(f"        case '{key}':\n")
-        file.write(f"            {example}();\n")
-        file.write("            break;\n")
-
-    file.write("    }\n")
-    file.write("}\n")
+    switch (get_key()) {{
+{cases}
+    }}
+}}
+""")
