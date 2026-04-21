@@ -20,11 +20,12 @@ fn main() {
     println!("K. ping.rs");
     println!("L. port_scanner.rs");
     println!("M. send_commands.rs");
-    println!("N. serial_connection.rs");
-    println!("O. settings.rs");
-    println!("P. tcp_connection.rs");
-    println!("Q. udp_connection.rs");
-    println!("R. usb_connection.rs");
+    println!("N. serial_accessory.rs");
+    println!("O. serial_connection.rs");
+    println!("P. settings.rs");
+    println!("Q. tcp_connection.rs");
+    println!("R. udp_connection.rs");
+    println!("S. usb_connection.rs");
 
     match helpers::get_key() {
         'A' => bluetooth_connection::run(),
@@ -40,11 +41,12 @@ fn main() {
         'K' => ping::run(),
         'L' => port_scanner::run(),
         'M' => send_commands::run(),
-        'N' => serial_connection::run(),
-        'O' => settings::run(),
-        'P' => tcp_connection::run(),
-        'Q' => udp_connection::run(),
-        'R' => usb_connection::run(),
+        'N' => serial_accessory::run(),
+        'O' => serial_connection::run(),
+        'P' => settings::run(),
+        'Q' => tcp_connection::run(),
+        'R' => udp_connection::run(),
+        'S' => usb_connection::run(),
         _ => {}
     }
 }
