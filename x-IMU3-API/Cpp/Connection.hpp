@@ -351,13 +351,10 @@ namespace ximu3 {
 
         static std::vector<std::optional<CommandMessage> > toVectorAndFree(const XIMU3_CommandMessages &responses) {
             std::vector<std::optional<CommandMessage> > vector;
-
             for (const auto &response: Helpers::toVector<XIMU3_CommandMessage>(responses)) {
                 vector.push_back(CommandMessage::from(response));
             }
-
             XIMU3_command_messages_free(responses);
-
             return vector;
         }
     };
