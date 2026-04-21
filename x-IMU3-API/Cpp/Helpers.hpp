@@ -38,18 +38,18 @@ namespace ximu3 {
             return vector;
         }
 
-        static auto toVectorAndFree(const XIMU3_CharArrays &charArrays) {
-            const auto vector = toVector<std::string>(charArrays);
-            XIMU3_char_arrays_free(charArrays);
-            return vector;
-        }
-
         static auto toCharPtrVector(const std::vector<std::string> &stringVector) {
             std::vector<const char *> charPtrVector(stringVector.size());
             for (size_t index = 0; index < charPtrVector.size(); index++) {
                 charPtrVector[index] = stringVector[index].c_str();
             }
             return charPtrVector;
+        }
+
+        static auto toVectorAndFree(const XIMU3_Devices &devices) {
+            const auto vector = toVector<XIMU3_Device>(devices);
+            XIMU3_devices_free(devices);
+            return vector;
         }
     };
 } // namespace ximu3
