@@ -540,6 +540,9 @@ namespace Ximu3
         public static extern void XIMU3_command_messages_free(XIMU3_CommandMessages messages);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_bytes_to_json(byte[] bytes, UInt32 length);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_new_usb(XIMU3_UsbConnectionConfig config);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -762,7 +765,7 @@ namespace Ximu3
         public static extern IntPtr XIMU3_file_connection_config_to_string(XIMU3_FileConnectionConfig config);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_mux_connection_config_new(Byte channel, IntPtr connection);
+        public static extern IntPtr XIMU3_mux_connection_config_new(byte channel, IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_mux_connection_config_free(IntPtr config);

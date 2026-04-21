@@ -35,6 +35,25 @@ static PyObject *command_message_get_error(CommandMessage *self) {
 
 PyObject *command_message_parse(PyObject *null, PyObject *arg);
 
+// TODO: test:
+// package.bytes_to_json(b"hello\x00\xFF")        # bytes
+// package.bytes_to_json(bytearray(b"hello"))      # bytearray
+// package.bytes_to_json(memoryview(b"hello"))     # memoryview
+
+static PyObject *command_message_bytes_to_json(PyObject *null, PyObject *arg) {
+    Py_buffer view;
+
+    if (PyObject_GetBuffer(arg, &view, PyBUF_SIMPLE) < 0) {
+        return NULL;
+    }
+
+    const char *const json = XIMU3_bytes_to_json((const uint8_t *) view.buf, (uint32_t) view.len);
+
+    PyBuffer_Release(&view);
+
+    return PyUnicode_FromString(json);
+}
+
 static PyGetSetDef command_message_get_set[] = {
     {"json", (getter) command_message_get_json, NULL, "", NULL},
     {"key", (getter) command_message_get_key, NULL, "", NULL},
@@ -46,6 +65,7 @@ static PyGetSetDef command_message_get_set[] = {
 
 static PyMethodDef command_message_methods[] = {
     {"parse", (PyCFunction) command_message_parse, METH_O | METH_STATIC, ""},
+    {"bytes_to_json", (PyCFunction) command_message_bytes_to_json, METH_O | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
 

@@ -27,6 +27,7 @@ SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optio
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
 
+        // TODO: juce::JSON::parse doesn't support \\u0000
         setOkButton((keyValue.isEmpty() == false) && ximu3::CommandMessage::parse(commandValue.getText().toStdString()).has_value());
     };
 
