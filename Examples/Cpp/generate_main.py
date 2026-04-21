@@ -1,48 +1,41 @@
-import os
 import sys
+from pathlib import Path
 
-sys.path.append(os.path.join("..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../..")))  # location of helpers.py
 
 import helpers
 
-examples = []
-
-for _, _, file_names in os.walk("Examples"):
-    for file_name in file_names:
-        file_stem, extension = os.path.splitext(file_name)
-
-        if extension == ".h":
-            examples.append(file_stem)
-
-examples = sorted(examples)
+examples = sorted(p.stem for p in Path("Examples").rglob("*") if p.is_file() and p.suffix == ".h")
 
 examples = [s for s in examples if s != "Connection"]
 
 keys = [chr(ord("A") + i) for i in range(len(examples))]
 
-with open("main.cpp", "w") as file:
-    file.write(helpers.preamble())
+includes = "\n".join(f'#include "Examples/{e}.h"' for e in examples)
 
-    for example in examples:
-        file.write(f'#include "Examples/{example}.h"\n')
+cout_examples = "\n".join(f'    std::cout << "{k}. {e}.h" << std::endl;' for k, e in zip(keys, examples))
 
-    file.write('#include "Helpers.hpp"\n')
-    file.write("#include <iostream>\n\n")
+cases = "\n".join(
+    f"""\
+        case '{k}':
+            {e}();
+            break;"""
+    for k, e in zip(keys, examples)
+)
 
-    file.write("int main(int argc, const char *argv[]) {\n")
-    file.write("    setbuf(stdout, NULL);\n\n")
-    file.write('    std::cout << "Select example " << std::endl;\n')
+Path("main.cpp").write_text(f"""\
+{helpers.preamble()}{includes}
+#include "Helpers.hpp"
+#include <iostream>
 
-    for key, example in zip(keys, examples):
-        file.write(f'    std::cout << "{key}. {example}.h" << std::endl;\n')
+int main(int argc, const char *argv[]) {{
+    setbuf(stdout, NULL);
 
-    file.write("\n")
-    file.write("    switch (helpers::getKey()) {\n")
+    std::cout << "Select example " << std::endl;
+{cout_examples}
 
-    for key, example in zip(keys, examples):
-        file.write(f"        case '{key}':\n")
-        file.write(f"            {example}();\n")
-        file.write("            break;\n")
-
-    file.write("    }\n")
-    file.write("}\n")
+    switch (helpers::getKey()) {{
+{cases}
+    }}
+}}
+""")

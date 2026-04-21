@@ -1,8 +1,8 @@
-import os
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 
-sys.path.append(os.path.join("..", "..", "..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../../../..")))  # location of helpers.py
 
 import helpers
 
@@ -128,13 +128,10 @@ messages = [
 
 # Generate *_message.rs
 for message in messages:
-    path = "template_float.txt" if message.argument_names else "template_char_array.txt"
-
-    with open(path) as file:
-        code = file.read()
+    template_path = Path("template_float.txt" if message.argument_names else "template_char_array.txt")
 
     code = helpers.replace(
-        code,
+        template_path.read_text(),
         (
             ("$name_snake_case$", helpers.snake_case(message.name)),
             ("$name_pascal_case$", helpers.pascal_case(message.name)),
@@ -156,12 +153,10 @@ for message in messages:
         ),
     )
 
-    with open(helpers.snake_case(message.name) + "_message.rs", "w") as file:
-        file.write(helpers.preamble())
-        file.write(code)
+    Path(f"{helpers.snake_case(message.name)}_message.rs").write_text(f"{helpers.preamble()}{code}")
 
 
-def insert(path: str, id: int, template: str) -> None:
+def insert(path: Path, id: int, template: str) -> None:
     code = "".join(
         helpers.replace(
             template,
@@ -178,7 +173,7 @@ def insert(path: str, id: int, template: str) -> None:
 
 
 # Insert code into mod.rs
-path = "mod.rs"
+path = Path("mod.rs")
 
 insert(
     path,
@@ -194,7 +189,7 @@ insert(
 
 # Insert code into x-IMU3-API/Rust/src/connection.rs
 insert(
-    "../connection.rs",
+    Path("../connection.rs"),
     0,
     """\
     pub fn get_$name_snake_case$_message(&self, consume: bool) -> Option<$name_pascal_case$Message> {
@@ -206,7 +201,7 @@ insert(
 )
 
 insert(
-    "../connection.rs",
+    Path("../connection.rs"),
     1,
     """\
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
@@ -216,7 +211,7 @@ insert(
 
 # Insert code into x-IMU3-API/Rust/src/ffi/connection.rs
 insert(
-    "../ffi/connection.rs",
+    Path("../ffi/connection.rs"),
     0,
     """\
 #[no_mangle]
@@ -227,7 +222,7 @@ pub extern "C" fn XIMU3_connection_get_$name_snake_case$_message(connection: *mu
 )
 
 insert(
-    "../ffi/connection.rs",
+    Path("../ffi/connection.rs"),
     1,
     """\
 #[no_mangle]
@@ -240,13 +235,13 @@ pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *m
 
 # Insert code into x-IMU3-API/Rust/src/receiver.rs
 insert(
-    "../receiver.rs",
+    Path("../receiver.rs"),
     0,
     "        parse!($name_pascal_case$Message, $name_pascal_case$);\n",
 )
 
 # Insert code into x-IMU3-API/Rust/src/dispatcher.rs
-path = "../dispatcher.rs"
+path = Path("../dispatcher.rs")
 
 insert(
     path,
@@ -320,7 +315,7 @@ insert(
 
 # Insert code into x-IMU3-API/Rust/src/ffi/data_messages.rs
 insert(
-    "../ffi/data_messages.rs",
+    Path("../ffi/data_messages.rs"),
     0,
     """\
 #[no_mangle]
@@ -331,7 +326,7 @@ pub extern "C" fn XIMU3_$name_snake_case$_message_to_string(message: $name_pasca
 
 # Insert code into x-IMU3-API/Cpp/Connection.hpp
 insert(
-    "../../../Cpp/Connection.hpp",
+    Path("../../../Cpp/Connection.hpp"),
     0,
     """\
         XIMU3_$name_pascal_case$Message get$name_pascal_case$Message(bool consume = false) {
@@ -340,7 +335,7 @@ insert(
 )
 
 insert(
-    "../../../Cpp/Connection.hpp",
+    Path("../../../Cpp/Connection.hpp"),
     1,
     """\
         uint64_t add$name_pascal_case$Callback(std::function<void(XIMU3_$name_pascal_case$Message)> &callback) {
@@ -350,7 +345,7 @@ insert(
 
 
 # Generate x-IMU3-API/Python/ximu3/DataMessages/*Message.h
-directory = "../../../Python/ximu3/DataMessages/"
+directory = Path("../../../Python/ximu3/DataMessages")
 
 for message in messages:
     if message.name in ("Quaternion", "Rotation Matrix", "Euler Angles", "Linear Acceleration", "Earth Acceleration"):
@@ -360,10 +355,7 @@ for message in messages:
     else:
         file_name = "TemplateCharArray.txt"
 
-    path = os.path.join(directory, file_name)
-
-    with open(path) as file:
-        code = file.read()
+    code = (directory / file_name).read_text()
 
     argument_names = ("Timestamp", *message.argument_names)
     argument_types = ("PyLong_FromUnsignedLongLong((unsigned long long) ",) + tuple("PyFloat_FromDouble((double) " for _ in message.argument_names)
@@ -413,26 +405,24 @@ static PyObject *$name_snake_case$_message_get_$argument_name$($name_pascal_case
         ),
     )
 
-    with open(os.path.join(directory, f"{helpers.pascal_case(message.name)}Message.h"), "w") as file:
-        file.write(helpers.preamble())
-        file.write(code)
+    (directory / f"{helpers.pascal_case(message.name)}Message.h").write_text(f"{helpers.preamble()}{code}")
 
 # Generate x-IMU3-API/Python/ximu3/DataMessages/DataMessages.h
 insert(
-    "../../../Python/ximu3/DataMessages/DataMessages.h",
+    Path("../../../Python/ximu3/DataMessages/DataMessages.h"),
     0,
     '#include "$name_pascal_case$Message.h"\n',
 )
 
 # Insert code into x-IMU3-API/Python/ximu3/ximu3.c
 insert(
-    "../../../Python/ximu3/ximu3.c",
+    Path("../../../Python/ximu3/ximu3.c"),
     0,
     '        add_object(module, &$name_snake_case$_message_object, "$name_pascal_case$Message") &&\n',
 )
 
 # Insert code into x-IMU3-API/Python/ximu3/Connection.h
-path = "../../../Python/ximu3/Connection.h"
+path = Path("../../../Python/ximu3/Connection.h")
 
 insert(
     path,
@@ -493,9 +483,9 @@ insert(
     '    {"add_$name_snake_case$_callback", (PyCFunction) connection_add_$name_snake_case$_callback, METH_O, ""},\n',
 )
 
-# Insert code into x-IMU3-API/CSharp/x-IMU3/Connection.h
+# Insert code into x-IMU3-API/CSharp/x-IMU3/Connection.cs
 insert(
-    "../../../CSharp/x-IMU3/Connection.cs",
+    Path("../../../CSharp/x-IMU3/Connection.cs"),
     0,
     """\
         public CApi.XIMU3_$name_pascal_case$Message Get$name_pascal_case$Message(bool consume = false)
@@ -505,7 +495,7 @@ insert(
 )
 
 insert(
-    "../../../CSharp/x-IMU3/Connection.cs",
+    Path("../../../CSharp/x-IMU3/Connection.cs"),
     1,
     """\
         public delegate void $name_pascal_case$Callback(CApi.XIMU3_$name_pascal_case$Message message);

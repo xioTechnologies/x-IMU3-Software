@@ -1,8 +1,8 @@
-import os
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 
-sys.path.append(os.path.join("..", "..", "..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../../../..")))  # location of helpers.py
 
 import helpers
 
@@ -278,14 +278,8 @@ windows = [
 
 # Generate *GraphWindow.h and *GraphWindow.cpp
 for window in windows:
-    with open("template_h.txt") as file:
-        code_h = file.read()
-
-    with open("template_cpp.txt") as file:
-        code_cpp = file.read()
-
     code_h = helpers.replace(
-        code_h,
+        Path("template_h.txt").read_text(),
         (
             ("$name$", window.name),
             ("$callback_declarations$", window.callback_declarations),
@@ -293,7 +287,7 @@ for window in windows:
     )
 
     code_cpp = helpers.replace(
-        code_cpp,
+        Path("template_cpp.txt").read_text(),
         (
             ("$name$", window.name),
             ("$horizontal_autoscale$", window.horizontal_autoscale),
@@ -305,31 +299,26 @@ for window in windows:
         ),
     )
 
-    with open(window.name + "GraphWindow.h", "w") as file:
-        file.write(helpers.preamble())
-        file.write(code_h)
-
-    with open(window.name + "GraphWindow.cpp", "w") as file:
-        file.write(helpers.preamble())
-        file.write(code_cpp)
+    Path(f"{window.name}GraphWindow.h").write_text(f"{helpers.preamble()}{code_h}")
+    Path(f"{window.name}GraphWindow.cpp").write_text(f"{helpers.preamble()}{code_cpp}")
 
 # Insert code into x-IMU3-GUI/Source/ConnectionPanel/ConnectionPanel.cpp
-path = "../../ConnectionPanel/ConnectionPanel.cpp"
+path = Path("../../ConnectionPanel/ConnectionPanel.cpp")
 
 helpers.insert(
     path,
     0,
-    "".join('#include "Windows/Graphs/' + w.name + 'GraphWindow.h"\n' for w in windows),
+    "".join(f'#include "Windows/Graphs/{w.name}GraphWindow.h"\n' for w in windows),
 )
 
 helpers.insert(
     path,
     1,
     "".join(
-        """\
-    if (type == WindowIds::$name$) {
-        return window = std::make_shared<$name$GraphWindow>(windowLayout, type, *this, openGLRenderer);
-    }\n""".replace("$name$", w.name)
+        f"""\
+    if (type == WindowIds::{w.name}) {{
+        return window = std::make_shared<{w.name}GraphWindow>(windowLayout, type, *this, openGLRenderer);
+    }}\n"""
         for w in windows
     ),
 )

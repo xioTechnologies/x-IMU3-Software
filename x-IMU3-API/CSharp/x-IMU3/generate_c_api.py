@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 def get_blocks(c_code: str, declaration: str) -> list[str]:
     blocks = []
     block = ""
@@ -20,9 +23,7 @@ def get_blocks(c_code: str, declaration: str) -> list[str]:
     return blocks
 
 
-# Read C file
-with open("../../C/Ximu3.h") as file:
-    c_code = file.read()
+c_code = Path("../../C/Ximu3.h").read_text()
 
 cs_code = ""
 
@@ -141,5 +142,4 @@ namespace Ximu3
 }}
 """
 
-with open("CApi.cs", "w") as file:
-    file.write(cs_code)
+Path("CApi.cs").write_text(cs_code)

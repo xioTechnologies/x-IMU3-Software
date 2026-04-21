@@ -1,51 +1,39 @@
-import os
 import sys
+from pathlib import Path
 
-sys.path.append(os.path.join("..", "..", ".."))  # location of helpers.py
+sys.path.append(str(Path("../../..")))  # location of helpers.py
 
 import helpers
 
-examples = []
+examples = sorted(p.stem for p in Path("Examples").rglob("*") if p.is_file() and p.suffix == ".rs")
 
-for _, _, file_names in os.walk("Examples"):
-    for file_name in file_names:
-        file_stem, extension = os.path.splitext(file_name)
-
-        if extension == ".rs":
-            examples.append(file_stem)
-
-examples = sorted(examples)
-
-examples = [s for s in examples if s not in ["mod"]]
+examples = [s for s in examples if s != "mod"]
 
 keys = [chr(ord("A") + i) for i in range(len(examples))]
 
-with open("examples/mod.rs", "w") as file:
-    file.write(helpers.preamble())
+mod_lines = "\n".join(f"pub mod {e};" for e in examples)
 
-    for example in examples:
-        file.write(f"pub mod {example};\n")
+Path("examples/mod.rs").write_text(f"{helpers.preamble()}{mod_lines}\n")
 
-examples = [s for s in examples if s not in ["connection"]]
+examples = [s for s in examples if s != "connection"]
 
-with open("main.rs", "w") as file:
-    file.write(helpers.preamble())
+printlns = "\n".join(f'    println!("{k}. {e}.rs");' for k, e in zip(keys, examples))
 
-    file.write("use crate::examples::*;\n\n")
-    file.write("mod examples;\n")
-    file.write("mod helpers;\n\n")
-    file.write("fn main() {\n")
-    file.write('    println!("Select example");\n')
+match_arms = "\n".join(f"        '{k}' => {e}::run()," for k, e in zip(keys, examples))
 
-    for key, example in zip(keys, examples):
-        file.write(f'    println!("{key}. {example}.rs");\n')
+Path("main.rs").write_text(f"""\
+{helpers.preamble()}use crate::examples::*;
 
-    file.write("\n")
-    file.write("    match helpers::get_key() {\n")
+mod examples;
+mod helpers;
 
-    for key, example in zip(keys, examples):
-        file.write(f"        '{key}' => {example}::run(),\n")
+fn main() {{
+    println!("Select example");
+{printlns}
 
-    file.write("        _ => {}\n")
-    file.write("    }\n")
-    file.write("}\n")
+    match helpers::get_key() {{
+{match_arms}
+        _ => {{}}
+    }}
+}}
+""")
