@@ -9,11 +9,13 @@ GraphWindow::GraphWindow(const juce::ValueTree &windowLayout_, const juce::Ident
                          const juce::String &yAxis,
                          std::vector<juce::String> legendStrings_,
                          std::vector<juce::Colour> legendColours_,
-                         bool defaultHorizontalAutoscale_)
+                         bool defaultHorizontalAutoscale_,
+                         bool showTimestamp_)
     : Window(windowLayout_, type_, connectionPanel_, ""),
       legendStrings(legendStrings_),
       legendColours(legendColours_),
       defaultHorizontalAutoscale(defaultHorizontalAutoscale_),
+      showTimestamp(showTimestamp_),
       graph(openGLRenderer, legendColours_, labelHeight, rightMargin),
       yLabel(yAxis, UIFonts::getDefaultFont(), juce::Justification::centred) {
     jassert(legendStrings.size() == legendColours.size());
@@ -331,8 +333,13 @@ void GraphWindow::handleAsyncUpdate() {
 }
 
 void GraphWindow::timerCallback() {
-    const auto timestamp = juce::String(1E-6f * (float) mostRecentTimestamp.load(), 3);
-    xLabel.setText("Time (t = " + timestamp + " s)");
+    if (showTimestamp) {
+        const auto timestamp = juce::String(1E-6f * (float) mostRecentTimestamp.load(), 3);
+        xLabel.setText("Time (t = " + timestamp + " s)");
+    }
+    else {
+        xLabel.setText("Time (t = Now s)");
+    }
 
     const auto labelWidth = juce::roundToInt(xLabel.getTextWidth(xLabel.getText().replaceCharacters("123456789", "000000000")));
     xLabel.setBounds(xLabelArea.withTrimmedLeft((xLabelArea.getWidth() - labelWidth) / 2));

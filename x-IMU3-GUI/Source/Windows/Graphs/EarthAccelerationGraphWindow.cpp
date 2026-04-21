@@ -9,7 +9,8 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
                   "Acceleration (g)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
         update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
     }));

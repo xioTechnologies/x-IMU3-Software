@@ -9,6 +9,7 @@ ButtonGraphWindow::ButtonGraphWindow(const juce::ValueTree &windowLayout_, const
                   "State",
                   {""},
                   {UIColours::graphChannel1},
+                  true,
                   true) {
     callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&](auto message) {
         const auto state = message.state > 0.0f;

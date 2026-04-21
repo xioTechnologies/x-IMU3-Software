@@ -12,6 +12,7 @@ class Window:
     name: str
     callback_declarations: str
     horizontal_autoscale: str
+    show_timestamp: str
     y_axis: str
     legend_strings: str
     legend_colours: str
@@ -23,6 +24,7 @@ windows = [
         name="Gyroscope",
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis='Angular Rate (" + degreeSymbol + "/s)',
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -35,6 +37,7 @@ windows = [
         name="Accelerometer",
         callback_declarations="    std::function<void(ximu3::XIMU3_InertialMessage)> inertialCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="Acceleration (g)",
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -47,6 +50,7 @@ windows = [
         name="Magnetometer",
         callback_declarations="    std::function<void(ximu3::XIMU3_MagnetometerMessage)> magnetometerCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="Intensity (a.u.)",
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -59,6 +63,7 @@ windows = [
         name="HighGAccelerometer",
         callback_declarations="    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage)> highGAccelerometerCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="Acceleration (g)",
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -76,6 +81,7 @@ windows = [
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;""",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis='Angle (" + degreeSymbol + ")',
         legend_strings='{"Roll", "Pitch", "Yaw"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -108,6 +114,7 @@ windows = [
         name="LinearAcceleration",
         callback_declarations="    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="Acceleration (g)",
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -120,6 +127,7 @@ windows = [
         name="EarthAcceleration",
         callback_declarations="    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="Acceleration (g)",
         legend_strings='{"X", "Y", "Z"}',
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
@@ -132,6 +140,7 @@ windows = [
         name="SerialAccessoryCsvs",
         callback_declarations="    std::function<void(ximu3::XIMU3_SerialAccessoryMessage)> serialAccessoryCallback;",
         horizontal_autoscale="false",
+        show_timestamp="true",
         y_axis="CSV",
         legend_strings='{"1", "2", "3", "4", "5", "6", "7", "8"}',
         legend_colours="{UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8}",
@@ -148,6 +157,7 @@ windows = [
         name="Sync",
         callback_declarations="    std::function<void(ximu3::XIMU3_SyncMessage)> syncCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="Edge",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -162,6 +172,7 @@ windows = [
         name="Temperature",
         callback_declarations="    std::function<void(ximu3::XIMU3_TemperatureMessage)> temperatureCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis='Temperature (" + degreeSymbol + "C)',
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -174,6 +185,7 @@ windows = [
         name="BatteryPercentage",
         callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="Percentage (%)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -186,6 +198,7 @@ windows = [
         name="BatteryVoltage",
         callback_declarations="    std::function<void(ximu3::XIMU3_BatteryMessage)> batteryCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="Voltage (V)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -198,6 +211,7 @@ windows = [
         name="RssiPercentage",
         callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="Percentage (%)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -210,6 +224,7 @@ windows = [
         name="RssiPower",
         callback_declarations="    std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="Power (dBm)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -222,6 +237,7 @@ windows = [
         name="Button",
         callback_declarations="    std::function<void(ximu3::XIMU3_ButtonMessage)> buttonCallback;",
         horizontal_autoscale="true",
+        show_timestamp="true",
         y_axis="State",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
@@ -236,24 +252,26 @@ windows = [
         name="ReceivedMessageRate",
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
         horizontal_autoscale="true",
+        show_timestamp="false",
         y_axis="Throughput (messages/s)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
     callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
-        update(message.timestamp, {(float) message.message_rate});
+        update(static_cast<uint64_t>(juce::Time::getMillisecondCounterHiRes() * 1000.0), {(float) message.message_rate});
     }));""",
     ),
     Window(
         name="ReceivedDataRate",
         callback_declarations="    std::function<void(ximu3::XIMU3_Statistics)> statisticsCallback;",
         horizontal_autoscale="true",
+        show_timestamp="false",
         y_axis="Throughput (kB/s)",
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
     callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
-        update(message.timestamp, {(float) message.data_rate / 1000.0f});
+        update(static_cast<uint64_t>(juce::Time::getMillisecondCounterHiRes() * 1000.0), {(float) message.data_rate / 1000.0f});
     }));""",
     ),
 ]
@@ -279,6 +297,7 @@ for window in windows:
         (
             ("$name$", window.name),
             ("$horizontal_autoscale$", window.horizontal_autoscale),
+            ("$show_timestamp$", window.show_timestamp),
             ("$y_axis$", window.y_axis),
             ("$legend_strings$", window.legend_strings),
             ("$legend_colours$", window.legend_colours),

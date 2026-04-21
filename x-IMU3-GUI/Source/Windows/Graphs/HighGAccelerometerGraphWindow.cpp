@@ -9,7 +9,8 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
                   "Acceleration (g)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));

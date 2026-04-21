@@ -9,7 +9,8 @@ MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree &windowLa
                   "Intensity (a.u.)",
                   {"X", "Y", "Z"},
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
-                  false) {
+                  false,
+                  true) {
     callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));
