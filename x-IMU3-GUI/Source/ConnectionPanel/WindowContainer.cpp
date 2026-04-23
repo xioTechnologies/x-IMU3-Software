@@ -129,14 +129,20 @@ void WindowContainer::valueTreeChildAdded(juce::ValueTree &parentTree, juce::Val
         return;
     }
 
-    std::shared_ptr<juce::Component> componentToAdd;
+    std::shared_ptr<juce::Component> component;
+
     if (childWhichHasBeenAdded.hasType(WindowIds::Row) || childWhichHasBeenAdded.hasType(WindowIds::Column)) {
-        componentToAdd = std::make_shared<WindowContainer>(connectionPanel, childWhichHasBeenAdded);
-    } else if (!(componentToAdd = connectionPanel.getOrCreateWindow(childWhichHasBeenAdded))) {
+        component = std::make_shared<WindowContainer>(connectionPanel, childWhichHasBeenAdded);
+    } else {
+        component = connectionPanel.getOrCreateWindow(childWhichHasBeenAdded);
+    }
+
+    if (component == nullptr) {
         return;
     }
-    addAndMakeVisible(*componentToAdd);
-    childComponents.insert(childComponents.begin() + parentTree.indexOf(childWhichHasBeenAdded), componentToAdd);
+
+    addAndMakeVisible(*component);
+    childComponents.insert(childComponents.begin() + std::min((int) childComponents.size(), parentTree.indexOf(childWhichHasBeenAdded)), component);
 
     componentAddedOrRemoved();
 }
@@ -163,7 +169,7 @@ void WindowContainer::valueTreeChildRemoved(juce::ValueTree &parentTree, juce::V
     }
 
     if (componentToRemove == nullptr) {
-        jassertfalse; // this assert indicates that the removed child was not found
+        return;
     }
 
     removeChildComponent(componentToRemove);

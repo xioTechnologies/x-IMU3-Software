@@ -9,7 +9,7 @@ WindowHeader::WindowHeader(ConnectionPanel &connectionPanel_, const juce::ValueT
       windowLayout(windowLayout_),
       type(type_),
       menuButton(BinaryData::menu_svg, menuButtonTooltip, getPopup, false),
-      title(windowTitles.at(type_), UIFonts::getSmallFont(), juce::Justification::centred) {
+      title(getWindowTitle(type_), UIFonts::getSmallFont(), juce::Justification::centred) {
     addAndMakeVisible(menuButton);
     addAndMakeVisible(title);
 

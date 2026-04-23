@@ -60,6 +60,14 @@ static const std::map<juce::Identifier, juce::String> windowTitles
     {WindowIds::ThreeDView, "3D View"},
 };
 
+inline juce::String getWindowTitle(const juce::Identifier &type) {
+    try {
+        return windowTitles.at(type);
+    } catch (...) {
+        return {};
+    }
+}
+
 inline juce::ValueTree findWindow(const juce::ValueTree root, const juce::Identifier &type) {
     for (auto child: root) {
         if (child.hasType(type)) {
