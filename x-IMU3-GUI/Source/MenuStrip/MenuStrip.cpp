@@ -299,7 +299,7 @@ juce::PopupMenu MenuStrip::getManualConnectionMenu() {
             }
 
             if (auto *channels = std::get_if<std::pair<std::uint8_t, std::uint8_t> >(&connection)) {
-                menu.addItem(juce::String::formatted("Mux 0x%02X to 0x%02X", channels->first, channels->second), [this, channels_ = *channels] {
+                menu.addItem(juce::String::formatted("Mux 0x%02X" + ((channels->first != channels->second) ? " to 0x%02X" : juce::String("")), channels->first, channels->second), [this, channels_ = *channels] {
                     openMuxDialog({channels_.first, channels_.second});
                 });
             }

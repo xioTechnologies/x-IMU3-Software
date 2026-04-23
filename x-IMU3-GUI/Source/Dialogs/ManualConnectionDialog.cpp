@@ -301,6 +301,10 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
         lastChannelValue.setSelectedItemIndex(firstChannelValue.getSelectedItemIndex());
     };
 
+    if (channels.first == channels.second) {
+        singleToggle.setToggleState(true, juce::sendNotification);
+    }
+
     setSize(dialogWidth, calculateHeight(2));
 }
 
