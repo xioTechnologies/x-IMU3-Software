@@ -48,9 +48,9 @@ NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message> 
         onClear_();
     };
 
-    table.getHeader().addColumn("", (int) ColumnId::type, 70, 70, 70);
-    table.getHeader().addColumn("", (int) ColumnId::timestamp, 100, 100, 100);
-    table.getHeader().addColumn("", (int) ColumnId::message, 1);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::type), 70, 70, 70);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::timestamp), 100, 100, 100);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::message), 1);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -68,9 +68,9 @@ void NotificationsAndErrorsDialog::resized() {
 
     static constexpr int headerHeight = 30;
     bounds.removeFromTop(headerHeight);
-    typeLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnId::type - 1).withHeight(headerHeight));
-    timestampLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnId::timestamp - 1).withHeight(headerHeight));
-    messageLabel.setBounds(table.getHeader().getColumnPosition((int) ColumnId::message - 1).withHeight(headerHeight));
+    typeLabel.setBounds(table.getHeader().getColumnPosition(static_cast<int>(ColumnId::type) - 1).withHeight(headerHeight));
+    timestampLabel.setBounds(table.getHeader().getColumnPosition(static_cast<int>(ColumnId::timestamp) - 1).withHeight(headerHeight));
+    messageLabel.setBounds(table.getHeader().getColumnPosition(static_cast<int>(ColumnId::message) - 1).withHeight(headerHeight));
 
     table.setBounds(bounds);
     noNotificationsOrErrorsLabel.setBounds(bounds);
@@ -94,7 +94,7 @@ juce::Component *NotificationsAndErrorsDialog::refreshComponentForCell(int rowNu
 
     const auto &message = messages[messages.size() - 1 - (size_t) rowNumber];
 
-    switch ((ColumnId) columnId) {
+    switch (static_cast<ColumnId>(columnId)) {
         case ColumnId::type:
             return new Icon(message.getIcon(), message.getTooltip(), 0.6f);
 

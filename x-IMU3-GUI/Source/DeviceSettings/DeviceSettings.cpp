@@ -75,7 +75,7 @@ void DeviceSettings::setValue(const std::string &key, const juce::var &value) {
 
     juce::ScopedValueSetter _(ignoreCallback, true);
     if (setting[DeviceSettingsIds::value] != value) {
-        setting.setProperty(DeviceSettingsIds::status, (int) Setting::Status::modified, nullptr);
+        setting.setProperty(DeviceSettingsIds::status, static_cast<int>(Setting::Status::modified), nullptr);
         setting.setProperty(DeviceSettingsIds::statusTooltip, "Modified but Not Written to Device", nullptr);
     }
     setting.setProperty(DeviceSettingsIds::value, value, nullptr);
@@ -97,7 +97,7 @@ void DeviceSettings::setStatus(const juce::String &key, const Setting::Status st
     }
 
     juce::ScopedValueSetter _(ignoreCallback, true);
-    setting.setProperty(DeviceSettingsIds::status, (int) status, nullptr);
+    setting.setProperty(DeviceSettingsIds::status, static_cast<int>(status), nullptr);
     setting.setProperty(DeviceSettingsIds::statusTooltip, statusTooltip, nullptr);
 }
 

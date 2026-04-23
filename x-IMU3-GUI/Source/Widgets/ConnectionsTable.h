@@ -31,7 +31,7 @@ public:
     const std::vector<Row> &getRows() const;
 
 private:
-    enum class ColumnIds {
+    enum class ColumnId {
         selected = 1,
         descriptor,
         connection,

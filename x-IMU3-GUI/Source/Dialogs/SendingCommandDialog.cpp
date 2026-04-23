@@ -8,9 +8,9 @@ SendingCommandDialog::SendingCommandDialog(const std::string &command, const std
     addAndMakeVisible(closeWhenCompleteButton);
 
     const int tagColumnWidth = UILayout::tagWidth + 5;
-    table.getHeader().addColumn("", (int) ColumnIds::tag, tagColumnWidth, tagColumnWidth, tagColumnWidth);
-    table.getHeader().addColumn("", (int) ColumnIds::headingAndResponse, 1);
-    table.getHeader().addColumn("", (int) ColumnIds::icon, 50, 50, 50);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::tag), tagColumnWidth, tagColumnWidth, tagColumnWidth);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::headingAndResponse), 1);
+    table.getHeader().addColumn("", static_cast<int>(ColumnId::icon), 50, 50, 50);
     table.getHeader().setStretchToFitActive(true);
     table.setHeaderHeight(0);
     table.getViewport()->setScrollBarsShown(true, false);
@@ -139,11 +139,11 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
     delete existingComponentToUpdate;
 
-    switch ((ColumnIds) columnId) {
-        case ColumnIds::tag:
+    switch (static_cast<ColumnId>(columnId)) {
+        case ColumnId::tag:
             return nullptr;
 
-        case ColumnIds::headingAndResponse:
+        case ColumnId::headingAndResponse:
             class HeadingAndResponse : public juce::Component {
             public:
                 HeadingAndResponse(const Row &row)
@@ -181,7 +181,7 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
             return new HeadingAndResponse(rows[(size_t) rowNumber]);
 
-        case ColumnIds::icon:
+        case ColumnId::icon:
             switch (rows[(size_t) rowNumber].state) {
                 case Row::State::inProgress:
                     return new Icon(BinaryData::progress_svg, "In Progress", 0.6f);

@@ -71,11 +71,15 @@ private:
     Icon accelerationRecoveryIcon{BinaryData::vibration_grey_svg, "Acceleration Recovery"};
     Icon magneticRecoveryIcon{BinaryData::magnet_grey_svg, "Magnetic Recovery"};
 
+    SimpleLabel axesConventionLabel { "", UIFonts::getDefaultFont(), juce::Justification::topRight };
+
     const juce::File customModelsDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Models");
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
     static float wrapAngle(float angle);
+
+    static juce::String toString(const ThreeDView::AxesConvention axesConvention);
 
     void writeToValueTree(const ThreeDView::Settings &settings);
 
@@ -84,6 +88,8 @@ private:
     void updateEulerAnglesVisibilities();
 
     void updateAhrsStatusVisibilities();
+
+    void updateAxesConventionLabel();
 
     juce::PopupMenu getMenu() override;
 

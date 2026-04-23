@@ -15,7 +15,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
     addAndMakeVisible(angularRateRecoveryIcon);
     addAndMakeVisible(accelerationRecoveryIcon);
     addAndMakeVisible(magneticRecoveryIcon);
-
+    addAndMakeVisible(axesConventionLabel);
     addAndMakeVisible(loadingLabel);
 
     quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
@@ -82,8 +82,11 @@ void ThreeDViewWindow::resized() {
 
     updateEulerAnglesVisibilities();
     updateAhrsStatusVisibilities();
+    updateAxesConventionLabel();
 
     bounds.reduce(10, 10);
+
+    axesConventionLabel.setBounds(bounds);
 
     const auto setRow = [&](auto &label, auto &value) {
         auto row = bounds.removeFromTop(20);
@@ -161,6 +164,18 @@ float ThreeDViewWindow::wrapAngle(float angle) {
     return angle;
 }
 
+juce::String ThreeDViewWindow::toString(const ThreeDView::AxesConvention axesConvention) {
+    switch (axesConvention) {
+        case ThreeDView::AxesConvention::nwu:
+            return "NWU";
+        case ThreeDView::AxesConvention::enu:
+            return "ENU";
+        case ThreeDView::AxesConvention::ned:
+            return "NED";
+    }
+    return "";
+}
+
 void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings &settings) {
     settingsTree.setProperty("cameraAzimuth", settings.cameraAzimuth, nullptr);
     settingsTree.setProperty("cameraElevation", settings.cameraElevation, nullptr);
@@ -183,9 +198,9 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const {
     settings.modelEnabled = settingsTree.getProperty("modelEnabled", settings.modelEnabled);
     settings.axesEnabled = settingsTree.getProperty("axesEnabled", settings.axesEnabled);
     settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.axesEnabled);
-    settings.model = static_cast<ThreeDView::Model>((int) settingsTree.getProperty("model", static_cast<int>(settings.model)));
+    settings.model = ThreeDView::modelFrom(settingsTree.getProperty("model", static_cast<int>(settings.model)));
     settings.customModel = settingsTree["customModel"];
-    settings.axesConvention = static_cast<ThreeDView::AxesConvention>((int) settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
+    settings.axesConvention = ThreeDView::axesConventionFrom(settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
     return settings;
 }
 
@@ -198,6 +213,11 @@ void ThreeDViewWindow::updateEulerAnglesVisibilities() {
     rollValue.setVisible(visible);
     pitchValue.setVisible(visible);
     yawValue.setVisible(visible);
+}
+
+void ThreeDViewWindow::updateAxesConventionLabel() {
+    axesConventionLabel.setText(toString(readFromValueTree().axesConvention));
+    axesConventionLabel.setVisible(readFromValueTree().axesEnabled && compactView == false);
 }
 
 void ThreeDViewWindow::updateAhrsStatusVisibilities() {
@@ -347,20 +367,14 @@ void ThreeDViewWindow::timerCallback() {
     magneticRecoveryIcon.setIcon(magneticRecoveryState.load() ? BinaryData::magnet_white_svg : BinaryData::magnet_grey_svg);
 }
 
-void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) {
+void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &) {
     if (treeWhosePropertyHasChanged != settingsTree) {
         return;
     }
 
-    if (property.toString() == "eulerAnglesEnabled") {
-        updateEulerAnglesVisibilities();
-        return;
-    }
-
-    if (property.toString() == "ahrsStatusEnabled") {
-        updateAhrsStatusVisibilities();
-        return;
-    }
-
+    updateEulerAnglesVisibilities();
+    updateAhrsStatusVisibilities();
+    updateAxesConventionLabel();
+    
     threeDView.setSettings(readFromValueTree());
 }

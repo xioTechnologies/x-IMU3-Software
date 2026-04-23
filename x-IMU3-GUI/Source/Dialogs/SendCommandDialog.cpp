@@ -22,7 +22,7 @@ SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optio
     typeValue.addItemList({toString(Type::string), toString(Type::number), toString(Type::true_), toString(Type::false_), toString(Type::null)}, 1);
 
     keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberValue.onTextChange = [&] {
-        const auto type = static_cast<Type>(typeValue.getSelectedItemIndex());
+        const auto type = typeFrom(typeValue.getSelectedItemIndex());
         commandValue.setText(createCommand(keyValue.getText(), type, stringValue.getText(), numberValue.getText()), false);
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
@@ -67,7 +67,7 @@ void SendCommandDialog::resized() {
 
 std::string SendCommandDialog::getCommand() {
     juce::ValueTree newCommand{"Command", {{"key", keyValue.getText()}, {"type", typeValue.getSelectedItemIndex()}}};
-    switch (static_cast<Type>(typeValue.getSelectedItemIndex())) {
+    switch (typeFrom(typeValue.getSelectedItemIndex())) {
         case Type::string:
             newCommand.setProperty("value", stringValue.getText(), nullptr);
             break;
@@ -136,8 +136,8 @@ juce::String SendCommandDialog::createCommand(const juce::String &key, const Typ
 void SendCommandDialog::selectCommand(const juce::ValueTree command) {
     keyValue.setText(command["key"], false);
     typeValue.setSelectedItemIndex(command["type"], juce::dontSendNotification);
-    stringValue.setText(static_cast<Type>((int) command["type"]) == Type::string ? command["value"] : "", false);
-    numberValue.setText(static_cast<Type>((int) command["type"]) == Type::number ? command["value"] : "", false);
+    stringValue.setText(typeFrom(command["type"]) == Type::string ? command["value"] : "", false);
+    numberValue.setText(typeFrom(command["type"]) == Type::number ? command["value"] : "", false);
     keyValue.onTextChange();
 }
 
@@ -162,7 +162,7 @@ juce::PopupMenu SendCommandDialog::getCommandKeysMenu() {
 juce::PopupMenu SendCommandDialog::getPreviousCommandsMenu() {
     juce::PopupMenu menu;
     for (const auto command: previousCommands) {
-        menu.addItem(createCommand(command["key"], static_cast<Type>((int) command["type"]), command["value"], command["value"]), [&, command] {
+        menu.addItem(createCommand(command["key"], typeFrom(command["type"]), command["value"], command["value"]), [&, command] {
             selectCommand(command);
         });
     }

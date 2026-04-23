@@ -15,11 +15,35 @@ public:
         custom,
     };
 
+    static Model modelFrom(const int integer) {
+        switch (static_cast<Model>(integer)) {
+            case Model::board:
+                return Model::board;
+            case Model::housing:
+                return Model::housing;
+            case Model::custom:
+                return Model::custom;
+        }
+        return Model::board;
+    }
+
     enum class AxesConvention {
         nwu,
         enu,
         ned,
     };
+
+    static AxesConvention axesConventionFrom(const int integer) {
+        switch (static_cast<AxesConvention>(integer)) {
+            case AxesConvention::nwu:
+                return AxesConvention::nwu;
+            case AxesConvention::enu:
+                return AxesConvention::enu;
+            case AxesConvention::ned:
+                return AxesConvention::ned;
+        }
+        return AxesConvention::nwu;
+    }
 
     struct Settings {
         float cameraAzimuth = 45.0f;
