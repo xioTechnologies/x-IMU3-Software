@@ -38,7 +38,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this] {
             if (auto *dialog = dynamic_cast<AvailableConnectionsDialog *>(DialogQueue::getSingleton().getActive())) {
                 for (const auto &config: dialog->getConnectionConfigs()) {
-                    connectionPanelContainer.connectToDevice(*config, true);
+                    connectionPanelContainer.connectToDevice(*config, dynamic_cast<ximu3::MuxConnectionConfig*>(config) == nullptr);
                 }
             }
             return true;
