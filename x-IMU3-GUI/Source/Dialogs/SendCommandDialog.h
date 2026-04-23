@@ -24,6 +24,22 @@ private:
         null,
     };
 
+    static Type typeFrom(const int integer) {
+        switch (static_cast<Type>(integer)) {
+            case Type::string:
+                return Type::string;
+            case Type::number:
+                return Type::number;
+            case Type::true_:
+                return Type::true_;
+            case Type::false_:
+                return Type::false_;
+            case Type::null:
+                return Type::null;
+        }
+        return Type::string;
+    }
+
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
     IconButton commandKeysButton{BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this)};

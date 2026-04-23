@@ -65,7 +65,7 @@ juce::var Setting::getValue() const {
 
 void Setting::setValue(const juce::var &value) {
     tree.setPropertyExcludingListener(this, DeviceSettingsIds::value, value, nullptr);
-    tree.setProperty(DeviceSettingsIds::status, (int) Status::modified, nullptr);
+    tree.setProperty(DeviceSettingsIds::status, static_cast<int>(Status::modified), nullptr);
     tree.setProperty(DeviceSettingsIds::statusTooltip, "Modified but Not Written to Device", nullptr);
 }
 
@@ -78,7 +78,7 @@ void Setting::updateIcon() {
     };
 
     if (parentIfExpandable == nullptr) {
-        updateIcons((Status) (int) tree[DeviceSettingsIds::status], tree[DeviceSettingsIds::statusTooltip]);
+        updateIcons(statusFrom(tree[DeviceSettingsIds::status]), tree[DeviceSettingsIds::statusTooltip]);
         return;
     }
 
@@ -97,7 +97,7 @@ void Setting::updateIcon() {
         }
         return status;
     };
-    updateIcons((Status) (int) getStatus(tree)[DeviceSettingsIds::status], getStatus(tree)[DeviceSettingsIds::statusTooltip]);
+    updateIcons(statusFrom(getStatus(tree)[DeviceSettingsIds::status]), getStatus(tree)[DeviceSettingsIds::statusTooltip]);
 }
 
 void Setting::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) {

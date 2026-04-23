@@ -13,7 +13,7 @@ public:
     void resized() override;
 
 private:
-    enum class ColumnIds {
+    enum class ColumnId {
         tag = 1,
         headingAndResponse,
         icon,

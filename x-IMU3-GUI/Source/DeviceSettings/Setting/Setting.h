@@ -18,6 +18,18 @@ public:
         warning,
     };
 
+    static Status statusFrom(const int integer) {
+        switch (static_cast<Status>(integer)) {
+            case Status::normal:
+                return Status::normal;
+            case Status::modified:
+                return Status::modified;
+            case Status::warning:
+                return Status::warning;
+        }
+        return Status::normal;
+    }
+
     static constexpr int rowMargin = 4;
 
     explicit Setting(const juce::ValueTree &tree_, DeviceSettingsItem *const parentIfExpandable_ = nullptr);

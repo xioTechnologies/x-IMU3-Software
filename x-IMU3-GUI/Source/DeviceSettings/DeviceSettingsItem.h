@@ -91,7 +91,7 @@ private:
                 return true;
             }
         }
-        return (int) tree_[DeviceSettingsIds::status] != (int) Setting::Status::normal;
+        return (int) tree_[DeviceSettingsIds::status] != static_cast<int>(Setting::Status::normal);
     }
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(DeviceSettingsItem)
