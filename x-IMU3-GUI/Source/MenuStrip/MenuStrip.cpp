@@ -408,7 +408,7 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
 
         for (auto id: ids) {
             const auto toggled = findWindow(windowLayout, id).isValid();
-            menu.addItem(windowTitles.at(id), true, toggled, [this, id_ = id, toggled] {
+            menu.addItem(getWindowTitle(id), true, toggled, [this, id_ = id, toggled] {
                 if (toggled) {
                     for (auto child = findWindow(windowLayout, id_); child.isValid() && child.getNumChildren() == 0;) {
                         auto parent = child.getParent();
