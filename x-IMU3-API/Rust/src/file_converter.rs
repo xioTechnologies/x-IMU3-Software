@@ -92,13 +92,13 @@ impl FileConverter {
                 }
             };
 
-            let end_of_file_counter = Arc::new(AtomicUsize::new(0));
+            let close_counter = Arc::new(AtomicUsize::new(0));
 
             for connection in connections.iter() {
-                let end_of_file_counter = end_of_file_counter.clone();
+                let close_counter = close_counter.clone();
 
-                connection.add_end_of_file_closure(Box::new(move || {
-                    end_of_file_counter.fetch_add(1, Ordering::SeqCst);
+                connection.add_close_closure(Box::new(move || {
+                    close_counter.fetch_add(1, Ordering::SeqCst);
                 }));
 
                 if connection.open().is_err() {
@@ -117,7 +117,7 @@ impl FileConverter {
                 progress.bytes_processed = connections.iter().map(|connection| connection.get_statistics().data_total).sum();
                 progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.bytes_total as f64)) as f32;
 
-                if end_of_file_counter.load(Ordering::SeqCst) == connections.len() {
+                if close_counter.load(Ordering::SeqCst) == connections.len() {
                     break;
                 }
 

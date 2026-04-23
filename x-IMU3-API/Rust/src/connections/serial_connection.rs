@@ -1,5 +1,6 @@
 use crate::connection_config::*;
 use crate::connections::*;
+use crate::dispatcher::DispatcherData;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
 use serialport::FlowControl;
@@ -56,6 +57,8 @@ impl GenericConnection for SerialConnection {
                     serial_port.write(&data).ok();
                 }
             }
+
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Close()).ok();
         });
 
         Ok(())

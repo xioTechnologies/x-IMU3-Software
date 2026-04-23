@@ -611,7 +611,7 @@ uint64_t XIMU3_connection_add_notification_callback(struct XIMU3_Connection *con
 
 uint64_t XIMU3_connection_add_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackErrorMessage callback, void *context);
 
-uint64_t XIMU3_connection_add_end_of_file_callback(struct XIMU3_Connection *connection, void (*callback)(void *context), void *context);
+uint64_t XIMU3_connection_add_close_callback(struct XIMU3_Connection *connection, void (*callback)(void *context), void *context);
 
 void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t callback_id);
 

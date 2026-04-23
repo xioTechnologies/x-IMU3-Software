@@ -41,7 +41,7 @@ pub fn run(config: &ConnectionConfig) {
         connection.add_button_closure(Box::new(button_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
-        connection.add_end_of_file_closure(Box::new(end_of_file_closure));
+        connection.add_close_closure(Box::new(end_of_file_closure));
 
         std::thread::sleep(std::time::Duration::from_secs(60));
     } else {

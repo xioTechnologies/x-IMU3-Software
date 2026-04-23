@@ -1,5 +1,6 @@
 use crate::connection_config::*;
 use crate::connections::*;
+use crate::dispatcher::DispatcherData;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
@@ -56,6 +57,8 @@ impl GenericConnection for UdpConnection {
                     socket.send_to(&data, socket_address).ok();
                 }
             }
+
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Close()).ok();
         });
 
         Ok(())

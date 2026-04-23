@@ -39,12 +39,13 @@ impl GenericConnection for FileConnection {
             while close_receiver.try_recv().is_err() {
                 if let Ok(number_of_bytes) = file.read(&mut buffer) {
                     if number_of_bytes == 0 {
-                        receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::EndOfFile()).ok();
                         break;
                     }
                     receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
                 }
             }
+
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Close()).ok();
         });
 
         Ok(())
