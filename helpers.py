@@ -32,7 +32,7 @@ def pascal_case(string: str) -> str:
 
 
 def snake_case(string: str) -> str:
-    return "_".join([w.lower() for w in split_words(string)])
+    return "_".join(w.lower() for w in split_words(string))
 
 
 def title_case(string: str) -> str:

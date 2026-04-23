@@ -49,7 +49,7 @@ for block in get_blocks(c_code, "typedef struct"):
     block = block.replace("enum", "public")
     block = block.replace("    struct", "    public")
 
-    block = "\n".join([p if "*array" not in p else "    public IntPtr array;" for p in block.splitlines()])
+    block = "\n".join(p if "*array" not in p else "    public IntPtr array;" for p in block.splitlines())
 
     block = block.replace("char char_array", "[MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE)]\n    public byte[] char_array")
     block = block.replace("[XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE]", "")
