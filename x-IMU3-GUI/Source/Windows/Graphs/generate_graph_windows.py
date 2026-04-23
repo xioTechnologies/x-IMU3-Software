@@ -162,10 +162,15 @@ windows = [
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&, previous = std::optional<bool>()](auto message) mutable {
         const auto edge = message.edge > 0.0f;
-        update(message.timestamp, { edge ? 0.0f : 1.0f });
-        update(message.timestamp, { edge ? 1.0f : 0.0f });
+
+        if (previous && *previous != edge) {
+            update(message.timestamp, {edge ? 0.0f : 1.0f});
+        }
+        update(message.timestamp, {edge ? 1.0f : 0.0f});
+
+        previous = edge;
     }));""",
     ),
     Window(
@@ -242,10 +247,15 @@ windows = [
         legend_strings='{""}',
         legend_colours="{UIColours::graphChannel1}",
         callback_implementations="""\
-    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&, previous = std::optional<bool>()](auto message) mutable {
         const auto state = message.state > 0.0f;
-        update(message.timestamp, { state ? 0.0f : 1.0f });
-        update(message.timestamp, { state ? 1.0f : 0.0f });
+
+        if (previous && *previous != state) {
+            update(message.timestamp, {state ? 0.0f : 1.0f});
+        }
+        update(message.timestamp, {state ? 1.0f : 0.0f});
+
+        previous = state;
     }));""",
     ),
     Window(
