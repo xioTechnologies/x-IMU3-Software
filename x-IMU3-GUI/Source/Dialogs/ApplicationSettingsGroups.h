@@ -34,6 +34,7 @@ private:
     CustomToggleButton tcpToggle{"TCP"};
     CustomToggleButton udpToggle{"UDP"};
     CustomToggleButton bluetoothToggle{"Bluetooth"};
+    CustomToggleButton muxToggle{"Mux"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AvailableConnectionsGroup)
 };

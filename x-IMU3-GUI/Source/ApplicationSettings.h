@@ -15,6 +15,7 @@ public:
         juce::CachedValue<bool> tcp{tree, "tcp", nullptr, false};
         juce::CachedValue<bool> udp{tree, "udp", nullptr, true};
         juce::CachedValue<bool> bluetooth{tree, "bluetooth", nullptr, true};
+        juce::CachedValue<bool> mux{tree, "mux", nullptr, false};
     } availableConnections{tree.getOrCreateChildWithName("AvailableConnections", nullptr)};
 
     struct {

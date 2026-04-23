@@ -11,10 +11,10 @@ class AvailableConnectionsDialog : public Dialog,
 public:
     struct ExistingConnection {
         juce::String descriptor;
-        std::shared_ptr<ximu3::ConnectionConfig> config;
+        std::shared_ptr<ximu3::Connection> connection;
 
         bool operator==(const ximu3::ConnectionConfig &config_) const {
-            return config->toString() == config_.toString();
+            return connection->getConfig()->toString() == config_.toString();
         }
     };
 
@@ -33,6 +33,8 @@ private:
         [](const auto &) {
         }
     };
+
+    std::vector<std::unique_ptr<ximu3::MuxScanner>> muxScanners;
 
     ConnectionsTable table;
 
