@@ -20,7 +20,7 @@ public:
         std::vector<std::unique_ptr<ximu3::Connection> > connections;
 
         for (auto device: devices) {
-            std::cout << "Found " << ximu3::XIMU3_device_to_string(device) << std::endl;
+            std::cout << "Found " << device.toString() << std::endl;
 
             auto connection = std::make_unique<ximu3::Connection>(*ximu3::ConnectionConfig::from(device));
 

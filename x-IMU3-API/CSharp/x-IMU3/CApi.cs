@@ -849,6 +849,12 @@ namespace Ximu3
         public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_device_free(XIMU3_Device device);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Device XIMU3_device_clone(XIMU3_Device device);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_device_to_string(XIMU3_Device device);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

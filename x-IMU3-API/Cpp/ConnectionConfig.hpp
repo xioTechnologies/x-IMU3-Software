@@ -2,6 +2,7 @@
 
 #include "../C/Ximu3.h"
 #include <cstring>
+#include "Device.hpp"
 #include <memory>
 #include <string>
 
@@ -18,7 +19,7 @@ namespace ximu3 {
 
         virtual std::string toString() const = 0;
 
-        static std::shared_ptr<ConnectionConfig> from(const XIMU3_Device &device);
+        static std::shared_ptr<ConnectionConfig> from(const Device &device);
 
     protected:
         static void stringCopy(char *destination, const char *source, const size_t destinationSize) {
@@ -146,7 +147,7 @@ namespace ximu3 {
         friend class Connection;
     };
 
-    inline std::shared_ptr<ConnectionConfig> ConnectionConfig::from(const XIMU3_Device &device) {
+    inline std::shared_ptr<ConnectionConfig> ConnectionConfig::from(const Device &device) {
         switch (device.connection_type) {
             case XIMU3_ConnectionTypeUsb:
                 return std::make_shared<UsbConnectionConfig>(device.usb_connection_config);

@@ -13,7 +13,7 @@ namespace Ximu3Examples
 
             foreach (var device in devices)
             {
-                Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(device)));
+                Console.WriteLine("Found " + device.ToString());
 
                 var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(device)!);
 

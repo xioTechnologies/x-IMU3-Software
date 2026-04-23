@@ -22,9 +22,9 @@ public:
     static void launch(juce::ThreadPool &threadPool);
 
 private:
-    std::vector<ximu3::XIMU3_Device> devices;
+    std::vector<ximu3::Device> devices;
     ximu3::PortScanner portScanner{
-        [this](const std::vector<ximu3::XIMU3_Device> &devices_) {
+        [this](const std::vector<ximu3::Device> &devices_) {
             auto self = SafePointer<juce::Component>(this);
             juce::MessageManager::callAsync([this, self, devices_] {
                 if (self == nullptr) {

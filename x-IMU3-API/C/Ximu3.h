@@ -691,6 +691,10 @@ struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angle
 
 struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
 
+void XIMU3_device_free(struct XIMU3_Device device);
+
+struct XIMU3_Device XIMU3_device_clone(struct XIMU3_Device device);
+
 const char *XIMU3_device_to_string(struct XIMU3_Device device);
 
 void XIMU3_devices_free(struct XIMU3_Devices devices);

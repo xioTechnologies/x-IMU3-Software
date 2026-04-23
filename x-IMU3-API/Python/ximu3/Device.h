@@ -10,6 +10,7 @@ typedef struct {
 } Device;
 
 static void device_free(Device *self) {
+    XIMU3_device_free(self->wrapped);
     Py_TYPE(self)->tp_free(self);
 }
 
@@ -66,7 +67,7 @@ static PyObject *device_from(const XIMU3_Device *const device) {
         return NULL;
     }
 
-    self->wrapped = *device;
+    self->wrapped = XIMU3_device_clone(*device);
     return (PyObject *) self;
 }
 

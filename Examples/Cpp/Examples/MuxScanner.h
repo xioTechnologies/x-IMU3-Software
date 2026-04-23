@@ -20,7 +20,7 @@ public:
             return;
         }
 
-        std::cout << "Found " << ximu3::XIMU3_device_to_string(usbDevices[0]) << std::endl;
+        std::cout << "Found " << usbDevices[0].toString() << std::endl;
 
         // Open connection
         ximu3::Connection usbConnection(*ximu3::ConnectionConfig::from(usbDevices[0]));
@@ -47,16 +47,16 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<ximu3::XIMU3_Device> &)> callback = [](const auto &devices) {
+    std::function<void(const std::vector<ximu3::Device> &)> callback = [](const auto &devices) {
         printDevices(devices);
     };
 
-    static void printDevices(const std::vector<ximu3::XIMU3_Device> &devices) {
+    static void printDevices(const std::vector<ximu3::Device> &devices) {
         std::cout << devices.size() << " device(s) found" << std::endl;
 
         for (const auto &device: devices) {
             std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::ConnectionConfig::from(device)->toString() << std::endl;
-            // std::cout << ximu3::XIMU3_device_to_string(device) << std::endl; // alternative to above
+            // std::cout << device.toString() << std::endl; // alternative to above
         }
     }
 };

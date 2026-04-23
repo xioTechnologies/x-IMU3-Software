@@ -4,22 +4,22 @@ namespace Ximu3
 {
     public class ConnectionConfig
     {
-        public static ConnectionConfig? From(CApi.XIMU3_Device device)
+        public static ConnectionConfig? From(Device device)
         {
-            switch (device.connection_type)
+            switch (device.wrapped.connection_type)
             {
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUsb:
-                    return new UsbConnectionConfig(device.usb_connection_config);
+                    return new UsbConnectionConfig(device.wrapped.usb_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeSerial:
-                    return new SerialConnectionConfig(device.serial_connection_config);
+                    return new SerialConnectionConfig(device.wrapped.serial_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth:
-                    return new BluetoothConnectionConfig(device.bluetooth_connection_config);
+                    return new BluetoothConnectionConfig(device.wrapped.bluetooth_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp:
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile:
                     break;
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux:
-                    return new MuxConnectionConfig(device.mux_connection_config);
+                    return new MuxConnectionConfig(device.wrapped.mux_connection_config);
             }
 
             return null;

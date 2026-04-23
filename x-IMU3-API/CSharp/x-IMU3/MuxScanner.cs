@@ -5,7 +5,7 @@ namespace Ximu3
 {
     public class MuxScanner(Connection connection, MuxScanner.Callback callback) : IDisposable
     {
-        public delegate void Callback(CApi.XIMU3_Device[] devices);
+        public delegate void Callback(Device[] devices);
 
         private static void CallbackInternal(CApi.XIMU3_Devices devices, IntPtr context)
         {
@@ -25,12 +25,12 @@ namespace Ximu3
             GC.SuppressFinalize(this);
         }
 
-        public CApi.XIMU3_Device[] GetDevices()
+        public Device[] GetDevices()
         {
             return Helpers.ToArrayAndFree(CApi.XIMU3_mux_scanner_get_devices(wrapped));
         }
 
-        public static CApi.XIMU3_Device[] Scan(Connection connection, UInt32 numberOfChannels = CApi.XIMU3_MAX_NUMBER_OF_MUX_CHANNELS, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
+        public static Device[] Scan(Connection connection, UInt32 numberOfChannels = CApi.XIMU3_MAX_NUMBER_OF_MUX_CHANNELS, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
             return Helpers.ToArrayAndFree(CApi.XIMU3_mux_scanner_scan(connection.wrapped, numberOfChannels, retries, timeout));
         }

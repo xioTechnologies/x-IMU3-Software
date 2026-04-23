@@ -20,7 +20,7 @@ public:
             return;
         }
 
-        std::cout << "Found " << ximu3::XIMU3_device_to_string(usbDevices[0]) << std::endl;
+        std::cout << "Found " << usbDevices[0].toString() << std::endl;
 
         // Open connection
         ximu3::Connection usbConnection(*ximu3::ConnectionConfig::from(usbDevices[0]));
@@ -41,7 +41,7 @@ public:
                 return;
             }
 
-            std::cout << "Found " << ximu3::XIMU3_device_to_string(muxDevices[0]) << std::endl;
+            std::cout << "Found " << muxDevices[0].toString() << std::endl;
 
             const auto config = ximu3::ConnectionConfig::from(muxDevices[0]);
 

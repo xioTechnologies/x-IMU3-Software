@@ -78,6 +78,21 @@ impl From<DeviceC> for Device {
 }
 
 #[no_mangle]
+pub extern "C" fn XIMU3_device_free(device: DeviceC) {
+    if device.connection_type == ConnectionType::Mux {
+        XIMU3_mux_connection_config_free(device.mux_connection_config);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_device_clone(mut device: DeviceC) -> DeviceC {
+    if device.connection_type == ConnectionType::Mux {
+        device.mux_connection_config = XIMU3_mux_connection_config_clone(device.mux_connection_config);
+    }
+    device
+}
+
+#[no_mangle]
 pub extern "C" fn XIMU3_device_to_string(device: DeviceC) -> *const c_char {
     str_to_char_ptr(&Device::from(device).to_string())
 }
@@ -107,9 +122,7 @@ impl From<Vec<Device>> for Devices {
 pub extern "C" fn XIMU3_devices_free(devices: Devices) {
     let vector = unsafe { Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize) };
 
-    for device in &vector {
-        if device.connection_type == ConnectionType::Mux {
-            XIMU3_mux_connection_config_free(device.mux_connection_config);
-        }
+    for device in vector {
+        XIMU3_device_free(device);
     }
 }
