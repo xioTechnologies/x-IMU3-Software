@@ -276,13 +276,8 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
             text += "    \\n";
             enabled = false;
         }
-
-        if (static_cast<char>(channel) == '^') {
-            text += "    ^";
-        }
-
-        if (static_cast<char>(channel) == '_') {
-            text += "    _";
+        else if (std::isgraph(channel)) {
+            text += "    " + juce::String::charToString(channel);
         }
 
         firstChannelValue.addItem(text, 1 + channel);
