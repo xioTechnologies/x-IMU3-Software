@@ -41,7 +41,7 @@ private:
         bool hideUnusedSettings = true;
         bool readSettingsWhenWindowOpens = true;
         bool writeSettingsWhenModified = true;
-        juce::File customSchema;
+        juce::String customSchema;
     };
 
     static void expandOrCollapseAll(juce::TreeViewItem &rootItem, const bool expand);

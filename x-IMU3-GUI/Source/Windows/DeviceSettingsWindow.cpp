@@ -163,9 +163,9 @@ void DeviceSettingsWindow::writeToValueTree(const Settings &settings) {
     settingsTree.setProperty("hideUnusedSettings", settings.hideUnusedSettings, nullptr);
     settingsTree.setProperty("readSettingsWhenWindowOpens", settings.readSettingsWhenWindowOpens, nullptr);
     settingsTree.setProperty("writeSettingsWhenModified", settings.writeSettingsWhenModified, nullptr);
-    if (settingsTree.getProperty("customSchema") != settings.customSchema.getFullPathName()) // avoid callback when property doesn't exist
+    if (settingsTree.getProperty("customSchema") != settings.customSchema) // avoid callback when property doesn't exist
     {
-        settingsTree.setProperty("customSchema", settings.customSchema.getFullPathName(), nullptr);
+        settingsTree.setProperty("customSchema", settings.customSchema, nullptr);
     }
 }
 
@@ -273,9 +273,9 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCHEMA"), nullptr);
-    menu.addItem("x-IMU3", true, readFromValueTree().customSchema == juce::File(), [&] {
+    menu.addItem("x-IMU3", true, readFromValueTree().customSchema.isEmpty(), [&] {
         auto settings = readFromValueTree();
-        settings.customSchema = juce::File();
+        settings.customSchema = {};
         writeToValueTree(settings);
     });
     juce::PopupMenu customSchemasMenu;
@@ -290,11 +290,11 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
             customSchemasDirectory.createDirectory();
             fileChooser->getResult().copyFileTo(customSchema);
 
-            if (readFromValueTree().customSchema == customSchema) {
+            if (readFromValueTree().customSchema == customSchema.getFileNameWithoutExtension()) {
                 settingsTree.sendPropertyChangeMessage("customSchema");
             } else {
                 auto settings = readFromValueTree();
-                settings.customSchema = customSchema;
+                settings.customSchema = customSchema.getFileNameWithoutExtension();
                 writeToValueTree(settings);
             }
         });
@@ -303,17 +303,17 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
         customSchemasMenu.addSeparator();
         customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto &file: files) {
-            const auto ticked = readFromValueTree().customSchema == file.getFullPathName();
+            const auto ticked = readFromValueTree().customSchema == file.getFileNameWithoutExtension();
             customSchemasMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file] {
                 auto settings = readFromValueTree();
-                settings.customSchema = file;
+                settings.customSchema = file.getFileNameWithoutExtension();
                 writeToValueTree(settings);
             });
         }
     }
 
-    const auto suffix = readFromValueTree().customSchema != juce::File() ? (" (" + juce::File(readFromValueTree().customSchema).getFileNameWithoutExtension() + ")") : "";
-    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, readFromValueTree().customSchema != juce::File());
+    const auto suffix = readFromValueTree().customSchema.isNotEmpty() ? (" (" + readFromValueTree().customSchema + ")") : "";
+    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, readFromValueTree().customSchema.isNotEmpty());
 
     return menu;
 }
@@ -325,8 +325,8 @@ void DeviceSettingsWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePr
 
     if (property.toString() == "customSchema") {
         const auto tree = [&] {
-            if (const auto customSchemaFile = readFromValueTree().customSchema; customSchemaFile != juce::File()) {
-                return juce::ValueTree::fromXml(juce::File(customSchemaFile).loadFileAsString());
+            if (const auto customSchema = readFromValueTree().customSchema; customSchema.isNotEmpty()) {
+                return juce::ValueTree::fromXml(customSchemasDirectory.getChildFile(customSchema).withFileExtension(".xml").loadFileAsString());
             }
             return juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml);
         }();
