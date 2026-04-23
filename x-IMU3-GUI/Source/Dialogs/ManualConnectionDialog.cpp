@@ -273,16 +273,16 @@ ManualMuxConnectionDialog::ManualMuxConnectionDialog(std::vector<ximu3::Connecti
         bool enabled = true;
 
         if (static_cast<char>(channel) == '\n') {
-            text += " '\\n'";
+            text += "    \\n";
             enabled = false;
         }
 
         if (static_cast<char>(channel) == '^') {
-            text += " '^'";
+            text += "    ^";
         }
 
         if (static_cast<char>(channel) == '_') {
-            text += " '_'";
+            text += "    _";
         }
 
         firstChannelValue.addItem(text, 1 + channel);
