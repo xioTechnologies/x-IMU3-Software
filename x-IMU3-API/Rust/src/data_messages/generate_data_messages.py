@@ -138,7 +138,7 @@ for message in messages:
             ("$name_camel_case$", helpers.camel_case(message.name)),
             ("$ascii_id$", message.ascii_id),
             ("$arguments_struct_declare$", "".join("pub " + helpers.snake_case(n) + ": f32,\n    " for n in message.argument_names).rstrip()),
-            ("$arguments_struct_default$", "".join([helpers.snake_case(n) + ": 0.0,\n            " for n in message.argument_names]).rstrip("\n    ")),
+            ("$arguments_struct_default$", "".join(helpers.snake_case(n) + ": 0.0,\n            " for n in message.argument_names).rstrip("\n    ")),
             ("$arguments_scan_fmt$", "".join("{f}," for _ in message.argument_names).rstrip(",")),
             ("$arguments_types$", "".join("f32, " for _ in message.argument_names).rstrip(", ")),
             ("$arguments_scan_result$", "".join(helpers.snake_case(n) + ", " for n in message.argument_names).rstrip(", ")),

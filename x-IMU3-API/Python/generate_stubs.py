@@ -7,11 +7,11 @@ def extract(line: str, start_token: str, end_token: str) -> str:
 
 lines = Path("ximu3/ximu3.c").read_text().splitlines()
 
-constants = [extract(l, '"', '"') for l in lines if "PyModule_AddIntConstant" in l]
+constants = (extract(l, '"', '"') for l in lines if "PyModule_AddIntConstant" in l)
 
-functions = [extract(l, ", ", ")") for l in lines if "PyModule_AddFunctions" in l]
+functions = (extract(l, ", ", ")") for l in lines if "PyModule_AddFunctions" in l)
 
-objects = [extract(l, "&", ",") for l in lines if "add_object(module" in l]
+objects = (extract(l, "&", ",") for l in lines if "add_object(module" in l)
 
 Path("ximu3-stubs/__init__.pyi").write_text(f"""\
 {"\n".join(f"{c}: int" for c in constants)}
