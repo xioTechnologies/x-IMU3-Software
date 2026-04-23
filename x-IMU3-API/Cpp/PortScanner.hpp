@@ -9,7 +9,7 @@
 namespace ximu3 {
     class PortScanner {
     public:
-        explicit PortScanner(std::function<void(const std::vector<XIMU3_Device> &)> callback_) {
+        explicit PortScanner(std::function<void(const std::vector<ximu3::Device> &)> callback_) {
             callback = [callback_](XIMU3_Devices devices) {
                 callback_(Helpers::toVectorAndFree(devices));
             };
@@ -20,15 +20,15 @@ namespace ximu3 {
             XIMU3_port_scanner_free(wrapped);
         }
 
-        std::vector<XIMU3_Device> getDevices() {
+        std::vector<ximu3::Device> getDevices() {
             return Helpers::toVectorAndFree(XIMU3_port_scanner_get_devices(wrapped));
         }
 
-        static std::vector<XIMU3_Device> scan() {
+        static std::vector<ximu3::Device> scan() {
             return Helpers::toVectorAndFree(XIMU3_port_scanner_scan());
         }
 
-        static std::vector<XIMU3_Device> scanFilter(XIMU3_PortType portType) {
+        static std::vector<ximu3::Device> scanFilter(XIMU3_PortType portType) {
             return Helpers::toVectorAndFree(XIMU3_port_scanner_scan_filter(portType));
         }
 

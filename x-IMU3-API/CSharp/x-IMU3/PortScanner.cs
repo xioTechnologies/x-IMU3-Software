@@ -5,7 +5,7 @@ namespace Ximu3
 {
     public class PortScanner(PortScanner.Callback callback) : IDisposable
     {
-        public delegate void Callback(CApi.XIMU3_Device[] devices);
+        public delegate void Callback(Device[] devices);
 
         private static void CallbackInternal(CApi.XIMU3_Devices devices, IntPtr context)
         {
@@ -25,17 +25,17 @@ namespace Ximu3
             GC.SuppressFinalize(this);
         }
 
-        public CApi.XIMU3_Device[] GetDevices()
+        public Device[] GetDevices()
         {
             return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_get_devices(wrapped));
         }
 
-        public static CApi.XIMU3_Device[] Scan()
+        public static Device[] Scan()
         {
             return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_scan());
         }
 
-        public static CApi.XIMU3_Device[] ScanFilter(CApi.XIMU3_PortType portType)
+        public static Device[] ScanFilter(CApi.XIMU3_PortType portType)
         {
             return Helpers.ToArrayAndFree(CApi.XIMU3_port_scanner_scan_filter(portType));
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../C/Ximu3.h"
+#include "Device.hpp"
 #include <functional>
 #include <string>
 #include <type_traits>
@@ -47,7 +48,11 @@ namespace ximu3 {
         }
 
         static auto toVectorAndFree(const XIMU3_Devices &devices) {
-            const auto vector = toVector<XIMU3_Device>(devices);
+            std::vector<ximu3::Device> vector;
+            for (auto device : toVector<XIMU3_Device>(devices)) {
+                vector.push_back(ximu3::Device{device});
+            }
+
             XIMU3_devices_free(devices);
             return vector;
         }

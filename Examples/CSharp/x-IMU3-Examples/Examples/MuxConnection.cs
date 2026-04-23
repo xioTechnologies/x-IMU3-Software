@@ -15,7 +15,7 @@
                 return;
             }
 
-            Console.WriteLine("Found " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_device_to_string(usbDevices[0])));
+            Console.WriteLine("Found " + usbDevices[0].ToString());
 
             // Open connection
             var usbConnection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(usbDevices[0])!);

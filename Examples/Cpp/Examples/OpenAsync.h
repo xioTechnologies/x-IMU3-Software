@@ -19,7 +19,7 @@ public:
             return;
         }
 
-        std::cout << "Found " << ximu3::XIMU3_device_to_string(devices[0]) << std::endl;
+        std::cout << "Found " << devices[0].toString() << std::endl;
 
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionConfig::from(devices[0]));

@@ -48,13 +48,13 @@ namespace Ximu3
             return pointers;
         }
 
-        internal static CApi.XIMU3_Device[] ToArrayAndFree(CApi.XIMU3_Devices devices)
+        internal static Device[] ToArrayAndFree(CApi.XIMU3_Devices devices)
         {
-            var array = new CApi.XIMU3_Device[devices.length];
+            var array = new Device[devices.length];
 
             for (var i = 0; i < devices.length; i++)
             {
-                array[i] = Marshal.PtrToStructure<CApi.XIMU3_Device>(devices.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device)));
+                array[i] = new Device(Marshal.PtrToStructure<CApi.XIMU3_Device>(devices.array + i * Marshal.SizeOf(typeof(CApi.XIMU3_Device))));
             }
 
             CApi.XIMU3_devices_free(devices);
