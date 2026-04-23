@@ -11,10 +11,15 @@ ButtonGraphWindow::ButtonGraphWindow(const juce::ValueTree &windowLayout_, const
                   {UIColours::graphChannel1},
                   true,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&, previous = std::optional<bool>()](auto message) mutable {
         const auto state = message.state > 0.0f;
-        update(message.timestamp, { state ? 0.0f : 1.0f });
-        update(message.timestamp, { state ? 1.0f : 0.0f });
+
+        if (previous && *previous != state) {
+            update(message.timestamp, {state ? 0.0f : 1.0f});
+        }
+        update(message.timestamp, {state ? 1.0f : 0.0f});
+
+        previous = state;
     }));
 }
 

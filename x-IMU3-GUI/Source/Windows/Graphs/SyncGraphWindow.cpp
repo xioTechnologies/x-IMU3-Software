@@ -11,10 +11,15 @@ SyncGraphWindow::SyncGraphWindow(const juce::ValueTree &windowLayout_, const juc
                   {UIColours::graphChannel1},
                   true,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&, previous = std::optional<bool>()](auto message) mutable {
         const auto edge = message.edge > 0.0f;
-        update(message.timestamp, { edge ? 0.0f : 1.0f });
-        update(message.timestamp, { edge ? 1.0f : 0.0f });
+
+        if (previous && *previous != edge) {
+            update(message.timestamp, {edge ? 0.0f : 1.0f});
+        }
+        update(message.timestamp, {edge ? 1.0f : 0.0f});
+
+        previous = edge;
     }));
 }
 
