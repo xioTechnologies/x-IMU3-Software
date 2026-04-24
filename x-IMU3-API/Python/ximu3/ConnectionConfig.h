@@ -654,7 +654,7 @@ static PyObject *mux_connection_config_from(XIMU3_MuxConnectionConfig *const con
         return NULL;
     }
 
-    self->wrapped = config;
+    self->wrapped = XIMU3_mux_connection_config_clone(config);
     return (PyObject *) self;
 }
 
