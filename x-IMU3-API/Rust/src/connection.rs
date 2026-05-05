@@ -174,7 +174,7 @@ impl Connection {
         let mut transactions: Vec<Transaction> = commands
             .iter()
             .map(|command| Transaction {
-                command: CommandMessage::parse(command).map(|message| Some(message)).unwrap_or(None),
+                command: CommandMessage::parse(command),
                 response: None,
             })
             .collect();

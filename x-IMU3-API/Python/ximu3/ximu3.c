@@ -66,8 +66,6 @@ PyMODINIT_FUNC PyInit_ximu3() {
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_BUFFER_OVERRUN", XIMU3_ReceiveErrorBufferOverrun) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_MESSAGE_IDENTIFIER", XIMU3_ReceiveErrorInvalidMessageIdentifier) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_JSON", XIMU3_ReceiveErrorInvalidJson) == 0) &&
-        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_IS_NOT_AN_OBJECT", XIMU3_ReceiveErrorJsonIsNotAnObject) == 0) &&
-        (PyModule_AddIntConstant(module, "RECEIVE_ERROR_JSON_OBJECT_IS_NOT_A_SINGLE_KEY_VALUE_PAIR", XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_MUX_MESSAGE_LENGTH", XIMU3_ReceiveErrorInvalidMuxMessageLength) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_ESCAPE_SEQUENCE", XIMU3_ReceiveErrorInvalidEscapeSequence) == 0) &&
         (PyModule_AddIntConstant(module, "RECEIVE_ERROR_INVALID_BINARY_MESSAGE_LENGTH", XIMU3_ReceiveErrorInvalidBinaryMessageLength) == 0) &&

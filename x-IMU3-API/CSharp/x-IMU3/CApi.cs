@@ -77,8 +77,6 @@ namespace Ximu3
             XIMU3_ReceiveErrorBufferOverrun,
             XIMU3_ReceiveErrorInvalidMessageIdentifier,
             XIMU3_ReceiveErrorInvalidJson,
-            XIMU3_ReceiveErrorJsonIsNotAnObject,
-            XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair,
             XIMU3_ReceiveErrorInvalidMuxMessageLength,
             XIMU3_ReceiveErrorInvalidEscapeSequence,
             XIMU3_ReceiveErrorInvalidBinaryMessageLength,
