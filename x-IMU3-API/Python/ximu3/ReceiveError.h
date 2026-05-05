@@ -9,8 +9,6 @@ static int receive_error_from(XIMU3_ReceiveError *const error, const int error_i
         case XIMU3_ReceiveErrorBufferOverrun:
         case XIMU3_ReceiveErrorInvalidMessageIdentifier:
         case XIMU3_ReceiveErrorInvalidJson:
-        case XIMU3_ReceiveErrorJsonIsNotAnObject:
-        case XIMU3_ReceiveErrorJsonObjectIsNotASingleKeyValuePair:
         case XIMU3_ReceiveErrorInvalidMuxMessageLength:
         case XIMU3_ReceiveErrorInvalidEscapeSequence:
         case XIMU3_ReceiveErrorInvalidBinaryMessageLength:
