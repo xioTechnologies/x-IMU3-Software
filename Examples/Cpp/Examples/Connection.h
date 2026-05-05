@@ -60,24 +60,31 @@ protected:
         } else {
             for (int count = 0; count < 60000; count++) {
                 std::cout << ximu3::XIMU3_statistics_to_string(connection.getStatistics()) << std::endl;
-                std::cout << ximu3::XIMU3_inertial_message_to_string(connection.getInertialMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_magnetometer_message_to_string(connection.getMagnetometerMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(connection.getHighGAccelerometerMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_quaternion_message_to_string(connection.getQuaternionMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_rotation_matrix_message_to_string(connection.getRotationMatrixMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_euler_angles_message_to_string(connection.getEulerAnglesMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(connection.getLinearAccelerationMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(connection.getEarthAccelerationMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_ahrs_status_message_to_string(connection.getAhrsStatusMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_serial_accessory_message_to_string(connection.getSerialAccessoryMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_sync_message_to_string(connection.getSyncMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_ltc_message_to_string(connection.getLtcMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_temperature_message_to_string(connection.getTemperatureMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_battery_message_to_string(connection.getBatteryMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_rssi_message_to_string(connection.getRssiMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_button_message_to_string(connection.getButtonMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_notification_message_to_string(connection.getNotificationMessage()) << std::endl;
-                std::cout << ximu3::XIMU3_error_message_to_string(connection.getErrorMessage()) << std::endl;
+
+                auto print = [](auto message, auto toString) {
+                    if (message) {
+                        std::cout << toString(*message) << std::endl;
+                    }
+                };
+
+                print(connection.getInertialMessage(), ximu3::XIMU3_inertial_message_to_string);
+                print(connection.getMagnetometerMessage(), ximu3::XIMU3_magnetometer_message_to_string);
+                print(connection.getHighGAccelerometerMessage(), ximu3::XIMU3_high_g_accelerometer_message_to_string);
+                print(connection.getQuaternionMessage(), ximu3::XIMU3_quaternion_message_to_string);
+                print(connection.getRotationMatrixMessage(), ximu3::XIMU3_rotation_matrix_message_to_string);
+                print(connection.getEulerAnglesMessage(), ximu3::XIMU3_euler_angles_message_to_string);
+                print(connection.getLinearAccelerationMessage(), ximu3::XIMU3_linear_acceleration_message_to_string);
+                print(connection.getEarthAccelerationMessage(), ximu3::XIMU3_earth_acceleration_message_to_string);
+                print(connection.getAhrsStatusMessage(), ximu3::XIMU3_ahrs_status_message_to_string);
+                print(connection.getSerialAccessoryMessage(), ximu3::XIMU3_serial_accessory_message_to_string);
+                print(connection.getSyncMessage(), ximu3::XIMU3_sync_message_to_string);
+                print(connection.getLtcMessage(), ximu3::XIMU3_ltc_message_to_string);
+                print(connection.getTemperatureMessage(), ximu3::XIMU3_temperature_message_to_string);
+                print(connection.getBatteryMessage(), ximu3::XIMU3_battery_message_to_string);
+                print(connection.getRssiMessage(), ximu3::XIMU3_rssi_message_to_string);
+                print(connection.getButtonMessage(), ximu3::XIMU3_button_message_to_string);
+                print(connection.getNotificationMessage(), ximu3::XIMU3_notification_message_to_string);
+                print(connection.getErrorMessage(), ximu3::XIMU3_error_message_to_string);
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
