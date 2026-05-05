@@ -1,31 +1,29 @@
-use crate::receive_error::*;
 use serde_json;
+use serde_json::value::RawValue;
 
 #[derive(Clone)]
 pub struct CommandMessage {
     pub json: Vec<u8>,
     pub key: Vec<u8>,
     pub value: Vec<u8>,
-    pub error: Option<String>,
+    pub error: Option<String>, // only applicable to responses
 }
 
 impl CommandMessage {
-    pub(crate) fn parse(json: &[u8]) -> Result<Self, ReceiveError> {
-        let value = serde_json::from_slice::<serde_json::Value>(json).map_err(|_| ReceiveError::InvalidJson)?;
+    pub(crate) fn parse(json: &[u8]) -> Option<Self> {
+        let map: std::collections::HashMap<String, &RawValue> = serde_json::from_slice(json).ok()?;
 
-        let object = value.as_object().ok_or(ReceiveError::JsonIsNotAnObject)?;
-
-        if object.len() != 1 {
-            return Err(ReceiveError::JsonObjectIsNotASingleKeyValuePair);
+        if map.len() != 1 {
+            return None;
         }
 
-        let (key, value) = object.iter().next().ok_or(ReceiveError::JsonObjectIsNotASingleKeyValuePair)?;
+        let (key, value) = map.iter().next()?;
 
-        Ok(Self {
-            json: serde_json::to_vec(object).map_err(|_| ReceiveError::UnknownError)?,
+        Some(Self {
+            json: json.to_vec(),
             key: key.as_bytes().to_vec(),
-            value: serde_json::to_vec(value).map_err(|_| ReceiveError::UnknownError)?,
-            error: value.as_object().and_then(|object| object.get("error")).and_then(|value| value.as_str()).map(String::from),
+            value: value.get().as_bytes().to_vec(),
+            error: serde_json::from_str::<serde_json::Value>(value.get()).ok().and_then(|v| v.as_object().and_then(|o| o.get("error")).and_then(|v| v.as_str()).map(String::from)),
         })
     }
 }
