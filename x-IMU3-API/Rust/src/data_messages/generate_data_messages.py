@@ -329,8 +329,14 @@ insert(
     Path("../../../Cpp/Connection.hpp"),
     0,
     """\
-        XIMU3_$name_pascal_case$Message get$name_pascal_case$Message(bool consume = false) {
-            return XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
+        std::optional<XIMU3_$name_pascal_case$Message> get$name_pascal_case$Message(bool consume = false) {
+            const auto message = XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
+
+            if (message.timestamp == 0) {
+                return {};
+            }
+
+            return message;
         }\n\n""",
 )
 
@@ -488,9 +494,16 @@ insert(
     Path("../../../CSharp/x-IMU3/Connection.cs"),
     0,
     """\
-        public CApi.XIMU3_$name_pascal_case$Message Get$name_pascal_case$Message(bool consume = false)
+        public CApi.XIMU3_$name_pascal_case$Message? Get$name_pascal_case$Message(bool consume = false)
         {
-            return CApi.XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
+            var message = CApi.XIMU3_connection_get_$name_snake_case$_message(wrapped, consume);
+
+            if (message.timestamp == 0)
+            {
+                return null;
+            }
+
+            return message;            
         }\n\n""",
 )
 

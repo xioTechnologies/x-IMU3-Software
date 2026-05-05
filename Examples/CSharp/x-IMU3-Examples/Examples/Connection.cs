@@ -51,24 +51,33 @@ namespace Ximu3Examples
                 for (int count = 0; count < 60000; count++)
                 {
                     Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_statistics_to_string(connection.GetStatistics())));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_inertial_message_to_string(connection.GetInertialMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_magnetometer_message_to_string(connection.GetMagnetometerMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string(connection.GetHighGAccelerometerMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_quaternion_message_to_string(connection.GetQuaternionMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rotation_matrix_message_to_string(connection.GetRotationMatrixMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(connection.GetEulerAnglesMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_linear_acceleration_message_to_string(connection.GetLinearAccelerationMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_earth_acceleration_message_to_string(connection.GetEarthAccelerationMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ahrs_status_message_to_string(connection.GetAhrsStatusMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_serial_accessory_message_to_string(connection.GetSerialAccessoryMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_sync_message_to_string(connection.GetSyncMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ltc_message_to_string(connection.GetLtcMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_temperature_message_to_string(connection.GetTemperatureMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_battery_message_to_string(connection.GetBatteryMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_rssi_message_to_string(connection.GetRssiMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_button_message_to_string(connection.GetButtonMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_notification_message_to_string(connection.GetNotificationMessage(false))));
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_error_message_to_string(connection.GetErrorMessage(false))));
+
+                    static void Print<T>(T? message, Func<T, IntPtr> toString) where T : struct
+                    {
+                        if (message.HasValue)
+                        {
+                            Console.WriteLine(Ximu3.Helpers.ToString(toString(message.Value)));
+                        }
+                    }
+
+                    Print(connection.GetInertialMessage(false), Ximu3.CApi.XIMU3_inertial_message_to_string);
+                    Print(connection.GetMagnetometerMessage(false), Ximu3.CApi.XIMU3_magnetometer_message_to_string);
+                    Print(connection.GetHighGAccelerometerMessage(false), Ximu3.CApi.XIMU3_high_g_accelerometer_message_to_string);
+                    Print(connection.GetQuaternionMessage(false), Ximu3.CApi.XIMU3_quaternion_message_to_string);
+                    Print(connection.GetRotationMatrixMessage(false), Ximu3.CApi.XIMU3_rotation_matrix_message_to_string);
+                    Print(connection.GetEulerAnglesMessage(false), Ximu3.CApi.XIMU3_euler_angles_message_to_string);
+                    Print(connection.GetLinearAccelerationMessage(false), Ximu3.CApi.XIMU3_linear_acceleration_message_to_string);
+                    Print(connection.GetEarthAccelerationMessage(false), Ximu3.CApi.XIMU3_earth_acceleration_message_to_string);
+                    Print(connection.GetAhrsStatusMessage(false), Ximu3.CApi.XIMU3_ahrs_status_message_to_string);
+                    Print(connection.GetSerialAccessoryMessage(false), Ximu3.CApi.XIMU3_serial_accessory_message_to_string);
+                    Print(connection.GetSyncMessage(false), Ximu3.CApi.XIMU3_sync_message_to_string);
+                    Print(connection.GetLtcMessage(false), Ximu3.CApi.XIMU3_ltc_message_to_string);
+                    Print(connection.GetTemperatureMessage(false), Ximu3.CApi.XIMU3_temperature_message_to_string);
+                    Print(connection.GetBatteryMessage(false), Ximu3.CApi.XIMU3_battery_message_to_string);
+                    Print(connection.GetRssiMessage(false), Ximu3.CApi.XIMU3_rssi_message_to_string);
+                    Print(connection.GetButtonMessage(false), Ximu3.CApi.XIMU3_button_message_to_string);
+                    Print(connection.GetNotificationMessage(false), Ximu3.CApi.XIMU3_notification_message_to_string);
+                    Print(connection.GetErrorMessage(false), Ximu3.CApi.XIMU3_error_message_to_string);
 
                     System.Threading.Thread.Sleep(1);
                 }
