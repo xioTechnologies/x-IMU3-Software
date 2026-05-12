@@ -71,7 +71,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
 
             juce::DynamicObject object;
             for (size_t index = 0; index < keys.size(); index++) {
-                object.setProperty(juce::String(keys[index]), juce::String(values[index]));
+                object.setProperty(juce::String(keys[index]), DeviceSettings::valueToVar(values[index]));
             }
 
             juce::FileOutputStream stream(fileChooser->getResult());
