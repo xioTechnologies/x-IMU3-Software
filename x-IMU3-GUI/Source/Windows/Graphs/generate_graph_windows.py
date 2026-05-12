@@ -146,8 +146,14 @@ windows = [
         legend_colours="{UIColours::graphChannel1, UIColours::graphChannel2, UIColours::graphChannel3, UIColours::graphChannel4, UIColours::graphChannel5, UIColours::graphChannel6, UIColours::graphChannel7, UIColours::graphChannel8}",
         callback_implementations="""\
     callbackIds.push_back(connectionPanel.getConnection()->addSerialAccessoryCallback(serialAccessoryCallback = [&](auto message) {
+        for (size_t index = 0; index < message.number_of_bytes; index++) {
+            if (message.char_array[index] < 0) {
+                message.char_array[index] = ' ';
+            }
+        }
+
         std::vector<float> values;
-        for (const auto &string: juce::StringArray::fromTokens(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes), ",", "")) {
+        for (const auto &string: juce::StringArray::fromTokens(juce::String(message.char_array), ",", "")) {
             values.push_back(string.getFloatValue());
         }
         update(message.timestamp, values);

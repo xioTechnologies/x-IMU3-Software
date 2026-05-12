@@ -15,7 +15,7 @@ public:
 
     void paint(juce::Graphics &g) override {
         if (drawable != nullptr) {
-            drawable->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre(getWidth() * scale, getHeight() * scale),
+            drawable->drawWithin(g, getLocalBounds().toFloat().withSizeKeepingCentre((float) getWidth() * scale, (float) getHeight() * scale),
                                  juce::RectanglePlacement::centred, isEnabled() ? 1.0f : 0.5f);
         }
     }
