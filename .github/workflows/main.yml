@@ -89,14 +89,14 @@ jobs:
           cargo install cargo-ndk
           cargo ndk -t ${{ matrix.target[1] }} build --release
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         name: Upload to artifacts
         with:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }}
 
       - name: Zip
-        uses: vimtor/action-zip@v1.2
+        uses: vimtor/action-zip@v1.3
         with:
           files: x-IMU3-API/C/Ximu3.h x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[2] }} x-IMU3-API/Rust/target/${{ matrix.target[1] }}/release/${{ matrix.target[3] }}
           dest: x-IMU3-API-${{ matrix.target[1] }}.zip
@@ -145,7 +145,7 @@ jobs:
         run: cargo build --release
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Restore NuGet Packages
         run: nuget restore Examples/CSharp/x-IMU3-Examples/x-IMU3-Examples.sln
@@ -175,7 +175,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: rust-${{ matrix.target[1] }}
           path: x-IMU3-API/Rust/target/release
@@ -187,19 +187,19 @@ jobs:
 
       - if: matrix.target[0] == 'ubuntu-22.04'
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
         with:
           platforms: all
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v3.3.1
+        uses: pypa/cibuildwheel@v3.4.1
         env:
           CIBW_ARCHS: all
           CIBW_BUILD: ${{ matrix.python-version }}${{ matrix.target[2] }}
           CIBW_BEFORE_BUILD_LINUX: yum install -y libudev-devel
           CIBW_TEST_SKIP: "*-win_arm64" # silence warning
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: python-${{ matrix.python-version }}${{ matrix.target[2] }}
           path: wheelhouse/*
@@ -209,7 +209,7 @@ jobs:
     needs: python
 
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: python-*
           path: wheelhouse
@@ -266,7 +266,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: rust-${{ matrix.target[0] }}
           path: x-IMU3-API/Rust/target/release
@@ -297,7 +297,7 @@ jobs:
           xcrun notarytool submit "x-IMU3-GUI${{ matrix.target[2] }}" --team-id 29X883CFTW --apple-id ${{ secrets.AC_USERNAME }} --password ${{ secrets.AC_PASSWORD }} --wait
           xcrun stapler staple "x-IMU3-GUI${{ matrix.target[2] }}"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         name: Upload to artifacts
         with:
           name: x-IMU3-GUI${{ matrix.target[2] }}
@@ -324,7 +324,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: rust-${{ matrix.target[0] }}
           path: x-IMU3-API/Rust/target/release
@@ -382,7 +382,7 @@ jobs:
         run: Rename-Item -Path x-IMU3-GUI-Setup.exe -NewName x-IMU3-GUI-Setup-${{ matrix.target[1] }}.exe
         working-directory: cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         name: Upload to artifacts
         with:
           name: x-IMU3-GUI-Setup-${{ matrix.target[1] }}.exe
@@ -398,14 +398,11 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [ create-release, rust ]
 
-    strategy:
-      fail-fast: false
-
     steps:
       - uses: actions/checkout@v6
 
       - name: Download from artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: rust-x86_64-unknown-linux-gnu
           path: x-IMU3-API/Rust/target/release
@@ -432,7 +429,7 @@ jobs:
       - name: Rename file
         run: mv "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3 GUI" "cmake-build-release/x-IMU3-GUI/x-IMU3-GUI_artefacts/Release/x-IMU3-GUI"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         name: Upload to artifacts
         with:
           name: x-IMU3-GUI
