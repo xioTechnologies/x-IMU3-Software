@@ -46,6 +46,7 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree &windowLayout_,
 }
 
 ConnectionPanel::~ConnectionPanel() {
+    keepOpen.reset();
     connection->close();
 
     *destroyed = true;
@@ -186,25 +187,28 @@ void ConnectionPanel::connect() {
     const juce::WeakReference weakReference(this);
 
     if (keepOpenEnabled) {
-        keepOpen = std::make_unique<ximu3::KeepOpen>(
-            *connection, [ &, weakReference](ximu3::XIMU3_ConnectionStatus status) {
-                juce::MessageManager::callAsync([&, weakReference, status] {
-                    if (weakReference == nullptr) {
-                        return;
-                    }
+        statusCallback = [&, weakReference](ximu3::XIMU3_ConnectionStatus status) {
+            juce::MessageManager::callAsync([&, weakReference, status] {
+                if (weakReference == nullptr) {
+                    return;
+                }
 
-                    switch (status) {
-                        case ximu3::XIMU3_ConnectionStatusConnected:
-                            connected();
-                            break;
+                switch (status) {
+                    case ximu3::XIMU3_ConnectionStatusConnected:
+                        connected();
+                        break;
 
-                        case ximu3::XIMU3_ConnectionStatusReconnecting:
-                            recursivePing.reset();
-                            header.updateHeading("Reconnecting...");
-                            break;
-                    }
-                });
+                    case ximu3::XIMU3_ConnectionStatusDisconnected:
+                        recursivePing.reset();
+                        header.updateHeading("Reconnecting...");
+                        break;
+                }
             });
+        };
+
+        connection->addStatusCallback(statusCallback);
+
+        keepOpen = std::make_unique<ximu3::KeepOpen>(*connection);
     } else {
         connection->openAsync([&, weakReference](auto result) {
             juce::MessageManager::callAsync([&, weakReference, result] {

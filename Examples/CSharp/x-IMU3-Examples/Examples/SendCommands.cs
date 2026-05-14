@@ -51,7 +51,7 @@ namespace Ximu3Examples
             connection.Close();
         }
 
-        private void Callback(Ximu3.CommandMessage?[] responses)
+        private static void Callback(Ximu3.CommandMessage?[] responses)
         {
             PrintResponses(responses);
         }

@@ -35,6 +35,7 @@ protected:
         // Print data messages
         if (helpers::yesOrNo("Use callbacks (else poll)?")) {
             connection.addReceiveErrorCallback(receiveErrorCallback);
+            connection.addStatusCallback(statusCallback);
             connection.addStatisticsCallback(statisticsCallback);
 
             connection.addInertialCallback(inertialCallback);
@@ -55,7 +56,6 @@ protected:
             connection.addButtonCallback(buttonCallback);
             connection.addNotificationCallback(notificationCallback);
             connection.addErrorCallback(errorCallback);
-            connection.addEndOfFileCallback(endOfFileCallback);
 
             std::this_thread::sleep_for(std::chrono::seconds(60));
         } else {
@@ -96,6 +96,10 @@ protected:
 private:
     std::function<void(ximu3::XIMU3_ReceiveError error)> receiveErrorCallback = [](auto error) {
         std::cout << ximu3::XIMU3_receive_error_to_string(error) << std::endl;
+    };
+
+    std::function<void(ximu3::XIMU3_ConnectionStatus error)> statusCallback = [](auto status) {
+        std::cout << ximu3::XIMU3_connection_status_to_string(status) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics) {
@@ -281,7 +285,4 @@ private:
         // std::cout << ximu3::XIMU3_error_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void()> endOfFileCallback = [] {
-        std::cout << "End of file" << std::endl;
-    };
 };

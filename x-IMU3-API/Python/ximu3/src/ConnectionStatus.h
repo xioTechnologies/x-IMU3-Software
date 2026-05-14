@@ -7,7 +7,7 @@
 static int connection_status_from(XIMU3_ConnectionStatus *const status, const int status_int) {
     switch (status_int) {
         case XIMU3_ConnectionStatusConnected:
-        case XIMU3_ConnectionStatusReconnecting:
+        case XIMU3_ConnectionStatusDisconnected:
             *status = (XIMU3_ConnectionStatus) status_int;
             return 0;
     }

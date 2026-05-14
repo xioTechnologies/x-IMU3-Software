@@ -1,12 +1,16 @@
 use crate::connection_config::*;
+use crate::connection_status::*;
 use crate::connections::*;
+use crate::dispatcher::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, Mutex};
 
 pub struct UdpConnection {
     config: UdpConnectionConfig,
+    status: Arc<AtomicI32>,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
     write_sender: Option<Sender<Vec<u8>>>,
@@ -16,6 +20,7 @@ impl UdpConnection {
     pub fn new(config: &UdpConnectionConfig) -> Self {
         Self {
             config: config.clone(),
+            status: Arc::new(AtomicI32::new(ConnectionStatus::Disconnected as i32)),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
@@ -31,6 +36,8 @@ impl GenericConnection for UdpConnection {
 
         let socket_address = SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.send_port);
 
+        let status = self.status.clone();
+
         let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
@@ -38,6 +45,9 @@ impl GenericConnection for UdpConnection {
 
         self.close_sender = Some(close_sender);
         self.write_sender = Some(write_sender);
+
+        self.status.store(ConnectionStatus::Connected as i32, Ordering::SeqCst);
+        self.receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Connected)).ok();
 
         std::thread::spawn(move || {
             let mut buffer = [0u8; 2048];
@@ -56,6 +66,9 @@ impl GenericConnection for UdpConnection {
                     socket.send_to(&data, socket_address).ok();
                 }
             }
+
+            status.store(ConnectionStatus::Disconnected as i32, Ordering::SeqCst);
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Disconnected)).ok();
         });
 
         Ok(())
@@ -69,6 +82,10 @@ impl GenericConnection for UdpConnection {
 
     fn get_config(&self) -> ConnectionConfig {
         ConnectionConfig::UdpConnectionConfig(self.config.clone())
+    }
+
+    fn get_status(&self) -> ConnectionStatus {
+        self.status.load(Ordering::SeqCst).into()
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

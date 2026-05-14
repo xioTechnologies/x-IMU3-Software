@@ -91,6 +91,12 @@ typedef enum XIMU3_ConnectionType
     XIMU3_ConnectionTypeMux,
 } XIMU3_ConnectionType;
 
+typedef enum XIMU3_ConnectionStatus
+{
+    XIMU3_ConnectionStatusConnected,
+    XIMU3_ConnectionStatusDisconnected,
+} XIMU3_ConnectionStatus;
+
 typedef enum XIMU3_ReceiveError
 {
     XIMU3_ReceiveErrorBufferOverrun,
@@ -109,12 +115,6 @@ typedef enum XIMU3_FileConverterStatus
     XIMU3_FileConverterStatusFailed,
     XIMU3_FileConverterStatusInProgress,
 } XIMU3_FileConverterStatus;
-
-typedef enum XIMU3_ConnectionStatus
-{
-    XIMU3_ConnectionStatusConnected,
-    XIMU3_ConnectionStatusReconnecting,
-} XIMU3_ConnectionStatus;
 
 typedef enum XIMU3_PortType
 {
@@ -375,6 +375,8 @@ typedef struct XIMU3_ErrorMessage
 
 typedef void (*XIMU3_CallbackReceiveError)(enum XIMU3_ReceiveError data, void *context);
 
+typedef void (*XIMU3_CallbackConnectionStatus)(enum XIMU3_ConnectionStatus data, void *context);
+
 typedef void (*XIMU3_CallbackStatistics)(struct XIMU3_Statistics data, void *context);
 
 typedef void (*XIMU3_CallbackInertialMessage)(struct XIMU3_InertialMessage data, void *context);
@@ -440,8 +442,6 @@ typedef struct XIMU3_FileConverterProgress
 } XIMU3_FileConverterProgress;
 
 typedef void (*XIMU3_CallbackFileConverterProgress)(struct XIMU3_FileConverterProgress data, void *context);
-
-typedef void (*XIMU3_CallbackConnectionStatus)(enum XIMU3_ConnectionStatus data, void *context);
 
 typedef void (*XIMU3_CallbackDevices)(struct XIMU3_Devices data, void *context);
 
@@ -531,6 +531,8 @@ struct XIMU3_MuxConnectionConfig *XIMU3_connection_get_config_mux(struct XIMU3_C
 
 const char *XIMU3_connection_get_config_string(struct XIMU3_Connection *connection);
 
+enum XIMU3_ConnectionStatus XIMU3_connection_get_status(struct XIMU3_Connection *connection);
+
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
 struct XIMU3_InertialMessage XIMU3_connection_get_inertial_message(struct XIMU3_Connection *connection, bool consume);
@@ -571,6 +573,8 @@ struct XIMU3_ErrorMessage XIMU3_connection_get_error_message(struct XIMU3_Connec
 
 uint64_t XIMU3_connection_add_receive_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackReceiveError callback, void *context);
 
+uint64_t XIMU3_connection_add_status_callback(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
+
 uint64_t XIMU3_connection_add_statistics_callback(struct XIMU3_Connection *connection, XIMU3_CallbackStatistics callback, void *context);
 
 uint64_t XIMU3_connection_add_inertial_callback(struct XIMU3_Connection *connection, XIMU3_CallbackInertialMessage callback, void *context);
@@ -609,8 +613,6 @@ uint64_t XIMU3_connection_add_notification_callback(struct XIMU3_Connection *con
 
 uint64_t XIMU3_connection_add_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackErrorMessage callback, void *context);
 
-uint64_t XIMU3_connection_add_end_of_file_callback(struct XIMU3_Connection *connection, void (*callback)(void *context), void *context);
-
 void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t callback_id);
 
 const char *XIMU3_usb_connection_config_to_string(struct XIMU3_UsbConnectionConfig config);
@@ -632,6 +634,8 @@ void XIMU3_mux_connection_config_free(struct XIMU3_MuxConnectionConfig *config);
 struct XIMU3_MuxConnectionConfig *XIMU3_mux_connection_config_clone(struct XIMU3_MuxConnectionConfig *config);
 
 const char *XIMU3_mux_connection_config_to_string(struct XIMU3_MuxConnectionConfig *config);
+
+const char *XIMU3_connection_status_to_string(enum XIMU3_ConnectionStatus status);
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 
@@ -707,9 +711,7 @@ void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
 struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
 
-const char *XIMU3_connection_status_to_string(enum XIMU3_ConnectionStatus status);
-
-struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
+struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection);
 
 void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
 

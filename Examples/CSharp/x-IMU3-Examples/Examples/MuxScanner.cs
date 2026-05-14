@@ -42,7 +42,7 @@
             usbConnection.Close();
         }
 
-        private void Callback(Ximu3.Device[] devices)
+        private static void Callback(Ximu3.Device[] devices)
         {
             PrintDevices(devices);
         }

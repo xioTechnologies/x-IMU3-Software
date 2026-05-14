@@ -68,6 +68,7 @@ private:
 
     const bool keepOpenEnabled;
     std::unique_ptr<ximu3::KeepOpen> keepOpen;
+    std::function<void(ximu3::XIMU3_ConnectionStatus)> statusCallback;
     std::unique_ptr<RecursivePing> recursivePing;
 
     void connect();

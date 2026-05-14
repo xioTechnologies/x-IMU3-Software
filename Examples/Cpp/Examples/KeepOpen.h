@@ -23,7 +23,9 @@ public:
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionConfig::from(devices[0]));
 
-        auto keepOpen = std::make_unique<ximu3::KeepOpen>(connection, callback);
+        connection.addStatusCallback(callback);
+
+        auto keepOpen = std::make_unique<ximu3::KeepOpen>(connection);
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(60));
@@ -37,10 +39,9 @@ private:
             case ximu3::XIMU3_ConnectionStatusConnected:
                 std::cout << "Connected" << std::endl;
                 break;
-            case ximu3::XIMU3_ConnectionStatusReconnecting:
+            case ximu3::XIMU3_ConnectionStatusDisconnected:
                 std::cout << "Reconnecting" << std::endl;
                 break;
         }
-        // std::cout << XIMU3_connection_status_to_string(status) << std::endl; // alternative to above
     };
 };

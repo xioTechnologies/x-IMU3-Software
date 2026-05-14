@@ -1,4 +1,5 @@
 use crate::connection_config::*;
+use crate::connection_status::*;
 use crate::connections::*;
 use crate::receiver::*;
 use crossbeam::channel::Sender;
@@ -37,6 +38,10 @@ impl GenericConnection for UsbConnection {
 
     fn get_config(&self) -> ConnectionConfig {
         ConnectionConfig::UsbConnectionConfig(self.config.clone())
+    }
+
+    fn get_status(&self) -> ConnectionStatus {
+        self.serial_connection.get_status()
     }
 
     fn get_receiver(&self) -> Arc<Mutex<Receiver>> {

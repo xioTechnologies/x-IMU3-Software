@@ -80,18 +80,12 @@ def _keep_open(
 ) -> tuple[ximu3.Connection, ximu3.KeepOpen]:
     connection = ximu3.Connection(config)
 
-    _keep_open_status: int | None = None
-
-    def callback(status: int) -> None:
-        nonlocal _keep_open_status
-        _keep_open_status = status
-
-    keep_open = ximu3.KeepOpen(connection, callback)
+    keep_open = ximu3.KeepOpen(connection)
 
     start = time.perf_counter()
 
     while True:
-        if (_keep_open_status is not None) and (_keep_open_status == ximu3.CONNECTION_STATUS_CONNECTED):
+        if connection.get_status() == ximu3.CONNECTION_STATUS_CONNECTED:
             return connection, keep_open
 
         if time.perf_counter() > (start + timeout):

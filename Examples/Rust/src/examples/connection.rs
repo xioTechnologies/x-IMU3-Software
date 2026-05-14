@@ -2,6 +2,7 @@ use crate::helpers;
 use ximu3::charging_status::*;
 use ximu3::connection::*;
 use ximu3::connection_config::*;
+use ximu3::connection_status::*;
 use ximu3::data_messages::*;
 use ximu3::receive_error::*;
 use ximu3::statistics::*;
@@ -22,6 +23,7 @@ pub fn run(config: &ConnectionConfig) {
     // Print data messages
     if helpers::yes_or_no("Use callbacks (else poll)?") {
         connection.add_receive_error_closure(Box::new(receive_error_closure));
+        connection.add_status_closure(Box::new(status_closure));
         connection.add_statistics_closure(Box::new(statistics_closure));
 
         connection.add_inertial_closure(Box::new(inertial_closure));
@@ -42,7 +44,6 @@ pub fn run(config: &ConnectionConfig) {
         connection.add_button_closure(Box::new(button_closure));
         connection.add_notification_closure(Box::new(notification_closure));
         connection.add_error_closure(Box::new(error_closure));
-        connection.add_end_of_file_closure(Box::new(end_of_file_closure));
 
         std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
@@ -100,6 +101,10 @@ macro_rules! string_fmt {
 
 pub fn receive_error_closure(error: ReceiveError) {
     println!("{error}");
+}
+
+pub fn status_closure(status: ConnectionStatus) {
+    println!("{status}");
 }
 
 pub fn statistics_closure(statistics: Statistics) {
@@ -302,8 +307,4 @@ pub fn error_closure(message: ErrorMessage) {
              message.timestamp,
              message.char_array_as_string());
     // println!("{message}"); // alternative to above
-}
-
-pub fn end_of_file_closure() {
-    println!("End of file");
 }

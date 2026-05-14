@@ -53,7 +53,7 @@ PyMODINIT_FUNC PyInit__core() {
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_COMPLETE", XIMU3_ChargingStatusChargingComplete) == 0) &&
         (PyModule_AddIntConstant(module, "CHARGING_STATUS_CHARGING_ON_HOLD", XIMU3_ChargingStatusChargingOnHold) == 0) &&
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_CONNECTED", XIMU3_ConnectionStatusConnected) == 0) &&
-        (PyModule_AddIntConstant(module, "CONNECTION_STATUS_RECONNECTING", XIMU3_ConnectionStatusReconnecting) == 0) &&
+        (PyModule_AddIntConstant(module, "CONNECTION_STATUS_DISCONNECTED", XIMU3_ConnectionStatusDisconnected) == 0) &&
         (PyModule_AddIntConstant(module, "DEFAULT_RETRIES", XIMU3_DEFAULT_RETRIES) == 0) &&
         (PyModule_AddIntConstant(module, "DEFAULT_TIMEOUT", XIMU3_DEFAULT_TIMEOUT) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&

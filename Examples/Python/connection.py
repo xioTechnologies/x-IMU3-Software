@@ -24,6 +24,10 @@ def receive_error_callback(error: int) -> None:
     print(ximu3.receive_error_to_string(error))
 
 
+def status_callback(status: int) -> None:
+    print(ximu3.connection_status_to_string(status))
+
+
 def statistics_callback(statistics: ximu3.Statistics) -> None:
     print(
         "".join(
@@ -259,10 +263,6 @@ def error_callback(message: ximu3.ErrorMessage) -> None:
     # print(message)  # alternative to above
 
 
-def end_of_file_callback() -> None:
-    print("End of file")
-
-
 def run(config: ximu3.ConnectionConfig) -> None:
     connection = ximu3.Connection(config)
 
@@ -272,6 +272,7 @@ def run(config: ximu3.ConnectionConfig) -> None:
 
     if helpers.yes_or_no("Use callbacks (else poll)?"):
         connection.add_receive_error_callback(receive_error_callback)
+        connection.add_status_callback(status_callback)
         connection.add_statistics_callback(statistics_callback)
 
         connection.add_inertial_callback(inertial_callback)
@@ -292,7 +293,6 @@ def run(config: ximu3.ConnectionConfig) -> None:
         connection.add_button_callback(button_callback)
         connection.add_notification_callback(notification_callback)
         connection.add_error_callback(error_callback)
-        connection.add_end_of_file_callback(end_of_file_callback)
 
         time.sleep(60)
     else:

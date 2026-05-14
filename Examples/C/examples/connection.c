@@ -11,6 +11,8 @@
 
 void receive_error_callback(const XIMU3_ReceiveError error, void *context);
 
+void status_callback(const XIMU3_ConnectionStatus status, void *context);
+
 void statistics_callback(const XIMU3_Statistics statistics, void *context);
 
 void inertial_callback(const XIMU3_InertialMessage message, void *context);
@@ -49,8 +51,6 @@ void notification_callback(const XIMU3_NotificationMessage message, void *contex
 
 void error_callback(const XIMU3_ErrorMessage message, void *context);
 
-void end_of_file_callback(void *context);
-
 void run(XIMU3_Connection *const connection) {
     // Open connection
     const XIMU3_Result result = XIMU3_connection_open(connection);
@@ -67,6 +67,7 @@ void run(XIMU3_Connection *const connection) {
     // Print data messages
     if (yes_or_no("Use callbacks (else poll)?")) {
         XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
+        XIMU3_connection_add_status_callback(connection, status_callback, NULL);
         XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
 
         XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
@@ -87,7 +88,6 @@ void run(XIMU3_Connection *const connection) {
         XIMU3_connection_add_button_callback(connection, button_callback, NULL);
         XIMU3_connection_add_notification_callback(connection, notification_callback, NULL);
         XIMU3_connection_add_error_callback(connection, error_callback, NULL);
-        XIMU3_connection_add_end_of_file_callback(connection, end_of_file_callback, NULL);
 
         sleep(60);
     } else {
@@ -122,6 +122,10 @@ void run(XIMU3_Connection *const connection) {
 
 void receive_error_callback(const XIMU3_ReceiveError error, void *context) {
     printf("%s\n", XIMU3_receive_error_to_string(error));
+}
+
+void status_callback(const XIMU3_ConnectionStatus status, void *context) {
+    printf("%s\n", XIMU3_connection_status_to_string(status));
 }
 
 void statistics_callback(const XIMU3_Statistics statistics, void *context) {
@@ -305,8 +309,4 @@ void error_callback(const XIMU3_ErrorMessage message, void *context) {
            message.timestamp,
            message.char_array);
     // printf("%s\n", XIMU3_error_message_to_string(message)); // alternative to above
-}
-
-void end_of_file_callback(void *context) {
-    printf("End of file\n");
 }
