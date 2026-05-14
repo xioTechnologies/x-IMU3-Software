@@ -19,7 +19,7 @@ impl Default for LtcMessage {
     fn default() -> Self {
         Self {
             timestamp: 0,
-			char_array: [0; DATA_MESSAGE_CHAR_ARRAY_SIZE],
+            char_array: [0; DATA_MESSAGE_CHAR_ARRAY_SIZE],
             number_of_bytes: 0,
         }
     }
