@@ -68,6 +68,7 @@ void run(XIMU3_Connection *const connection) {
     if (yes_or_no("Use callbacks (else poll)?")) {
         XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
         XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
+
         XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
         XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
         XIMU3_connection_add_high_g_accelerometer_callback(connection, high_g_accelerometer_callback, NULL);
@@ -91,7 +92,6 @@ void run(XIMU3_Connection *const connection) {
         sleep(60);
     } else {
         for (int count = 0; count < 60; count++) {
-            printf("%s\n", XIMU3_statistics_to_string(XIMU3_connection_get_statistics(connection)));
             printf("%s\n", XIMU3_inertial_message_to_string(XIMU3_connection_get_inertial_message(connection, false)));
             printf("%s\n", XIMU3_magnetometer_message_to_string(XIMU3_connection_get_magnetometer_message(connection, false)));
             printf("%s\n", XIMU3_high_g_accelerometer_message_to_string(XIMU3_connection_get_high_g_accelerometer_message(connection, false)));

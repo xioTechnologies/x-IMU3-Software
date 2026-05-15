@@ -273,6 +273,7 @@ def run(config: ximu3.ConnectionConfig) -> None:
     if helpers.yes_or_no("Use callbacks (else poll)?"):
         connection.add_receive_error_callback(receive_error_callback)
         connection.add_statistics_callback(statistics_callback)
+
         connection.add_inertial_callback(inertial_callback)
         connection.add_magnetometer_callback(magnetometer_callback)
         connection.add_high_g_accelerometer_callback(high_g_accelerometer_callback)
@@ -296,7 +297,6 @@ def run(config: ximu3.ConnectionConfig) -> None:
         time.sleep(60)
     else:
         for _ in range(60000):
-            print(connection.get_statistics())
             print(connection.get_inertial_message())
             print(connection.get_magnetometer_message())
             print(connection.get_high_g_accelerometer_message())
