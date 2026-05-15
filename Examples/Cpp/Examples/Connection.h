@@ -36,6 +36,7 @@ protected:
         if (helpers::yesOrNo("Use callbacks (else poll)?")) {
             connection.addReceiveErrorCallback(receiveErrorCallback);
             connection.addStatisticsCallback(statisticsCallback);
+
             connection.addInertialCallback(inertialCallback);
             connection.addMagnetometerCallback(magnetometerCallback);
             connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
@@ -59,8 +60,6 @@ protected:
             std::this_thread::sleep_for(std::chrono::seconds(60));
         } else {
             for (int count = 0; count < 60000; count++) {
-                std::cout << ximu3::XIMU3_statistics_to_string(connection.getStatistics()) << std::endl;
-
                 auto print = [](auto message, auto toString) {
                     if (message) {
                         std::cout << toString(*message) << std::endl;

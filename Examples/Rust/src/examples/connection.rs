@@ -23,6 +23,7 @@ pub fn run(config: &ConnectionConfig) {
     if helpers::yes_or_no("Use callbacks (else poll)?") {
         connection.add_receive_error_closure(Box::new(receive_error_closure));
         connection.add_statistics_closure(Box::new(statistics_closure));
+
         connection.add_inertial_closure(Box::new(inertial_closure));
         connection.add_magnetometer_closure(Box::new(magnetometer_closure));
         connection.add_high_g_accelerometer_closure(Box::new(high_g_accelerometer_closure));
@@ -46,7 +47,6 @@ pub fn run(config: &ConnectionConfig) {
         std::thread::sleep(std::time::Duration::from_secs(60));
     } else {
         for _ in 0..60000 {
-            println!("{}", connection.get_statistics());
             println!("{}", connection.get_inertial_message(false).unwrap_or_default());
             println!("{}", connection.get_magnetometer_message(false).unwrap_or_default());
             println!("{}", connection.get_high_g_accelerometer_message(false).unwrap_or_default());

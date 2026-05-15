@@ -24,6 +24,7 @@ namespace Ximu3Examples
             {
                 connection.AddReceiveErrorCallback(ReceiveErrorCallback);
                 connection.AddStatisticsCallback(StatisticsCallback);
+
                 connection.AddInertialCallback(InertialCallback);
                 connection.AddMagnetometerCallback(MagnetometerCallback);
                 connection.AddHighGAccelerometerCallback(HighGAccelerometerCallback);
@@ -50,8 +51,6 @@ namespace Ximu3Examples
             {
                 for (int count = 0; count < 60000; count++)
                 {
-                    Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_statistics_to_string(connection.GetStatistics())));
-
                     static void Print<T>(T? message, Func<T, IntPtr> toString) where T : struct
                     {
                         if (message.HasValue)
