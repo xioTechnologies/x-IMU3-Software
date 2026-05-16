@@ -301,7 +301,7 @@ insert(
     8,
     """\
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
-        let id = self.get_closure_id();
+        let id = self.new_id();
         self.$name_snake_case$_closures.lock().unwrap().push((closure, id));
         id
     }\n\n""",
@@ -310,7 +310,13 @@ insert(
 insert(
     path,
     9,
-    "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, id)| id != &closure_id);\n",
+    "        self.$name_snake_case$_closures.lock().unwrap().retain(|(_, closure_id)| closure_id != &id);\n",
+)
+
+insert(
+    path,
+    10,
+    "        self.$name_snake_case$_closures.lock().unwrap().clear();\n",
 )
 
 # Insert code into x-IMU3-API/Rust/src/ffi/data_messages.rs
