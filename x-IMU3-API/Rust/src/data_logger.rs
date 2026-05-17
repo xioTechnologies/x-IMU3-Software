@@ -9,8 +9,7 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 pub struct DataLogger<'a> {
-    connections: Vec<&'a Connection>,
-    closure_ids: Vec<Vec<u64>>,
+    connections: Vec<(&'a Connection, Vec<u64>)>,
     in_progress: Arc<Mutex<bool>>,
 }
 
@@ -25,8 +24,7 @@ impl<'a> DataLogger<'a> {
 
         // Initialise structure
         let mut data_logger = Self {
-            connections,
-            closure_ids: Vec::new(),
+            connections: connections.into_iter().map(|connection| (connection, Vec::new())).collect(),
             in_progress: Arc::new(Mutex::new(false)),
         };
 
@@ -34,7 +32,7 @@ impl<'a> DataLogger<'a> {
         let mut paths = Vec::new();
 
         for (index, _) in data_logger.connections.iter().enumerate() {
-            let path = Path::new(&root).join(format!("Connection {}", index));
+            let path = Path::new(&root).join(format!("Connection {index}"));
             std::fs::create_dir_all(&path)?;
             paths.push(path);
         }
@@ -43,10 +41,8 @@ impl<'a> DataLogger<'a> {
         let (sender, receiver) = crossbeam::channel::unbounded();
         const COMMAND_FILE_NAME: &str = "Command.json";
 
-        for (index, connection) in data_logger.connections.iter().enumerate() {
-            data_logger.closure_ids.push(Vec::new());
-
-            data_logger.closure_ids[index].push(connection.add_receive_error_closure(Box::new({
+        for (index, (connection, closure_ids)) in data_logger.connections.iter_mut().enumerate() {
+            closure_ids.push(connection.add_receive_error_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -55,7 +51,7 @@ impl<'a> DataLogger<'a> {
                 }
             })));
 
-            data_logger.closure_ids[index].push(connection.add_command_closure(Box::new({
+            closure_ids.push(connection.add_command_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -64,7 +60,7 @@ impl<'a> DataLogger<'a> {
                 }
             })));
 
-            data_logger.closure_ids[index].push(connection.add_data_closure(Box::new({
+            closure_ids.push(connection.add_data_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -130,7 +126,7 @@ impl<'a> DataLogger<'a> {
         });
 
         // Send commands
-        for connection in data_logger.connections.iter() {
+        for (connection, _) in data_logger.connections.iter() {
             connection.send_commands_async(vec!["{\"ping\":null}".into(), "{\"time\":null}".into()], 4, 200, Box::new(|_| {}));
         }
 
@@ -150,11 +146,9 @@ impl<'a> DataLogger<'a> {
 
 impl Drop for DataLogger<'_> {
     fn drop(&mut self) {
-        if self.closure_ids.len() > 0 {
-            for (index, connection) in self.connections.iter().enumerate() {
-                for closure_id in self.closure_ids[index].iter() {
-                    connection.remove_closure(*closure_id);
-                }
+        for (connection, closure_ids) in &self.connections {
+            for closure_id in closure_ids {
+                connection.remove_closure(*closure_id);
             }
         }
 
