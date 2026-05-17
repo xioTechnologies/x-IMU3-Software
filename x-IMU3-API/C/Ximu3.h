@@ -139,6 +139,8 @@ typedef struct XIMU3_DataLogger XIMU3_DataLogger;
 
 typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 
+typedef struct XIMU3_FileConverter XIMU3_FileConverter;
+
 typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
 
 typedef struct XIMU3_MuxConnectionConfig XIMU3_MuxConnectionConfig;
@@ -709,6 +711,8 @@ const char *XIMU3_file_converter_progress_to_string(struct XIMU3_FileConverterPr
 struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, const char *name, const char *const *file_paths, uint32_t length, XIMU3_CallbackFileConverterProgress callback, void *context);
 
 void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
+
+enum XIMU3_Result XIMU3_file_converter_get_result(struct XIMU3_FileConverter *file_converter);
 
 struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
 
