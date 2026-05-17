@@ -1,8 +1,6 @@
 use crate::connection::*;
-use crate::connections::*;
 use std::fmt;
 use std::net::Ipv4Addr;
-use std::sync::{Arc, Mutex};
 
 #[derive(Clone, PartialEq)]
 pub enum ConnectionConfig {
@@ -123,7 +121,7 @@ impl fmt::Display for FileConnectionConfig {
 #[derive(Clone)]
 pub struct MuxConnectionConfig {
     pub channel: u8,
-    pub(crate) connection: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
+    pub(crate) connection: InternalConnection,
 }
 
 impl MuxConnectionConfig {
