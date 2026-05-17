@@ -26,7 +26,12 @@ namespace Ximu3
             GC.SuppressFinalize(this);
         }
 
-        public static CApi.XIMU3_FileConverterProgress Convert(string destination, string name, string[] filePaths)
+        public CApi.XIMU3_Result GetResult()
+        {
+            return CApi.XIMU3_file_converter_get_result(wrapped);
+        }
+
+        public static CApi.XIMU3_Result Convert(string destination, string name, string[] filePaths)
         {
             return CApi.XIMU3_file_converter_convert(
                 Helpers.ToPointer(destination),

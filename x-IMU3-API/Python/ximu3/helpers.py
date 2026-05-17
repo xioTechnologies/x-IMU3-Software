@@ -289,10 +289,7 @@ def convert_together(
 
     path = _verify_destination(destination, name, overwrite)
 
-    progress = ximu3.FileConverter.convert(str(destination), name, [str(f) for f in file_paths])
-
-    if progress.status != ximu3.FILE_CONVERTER_STATUS_COMPLETE:
-        raise RuntimeError(f"Unexpected file converter status: {ximu3.file_converter_status_to_string(progress.status)}")
+    ximu3.FileConverter.convert(str(destination), name, [str(f) for f in file_paths])
 
     return path
 

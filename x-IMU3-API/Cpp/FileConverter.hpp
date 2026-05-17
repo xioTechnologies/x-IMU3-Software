@@ -17,7 +17,11 @@ namespace ximu3 {
             XIMU3_file_converter_free(wrapped);
         }
 
-        static XIMU3_FileConverterProgress convert(const std::string &destination, const std::string &name, const std::vector<std::string> &filePaths) {
+        XIMU3_Result getResult() {
+            return XIMU3_file_converter_get_result(wrapped);
+        }
+
+        static XIMU3_Result convert(const std::string &destination, const std::string &name, const std::vector<std::string> &filePaths) {
             const auto charPtrVector = Helpers::toCharPtrVector(filePaths);
             return XIMU3_file_converter_convert(destination.c_str(), name.c_str(), charPtrVector.data(), (uint32_t) charPtrVector.size());
         }
