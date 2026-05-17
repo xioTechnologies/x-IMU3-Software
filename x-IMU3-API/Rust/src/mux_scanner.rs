@@ -1,6 +1,5 @@
 use crate::connection::*;
 use crate::connection_config::*;
-use crate::connections::*;
 use crate::device::*;
 use crate::mux_message::*;
 use crate::ping_response::*;
@@ -132,7 +131,7 @@ impl<'a> MuxScanner<'a> {
         devices.clone()
     }
 
-    fn parse_mux_message(message: MuxMessage, connection: &Arc<Mutex<Box<dyn GenericConnection + Send>>>) -> Option<Device> {
+    fn parse_mux_message(message: MuxMessage, connection: &InternalConnection) -> Option<Device> {
         let response = PingResponse::parse(&message.message)?;
 
         let connection_config = ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig {

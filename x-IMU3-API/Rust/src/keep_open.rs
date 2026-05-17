@@ -71,16 +71,11 @@ impl<'a> KeepOpen<'a> {
                     continue;
                 }
 
-                let receiver = connection.lock().unwrap().get_receiver();
-                let write_sender = connection.lock().unwrap().get_write_sender();
-
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
                         return;
                     }
-                    if let Some(write_sender) = write_sender {
-                        Connection::ping_internal(receiver, write_sender);
-                    };
+                    Connection::ping_internal(&connection);
                 }
 
                 if connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total > data_total {

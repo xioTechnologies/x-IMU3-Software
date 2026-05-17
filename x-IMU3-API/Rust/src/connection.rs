@@ -6,9 +6,7 @@ use crate::dispatcher::*;
 use crate::mux_message::*;
 use crate::ping_response::*;
 use crate::receive_error::*;
-use crate::receiver::*;
 use crate::statistics::*;
-use crossbeam::channel::Sender;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
 
@@ -16,9 +14,11 @@ pub const DEFAULT_RETRIES: u32 = 2;
 
 pub const DEFAULT_TIMEOUT: u32 = 500; // milliseconds
 
+pub(crate) type InternalConnection = Arc<Mutex<Box<dyn GenericConnection + Send>>>;
+
 pub struct Connection {
     dropped: Arc<Mutex<bool>>,
-    pub(crate) internal: Arc<Mutex<Box<dyn GenericConnection + Send>>>,
+    pub(crate) internal: InternalConnection,
 }
 
 impl Connection {
@@ -93,23 +93,15 @@ impl Connection {
     }
 
     pub fn ping(&self) -> Option<PingResponse> {
-        let receiver = self.internal.lock().unwrap().get_receiver();
-        let write_sender = self.internal.lock().unwrap().get_write_sender()?;
-
-        Self::ping_internal(receiver, write_sender)
+        Self::ping_internal(&self.internal)
     }
 
     pub fn ping_async(&self, closure: Box<dyn FnOnce(Option<PingResponse>) + Send>) {
-        let receiver = self.internal.lock().unwrap().get_receiver();
-
-        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
-            return;
-        };
-
+        let internal = self.internal.clone();
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let response = Self::ping_internal(receiver, write_sender);
+            let response = Self::ping_internal(&internal);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -120,8 +112,8 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Sender<Vec<u8>>) -> Option<PingResponse> {
-        let responses = Self::send_commands_internal(receiver, write_sender, vec!["{\"ping\":null}".into()], 4, 200);
+    pub(crate) fn ping_internal(internal: &InternalConnection) -> Option<PingResponse> {
+        let responses = Self::send_commands_internal(internal, vec!["{\"ping\":null}".into()], 4, 200);
 
         PingResponse::parse(&responses.first()?.as_ref()?.json)
     }
@@ -131,13 +123,7 @@ impl Connection {
     }
 
     pub fn send_commands(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
-        let receiver = self.internal.lock().unwrap().get_receiver();
-
-        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
-            return Vec::new();
-        };
-
-        Self::send_commands_internal(receiver, write_sender, commands, retries, timeout)
+        Self::send_commands_internal(&self.internal, commands, retries, timeout)
     }
 
     pub fn send_command_async(&self, command: Vec<u8>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Option<CommandMessage>) + Send>) {
@@ -145,16 +131,11 @@ impl Connection {
     }
 
     pub fn send_commands_async(&self, commands: Vec<Vec<u8>>, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Vec<Option<CommandMessage>>) + Send>) {
-        let receiver = self.internal.lock().unwrap().get_receiver();
-
-        let Some(write_sender) = self.internal.lock().unwrap().get_write_sender() else {
-            return;
-        };
-
+        let internal = self.internal.clone();
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let responses = Self::send_commands_internal(receiver, write_sender, commands, retries, timeout);
+            let responses = Self::send_commands_internal(&internal, commands, retries, timeout);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -165,7 +146,13 @@ impl Connection {
         });
     }
 
-    fn send_commands_internal(receiver: Arc<Mutex<Receiver>>, write_sender: Sender<Vec<u8>>, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
+    fn send_commands_internal(internal: &InternalConnection, commands: Vec<Vec<u8>>, retries: u32, timeout: u32) -> Vec<Option<CommandMessage>> {
+        let receiver = internal.lock().unwrap().get_receiver();
+
+        let Some(write_sender) = internal.lock().unwrap().get_write_sender() else {
+            return Vec::new();
+        };
+
         struct Transaction {
             command: Option<CommandMessage>,
             response: Option<CommandMessage>,
