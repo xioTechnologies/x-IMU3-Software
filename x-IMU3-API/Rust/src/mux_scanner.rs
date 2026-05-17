@@ -26,7 +26,7 @@ impl<'a> MuxScanner<'a> {
             let devices = devices.clone();
             let updated = updated.clone();
 
-            move |message: MuxMessage| {
+            move |message| {
                 let Some(device) = Self::parse_mux_message(message, &connection) else {
                     return;
                 };

@@ -168,7 +168,7 @@ impl Connection {
 
         let (response_sender, response_receiver) = crossbeam::channel::unbounded();
 
-        let closure_id = receiver.lock().unwrap().dispatcher.add_command_closure(Box::new(move |command: CommandMessage| {
+        let closure_id = receiver.lock().unwrap().dispatcher.add_command_closure(Box::new(move |command| {
             response_sender.send(command).ok();
         }));
 
