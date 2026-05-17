@@ -45,7 +45,7 @@ pub struct FileConverter {
 }
 
 impl FileConverter {
-    pub fn new(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> Self {
+    pub fn new(destination: &str, name: &str, file_paths: Vec<&str>, closure: Box<dyn Fn(FileConverterProgress) + Send>) -> std::io::Result<Self> {
         let file_converter = Self {
             dropped: Arc::new(Mutex::new(false)),
         };
@@ -54,18 +54,8 @@ impl FileConverter {
             status: FileConverterStatus::Failed,
             percentage: 0.0,
             bytes_processed: 0,
-            bytes_total: 0,
+            bytes_total: file_paths.iter().map(|file_path| std::fs::metadata(file_path).map(|metadata| metadata.len())).sum::<std::io::Result<u64>>()?,
         };
-
-        for file_path in &file_paths {
-            match std::fs::metadata(file_path) {
-                Ok(metadata) => progress.bytes_total += metadata.len(),
-                Err(_) => {
-                    closure(progress);
-                    return file_converter;
-                }
-            }
-        }
 
         let dropped = file_converter.dropped.clone();
         let destination = destination.to_owned();
@@ -144,7 +134,7 @@ impl FileConverter {
             }
         });
 
-        file_converter
+        Ok(file_converter)
     }
 
     pub fn convert(destination: &str, name: &str, files: Vec<&str>) -> FileConverterProgress {
