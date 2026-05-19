@@ -733,7 +733,7 @@ namespace Ximu3
         public static extern UInt64 XIMU3_connection_add_error_callback(IntPtr connection, XIMU3_CallbackErrorMessage callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_connection_remove_callback(IntPtr connection, UInt64 callback_id);
+        public static extern void XIMU3_connection_remove_callback(IntPtr connection, UInt64 id);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_usb_connection_config_to_string(XIMU3_UsbConnectionConfig config);
@@ -922,7 +922,7 @@ namespace Ximu3
         public static extern UInt64 XIMU3_network_announcement_add_callback(IntPtr network_announcement, XIMU3_CallbackNetworkAnnouncementMessageC callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_network_announcement_remove_callback(IntPtr network_announcement, UInt64 callback_id);
+        public static extern void XIMU3_network_announcement_remove_callback(IntPtr network_announcement, UInt64 id);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages(IntPtr network_announcement);

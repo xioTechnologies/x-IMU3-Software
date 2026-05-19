@@ -301,7 +301,7 @@ insert(
     8,
     """\
     pub fn add_$name_snake_case$_closure(&self, closure: Box<dyn Fn($name_pascal_case$Message) + Send>) -> u64 {
-        let id = self.new_id();
+        let id = self.new_closure_id();
         self.$name_snake_case$_closures.lock().unwrap().push((closure, id));
         id
     }\n\n""",

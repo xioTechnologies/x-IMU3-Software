@@ -158,8 +158,8 @@ impl NetworkAnnouncement {
         id
     }
 
-    pub fn remove_closure(&self, closure_id: u64) {
-        self.closures.lock().unwrap().retain(|(_, id)| id != &closure_id);
+    pub fn remove_closure(&self, id: u64) {
+        self.closures.lock().unwrap().retain(|(_, closure_id)| closure_id != &id);
     }
 
     pub fn get_messages(&self) -> Vec<NetworkAnnouncementMessage> {

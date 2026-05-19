@@ -613,7 +613,7 @@ uint64_t XIMU3_connection_add_notification_callback(struct XIMU3_Connection *con
 
 uint64_t XIMU3_connection_add_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackErrorMessage callback, void *context);
 
-void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t callback_id);
+void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t id);
 
 const char *XIMU3_usb_connection_config_to_string(struct XIMU3_UsbConnectionConfig config);
 
@@ -739,7 +739,7 @@ enum XIMU3_Result XIMU3_network_announcement_get_result(struct XIMU3_NetworkAnno
 
 uint64_t XIMU3_network_announcement_add_callback(struct XIMU3_NetworkAnnouncement *network_announcement, XIMU3_CallbackNetworkAnnouncementMessageC callback, void *context);
 
-void XIMU3_network_announcement_remove_callback(struct XIMU3_NetworkAnnouncement *network_announcement, uint64_t callback_id);
+void XIMU3_network_announcement_remove_callback(struct XIMU3_NetworkAnnouncement *network_announcement, uint64_t id);
 
 struct XIMU3_NetworkAnnouncementMessages XIMU3_network_announcement_get_messages(struct XIMU3_NetworkAnnouncement *network_announcement);
 

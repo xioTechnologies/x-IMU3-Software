@@ -63,14 +63,14 @@ static PyObject *network_announcement_add_callback(NetworkAnnouncement *self, Py
 }
 
 static PyObject *network_announcement_remove_callback(NetworkAnnouncement *self, PyObject *arg) {
-    const unsigned long long callback_id = PyLong_AsUnsignedLongLong(arg);
+    const unsigned long long id = PyLong_AsUnsignedLongLong(arg);
 
     if (PyErr_Occurred()) {
         return NULL;
     }
 
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_network_announcement_remove_callback(self->wrapped, (uint64_t) callback_id);
+        XIMU3_network_announcement_remove_callback(self->wrapped, (uint64_t) id);
     Py_END_ALLOW_THREADS
 
     Py_RETURN_NONE;
