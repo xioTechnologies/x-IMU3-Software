@@ -8,7 +8,6 @@ use std::io::{Read, Write};
 use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 
 pub struct TcpConnection {
     config: TcpConnectionConfig,
@@ -32,7 +31,7 @@ impl TcpConnection {
 
 impl GenericConnection for TcpConnection {
     fn open(&mut self) -> std::io::Result<()> {
-        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.port), Duration::new(3, 0))?;
+        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.port), std::time::Duration::new(3, 0))?;
 
         stream.set_nonblocking(true)?;
 

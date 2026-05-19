@@ -7,7 +7,6 @@ use crossbeam::channel::Sender;
 use serialport::FlowControl;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 
 pub struct SerialConnection {
     config: SerialConnectionConfig,
@@ -36,7 +35,7 @@ impl GenericConnection for SerialConnection {
                 true => FlowControl::Hardware,
                 false => FlowControl::None,
             })
-            .timeout(Duration::from_millis(1))
+            .timeout(std::time::Duration::from_millis(1))
             .open()?;
 
         serial_port.write_data_terminal_ready(true).ok();
