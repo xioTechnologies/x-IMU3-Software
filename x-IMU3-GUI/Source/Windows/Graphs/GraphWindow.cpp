@@ -90,7 +90,7 @@ void GraphWindow::mouseWheelMove(const juce::MouseEvent &mouseEvent, const juce:
     }
 }
 
-void GraphWindow::mouseDown([[maybe_unused]] const juce::MouseEvent &mouseEvent) {
+void GraphWindow::mouseDown(const juce::MouseEvent &mouseEvent) {
     // Cache graph state for mouseDrag
     graphSettingsMouseCache = graph.getSettings();
     plotWidthJUCEPixelsMouseCache = graph.plotWidthJUCEPixels;

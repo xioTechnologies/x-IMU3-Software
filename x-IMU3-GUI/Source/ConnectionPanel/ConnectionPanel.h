@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include "ConnectionPanelFooter.h"
 #include "ConnectionPanelHeader.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -61,8 +60,6 @@ private:
 
     std::map<juce::Identifier, std::shared_ptr<Window> > windows;
     std::unique_ptr<WindowContainer> windowContainer;
-
-    std::shared_ptr<std::atomic<bool> > destroyed = std::make_shared<std::atomic<bool> >(false);
 
     DisabledOverlay disabledOverlay{false};
 
