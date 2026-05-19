@@ -238,7 +238,7 @@ pub fn serial_accessory_closure(message: SerialAccessoryMessage) {
 
 pub fn sync_closure(message: SyncMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), string_fmt!()),
+    println!(concat!(timestamp_fmt!(), float_fmt!()),
              message.timestamp,
              message.edge);
     // println!("{message}"); // alternative to above
@@ -268,7 +268,7 @@ pub fn battery_closure(message: BatteryMessage) {
              message.voltage,
              message.charging_status,
              ChargingStatus::from(message.charging_status));
-    println!("{message} ({})", ChargingStatus::from(message.charging_status)); // alternative to above
+    // println!("{message} ({})", ChargingStatus::from(message.charging_status)); // alternative to above
 }
 
 pub fn rssi_closure(message: RssiMessage) {
@@ -282,7 +282,7 @@ pub fn rssi_closure(message: RssiMessage) {
 
 pub fn button_closure(message: ButtonMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), string_fmt!()),
+    println!(concat!(timestamp_fmt!(), float_fmt!()),
              message.timestamp,
              message.state);
     // println!("{message}"); // alternative to above
