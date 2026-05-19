@@ -132,10 +132,10 @@ pub extern "C" fn XIMU3_network_announcement_add_callback(network_announcement: 
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcement: *mut NetworkAnnouncementC, callback_id: u64) {
+pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcement: *mut NetworkAnnouncementC, id: u64) {
     let network_announcement = unsafe { &*network_announcement };
     if let Ok(network_announcement) = &network_announcement.internal {
-        network_announcement.remove_closure(callback_id);
+        network_announcement.remove_closure(id);
     }
 }
 
