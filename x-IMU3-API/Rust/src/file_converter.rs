@@ -1,5 +1,6 @@
 use crate::connection::*;
 use crate::connection_config::*;
+use crate::connection_status::*;
 use crate::data_logger::*;
 use std::fmt;
 use std::ops::Drop;
@@ -35,7 +36,7 @@ pub struct FileConverterProgress {
 
 impl fmt::Display for FileConverterProgress {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{}, {:.1}%, {} of {} bytes", self.status, self.percentage, self.bytes_processed, self.bytes_total,)
+        write!(formatter, "{}, {:.1}%, {} of {} bytes", self.status, self.percentage, self.bytes_processed, self.bytes_total)
     }
 }
 
@@ -97,8 +98,10 @@ impl FileConverter {
             for connection in connections.iter() {
                 let end_of_file_counter = end_of_file_counter.clone();
 
-                connection.add_end_of_file_closure(Box::new(move || {
-                    end_of_file_counter.fetch_add(1, Ordering::SeqCst);
+                connection.add_status_closure(Box::new(move |status| {
+                    if status == ConnectionStatus::Disconnected {
+                        end_of_file_counter.fetch_add(1, Ordering::SeqCst);
+                    }
                 }));
 
                 if connection.open().is_err() {

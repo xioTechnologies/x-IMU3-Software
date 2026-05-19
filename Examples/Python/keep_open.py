@@ -18,13 +18,13 @@ def callback(status: int) -> None:
     match status:
         case ximu3.CONNECTION_STATUS_CONNECTED:
             print("Connected")
-        case ximu3.CONNECTION_STATUS_RECONNECTING:
+        case ximu3.CONNECTION_STATUS_DISCONNECTED:
             print("Reconnecting")
 
-    # print(ximu3.connection_status_to_string(status))  # alternative to above
 
+connection.add_status_callback(callback)
 
-keep_open = ximu3.KeepOpen(connection, callback)
+keep_open = ximu3.KeepOpen(connection)
 
 # Close connection
 time.sleep(60)

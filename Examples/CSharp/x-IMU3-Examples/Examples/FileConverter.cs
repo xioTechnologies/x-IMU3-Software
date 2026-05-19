@@ -21,7 +21,7 @@ namespace Ximu3Examples
             System.Threading.Thread.Sleep(60000);
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_FileConverterProgress progress)
+        private static void Callback(Ximu3.CApi.XIMU3_FileConverterProgress progress)
         {
             PrintProgress(progress);
         }

@@ -4,8 +4,6 @@
 
 static void callback(const XIMU3_ConnectionStatus status, void *context);
 
-static void print_connection_status(const XIMU3_ConnectionStatus status);
-
 void keep_open() {
     // Search for connection
     const XIMU3_Devices devices = XIMU3_port_scanner_scan_filter(XIMU3_PortTypeUsb);
@@ -22,7 +20,9 @@ void keep_open() {
 
     XIMU3_devices_free(devices);
 
-    XIMU3_KeepOpen *const keep_open = XIMU3_keep_open_new(connection, callback, NULL);
+    XIMU3_connection_add_status_callback(connection, callback, NULL);
+
+    XIMU3_KeepOpen *const keep_open = XIMU3_keep_open_new(connection);
 
     // Close connection
     sleep(60);
@@ -32,17 +32,12 @@ void keep_open() {
 }
 
 static void callback(const XIMU3_ConnectionStatus status, void *context) {
-    print_connection_status(status);
-}
-
-static void print_connection_status(const XIMU3_ConnectionStatus status) {
     switch (status) {
         case XIMU3_ConnectionStatusConnected:
             printf("Connected\n");
             break;
-        case XIMU3_ConnectionStatusReconnecting:
+        case XIMU3_ConnectionStatusDisconnected:
             printf("Reconnecting\n");
             break;
     }
-    // printf("%s\n", XIMU3_connection_status_to_string(status)); // alternative to above
 }

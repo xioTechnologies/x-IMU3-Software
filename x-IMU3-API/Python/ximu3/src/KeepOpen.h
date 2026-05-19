@@ -13,20 +13,13 @@ typedef struct {
 
 static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection;
-    PyObject *callback;
 
     static char *kwlist[] = {
         "connection",
-        "callback",
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O", kwlist, &connection_object, &connection, &callback) == 0) {
-        return NULL;
-    }
-
-    if (PyCallable_Check(callback) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!", kwlist, &connection_object, &connection) == 0) {
         return NULL;
     }
 
@@ -36,16 +29,12 @@ static PyObject *keep_open_new(PyTypeObject *subtype, PyObject *args, PyObject *
         return NULL;
     }
 
-    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
-
-    self->wrapped = XIMU3_keep_open_new(((Connection *) connection)->wrapped, connection_status_callback, callback);
+    self->wrapped = XIMU3_keep_open_new(((Connection *) connection)->wrapped);
     return (PyObject *) self;
 }
 
 static void keep_open_free(KeepOpen *self) {
-    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        XIMU3_keep_open_free(self->wrapped);
-    Py_END_ALLOW_THREADS
+    XIMU3_keep_open_free(self->wrapped);
     Py_TYPE(self)->tp_free(self);
 }
 

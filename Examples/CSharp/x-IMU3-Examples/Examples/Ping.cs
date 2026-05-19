@@ -42,7 +42,7 @@ namespace Ximu3Examples
             connection.Close();
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_PingResponse? response)
+        private static void Callback(Ximu3.CApi.XIMU3_PingResponse? response)
         {
             PrintResponse(response);
         }

@@ -18,7 +18,9 @@
             // Open connection
             var connection = new Ximu3.Connection(Ximu3.ConnectionConfig.From(devices[0])!);
 
-            var keepOpen = new Ximu3.KeepOpen(connection, Callback);
+            connection.AddStatusCallback(Callback);
+
+            var keepOpen = new Ximu3.KeepOpen(connection);
 
             // Close connection
             System.Threading.Thread.Sleep(60000);
@@ -26,18 +28,17 @@
             keepOpen.Dispose();
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_ConnectionStatus status)
+        private static void Callback(Ximu3.CApi.XIMU3_ConnectionStatus status)
         {
             switch (status)
             {
                 case Ximu3.CApi.XIMU3_ConnectionStatus.XIMU3_ConnectionStatusConnected:
                     Console.WriteLine("Connected");
                     break;
-                case Ximu3.CApi.XIMU3_ConnectionStatus.XIMU3_ConnectionStatusReconnecting:
+                case Ximu3.CApi.XIMU3_ConnectionStatus.XIMU3_ConnectionStatusDisconnected:
                     Console.WriteLine("Reconnecting");
                     break;
             }
-            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_connection_status_to_string(status))); // alternative to above
         }
     }
 }

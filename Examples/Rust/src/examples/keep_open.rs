@@ -1,4 +1,5 @@
 use ximu3::connection::*;
+use ximu3::connection_status::*;
 use ximu3::keep_open::*;
 use ximu3::port_scanner::*;
 
@@ -16,15 +17,12 @@ pub fn run() {
     // Open connection
     let connection = Connection::new(&device.connection_config);
 
-    let closure = Box::new(|status| {
-        match status {
-            ConnectionStatus::Connected => println!("Connected"),
-            ConnectionStatus::Reconnecting => println!("Reconnecting"),
-        }
-        // println!("{status}"); // alternative to above
-    });
+    connection.add_status_closure(Box::new(|status| match status {
+        ConnectionStatus::Connected => println!("Connected"),
+        ConnectionStatus::Disconnected => println!("Reconnecting"),
+    }));
 
-    let keep_open = KeepOpen::new(&connection, closure);
+    let keep_open = KeepOpen::new(&connection);
 
     // Close connection
     std::thread::sleep(std::time::Duration::from_secs(60));

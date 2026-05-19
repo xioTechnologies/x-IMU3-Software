@@ -72,6 +72,12 @@ namespace Ximu3
             XIMU3_ConnectionTypeMux,
         }
 
+        public enum XIMU3_ConnectionStatus
+        {
+            XIMU3_ConnectionStatusConnected,
+            XIMU3_ConnectionStatusDisconnected,
+        }
+
         public enum XIMU3_ReceiveError
         {
             XIMU3_ReceiveErrorBufferOverrun,
@@ -89,12 +95,6 @@ namespace Ximu3
             XIMU3_FileConverterStatusComplete,
             XIMU3_FileConverterStatusFailed,
             XIMU3_FileConverterStatusInProgress,
-        }
-
-        public enum XIMU3_ConnectionStatus
-        {
-            XIMU3_ConnectionStatusConnected,
-            XIMU3_ConnectionStatusReconnecting,
         }
 
         public enum XIMU3_PortType
@@ -448,6 +448,9 @@ namespace Ximu3
         public delegate void XIMU3_CallbackReceiveError(XIMU3_ReceiveError data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void XIMU3_CallbackConnectionStatus(XIMU3_ConnectionStatus data, IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackStatistics(XIMU3_Statistics data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -506,9 +509,6 @@ namespace Ximu3
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackFileConverterProgress(XIMU3_FileConverterProgress data, IntPtr context);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void XIMU3_CallbackConnectionStatus(XIMU3_ConnectionStatus data, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void XIMU3_CallbackDevices(XIMU3_Devices data, IntPtr context);
@@ -610,6 +610,9 @@ namespace Ximu3
         public static extern IntPtr XIMU3_connection_get_config_string(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_ConnectionStatus XIMU3_connection_get_status(IntPtr connection);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -670,6 +673,9 @@ namespace Ximu3
         public static extern UInt64 XIMU3_connection_add_receive_error_callback(IntPtr connection, XIMU3_CallbackReceiveError callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_connection_add_status_callback(IntPtr connection, XIMU3_CallbackConnectionStatus callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_statistics_callback(IntPtr connection, XIMU3_CallbackStatistics callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -727,9 +733,6 @@ namespace Ximu3
         public static extern UInt64 XIMU3_connection_add_error_callback(IntPtr connection, XIMU3_CallbackErrorMessage callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern UInt64 XIMU3_connection_add_end_of_file_callback(IntPtr connection, XIMU3_CallbackEndOfFile callback, IntPtr context);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_connection_remove_callback(IntPtr connection, UInt64 callback_id);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -761,6 +764,9 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_mux_connection_config_to_string(IntPtr config);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_connection_status_to_string(XIMU3_ConnectionStatus status);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_connection_type_to_string(XIMU3_ConnectionType connection_type);
@@ -874,10 +880,7 @@ namespace Ximu3
         public static extern XIMU3_FileConverterProgress XIMU3_file_converter_convert(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_connection_status_to_string(XIMU3_ConnectionStatus status);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_keep_open_new(IntPtr connection, XIMU3_CallbackConnectionStatus callback, IntPtr context);
+        public static extern IntPtr XIMU3_keep_open_new(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_keep_open_free(IntPtr keep_open);

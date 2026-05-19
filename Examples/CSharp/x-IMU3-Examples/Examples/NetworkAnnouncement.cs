@@ -26,7 +26,7 @@ namespace Ximu3Examples
             System.Threading.Thread.Sleep(60000);
         }
 
-        private void Callback(Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message)
+        private static void Callback(Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message)
         {
             PrintMessage(message);
         }

@@ -7,9 +7,8 @@
 namespace ximu3 {
     class KeepOpen {
     public:
-        KeepOpen(Connection &connection, std::function<void(XIMU3_ConnectionStatus)> callback_) {
-            callback = std::move(callback_);
-            wrapped = XIMU3_keep_open_new(connection.wrapped, Helpers::wrapCallable<XIMU3_ConnectionStatus>(callback), &callback);
+        KeepOpen(Connection &connection) {
+            wrapped = XIMU3_keep_open_new(connection.wrapped);
         }
 
         ~KeepOpen() {
@@ -18,6 +17,5 @@ namespace ximu3 {
 
     private:
         XIMU3_KeepOpen *wrapped;
-        std::function<void(XIMU3_ConnectionStatus)> callback;
     };
 } // namespace ximu3

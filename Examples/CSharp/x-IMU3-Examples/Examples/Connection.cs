@@ -23,6 +23,7 @@ namespace Ximu3Examples
             if (Helpers.YesOrNo("Use callbacks (else poll)?"))
             {
                 connection.AddReceiveErrorCallback(ReceiveErrorCallback);
+                connection.AddStatusCallback(StatusCallback);
                 connection.AddStatisticsCallback(StatisticsCallback);
 
                 connection.AddInertialCallback(InertialCallback);
@@ -43,7 +44,6 @@ namespace Ximu3Examples
                 connection.AddButtonCallback(ButtonCallback);
                 connection.AddNotificationCallback(NotificationCallback);
                 connection.AddErrorCallback(ErrorCallback);
-                connection.AddEndOfFileCallback(EndOfFileCallback);
 
                 System.Threading.Thread.Sleep(60000);
             }
@@ -114,6 +114,11 @@ namespace Ximu3Examples
         private static void ReceiveErrorCallback(Ximu3.CApi.XIMU3_ReceiveError error)
         {
             Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_receive_error_to_string(error)));
+        }
+
+        private static void StatusCallback(Ximu3.CApi.XIMU3_ConnectionStatus status)
+        {
+            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_connection_status_to_string(status)));
         }
 
         private static void StatisticsCallback(Ximu3.CApi.XIMU3_Statistics statistics)
@@ -334,11 +339,6 @@ namespace Ximu3Examples
                 StringFormat(Ximu3.Helpers.ToString(message.char_array))
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_error_message_to_string(message))); // alternative to above
-        }
-
-        private static void EndOfFileCallback()
-        {
-            Console.WriteLine("End of file");
         }
     }
 }

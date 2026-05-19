@@ -5,6 +5,7 @@ pub mod charging_status;
 pub mod command_message;
 pub mod connection;
 pub mod connection_config;
+pub mod connection_status;
 mod connections;
 pub mod data_logger;
 pub mod data_messages;
