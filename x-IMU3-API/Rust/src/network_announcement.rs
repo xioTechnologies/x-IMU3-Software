@@ -54,7 +54,7 @@ impl fmt::Display for NetworkAnnouncementMessage {
             self.udp_receive,
             self.rssi,
             self.battery,
-            self.charging_status
+            self.charging_status,
         )
     }
 }
