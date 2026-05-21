@@ -209,6 +209,6 @@ def mux_connect(
     duplicates = [name for name, count in Counter(device_names).items() if count > 1]
 
     if duplicates:
-        raise RuntimeError(f"Dupliate device name(s) {duplicates}")
+        raise RuntimeError(f"Duplicate device name(s) {duplicates}")
 
     return {d.device_name: ximu3.Connection(d.connection_config).open() for d in devices}
