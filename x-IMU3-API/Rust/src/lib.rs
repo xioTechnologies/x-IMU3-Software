@@ -10,6 +10,7 @@ mod connections;
 pub mod data_logger;
 pub mod data_messages;
 pub mod device;
+pub mod discover;
 mod dispatcher;
 mod ffi;
 pub mod file_converter;
