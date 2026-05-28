@@ -886,10 +886,16 @@ namespace Ximu3
         public static extern void XIMU3_keep_open_free(IntPtr keep_open);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_mux_scanner_new(IntPtr connection, XIMU3_CallbackDevices callback, IntPtr context);
+        public static extern IntPtr XIMU3_mux_scanner_new(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_mux_scanner_free(IntPtr mux_scanner);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_mux_scanner_add_callback(IntPtr mux_scanner, XIMU3_CallbackDevices callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_mux_scanner_remove_callback(IntPtr mux_scanner, UInt64 id);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_mux_scanner_get_devices(IntPtr mux_scanner);
@@ -937,10 +943,16 @@ namespace Ximu3
         public static extern IntPtr XIMU3_port_type_to_string(XIMU3_PortType port_type);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, IntPtr context);
+        public static extern IntPtr XIMU3_port_scanner_new();
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_port_scanner_free(IntPtr port_scanner);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_port_scanner_add_callback(IntPtr port_scanner, XIMU3_CallbackDevices callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void XIMU3_port_scanner_remove_callback(IntPtr port_scanner, UInt64 id);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_Devices XIMU3_port_scanner_get_devices(IntPtr port_scanner);

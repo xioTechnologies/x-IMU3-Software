@@ -10,14 +10,26 @@ pub extern "C" fn XIMU3_port_type_to_string(port_type: PortType) -> *const c_cha
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_port_scanner_new(callback: Callback<Devices>, context: *mut c_void) -> *mut PortScanner {
-    let void_ptr = VoidPtr(context);
-    Box::into_raw(Box::new(PortScanner::new(Box::new(move |devices| callback(devices.into(), void_ptr.0)))))
+pub extern "C" fn XIMU3_port_scanner_new() -> *mut PortScanner {
+    Box::into_raw(Box::new(PortScanner::new()))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_free(port_scanner: *mut PortScanner) {
     unsafe { drop(Box::from_raw(port_scanner)) };
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_port_scanner_add_callback(port_scanner: *mut PortScanner, callback: Callback<Devices>, context: *mut c_void) -> u64 {
+    let port_scanner = unsafe { &*port_scanner };
+    let void_ptr = VoidPtr(context);
+    port_scanner.add_closure(Box::new(move |devices| callback(devices.into(), void_ptr.0)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_port_scanner_remove_callback(port_scanner: *mut PortScanner, id: u64) {
+    let port_scanner = unsafe { &*port_scanner };
+    port_scanner.remove_closure(id);
 }
 
 #[no_mangle]

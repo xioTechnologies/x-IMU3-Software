@@ -12,20 +12,13 @@ typedef struct {
 
 static PyObject *mux_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     PyObject *connection;
-    PyObject *callback;
 
     static char *kwlist[] = {
         "connection",
-        "callback",
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!O", kwlist, &connection_object, &connection, &callback) == 0) {
-        return NULL;
-    }
-
-    if (PyCallable_Check(callback) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O!", kwlist, &connection_object, &connection) == 0) {
         return NULL;
     }
 
@@ -35,9 +28,7 @@ static PyObject *mux_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject
         return NULL;
     }
 
-    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
-
-    self->wrapped = XIMU3_mux_scanner_new(((Connection *) connection)->wrapped, devices_callback, callback);
+    self->wrapped = XIMU3_mux_scanner_new(((Connection *) connection)->wrapped);
     return (PyObject *) self;
 }
 
@@ -46,6 +37,36 @@ static void mux_scanner_free(MuxScanner *self) {
         XIMU3_mux_scanner_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject *mux_scanner_add_callback(MuxScanner *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_mux_scanner_add_callback(self->wrapped, devices_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *mux_scanner_remove_callback(MuxScanner *self, PyObject *arg) {
+    const unsigned long long id = PyLong_AsUnsignedLongLong(arg);
+
+    if (PyErr_Occurred()) {
+        return NULL;
+    }
+
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_mux_scanner_remove_callback(self->wrapped, (uint64_t) id);
+    Py_END_ALLOW_THREADS
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *mux_scanner_get_devices(MuxScanner *self, PyObject *args) {
@@ -78,6 +99,8 @@ static PyObject *mux_scanner_scan(PyObject *null, PyObject *args, PyObject *kwds
 }
 
 static PyMethodDef mux_scanner_methods[] = {
+    {"add_callback", (PyCFunction) mux_scanner_add_callback, METH_O, ""},
+    {"remove_callback", (PyCFunction) mux_scanner_remove_callback, METH_O, ""},
     {"get_devices", (PyCFunction) mux_scanner_get_devices, METH_NOARGS, ""},
     {"scan", (PyCFunction) mux_scanner_scan, METH_VARARGS | METH_KEYWORDS | METH_STATIC, ""},
     {NULL} /* sentinel */

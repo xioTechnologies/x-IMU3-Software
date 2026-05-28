@@ -38,7 +38,9 @@ public:
         printDevices(muxDevices);
 
         // Mux scanner (non-blocking)
-        const ximu3::MuxScanner muxScanner(usbConnection, callback);
+        ximu3::MuxScanner muxScanner(usbConnection);
+
+        muxScanner.addCallback(callback);
 
         std::this_thread::sleep_for(std::chrono::seconds(60));
 

@@ -9,15 +9,23 @@
 namespace ximu3 {
     class MuxScanner {
     public:
-        explicit MuxScanner(const Connection &connection, std::function<void(const std::vector<ximu3::Device> &)> callback_) {
-            callback = [callback_](XIMU3_Devices devices) {
-                callback_(Helpers::toVectorAndFree(devices));
-            };
-            wrapped = XIMU3_mux_scanner_new(connection.wrapped, Helpers::wrapCallable<XIMU3_Devices>(callback), &callback);
+        explicit MuxScanner(const Connection &connection) {
+            wrapped = XIMU3_mux_scanner_new(connection.wrapped);
         }
 
         ~MuxScanner() {
             XIMU3_mux_scanner_free(wrapped);
+        }
+
+        uint64_t addCallback(std::function<void(const std::vector<ximu3::Device> &)> &callback_) {
+            const auto internalCallback = +[](XIMU3_Devices devices, void *context) {
+                (*static_cast<decltype(&callback_)>(context))(Helpers::toVectorAndFree(devices));
+            };
+            return XIMU3_mux_scanner_add_callback(wrapped, internalCallback, &callback_);
+        }
+
+        void removeCallback(const uint64_t id) {
+            XIMU3_mux_scanner_remove_callback(wrapped, id);
         }
 
         std::vector<ximu3::Device> getDevices() {
@@ -30,6 +38,5 @@ namespace ximu3 {
 
     private:
         XIMU3_MuxScanner *wrapped;
-        std::function<void(XIMU3_Devices)> callback;
     };
 } // namespace ximu3

@@ -4,6 +4,7 @@ use crate::device::*;
 use crossbeam::channel::Sender;
 use std::fmt;
 use std::ops::Drop;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
 #[repr(C)]
@@ -26,17 +27,22 @@ impl fmt::Display for PortType {
 
 pub struct PortScanner {
     dropped: Arc<Mutex<bool>>,
+    closure_counter: AtomicU64,
+    closures: Arc<Mutex<Vec<(Box<dyn Fn(Vec<Device>) + Send>, u64)>>>,
     devices: Arc<Mutex<Vec<Device>>>,
 }
 
 impl PortScanner {
-    pub fn new(closure: Box<dyn Fn(Vec<Device>) + Send>) -> Self {
+    pub fn new() -> Self {
         let port_scanner = Self {
             dropped: Arc::new(Mutex::new(false)),
+            closure_counter: AtomicU64::new(0),
+            closures: Arc::new(Mutex::new(Vec::new())),
             devices: Arc::new(Mutex::new(Vec::new())),
         };
 
         let dropped = port_scanner.dropped.clone();
+        let closures = port_scanner.closures.clone();
         let devices = port_scanner.devices.clone();
 
         std::thread::spawn(move || {
@@ -76,7 +82,7 @@ impl PortScanner {
                     }
                     if let Ok(_) = receiver.try_recv() {
                         let devices = devices.lock().unwrap().clone();
-                        closure(devices); // argument must not include lock() because this could cause deadlock
+                        closures.lock().unwrap().iter().for_each(|(closure, _)| closure(devices.clone()));
                     }
                 }
 
@@ -117,6 +123,16 @@ impl PortScanner {
 
         devices.lock().unwrap().push(device);
         sender.send(()).ok();
+    }
+
+    pub fn add_closure(&self, closure: Box<dyn Fn(Vec<Device>) + Send>) -> u64 {
+        let id = self.closure_counter.fetch_add(1, Ordering::SeqCst);
+        self.closures.lock().unwrap().push((closure, id));
+        id
+    }
+
+    pub fn remove_closure(&self, id: u64) {
+        self.closures.lock().unwrap().retain(|(_, closure_id)| closure_id != &id);
     }
 
     pub fn get_devices(&self) -> Vec<Device> {

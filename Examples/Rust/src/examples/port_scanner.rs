@@ -8,7 +8,9 @@ pub fn run() {
     print_devices(devices);
 
     // Non-blocking
-    let _port_scanner = PortScanner::new(Box::new(|devices| {
+    let port_scanner = PortScanner::new();
+
+    port_scanner.add_closure(Box::new(|devices| {
         print_devices(devices);
     }));
 

@@ -35,7 +35,9 @@ def callback(mux_devices: list[ximu3.Device]) -> None:
     print_devices(mux_devices)
 
 
-_ = ximu3.MuxScanner(usb_connection, callback)
+mux_scanner = ximu3.MuxScanner(usb_connection)
+
+mux_scanner.add_callback(callback)
 
 time.sleep(60)
 

@@ -29,10 +29,7 @@ private:
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
-    ximu3::PortScanner portScanner{
-        [](const auto &) {
-        }
-    };
+    ximu3::PortScanner portScanner;
 
     std::vector<std::unique_ptr<ximu3::MuxScanner>> muxScanners;
 

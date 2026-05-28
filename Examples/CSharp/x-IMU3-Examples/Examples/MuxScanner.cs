@@ -34,7 +34,9 @@
             PrintDevices(muxDevices);
 
             // Mux scanner (non-blocking)
-            var muxScanner = new Ximu3.MuxScanner(usbConnection, Callback);
+            var muxScanner = new Ximu3.MuxScanner(usbConnection);
+
+            muxScanner.AddCallback(Callback);
 
             System.Threading.Thread.Sleep(60000);
 

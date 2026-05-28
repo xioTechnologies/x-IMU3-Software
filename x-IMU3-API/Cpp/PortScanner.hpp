@@ -9,15 +9,23 @@
 namespace ximu3 {
     class PortScanner {
     public:
-        explicit PortScanner(std::function<void(const std::vector<ximu3::Device> &)> callback_) {
-            callback = [callback_](XIMU3_Devices devices) {
-                callback_(Helpers::toVectorAndFree(devices));
-            };
-            wrapped = XIMU3_port_scanner_new(Helpers::wrapCallable<XIMU3_Devices>(callback), &callback);
+        PortScanner() {
+            wrapped = XIMU3_port_scanner_new();
         }
 
         ~PortScanner() {
             XIMU3_port_scanner_free(wrapped);
+        }
+
+        uint64_t addCallback(std::function<void(const std::vector<ximu3::Device> &)> &callback_) {
+            const auto internalCallback = +[](XIMU3_Devices devices, void *context) {
+                (*static_cast<decltype(&callback_)>(context))(Helpers::toVectorAndFree(devices));
+            };
+            return XIMU3_port_scanner_add_callback(wrapped, internalCallback, &callback_);
+        }
+
+        void removeCallback(const uint64_t id) {
+            XIMU3_port_scanner_remove_callback(wrapped, id);
         }
 
         std::vector<ximu3::Device> getDevices() {
@@ -38,7 +46,6 @@ namespace ximu3 {
 
     private:
         XIMU3_PortScanner *wrapped;
-        std::function<void(XIMU3_Devices)> callback;
 
         static std::vector<std::string> toVectorAndFree(const XIMU3_CharArrays &charArrays) {
             const auto vector = Helpers::toVector<std::string>(charArrays);
