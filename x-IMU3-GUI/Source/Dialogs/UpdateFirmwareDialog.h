@@ -23,33 +23,8 @@ public:
 
 private:
     std::vector<ximu3::Device> devices;
-    ximu3::PortScanner portScanner{
-        [this](const std::vector<ximu3::Device> &devices_) {
-            auto self = SafePointer<juce::Component>(this);
-            juce::MessageManager::callAsync([this, self, devices_] {
-                if (self == nullptr) {
-                    return;
-                }
-
-                devices.clear();
-                for (auto &device: devices_) {
-                    const auto config = ximu3::ConnectionConfig::from(device);
-
-                    if ((dynamic_cast<ximu3::UsbConnectionConfig *>(config.get()) != nullptr) ||
-                        (dynamic_cast<ximu3::SerialConnectionConfig *>(config.get()) != nullptr)) {
-                        devices.push_back(device);
-                    }
-                }
-
-                const auto id = deviceValue.getSelectedId();
-                deviceValue.clear();
-                for (const auto &device: devices) {
-                    deviceValue.addItem(juce::String(device.device_name) + " " + juce::String(device.serial_number) + " (" + ximu3::ConnectionConfig::from(device)->toString() + ")", 1 + deviceValue.getNumItems());
-                }
-                deviceValue.setSelectedId(std::max(1, id));
-            });
-        }
-    };
+    std::function<void(const std::vector<ximu3::Device> &)> portScannerCallback;
+    ximu3::PortScanner portScanner;
 
     SimpleLabel deviceLabel{"Device:"};
     CustomComboBox deviceValue{"No Devices Found"};

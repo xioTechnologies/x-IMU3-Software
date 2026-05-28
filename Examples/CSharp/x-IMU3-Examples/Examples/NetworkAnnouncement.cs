@@ -4,7 +4,7 @@ namespace Ximu3Examples
     {
         public NetworkAnnouncement()
         {
-            var networkAnnouncement = new Ximu3.NetworkAnnouncement();
+            using var networkAnnouncement = new Ximu3.NetworkAnnouncement();
 
             var result = networkAnnouncement.GetResult();
 

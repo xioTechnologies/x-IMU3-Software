@@ -18,7 +18,7 @@ def quick_connect(
     keep_open: bool = False,
     timeout: int = 2,
 ) -> ximu3.Connection | tuple[ximu3.Connection, ximu3.KeepOpen]:  # del ximu3.KeepOpen to close connection
-    port_scanner = ximu3.PortScanner(lambda _: None)
+    port_scanner = ximu3.PortScanner()
 
     rejected_names: set[str] = set()
 

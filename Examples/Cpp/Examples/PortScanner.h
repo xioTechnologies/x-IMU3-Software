@@ -16,7 +16,9 @@ public:
         printDevices(devices);
 
         // Non-blocking
-        ximu3::PortScanner portScanner(callback);
+        ximu3::PortScanner portScanner;
+
+        portScanner.addCallback(callback);
 
         std::this_thread::sleep_for(std::chrono::seconds(60));
     }

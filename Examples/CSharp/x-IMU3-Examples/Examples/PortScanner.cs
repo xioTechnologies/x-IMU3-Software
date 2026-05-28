@@ -10,7 +10,9 @@ namespace Ximu3Examples
             PrintDevices(devices);
 
             // Non-blocking
-            using var portScanner = new Ximu3.PortScanner(Callback);
+            using var portScanner = new Ximu3.PortScanner();
+
+            portScanner.AddCallback(Callback);
 
             System.Threading.Thread.Sleep(60000);
         }

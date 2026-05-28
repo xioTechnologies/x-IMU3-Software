@@ -15,7 +15,9 @@ void port_scanner() {
     XIMU3_devices_free(devices);
 
     // Non-blocking
-    XIMU3_PortScanner *const port_scanner = XIMU3_port_scanner_new(callback, NULL);
+    XIMU3_PortScanner *const port_scanner = XIMU3_port_scanner_new();
+
+    XIMU3_port_scanner_add_callback(port_scanner, callback, NULL);
 
     sleep(60);
 

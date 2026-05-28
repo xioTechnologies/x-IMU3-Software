@@ -30,12 +30,11 @@ pub fn run() {
     print_devices(mux_devices);
 
     // Mux scanner (non-blocking)
-    let _mux_scanner = MuxScanner::new(
-        &usb_connection,
-        Box::new(|mux_devices| {
-            print_devices(mux_devices);
-        }),
-    );
+    let mux_scanner = MuxScanner::new(&usb_connection);
+
+    mux_scanner.add_closure(Box::new(|mux_devices| {
+        print_devices(mux_devices);
+    }));
 
     std::thread::sleep(std::time::Duration::from_secs(60));
 

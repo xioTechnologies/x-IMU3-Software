@@ -114,8 +114,7 @@ void AvailableConnectionsDialog::timerCallback() {
     if (ApplicationSettings::getSingleton().availableConnections.mux) {
         if (muxScanners.empty()) {
             for (const auto &connection: existingConnections) {
-                muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection.connection, [](const auto &) {
-                }));
+                muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection.connection));
             }
         }
 
