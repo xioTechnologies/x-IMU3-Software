@@ -72,12 +72,13 @@ void AvailableConnectionsGroup::resized() {
     bluetoothToggle.setBounds(bounds);
 }
 
-CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3) {
+CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
     addAndMakeVisible(retriesLabel);
     addAndMakeVisible(retriesValue);
     addAndMakeVisible(timeoutLabel);
     addAndMakeVisible(timeoutValue);
     addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
+    addAndMakeVisible(sequentialButton);
 
     retriesValue.onTextChange = [this] {
         ApplicationSettings::getSingleton().commands.retries = (uint32_t) retriesValue.getText().getIntValue();
@@ -91,9 +92,14 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 3) {
         ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
     };
 
+    sequentialButton.onClick = [this] {
+        ApplicationSettings::getSingleton().commands.sequential = sequentialButton.getToggleState();
+    };
+
     retriesValue.setText(juce::String(ApplicationSettings::getSingleton().commands.retries.get()), juce::dontSendNotification);
     timeoutValue.setText(juce::String(ApplicationSettings::getSingleton().commands.timeout.get()), juce::dontSendNotification);
     closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    sequentialButton.setToggleState(ApplicationSettings::getSingleton().commands.sequential, juce::dontSendNotification);
 }
 
 void CommandsGroup::resized() {
@@ -111,4 +117,6 @@ void CommandsGroup::resized() {
     setTextSettingBounds(timeoutLabel, timeoutValue);
 
     closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    bounds.removeFromTop(rowMargin);
+    sequentialButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }

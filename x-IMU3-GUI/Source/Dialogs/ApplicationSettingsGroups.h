@@ -53,6 +53,7 @@ private:
     CustomTextEditor timeoutValue;
 
     CustomToggleButton closeSendingCommandDialogWhenCompleteButton{"Close Sending Command Dialog When Complete"};
+    CustomToggleButton sequentialButton{"Sequential"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };

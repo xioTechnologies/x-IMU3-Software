@@ -2,8 +2,9 @@
 #include "SendingCommandDialog.h"
 #include "Widgets/SimpleLabel.h"
 
-SendingCommandDialog::SendingCommandDialog(const std::string &command, const std::vector<ConnectionPanel *> &connectionPanels)
-    : Dialog(BinaryData::progress_svg, "Sending Command " + replaceInvalidCharacters(command), "Retry", "Cancel", &closeWhenCompleteButton, 175, true) {
+SendingCommandDialog::SendingCommandDialog(const std::string &command_, const std::vector<ConnectionPanel *> &connectionPanels)
+    : Dialog(BinaryData::progress_svg, "Sending Command " + replaceInvalidCharacters(command_), "Retry", "Cancel", &closeWhenCompleteButton, 175, true),
+      command(command_) {
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
 
@@ -27,65 +28,12 @@ SendingCommandDialog::SendingCommandDialog(const std::string &command, const std
         ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
     };
 
-    okCallback = [&, command] {
-        for (auto &row: rows) {
-            if (row.state == Row::State::complete) {
-                continue;
-            }
+    sendAll(0);
 
-            row.state = Row::State::inProgress;
-            row.response.clear();
-
-            juce::Timer::callAfterDelay(sendDelay, [&, row_ = &row] {
-                row_->connectionPanel.sendCommands({command}, this, [&, row_](const auto &responses) {
-                    if (responses.front().has_value() == false) {
-                        row_->state = Row::State::failed;
-                        row_->response = "No response";
-                    } else if (const auto error = responses.front()->error) {
-                        row_->state = Row::State::failed;
-                        row_->response = *error;
-                    } else {
-                        row_->state = Row::State::complete;
-                        if (responses.front()->value != "null") {
-                            row_->response = replaceInvalidCharacters(responses.front()->value);
-                        }
-                    }
-
-                    table.updateContent();
-
-                    if (findRow(Row::State::inProgress)) {
-                        return;
-                    }
-
-                    if (const auto index = findRow(Row::State::failed)) {
-                        setOkButton(true);
-                        setCancelButton(true);
-                        table.scrollToEnsureRowIsOnscreen(*index);
-                        return;
-                    }
-
-                    okCallback = [&] {
-                        return true;
-                    };
-                    setOkButton(true, "Close");
-                    setCancelButton(false);
-
-                    startTimer(1000);
-                });
-            });
-        }
-
-        sendDelay = 250; // delay retry sends to improve UX
-
-        setOkButton(false);
-        setCancelButton(false);
-
-        table.updateContent();
-
+    okCallback = [&] {
+        sendAll(250); // delay retry sends to improve UX
         return false;
     };
-
-    okCallback();
 
     setSize(600, calculateHeight(0) + margin + (int) connectionPanels.size() * table.getRowHeight());
 }
@@ -103,6 +51,81 @@ std::optional<int> SendingCommandDialog::findRow(const Row::State state) const {
         }
     }
     return {};
+}
+
+void SendingCommandDialog::sendAll(int sendDelay) {
+    for (auto &row: rows) {
+        if (row.state == Row::State::complete) {
+            continue;
+        }
+
+        row.state = Row::State::pending;
+        row.response.clear();
+    }
+
+    for (auto &row: rows) {
+        if (row.state != Row::State::pending) {
+            continue;
+        }
+
+        sendRow(row, sendDelay);
+
+        if (ApplicationSettings::getSingleton().commands.sequential) {
+            break;
+        }
+    }
+
+    setOkButton(false);
+    setCancelButton(false);
+
+    table.updateContent();
+}
+
+void SendingCommandDialog::sendRow(Row &row, int sendDelay) {
+    row.state = Row::State::inProgress;
+
+    juce::Timer::callAfterDelay(sendDelay, [&, row_ = &row] {
+        row_->connectionPanel.sendCommands({command}, this, [&, row_](const auto &responses) {
+            if (responses.front().has_value() == false) {
+                row_->state = Row::State::failed;
+                row_->response = "No response";
+            } else if (const auto error = responses.front()->error) {
+                row_->state = Row::State::failed;
+                row_->response = *error;
+            } else {
+                row_->state = Row::State::complete;
+                if (responses.front()->value != "null") {
+                    row_->response = replaceInvalidCharacters(responses.front()->value);
+                }
+            }
+
+            table.updateContent();
+
+            if (const auto index = findRow(Row::State::pending)) {
+                sendRow(rows[static_cast<size_t>(*index)], 0);
+                return;
+            }
+
+            if (findRow(Row::State::inProgress)) {
+                return;
+            }
+
+            if (const auto index = findRow(Row::State::failed)) {
+                setOkButton(true);
+                setCancelButton(true);
+                table.scrollToEnsureRowIsOnscreen(*index);
+                return;
+            }
+
+            okCallback = [&] {
+                return true;
+            };
+            setOkButton(true, "Close");
+            setCancelButton(false);
+
+            startTimer(1000);
+        });
+    });
 }
 
 std::string SendingCommandDialog::replaceInvalidCharacters(const std::string &input) {
@@ -152,6 +175,7 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
                     addAndMakeVisible(headingLabel);
                     addAndMakeVisible(responseLabel);
                     switch (row.state) {
+                        case Row::State::pending:
                         case Row::State::inProgress:
                             break;
                         case Row::State::failed:
@@ -183,6 +207,9 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
         case ColumnId::icon:
             switch (rows[(size_t) rowNumber].state) {
+                case Row::State::pending:
+                    return new Icon(BinaryData::progress_svg, "Pending", 0.6f);
+
                 case Row::State::inProgress:
                     return new Icon(BinaryData::progress_svg, "In Progress", 0.6f);
 
