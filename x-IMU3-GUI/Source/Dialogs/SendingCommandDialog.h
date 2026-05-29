@@ -8,11 +8,13 @@ class SendingCommandDialog : public Dialog,
                              private juce::TableListBoxModel,
                              private juce::Timer {
 public:
-    SendingCommandDialog(const std::string &command, const std::vector<ConnectionPanel *> &connectionPanels);
+    SendingCommandDialog(const std::string &command_, const std::vector<ConnectionPanel *> &connectionPanels);
 
     void resized() override;
 
 private:
+    const std::string command;
+
     enum class ColumnId {
         tag = 1,
         headingAndResponse,
@@ -21,13 +23,14 @@ private:
 
     struct Row {
         enum class State {
+            pending,
             inProgress,
             failed,
             complete,
         };
 
         ConnectionPanel &connectionPanel;
-        State state = State::inProgress;
+        State state = State::pending;
         juce::String response{};
     };
 
@@ -36,9 +39,11 @@ private:
 
     CustomToggleButton closeWhenCompleteButton{"Close When Complete"};
 
-    int sendDelay = 0;
-
     std::optional<int> findRow(const Row::State state) const;
+
+    void sendAll(int sendDelay);
+
+    void sendRow(Row &row, int sendDelay);
 
     static std::string replaceInvalidCharacters(const std::string &input);
 
