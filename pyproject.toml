@@ -22,7 +22,6 @@ classifiers = [
 Repository = "https://github.com/xioTechnologies/x-IMU3-Software"
 
 [tool.setuptools]
-py-modules = [] # fix cibuildwheel error: "Multiple top-level packages discovered in a flat-layout"
 packages = ["ximu3"]
 package-dir = { "ximu3" = "x-IMU3-API/Python/ximu3" }
 
