@@ -1132,7 +1132,7 @@ static PyTypeObject connection_object = {
     .tp_name = "ximu3.Connection",
     .tp_basicsize = sizeof(Connection),
     .tp_dealloc = (destructor) connection_free,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = connection_new,
     .tp_methods = connection_methods,
 };
