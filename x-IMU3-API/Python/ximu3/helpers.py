@@ -183,6 +183,9 @@ def mux_scanner(
 ) -> list[ximu3.Device]:
     devices = ximu3.MuxScanner.scan(connection, number_of_channels or ximu3.MAX_NUMBER_OF_MUX_CHANNELS, retries, timeout)
 
+    if not devices:
+        raise RuntimeError("No mux connections found")
+
     if number_of_channels and (number_of_channels != len(devices)):
         raise RuntimeError(f"Found {len(devices)} mux channel(s) when {number_of_channels} expected")
 
@@ -194,19 +197,19 @@ def mux_connect(
     number_of_channels: int | None = None,
     retries: int = ximu3.DEFAULT_RETRIES,
     timeout: int = ximu3.DEFAULT_TIMEOUT,
-    dictionary: bool = False,
-) -> list[ximu3.Connection] | dict[str, ximu3.Connection]:
+) -> list[ximu3.Connection]:
+    return [ximu3.Connection(d.connection_config).open() for d in mux_scanner(connection, number_of_channels, retries, timeout)]
+
+
+def mux_connect_dict(
+    connection: ximu3.Connection,
+    number_of_channels: int | None = None,
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
+) -> dict[str, ximu3.Connection]:
     devices = mux_scanner(connection, number_of_channels, retries, timeout)
 
-    if not devices:
-        raise RuntimeError("No mux connections found")
-
-    if not dictionary:
-        return [ximu3.Connection(d.connection_config).open() for d in devices]
-
-    device_names = [d.device_name for d in devices]
-
-    duplicates = [name for name, count in Counter(device_names).items() if count > 1]
+    duplicates = [name for name, count in Counter(d.device_name for d in devices).items() if count > 1]
 
     if duplicates:
         raise RuntimeError(f"Duplicate device name(s) {duplicates}")
