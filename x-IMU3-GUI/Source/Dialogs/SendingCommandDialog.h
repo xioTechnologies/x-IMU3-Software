@@ -23,14 +23,13 @@ private:
 
     struct Row {
         enum class State {
-            pending,
             inProgress,
             failed,
             complete,
         };
 
         ConnectionPanel &connectionPanel;
-        State state = State::pending;
+        State state = State::inProgress;
         juce::String response{};
     };
 

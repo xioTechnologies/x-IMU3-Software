@@ -59,12 +59,12 @@ void SendingCommandDialog::sendAll(int sendDelay) {
             continue;
         }
 
-        row.state = Row::State::pending;
+        row.state = Row::State::inProgress;
         row.response.clear();
     }
 
     for (auto &row: rows) {
-        if (row.state != Row::State::pending) {
+        if (row.state != Row::State::inProgress) {
             continue;
         }
 
@@ -82,8 +82,6 @@ void SendingCommandDialog::sendAll(int sendDelay) {
 }
 
 void SendingCommandDialog::sendRow(Row &row, int sendDelay) {
-    row.state = Row::State::inProgress;
-
     juce::Timer::callAfterDelay(sendDelay, [&, row_ = &row] {
         row_->connectionPanel.sendCommands({command}, this, [&, row_](const auto &responses) {
             if (responses.front().has_value() == false) {
@@ -101,12 +99,10 @@ void SendingCommandDialog::sendRow(Row &row, int sendDelay) {
 
             table.updateContent();
 
-            if (const auto index = findRow(Row::State::pending)) {
-                sendRow(rows[static_cast<size_t>(*index)], 0);
-                return;
-            }
-
-            if (findRow(Row::State::inProgress)) {
+            if (const auto index = findRow(Row::State::inProgress)) {
+                if (ApplicationSettings::getSingleton().commands.sequential) {
+                    sendRow(rows[static_cast<size_t>(*index)], 0);
+                }
                 return;
             }
 
@@ -175,7 +171,6 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
                     addAndMakeVisible(headingLabel);
                     addAndMakeVisible(responseLabel);
                     switch (row.state) {
-                        case Row::State::pending:
                         case Row::State::inProgress:
                             break;
                         case Row::State::failed:
@@ -207,9 +202,6 @@ juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, in
 
         case ColumnId::icon:
             switch (rows[(size_t) rowNumber].state) {
-                case Row::State::pending:
-                    return new Icon(BinaryData::progress_svg, "Pending", 0.6f);
-
                 case Row::State::inProgress:
                     return new Icon(BinaryData::progress_svg, "In Progress", 0.6f);
 
