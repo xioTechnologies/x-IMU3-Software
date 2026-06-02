@@ -19,6 +19,8 @@ impl<'a> KeepOpen<'a> {
 
         std::thread::spawn(move || loop {
             loop {
+                // TODO: Calling open before creating a KeepOpen will mean this loop never exits
+
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
                         return;

@@ -101,6 +101,8 @@ impl<'a> DataLogger<'a> {
 
             drop(files);
 
+            // TODO: This renaming can cause the last parts of files to be lost. Flush and sync do not solve this.
+
             // Rename connection directories
             for path in &paths {
                 let json = match std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
