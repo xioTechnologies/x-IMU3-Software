@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Ximu3
@@ -18,7 +18,7 @@ namespace Ximu3
         {
             if (wrapped != IntPtr.Zero)
             {
-                CApi.XIMU3_port_scanner_free(wrapped);
+                CApi.XIMU3_mux_scanner_free(wrapped);
                 wrapped = IntPtr.Zero;
             }
 
