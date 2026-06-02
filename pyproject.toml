@@ -11,7 +11,6 @@ authors = [{ name = "x-io Technologies Limited", email = "info@x-io.co.uk" }]
 license = "MIT"
 license-files = ["LICENSE.md"]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
