@@ -12,19 +12,7 @@ typedef struct {
 } PortScanner;
 
 static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
-    PyObject *callback;
-
-    static char *kwlist[] = {
-        "callback",
-        NULL, /* sentinel */
-    };
-
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &callback) == 0) {
-        return NULL;
-    }
-
-    if (PyCallable_Check(callback) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+    if (PyArg_ParseTuple(args, "") == 0) {
         return NULL;
     }
 
@@ -34,9 +22,7 @@ static PyObject *port_scanner_new(PyTypeObject *subtype, PyObject *args, PyObjec
         return NULL;
     }
 
-    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
-
-    self->wrapped = XIMU3_port_scanner_new(devices_callback, callback);
+    self->wrapped = XIMU3_port_scanner_new();
     return (PyObject *) self;
 }
 
@@ -45,6 +31,36 @@ static void port_scanner_free(PortScanner *self) {
         XIMU3_port_scanner_free(self->wrapped);
     Py_END_ALLOW_THREADS
     Py_TYPE(self)->tp_free(self);
+}
+
+static PyObject *port_scanner_add_callback(PortScanner *self, PyObject *arg) {
+    if (PyCallable_Check(arg) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
+        return NULL;
+    }
+
+    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+
+    uint64_t id;
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        id = XIMU3_port_scanner_add_callback(self->wrapped, devices_callback, arg);
+    Py_END_ALLOW_THREADS
+
+    return PyLong_FromUnsignedLongLong((unsigned long long) id);
+}
+
+static PyObject *port_scanner_remove_callback(PortScanner *self, PyObject *arg) {
+    const unsigned long long id = PyLong_AsUnsignedLongLong(arg);
+
+    if (PyErr_Occurred()) {
+        return NULL;
+    }
+
+    Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
+        XIMU3_port_scanner_remove_callback(self->wrapped, (uint64_t) id);
+    Py_END_ALLOW_THREADS
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *port_scanner_get_devices(PortScanner *self, PyObject *args) {
@@ -105,6 +121,8 @@ cleanup:
 }
 
 static PyMethodDef port_scanner_methods[] = {
+    {"add_callback", (PyCFunction) port_scanner_add_callback, METH_O, ""},
+    {"remove_callback", (PyCFunction) port_scanner_remove_callback, METH_O, ""},
     {"get_devices", (PyCFunction) port_scanner_get_devices, METH_NOARGS, ""},
     {"scan", (PyCFunction) port_scanner_scan, METH_NOARGS | METH_STATIC, ""},
     {"scan_filter", (PyCFunction) port_scanner_scan_filter, METH_O | METH_STATIC, ""},

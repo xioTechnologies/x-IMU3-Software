@@ -22,6 +22,8 @@ def callback(devices: list[ximu3.Device]) -> None:
     print_devices(devices)
 
 
-_ = ximu3.PortScanner(callback)
+port_scanner = ximu3.PortScanner()
+
+port_scanner.add_callback(callback)
 
 time.sleep(60)

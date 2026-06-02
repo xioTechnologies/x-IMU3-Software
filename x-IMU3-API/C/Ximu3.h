@@ -715,9 +715,13 @@ struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection);
 
 void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
 
-struct XIMU3_MuxScanner *XIMU3_mux_scanner_new(struct XIMU3_Connection *connection, XIMU3_CallbackDevices callback, void *context);
+struct XIMU3_MuxScanner *XIMU3_mux_scanner_new(struct XIMU3_Connection *connection);
 
 void XIMU3_mux_scanner_free(struct XIMU3_MuxScanner *mux_scanner);
+
+uint64_t XIMU3_mux_scanner_add_callback(struct XIMU3_MuxScanner *mux_scanner, XIMU3_CallbackDevices callback, void *context);
+
+void XIMU3_mux_scanner_remove_callback(struct XIMU3_MuxScanner *mux_scanner, uint64_t id);
 
 struct XIMU3_Devices XIMU3_mux_scanner_get_devices(struct XIMU3_MuxScanner *mux_scanner);
 
@@ -749,9 +753,13 @@ const char *XIMU3_ping_response_to_string(struct XIMU3_PingResponse response);
 
 const char *XIMU3_port_type_to_string(enum XIMU3_PortType port_type);
 
-struct XIMU3_PortScanner *XIMU3_port_scanner_new(XIMU3_CallbackDevices callback, void *context);
+struct XIMU3_PortScanner *XIMU3_port_scanner_new(void);
 
 void XIMU3_port_scanner_free(struct XIMU3_PortScanner *port_scanner);
+
+uint64_t XIMU3_port_scanner_add_callback(struct XIMU3_PortScanner *port_scanner, XIMU3_CallbackDevices callback, void *context);
+
+void XIMU3_port_scanner_remove_callback(struct XIMU3_PortScanner *port_scanner, uint64_t id);
 
 struct XIMU3_Devices XIMU3_port_scanner_get_devices(struct XIMU3_PortScanner *port_scanner);
 

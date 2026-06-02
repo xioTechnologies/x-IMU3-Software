@@ -4,7 +4,7 @@ use crate::device::*;
 use crate::mux_message::*;
 use crate::ping_response::*;
 use std::ops::Drop;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
 pub const MAX_NUMBER_OF_MUX_CHANNELS: u32 = 254; // '\n' and '^' are reserved
@@ -13,11 +13,13 @@ pub struct MuxScanner<'a> {
     dropped: Arc<Mutex<bool>>,
     connection: &'a Connection,
     closure_id: u64,
+    closure_counter: AtomicU64,
+    closures: Arc<Mutex<Vec<(Box<dyn Fn(Vec<Device>) + Send>, u64)>>>,
     devices: Arc<Mutex<Vec<Device>>>,
 }
 
 impl<'a> MuxScanner<'a> {
-    pub fn new(connection: &'a Connection, closure: Box<dyn Fn(Vec<Device>) + Send>) -> Self {
+    pub fn new(connection: &'a Connection) -> Self {
         let devices = Arc::new(Mutex::new(Vec::new()));
         let updated = Arc::new(AtomicBool::new(false));
 
@@ -41,10 +43,13 @@ impl<'a> MuxScanner<'a> {
             dropped: Arc::new(Mutex::new(false)),
             connection,
             closure_id,
+            closure_counter: AtomicU64::new(0),
+            closures: Arc::new(Mutex::new(Vec::new())),
             devices: devices.clone(),
         };
 
         let dropped = mux_scanner.dropped.clone();
+        let closures = mux_scanner.closures.clone();
         let connection = connection.internal.clone();
 
         std::thread::spawn(move || {
@@ -71,8 +76,8 @@ impl<'a> MuxScanner<'a> {
                         return;
                     }
                     if updated.swap(false, Ordering::SeqCst) {
-                        let devices = devices.lock().unwrap().clone();
-                        closure(devices); // argument must not include lock() because this could cause deadlock
+                        let devices = devices.lock().unwrap().clone(); // clone to release lock to avoid potential deadlock in closure
+                        closures.lock().unwrap().iter().for_each(|(closure, _)| closure(devices.clone()));
                     }
                 }
 
@@ -81,6 +86,16 @@ impl<'a> MuxScanner<'a> {
         });
 
         mux_scanner
+    }
+
+    pub fn add_closure(&self, closure: Box<dyn Fn(Vec<Device>) + Send>) -> u64 {
+        let id = self.closure_counter.fetch_add(1, Ordering::SeqCst);
+        self.closures.lock().unwrap().push((closure, id));
+        id
+    }
+
+    pub fn remove_closure(&self, id: u64) {
+        self.closures.lock().unwrap().retain(|(_, closure_id)| closure_id != &id);
     }
 
     pub fn get_devices(&self) -> Vec<Device> {

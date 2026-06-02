@@ -40,7 +40,9 @@ void mux_scanner() {
     XIMU3_devices_free(mux_devices);
 
     // Mux scanner (non-blocking)
-    XIMU3_MuxScanner *mux_scanner = XIMU3_mux_scanner_new(usb_connection, callback, NULL);
+    XIMU3_MuxScanner *const mux_scanner = XIMU3_mux_scanner_new(usb_connection);
+
+    XIMU3_mux_scanner_add_callback(mux_scanner, callback, NULL);
 
     sleep(60);
 
