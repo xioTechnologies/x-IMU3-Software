@@ -6,19 +6,30 @@ from collections import Counter
 from collections.abc import Sequence
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any
+from typing import Any, Self  # Self requires modern Python version
 
 from . import _core as ximu3
 
 _LOOP_SLEEP = 0.01
 
 
-def quick_connect(
+class Connection(ximu3.Connection):
+    def open(self) -> Self:
+        super().open()
+
+        self._keep_open = ximu3.KeepOpen(self)
+
+        return self
+
+    def close(self) -> None:
+        del self._keep_open
+
+
+def connect(
     name: str = "*",
-    keep_open: bool = False,
     timeout: int = 2,
-) -> ximu3.Connection | tuple[ximu3.Connection, ximu3.KeepOpen]:  # del ximu3.KeepOpen to close connection
-    port_scanner = ximu3.PortScanner()
+) -> Connection:
+    port_scanner = ximu3.PortScanner(lambda _: None)
 
     rejected_names: set[str] = set()
 
@@ -28,10 +39,7 @@ def quick_connect(
         config = _match(name, port_scanner.get_devices(), rejected_names)
 
         if config:
-            if keep_open:
-                return _keep_open(config, timeout)
-            else:
-                return _open(config, timeout)
+            return _open(config, timeout)
 
         if time.perf_counter() > (start + timeout):
             break
@@ -66,30 +74,10 @@ def _open(
 
     while True:
         try:
-            return ximu3.Connection(config).open()
+            return Connection(config).open()
         except Exception:
             if time.perf_counter() > (start + timeout):
                 raise
-
-        time.sleep(_LOOP_SLEEP)
-
-
-def _keep_open(
-    config: ximu3.ConnectionConfig,
-    timeout: int,
-) -> tuple[ximu3.Connection, ximu3.KeepOpen]:
-    connection = ximu3.Connection(config)
-
-    keep_open = ximu3.KeepOpen(connection)
-
-    start = time.perf_counter()
-
-    while True:
-        if connection.get_status() == ximu3.CONNECTION_STATUS_CONNECTED:
-            return connection, keep_open
-
-        if time.perf_counter() > (start + timeout):
-            raise RuntimeError(f"Unable to open {connection.get_config()} after {timeout} second(s)")
 
         time.sleep(_LOOP_SLEEP)
 
@@ -195,6 +183,7 @@ def mux_scanner(
 def mux_connect(
     connection: ximu3.Connection,
     number_of_channels: int | None = None,
+    recursive: bool = False,  # TODO
     retries: int = ximu3.DEFAULT_RETRIES,
     timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> list[ximu3.Connection]:
@@ -204,6 +193,7 @@ def mux_connect(
 def mux_connect_dict(
     connection: ximu3.Connection,
     number_of_channels: int | None = None,
+    recursive: bool = False,  # TODO
     retries: int = ximu3.DEFAULT_RETRIES,
     timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> dict[str, ximu3.Connection]:
