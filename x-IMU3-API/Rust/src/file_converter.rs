@@ -4,7 +4,6 @@ use crate::connection_status::*;
 use crate::data_logger::*;
 use std::fmt;
 use std::ops::Drop;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
 #[repr(C)]
@@ -93,17 +92,7 @@ impl FileConverter {
                 }
             };
 
-            let end_of_file_counter = Arc::new(AtomicUsize::new(0));
-
             for connection in connections.iter() {
-                let end_of_file_counter = end_of_file_counter.clone();
-
-                connection.add_status_closure(Box::new(move |status| {
-                    if status == ConnectionStatus::Disconnected {
-                        end_of_file_counter.fetch_add(1, Ordering::SeqCst);
-                    }
-                }));
-
                 if connection.open().is_err() {
                     if let Ok(dropped) = dropped.lock() {
                         if *dropped == false {
@@ -120,7 +109,7 @@ impl FileConverter {
                 progress.bytes_processed = connections.iter().map(|connection| connection.get_statistics().data_total).sum();
                 progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.bytes_total as f64)) as f32;
 
-                if end_of_file_counter.load(Ordering::SeqCst) == connections.len() {
+                if connections.iter().all(|connection| connection.get_status() == ConnectionStatus::Disconnected) {
                     break;
                 }
 

@@ -54,6 +54,10 @@ impl GenericConnection for FileConnection {
                 }
             }
 
+            while receiver.lock().unwrap().dispatcher.pending() {
+                std::thread::sleep(std::time::Duration::from_millis(1));
+            }
+
             status.store(ConnectionStatus::Disconnected as i32, Ordering::SeqCst);
             receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Disconnected)).ok();
         });
