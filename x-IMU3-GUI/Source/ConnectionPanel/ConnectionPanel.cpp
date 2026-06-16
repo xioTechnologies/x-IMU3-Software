@@ -48,8 +48,6 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree &windowLayout_,
 ConnectionPanel::~ConnectionPanel() {
     keepOpen.reset();
     connection->close();
-
-    *destroyed = true;
 }
 
 void ConnectionPanel::resized() {

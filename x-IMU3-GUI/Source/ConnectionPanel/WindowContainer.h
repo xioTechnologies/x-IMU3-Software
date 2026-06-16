@@ -34,7 +34,5 @@ private:
 
     void valueTreeChildRemoved(juce::ValueTree &parentTree, juce::ValueTree &childWhichHasBeenRemoved, int) override;
 
-    void valueTreeChildOrderChanged(juce::ValueTree &, int, int) override;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WindowContainer)
 };

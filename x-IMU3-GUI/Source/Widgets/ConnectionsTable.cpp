@@ -1,5 +1,4 @@
 #include "ConnectionsTable.h"
-#include "CustomLookAndFeel.h"
 #include "Widgets/Icon.h"
 
 ConnectionsTable::ConnectionsTable() {

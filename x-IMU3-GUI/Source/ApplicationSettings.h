@@ -34,10 +34,6 @@ public:
         return juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile(juce::JUCEApplication::getInstance()->getApplicationName());
     }
 
-    juce::ValueTree &getTree() {
-        return tree;
-    }
-
     void restoreDefault() {
         file.deleteFile();
         load();

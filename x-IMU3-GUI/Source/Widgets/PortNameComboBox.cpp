@@ -11,14 +11,12 @@ void PortNameComboBox::mouseDown(const juce::MouseEvent &e) {
     juce::ComboBox::mouseDown(e);
 }
 
-const std::string &PortNameComboBox::getSelectedPortName() const {
-    if (previousPortNames.size() > 0 && getSelectedId() > 0) {
-        return previousPortNames[(size_t) (getSelectedId() - 1)];
+std::string PortNameComboBox::getSelectedPortName() const {
+    try {
+        return previousPortNames.at((size_t) (getSelectedId() - 1));
+    } catch (...) {
+        return {};
     }
-
-    jassertfalse;
-    static const std::string fallback;
-    return fallback;
 }
 
 void PortNameComboBox::updatePorts() {

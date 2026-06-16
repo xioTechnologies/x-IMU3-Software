@@ -1,4 +1,5 @@
-#include "./ConnectionPanelContainer.h"
+#include "../ConnectionPanelContainer.h"
+#include "../Widgets/PopupMenuHeader.h"
 #include "ThreeDViewWindow.h"
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)

@@ -53,19 +53,6 @@ public:
         return orthogonalProjectionMatrix;
     }
 
-    glm::mat4 getProjectionMatrixForViewport(juce::Rectangle<GLint> viewport_) {
-        setViewportBounds(viewport_);
-        return perspectiveProjectionMatrix;
-    }
-
-    float getDistanceFromOrigin() const {
-        return distanceFromOrigin;
-    }
-
-    float getAspectRatio() const {
-        return aspectRatio;
-    }
-
     float fieldOfViewDegrees = 30.0f;
     float nearClip = 0.1f;
     float farClip = 1000.0f;

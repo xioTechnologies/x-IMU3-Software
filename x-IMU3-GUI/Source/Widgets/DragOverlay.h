@@ -7,9 +7,10 @@ class DragOverlay : public juce::Component,
                     private juce::ComponentListener {
 public:
     explicit DragOverlay(juce::Component &target_) : target(&target_) {
+        setBounds(target_.getLocalBounds());
+
         target->addComponentListener(this);
         setAlwaysOnTop(true);
-        updateBoundsToTarget();
     }
 
     ~DragOverlay() override {
@@ -70,15 +71,7 @@ private:
     Side side = Side::top;
 
     void componentMovedOrResized(juce::Component &, bool, bool) override {
-        updateBoundsToTarget();
-    }
-
-    void updateBoundsToTarget() {
-        if (target != nullptr) {
-            setBounds(target->getLocalBounds());
-        } else {
-            jassertfalse;
-        }
+        setBounds(target->getLocalBounds());
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DragOverlay)

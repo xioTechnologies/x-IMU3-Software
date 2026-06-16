@@ -44,12 +44,6 @@ static inline std::vector<Tick> createTicks(const int numberOfPixels, const Axis
     const unsigned int minorPerMajorDivisions = minorDivisionsUsesFourths ? 4 : 5;
     const float minorDistance = majorDistance / (float) minorPerMajorDivisions;
 
-    // Prevent divide by 0 when adding text labels
-    if (majorDistance <= 0.0 || minorPerMajorDivisions <= 0) {
-        jassertfalse;
-        return {};
-    }
-
     // Create tick data from determined major and minor division distances
     std::vector<Tick> ticks;
 

@@ -1,4 +1,3 @@
-#include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"

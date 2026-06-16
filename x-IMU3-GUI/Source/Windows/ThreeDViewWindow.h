@@ -5,7 +5,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "OpenGL/ThreeDView.h"
-#include "Widgets/PopupMenuHeader.h"
 #include "Widgets/SimpleLabel.h"
 #include "Window.h"
 #include "Ximu3.hpp"

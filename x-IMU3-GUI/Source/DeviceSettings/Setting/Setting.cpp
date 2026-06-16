@@ -33,10 +33,8 @@ void Setting::resized() {
     modifiedIcon.setBounds(bounds.removeFromRight(25).reduced(5));
     warningIcon.setBounds(modifiedIcon.getBounds());
 
-    if (auto *treeview = findParentComponentOfClass<juce::TreeView>()) {
+    if (const auto *const treeview = findParentComponentOfClass<juce::TreeView>()) {
         valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
-    } else {
-        jassertfalse;
     }
 
     valueBounds.removeFromRight(2);

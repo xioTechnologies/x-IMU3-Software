@@ -4,8 +4,6 @@
 #include <memory>
 #include "OpenGL/Graph/LineBuffer.h"
 #include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/GraphDataShader.h"
-#include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/GraphGridShader.h"
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/Shaders/ScreenSpaceLitShader.h"
@@ -44,7 +42,6 @@ public:
     // Shaders
     const GraphDataShader graphDataShader{context};
     const GraphGridShader graphGridShader{context};
-    const GraphGridShader gridLinesShader{context};
     const WorldGridShader grid3DShader{context};
     const TextShader textShader{context};
     const LitShader threeDViewShader{context};
