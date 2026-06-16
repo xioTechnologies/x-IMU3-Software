@@ -107,11 +107,6 @@ void GraphWindow::mouseDrag(const juce::MouseEvent &mouseEvent) {
         return;
     }
 
-    if (plotWidthJUCEPixelsMouseCache <= 0.0f || plotHeightJUCEPixelsMouseCache <= 0.0f) {
-        jassertfalse;
-        return;
-    }
-
     auto dragOffsetPixels = mouseEvent.position - mouseEvent.mouseDownPosition;
 
     if (settings.horizontalAutoscale == false) {

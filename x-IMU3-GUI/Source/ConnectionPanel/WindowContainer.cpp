@@ -185,7 +185,3 @@ void WindowContainer::valueTreeChildRemoved(juce::ValueTree &parentTree, juce::V
 
     componentAddedOrRemoved();
 }
-
-void WindowContainer::valueTreeChildOrderChanged(juce::ValueTree &, int, int) {
-    jassertfalse;
-}

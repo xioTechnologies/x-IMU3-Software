@@ -28,8 +28,6 @@ namespace EscapedStrings {
 
     std::string bytesToPrintable(const std::string &bytes);
 
-    std::string jsonToBytes(std::string json);
-
     std::string bytesToJson(const std::string &bytes);
 
     std::vector<std::string> splitPrintable(const std::string &printable);

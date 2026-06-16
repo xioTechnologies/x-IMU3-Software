@@ -1,4 +1,3 @@
-#include "ApplicationSettings.h"
 #include "ConnectionPanel.h"
 #include "ConnectionPanelFooter.h"
 #include "CustomLookAndFeel.h"

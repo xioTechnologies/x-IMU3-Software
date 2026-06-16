@@ -1,4 +1,3 @@
-#include "EscapedStrings.h"
 #include "Terminal.h"
 
 Terminal::Terminal() {

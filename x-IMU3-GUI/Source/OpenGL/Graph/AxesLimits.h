@@ -46,11 +46,7 @@ struct AxesLimits {
         x.limitRange();
         y.limitRange();
 
-        if (channels.empty()) {
-            return;
-        }
-
-        if (channels[0].size() < 2) {
+        if (channels.empty() || (channels[0].size() < 2)) {
             return;
         }
 

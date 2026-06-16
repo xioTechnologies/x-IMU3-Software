@@ -9,7 +9,7 @@ public:
 
     void mouseDown(const juce::MouseEvent &e) override;
 
-    const std::string &getSelectedPortName() const;
+    std::string getSelectedPortName() const;
 
 private:
     std::vector<std::string> previousPortNames;

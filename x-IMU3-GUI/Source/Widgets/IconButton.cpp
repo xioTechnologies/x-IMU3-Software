@@ -1,4 +1,3 @@
-#include "CustomLookAndFeel.h"
 #include "IconButton.h"
 
 IconButton::IconButton(const juce::String &icon, const juce::String &tooltip_,

@@ -9,8 +9,6 @@ public:
 
     bool keyPressed(const juce::KeyPress &key) override;
 
-    int x() { return 0; }
-
 private:
     juce::ValueTree previousData;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Serial Accessory Data.xml");

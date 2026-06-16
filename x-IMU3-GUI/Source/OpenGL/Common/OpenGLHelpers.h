@@ -39,10 +39,6 @@ namespace OpenGLHelpers {
             return isValid();
         }
 
-        GLint getUniformId() const {
-            return uniformId;
-        }
-
         /** Sets a float uniform. */
         void set(GLfloat n1) const noexcept {
             juce::gl::glUniform1f(uniformId, n1);
@@ -51,11 +47,6 @@ namespace OpenGLHelpers {
         /** Sets an int uniform. */
         void set(GLint n1) const noexcept {
             juce::gl::glUniform1i(uniformId, n1);
-        }
-
-        /** Sets a boolean into an int uniform. */
-        void set(bool data) const noexcept {
-            set((GLint) data);
         }
 
         /** Sets a vec2 uniform. */
@@ -78,29 +69,9 @@ namespace OpenGLHelpers {
             juce::gl::glUniform4i(uniformId, n1, n2, n3, n4);
         }
 
-        /** Sets a vector float uniform. */
-        void set(const GLfloat *values, int numValues) const noexcept {
-            juce::gl::glUniform1fv(uniformId, numValues, values);
-        }
-
-        /** Sets a 2x2 matrix float uniform. */
-        void setMatrix2(const GLfloat *values, GLint count, GLboolean transpose) const noexcept {
-            juce::gl::glUniformMatrix2fv(uniformId, count, transpose, values);
-        }
-
-        /** Sets a 3x3 matrix float uniform. */
-        void setMatrix3(const GLfloat *values, GLint count, GLboolean transpose) const noexcept {
-            juce::gl::glUniformMatrix3fv(uniformId, count, transpose, values);
-        }
-
         /** Sets a 4x4 matrix float uniform. */
         void setMatrix4(const GLfloat *values, GLint count, GLboolean transpose) const noexcept {
             juce::gl::glUniformMatrix4fv(uniformId, count, transpose, values);
-        }
-
-        /** Sets the RGB portion of a JUCE colour to a vec3 uniform. */
-        void setRGB(juce::Colour colour) const noexcept {
-            set((GLfloat) colour.getFloatRed(), (GLfloat) colour.getFloatGreen(), (GLfloat) colour.getFloatBlue());
         }
 
         /** Sets the RGBA of a JUCE colour to a vec4 uniform. */
