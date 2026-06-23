@@ -15,6 +15,7 @@ pub mod ping;
 pub mod port_scanner;
 pub mod send_commands;
 pub mod serial_connection;
+pub mod settings;
 pub mod tcp_connection;
 pub mod udp_connection;
 pub mod usb_connection;

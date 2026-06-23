@@ -21,9 +21,10 @@ namespace Ximu3Examples
             Console.WriteLine("L. PortScanner");
             Console.WriteLine("M. SendCommands");
             Console.WriteLine("N. SerialConnection");
-            Console.WriteLine("O. TcpConnection");
-            Console.WriteLine("P. UdpConnection");
-            Console.WriteLine("Q. UsbConnection");
+            Console.WriteLine("O. Settings");
+            Console.WriteLine("P. TcpConnection");
+            Console.WriteLine("Q. UdpConnection");
+            Console.WriteLine("R. UsbConnection");
 
             switch (Helpers.GetKey())
             {
@@ -70,12 +71,15 @@ namespace Ximu3Examples
                     _ = new SerialConnection();
                     break;
                 case 'O':
-                    _ = new TcpConnection();
+                    _ = new Settings();
                     break;
                 case 'P':
-                    _ = new UdpConnection();
+                    _ = new TcpConnection();
                     break;
                 case 'Q':
+                    _ = new UdpConnection();
+                    break;
+                case 'R':
                     _ = new UsbConnection();
                     break;
             }
