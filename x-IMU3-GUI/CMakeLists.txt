@@ -72,8 +72,8 @@ FILE(GLOB_RECURSE IMAGE_FILES "Images/*.*")
 FILE(GLOB FIRMWARE_FILE "Source/Firmware/*.hex")
 FILE(GLOB_RECURSE OPEN_GL_FILES "Source/OpenGL/Assets/*.*")
 juce_add_binary_data(x-IMU3-GUI-AppData SOURCES
-        "Source/DeviceSettings/DeviceSettings.xml"
-        "Source/Dialogs/CommandKeys.xml"
+        "Source/Schema/x-IMU3 Schema.xml"
+        "Source/Schema/x-IMU4 Schema.xml"
         ${FONT_FILES}
         ${IMAGE_FILES}
         ${FIRMWARE_FILE}

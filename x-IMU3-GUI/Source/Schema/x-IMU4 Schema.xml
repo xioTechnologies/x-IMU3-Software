@@ -1,0 +1,272 @@
+<Schema name="x-IMU4">
+    <Commands>
+        <Command key="ping"/>
+        <Command key="default"/>
+        <Command key="apply"/>
+        <Command key="save"/>
+        <Command key="time"/>
+        <Command key="format"/>
+        <Command key="capacity"/>
+        <Command key="start"/>
+        <Command key="stop"/>
+        <Command key="delete"/>
+        <Command key="restart"/>
+        <Command key="heading"/>
+        <Command key="magnetic"/>
+        <Command key="relative"/>
+        <Command key="anchor_start"/>
+        <Command key="anchor_progress"/>
+        <Command key="anchor_complete"/>
+        <Command key="anchor_abort"/>
+        <Command key="bias_start"/>
+        <Command key="bias_progress"/>
+        <Command key="bias_complete"/>
+        <Command key="bias_abort"/>
+        <Command key="hard_iron_start"/>
+        <Command key="hard_iron_progress"/>
+        <Command key="hard_iron_complete"/>
+        <Command key="hard_iron_abort"/>
+        <Command key="accessory"/>
+        <Command key="note"/>
+        <Command key="timestamp"/>
+        <Command key="test"/>
+    </Commands>
+    <Settings>
+        <Group name="Device Information" expand="false">
+            <Setting key="model" name="Model" type="string" readOnly="true"/>
+            <Setting key="serial_number" name="Serial Number" type="string" readOnly="true"/>
+            <Setting key="hardware_version" name="Hardware Version" type="string" readOnly="true"/>
+            <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
+            <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
+            <Setting key="device_name" name="Device Name" type="string"/>
+        </Group>
+        <Group name="Serial" expand="false">
+            <Setting key="serial_mode" name="Mode" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="Normal" value="1"/>
+                <Enum name="Accessory" value="2"/>
+                <Enum name="Mux" value="3"/>
+                <Enum name="Sync" value="4"/>
+                <Enum name="LTC" value="5"/>
+            </Setting>
+            <Setting key="baud_rate" name="Baud Rate" type="number" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Setting key="rts_cts" name="RTS/CTS" type="bool" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Group name="Accessory Receive" dependsOnKey="serial_mode" dependsOnValues="2">
+                <Setting key="accessory_number_of_bytes" name="Number of Bytes" type="number"/>
+                <Setting key="accessory_termination" name="Termination" type="number"/>
+                <Setting key="accessory_timeout" name="Timeout (ms)" type="number"/>
+            </Group>
+        </Group>
+        <Group name="SD Card Logging" expand="false">
+            <Setting key="start_logging_on_power_on" name="Start on Power-On" type="bool"/>
+            <Setting key="stop_logging_for_usb_access" name="Stop for USB Access" type="bool"/>
+            <Setting key="stop_logging_for_http_access" name="Stop for HTTP Access" type="bool"/>
+            <Group name="File">
+                <Setting key="file_name_prefix" name="File Name Prefix" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Model" value="1"/>
+                    <Enum name="Serial Number" value="2"/>
+                    <Enum name="Device Name" value="3"/>
+                </Setting>
+                <Setting key="file_name_suffix" name="File Name Suffix" type="enum">
+                    <Enum name="Counter" value="0"/>
+                    <Enum name="Date &amp; Time" value="1"/>
+                </Setting>
+                <Setting key="max_file_size" name="Max File Size (MB)" type="number"/>
+                <Setting key="max_file_period" name="Max File Period (s)" type="number"/>
+            </Group>
+        </Group>
+        <Group name="IMU">
+            <Setting key="individual_imus" name="Individual IMUs" type="bool"/>
+            <Setting key="sample_rate" name="Sample Rate" type="enum">
+                <Enum name="12 Hz" value="12"/>
+                <Enum name="25 Hz" value="25"/>
+                <Enum name="50 Hz" value="50"/>
+                <Enum name="100 Hz" value="100"/>
+                <Enum name="200 Hz" value="200"/>
+                <Enum name="400 Hz" value="400"/>
+                <Enum name="800 Hz" value="800"/>
+                <Enum name="1600 Hz" value="1600"/>
+                <Enum name="3200 Hz" value="3200"/>
+                <Enum name="6400 Hz" value="6400"/>
+            </Setting>
+            <Group name="Low-Pass Filters">
+                <Setting key="gyroscope_low_pass_filter" name="Gyroscope" type="enum">
+                    <Enum name="Bypass" value="0"/>
+                    <Enum name="Sample Rate / 4" value="4"/>
+                    <Enum name="Sample Rate / 8" value="8"/>
+                    <Enum name="Sample Rate / 16" value="16"/>
+                    <Enum name="Sample Rate / 32" value="32"/>
+                    <Enum name="Sample Rate / 64" value="64"/>
+                    <Enum name="Sample Rate / 128" value="128"/>
+                </Setting>
+                <Setting key="accelerometer_low_pass_filter" name="Accelerometer" type="enum">
+                    <Enum name="Bypass" value="0"/>
+                    <Enum name="Sample Rate / 4" value="4"/>
+                    <Enum name="Sample Rate / 8" value="8"/>
+                    <Enum name="Sample Rate / 16" value="16"/>
+                    <Enum name="Sample Rate / 32" value="32"/>
+                    <Enum name="Sample Rate / 64" value="64"/>
+                    <Enum name="Sample Rate / 128" value="128"/>
+                </Setting>
+            </Group>
+            <Setting key="axis_remap" name="Axis Remap" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="+X+Z-Y" value="1"/>
+                <Enum name="+X-Z+Y" value="2"/>
+                <Enum name="+X-Y-Z" value="3"/>
+                <Enum name="+Y+X-Z" value="4"/>
+                <Enum name="+Y+Z+X" value="5"/>
+                <Enum name="+Y-Z-X" value="6"/>
+                <Enum name="+Y-X+Z" value="7"/>
+                <Enum name="+Z+X+Y" value="8"/>
+                <Enum name="+Z+Y-X" value="9"/>
+                <Enum name="+Z-Y+X" value="10"/>
+                <Enum name="+Z-X-Y" value="11"/>
+                <Enum name="-Z+X-Y" value="12"/>
+                <Enum name="-Z+Y+X" value="13"/>
+                <Enum name="-Z-Y-X" value="14"/>
+                <Enum name="-Z-X+Y" value="15"/>
+                <Enum name="-Y+X+Z" value="16"/>
+                <Enum name="-Y+Z-X" value="17"/>
+                <Enum name="-Y-Z+X" value="18"/>
+                <Enum name="-Y-X-Z" value="19"/>
+                <Enum name="-X+Y-Z" value="20"/>
+                <Enum name="-X+Z+Y" value="21"/>
+                <Enum name="-X-Z-Y" value="22"/>
+                <Enum name="-X-Y+Z" value="23"/>
+            </Setting>
+            <Setting key="bias_correction_mode" name="Bias Correction" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="Continuous" value="1"/>
+                <Enum name="Command" value="2"/>
+            </Setting>
+            <Setting key="hard_iron_correction_enabled" name="Hard-Iron Correction" type="bool"/>
+            <Setting key="ahrs_enabled" name="AHRS" type="bool"/>
+            <Group name="AHRS">
+                <Setting key="axes_convention" name="Axes Convention" type="enum">
+                    <Enum name="North, West, Up (NWU)" value="0"/>
+                    <Enum name="East, North, Up (ENU)" value="1"/>
+                    <Enum name="North, East, Down (NED)" value="2"/>
+                </Setting>
+                <Setting key="heading_mode" name="Heading Mode" type="enum">
+                    <Enum name="Magnetic" value="0"/>
+                    <Enum name="Relative" value="1"/>
+                    <Enum name="Anchored" value="2"/>
+                </Setting>
+                <Setting key="ahrs_gain" name="Gain" type="number"/>
+                <Setting key="overrange_recovery" name="Overrange Recovery" type="bool"/>
+                <Setting key="acceleration_rejection" name="Acceleration Rejection" type="bool"/>
+                <Setting key="magnetic_rejection" name="Magnetic Rejection" type="bool" dependsOnKey="heading_mode" dependsOnValues="0"/>
+                <Group name="Anchor" dependsOnKey="heading_mode" dependsOnValues="2">
+                    <Setting key="anchor_cutoff" name="Cutoff (Hz)" type="number"/>
+                    <Setting key="anchor_duration" name="Duration (s)" type="number"/>
+                </Group>
+            </Group>
+        </Group>
+        <Group name="Data Messages">
+            <Setting key="data_message_mode" name="Mode" type="enum">
+                <Enum name="Binary" value="0"/>
+                <Enum name="ASCII" value="1"/>
+            </Setting>
+            <Group name="Message Modes">
+                <Setting key="orientation_mode" name="Orientation" type="enum">
+                    <Enum name="Quaternion" value="0"/>
+                    <Enum name="Rotation Matrix" value="1"/>
+                    <Enum name="Euler Angles" value="2"/>
+                </Setting>
+                <Setting key="acceleration_mode" name="Acceleration" type="enum">
+                    <Enum name="Linear" value="0"/>
+                    <Enum name="Earth" value="1"/>
+                </Setting>
+            </Group>
+            <Group name="Message Rates">
+                <Setting key="inertial_message_rate" name="Inertial" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                    <Enum name="2 Hz" value="2"/>
+                    <Enum name="4 Hz" value="4"/>
+                    <Enum name="5 Hz" value="5"/>
+                    <Enum name="10 Hz" value="10"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="25"/>
+                    <Enum name="50 Hz" value="50"/>
+                    <Enum name="100 Hz" value="100"/>
+                    <Enum name="400 Hz" value="400"/>
+                    <Enum name="800 Hz" value="800"/>
+                    <Enum name="1600 Hz" value="1600"/>
+                    <Enum name="3200 Hz" value="3200"/>
+                    <Enum name="6400 Hz" value="6400"/>
+                </Setting>
+                <Setting key="magnetometer_message_rate" name="Magnetometer" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                    <Enum name="2 Hz" value="2"/>
+                    <Enum name="5 Hz" value="5"/>
+                    <Enum name="10 Hz" value="10"/>
+                    <Enum name="25 Hz" value="25"/>
+                    <Enum name="50 Hz" value="50"/>
+                </Setting>
+                <Setting key="orientation_message_rate" name="Orientation" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                    <Enum name="2 Hz" value="2"/>
+                    <Enum name="4 Hz" value="4"/>
+                    <Enum name="5 Hz" value="5"/>
+                    <Enum name="10 Hz" value="10"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="25"/>
+                    <Enum name="50 Hz" value="50"/>
+                    <Enum name="100 Hz" value="100"/>
+                    <Enum name="400 Hz" value="400"/>
+                    <Enum name="800 Hz" value="800"/>
+                    <Enum name="1600 Hz" value="1600"/>
+                    <Enum name="3200 Hz" value="3200"/>
+                    <Enum name="6400 Hz" value="6400"/>
+                </Setting>
+                <Setting key="acceleration_message_rate" name="Acceleration" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                    <Enum name="2 Hz" value="2"/>
+                    <Enum name="4 Hz" value="4"/>
+                    <Enum name="5 Hz" value="5"/>
+                    <Enum name="10 Hz" value="10"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="25"/>
+                    <Enum name="50 Hz" value="50"/>
+                    <Enum name="100 Hz" value="100"/>
+                    <Enum name="400 Hz" value="400"/>
+                    <Enum name="800 Hz" value="800"/>
+                    <Enum name="1600 Hz" value="1600"/>
+                    <Enum name="3200 Hz" value="3200"/>
+                    <Enum name="6400 Hz" value="6400"/>
+                </Setting>
+                <Setting key="temperature_message_rate" name="Temperature" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                    <Enum name="2 Hz" value="2"/>
+                    <Enum name="4 Hz" value="4"/>
+                    <Enum name="5 Hz" value="5"/>
+                    <Enum name="10 Hz" value="10"/>
+                </Setting>
+            </Group>
+            <Group name="Interfaces">
+                <Setting key="usb_send_mode" name="USB" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Blocking" value="1"/>
+                    <Enum name="Non-Blocking" value="2"/>
+                </Setting>
+                <Setting key="serial_send_mode" name="Serial" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Blocking" value="1"/>
+                    <Enum name="Non-Blocking" value="2"/>
+                </Setting>
+                <Setting key="sd_card_send_mode" name="SD Card" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Blocking" value="1"/>
+                    <Enum name="Non-Blocking" value="2"/>
+                </Setting>
+            </Group>
+        </Group>
+    </Settings>
+</Schema>

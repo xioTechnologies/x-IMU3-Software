@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ApplicationSettings.h"
+#include "ConnectionPanel/ConnectionPanel.h"
 #include "Dialog.h"
+#include "Schema/Schema.h"
 #include "Widgets/CustomComboBox.h"
 #include "Widgets/CustomTextEditor.h"
 #include "Widgets/IconButton.h"
@@ -9,7 +11,22 @@
 
 class SendCommandDialog : public Dialog {
 public:
-    explicit SendCommandDialog(const juce::String &dialogTitle, const std::optional<juce::Colour> &colourTag_ = {});
+    class Dictionary {
+    public:
+        explicit Dictionary(const std::vector<ConnectionPanel *> &connectionPanels);
+
+        juce::StringArray names;
+        juce::StringArray commands;
+        juce::StringArray settings;
+        std::optional<juce::String> error;
+
+    private:
+        void addCommands(juce::ValueTree tree);
+
+        void addSettings(juce::ValueTree tree);
+    };
+
+    explicit SendCommandDialog(const juce::String &dialogTitle, const Dictionary &dictionary_, const std::optional<juce::Colour> &colourTag_ = {});
 
     void resized() override;
 
@@ -40,9 +57,11 @@ private:
         return Type::string;
     }
 
+    const Dictionary dictionary;
+
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
-    IconButton dictionaryButton{BinaryData::dictionary_svg, "Dictionary", std::bind(&SendCommandDialog::getDictionaryMenu, this)};
+    IconButton dictionaryButton{BinaryData::dictionary_svg, "Dictionary: " + (dictionary.error ? *dictionary.error : dictionary.names.joinIntoString(", ")), std::bind(&SendCommandDialog::getDictionaryMenu, this)};
 
     SimpleLabel valueLabel{"Value:"};
     CustomComboBox typeValue;
@@ -53,8 +72,6 @@ private:
     CustomTextEditor commandValue;
 
     IconButton previousCommandsButton{BinaryData::history_svg, "History", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this)};
-
-    const juce::ValueTree commandKeys = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
     juce::ValueTree previousCommands;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");

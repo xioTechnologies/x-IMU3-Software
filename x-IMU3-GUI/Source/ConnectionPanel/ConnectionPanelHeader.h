@@ -40,7 +40,6 @@ private:
     ConnectionPanelContainer &connectionPanelContainer;
     const std::shared_ptr<ximu3::Connection> connection;
 
-    juce::String deviceName, serialNumber;
     const juce::String configString = connection->getConfig()->toString();
 
     IconButton retryButton{BinaryData::retry_svg, "Retry"};

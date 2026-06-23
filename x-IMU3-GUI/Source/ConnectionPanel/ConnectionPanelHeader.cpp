@@ -2,7 +2,6 @@
 #include "ConnectionPanelContainer.h"
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
-#include "KeyCompare.h"
 
 ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, ConnectionPanelContainer &connectionPanelContainer_)
     : connectionPanel(connectionPanel_),

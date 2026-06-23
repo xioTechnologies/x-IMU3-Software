@@ -1,7 +1,66 @@
+#include "Schema/Schema.h"
 #include "SendCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const std::optional<juce::Colour> &colourTag_) : Dialog(BinaryData::json_svg, dialogTitle, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, colourTag_) {
+SendCommandDialog::Dictionary::Dictionary(const std::vector<ConnectionPanel *> &connectionPanels) {
+    juce::StringArray missingNames;
+
+    for (auto *connectionPanel: connectionPanels) {
+        auto response = connectionPanel->getConnection()->getPingResponse();
+
+        if (response.has_value() == false) {
+            continue;
+        }
+
+        const juce::String model = response->device_name; // TODO: Use model
+
+        const auto schema = Schema::find(model);
+
+        if (schema.has_value() == false) {
+            missingNames.addIfNotAlreadyThere(model);
+            continue;
+        }
+
+        names.addIfNotAlreadyThere(schema->name);
+
+        addCommands(schema->commands);
+        addSettings(schema->settings);
+    }
+
+    commands.sort(false);
+    settings.sort(false);
+
+    if (names.isEmpty() == false) {
+        return;
+    }
+
+    if (missingNames.isEmpty() == false) {
+        error = "Schema not found for " + missingNames.joinIntoString(", ");
+        return;
+    }
+
+    error = "No ping response";
+}
+
+void SendCommandDialog::Dictionary::addCommands(juce::ValueTree tree) {
+    for (auto child: tree) {
+        commands.addIfNotAlreadyThere(child.getProperty("key"));
+    }
+}
+
+void SendCommandDialog::Dictionary::addSettings(juce::ValueTree tree) {
+    for (auto child: tree) {
+        if (child.hasProperty("key")) {
+            settings.addIfNotAlreadyThere(child.getProperty("key"));
+        }
+
+        addSettings(child);
+    }
+}
+
+SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const Dictionary &dictionary_, const std::optional<juce::Colour> &colourTag_)
+    : Dialog(BinaryData::json_svg, dialogTitle, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, colourTag_),
+      dictionary(dictionary_) {
     addAndMakeVisible(keyLabel);
     addAndMakeVisible(keyValue);
     addAndMakeVisible(dictionaryButton);
@@ -12,6 +71,8 @@ SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const std:
     addAndMakeVisible(commandLabel);
     addAndMakeVisible(commandValue);
     addAndMakeVisible(previousCommandsButton);
+
+    dictionaryButton.setEnabled(dictionary.error.has_value() == false);
 
     previousCommands = juce::ValueTree::fromXml(file.loadFileAsString());
     if (!previousCommands.isValid()) {
@@ -143,19 +204,27 @@ void SendCommandDialog::selectCommand(const juce::ValueTree command) {
 
 juce::PopupMenu SendCommandDialog::getDictionaryMenu() {
     juce::PopupMenu menu;
-    for (const auto command: commandKeys) {
-        if (command.hasType("Command")) {
-            menu.addItem(command["key"], [&, command] {
-                keyValue.setText(command["key"], juce::sendNotification);
-                typeValue.setSelectedItemIndex(command["type"], juce::sendNotification);
-                stringValue.setText({}, juce::sendNotification);
-                numberValue.setText({}, juce::sendNotification);
-            });
-        } else if (command.hasType("Separator")) {
-            menu.addSeparator();
-            menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(command["header"]), nullptr);
-        }
+
+    const auto addItem = [&](const auto &key) {
+        menu.addItem(key, [&, key] {
+            keyValue.setText(key, juce::sendNotification);
+            typeValue.setSelectedItemIndex(static_cast<int>(Type::null), juce::sendNotification);
+            stringValue.setText({}, juce::sendNotification);
+            numberValue.setText({}, juce::sendNotification);
+        });
+    };
+
+    for (const auto &command: dictionary.commands) {
+        addItem(command);
     }
+
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("DEVICE SETTINGS"), nullptr);
+
+    for (const auto &setting: dictionary.settings) {
+        addItem(setting);
+    }
+
     return menu;
 }
 
