@@ -14,6 +14,7 @@
 #include "Examples/PortScanner.h"
 #include "Examples/SendCommands.h"
 #include "Examples/SerialConnection.h"
+#include "Examples/Settings.h"
 #include "Examples/TcpConnection.h"
 #include "Examples/UdpConnection.h"
 #include "Examples/UsbConnection.h"
@@ -38,9 +39,10 @@ int main(int argc, const char *argv[]) {
     std::cout << "L. PortScanner.h" << std::endl;
     std::cout << "M. SendCommands.h" << std::endl;
     std::cout << "N. SerialConnection.h" << std::endl;
-    std::cout << "O. TcpConnection.h" << std::endl;
-    std::cout << "P. UdpConnection.h" << std::endl;
-    std::cout << "Q. UsbConnection.h" << std::endl;
+    std::cout << "O. Settings.h" << std::endl;
+    std::cout << "P. TcpConnection.h" << std::endl;
+    std::cout << "Q. UdpConnection.h" << std::endl;
+    std::cout << "R. UsbConnection.h" << std::endl;
 
     switch (helpers::getKey()) {
         case 'A':
@@ -86,12 +88,15 @@ int main(int argc, const char *argv[]) {
             SerialConnection();
             break;
         case 'O':
-            TcpConnection();
+            Settings();
             break;
         case 'P':
-            UdpConnection();
+            TcpConnection();
             break;
         case 'Q':
+            UdpConnection();
+            break;
+        case 'R':
             UsbConnection();
             break;
     }

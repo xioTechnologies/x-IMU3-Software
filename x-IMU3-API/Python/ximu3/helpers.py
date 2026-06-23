@@ -40,6 +40,8 @@ def connect(
     while True:
         config = _match(name, port_scanner.get_devices(), rejected_names)
 
+        # TODO: exception if >1 match
+
         if config:
             return _open(config, timeout)
 
@@ -207,3 +209,69 @@ def mux_connect_dict(
         raise RuntimeError(f"Duplicate device name(s) {duplicates}")
 
     return {d.device_name: ximu3.Connection(d.connection_config).open() for d in devices}
+
+
+def backup(
+    connection: ximu3.Connection,
+    file_path: str | None = None,
+    overwrite: bool = False,
+) -> Path:
+    if file_path:
+        file_path = Path(file_path).absolute()
+    else:
+        response = connection.ping()
+
+        if not response:
+            raise RuntimeError("No ping response")
+
+        directory = Path(sys.modules["__main__"].__file__).parent
+
+        file_path = directory / f"{response.device_name} {response.serial_number}"
+
+    file_path: Path = file_path.with_suffix(".json")
+
+    if overwrite:
+        file_path.unlink(missing_ok=True)
+
+    if file_path.exists():
+        raise FileExistsError(f"File already exists: {file_path}")
+
+    ximu3.settings_backup(str(file_path), connection)
+
+    return file_path
+
+
+def restore(
+    connection: ximu3.Connection,
+    file_path: str | None = None,
+) -> Path:
+    if file_path:
+        file_path = Path(file_path).absolute()
+    else:
+        response = connection.ping()
+
+        if not response:
+            raise RuntimeError("No ping response")
+
+        directory = Path(sys.modules["__main__"].__file__).parent
+
+        backups = [f for f in directory.glob("*.json") if response.serial_number in f.name]
+
+        if len(backups) > 1:
+            backups_string = "\n".join(f.as_posix() for f in backups)
+
+            raise RuntimeError(f"Multiple backups found for {response.serial_number}:\n{backups_string}")
+
+        if not backups:
+            raise FileNotFoundError(f"No backups found for {response.serial_number} in {directory}")
+
+        file_path: Path = backups[0]
+
+    file_path = file_path.with_suffix(".json")
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"File does not exist: {file_path}")
+
+    ximu3.settings_restore(str(file_path), connection)
+
+    return file_path
