@@ -7,7 +7,7 @@
 
 class ConnectionPanelContainer : public juce::Component {
 public:
-    ConnectionPanelContainer(juce::ValueTree &windowLayout_, OpenGLRenderer &openGLRenderer_);
+    ConnectionPanelContainer(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPool_, OpenGLRenderer &openGLRenderer_);
 
     void resized() override;
 
@@ -48,6 +48,7 @@ public:
 
 private:
     juce::ValueTree &windowLayout;
+    juce::ThreadPool &threadPool;
     OpenGLRenderer &openGLRenderer;
 
     SimpleLabel noConnectionsLabel{"No Connections", UIFonts::getDefaultFont(), juce::Justification::centred};

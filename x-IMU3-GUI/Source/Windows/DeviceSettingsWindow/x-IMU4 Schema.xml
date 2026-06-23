@@ -1,0 +1,29 @@
+<Schema>
+    <Settings>
+        <Group name="Device Information" expand="false">
+            <Setting key="model" name="Model" type="string" readOnly="true"/>
+            <Setting key="serial_number" name="Serial Number" type="string" readOnly="true"/>
+            <Setting key="hardware_version" name="Hardware Version" type="string" readOnly="true"/>
+            <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
+            <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
+            <Setting key="device_name" name="Device Name" type="string"/>
+        </Group>
+        <Group name="Serial" expand="false">
+            <Setting key="serial_mode" name="Mode" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="Normal" value="1"/>
+                <Enum name="Accessory" value="2"/>
+                <Enum name="Mux" value="3"/>
+                <Enum name="Sync" value="4"/>
+                <Enum name="LTC" value="5"/>
+            </Setting>
+            <Setting key="serial_baud_rate" name="Baud Rate" type="number" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Group name="Accessory Send Conditions" dependsOnKey="serial_mode" dependsOnValues="2">
+                <Setting key="serial_accessory_number_of_bytes" name="Number of Bytes" type="number"/>
+                <Setting key="serial_accessory_termination_byte" name="Termination" type="number"/>
+                <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
+            </Group>
+        </Group>
+    </Settings>
+</Schema>

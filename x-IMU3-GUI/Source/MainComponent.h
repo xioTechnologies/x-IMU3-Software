@@ -62,7 +62,7 @@ private:
     juce::ValueTree windowLayout{WindowIds::Row};
     juce::ThreadPool threadPool;
     OpenGLRenderer openGLRenderer{*this, threadPool};
-    ConnectionPanelContainer connectionPanelContainer{windowLayout, openGLRenderer};
+    ConnectionPanelContainer connectionPanelContainer{windowLayout, threadPool, openGLRenderer};
     juce::Viewport connectionPanelViewport;
     MenuStrip menuStrip{windowLayout, threadPool, connectionPanelContainer};
     juce::TooltipWindow tooltipWindow{nullptr, 300};

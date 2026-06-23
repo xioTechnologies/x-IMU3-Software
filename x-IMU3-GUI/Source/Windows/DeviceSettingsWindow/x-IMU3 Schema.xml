@@ -1,0 +1,347 @@
+<Schema>
+    <Settings>
+        <Group name="Device Information" expand="false">
+            <Setting key="model" name="Model" type="string" readOnly="true"/>
+            <Setting key="serial_number" name="Serial Number" type="string" readOnly="true"/>
+            <Setting key="hardware_version" name="Hardware Version" type="string" readOnly="true"/>
+            <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
+            <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
+            <Setting key="device_name" name="Device Name" type="string"/>
+        </Group>
+        <Group name="Serial" expand="false">
+            <Setting key="serial_mode" name="Mode" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="Normal" value="1"/>
+                <Enum name="Accessory" value="2"/>
+                <Enum name="Mux" value="3"/>
+                <Enum name="Sync" value="4"/>
+                <Enum name="LTC" value="5"/>
+            </Setting>
+            <Setting key="serial_baud_rate" name="Baud Rate" type="number" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Group name="Accessory Send Conditions" dependsOnKey="serial_mode" dependsOnValues="2">
+                <Setting key="serial_accessory_number_of_bytes" name="Number of Bytes" type="number"/>
+                <Setting key="serial_accessory_termination_byte" name="Termination" type="number"/>
+                <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
+            </Group>
+        </Group>
+        <Group name="Wireless" expand="false">
+            <Setting key="wireless_mode" name="Mode" type="enum">
+                <Enum name="Disabled" value="0"/>
+                <Enum name="Wi-Fi Client" value="1"/>
+                <Enum name="Wi-Fi AP" value="2"/>
+                <Enum name="Bluetooth" value="3"/>
+            </Setting>
+            <Setting key="wireless_firmware_version" name="Firmware Version" type="string" readOnly="true" dependsOnKey="wireless_mode" dependsOnValues="1 2 3"/>
+            <Setting key="external_antennae_enabled" name="External Antennae" type="bool" dependsOnKey="wireless_mode" dependsOnValues="1 2 3"/>
+            <Group name="Wi-Fi" dependsOnKey="wireless_mode" dependsOnValues="1 2">
+                <Setting key="wi_fi_region" name="Region" type="enum">
+                    <Enum name="United States (US)" value="1"/>
+                    <Enum name="Europe (EU)" value="2"/>
+                    <Enum name="Japan (JP)" value="3"/>
+                </Setting>
+                <Setting key="wi_fi_mac_address" name="MAC Address" type="string" readOnly="true"/>
+                <Setting key="wi_fi_ip_address" name="IP Address" type="string" readOnly="true"/>
+                <Group name="Client Mode" dependsOnKey="wireless_mode" dependsOnValues="1">
+                    <Setting key="wi_fi_client_ssid" name="SSID" type="string" emptyString="x-IMU3 Network"/>
+                    <Setting key="wi_fi_client_key" name="Key" type="string" emptyString="xiotechnologies"/>
+                    <Setting key="wi_fi_client_channel" name="Channel" type="enum">
+                        <Enum name="All" value="0"/>
+                        <Enum name="1 (2.4 GHz)" value="1"/>
+                        <Enum name="2 (2.4 GHz)" value="2"/>
+                        <Enum name="3 (2.4 GHz)" value="3"/>
+                        <Enum name="4 (2.4 GHz)" value="4"/>
+                        <Enum name="5 (2.4 GHz)" value="5"/>
+                        <Enum name="6 (2.4 GHz)" value="6"/>
+                        <Enum name="7 (2.4 GHz)" value="7"/>
+                        <Enum name="8 (2.4 GHz)" value="8"/>
+                        <Enum name="9 (2.4 GHz)" value="9"/>
+                        <Enum name="10 (2.4 GHz)" value="10"/>
+                        <Enum name="11 (2.4 GHz)" value="11"/>
+                        <Enum name="12 (2.4 GHz, Invalid for US)" value="12"/>
+                        <Enum name="13 (2.4 GHz, Invalid for US)" value="13"/>
+                        <Enum name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+                        <Enum name="36 (5 GHz)" value="36"/>
+                        <Enum name="40 (5 GHz)" value="40"/>
+                        <Enum name="44 (5 GHz)" value="44"/>
+                        <Enum name="48 (5 GHz)" value="48"/>
+                        <Enum name="52 (5 GHz, DFS)" value="52"/>
+                        <Enum name="56 (5 GHz, DFS)" value="56"/>
+                        <Enum name="60 (5 GHz, DFS)" value="60"/>
+                        <Enum name="64 (5 GHz, DFS)" value="64"/>
+                        <Enum name="100 (5 GHz, DFS)" value="100"/>
+                        <Enum name="104 (5 GHz, DFS)" value="104"/>
+                        <Enum name="108 (5 GHz, DFS)" value="108"/>
+                        <Enum name="112 (5 GHz, DFS)" value="112"/>
+                        <Enum name="116 (5 GHz, DFS)" value="116"/>
+                        <Enum name="120 (5 GHz, DFS, Invalid for US)" value="120"/>
+                        <Enum name="124 (5 GHz, DFS, Invalid for US)" value="124"/>
+                        <Enum name="128 (5 GHz, DFS, Invalid for US)" value="128"/>
+                        <Enum name="132 (5 GHz, DFS)" value="132"/>
+                        <Enum name="136 (5 GHz, DFS)" value="136"/>
+                        <Enum name="140 (5 GHz, DFS)" value="140"/>
+                        <Enum name="149 (5 GHz, Invalid for EU and JP)" value="149"/>
+                        <Enum name="153 (5 GHz, Invalid for EU and JP)" value="153"/>
+                        <Enum name="157 (5 GHz, Invalid for EU and JP)" value="157"/>
+                        <Enum name="161 (5 GHz, Invalid for EU and JP)" value="161"/>
+                        <Enum name="165 (5 GHz, Invalid for EU and JP)" value="165"/>
+                    </Setting>
+                    <Setting key="wi_fi_client_dhcp_enabled" name="DHCP" type="bool"/>
+                    <Setting key="wi_fi_client_ip_address" name="IP Address" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
+                    <Setting key="wi_fi_client_netmask" name="Netmask" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
+                    <Setting key="wi_fi_client_gateway" name="Gateway" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
+                </Group>
+                <Group name="AP Mode" dependsOnKey="wireless_mode" dependsOnValues="2">
+                    <Setting key="wi_fi_ap_ssid" name="SSID" type="string" emptyString="x-IMU3"/>
+                    <Setting key="wi_fi_ap_key" name="Key" type="string" emptyString="No Security"/>
+                    <Setting key="wi_fi_ap_channel" name="Channel" type="enum">
+                        <Enum name="1 (2.4 GHz)" value="1"/>
+                        <Enum name="2 (2.4 GHz)" value="2"/>
+                        <Enum name="3 (2.4 GHz)" value="3"/>
+                        <Enum name="4 (2.4 GHz)" value="4"/>
+                        <Enum name="5 (2.4 GHz)" value="5"/>
+                        <Enum name="6 (2.4 GHz)" value="6"/>
+                        <Enum name="7 (2.4 GHz)" value="7"/>
+                        <Enum name="8 (2.4 GHz)" value="8"/>
+                        <Enum name="9 (2.4 GHz)" value="9"/>
+                        <Enum name="10 (2.4 GHz)" value="10"/>
+                        <Enum name="11 (2.4 GHz)" value="11"/>
+                        <Enum name="12 (2.4 GHz, Invalid for US)" value="12"/>
+                        <Enum name="13 (2.4 GHz, Invalid for US)" value="13"/>
+                        <Enum name="14 (2.4 GHz, Invalid for US and EU)" value="14"/>
+                        <Enum name="36 (5 GHz)" value="36"/>
+                        <Enum name="40 (5 GHz)" value="40"/>
+                        <Enum name="44 (5 GHz)" value="44"/>
+                        <Enum name="48 (5 GHz)" value="48"/>
+                        <Enum name="149 (5 GHz), Invalid for EU and JP)" value="149"/>
+                        <Enum name="153 (5 GHz), Invalid for EU and JP)" value="153"/>
+                        <Enum name="157 (5 GHz), Invalid for EU and JP)" value="157"/>
+                        <Enum name="161 (5 GHz), Invalid for EU and JP)" value="161"/>
+                        <Enum name="165 (5 GHz), Invalid for EU and JP)" value="165"/>
+                    </Setting>
+                    <Setting key="wi_fi_ap_ip_address" name="IP Address" type="string"/>
+                </Group>
+                <Group name="TCP" expand="false">
+                    <Setting key="tcp_port" name="Port" type="number"/>
+                </Group>
+                <Group name="UDP" expand="false">
+                    <Setting key="udp_ip_address" name="IP Address" type="string"/>
+                    <Setting key="udp_send_port" name="Send Port" type="number"/>
+                    <Setting key="udp_receive_port" name="Receive Port" type="number"/>
+                    <Setting key="udp_low_latency" name="Low Latency" type="bool"/>
+                </Group>
+                <Group name="Synchronisation" expand="false">
+                    <Setting key="synchronisation_enabled" name="Enabled" type="bool"/>
+                    <Setting key="synchronisation_network_latency" name="Network Latency (us)" type="number" dependsOnKey="synchronisation_enabled" dependsOnValues="true"/>
+                </Group>
+            </Group>
+            <Group name="Bluetooth" dependsOnKey="wireless_mode" dependsOnValues="3">
+                <Setting key="bluetooth_address" name="Bluetooth Address" type="string" readOnly="true"/>
+                <Setting key="bluetooth_name" name="Name" type="string" emptyString="x-IMU3"/>
+                <Setting key="bluetooth_pin_code" name="Pin Code" type="string" emptyString="1234"/>
+                <Setting key="bluetooth_discovery_mode" name="Discovery Mode" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Enabled" value="1"/>
+                    <Enum name="Limited" value="2"/>
+                </Setting>
+                <Setting key="bluetooth_paired_address" name="Paired Address" type="string" readOnly="true"/>
+                <Setting key="bluetooth_paired_link_key" name="Paired Link Key" type="string" readOnly="true"/>
+            </Group>
+        </Group>
+        <Group name="SD Card Logging" expand="false">
+            <Setting key="data_logger_automatic_start_stop_enabled" name="Automatic Start Stop" type="bool"/>
+            <Group name="File">
+                <Setting key="data_logger_file_name_prefix" name="File Name Prefix" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="Model" value="1"/>
+                    <Enum name="Serial Number" value="2"/>
+                    <Enum name="Device Name" value="3"/>
+                </Setting>
+                <Setting key="data_logger_file_name_counter_enabled" name="File Name Counter" type="bool"/>
+                <Setting key="data_logger_max_file_size" name="Max File Size (MB)" type="number"/>
+                <Setting key="data_logger_max_file_period" name="Max File Period (s)" type="number"/>
+            </Group>
+        </Group>
+        <Group name="IMU" expand="false">
+            <Setting key="axes_alignment" name="Axes Alignment" type="enum">
+                <Enum name="+X+Y+Z" value="0"/>
+                <Enum name="+X+Z-Y" value="1"/>
+                <Enum name="+X-Z+Y" value="2"/>
+                <Enum name="+X-Y-Z" value="3"/>
+                <Enum name="+Y+X-Z" value="4"/>
+                <Enum name="+Y+Z+X" value="5"/>
+                <Enum name="+Y-Z-X" value="6"/>
+                <Enum name="+Y-X+Z" value="7"/>
+                <Enum name="+Z+X+Y" value="8"/>
+                <Enum name="+Z+Y-X" value="9"/>
+                <Enum name="+Z-Y+X" value="10"/>
+                <Enum name="+Z-X-Y" value="11"/>
+                <Enum name="-Z+X-Y" value="12"/>
+                <Enum name="-Z+Y+X" value="13"/>
+                <Enum name="-Z-Y-X" value="14"/>
+                <Enum name="-Z-X+Y" value="15"/>
+                <Enum name="-Y+X+Z" value="16"/>
+                <Enum name="-Y+Z-X" value="17"/>
+                <Enum name="-Y-Z+X" value="18"/>
+                <Enum name="-Y-X-Z" value="19"/>
+                <Enum name="-X+Y-Z" value="20"/>
+                <Enum name="-X+Z+Y" value="21"/>
+                <Enum name="-X-Z-Y" value="22"/>
+                <Enum name="-X-Y+Z" value="23"/>
+            </Setting>
+            <Setting key="gyroscope_offset_correction_enabled" name="Bias Correction" type="bool"/>
+            <Setting key="hard_iron_correction_enabled" name="Hard-Iron Correction" type="bool"/>
+            <Group name="AHRS">
+                <Setting key="ahrs_axes_convention" name="Axes Convention" type="enum">
+                    <Enum name="North, West, Up (NWU)" value="0"/>
+                    <Enum name="East, North, Up (ENU)" value="1"/>
+                    <Enum name="North, East, Down (NED)" value="2"/>
+                </Setting>
+                <Setting key="ahrs_gain" name="Gain" type="number"/>
+                <Setting key="ahrs_ignore_magnetometer" name="Ignore Magnetometer" type="bool"/>
+                <Setting key="ahrs_overrange_recovery_enabled" name="Overrange Recovery" type="bool"/>
+                <Setting key="ahrs_acceleration_rejection_enabled" name="Acceleration Rejection" type="bool"/>
+                <Setting key="ahrs_magnetic_rejection_enabled" name="Magnetic Rejection" type="bool" dependsOnKey="ahrs_ignore_magnetometer" dependsOnValues="false"/>
+                <Setting key="ahrs_anchored_heading_enabled" name="Anchored Heading" type="bool"/>
+                <Group name="Anchor" dependsOnKey="ahrs_anchored_heading_enabled" dependsOnValues="true">
+                    <Setting key="ahrs_anchored_heading_cutoff" name="Cutoff (Hz)" type="number"/>
+                    <Setting key="ahrs_anchored_heading_duration" name="Duration (s)" type="number"/>
+                </Group>
+            </Group>
+        </Group>
+        <Group name="Data Messages">
+            <Setting key="binary_mode_enabled" name="Binary Mode" type="bool"/>
+            <Group name="Message Modes">
+                <Setting key="ahrs_message_type" name="Orientation" type="enum">
+                    <Enum name="Quaternion" value="0"/>
+                    <Enum name="Rotation Matrix" value="1"/>
+                    <Enum name="Euler Angles" value="2"/>
+                </Setting>
+                <Setting key="acceleration_mode" name="Acceleration" type="enum">
+                    <Enum name="Linear" value="0"/>
+                    <Enum name="Earth" value="1"/>
+                </Setting>
+            </Group>
+            <Group name="Message Rates">
+                <Setting key="inertial_message_rate_divisor" name="Inertial" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="400"/>
+                    <Enum name="2 Hz" value="200"/>
+                    <Enum name="4 Hz" value="100"/>
+                    <Enum name="5 Hz" value="80"/>
+                    <Enum name="8 Hz" value="50"/>
+                    <Enum name="10 Hz" value="40"/>
+                    <Enum name="16 Hz" value="25"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="16"/>
+                    <Enum name="40 Hz" value="10"/>
+                    <Enum name="50 Hz" value="8"/>
+                    <Enum name="80 Hz" value="5"/>
+                    <Enum name="100 Hz" value="4"/>
+                    <Enum name="200 Hz" value="2"/>
+                    <Enum name="400 Hz" value="1"/>
+                </Setting>
+                <Setting key="magnetometer_message_rate_divisor" name="Magnetometer" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="20"/>
+                    <Enum name="2 Hz" value="10"/>
+                    <Enum name="4 Hz" value="5"/>
+                    <Enum name="5 Hz" value="4"/>
+                    <Enum name="10 Hz" value="2"/>
+                    <Enum name="20 Hz" value="1"/>
+                </Setting>
+                <Setting key="high_g_accelerometer_message_rate_divisor" name="High-g Accelerometer" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="3200"/>
+                    <Enum name="2 Hz" value="1600"/>
+                    <Enum name="4 Hz" value="800"/>
+                    <Enum name="5 Hz" value="640"/>
+                    <Enum name="8 Hz" value="400"/>
+                    <Enum name="10 Hz" value="320"/>
+                    <Enum name="16 Hz" value="200"/>
+                    <Enum name="20 Hz" value="160"/>
+                    <Enum name="25 Hz" value="128"/>
+                    <Enum name="32 Hz" value="100"/>
+                    <Enum name="40 Hz" value="80"/>
+                    <Enum name="50 Hz" value="64"/>
+                    <Enum name="64 Hz" value="50"/>
+                    <Enum name="80 Hz" value="40"/>
+                    <Enum name="100 Hz" value="32"/>
+                    <Enum name="128 Hz" value="25"/>
+                    <Enum name="160 Hz" value="20"/>
+                    <Enum name="200 Hz" value="16"/>
+                    <Enum name="320 Hz" value="10"/>
+                    <Enum name="400 Hz" value="8"/>
+                    <Enum name="640 Hz" value="5"/>
+                    <Enum name="800 Hz" value="4"/>
+                    <Enum name="1600 Hz" value="2"/>
+                    <Enum name="3200 Hz" value="1"/>
+                </Setting>
+                <Setting key="ahrs_message_rate_divisor" name="Orientation" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="400"/>
+                    <Enum name="2 Hz" value="200"/>
+                    <Enum name="4 Hz" value="100"/>
+                    <Enum name="5 Hz" value="80"/>
+                    <Enum name="8 Hz" value="50"/>
+                    <Enum name="10 Hz" value="40"/>
+                    <Enum name="16 Hz" value="25"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="16"/>
+                    <Enum name="40 Hz" value="10"/>
+                    <Enum name="50 Hz" value="8"/>
+                    <Enum name="80 Hz" value="5"/>
+                    <Enum name="100 Hz" value="4"/>
+                    <Enum name="200 Hz" value="2"/>
+                    <Enum name="400 Hz" value="1"/>
+                </Setting>
+                <Setting key="acceleration_message_rate_divisor" name="Acceleration" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="400"/>
+                    <Enum name="2 Hz" value="200"/>
+                    <Enum name="4 Hz" value="100"/>
+                    <Enum name="5 Hz" value="80"/>
+                    <Enum name="8 Hz" value="50"/>
+                    <Enum name="10 Hz" value="40"/>
+                    <Enum name="16 Hz" value="25"/>
+                    <Enum name="20 Hz" value="20"/>
+                    <Enum name="25 Hz" value="16"/>
+                    <Enum name="40 Hz" value="10"/>
+                    <Enum name="50 Hz" value="8"/>
+                    <Enum name="80 Hz" value="5"/>
+                    <Enum name="100 Hz" value="4"/>
+                    <Enum name="200 Hz" value="2"/>
+                    <Enum name="400 Hz" value="1"/>
+                </Setting>
+                <Setting key="temperature_message_rate_divisor" name="Temperature" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="5"/>
+                    <Enum name="5 Hz" value="1"/>
+                </Setting>
+                <Setting key="battery_message_rate_divisor" name="Battery" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="5"/>
+                    <Enum name="5 Hz" value="1"/>
+                </Setting>
+                <Setting key="rssi_message_rate_divisor" name="RSSI" type="enum">
+                    <Enum name="Disabled" value="0"/>
+                    <Enum name="1 Hz" value="1"/>
+                </Setting>
+            </Group>
+            <Group name="Interfaces" expand="false">
+                <Setting key="usb_data_messages_enabled" name="USB" type="bool"/>
+                <Setting key="serial_data_messages_enabled" name="Serial" type="bool"/>
+                <Setting key="tcp_data_messages_enabled" name="TCP" type="bool"/>
+                <Setting key="udp_data_messages_enabled" name="UDP" type="bool"/>
+                <Setting key="bluetooth_data_messages_enabled" name="Bluetooth" type="bool"/>
+                <Setting key="data_logger_data_messages_enabled" name="SD Card" type="bool"/>
+            </Group>
+        </Group>
+        <Group name="Power" expand="false">
+            <Setting key="usb_power_on_enabled" name="USB Power On" type="bool"/>
+            <Setting key="shipping_mode_enabled" name="Shipping Mode" type="bool"/>
+            <Setting key="battery_max_charging_temperature" name="Max Charging (&#176;C)" type="number"/>
+            <Setting key="battery_max_discharging_temperature" name="Max Discharging (&#176;C)" type="number"/>
+        </Group>
+    </Settings>
+</Schema>
