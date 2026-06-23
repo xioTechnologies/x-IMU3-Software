@@ -92,8 +92,6 @@ public:
 
     void drawTreeviewPlusMinusBox(juce::Graphics &g, const juce::Rectangle<float> &area, juce::Colour, bool isOpen, bool isMouseOver) override;
 
-    bool areLinesDrawnForTreeView(juce::TreeView &) override;
-
     int getTreeViewIndentSize(juce::TreeView &) override;
 
     void drawPopupMenuBackground(juce::Graphics &g, int width, int height) override;
