@@ -28,5 +28,9 @@ namespace ximu3 {
 
             return response;
         }
+
+        static std::optional<CommandMessage> parse(const std::string &json) {
+            return from(XIMU3_command_message_parse(json.c_str()));
+        }
     };
 }

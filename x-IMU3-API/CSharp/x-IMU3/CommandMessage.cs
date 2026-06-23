@@ -24,5 +24,10 @@ namespace Ximu3
                 Error = Helpers.ToString(response.error).Length == 0 ? null : Helpers.ToString(response.error)
             };
         }
+
+        public static CommandMessage? Parse(string json)
+        {
+            return From(CApi.XIMU3_command_message_parse(Helpers.ToPointer(json)));
+        }
     }
 }

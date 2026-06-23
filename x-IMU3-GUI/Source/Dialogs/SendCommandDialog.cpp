@@ -27,7 +27,7 @@ SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optio
         stringValue.setVisible(type == Type::string);
         numberValue.setVisible(type == Type::number);
 
-        setOkButton((keyValue.isEmpty() == false) && (juce::JSON::parse(commandValue.getText()).isVoid() == false));
+        setOkButton((keyValue.isEmpty() == false) && ximu3::CommandMessage::parse(commandValue.getText().toStdString()).has_value());
     };
 
     selectCommand(previousCommands.getChild(0));
