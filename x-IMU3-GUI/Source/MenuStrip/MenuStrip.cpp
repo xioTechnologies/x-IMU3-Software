@@ -429,6 +429,7 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
 
     addWindows("DEVICE SETTINGS", {
                    WindowIds::DeviceSettings,
+                   WindowIds::DeviceSettingsX,
                });
     addWindows("SENSORS", {
                    WindowIds::Gyroscope,
