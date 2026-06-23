@@ -5,6 +5,7 @@
 struct DisabledOverlay : juce::Component {
     DisabledOverlay(const bool shouldInterceptMouseClicks = true) {
         setInterceptsMouseClicks(shouldInterceptMouseClicks, shouldInterceptMouseClicks);
+        setAlwaysOnTop(true);
     }
 
     void paint(juce::Graphics &g) override {
