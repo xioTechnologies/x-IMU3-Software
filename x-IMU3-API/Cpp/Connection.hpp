@@ -451,6 +451,10 @@ namespace ximu3 {
         friend class MuxConnectionConfig;
         friend class MuxScanner;
 
+        friend XIMU3_Result settings_backup(const std::string &file_path, const Connection &connection);
+
+        friend XIMU3_Result settings_restore(const std::string &file_path, const Connection &connection);
+
         XIMU3_Connection *wrapped;
 
         static std::optional<XIMU3_PingResponse> toOptional(const XIMU3_PingResponse &response) {

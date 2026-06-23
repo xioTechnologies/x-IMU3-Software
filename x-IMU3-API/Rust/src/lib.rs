@@ -21,4 +21,5 @@ pub mod ping_response;
 pub mod port_scanner;
 pub mod receive_error;
 mod receiver;
+pub mod settings;
 pub mod statistics;

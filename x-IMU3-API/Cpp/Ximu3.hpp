@@ -9,3 +9,4 @@
 #include "MuxScanner.hpp"
 #include "NetworkAnnouncement.hpp"
 #include "PortScanner.hpp"
+#include "Settings.hpp"

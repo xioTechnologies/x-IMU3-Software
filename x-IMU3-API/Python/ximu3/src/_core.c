@@ -20,6 +20,7 @@
 #include <Python.h>
 #include "ReceiveError.h"
 #include "Result.h"
+#include "Settings.h"
 #include "Statistics.h"
 
 static struct PyModuleDef config = {
@@ -115,6 +116,7 @@ PyMODINIT_FUNC PyInit__core() {
         (PyModule_AddFunctions(module, port_type_methods) == 0) &&
         (PyModule_AddFunctions(module, receive_error_methods) == 0) &&
         (PyModule_AddFunctions(module, result_methods) == 0) &&
+        (PyModule_AddFunctions(module, settings_methods) == 0) &&
         add_object(module, &command_message_object, "CommandMessage") &&
         add_object(module, &connection_object, "Connection") &&
         add_object(module, &data_logger_object, "DataLogger") &&

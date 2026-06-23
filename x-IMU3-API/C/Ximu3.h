@@ -773,6 +773,10 @@ const char *XIMU3_receive_error_to_string(enum XIMU3_ReceiveError error);
 
 const char *XIMU3_result_to_string(enum XIMU3_Result result);
 
+enum XIMU3_Result XIMU3_settings_backup(const char *file_path, struct XIMU3_Connection *connection);
+
+enum XIMU3_Result XIMU3_settings_restore(const char *file_path, struct XIMU3_Connection *connection);
+
 const char *XIMU3_statistics_to_string(struct XIMU3_Statistics statistics);
 
 #ifdef __cplusplus
