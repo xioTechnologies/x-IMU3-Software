@@ -10,7 +10,7 @@ pub struct CommandMessage {
 }
 
 impl CommandMessage {
-    pub(crate) fn parse(json: &[u8]) -> Option<Self> {
+    pub fn parse(json: &[u8]) -> Option<Self> {
         let map: std::collections::HashMap<String, &RawValue> = serde_json::from_slice(json).ok()?;
 
         if map.len() != 1 {

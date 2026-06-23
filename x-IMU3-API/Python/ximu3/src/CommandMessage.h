@@ -29,11 +29,18 @@ static PyObject *command_message_get_error(CommandMessage *self) {
     return PyUnicode_FromString(self->wrapped.error);
 }
 
+PyObject *command_message_parse(PyObject *null, PyObject *arg);
+
 static PyGetSetDef command_message_get_set[] = {
     {"json", (getter) command_message_get_json, NULL, "", NULL},
     {"key", (getter) command_message_get_key, NULL, "", NULL},
     {"value", (getter) command_message_get_value, NULL, "", NULL},
     {"error", (getter) command_message_get_error, NULL, "", NULL},
+    {NULL} /* sentinel */
+};
+
+static PyMethodDef command_message_type_methods[] = {
+    {"parse", (PyCFunction) command_message_parse, METH_O | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
 
@@ -44,6 +51,7 @@ static PyTypeObject command_message_object = {
     .tp_dealloc = (destructor) command_message_free,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = command_message_get_set,
+    .tp_methods = command_message_type_methods,
 };
 
 static PyObject *command_message_from(const XIMU3_CommandMessage *const message) {
@@ -59,6 +67,17 @@ static PyObject *command_message_from(const XIMU3_CommandMessage *const message)
 
     self->wrapped = *message;
     return (PyObject *) self;
+}
+
+inline PyObject *command_message_parse(PyObject *null, PyObject *arg) {
+    const char *const json = PyUnicode_AsUTF8(arg);
+
+    if (json == NULL) {
+        return NULL;
+    }
+
+    const XIMU3_CommandMessage message = XIMU3_command_message_parse(json);
+    return command_message_from(&message);
 }
 
 static PyObject *command_messages_to_list_and_free(const XIMU3_CommandMessages responses) {

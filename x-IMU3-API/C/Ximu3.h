@@ -477,6 +477,8 @@ enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float status);
 
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus status);
 
+struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
+
 void XIMU3_command_messages_free(struct XIMU3_CommandMessages messages);
 
 struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionConfig config);
