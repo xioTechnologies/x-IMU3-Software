@@ -491,7 +491,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
 
     const auto toAll = "Send Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")";
     menu.addItem(toAll, [&, toAll] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>(toAll), [this] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>(toAll, SendCommandDialog::Dictionary{connectionPanelContainer.getConnectionPanels()}), [this] {
             if (auto *dialog = dynamic_cast<SendCommandDialog *>(DialogQueue::getSingleton().getActive())) {
                 DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), dialog->getCommand()));
             }
@@ -500,7 +500,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
     });
 
     addDevices(menu, [&](auto &connectionPanel) {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getHeading(), connectionPanel.getColourTag()), [&, connectionPanel_ = &connectionPanel] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getHeading(), SendCommandDialog::Dictionary{{&connectionPanel}}, connectionPanel.getColourTag()), [&, connectionPanel_ = &connectionPanel] {
             if (auto *dialog = dynamic_cast<SendCommandDialog *>(DialogQueue::getSingleton().getActive())) {
                 DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>({connectionPanel_}), dialog->getCommand()));
             }

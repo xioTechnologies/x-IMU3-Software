@@ -7,12 +7,15 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/OpenGLRenderer.h"
+#include "Schema/Schema.h"
 #include "Widgets/DisabledOverlay.h"
 #include "Windows/WindowIds.h"
 
 class MainComponent : public juce::Component, private juce::ChangeListener {
 public:
     MainComponent() {
+        Schema::copyDefaultSchemas();
+
         addAndMakeVisible(menuStrip);
         addAndMakeVisible(connectionPanelViewport);
         addChildComponent(disabledOverlay);
@@ -62,7 +65,7 @@ private:
     juce::ValueTree windowLayout{WindowIds::Row};
     juce::ThreadPool threadPool;
     OpenGLRenderer openGLRenderer{*this, threadPool};
-    ConnectionPanelContainer connectionPanelContainer{windowLayout, openGLRenderer};
+    ConnectionPanelContainer connectionPanelContainer{windowLayout, threadPool, openGLRenderer};
     juce::Viewport connectionPanelViewport;
     MenuStrip menuStrip{windowLayout, threadPool, connectionPanelContainer};
     juce::TooltipWindow tooltipWindow{nullptr, 300};
