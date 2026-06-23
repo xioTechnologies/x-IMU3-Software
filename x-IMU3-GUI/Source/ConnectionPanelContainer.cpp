@@ -2,8 +2,9 @@
 #include "ConnectionPanelContainer.h"
 #include "Dialogs/MessageDialog.h"
 
-ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree &windowLayout_, OpenGLRenderer &openGLRenderer_)
+ConnectionPanelContainer::ConnectionPanelContainer(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPool_, OpenGLRenderer &openGLRenderer_)
     : windowLayout(windowLayout_),
+      threadPool(threadPool_),
       openGLRenderer(openGLRenderer_) {
     addAndMakeVisible(noConnectionsLabel);
     addChildComponent(&accordionResizeBar);
@@ -125,7 +126,7 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionConfig &co
     }
 
     auto connection = std::make_shared<ximu3::Connection>(config);
-    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&] {
+    addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, threadPool, connection, openGLRenderer, *this, [&] {
         static unsigned int counter;
 
         if (connectionPanels.empty() || (++counter >= UIColours::colourTags.size())) {

@@ -10,9 +10,9 @@
         </Group>
         <Group name="Serial" expand="false">
             <Setting key="serial_mode" name="Mode" type="SerialMode"/>
-            <Setting key="serial_baud_rate" name="Baud Rate" type="number" hideKey="serial_mode" hideValues="0 4 5"/>
-            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" hideKey="serial_mode" hideValues="0 4 5"/>
-            <Group name="Accessory Send Conditions" hideKey="serial_mode" hideValues="0 1 3 4 5">
+            <Setting key="serial_baud_rate" name="Baud Rate" type="number" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
+            <Group name="Accessory Send Conditions" dependsOnKey="serial_mode" dependsOnValues="2">
                 <Setting key="serial_accessory_number_of_bytes" name="Number of Bytes" type="number"/>
                 <Setting key="serial_accessory_termination_byte" name="Termination" type="number"/>
                 <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
@@ -20,24 +20,24 @@
         </Group>
         <Group name="Wireless" expand="false">
             <Setting key="wireless_mode" name="Mode" type="WirelessMode"/>
-            <Setting key="wireless_firmware_version" name="Firmware Version" type="string" readOnly="true" hideKey="wireless_mode" hideValues="0"/>
-            <Setting key="external_antennae_enabled" name="External Antennae" type="bool" hideKey="wireless_mode" hideValues="0"/>
-            <Group name="Wi-Fi" hideKey="wireless_mode" hideValues="0 3">
+            <Setting key="wireless_firmware_version" name="Firmware Version" type="string" readOnly="true" dependsOnKey="wireless_mode" dependsOnValues="1 2 3"/>
+            <Setting key="external_antennae_enabled" name="External Antennae" type="bool" dependsOnKey="wireless_mode" dependsOnValues="1 2 3"/>
+            <Group name="Wi-Fi" dependsOnKey="wireless_mode" dependsOnValues="1 2">
                 <Setting key="wi_fi_region" name="Region" type="RS9116WlanCommandRegion"/>
                 <Setting key="wi_fi_mac_address" name="MAC Address" type="string" readOnly="true"/>
                 <Setting key="wi_fi_ip_address" name="IP Address" type="string" readOnly="true"/>
-                <Group name="Client Mode" hideKey="wireless_mode" hideValues="0 2 3">
-                    <Setting key="wi_fi_client_ssid" name="SSID" type="string" emptyValue="x-IMU3 Network"/>
-                    <Setting key="wi_fi_client_key" name="Key" type="string" emptyValue="xiotechnologies"/>
+                <Group name="Client Mode" dependsOnKey="wireless_mode" dependsOnValues="1">
+                    <Setting key="wi_fi_client_ssid" name="SSID" type="string" emptyString="x-IMU3 Network"/>
+                    <Setting key="wi_fi_client_key" name="Key" type="string" emptyString="xiotechnologies"/>
                     <Setting key="wi_fi_client_channel" name="Channel" type="WirelessWlanClientChannel"/>
                     <Setting key="wi_fi_client_dhcp_enabled" name="DHCP" type="bool"/>
-                    <Setting key="wi_fi_client_ip_address" name="IP Address" type="string" hideKey="wi_fi_client_dhcp_enabled" hideValues="1"/>
-                    <Setting key="wi_fi_client_netmask" name="Netmask" type="string" hideKey="wi_fi_client_dhcp_enabled" hideValues="1"/>
-                    <Setting key="wi_fi_client_gateway" name="Gateway" type="string" hideKey="wi_fi_client_dhcp_enabled" hideValues="1"/>
+                    <Setting key="wi_fi_client_ip_address" name="IP Address" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
+                    <Setting key="wi_fi_client_netmask" name="Netmask" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
+                    <Setting key="wi_fi_client_gateway" name="Gateway" type="string" dependsOnKey="wi_fi_client_dhcp_enabled" dependsOnValues="false"/>
                 </Group>
-                <Group name="AP Mode" hideKey="wireless_mode" hideValues="0 1 3">
-                    <Setting key="wi_fi_ap_ssid" name="SSID" type="string" emptyValue="x-IMU3"/>
-                    <Setting key="wi_fi_ap_key" name="Key" type="string" emptyValue="No Security"/>
+                <Group name="AP Mode" dependsOnKey="wireless_mode" dependsOnValues="2">
+                    <Setting key="wi_fi_ap_ssid" name="SSID" type="string" emptyString="x-IMU3"/>
+                    <Setting key="wi_fi_ap_key" name="Key" type="string" emptyString="No Security"/>
                     <Setting key="wi_fi_ap_channel" name="Channel" type="WirelessWlanAPChannel"/>
                     <Setting key="wi_fi_ap_ip_address" name="IP Address" type="string"/>
                 </Group>
@@ -52,13 +52,13 @@
                 </Group>
                 <Group name="Synchronisation" expand="false">
                     <Setting key="synchronisation_enabled" name="Enabled" type="bool"/>
-                    <Setting key="synchronisation_network_latency" name="Network Latency (us)" type="number" hideKey="synchronisation_enabled" hideValues="0"/>
+                    <Setting key="synchronisation_network_latency" name="Network Latency (us)" type="number" dependsOnKey="synchronisation_enabled" dependsOnValues="true"/>
                 </Group>
             </Group>
-            <Group name="Bluetooth" hideKey="wireless_mode" hideValues="0 1 2">
+            <Group name="Bluetooth" dependsOnKey="wireless_mode" dependsOnValues="3">
                 <Setting key="bluetooth_address" name="Bluetooth Address" type="string" readOnly="true"/>
-                <Setting key="bluetooth_name" name="Name" type="string" emptyValue="x-IMU3"/>
-                <Setting key="bluetooth_pin_code" name="Pin Code" type="string" emptyValue="1234"/>
+                <Setting key="bluetooth_name" name="Name" type="string" emptyString="x-IMU3"/>
+                <Setting key="bluetooth_pin_code" name="Pin Code" type="string" emptyString="1234"/>
                 <Setting key="bluetooth_discovery_mode" name="Discovery Mode" type="WirelessBTDiscoveryMode"/>
                 <Setting key="bluetooth_paired_address" name="Paired Address" type="string" readOnly="true"/>
                 <Setting key="bluetooth_paired_link_key" name="Paired Link Key" type="string" readOnly="true"/>
@@ -83,9 +83,9 @@
                 <Setting key="ahrs_ignore_magnetometer" name="Ignore Magnetometer" type="bool"/>
                 <Setting key="ahrs_overrange_recovery_enabled" name="Overrange Recovery" type="bool"/>
                 <Setting key="ahrs_acceleration_rejection_enabled" name="Acceleration Rejection" type="bool"/>
-                <Setting key="ahrs_magnetic_rejection_enabled" name="Magnetic Rejection" type="bool" hideKey="ahrs_ignore_magnetometer" hideValues="1"/>
+                <Setting key="ahrs_magnetic_rejection_enabled" name="Magnetic Rejection" type="bool" dependsOnKey="ahrs_ignore_magnetometer" dependsOnValues="false"/>
                 <Setting key="ahrs_anchored_heading_enabled" name="Anchored Heading" type="bool"/>
-                <Group name="Anchor" hideKey="ahrs_anchored_heading_enabled" hideValues="0">
+                <Group name="Anchor" dependsOnKey="ahrs_anchored_heading_enabled" dependsOnValues="true">
                     <Setting key="ahrs_anchored_heading_cutoff" name="Cutoff (Hz)" type="number"/>
                     <Setting key="ahrs_anchored_heading_duration" name="Duration (s)" type="number"/>
                 </Group>

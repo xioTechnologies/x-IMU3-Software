@@ -2,7 +2,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path("../../..")))  # location of helpers.py
+sys.path.append(str(Path("../../../..")))  # location of helpers.py
 
 import helpers
 

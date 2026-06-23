@@ -20,6 +20,7 @@ public:
     static constexpr int collapsedHeight = headerHeight + UILayout::panelMargin + footerHeight + UILayout::panelMargin;
 
     ConnectionPanel(const juce::ValueTree &windowLayout_,
+                    juce::ThreadPool &threadPool_,
                     std::shared_ptr<ximu3::Connection> connection_,
                     OpenGLRenderer &openGLRenderer_,
                     ConnectionPanelContainer &connectionPanelContainer_,
@@ -48,6 +49,7 @@ public:
 
 private:
     const juce::ValueTree &windowLayout;
+    juce::ThreadPool &threadPool;
     std::shared_ptr<ximu3::Connection> connection;
     OpenGLRenderer &openGLRenderer;
     ConnectionPanelContainer &connectionPanelContainer;
