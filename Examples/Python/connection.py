@@ -264,12 +264,16 @@ def error_callback(message: ximu3.ErrorMessage) -> None:
 
 
 def run(config: ximu3.ConnectionConfig) -> None:
+    # Create connection
     connection = ximu3.Connection(config)
 
+    # Open connection
     connection.open()
 
-    connection.send_command('{"strobe":null}')  # send command to strobe LED
+    # Send command to strobe LED
+    connection.send_command('{"strobe":null}')
 
+    # Print data messages
     if helpers.yes_or_no("Use callbacks (else poll)?"):
         connection.add_receive_error_callback(receive_error_callback)
         connection.add_status_callback(status_callback)
@@ -318,4 +322,5 @@ def run(config: ximu3.ConnectionConfig) -> None:
 
             time.sleep(0.001)
 
+    # Close connection
     connection.close()
