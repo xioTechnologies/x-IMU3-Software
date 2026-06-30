@@ -28,7 +28,7 @@ pub fn run() {
     }
 
     // Log data (blocking)
-    let destination = "C:/";
+    let destination = "C:/Users/Public/";
     let name_blocking = "x-IMU3 Data Logger Example Blocking";
 
     let result = DataLogger::log(destination, name_blocking, connections.iter().collect(), 3);

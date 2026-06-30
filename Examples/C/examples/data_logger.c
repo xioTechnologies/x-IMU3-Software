@@ -39,7 +39,7 @@ void data_logger() {
     }
 
     // Log data (blocking)
-    const char *destination = "C:/";
+    const char *destination = "C:/Users/Public/";
     const char *name_blocking = "x-IMU3 Data Logger Example Blocking";
 
     const XIMU3_Result resultBlocking = XIMU3_data_logger_log(destination, name_blocking, connections, number_of_connections, 3);
