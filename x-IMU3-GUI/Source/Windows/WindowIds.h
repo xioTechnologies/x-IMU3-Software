@@ -13,6 +13,7 @@ namespace WindowIds {
     DECLARE_ID(BatteryVoltage)
     DECLARE_ID(Button)
     DECLARE_ID(DeviceSettings)
+    DECLARE_ID(DeviceSettingsX)
     DECLARE_ID(EarthAcceleration)
     DECLARE_ID(EulerAngles)
     DECLARE_ID(Gyroscope)
@@ -42,6 +43,7 @@ static const std::map<juce::Identifier, juce::String> windowTitles
     {WindowIds::BatteryVoltage, "Battery Voltage"},
     {WindowIds::Button, "Button"},
     {WindowIds::DeviceSettings, "Device Settings"},
+    {WindowIds::DeviceSettingsX, "Device Settings X"},
     {WindowIds::EarthAcceleration, "Earth Acceleration"},
     {WindowIds::EulerAngles, "Euler Angles"},
     {WindowIds::Gyroscope, "Gyroscope"},
