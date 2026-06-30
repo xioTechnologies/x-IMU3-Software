@@ -20,7 +20,7 @@ if not connections:
     raise Exception("No USB connections available")
 
 # Log data (blocking)
-destination = "C:/"
+destination = "C:/Users/Public/"
 name_blocking = "x-IMU3 Data Logger Example Blocking"
 
 ximu3.DataLogger.log(destination, name_blocking, connections, 3)

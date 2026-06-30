@@ -39,7 +39,7 @@ public:
         }
 
         // Log data (blocking)
-        const auto destination = "C:/";
+        const auto destination = "C:/Users/Public/";
         const auto nameBlocking = "x-IMU3 Data Logger Example Blocking";
 
         const auto resultBlocking = ximu3::DataLogger::log(destination, nameBlocking, toRawPointers(connections), 3);

@@ -12,9 +12,9 @@ class FileConverter {
 public:
     FileConverter() {
         // Blocking
-        const auto destination = "C:/";
+        const auto destination = "C:/Users/Public/";
         const auto nameBlocking = "x-IMU3 File Conversion Example Blocking";
-        const std::vector<std::string> filePaths = {"C:/x-IMU3 Example File.ximu3"}; // replace with actual file path
+        const std::vector<std::string> filePaths = {"C:/Users/Public/x-IMU3 Example File.ximu3"}; // replace with actual file path
 
         const auto progress = ximu3::FileConverter::convert(destination, nameBlocking, filePaths);
 

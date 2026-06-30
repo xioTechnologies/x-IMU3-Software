@@ -9,9 +9,9 @@ static void print_progress(const XIMU3_FileConverterProgress progress);
 
 void file_converter() {
     // Blocking
-    const char *destination = "C:/";
+    const char *destination = "C:/Users/Public/";
     const char *nameBlocking = "x-IMU3 File Conversion Example Blocking";
-    const char *file_paths[] = {"C:/x-IMU3 Example File.ximu3"}; // replace with actual file path
+    const char *file_paths[] = {"C:/Users/Public/x-IMU3 Example File.ximu3"}; // replace with actual file path
     const int number_of_files = sizeof(file_paths) / sizeof(file_paths[0]);
 
     const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, nameBlocking, file_paths, number_of_files);

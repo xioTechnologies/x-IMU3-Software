@@ -2,9 +2,9 @@ use ximu3::file_converter::*;
 
 pub fn run() {
     // Blocking
-    let destination = "C:/";
+    let destination = "C:/Users/Public/";
     let name_blocking = "x-IMU3 File Conversion Example Blocking";
-    let file_paths = vec!["C:/x-IMU3 Example File.ximu3"]; // replace with actual file path
+    let file_paths = vec!["C:/Users/Public/x-IMU3 Example File.ximu3"]; // replace with actual file path
 
     let progress = FileConverter::convert(destination, name_blocking, file_paths.clone());
 

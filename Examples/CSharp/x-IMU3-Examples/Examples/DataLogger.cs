@@ -36,7 +36,7 @@ namespace Ximu3Examples
             }
 
             // Log data (blocking)
-            var destination = "C:/";
+            var destination = "C:/Users/Public/";
             var nameBlocking = "x-IMU3 Data Logger Example Blocking";
 
             var resultBlocking = Ximu3.DataLogger.Log(destination, nameBlocking, [.. connections], 3);
