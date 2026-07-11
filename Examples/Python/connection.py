@@ -146,18 +146,13 @@ def linear_acceleration_callback(message: ximu3.LinearAccelerationMessage) -> No
         "".join(
             [
                 timestamp_format(message.timestamp),
-                float_format(message.quaternion_w),
-                float_format(message.quaternion_x),
-                float_format(message.quaternion_y),
-                float_format(message.quaternion_z),
-                float_format(message.acceleration_x) + " g",
-                float_format(message.acceleration_y) + " g",
-                float_format(message.acceleration_z) + " g",
+                float_format(message.x) + " g",
+                float_format(message.y) + " g",
+                float_format(message.z) + " g",
             ]
         )
     )
     # print(message)  # alternative to above
-    print(message.to_euler_angles_message())
 
 
 def earth_acceleration_callback(message: ximu3.EarthAccelerationMessage) -> None:
@@ -165,18 +160,13 @@ def earth_acceleration_callback(message: ximu3.EarthAccelerationMessage) -> None
         "".join(
             [
                 timestamp_format(message.timestamp),
-                float_format(message.quaternion_w),
-                float_format(message.quaternion_x),
-                float_format(message.quaternion_y),
-                float_format(message.quaternion_z),
-                float_format(message.acceleration_x) + " g",
-                float_format(message.acceleration_y) + " g",
-                float_format(message.acceleration_z) + " g",
+                float_format(message.x) + " g",
+                float_format(message.y) + " g",
+                float_format(message.z) + " g",
             ]
         )
     )
     # print(message)  # alternative to above
-    print(message.to_euler_angles_message())
 
 
 def ahrs_status_callback(message: ximu3.AhrsStatusMessage) -> None:

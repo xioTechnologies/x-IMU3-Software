@@ -17,6 +17,4 @@ private:
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
     std::function<void(ximu3::XIMU3_RotationMatrixMessage)> rotationMatrixCallback;
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;
-    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
-    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
 };

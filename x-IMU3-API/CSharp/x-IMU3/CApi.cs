@@ -270,26 +270,18 @@ namespace Ximu3
         public struct XIMU3_LinearAccelerationMessage
         {
             public UInt64 timestamp;
-            public float quaternion_w;
-            public float quaternion_x;
-            public float quaternion_y;
-            public float quaternion_z;
-            public float acceleration_x;
-            public float acceleration_y;
-            public float acceleration_z;
+            public float x;
+            public float y;
+            public float z;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct XIMU3_EarthAccelerationMessage
         {
             public UInt64 timestamp;
-            public float quaternion_w;
-            public float quaternion_x;
-            public float quaternion_y;
-            public float quaternion_z;
-            public float acceleration_x;
-            public float acceleration_y;
-            public float acceleration_z;
+            public float x;
+            public float y;
+            public float z;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -848,12 +840,6 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_QuaternionMessage XIMU3_euler_angles_message_to_quaternion_message(XIMU3_EulerAnglesMessage message);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angles_message(XIMU3_LinearAccelerationMessage message);
-
-        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(XIMU3_EarthAccelerationMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_device_free(XIMU3_Device device);

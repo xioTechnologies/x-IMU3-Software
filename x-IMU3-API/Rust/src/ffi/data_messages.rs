@@ -110,13 +110,3 @@ pub extern "C" fn XIMU3_rotation_matrix_message_to_euler_angles_message(message:
 pub extern "C" fn XIMU3_euler_angles_message_to_quaternion_message(message: EulerAnglesMessage) -> QuaternionMessage {
     message.into()
 }
-
-#[no_mangle]
-pub extern "C" fn XIMU3_linear_acceleration_message_to_euler_angles_message(message: LinearAccelerationMessage) -> EulerAnglesMessage {
-    message.into()
-}
-
-#[no_mangle]
-pub extern "C" fn XIMU3_earth_acceleration_message_to_euler_angles_message(message: EarthAccelerationMessage) -> EulerAnglesMessage {
-    message.into()
-}

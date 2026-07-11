@@ -24,16 +24,6 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree &windowLayo
     callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
         update(message.timestamp, {message.roll, message.pitch, message.yaw});
     }));
-
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
-        const auto eulerAngles = ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
-    }));
-
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
-        const auto eulerAngles = ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
-    }));
 }
 
 EulerAnglesGraphWindow::~EulerAnglesGraphWindow() {

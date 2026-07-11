@@ -55,14 +55,14 @@ messages = [
     Message(
         name="Linear Acceleration",
         ascii_id="L",
-        argument_names=("Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"),
-        argument_units=("", "", "", "", "g", "g", "g"),
+        argument_names=("X", "Y", "Z"),
+        argument_units=("g", "g", "g"),
     ),
     Message(
         name="Earth Acceleration",
         ascii_id="E",
-        argument_names=("Quaternion W", "Quaternion X", "Quaternion Y", "Quaternion Z", "Acceleration X", "Acceleration Y", "Acceleration Z"),
-        argument_units=("", "", "", "", "g", "g", "g"),
+        argument_names=("X", "Y", "Z"),
+        argument_units=("g", "g", "g"),
     ),
     Message(
         name="AHRS status",
@@ -360,7 +360,7 @@ insert(
 directory = Path("../../../Python/ximu3/src/DataMessages")
 
 for message in messages:
-    if message.name in ("Quaternion", "Rotation Matrix", "Euler Angles", "Linear Acceleration", "Earth Acceleration"):
+    if message.name in ("Quaternion", "Rotation Matrix", "Euler Angles"):
         file_name = "TemplateFloatMethods.txt"
     elif message.argument_names:
         file_name = "TemplateFloat.txt"

@@ -207,31 +207,21 @@ void euler_angles_callback(const XIMU3_EulerAnglesMessage message, void *context
 }
 
 void linear_acceleration_callback(const XIMU3_LinearAccelerationMessage message, void *context) {
-    printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
-           message.quaternion_w,
-           message.quaternion_x,
-           message.quaternion_y,
-           message.quaternion_z,
-           message.acceleration_x,
-           message.acceleration_y,
-           message.acceleration_z);
+           message.x,
+           message.y,
+           message.z);
     // printf("%s\n", XIMU3_linear_acceleration_message_to_string(message)); // alternative to above
-    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_linear_acceleration_message_to_euler_angles_message(message)));
 }
 
 void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, void *context) {
-    printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+    printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
            message.timestamp,
-           message.quaternion_w,
-           message.quaternion_x,
-           message.quaternion_y,
-           message.quaternion_z,
-           message.acceleration_x,
-           message.acceleration_y,
-           message.acceleration_z);
+           message.x,
+           message.y,
+           message.z);
     // printf("%s\n", XIMU3_earth_acceleration_message_to_string(message)); // alternative to above
-    printf("%s\n", XIMU3_euler_angles_message_to_string(XIMU3_earth_acceleration_message_to_euler_angles_message(message)));
 }
 
 void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void *context) {

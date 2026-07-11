@@ -194,32 +194,22 @@ pub fn euler_angles_closure(message: EulerAnglesMessage) {
 
 pub fn linear_acceleration_closure(message: LinearAccelerationMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
-             message.quaternion_w,
-             message.quaternion_x,
-             message.quaternion_y,
-             message.quaternion_z,
-             message.acceleration_x,
-             message.acceleration_y,
-             message.acceleration_z);
+             message.x,
+             message.y,
+             message.z);
     // println!("{message}"); // alternative to above
-    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
+    println!(concat!(timestamp_fmt!(), float_fmt!(), " g", float_fmt!(), " g", float_fmt!(), " g"),
              message.timestamp,
-             message.quaternion_w,
-             message.quaternion_x,
-             message.quaternion_y,
-             message.quaternion_z,
-             message.acceleration_x,
-             message.acceleration_y,
-             message.acceleration_z);
+             message.x,
+             message.y,
+             message.z);
     // println!("{message}"); // alternative to above
-    println!("{}", EulerAnglesMessage::from(message));
 }
 
 pub fn ahrs_status_closure(message: AhrsStatusMessage) {
