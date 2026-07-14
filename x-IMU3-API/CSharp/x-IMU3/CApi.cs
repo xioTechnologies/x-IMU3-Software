@@ -529,6 +529,9 @@ namespace Ximu3
         public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus status);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_CommandMessage XIMU3_command_message_parse(IntPtr json);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XIMU3_command_messages_free(XIMU3_CommandMessages messages);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
