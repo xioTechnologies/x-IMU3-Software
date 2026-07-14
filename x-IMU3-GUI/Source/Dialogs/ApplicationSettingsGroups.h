@@ -54,5 +54,7 @@ private:
 
     CustomToggleButton closeSendingCommandDialogWhenCompleteButton{"Close Sending Command Dialog When Complete"};
 
+    CustomToggleButton allowEarlyCompletionButton{"Allow Early Completion"};
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };
