@@ -376,6 +376,6 @@ void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhoseProper
     updateEulerAnglesVisibilities();
     updateAhrsStatusVisibilities();
     updateAxesConventionLabel();
-    
+
     threeDView.setSettings(readFromValueTree());
 }
