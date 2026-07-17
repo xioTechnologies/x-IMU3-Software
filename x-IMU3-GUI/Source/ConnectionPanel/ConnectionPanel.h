@@ -34,7 +34,7 @@ public:
 
     void sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback = nullptr);
 
-    const juce::Colour &getTag() const;
+    const juce::Colour &getColourTag() const;
 
     std::shared_ptr<Window> getOrCreateWindow(const juce::ValueTree &windowTree);
 
@@ -53,7 +53,7 @@ private:
     std::shared_ptr<ximu3::Connection> connection;
     OpenGLRenderer &openGLRenderer;
     ConnectionPanelContainer &connectionPanelContainer;
-    const juce::Colour tag;
+    const juce::Colour colourTag;
 
     ConnectionPanelHeader header{*this, connectionPanelContainer};
     ConnectionPanelFooter footer{*this};

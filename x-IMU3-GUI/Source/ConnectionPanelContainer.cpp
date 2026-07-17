@@ -128,11 +128,11 @@ void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionConfig &co
     addAndMakeVisible(*connectionPanels.emplace_back(std::make_unique<ConnectionPanel>(windowLayout, connection, openGLRenderer, *this, [&] {
         static unsigned int counter;
 
-        if (connectionPanels.empty() || (++counter >= UIColours::tags.size())) {
+        if (connectionPanels.empty() || (++counter >= UIColours::colourTags.size())) {
             counter = 0;
         }
 
-        return UIColours::tags[counter];
+        return UIColours::colourTags[counter];
     }(), keepOpen)));
 
     connectionPanelsSizeChanged();

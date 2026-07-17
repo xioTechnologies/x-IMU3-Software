@@ -1,9 +1,9 @@
 #include "Dialog.h"
 
-Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const juce::String &okButtonText, const juce::String &cancelButtonText, juce::Component *const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_, const std::optional<juce::Colour> &tag_)
+Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const juce::String &okButtonText, const juce::String &cancelButtonText, juce::Component *const bottomLeftComponent_, const int bottomLeftComponentWidth_, const bool resizable_, const std::optional<juce::Colour> &colourTag_)
     : juce::Component(dialogTitle),
       icon(icon_),
-      tag(tag_),
+      colourTag(colourTag_),
       bottomLeftComponent(bottomLeftComponent_),
       bottomLeftComponentWidth(bottomLeftComponentWidth_),
       resizable(resizable_) {

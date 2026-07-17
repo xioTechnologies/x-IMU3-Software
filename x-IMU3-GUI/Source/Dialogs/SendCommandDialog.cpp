@@ -1,7 +1,7 @@
 #include "SendCommandDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &tag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, tag_) {
+SendCommandDialog::SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &colourTag_) : Dialog(BinaryData::json_svg, title, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, colourTag_) {
     addAndMakeVisible(keyLabel);
     addAndMakeVisible(keyValue);
     addAndMakeVisible(commandKeysButton);

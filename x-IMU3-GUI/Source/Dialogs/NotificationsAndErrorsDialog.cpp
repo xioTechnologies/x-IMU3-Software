@@ -34,7 +34,7 @@ juce::Colour NotificationsAndErrorsDialog::Message::getColour() const {
 }
 
 NotificationsAndErrorsDialog::NotificationsAndErrorsDialog(std::vector<Message> &messages_, const std::function<void()> &onClear, const ConnectionPanel &connectionPanel)
-    : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getHeading(), "Close", "", &clearButton, 70, true, connectionPanel.getTag()),
+    : Dialog(BinaryData::speech_white_svg, "Notifications and Errors from " + connectionPanel.getHeading(), "Close", "", &clearButton, 70, true, connectionPanel.getColourTag()),
       messages(messages_) {
     addAndMakeVisible(clearButton);
     addAndMakeVisible(typeLabel);
