@@ -46,6 +46,9 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree &windowLayout_,
 }
 
 ConnectionPanel::~ConnectionPanel() {
+    if (statusCallbackId) {
+        connection->removeCallback(*statusCallbackId);
+    }
     keepOpen.reset();
     connection->close();
 }
@@ -204,7 +207,7 @@ void ConnectionPanel::connect() {
             });
         };
 
-        connection->addStatusCallback(statusCallback);
+        statusCallbackId = connection->addStatusCallback(statusCallback);
 
         keepOpen = std::make_unique<ximu3::KeepOpen>(*connection);
     } else {
