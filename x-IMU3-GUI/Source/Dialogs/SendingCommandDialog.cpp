@@ -7,7 +7,7 @@ SendingCommandDialog::SendingCommandDialog(const std::string &command, const std
     addAndMakeVisible(table);
     addAndMakeVisible(closeWhenCompleteButton);
 
-    const int tagColumnWidth = UILayout::tagWidth + 5;
+    const int tagColumnWidth = UILayout::colourTagWidth + 5;
     table.getHeader().addColumn("", static_cast<int>(ColumnId::tag), tagColumnWidth, tagColumnWidth, tagColumnWidth);
     table.getHeader().addColumn("", static_cast<int>(ColumnId::headingAndResponse), 1);
     table.getHeader().addColumn("", static_cast<int>(ColumnId::icon), 50, 50, 50);
@@ -128,8 +128,8 @@ void SendingCommandDialog::paintRowBackground(juce::Graphics &g, int rowNumber, 
         return; // index may exceed size on Windows if display scaling >100%
     }
 
-    g.setColour(rows[(size_t) rowNumber].connectionPanel.getTag());
-    g.fillRect(0, 0, UILayout::tagWidth, height);
+    g.setColour(rows[(size_t) rowNumber].connectionPanel.getColourTag());
+    g.fillRect(0, 0, UILayout::colourTagWidth, height);
 }
 
 juce::Component *SendingCommandDialog::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component *existingComponentToUpdate) {

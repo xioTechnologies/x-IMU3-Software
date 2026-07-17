@@ -9,7 +9,7 @@
 
 class SendCommandDialog : public Dialog {
 public:
-    explicit SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &tag_ = {});
+    explicit SendCommandDialog(const juce::String &title, const std::optional<juce::Colour> &colourTag_ = {});
 
     void resized() override;
 

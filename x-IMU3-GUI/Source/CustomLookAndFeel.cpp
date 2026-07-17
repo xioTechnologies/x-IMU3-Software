@@ -319,9 +319,9 @@ void CustomLookAndFeel::drawDocumentWindowTitleBar(juce::DocumentWindow &window,
     juce::Rectangle<int> bounds(w, h);
 
     if (const auto *const dialogWindow = dynamic_cast<juce::DialogWindow *>(&window)) {
-        if (const auto tag = static_cast<Dialog *>(dialogWindow->getContentComponent())->tag) {
-            g.setColour(*tag);
-            g.fillRect(bounds.removeFromLeft(UILayout::tagWidth));
+        if (const auto colourTag = static_cast<Dialog *>(dialogWindow->getContentComponent())->colourTag) {
+            g.setColour(*colourTag);
+            g.fillRect(bounds.removeFromLeft(UILayout::colourTagWidth));
         }
     }
 

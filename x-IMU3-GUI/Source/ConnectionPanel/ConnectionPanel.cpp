@@ -30,13 +30,13 @@ ConnectionPanel::ConnectionPanel(const juce::ValueTree &windowLayout_,
                                  std::shared_ptr<ximu3::Connection> connection_,
                                  OpenGLRenderer &openGLRenderer_,
                                  ConnectionPanelContainer &connectionPanelContainer_,
-                                 const juce::Colour &tag_,
+                                 const juce::Colour &colourTag_,
                                  const bool keepOpenEnabled_)
     : windowLayout(windowLayout_),
       connection(connection_),
       openGLRenderer(openGLRenderer_),
       connectionPanelContainer(connectionPanelContainer_),
-      tag(tag_),
+      colourTag(colourTag_),
       keepOpenEnabled(keepOpenEnabled_) {
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
@@ -82,8 +82,8 @@ void ConnectionPanel::sendCommands(const std::vector<std::string> &commands, Saf
     }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
 }
 
-const juce::Colour &ConnectionPanel::getTag() const {
-    return tag;
+const juce::Colour &ConnectionPanel::getColourTag() const {
+    return colourTag;
 }
 
 std::shared_ptr<Window> ConnectionPanel::getOrCreateWindow(const juce::ValueTree &windowTree) {

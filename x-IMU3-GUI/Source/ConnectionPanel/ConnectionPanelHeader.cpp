@@ -62,8 +62,8 @@ ConnectionPanelHeader::~ConnectionPanelHeader() {
 
 void ConnectionPanelHeader::paint(juce::Graphics &g) {
     g.fillAll(UIColours::backgroundLightest);
-    g.setColour(connectionPanel.getTag());
-    g.fillRect(getLocalBounds().removeFromLeft(UILayout::tagWidth));
+    g.setColour(connectionPanel.getColourTag());
+    g.fillRect(getLocalBounds().removeFromLeft(UILayout::colourTagWidth));
 }
 
 void ConnectionPanelHeader::resized() {
@@ -71,7 +71,7 @@ void ConnectionPanelHeader::resized() {
 
     auto bounds = getLocalBounds().withSizeKeepingCentre(getWidth() - 2 * margin, 20);
 
-    bounds.removeFromLeft(UILayout::tagWidth);
+    bounds.removeFromLeft(UILayout::colourTagWidth);
 
     if (retryButton.isVisible()) {
         retryButton.setBounds(bounds.removeFromLeft(bounds.getHeight()));

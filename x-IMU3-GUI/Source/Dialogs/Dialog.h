@@ -16,7 +16,7 @@ public:
            juce::Component *const bottomLeftComponent_ = nullptr,
            const int bottomLeftComponentWidth_ = 0,
            const bool resizable_ = false,
-           const std::optional<juce::Colour> &tag_ = {});
+           const std::optional<juce::Colour> &colourTag_ = {});
 
     ~Dialog() override;
 
@@ -30,7 +30,7 @@ public:
 
     const juce::String icon;
 
-    const std::optional<juce::Colour> tag;
+    const std::optional<juce::Colour> colourTag;
 
     std::function<bool()> okCallback;
 
