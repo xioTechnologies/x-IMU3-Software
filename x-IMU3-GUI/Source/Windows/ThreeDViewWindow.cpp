@@ -43,14 +43,6 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
         yaw = message.yaw;
     });
 
-    linearAccelerationCallbackId = connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
-        quaternionCallback({message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z});
-    });
-
-    earthAccelerationCallbackId = connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
-        quaternionCallback({message.timestamp, message.quaternion_w, message.quaternion_x, message.quaternion_y, message.quaternion_z});
-    });
-
     ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message) {
         angularRateRecoveryState = juce::exactlyEqual(message.angular_rate_recovery, 0.0f) == false;
         accelerationRecoveryState = juce::exactlyEqual(message.acceleration_recovery, 0.0f) == false;
@@ -67,8 +59,6 @@ ThreeDViewWindow::~ThreeDViewWindow() {
     connectionPanel.getConnection()->removeCallback(quaternionCallbackId);
     connectionPanel.getConnection()->removeCallback(rotationMatrixCallbackId);
     connectionPanel.getConnection()->removeCallback(eulerAnglesCallbackId);
-    connectionPanel.getConnection()->removeCallback(linearAccelerationCallbackId);
-    connectionPanel.getConnection()->removeCallback(earthAccelerationCallbackId);
     connectionPanel.getConnection()->removeCallback(ahrsStatusMessageCallbackId);
 }
 

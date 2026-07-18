@@ -181,31 +181,21 @@ private:
     };
 
     std::function<void(ximu3::XIMU3_LinearAccelerationMessage message)> linearAccelerationCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
-               message.quaternion_w,
-               message.quaternion_x,
-               message.quaternion_y,
-               message.quaternion_z,
-               message.acceleration_x,
-               message.acceleration_y,
-               message.acceleration_z);
+               message.x,
+               message.y,
+               message.z);
         // std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(message) << std::endl; // alternative to above
-        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_EarthAccelerationMessage message)> earthAccelerationCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
+        printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
-               message.quaternion_w,
-               message.quaternion_x,
-               message.quaternion_y,
-               message.quaternion_z,
-               message.acceleration_x,
-               message.acceleration_y,
-               message.acceleration_z);
+               message.x,
+               message.y,
+               message.z);
         // std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
-        std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message)) << std::endl;
     };
 
     std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message) {

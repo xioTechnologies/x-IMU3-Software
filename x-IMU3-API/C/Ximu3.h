@@ -282,25 +282,17 @@ typedef struct XIMU3_EulerAnglesMessage
 typedef struct XIMU3_LinearAccelerationMessage
 {
     uint64_t timestamp;
-    float quaternion_w;
-    float quaternion_x;
-    float quaternion_y;
-    float quaternion_z;
-    float acceleration_x;
-    float acceleration_y;
-    float acceleration_z;
+    float x;
+    float y;
+    float z;
 } XIMU3_LinearAccelerationMessage;
 
 typedef struct XIMU3_EarthAccelerationMessage
 {
     uint64_t timestamp;
-    float quaternion_w;
-    float quaternion_x;
-    float quaternion_y;
-    float quaternion_z;
-    float acceleration_x;
-    float acceleration_y;
-    float acceleration_z;
+    float x;
+    float y;
+    float z;
 } XIMU3_EarthAccelerationMessage;
 
 typedef struct XIMU3_AhrsStatusMessage
@@ -690,10 +682,6 @@ struct XIMU3_EulerAnglesMessage XIMU3_quaternion_message_to_euler_angles_message
 struct XIMU3_EulerAnglesMessage XIMU3_rotation_matrix_message_to_euler_angles_message(struct XIMU3_RotationMatrixMessage message);
 
 struct XIMU3_QuaternionMessage XIMU3_euler_angles_message_to_quaternion_message(struct XIMU3_EulerAnglesMessage message);
-
-struct XIMU3_EulerAnglesMessage XIMU3_linear_acceleration_message_to_euler_angles_message(struct XIMU3_LinearAccelerationMessage message);
-
-struct XIMU3_EulerAnglesMessage XIMU3_earth_acceleration_message_to_euler_angles_message(struct XIMU3_EarthAccelerationMessage message);
 
 void XIMU3_device_free(struct XIMU3_Device device);
 

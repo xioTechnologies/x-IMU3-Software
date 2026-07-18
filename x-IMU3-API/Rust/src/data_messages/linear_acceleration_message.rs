@@ -9,26 +9,18 @@ use std::mem::size_of;
 #[derive(Clone, Copy)]
 pub struct LinearAccelerationMessage {
     pub timestamp: u64,
-    pub quaternion_w: f32,
-    pub quaternion_x: f32,
-    pub quaternion_y: f32,
-    pub quaternion_z: f32,
-    pub acceleration_x: f32,
-    pub acceleration_y: f32,
-    pub acceleration_z: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl Default for LinearAccelerationMessage {
     fn default() -> Self {
         Self {
             timestamp: 0,
-            quaternion_w: 0.0,
-            quaternion_x: 0.0,
-            quaternion_y: 0.0,
-            quaternion_z: 0.0,
-            acceleration_x: 0.0,
-            acceleration_y: 0.0,
-            acceleration_z: 0.0,
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
         }
     }
 }
@@ -39,16 +31,12 @@ impl DataMessage for LinearAccelerationMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, ReceiveError> {
-        match scan_fmt!(message, "{},{d},{f},{f},{f},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32, f32, f32, f32) {
-            Ok((_, timestamp, quaternion_w, quaternion_x, quaternion_y, quaternion_z, acceleration_x, acceleration_y, acceleration_z)) => Ok(Self {
+        match scan_fmt!(message, "{},{d},{f},{f},{f}\n", char, u64, f32, f32, f32) {
+            Ok((_, timestamp, x, y, z)) => Ok(Self {
                 timestamp,
-                quaternion_w,
-                quaternion_x,
-                quaternion_y,
-                quaternion_z,
-                acceleration_x,
-                acceleration_y,
-                acceleration_z,
+                x,
+                y,
+                z,
             }),
             Err(_) => Err(ReceiveError::UnableToParseAsciiMessage),
         }
@@ -59,13 +47,9 @@ impl DataMessage for LinearAccelerationMessage {
         struct BinaryMessage {
             _id: u8,
             timestamp: u64,
-            quaternion_w: f32,
-            quaternion_x: f32,
-            quaternion_y: f32,
-            quaternion_z: f32,
-            acceleration_x: f32,
-            acceleration_y: f32,
-            acceleration_z: f32,
+            x: f32,
+            y: f32,
+            z: f32,
             _termination: u8,
         }
 
@@ -80,13 +64,9 @@ impl DataMessage for LinearAccelerationMessage {
 
         Ok(Self {
             timestamp: binary_message.timestamp,
-            quaternion_w: binary_message.quaternion_w,
-            quaternion_x: binary_message.quaternion_x,
-            quaternion_y: binary_message.quaternion_y,
-            quaternion_z: binary_message.quaternion_z,
-            acceleration_x: binary_message.acceleration_x,
-            acceleration_y: binary_message.acceleration_y,
-            acceleration_z: binary_message.acceleration_z,
+            x: binary_message.x,
+            y: binary_message.y,
+            z: binary_message.z,
         })
     }
 
@@ -95,16 +75,16 @@ impl DataMessage for LinearAccelerationMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),Quaternion W,Quaternion X,Quaternion Y,Quaternion Z,Acceleration X (g),Acceleration Y (g),Acceleration Z (g)\n"
+        "Timestamp (us),X (g),Y (g),Z (g)\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.quaternion_w, self.quaternion_x, self.quaternion_y, self.quaternion_z, self.acceleration_x, self.acceleration_y, self.acceleration_z)
+        format!("{},{:.6},{:.6},{:.6}\n", self.timestamp, self.x, self.y, self.z)
     }
 }
 
 impl fmt::Display for LinearAccelerationMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3} {:>8.3} g {:>8.3} g {:>8.3} g", self.timestamp, self.quaternion_w, self.quaternion_x, self.quaternion_y, self.quaternion_z, self.acceleration_x, self.acceleration_y, self.acceleration_z)
+        write!(formatter, "{:>8} us {:>8.3} g {:>8.3} g {:>8.3} g", self.timestamp, self.x, self.y, self.z)
     }
 }

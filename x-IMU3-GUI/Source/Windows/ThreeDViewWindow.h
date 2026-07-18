@@ -51,12 +51,6 @@ private:
     std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;
     uint64_t eulerAnglesCallbackId;
 
-    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
-    uint64_t linearAccelerationCallbackId;
-
-    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;
-    uint64_t earthAccelerationCallbackId;
-
     std::function<void(ximu3::XIMU3_AhrsStatusMessage)> ahrsStatusMessageCallback;
     uint64_t ahrsStatusMessageCallbackId;
 

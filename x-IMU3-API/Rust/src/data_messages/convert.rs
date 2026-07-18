@@ -102,29 +102,3 @@ impl From<RotationMatrixMessage> for EulerAnglesMessage {
         QuaternionMessage::from(message).into()
     }
 }
-
-impl From<LinearAccelerationMessage> for EulerAnglesMessage {
-    fn from(message: LinearAccelerationMessage) -> Self {
-        QuaternionMessage {
-            timestamp: message.timestamp,
-            w: message.quaternion_w,
-            x: message.quaternion_x,
-            y: message.quaternion_y,
-            z: message.quaternion_z,
-        }
-        .into()
-    }
-}
-
-impl From<EarthAccelerationMessage> for EulerAnglesMessage {
-    fn from(message: EarthAccelerationMessage) -> Self {
-        QuaternionMessage {
-            timestamp: message.timestamp,
-            w: message.quaternion_w,
-            x: message.quaternion_x,
-            y: message.quaternion_y,
-            z: message.quaternion_z,
-        }
-        .into()
-    }
-}

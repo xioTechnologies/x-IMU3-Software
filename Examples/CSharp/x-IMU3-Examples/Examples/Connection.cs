@@ -217,32 +217,22 @@ namespace Ximu3Examples
         {
             Console.WriteLine(
                 TimestampFormat(message.timestamp) +
-                FloatFormat(message.quaternion_w) +
-                FloatFormat(message.quaternion_x) +
-                FloatFormat(message.quaternion_y) +
-                FloatFormat(message.quaternion_z) +
-                FloatFormat(message.acceleration_x) + " g" +
-                FloatFormat(message.acceleration_y) + " g" +
-                FloatFormat(message.acceleration_z) + " g"
+                FloatFormat(message.x) + " g" +
+                FloatFormat(message.y) + " g" +
+                FloatFormat(message.z) + " g"
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_linear_acceleration_message_to_string(message))); // alternative to above
-            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_linear_acceleration_message_to_euler_angles_message(message))));
         }
 
         private static void EarthAccelerationCallback(Ximu3.CApi.XIMU3_EarthAccelerationMessage message)
         {
             Console.WriteLine(
                 TimestampFormat(message.timestamp) +
-                FloatFormat(message.quaternion_w) +
-                FloatFormat(message.quaternion_x) +
-                FloatFormat(message.quaternion_y) +
-                FloatFormat(message.quaternion_z) +
-                FloatFormat(message.acceleration_x) + " g" +
-                FloatFormat(message.acceleration_y) + " g" +
-                FloatFormat(message.acceleration_z) + " g"
+                FloatFormat(message.x) + " g" +
+                FloatFormat(message.y) + " g" +
+                FloatFormat(message.z) + " g"
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_earth_acceleration_message_to_string(message))); // alternative to above
-            Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_euler_angles_message_to_string(Ximu3.CApi.XIMU3_earth_acceleration_message_to_euler_angles_message(message))));
         }
 
         private static void AhrsStatusCallback(Ximu3.CApi.XIMU3_AhrsStatusMessage message)

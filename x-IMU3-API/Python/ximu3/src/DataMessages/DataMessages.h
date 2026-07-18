@@ -40,16 +40,4 @@ static PyObject *euler_angles_message_to_quaternion_message(EulerAnglesMessage *
     return quaternion_message_from(&message);
 }
 
-static PyObject *linear_acceleration_message_to_euler_angles_message(LinearAccelerationMessage *self, PyObject *args) {
-    const XIMU3_EulerAnglesMessage message = XIMU3_linear_acceleration_message_to_euler_angles_message(self->wrapped);
-
-    return euler_angles_message_from(&message);
-}
-
-static PyObject *earth_acceleration_message_to_euler_angles_message(EarthAccelerationMessage *self, PyObject *args) {
-    const XIMU3_EulerAnglesMessage message = XIMU3_earth_acceleration_message_to_euler_angles_message(self->wrapped);
-
-    return euler_angles_message_from(&message);
-}
-
 #endif

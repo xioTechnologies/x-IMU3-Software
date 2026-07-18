@@ -77,9 +77,7 @@ windows = [
         callback_declarations="""\
     std::function<void(ximu3::XIMU3_QuaternionMessage)> quaternionCallback;
     std::function<void(ximu3::XIMU3_RotationMatrixMessage)> rotationMatrixCallback;
-    std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;
-    std::function<void(ximu3::XIMU3_LinearAccelerationMessage)> linearAccelerationCallback;
-    std::function<void(ximu3::XIMU3_EarthAccelerationMessage)> earthAccelerationCallback;""",
+    std::function<void(ximu3::XIMU3_EulerAnglesMessage)> eulerAnglesCallback;""",
         horizontal_autoscale="false",
         show_timestamp="true",
         y_axis='Angle (" + degreeSymbol + ")',
@@ -98,16 +96,6 @@ windows = [
 
     callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
         update(message.timestamp, {message.roll, message.pitch, message.yaw});
-    }));
-
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
-        const auto eulerAngles = ximu3::XIMU3_linear_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
-    }));
-
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
-        const auto eulerAngles = ximu3::XIMU3_earth_acceleration_message_to_euler_angles_message(message);
-        update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));""",
     ),
     Window(
@@ -120,7 +108,7 @@ windows = [
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
     callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
-        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
+        update(message.timestamp, {message.x, message.y, message.z});
     }));""",
     ),
     Window(
@@ -133,7 +121,7 @@ windows = [
         legend_colours="{UIColours::graphX, UIColours::graphY, UIColours::graphZ}",
         callback_implementations="""\
     callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
-        update(message.timestamp, {message.acceleration_x, message.acceleration_y, message.acceleration_z});
+        update(message.timestamp, {message.x, message.y, message.z});
     }));""",
     ),
     Window(
