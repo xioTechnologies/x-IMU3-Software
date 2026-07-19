@@ -299,10 +299,9 @@ namespace Ximu3
         public struct XIMU3_AhrsStatusMessage
         {
             public UInt64 timestamp;
-            public float initialising;
-            public float angular_rate_recovery;
-            public float acceleration_recovery;
-            public float magnetic_recovery;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE)]
+            public byte[] char_array;
+            public UIntPtr number_of_bytes;
         }
 
         [StructLayout(LayoutKind.Sequential)]

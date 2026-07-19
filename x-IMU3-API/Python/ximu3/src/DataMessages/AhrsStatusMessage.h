@@ -21,32 +21,22 @@ static PyObject *ahrs_status_message_str(AhrsStatusMessage *self) {
     return PyUnicode_FromString(string);
 }
 
-static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self) {
+static PyObject *ahrs_status_message_get_timestamp(AhrsStatusMessage *self, PyObject *args) {
     return PyLong_FromUnsignedLongLong((unsigned long long) self->wrapped.timestamp);
 }
 
-static PyObject *ahrs_status_message_get_initialising(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->wrapped.initialising);
+static PyObject *ahrs_status_message_get_string(AhrsStatusMessage *self, PyObject *args) {
+    return PyUnicode_FromString(self->wrapped.char_array);
 }
 
-static PyObject *ahrs_status_message_get_angular_rate_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->wrapped.angular_rate_recovery);
-}
-
-static PyObject *ahrs_status_message_get_acceleration_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->wrapped.acceleration_recovery);
-}
-
-static PyObject *ahrs_status_message_get_magnetic_recovery(AhrsStatusMessage *self) {
-    return PyFloat_FromDouble((double) self->wrapped.magnetic_recovery);
+static PyObject *ahrs_status_message_get_bytes(AhrsStatusMessage *self, PyObject *args) {
+    return PyByteArray_FromStringAndSize(self->wrapped.char_array, (Py_ssize_t) self->wrapped.number_of_bytes);
 }
 
 static PyGetSetDef ahrs_status_message_get_set[] = {
     {"timestamp", (getter) ahrs_status_message_get_timestamp, NULL, "", NULL},
-    {"initialising", (getter) ahrs_status_message_get_initialising, NULL, "", NULL},
-    {"angular_rate_recovery", (getter) ahrs_status_message_get_angular_rate_recovery, NULL, "", NULL},
-    {"acceleration_recovery", (getter) ahrs_status_message_get_acceleration_recovery, NULL, "", NULL},
-    {"magnetic_recovery", (getter) ahrs_status_message_get_magnetic_recovery, NULL, "", NULL},
+    {"string", (getter) ahrs_status_message_get_string, NULL, "", NULL},
+    {"bytes", (getter) ahrs_status_message_get_bytes, NULL, "", NULL},
     {NULL} /* sentinel */
 };
 

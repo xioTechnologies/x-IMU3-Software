@@ -309,10 +309,8 @@ typedef struct XIMU3_EarthAccelerationMessage
 typedef struct XIMU3_AhrsStatusMessage
 {
     uint64_t timestamp;
-    float initialising;
-    float angular_rate_recovery;
-    float acceleration_recovery;
-    float magnetic_recovery;
+    char char_array[XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE];
+    size_t number_of_bytes;
 } XIMU3_AhrsStatusMessage;
 
 typedef struct XIMU3_SerialAccessoryMessage
