@@ -10,6 +10,7 @@
 #include "FileConverter.h"
 #include "FileConverterProgress.h"
 #include "FileConverterStatus.h"
+#include "JsonType.h"
 #include "KeepOpen.h"
 #include "MuxScanner.h"
 #include "NetworkAnnouncement.h"
@@ -59,6 +60,12 @@ PyMODINIT_FUNC PyInit__core() {
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_FAILED", XIMU3_FileConverterStatusFailed) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_IN_PROGRESS", XIMU3_FileConverterStatusInProgress) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_STRING", XIMU3_JsonTypeString) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_NUMBER", XIMU3_JsonTypeNumber) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_BOOLEAN", XIMU3_JsonTypeBoolean) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_NULL", XIMU3_JsonTypeNull) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_OBJECT", XIMU3_JsonTypeObject) == 0) &&
+        (PyModule_AddIntConstant(module, "JSON_TYPE_ARRAY", XIMU3_JsonTypeArray) == 0) &&
         (PyModule_AddIntConstant(module, "MAX_NUMBER_OF_MUX_CHANNELS", XIMU3_MAX_NUMBER_OF_MUX_CHANNELS) == 0) &&
         (PyModule_AddIntConstant(module, "PORT_TYPE_USB", XIMU3_PortTypeUsb) == 0) &&
         (PyModule_AddIntConstant(module, "PORT_TYPE_SERIAL", XIMU3_PortTypeSerial) == 0) &&
@@ -112,6 +119,7 @@ PyMODINIT_FUNC PyInit__core() {
         (PyModule_AddFunctions(module, charging_status_methods) == 0) &&
         (PyModule_AddFunctions(module, connection_status_methods) == 0) &&
         (PyModule_AddFunctions(module, file_converter_status_methods) == 0) &&
+        (PyModule_AddFunctions(module, json_type_methods) == 0) &&
         (PyModule_AddFunctions(module, port_type_methods) == 0) &&
         (PyModule_AddFunctions(module, receive_error_methods) == 0) &&
         (PyModule_AddFunctions(module, result_methods) == 0) &&

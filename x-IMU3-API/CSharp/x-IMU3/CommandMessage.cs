@@ -7,6 +7,7 @@ namespace Ximu3
         public required string Json { get; init; }
         public required string Key { get; init; }
         public required string Value { get; init; }
+        public required CApi.XIMU3_JsonType ValueType { get; init; }
         public required string? Error { get; init; }
 
         public static CommandMessage? From(CApi.XIMU3_CommandMessage response)
@@ -21,6 +22,7 @@ namespace Ximu3
                 Json = Helpers.ToString(response.json),
                 Key = Helpers.ToString(response.key),
                 Value = Helpers.ToString(response.value),
+                ValueType = response.value_type,
                 Error = Helpers.ToString(response.error).Length == 0 ? null : Helpers.ToString(response.error)
             };
         }

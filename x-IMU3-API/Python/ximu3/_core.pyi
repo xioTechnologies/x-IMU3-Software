@@ -11,6 +11,12 @@ DEFAULT_TIMEOUT: int
 FILE_CONVERTER_STATUS_COMPLETE: int
 FILE_CONVERTER_STATUS_FAILED: int
 FILE_CONVERTER_STATUS_IN_PROGRESS: int
+JSON_TYPE_STRING: int
+JSON_TYPE_NUMBER: int
+JSON_TYPE_BOOLEAN: int
+JSON_TYPE_NULL: int
+JSON_TYPE_OBJECT: int
+JSON_TYPE_ARRAY: int
 MAX_NUMBER_OF_MUX_CHANNELS: int
 PORT_TYPE_USB: int
 PORT_TYPE_SERIAL: int
@@ -72,6 +78,9 @@ def connection_status_to_string(status: int) -> str: ...
 # file_converter_status_methods
 def file_converter_status_to_string(status: int) -> str: ...
 
+# json_type_methods
+def json_type_to_string(json_type: int) -> str: ...
+
 # port_type_methods
 def port_type_to_string(error: int) -> str: ...
 
@@ -89,6 +98,8 @@ class CommandMessage:
     def key(self) -> str: ...
     @property
     def value(self) -> str: ...
+    @property
+    def value_type(self) -> int: ...
     @property
     def error(self) -> str: ...
     @staticmethod

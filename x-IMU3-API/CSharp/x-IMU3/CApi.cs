@@ -19,6 +19,16 @@ namespace Ximu3
             XIMU3_ChargingStatusChargingOnHold,
         }
 
+        public enum XIMU3_JsonType
+        {
+            XIMU3_JsonTypeString,
+            XIMU3_JsonTypeNumber,
+            XIMU3_JsonTypeBoolean,
+            XIMU3_JsonTypeNull,
+            XIMU3_JsonTypeObject,
+            XIMU3_JsonTypeArray,
+        }
+
         public enum XIMU3_Result
         {
             XIMU3_ResultOk,
@@ -121,6 +131,7 @@ namespace Ximu3
             public byte[] key;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] value;
+            public XIMU3_JsonType value_type;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] error;
         }
@@ -519,6 +530,9 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_charging_status_to_string(XIMU3_ChargingStatus status);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XIMU3_json_type_to_string(XIMU3_JsonType json_type);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CommandMessage XIMU3_command_message_parse(IntPtr json);
