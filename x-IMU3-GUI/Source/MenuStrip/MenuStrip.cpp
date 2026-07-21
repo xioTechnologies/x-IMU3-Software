@@ -523,7 +523,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SD CARD LOGGING"), nullptr);
-    menu.addItem("Start SD Card Logging", [&] {
+    menu.addItem("Start SD Card Logging", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<StartSdCardLoggingDialog>(), [&] {
             if (const auto *const dialog = dynamic_cast<StartSdCardLoggingDialog *>(DialogQueue::getSingleton().getActive())) {
                 DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"start\":" + dialog->getFileName() + "}"));
@@ -535,7 +535,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
     menu.addItem("Stop SD Card Logging", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"stop\":null}"));
     });
-    menu.addItem("Convert .ximu3 Files", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
+    menu.addItem("Convert .ximu3 Files", true, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&] {
             if (const auto *const dialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
                 convertFilesSettings = dialog->getSettings();
