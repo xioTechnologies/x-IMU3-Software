@@ -44,7 +44,7 @@ static PyGetSetDef command_message_get_set[] = {
     {NULL} /* sentinel */
 };
 
-static PyMethodDef command_message_type_methods[] = {
+static PyMethodDef command_message_methods[] = {
     {"parse", (PyCFunction) command_message_parse, METH_O | METH_STATIC, ""},
     {NULL} /* sentinel */
 };
@@ -56,7 +56,7 @@ static PyTypeObject command_message_object = {
     .tp_dealloc = (destructor) command_message_free,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = command_message_get_set,
-    .tp_methods = command_message_type_methods,
+    .tp_methods = command_message_methods,
 };
 
 static PyObject *command_message_from(const XIMU3_CommandMessage *const message) {
