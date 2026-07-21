@@ -150,7 +150,7 @@ windows = [
     Window(
         name="Sync",
         callback_declarations="    std::function<void(ximu3::XIMU3_SyncMessage)> syncCallback;",
-        horizontal_autoscale="true",
+        horizontal_autoscale="false",
         show_timestamp="true",
         y_axis="Edge",
         legend_strings='{""}',
@@ -235,7 +235,7 @@ windows = [
     Window(
         name="Button",
         callback_declarations="    std::function<void(ximu3::XIMU3_ButtonMessage)> buttonCallback;",
-        horizontal_autoscale="true",
+        horizontal_autoscale="false",
         show_timestamp="true",
         y_axis="State",
         legend_strings='{""}',
