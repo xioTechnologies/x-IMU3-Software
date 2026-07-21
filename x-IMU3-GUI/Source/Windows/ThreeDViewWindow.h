@@ -56,15 +56,15 @@ private:
 
     bool compactView = false;
 
-    std::atomic<bool> angularRateRecoveryState{false};
-    std::atomic<bool> accelerationRecoveryState{false};
-    std::atomic<bool> magneticRecoveryState{false};
+    SimpleLabel ahrsStatusLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredTop };
+    juce::TimedCallback ahrsStatusLabelTimer{
+        [&] {
+            ahrsStatusLabel.setText("");
+            stopTimer();
+        }
+    };
 
-    Icon angularRateRecoveryIcon{BinaryData::speed_grey_svg, "Angular Rate Recovery"};
-    Icon accelerationRecoveryIcon{BinaryData::vibration_grey_svg, "Acceleration Recovery"};
-    Icon magneticRecoveryIcon{BinaryData::magnet_grey_svg, "Magnetic Recovery"};
-
-    SimpleLabel axesConventionLabel { "", UIFonts::getDefaultFont(), juce::Justification::topRight };
+    SimpleLabel axesConventionLabel{"", UIFonts::getDefaultFont(), juce::Justification::topRight};
 
     const juce::File customModelsDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Models");
 
@@ -80,7 +80,7 @@ private:
 
     void updateEulerAnglesVisibilities();
 
-    void updateAhrsStatusVisibilities();
+    void updateAhrsStatusVisibility();
 
     void updateAxesConventionLabel();
 

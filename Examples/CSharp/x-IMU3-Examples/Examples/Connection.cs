@@ -239,10 +239,7 @@ namespace Ximu3Examples
         {
             Console.WriteLine(
                 TimestampFormat(message.timestamp) +
-                FloatFormat(message.initialising) +
-                FloatFormat(message.angular_rate_recovery) +
-                FloatFormat(message.acceleration_recovery) +
-                FloatFormat(message.magnetic_recovery)
+                StringFormat(Ximu3.Helpers.ToString(message.char_array))
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ahrs_status_message_to_string(message))); // alternative to above
         }

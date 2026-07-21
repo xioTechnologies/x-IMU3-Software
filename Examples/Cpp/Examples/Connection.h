@@ -199,12 +199,9 @@ private:
     };
 
     std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message) {
-        printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
+        printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
-               message.initialising,
-               message.angular_rate_recovery,
-               message.acceleration_recovery,
-               message.magnetic_recovery);
+               message.char_array);
         // std::cout << ximu3::XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
     };
 

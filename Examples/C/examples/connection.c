@@ -225,12 +225,9 @@ void earth_acceleration_callback(const XIMU3_EarthAccelerationMessage message, v
 }
 
 void ahrs_status_callback(const XIMU3_AhrsStatusMessage message, void *context) {
-    printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
+    printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
            message.timestamp,
-           message.initialising,
-           message.angular_rate_recovery,
-           message.acceleration_recovery,
-           message.magnetic_recovery);
+           message.char_array);
     // printf("%s\n", XIMU3_ahrs_status_message_to_string(message)); // alternative to above
 }
 

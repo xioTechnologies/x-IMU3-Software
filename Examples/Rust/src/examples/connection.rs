@@ -214,12 +214,9 @@ pub fn earth_acceleration_closure(message: EarthAccelerationMessage) {
 
 pub fn ahrs_status_closure(message: AhrsStatusMessage) {
     #[rustfmt::skip]
-    println!(concat!(timestamp_fmt!(), float_fmt!(), float_fmt!(), float_fmt!(), float_fmt!()),
+    println!(concat!(timestamp_fmt!(), string_fmt!()),
              message.timestamp,
-             message.initialising,
-             message.angular_rate_recovery,
-             message.acceleration_recovery,
-             message.magnetic_recovery);
+             message.char_array_as_string());
     // println!("{message}"); // alternative to above
 }
 

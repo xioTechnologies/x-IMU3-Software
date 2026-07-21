@@ -67,8 +67,8 @@ messages = [
     Message(
         name="AHRS status",
         ascii_id="U",
-        argument_names=("Initialising", "Angular Rate Recovery", "Acceleration Recovery", "Magnetic Recovery"),
-        argument_units=("", "", "", ""),
+        argument_names=(),
+        argument_units=(),
     ),
     Message(
         name="Serial accessory",

@@ -170,17 +170,7 @@ def earth_acceleration_callback(message: ximu3.EarthAccelerationMessage) -> None
 
 
 def ahrs_status_callback(message: ximu3.AhrsStatusMessage) -> None:
-    print(
-        "".join(
-            [
-                timestamp_format(message.timestamp),
-                float_format(message.initialising),
-                float_format(message.angular_rate_recovery),
-                float_format(message.acceleration_recovery),
-                float_format(message.magnetic_recovery),
-            ]
-        )
-    )
+    print(timestamp_format(message.timestamp) + string_format(message.string))
     # print(message)  # alternative to above
 
 

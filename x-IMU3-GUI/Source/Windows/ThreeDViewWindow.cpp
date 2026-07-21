@@ -13,9 +13,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
     addAndMakeVisible(pitchValue);
     addAndMakeVisible(yawLabel);
     addAndMakeVisible(yawValue);
-    addAndMakeVisible(angularRateRecoveryIcon);
-    addAndMakeVisible(accelerationRecoveryIcon);
-    addAndMakeVisible(magneticRecoveryIcon);
+    addAndMakeVisible(ahrsStatusLabel);
     addAndMakeVisible(axesConventionLabel);
     addAndMakeVisible(loadingLabel);
 
@@ -44,9 +42,12 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
     });
 
     ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message) {
-        angularRateRecoveryState = juce::exactlyEqual(message.angular_rate_recovery, 0.0f) == false;
-        accelerationRecoveryState = juce::exactlyEqual(message.acceleration_recovery, 0.0f) == false;
-        magneticRecoveryState = juce::exactlyEqual(message.magnetic_recovery, 0.0f) == false;
+        juce::MessageManager::callAsync([&, self = SafePointer(this), message] {
+            ahrsStatusLabel.setText(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
+            resized();
+
+            ahrsStatusLabelTimer.startTimer(5000);
+        });
     });
 
     threeDView.setSettings(readFromValueTree());
@@ -72,11 +73,12 @@ void ThreeDViewWindow::resized() {
     threeDView.setHudEnabled(compactView == false);
 
     updateEulerAnglesVisibilities();
-    updateAhrsStatusVisibilities();
+    updateAhrsStatusVisibility();
     updateAxesConventionLabel();
 
     bounds.reduce(10, 10);
 
+    ahrsStatusLabel.setBounds(bounds.reduced(100, 0));
     axesConventionLabel.setBounds(bounds);
 
     const auto setRow = [&](auto &label, auto &value) {
@@ -90,20 +92,6 @@ void ThreeDViewWindow::resized() {
     setRow(yawLabel, yawValue);
 
     loadingLabel.setBounds(bounds.removeFromRight(100).removeFromBottom(20));
-
-    const auto iconHeight = 25;
-    const auto iconWidth = 25;
-    const auto margin = 25;
-    const auto numIcons = 3;
-    auto statusIconBounds = getContentBounds();
-    statusIconBounds.removeFromTop(10);
-    statusIconBounds = statusIconBounds.removeFromTop(iconHeight);
-    statusIconBounds = statusIconBounds.withSizeKeepingCentre((numIcons * iconWidth) + ((numIcons - 1) * margin), iconHeight);
-    angularRateRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
-    statusIconBounds.removeFromLeft(margin);
-    accelerationRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
-    statusIconBounds.removeFromLeft(margin);
-    magneticRecoveryIcon.setBounds(statusIconBounds.removeFromLeft(iconWidth));
 }
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent &mouseEvent) {
@@ -211,12 +199,8 @@ void ThreeDViewWindow::updateAxesConventionLabel() {
     axesConventionLabel.setVisible(readFromValueTree().axesEnabled && compactView == false);
 }
 
-void ThreeDViewWindow::updateAhrsStatusVisibilities() {
-    const auto visible = (settingsTree.getProperty("ahrsStatusEnabled", true) && compactView == false);
-
-    angularRateRecoveryIcon.setVisible(visible);
-    accelerationRecoveryIcon.setVisible(visible);
-    magneticRecoveryIcon.setVisible(visible);
+void ThreeDViewWindow::updateAhrsStatusVisibility() {
+    ahrsStatusLabel.setVisible(settingsTree.getProperty("ahrsStatusEnabled", true) && compactView == false);
 }
 
 juce::PopupMenu ThreeDViewWindow::getMenu() {
@@ -352,10 +336,6 @@ void ThreeDViewWindow::timerCallback() {
     yawValue.setText(formatAngle(yaw));
 
     loadingLabel.setText(threeDView.isLoading() ? "Loading..." : "");
-
-    angularRateRecoveryIcon.setIcon(angularRateRecoveryState.load() ? BinaryData::speed_white_svg : BinaryData::speed_grey_svg);
-    accelerationRecoveryIcon.setIcon(accelerationRecoveryState.load() ? BinaryData::vibration_white_svg : BinaryData::vibration_grey_svg);
-    magneticRecoveryIcon.setIcon(magneticRecoveryState.load() ? BinaryData::magnet_white_svg : BinaryData::magnet_grey_svg);
 }
 
 void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &) {
@@ -364,7 +344,7 @@ void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhoseProper
     }
 
     updateEulerAnglesVisibilities();
-    updateAhrsStatusVisibilities();
+    updateAhrsStatusVisibility();
     updateAxesConventionLabel();
 
     threeDView.setSettings(readFromValueTree());

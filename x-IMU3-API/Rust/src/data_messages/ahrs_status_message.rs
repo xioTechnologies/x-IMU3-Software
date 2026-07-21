@@ -2,28 +2,32 @@
 
 use crate::data_messages::*;
 use crate::receive_error::*;
+use libc::size_t;
 use std::fmt;
 use std::mem::size_of;
+use std::os::raw::c_char;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct AhrsStatusMessage {
     pub timestamp: u64,
-    pub initialising: f32,
-    pub angular_rate_recovery: f32,
-    pub acceleration_recovery: f32,
-    pub magnetic_recovery: f32,
+    pub char_array: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE],
+    pub number_of_bytes: size_t,
 }
 
 impl Default for AhrsStatusMessage {
     fn default() -> Self {
         Self {
             timestamp: 0,
-            initialising: 0.0,
-            angular_rate_recovery: 0.0,
-            acceleration_recovery: 0.0,
-            magnetic_recovery: 0.0,
+            char_array: [0; DATA_MESSAGE_CHAR_ARRAY_SIZE],
+            number_of_bytes: 0,
         }
+    }
+}
+
+impl AhrsStatusMessage {
+    pub fn char_array_as_string(self) -> String {
+        char_array_to_string(&self.char_array, self.number_of_bytes)
     }
 }
 
@@ -33,45 +37,44 @@ impl DataMessage for AhrsStatusMessage {
     }
 
     fn parse_ascii(message: &str) -> Result<Self, ReceiveError> {
-        match scan_fmt!(message, "{},{d},{f},{f},{f},{f}\n", char, u64, f32, f32, f32, f32) {
-            Ok((_, timestamp, initialising, angular_rate_recovery, acceleration_recovery, magnetic_recovery)) => Ok(Self {
-                timestamp,
-                initialising,
-                angular_rate_recovery,
-                acceleration_recovery,
-                magnetic_recovery,
-            }),
+        match scan_fmt!(message, "{},{d},{[^\n]}\n", char, u64, String) {
+            Ok((_, timestamp, string)) => {
+                let (char_array, number_of_bytes) = string_to_char_array(string);
+
+                Ok(Self {
+                    timestamp,
+                    char_array,
+                    number_of_bytes,
+                })
+            }
             Err(_) => Err(ReceiveError::UnableToParseAsciiMessage),
         }
     }
 
     fn parse_binary(message: &[u8]) -> Result<Self, ReceiveError> {
         #[repr(C, packed)]
-        struct BinaryMessage {
+        struct Header {
             _id: u8,
             timestamp: u64,
-            initialising: f32,
-            angular_rate_recovery: f32,
-            acceleration_recovery: f32,
-            magnetic_recovery: f32,
-            _termination: u8,
         }
 
-        if message.len() != size_of::<BinaryMessage>() {
+        let min_message_size = size_of::<Header>() + 1; // include termination byte
+
+        if message.len() < min_message_size {
             return Err(ReceiveError::InvalidBinaryMessageLength);
         }
 
-        let binary_message = unsafe {
-            let ref binary_message = *(message.as_ptr() as *const BinaryMessage);
-            binary_message
+        let timestamp = unsafe {
+            let ref binary_message = *(message.as_ptr() as *const Header);
+            binary_message.timestamp
         };
 
-        Ok(Self {
-            timestamp: binary_message.timestamp,
-            initialising: binary_message.initialising,
-            angular_rate_recovery: binary_message.angular_rate_recovery,
-            acceleration_recovery: binary_message.acceleration_recovery,
-            magnetic_recovery: binary_message.magnetic_recovery,
+        let (char_array, number_of_bytes) = slice_to_char_array(&message[size_of::<Header>()..(message.len() - 1)]); // exclude termination byte
+
+        Ok(AhrsStatusMessage {
+            timestamp,
+            char_array,
+            number_of_bytes,
         })
     }
 
@@ -80,16 +83,16 @@ impl DataMessage for AhrsStatusMessage {
     }
 
     fn get_csv_headings(&self) -> &'static str {
-        "Timestamp (us),Initialising,Angular Rate Recovery,Acceleration Recovery,Magnetic Recovery\n"
+        "Timestamp (us),String\n"
     }
 
     fn to_csv_row(&self) -> String {
-        format!("{},{:.6},{:.6},{:.6},{:.6}\n", self.timestamp, self.initialising, self.angular_rate_recovery, self.acceleration_recovery, self.magnetic_recovery)
+        format!("{},{}\n", self.timestamp, char_array_to_string(&self.char_array, self.number_of_bytes))
     }
 }
 
 impl fmt::Display for AhrsStatusMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:>8} us {:>8.3} {:>8.3} {:>8.3} {:>8.3}", self.timestamp, self.initialising, self.angular_rate_recovery, self.acceleration_recovery, self.magnetic_recovery)
+        write!(formatter, "{:>8} us \"{}\"", self.timestamp, char_array_to_string(&self.char_array, self.number_of_bytes))
     }
 }
