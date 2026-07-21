@@ -12,6 +12,7 @@
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
 #include "Dialogs/SendNoteCommandDialog.h"
+#include "Dialogs/StartSdCardLoggingDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "MenuStrip.h"
 #include "PreviousConnections.h"
@@ -372,8 +373,8 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
     });
     arrangeMenu.addItem("Save As...", [this] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SaveWindowLayoutDialog>(), [this] {
-            if (auto *saveWindowLayoutDialog = dynamic_cast<SaveWindowLayoutDialog *>(DialogQueue::getSingleton().getActive())) {
-                const auto layoutName = saveWindowLayoutDialog->getLayoutName();
+            if (auto *dialog = dynamic_cast<SaveWindowLayoutDialog *>(DialogQueue::getSingleton().getActive())) {
+                const auto layoutName = dialog->getLayoutName();
 
                 const auto save = [this, layoutName] {
                     WindowLayouts().save(layoutName, windowLayout);
@@ -522,10 +523,22 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SD CARD LOGGING"), nullptr);
-    menu.addItem("Convert .ximu3 Files", [&] {
+    menu.addItem("Start SD Card Logging", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<StartSdCardLoggingDialog>(), [&] {
+            if (const auto *const dialog = dynamic_cast<StartSdCardLoggingDialog *>(DialogQueue::getSingleton().getActive())) {
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"start\":" + dialog->getFileName() + "}", connectionPanelContainer.getConnectionPanels()));
+            }
+
+            return true;
+        });
+    });
+    menu.addItem("Stop SD Card Logging", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"stop\":null}", connectionPanelContainer.getConnectionPanels()));
+    });
+    menu.addItem("Convert .ximu3 Files", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&] {
-            if (const auto *const convertFileDialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
-                convertFilesSettings = convertFileDialog->getSettings();
+            if (const auto *const dialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
+                convertFilesSettings = dialog->getSettings();
 
                 if (const auto directory = convertFilesSettings.destination.getChildFile(convertFilesSettings.name); directory.exists()) {
                     DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(convertFilesSettings.name), [&, directory] {
