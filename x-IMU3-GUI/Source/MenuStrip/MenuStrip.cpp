@@ -7,11 +7,11 @@
 #include "Dialogs/ConvertingFilesDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/MessageDialog.h"
-#include "Dialogs/ProcessCommandDialog.h"
+#include "Dialogs/RemoteProcessDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
-#include "Dialogs/SendNoteCommandDialog.h"
+#include "Dialogs/SendNoteDialog.h"
 #include "Dialogs/StartSdCardLoggingDialog.h"
 #include "Dialogs/UpdateFirmwareDialog.h"
 #include "MenuStrip.h"
@@ -51,21 +51,21 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         availableConnectionsButton.triggerClick();
     }
 
-    shutdownButton.onClick = [this] {
+    shutdownAllDevicesButton.onClick = [this] {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this] {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"shutdown\":null}", connectionPanelContainer.getConnectionPanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"shutdown\":null}"));
             return true;
         });
     };
 
     zeroHeadingButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"heading\":0}", connectionPanelContainer.getConnectionPanels()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading\":0}"));
     };
 
-    noteButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendNoteCommandDialog>("Send Note Command to All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")"), [this] {
-            if (auto *dialog = dynamic_cast<SendNoteCommandDialog *>(DialogQueue::getSingleton().getActive())) {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"note\":\"" + dialog->getNote().toStdString() + "\"}", connectionPanelContainer.getConnectionPanels()));
+    sendNoteButton.onClick = [this] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendNoteDialog>(), [this] {
+            if (auto *dialog = dynamic_cast<SendNoteDialog *>(DialogQueue::getSingleton().getActive())) {
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"note\":\"" + dialog->getNote().toStdString() + "\"}"));
             }
             return true;
         });
@@ -123,7 +123,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         });
     };
 
-    mainSettingsButton.onClick = [] {
+    applicationSettingsButton.onClick = [] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ApplicationSettingsDialog>());
     };
 
@@ -148,7 +148,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     });
 
     connectionPanelContainer.onConnectionPanelsSizeChanged = [&] {
-        for (auto &component: std::vector<std::reference_wrapper<juce::Component> >({disconnectButton, windowsButton, shutdownButton, zeroHeadingButton, noteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime,})) {
+        for (auto &component: std::vector<std::reference_wrapper<juce::Component> >({disconnectButton, windowsButton, shutdownAllDevicesButton, zeroHeadingButton, sendNoteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime,})) {
             component.get().setEnabled(connectionPanelContainer.getConnectionPanels().size() > 0);
         }
 
@@ -475,7 +475,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
     menu.addItem(toAll, [&, toAll] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>(toAll), [this] {
             if (auto *dialog = dynamic_cast<SendCommandDialog *>(DialogQueue::getSingleton().getActive())) {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), connectionPanelContainer.getConnectionPanels()));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), dialog->getCommand()));
             }
             return true;
         });
@@ -484,7 +484,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
     addDevices(menu, [&](auto &connectionPanel) {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getHeading(), connectionPanel.getColourTag()), [&, connectionPanel_ = &connectionPanel] {
             if (auto *dialog = dynamic_cast<SendCommandDialog *>(DialogQueue::getSingleton().getActive())) {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(dialog->getCommand(), std::vector<ConnectionPanel *>({connectionPanel_})));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>({connectionPanel_}), dialog->getCommand()));
             }
             return true;
         });
@@ -498,15 +498,15 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
 
     menu.addItem("Set Date and Time", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&] {
-            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"time\":\"" + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S").toStdString() + "\"}", connectionPanelContainer.getConnectionPanels()));
+            DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"time\":\"" + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S").toStdString() + "\"}"));
             return true;
         });
     });
     menu.addItem("Gyroscope Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<ProcessCommandDialog>("Gyroscope Bias Calibration", "bias", 30, true, connectionPanelContainer.getConnectionPanels()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Gyroscope Bias Calibration", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
     });
     menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<ProcessCommandDialog>("Hard-Iron Calibration", "hard_iron", 60, true, connectionPanelContainer.getConnectionPanels()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
     });
     menu.addItem("Update Firmware", [&] {
         if (connectionPanelContainer.getConnectionPanels().size() > 0) {
@@ -526,14 +526,14 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
     menu.addItem("Start SD Card Logging", [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<StartSdCardLoggingDialog>(), [&] {
             if (const auto *const dialog = dynamic_cast<StartSdCardLoggingDialog *>(DialogQueue::getSingleton().getActive())) {
-                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"start\":" + dialog->getFileName() + "}", connectionPanelContainer.getConnectionPanels()));
+                DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"start\":" + dialog->getFileName() + "}"));
             }
 
             return true;
         });
     });
     menu.addItem("Stop SD Card Logging", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"stop\":null}", connectionPanelContainer.getConnectionPanels()));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"stop\":null}"));
     });
     menu.addItem("Convert .ximu3 Files", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&] {

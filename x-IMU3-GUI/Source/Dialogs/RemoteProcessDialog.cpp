@@ -1,16 +1,16 @@
 #include "ApplicationSettings.h"
-#include "ProcessCommandDialog.h"
+#include "RemoteProcessDialog.h"
 
-ProcessCommandDialog::ProcessCommandDialog(const juce::String &title, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, const std::vector<ConnectionPanel *> &connectionPanels_)
-    : CommandProgressDialog(title, connectionPanels_), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_) {
+RemoteProcessDialog::RemoteProcessDialog(const juce::String &title, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_)
+    : CommandProgressDialog(title, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_), threadPool(threadPool_) {
     onStart(false);
 }
 
-ProcessCommandDialog::~ProcessCommandDialog() {
+RemoteProcessDialog::~RemoteProcessDialog() {
     *stopPolling = true;
 }
 
-void ProcessCommandDialog::onStart(const bool retry) {
+void RemoteProcessDialog::onStart(const bool retry) {
     *stopPolling = true;
     stopPolling = std::make_shared<std::atomic<bool> >(false);
 
@@ -42,24 +42,20 @@ void ProcessCommandDialog::onStart(const bool retry) {
     }
 }
 
-void ProcessCommandDialog::onComplete() {
+void RemoteProcessDialog::onComplete() {
     for (auto &connectionPanel: connectionPanels) {
         connectionPanel->sendCommands({"{\"" + prefix + "_complete\":null}"});
     };
 }
 
-bool ProcessCommandDialog::completeAllowed() {
-    return ApplicationSettings::getSingleton().commands.allowEarlyCompletion;
-}
-
-void ProcessCommandDialog::onCancel() {
+void RemoteProcessDialog::onCancel() {
     for (auto &connectionPanel: connectionPanels) {
         connectionPanel->sendCommands({"{\"" + prefix + "_abort\":null}"});
     };
 }
 
-void ProcessCommandDialog::startPolling(const int index) {
-    juce::Thread::launch([stopPolling_ = stopPolling, index, prefix_ = prefix, connection = connectionPanels[(size_t) index]->getConnection(), this] {
+void RemoteProcessDialog::startPolling(const int index) {
+    threadPool.addJob([stopPolling_ = stopPolling, index, prefix_ = prefix, connection = connectionPanels[(size_t) index]->getConnection(), this] {
             const auto callAsync = [=](auto callback) {
                 juce::MessageManager::callAsync([=] {
                     if (stopPolling_->load() == false) {
@@ -109,7 +105,7 @@ void ProcessCommandDialog::startPolling(const int index) {
     );
 }
 
-void ProcessCommandDialog::save(const int index) {
+void RemoteProcessDialog::save(const int index) {
     connectionPanels[(size_t) index]->sendCommands({"{\"save\":null}"}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         const auto &response = responses.front();
 

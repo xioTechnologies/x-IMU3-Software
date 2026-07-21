@@ -6,9 +6,9 @@
 #include "Widgets/IconButton.h"
 #include "Widgets/SimpleLabel.h"
 
-class SendNoteCommandDialog : public Dialog {
+class SendNoteDialog : public Dialog {
 public:
-    SendNoteCommandDialog(const juce::String &title);
+    SendNoteDialog();
 
     void resized() override;
 
@@ -18,12 +18,12 @@ private:
     SimpleLabel label{"Note:"};
     CustomTextEditor value;
 
-    IconButton previousNotesButton{BinaryData::history_svg, "Previous Notes", std::bind(&SendNoteCommandDialog::getPreviousNotesMenu, this)};
+    IconButton previousNotesButton{BinaryData::history_svg, "Previous Notes", std::bind(&SendNoteDialog::getPreviousNotesMenu, this)};
 
     juce::ValueTree previousNotes;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Notes.xml");
 
     juce::PopupMenu getPreviousNotesMenu();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendNoteCommandDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SendNoteDialog)
 };

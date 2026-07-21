@@ -2,18 +2,16 @@
 
 #include "CommandProgressDialog.h"
 
-class ProcessCommandDialog : public CommandProgressDialog {
+class RemoteProcessDialog : public CommandProgressDialog {
 public:
-    ProcessCommandDialog(const juce::String &title, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, const std::vector<ConnectionPanel *> &connectionPanels_);
+    RemoteProcessDialog(const juce::String &title, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_);
 
-    ~ProcessCommandDialog() override;
+    ~RemoteProcessDialog() override;
 
 protected:
     void onStart(const bool retry) override;
 
     void onComplete() override;
-
-    bool completeAllowed() override;
 
     void onCancel() override;
 
@@ -21,6 +19,7 @@ private:
     const std::string prefix; // "<prefix>_start", "<prefix>_progress", "<prefix>_complete", "<prefix>_complete"
     const int timeout;
     const bool saveOnComplete;
+    juce::ThreadPool& threadPool;
     std::shared_ptr<std::atomic<bool> > stopPolling = std::make_shared<std::atomic<bool> >(false);
 
     void startPolling(const int index);

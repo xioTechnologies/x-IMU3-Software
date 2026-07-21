@@ -1,6 +1,6 @@
 #include "SendingCommandDialog.h"
 
-SendingCommandDialog::SendingCommandDialog(const std::string &command_, const std::vector<ConnectionPanel *> &connectionPanels_)
+SendingCommandDialog::SendingCommandDialog(const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &command_)
     : CommandProgressDialog("Sending " + replaceInvalidCharacters(command_), connectionPanels_),
       command(command_) {
     onStart(false);
@@ -44,10 +44,6 @@ void SendingCommandDialog::onStart(const bool retry) {
 }
 
 void SendingCommandDialog::onComplete() {
-}
-
-bool SendingCommandDialog::completeAllowed() {
-    return false;
 }
 
 void SendingCommandDialog::onCancel() {

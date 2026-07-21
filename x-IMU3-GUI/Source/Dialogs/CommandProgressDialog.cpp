@@ -1,9 +1,10 @@
 #include "../ApplicationSettings.h"
 #include "CommandProgressDialog.h"
 
-CommandProgressDialog::CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_)
+CommandProgressDialog::CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_)
     : Dialog(BinaryData::progress_svg, dialogTitle, "OK", "Cancel", &closeWhenCompleteButton, 175, true),
-      connectionPanels(connectionPanels_) {
+      connectionPanels(connectionPanels_),
+      enableCompleteButton(enableCompleteButton_) {
     addAndMakeVisible(table);
     for (auto &connectionPanel: connectionPanels) {
         table.addRow(connectionPanel->getColourTag(), connectionPanel->getHeading());
@@ -11,9 +12,9 @@ CommandProgressDialog::CommandProgressDialog(const juce::String &dialogTitle, co
 
     addAndMakeVisible(closeWhenCompleteButton);
     closeWhenCompleteButton.setClickingTogglesState(true);
-    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeWhenComplete, juce::dontSendNotification);
     closeWhenCompleteButton.onClick = [&] {
-        ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeWhenCompleteButton.getToggleState();
+        ApplicationSettings::getSingleton().commands.closeWhenComplete = closeWhenCompleteButton.getToggleState();
     };
 
     cancelCallback = [&] {
@@ -57,7 +58,7 @@ void CommandProgressDialog::statusChanged() {
         case CommandProgressTable::Status::inProgress:
             setCancelButton(true, "Cancel");
 
-            if (completeAllowed()) {
+            if (enableCompleteButton) {
                 setOkButton(true, "Complete");
                 okCallback = [&] {
                     onComplete();
@@ -75,7 +76,7 @@ void CommandProgressDialog::statusChanged() {
             okCallback = nullptr;
 
             juce::Timer::callAfterDelay(1000, [&, ptr = SafePointer(this)] {
-                if (ptr && ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete) {
+                if (ptr && ApplicationSettings::getSingleton().commands.closeWhenComplete) {
                     DialogQueue::getSingleton().pop();
                 }
             });

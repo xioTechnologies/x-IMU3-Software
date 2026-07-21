@@ -9,7 +9,7 @@ class CommandProgressDialog : public Dialog {
 public:
     static constexpr int retryDelay = 250; // to improve UX
 
-    CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_);
+    CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_ = false);
 
     void resized() override;
 
@@ -30,11 +30,11 @@ protected:
 
     virtual void onComplete() = 0;
 
-    virtual bool completeAllowed() = 0;
-
     virtual void onCancel() = 0;
 
 private:
+    const bool enableCompleteButton;
+
     CustomToggleButton closeWhenCompleteButton{"Close When Complete"};
     CommandProgressTable table;
 

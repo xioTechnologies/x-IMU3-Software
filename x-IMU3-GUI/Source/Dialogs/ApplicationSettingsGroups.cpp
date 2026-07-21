@@ -77,7 +77,7 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
     addAndMakeVisible(retriesValue);
     addAndMakeVisible(timeoutLabel);
     addAndMakeVisible(timeoutValue);
-    addAndMakeVisible(closeSendingCommandDialogWhenCompleteButton);
+    addAndMakeVisible(closeWhenCompleteButton);
     addAndMakeVisible(allowEarlyCompletionButton);
 
     retriesValue.onTextChange = [this] {
@@ -88,8 +88,8 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
         ApplicationSettings::getSingleton().commands.timeout = (uint32_t) timeoutValue.getText().getIntValue();
     };
 
-    closeSendingCommandDialogWhenCompleteButton.onClick = [this] {
-        ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete = closeSendingCommandDialogWhenCompleteButton.getToggleState();
+    closeWhenCompleteButton.onClick = [this] {
+        ApplicationSettings::getSingleton().commands.closeWhenComplete = closeWhenCompleteButton.getToggleState();
     };
 
     allowEarlyCompletionButton.onClick = [this] {
@@ -98,7 +98,7 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
 
     retriesValue.setText(juce::String(ApplicationSettings::getSingleton().commands.retries.get()), juce::dontSendNotification);
     timeoutValue.setText(juce::String(ApplicationSettings::getSingleton().commands.timeout.get()), juce::dontSendNotification);
-    closeSendingCommandDialogWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeSendingCommandDialogWhenComplete, juce::dontSendNotification);
+    closeWhenCompleteButton.setToggleState(ApplicationSettings::getSingleton().commands.closeWhenComplete, juce::dontSendNotification);
     allowEarlyCompletionButton.setToggleState(ApplicationSettings::getSingleton().commands.allowEarlyCompletion, juce::dontSendNotification);
 }
 
@@ -116,6 +116,6 @@ void CommandsGroup::resized() {
     setTextSettingBounds(retriesLabel, retriesValue);
     setTextSettingBounds(timeoutLabel, timeoutValue);
 
-    closeSendingCommandDialogWhenCompleteButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    closeWhenCompleteButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
     allowEarlyCompletionButton.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }

@@ -1,7 +1,7 @@
-#include "SendNoteCommandDialog.h"
+#include "SendNoteDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendNoteCommandDialog::SendNoteCommandDialog(const juce::String &title) : Dialog(BinaryData::note_svg, title, "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
+SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::note_svg, "Send Note", "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
     addAndMakeVisible(previousNotesButton);
@@ -23,7 +23,7 @@ SendNoteCommandDialog::SendNoteCommandDialog(const juce::String &title) : Dialog
     setSize(600, calculateHeight(1));
 }
 
-void SendNoteCommandDialog::resized() {
+void SendNoteDialog::resized() {
     Dialog::resized();
 
     auto bounds = getContentBounds().removeFromTop(UILayout::textComponentHeight);
@@ -31,7 +31,7 @@ void SendNoteCommandDialog::resized() {
     value.setBounds(bounds);
 }
 
-juce::String SendNoteCommandDialog::getNote() {
+juce::String SendNoteDialog::getNote() {
     juce::ValueTree newNote{"Note", {{"note", value.getText()}}};
 
     for (const auto note: previousNotes) {
@@ -51,7 +51,7 @@ juce::String SendNoteCommandDialog::getNote() {
     return value.getText();
 }
 
-juce::PopupMenu SendNoteCommandDialog::getPreviousNotesMenu() {
+juce::PopupMenu SendNoteDialog::getPreviousNotesMenu() {
     juce::PopupMenu menu;
     for (const auto note: previousNotes) {
         menu.addItem(note["note"], [&, note] {
