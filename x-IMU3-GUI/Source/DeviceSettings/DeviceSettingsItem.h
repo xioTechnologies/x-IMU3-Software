@@ -24,7 +24,7 @@ public:
             }
         }
 
-        setOpen(settingsTree[DeviceSettingsIds::expand]);
+        setOpen(settingsTree.getProperty(DeviceSettingsIds::expand, true));
     }
 
     bool mightContainSubItems() override {

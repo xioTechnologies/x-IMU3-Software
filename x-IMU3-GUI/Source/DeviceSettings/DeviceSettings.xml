@@ -1,13 +1,13 @@
 <DeviceSettings>
     <Settings>
-        <Group name="Device Information">
+        <Group name="Device Information" expand="false">
             <Setting key="device_name" name="Device Name" type="string"/>
             <Setting key="serial_number" name="Serial Number" type="string" readOnly="true"/>
             <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
             <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
             <Setting key="hardware_version" name="Hardware Version" type="string" readOnly="true"/>
         </Group>
-        <Group name="Serial">
+        <Group name="Serial" expand="false">
             <Setting key="serial_mode" name="Mode" type="SerialMode"/>
             <Setting key="serial_baud_rate" name="Baud Rate" type="number" hideKey="serial_mode" hideValues="0"/>
             <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" hideKey="serial_mode" hideValues="0"/>
@@ -17,7 +17,7 @@
                 <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
             </Group>
         </Group>
-        <Group name="Wireless">
+        <Group name="Wireless" expand="false">
             <Setting key="wireless_mode" name="Mode" type="WirelessMode"/>
             <Setting key="wireless_firmware_version" name="Firmware Version" type="string" readOnly="true" hideKey="wireless_mode" hideValues="0"/>
             <Setting key="external_antennae_enabled" name="External Antennae" type="bool" hideKey="wireless_mode" hideValues="0"/>
@@ -40,16 +40,16 @@
                     <Setting key="wi_fi_ap_channel" name="Channel" type="WirelessWlanAPChannel"/>
                     <Setting key="wi_fi_ap_ip_address" name="IP Address" type="string"/>
                 </Group>
-                <Group name="TCP">
+                <Group name="TCP" expand="false">
                     <Setting key="tcp_port" name="Port" type="number"/>
                 </Group>
-                <Group name="UDP">
+                <Group name="UDP" expand="false">
                     <Setting key="udp_ip_address" name="IP Address" type="string"/>
                     <Setting key="udp_send_port" name="Send Port" type="number"/>
                     <Setting key="udp_receive_port" name="Receive Port" type="number"/>
                     <Setting key="udp_low_latency" name="Low Latency" type="bool"/>
                 </Group>
-                <Group name="Synchronisation">
+                <Group name="Synchronisation" expand="false">
                     <Setting key="synchronisation_enabled" name="Enabled" type="bool"/>
                     <Setting key="synchronisation_network_latency" name="Network Latency (us)" type="number" hideKey="synchronisation_enabled" hideValues="0"/>
                 </Group>
@@ -63,14 +63,14 @@
                 <Setting key="bluetooth_paired_link_key" name="Paired Link Key" type="string" readOnly="true"/>
             </Group>
         </Group>
-        <Group name="Data Logger">
+        <Group name="Data Logger" expand="false">
             <Setting key="data_logger_automatic_start_stop_enabled" name="Automatic Start Stop" type="bool"/>
             <Setting key="data_logger_file_name_prefix" name="File Name Prefix" type="string" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
             <Setting key="data_logger_file_name_counter_enabled" name="File Name Counter" type="bool" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
             <Setting key="data_logger_max_file_size" name="Max File Size (MB)" type="number" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
             <Setting key="data_logger_max_file_period" name="Max File Period (s)" type="number" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
         </Group>
-        <Group name="Sensor Processing">
+        <Group name="Sensor Processing" expand="false">
             <Setting key="axes_alignment" name="Axes Alignment" type="FusionAxesAlignment"/>
             <Setting key="gyroscope_offset_correction_enabled" name="Gyroscope Offset Correction" type="bool"/>
             <Group name="AHRS">
@@ -81,10 +81,10 @@
                 <Setting key="ahrs_magnetic_rejection_enabled" name="Magnetic Rejection" type="bool" hideKey="ahrs_ignore_magnetometer" hideValues="1"/>
             </Group>
         </Group>
-        <Group name="Data Messages" expand="true">
+        <Group name="Data Messages">
             <Setting key="binary_mode_enabled" name="Binary Mode" type="bool"/>
             <Setting key="ahrs_message_type" name="AHRS Message Type" type="SendAhrsMessageType"/>
-            <Group name="Message Rates" expand="true">
+            <Group name="Message Rates">
                 <Setting key="inertial_message_rate_divisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
                 <Setting key="magnetometer_message_rate_divisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
                 <Setting key="ahrs_message_rate_divisor" name="AHRS" type="SendMessageRateDivisorAhrs"/>
@@ -93,7 +93,7 @@
                 <Setting key="battery_message_rate_divisor" name="Battery" type="SendMessageRateDivisorBattery"/>
                 <Setting key="rssi_message_rate_divisor" name="RSSI" type="SendMessageRateDivisorRssi"/>
             </Group>
-            <Group name="Sending">
+            <Group name="Sending" expand="false">
                 <Setting key="usb_data_messages_enabled" name="USB" type="bool"/>
                 <Setting key="serial_data_messages_enabled" name="Serial" type="bool"/>
                 <Setting key="tcp_data_messages_enabled" name="TCP" type="bool"/>
@@ -102,7 +102,7 @@
                 <Setting key="data_logger_data_messages_enabled" name="Data Logger" type="bool"/>
             </Group>
         </Group>
-        <Group name="Power">
+        <Group name="Power" expand="false">
             <Setting key="usb_power_on_enabled" name="USB Power On" type="bool"/>
             <Setting key="shipping_mode_enabled" name="Shipping Mode" type="bool"/>
             <Setting key="battery_max_charging_temperature" name="Max Charging (&#176;C)" type="number"/>
