@@ -36,7 +36,7 @@ private:
     IconButton connectionLayoutButton{BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this)};
     IconButton windowsButton{BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this)};
     IconButton shutdownAllDevicesButton{BinaryData::shutdown_svg, "Shutdown All Devices"};
-    IconButton zeroHeadingButton{BinaryData::north_svg, "Zero Heading"};
+    IconButton ahrsHeadingButton{BinaryData::heading_svg, "AHRS Heading", std::bind(&MenuStrip::getAhrsHeadingMenu, this)};
     IconButton sendNoteButton{BinaryData::note_svg, "Send Note"};
     IconButton sendCommandButton{BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this)};
     IconButton dataLoggerStartStopButton{BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger"};
@@ -48,7 +48,7 @@ private:
     const std::vector<std::vector<juce::Button *> > buttonGroups{
         {&availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton},
         {&windowsButton},
-        {&shutdownAllDevicesButton, &zeroHeadingButton, &sendNoteButton, &sendCommandButton},
+        {&shutdownAllDevicesButton, &ahrsHeadingButton, &sendNoteButton, &sendCommandButton},
         {&dataLoggerStartStopButton, &dataLoggerTime},
         {&toolsButton},
         {&applicationSettingsButton, &aboutButton},
@@ -85,6 +85,8 @@ private:
     juce::PopupMenu getConnectionLayoutMenu();
 
     juce::PopupMenu getWindowMenu();
+
+    juce::PopupMenu getAhrsHeadingMenu();
 
     juce::PopupMenu getSendCommandMenu();
 
