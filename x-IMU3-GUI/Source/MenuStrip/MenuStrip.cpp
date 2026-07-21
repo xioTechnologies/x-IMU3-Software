@@ -32,6 +32,11 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     }
 
     availableConnectionsButton.onClick = [this] {
+        juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
+        if (networkAnnouncement->getResult() != ximu3::XIMU3_ResultOk) {
+            DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("Unable to access the network announcement socket. Please close all other x-IMU3 applications and restart the x-IMU3 GUI."));
+        }
+
         std::vector<AvailableConnectionsDialog::ExistingConnection> existingConnections;
         for (auto *const connectionPanel: connectionPanelContainer.getConnectionPanels()) {
             existingConnections.push_back({connectionPanel->getDescriptor(), connectionPanel->getConnection()});

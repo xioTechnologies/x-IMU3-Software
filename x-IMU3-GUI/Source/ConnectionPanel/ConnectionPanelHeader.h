@@ -56,9 +56,9 @@ private:
     RssiIconAndText rssiIcon;
     BatteryIconAndText batteryIcon;
 
-    juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
-    std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
-    std::optional<uint64_t> networkAnnouncementCallbackId;
+    // juce::SharedResourcePointer<NetworkAnnouncement> networkAnnouncement;
+    // std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
+    // std::optional<uint64_t> networkAnnouncementCallbackId;
 
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
     uint64_t rssiCallbackId;

@@ -18,26 +18,26 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>{&connectionPanel}, "{\"strobe\":null}"));
     };
 
-    const auto addNetworkAnnouncementCallback = [&](const std::string &ipAddress) {
-        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message) {
-            if (std::string(message.ip_address) == ipAddress) {
-                if (message.rssi != -1) {
-                    rssiIcon.update(message.rssi);
-                }
-                if (message.battery != -1) {
-                    batteryIcon.update(message.battery, message.charging_status);
-                }
-            }
-        });
-    };
-
-    const auto config = connection->getConfig();
-    if (const auto *const tcpConnectionConfig = dynamic_cast<const ximu3::XIMU3_TcpConnectionConfig *>(config.get())) {
-        addNetworkAnnouncementCallback(tcpConnectionConfig->ip_address);
-    }
-    if (const auto *const udpConnectionConfig = dynamic_cast<const ximu3::XIMU3_UdpConnectionConfig *>(config.get())) {
-        addNetworkAnnouncementCallback(udpConnectionConfig->ip_address);
-    }
+    // const auto addNetworkAnnouncementCallback = [&](const std::string &ipAddress) {
+    //     networkAnnouncementCallbackId = networkAnnouncement->get().addCallback(networkAnnouncementCallback = [&, ipAddress](auto message) {
+    //         if (std::string(message.ip_address) == ipAddress) {
+    //             if (message.rssi != -1) {
+    //                 rssiIcon.update(message.rssi);
+    //             }
+    //             if (message.battery != -1) {
+    //                 batteryIcon.update(message.battery, message.charging_status);
+    //             }
+    //         }
+    //     });
+    // };
+    //
+    // const auto config = connection->getConfig();
+    // if (const auto *const tcpConnectionConfig = dynamic_cast<const ximu3::XIMU3_TcpConnectionConfig *>(config.get())) {
+    //     addNetworkAnnouncementCallback(tcpConnectionConfig->ip_address);
+    // }
+    // if (const auto *const udpConnectionConfig = dynamic_cast<const ximu3::XIMU3_UdpConnectionConfig *>(config.get())) {
+    //     addNetworkAnnouncementCallback(udpConnectionConfig->ip_address);
+    // }
 
     rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
         rssiIcon.update((int) message.percentage);
@@ -52,9 +52,9 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
 }
 
 ConnectionPanelHeader::~ConnectionPanelHeader() {
-    if (networkAnnouncementCallbackId) {
-        networkAnnouncement->removeCallback(*networkAnnouncementCallbackId);
-    }
+    // if (networkAnnouncementCallbackId) {
+    //     networkAnnouncement->get().removeCallback(*networkAnnouncementCallbackId);
+    // }
 
     connectionPanel.getConnection()->removeCallback(rssiCallbackId);
     connectionPanel.getConnection()->removeCallback(batteryCallbackId);
