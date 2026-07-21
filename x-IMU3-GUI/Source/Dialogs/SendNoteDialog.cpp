@@ -1,7 +1,7 @@
 #include "SendNoteDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::note_svg, "Send Note", "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
+SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::pin_svg, "Send Note", "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
     addAndMakeVisible(previousNotesButton);

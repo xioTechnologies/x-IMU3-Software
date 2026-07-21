@@ -37,7 +37,7 @@ private:
     IconButton windowsButton{BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this)};
     IconButton shutdownAllDevicesButton{BinaryData::shutdown_svg, "Shutdown All Devices"};
     IconButton ahrsHeadingButton{BinaryData::heading_svg, "AHRS Heading", std::bind(&MenuStrip::getAhrsHeadingMenu, this)};
-    IconButton sendNoteButton{BinaryData::note_svg, "Send Note"};
+    IconButton sendNoteButton{BinaryData::pin_svg, "Send Note"};
     IconButton sendCommandButton{BinaryData::json_svg, "Send Command", std::bind(&MenuStrip::getSendCommandMenu, this)};
     IconButton dataLoggerStartStopButton{BinaryData::record_svg, "Start Data Logger", nullptr, false, BinaryData::stop_svg, "Stop Data Logger"};
     Stopwatch dataLoggerTime;
