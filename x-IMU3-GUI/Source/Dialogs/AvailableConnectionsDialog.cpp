@@ -2,7 +2,7 @@
 #include "AvailableConnectionsDialog.h"
 
 AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
-    : Dialog(BinaryData::search_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
+    : Dialog(BinaryData::find_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
       existingConnections(existingConnections_) {
     addAndMakeVisible(table);
     addAndMakeVisible(filterButton);

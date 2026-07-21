@@ -30,9 +30,9 @@ private:
     juce::ThreadPool &threadPool;
     ConnectionPanelContainer &connectionPanelContainer;
 
-    IconButton availableConnectionsButton{BinaryData::search_svg, "Available Connections"};
+    IconButton availableConnectionsButton{BinaryData::find_svg, "Available Connections"};
     IconButton manualConnectionButton{BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectionMenu, this)};
-    IconButton disconnectButton{BinaryData::disconnect_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this)};
+    IconButton disconnectButton{BinaryData::close_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this)};
     IconButton connectionLayoutButton{BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this)};
     IconButton windowsButton{BinaryData::window_svg, "Windows", std::bind(&MenuStrip::getWindowMenu, this)};
     IconButton shutdownAllDevicesButton{BinaryData::shutdown_svg, "Shutdown All Devices"};
