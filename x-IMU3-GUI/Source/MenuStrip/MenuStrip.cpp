@@ -58,10 +58,6 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         });
     };
 
-    zeroHeadingButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading\":0}"));
-    };
-
     sendNoteButton.onClick = [this] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendNoteDialog>(), [this] {
             if (auto *dialog = dynamic_cast<SendNoteDialog *>(DialogQueue::getSingleton().getActive())) {
@@ -148,7 +144,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     });
 
     connectionPanelContainer.onConnectionPanelsSizeChanged = [&] {
-        for (auto &component: std::vector<std::reference_wrapper<juce::Component> >({disconnectButton, windowsButton, shutdownAllDevicesButton, zeroHeadingButton, sendNoteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime,})) {
+        for (auto &component: std::vector<std::reference_wrapper<juce::Component> >({disconnectButton, windowsButton, shutdownAllDevicesButton, ahrsHeadingButton, sendNoteButton, sendCommandButton, dataLoggerStartStopButton, dataLoggerTime,})) {
             component.get().setEnabled(connectionPanelContainer.getConnectionPanels().size() > 0);
         }
 
@@ -464,6 +460,28 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
                    WindowIds::ReceivedMessageRate,
                    WindowIds::ReceivedDataRate,
                });
+
+    return menu;
+}
+
+juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
+    juce::PopupMenu menu;
+
+    menu.addItem("Zero Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading\":0}"));
+    });
+
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AHRS MODE"), nullptr);
+    menu.addItem("Magnetic Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"ahrs_mode\":0}"));
+    });
+    menu.addItem("Gyroscope Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"ahrs_mode\":1}"));
+    });
+    menu.addItem("Anchored Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Anchored Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 5, false, threadPool));
+    });
 
     return menu;
 }
