@@ -23,6 +23,7 @@ public:
         juce::CachedValue<uint32_t> retries{tree, "retries", nullptr, XIMU3_DEFAULT_RETRIES};
         juce::CachedValue<uint32_t> timeout{tree, "timeout", nullptr, XIMU3_DEFAULT_TIMEOUT};
         juce::CachedValue<bool> closeSendingCommandDialogWhenComplete{tree, "closeSendingCommandDialogWhenComplete", nullptr, true};
+        juce::CachedValue<bool> allowEarlyCompletion{tree, "allowEarlyCompletion", nullptr, false};
     } commands{tree.getOrCreateChildWithName("Commands", nullptr)};
 
     static ApplicationSettings &getSingleton() {

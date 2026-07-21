@@ -33,6 +33,7 @@ public:
     const std::optional<juce::Colour> colourTag;
 
     std::function<bool()> okCallback;
+    std::function<bool()> cancelCallback;
 
 protected:
     static constexpr int dialogWidth = 520;

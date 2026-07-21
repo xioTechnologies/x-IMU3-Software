@@ -32,8 +32,16 @@ Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const
         }
     };
 
-    cancelButton.onClick = [] {
-        DialogQueue::getSingleton().pop();
+    cancelButton.onClick = [this] {
+        BailOutChecker thisDeletedChecker(this);
+
+        if (cancelCallback != nullptr && cancelCallback() == false) {
+            return;
+        }
+
+        if (thisDeletedChecker.shouldBailOut() == false) {
+            DialogQueue::getSingleton().pop();
+        }
     };
 
     timer.startTimerHz(25);

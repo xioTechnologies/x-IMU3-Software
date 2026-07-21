@@ -7,6 +7,7 @@
 #include "Dialogs/ConvertingFilesDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/MessageDialog.h"
+#include "Dialogs/ProcessCommandDialog.h"
 #include "Dialogs/SaveWindowLayoutDialog.h"
 #include "Dialogs/SendCommandDialog.h"
 #include "Dialogs/SendingCommandDialog.h"
@@ -38,7 +39,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this] {
             if (auto *dialog = dynamic_cast<AvailableConnectionsDialog *>(DialogQueue::getSingleton().getActive())) {
                 for (const auto &config: dialog->getConnectionConfigs()) {
-                    connectionPanelContainer.connectToDevice(*config, dynamic_cast<ximu3::MuxConnectionConfig*>(config) == nullptr);
+                    connectionPanelContainer.connectToDevice(*config, dynamic_cast<ximu3::MuxConnectionConfig *>(config) == nullptr);
                 }
             }
             return true;
@@ -493,12 +494,34 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
 
 juce::PopupMenu MenuStrip::getToolsMenu() {
     juce::PopupMenu menu;
+
     menu.addItem("Set Date and Time", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&] {
             DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"time\":\"" + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S").toStdString() + "\"}", connectionPanelContainer.getConnectionPanels()));
             return true;
         });
     });
+    menu.addItem("Gyroscope Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<ProcessCommandDialog>("Gyroscope Bias Calibration", "bias", 30, true, connectionPanelContainer.getConnectionPanels()));
+    });
+    menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<ProcessCommandDialog>("Hard-Iron Calibration", "hard_iron", 60, true, connectionPanelContainer.getConnectionPanels()));
+    });
+    menu.addItem("Update Firmware", [&] {
+        if (connectionPanelContainer.getConnectionPanels().size() > 0) {
+            DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&] {
+                disconnect(nullptr);
+                UpdateFirmwareDialog::launch(threadPool);
+                return true;
+            });
+            return;
+        }
+
+        UpdateFirmwareDialog::launch(threadPool);
+    });
+
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SD CARD LOGGING"), nullptr);
     menu.addItem("Convert .ximu3 Files", [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&] {
             if (const auto *const convertFileDialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
@@ -517,18 +540,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
             return true;
         });
     });
-    menu.addItem("Update Firmware", [&] {
-        if (connectionPanelContainer.getConnectionPanels().size() > 0) {
-            DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&] {
-                disconnect(nullptr);
-                UpdateFirmwareDialog::launch(threadPool);
-                return true;
-            });
-            return;
-        }
 
-        UpdateFirmwareDialog::launch(threadPool);
-    });
     return menu;
 }
 
