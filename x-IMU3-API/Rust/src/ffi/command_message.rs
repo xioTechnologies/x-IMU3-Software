@@ -3,11 +3,17 @@ use crate::ffi::helpers::*;
 use std::mem;
 use std::os::raw::c_char;
 
+#[no_mangle]
+pub extern "C" fn XIMU3_json_type_to_string(json_type: JsonType) -> *const c_char {
+    str_to_char_ptr(&json_type.to_string())
+}
+
 #[repr(C)]
 pub struct CommandMessageC {
     pub json: [c_char; CHAR_ARRAY_SIZE],
     pub key: [c_char; CHAR_ARRAY_SIZE],
     pub value: [c_char; CHAR_ARRAY_SIZE],
+    pub value_type: JsonType,
     pub error: [c_char; CHAR_ARRAY_SIZE],
 }
 
@@ -18,12 +24,14 @@ impl From<Option<CommandMessage>> for CommandMessageC {
                 json: bytes_to_char_array(&message.json),
                 key: bytes_to_char_array(&message.key),
                 value: bytes_to_char_array(&message.value),
+                value_type: message.value_type,
                 error: str_to_char_array(message.error.unwrap_or("".to_owned()).as_str()),
             },
             None => Self {
                 json: EMPTY_CHAR_ARRAY,
                 key: EMPTY_CHAR_ARRAY,
                 value: EMPTY_CHAR_ARRAY,
+                value_type: JsonType::Null,
                 error: EMPTY_CHAR_ARRAY,
             },
         }

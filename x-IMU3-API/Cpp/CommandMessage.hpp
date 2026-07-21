@@ -10,6 +10,7 @@ namespace ximu3 {
         std::string json;
         std::string key;
         std::string value;
+        XIMU3_JsonType valueType;
         std::optional<std::string> error;
 
         static std::optional<CommandMessage> from(const XIMU3_CommandMessage &response_) {
@@ -21,6 +22,7 @@ namespace ximu3 {
             response.json = response_.json;
             response.key = response_.key;
             response.value = response_.value;
+            response.valueType = response_.value_type;
 
             if (std::strlen(response_.error) != 0) {
                 response.error = response_.error;

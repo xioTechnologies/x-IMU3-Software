@@ -38,6 +38,16 @@ typedef enum XIMU3_ChargingStatus
     XIMU3_ChargingStatusChargingOnHold,
 } XIMU3_ChargingStatus;
 
+typedef enum XIMU3_JsonType
+{
+    XIMU3_JsonTypeString,
+    XIMU3_JsonTypeNumber,
+    XIMU3_JsonTypeBoolean,
+    XIMU3_JsonTypeNull,
+    XIMU3_JsonTypeObject,
+    XIMU3_JsonTypeArray,
+} XIMU3_JsonType;
+
 typedef enum XIMU3_Result
 {
     XIMU3_ResultOk,
@@ -151,6 +161,7 @@ typedef struct XIMU3_CommandMessage
     char json[XIMU3_CHAR_ARRAY_SIZE];
     char key[XIMU3_CHAR_ARRAY_SIZE];
     char value[XIMU3_CHAR_ARRAY_SIZE];
+    enum XIMU3_JsonType value_type;
     char error[XIMU3_CHAR_ARRAY_SIZE];
 } XIMU3_CommandMessage;
 
@@ -468,6 +479,8 @@ void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
 enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float status);
 
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus status);
+
+const char *XIMU3_json_type_to_string(enum XIMU3_JsonType json_type);
 
 struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
 

@@ -25,6 +25,10 @@ static PyObject *command_message_get_value(CommandMessage *self) {
     return PyUnicode_FromString(self->wrapped.value);
 }
 
+static PyObject *command_message_get_value_type(CommandMessage *self) {
+    return PyLong_FromLong((long) self->wrapped.value_type);
+}
+
 static PyObject *command_message_get_error(CommandMessage *self) {
     return PyUnicode_FromString(self->wrapped.error);
 }
@@ -35,6 +39,7 @@ static PyGetSetDef command_message_get_set[] = {
     {"json", (getter) command_message_get_json, NULL, "", NULL},
     {"key", (getter) command_message_get_key, NULL, "", NULL},
     {"value", (getter) command_message_get_value, NULL, "", NULL},
+    {"value_type", (getter) command_message_get_value_type, NULL, "", NULL},
     {"error", (getter) command_message_get_error, NULL, "", NULL},
     {NULL} /* sentinel */
 };
