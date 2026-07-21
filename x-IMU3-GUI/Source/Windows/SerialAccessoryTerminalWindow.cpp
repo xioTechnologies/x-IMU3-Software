@@ -13,7 +13,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
     textEditor.onReturnKey = [&] {
         const std::string command = "{\"accessory\":" + EscapedStrings::bytesToJson(EscapedStrings::printableToBytes(textEditor.getText().toStdString())) + "}";
 
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(command, std::vector<ConnectionPanel *>{&connectionPanel}));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>{&connectionPanel}, command));
 
         juce::AttributedString line;
         line.append("TX ", UIColours::success);

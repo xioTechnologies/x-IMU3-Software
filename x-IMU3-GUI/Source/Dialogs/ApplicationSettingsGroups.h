@@ -52,7 +52,7 @@ private:
     SimpleLabel timeoutLabel{"Timeout (ms)"};
     CustomTextEditor timeoutValue;
 
-    CustomToggleButton closeSendingCommandDialogWhenCompleteButton{"Close Sending Command Dialog When Complete"};
+    CustomToggleButton closeWhenCompleteButton{"Close When Complete"};
 
     CustomToggleButton allowEarlyCompletionButton{"Allow Early Completion"};
 

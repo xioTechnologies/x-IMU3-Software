@@ -15,7 +15,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
     addAndMakeVisible(batteryIcon);
 
     locateButton.onClick = [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>("{\"strobe\":null}", std::vector<ConnectionPanel *>{&connectionPanel}));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>{&connectionPanel}, "{\"strobe\":null}"));
     };
 
     const auto addNetworkAnnouncementCallback = [&](const std::string &ipAddress) {
