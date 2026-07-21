@@ -50,5 +50,5 @@ pub extern "C" fn XIMU3_port_scanner_scan_filter(port_type: PortType) -> Devices
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_get_port_names() -> CharArrays {
-    PortScanner::get_port_names().into()
+    PortScanner::get_port_names().as_slice().into()
 }

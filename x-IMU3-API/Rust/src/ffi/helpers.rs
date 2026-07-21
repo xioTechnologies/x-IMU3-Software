@@ -14,8 +14,8 @@ pub struct CharArrays {
     capacity: u32,
 }
 
-impl From<Vec<String>> for CharArrays {
-    fn from(strings: Vec<String>) -> Self {
+impl From<&[String]> for CharArrays {
+    fn from(strings: &[String]) -> Self {
         let mut vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = strings.iter().map(|string| str_to_char_array(string)).collect();
 
         let char_arrays = CharArrays {
@@ -30,8 +30,8 @@ impl From<Vec<String>> for CharArrays {
     }
 }
 
-impl From<Vec<Vec<u8>>> for CharArrays {
-    fn from(bytes: Vec<Vec<u8>>) -> Self {
+impl From<&[Vec<u8>]> for CharArrays {
+    fn from(bytes: &[Vec<u8>]) -> Self {
         let mut vector: Vec<[c_char; CHAR_ARRAY_SIZE]> = bytes.iter().map(|bytes| bytes_to_char_array(bytes)).collect();
 
         let char_arrays = Self {
