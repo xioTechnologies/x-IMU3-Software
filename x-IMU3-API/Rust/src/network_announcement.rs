@@ -1,6 +1,7 @@
 use crate::charging_status::*;
 use crate::connection_config::*;
 use serde_json;
+use socket2::{Domain, Socket, Type};
 use std::fmt;
 use std::net::{Ipv4Addr, UdpSocket};
 use std::ops::Drop;
@@ -80,7 +81,18 @@ pub struct NetworkAnnouncement {
 
 impl NetworkAnnouncement {
     pub fn new() -> std::io::Result<Self> {
-        let socket = UdpSocket::bind("0.0.0.0:10000")?;
+        let socket: UdpSocket = {
+            let socket = Socket::new(Domain::IPV4, Type::DGRAM, None)?;
+
+            socket.set_reuse_address(true)?;
+
+            #[cfg(unix)]
+            socket.set_reuse_port(true)?;
+
+            socket.bind(&"0.0.0.0:10000".parse::<std::net::SocketAddr>().unwrap().into())?;
+
+            socket.into()
+        };
 
         socket.set_nonblocking(true)?;
 

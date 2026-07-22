@@ -17,6 +17,7 @@ libc = "0.2.189"
 scan_fmt = "0.2.6"
 serde_json = { version = "1.0.151", features = ["preserve_order", "raw_value"] }
 serialport = "4.9.0"
+socket2 = "0.6.5"
 
 [build-dependencies]
 cbindgen = "0.29.4"
