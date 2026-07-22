@@ -13,11 +13,10 @@ crate-type = ["rlib", "staticlib", "dylib"]
 
 [dependencies]
 crossbeam = "0.8.4"
-libc = "0.2.185"
+libc = "0.2.189"
 scan_fmt = "0.2.6"
-serde = "1.0.228"
-serde_json = { version = "1.0.149", features = ["preserve_order", "raw_value"] }
+serde_json = { version = "1.0.151", features = ["preserve_order", "raw_value"] }
 serialport = "4.9.0"
 
 [build-dependencies]
-cbindgen = "0.29.2"
+cbindgen = "0.29.4"
