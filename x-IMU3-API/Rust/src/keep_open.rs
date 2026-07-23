@@ -1,4 +1,5 @@
 use crate::connection::*;
+use crate::connection_status::*;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
 
@@ -19,13 +20,12 @@ impl<'a> KeepOpen<'a> {
 
         std::thread::spawn(move || loop {
             loop {
-                // TODO: Calling open before creating a KeepOpen will mean this loop never exits
-
                 if let Ok(dropped) = dropped.lock() {
                     if *dropped {
                         return;
                     }
-                    if connection.lock().unwrap().open().is_ok() {
+                    let mut connection = connection.lock().unwrap();
+                    if connection.get_status() == ConnectionStatus::Connected || connection.open().is_ok() {
                         break;
                     }
                 }
