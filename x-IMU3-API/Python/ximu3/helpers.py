@@ -13,12 +13,25 @@ from . import _core as ximu3
 _LOOP_SLEEP = 0.01
 
 
-def quick_connect(
+class Connection(ximu3.Connection):
+    def open(self) -> "Connection":
+        super().open()
+
+        self._keep_open = ximu3.KeepOpen(self)
+
+        return self
+
+    def close(self) -> None:
+        self._keep_open = None  # TODO: this line may return before ximu3.KeepOpen Drop impl
+
+
+def connect(
     name: str = "*",
-    keep_open: bool = False,
     timeout: int = 2,
-) -> ximu3.Connection | tuple[ximu3.Connection, ximu3.KeepOpen]:  # del ximu3.KeepOpen to close connection
+) -> Connection:
     port_scanner = ximu3.PortScanner()
+
+    # TODO: add ximu3.NetworkAnnouncement to support network connection
 
     rejected_names: set[str] = set()
 
@@ -28,10 +41,7 @@ def quick_connect(
         config = _match(name, port_scanner.get_devices(), rejected_names)
 
         if config:
-            if keep_open:
-                return _keep_open(config, timeout)
-            else:
-                return _open(config, timeout)
+            return _open(config, timeout)
 
         if time.perf_counter() > (start + timeout):
             break
@@ -57,39 +67,21 @@ def _match(
         else:
             rejected_names.add(device.device_name)
 
+    return None
+
 
 def _open(
     config: ximu3.ConnectionConfig,
     timeout: int,
-) -> ximu3.Connection:
+) -> Connection:
     start = time.perf_counter()
 
     while True:
         try:
-            return ximu3.Connection(config).open()
+            return Connection(config).open()
         except Exception:
             if time.perf_counter() > (start + timeout):
                 raise
-
-        time.sleep(_LOOP_SLEEP)
-
-
-def _keep_open(
-    config: ximu3.ConnectionConfig,
-    timeout: int,
-) -> tuple[ximu3.Connection, ximu3.KeepOpen]:
-    connection = ximu3.Connection(config)
-
-    keep_open = ximu3.KeepOpen(connection)
-
-    start = time.perf_counter()
-
-    while True:
-        if connection.get_status() == ximu3.CONNECTION_STATUS_CONNECTED:
-            return connection, keep_open
-
-        if time.perf_counter() > (start + timeout):
-            raise RuntimeError(f"Unable to open {connection.get_config()} after {timeout} second(s)")
 
         time.sleep(_LOOP_SLEEP)
 
@@ -102,7 +94,7 @@ def send_command(
     retries: int = ximu3.DEFAULT_RETRIES,
     timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> str | None:
-    command = json or f'{{"{key}":{_json.dumps(value)}}}'
+    command = json or f"{{{_json.dumps(key)}:{_json.dumps(value)}}}"
 
     response = connection.send_command(command, retries, timeout)
 
@@ -129,50 +121,50 @@ class DataLogger:
 
         main_path = Path(sys.modules["__main__"].__file__)
 
-        self.__name = name or main_path.stem
+        self._name = name or main_path.stem
 
-        self.__destination = Path(destination).absolute() if destination else main_path.parent
+        self._destination = Path(destination).absolute() if destination else main_path.parent
 
-        if not self.__destination.exists():
-            raise FileNotFoundError(f"Destination does not exist. {self.__destination}")
+        if not self._destination.exists():
+            raise FileNotFoundError(f"Destination does not exist. {self._destination}")
 
-        if not self.__destination.is_dir():
-            raise NotADirectoryError(f"Destination is not a directory. {self.__destination}")
+        if not self._destination.is_dir():
+            raise NotADirectoryError(f"Destination is not a directory. {self._destination}")
 
-        self.__path = self.__destination / self.__name
+        self._path = self._destination / self._name
 
         if overwrite:
             self.delete()
 
-        if self.__path.exists():
-            raise FileExistsError(f"Directory already exists. {self.__path}")
+        if self._path.exists():
+            raise FileExistsError(f"Directory already exists. {self._path}")
 
         if seconds is None:
-            self.__wrapped = ximu3.DataLogger(str(self.__destination), self.__name, connections)
+            self._wrapped = ximu3.DataLogger(str(self._destination), self._name, connections)
         else:
-            ximu3.DataLogger.log(str(self.__destination), self.__name, connections, seconds)
-            self.__wrapped = None
+            ximu3.DataLogger.log(str(self._destination), self._name, connections, seconds)
+            self._wrapped = None
 
     @property
     def name(self) -> str:
-        return self.__name
+        return self._name
 
     @property
     def destination(self) -> Path:
-        return self.__destination
+        return self._destination
 
     @property
     def path(self) -> Path:
-        return self.__path
+        return self._path
 
     def stop(self) -> None:
-        if self.__wrapped is None:
+        if self._wrapped is None:
             raise RuntimeError("Data logger already stopped")
 
-        self.__wrapped = None
+        self._wrapped = None  # TODO: this line may return before ximu3.DataLogger Drop impl
 
     def delete(self) -> None:
-        shutil.rmtree(self.__path, ignore_errors=True)
+        shutil.rmtree(self._path, ignore_errors=True)
 
 
 def mux_scanner(
