@@ -15,9 +15,11 @@ namespace Ximu3
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeBluetooth:
                     return new BluetoothConnectionConfig(device.wrapped.bluetooth_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeTcp:
+                    return new TcpConnectionConfig(device.wrapped.tcp_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeUdp:
+                    return new UdpConnectionConfig(device.wrapped.udp_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeFile:
-                    break;
+                    return new FileConnectionConfig(device.wrapped.file_connection_config);
                 case CApi.XIMU3_ConnectionType.XIMU3_ConnectionTypeMux:
                     return new MuxConnectionConfig(device.wrapped.mux_connection_config);
             }

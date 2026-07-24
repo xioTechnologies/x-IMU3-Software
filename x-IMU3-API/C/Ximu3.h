@@ -423,7 +423,10 @@ typedef struct XIMU3_Device
     enum XIMU3_ConnectionType connection_type;
     struct XIMU3_UsbConnectionConfig usb_connection_config;
     struct XIMU3_SerialConnectionConfig serial_connection_config;
+    struct XIMU3_TcpConnectionConfig tcp_connection_config;
+    struct XIMU3_UdpConnectionConfig udp_connection_config;
     struct XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+    struct XIMU3_FileConnectionConfig file_connection_config;
     struct XIMU3_MuxConnectionConfig *mux_connection_config;
 } XIMU3_Device;
 
