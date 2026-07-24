@@ -56,6 +56,11 @@ namespace Ximu3
             return ToArrayAndFree(CApi.XIMU3_network_announcement_get_messages_after_short_delay(wrapped));
         }
 
+        public static Device[] ToDevices(CApi.XIMU3_NetworkAnnouncementMessage message)
+        {
+            return Helpers.ToArrayAndFree(CApi.XIMU3_network_announcement_message_to_devices(message));
+        }
+
         private static CApi.XIMU3_NetworkAnnouncementMessage[] ToArrayAndFree(CApi.XIMU3_NetworkAnnouncementMessages messages)
         {
             var array = new CApi.XIMU3_NetworkAnnouncementMessage[messages.length];
