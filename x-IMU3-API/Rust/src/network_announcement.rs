@@ -23,33 +23,48 @@ pub struct NetworkAnnouncementMessage {
     pub(crate) time: std::time::Instant,
 }
 
-impl From<&NetworkAnnouncementMessage> for TcpConnectionConfig {
+impl From<&NetworkAnnouncementMessage> for Option<TcpConnectionConfig> {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        TcpConnectionConfig {
+        if message.ip_address == Ipv4Addr::UNSPECIFIED || message.tcp_port == 0 {
+            return None;
+        }
+
+        Some(TcpConnectionConfig {
             ip_address: message.ip_address,
             port: message.tcp_port,
-        }
+        })
     }
 }
 
-impl From<&NetworkAnnouncementMessage> for UdpConnectionConfig {
+impl From<&NetworkAnnouncementMessage> for Option<UdpConnectionConfig> {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        UdpConnectionConfig {
+        if message.ip_address == Ipv4Addr::UNSPECIFIED || message.udp_send == 0 || message.udp_receive == 0 {
+            return None;
+        }
+
+        Some(UdpConnectionConfig {
             ip_address: message.ip_address,
             send_port: message.udp_receive, // swap send and receive ports
             receive_port: message.udp_send,
-        }
+        })
     }
 }
 
 impl From<&NetworkAnnouncementMessage> for Vec<Device> {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
-        let device = |connection_config| Device {
-            device_name: message.device_name.clone(),
-            serial_number: message.serial_number.clone(),
-            connection_config,
+        let device = |config: Option<ConnectionConfig>| {
+            Some(Device {
+                device_name: message.device_name.clone(),
+                serial_number: message.serial_number.clone(),
+                connection_config: config?,
+            })
         };
-        vec![device(ConnectionConfig::UdpConnectionConfig(message.into())), device(ConnectionConfig::TcpConnectionConfig(message.into()))]
+
+        let tcp_device = device(Option::<TcpConnectionConfig>::from(message).map(ConnectionConfig::TcpConnectionConfig));
+
+        let udp_device = device(Option::<UdpConnectionConfig>::from(message).map(ConnectionConfig::UdpConnectionConfig));
+
+        IntoIterator::into_iter([tcp_device, udp_device]).flatten().collect()
     }
 }
 

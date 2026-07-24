@@ -21,15 +21,20 @@ public:
             const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
 
             if (messages.empty()) {
+                std::cout << "No network connections available" << std::endl;
+                return;
+            }
+
+            const auto config = ximu3::TcpConnectionConfig::from(messages.front());
+
+            if (config == nullptr) {
                 std::cout << "No TCP connections available" << std::endl;
                 return;
             }
 
             std::cout << "Found " << messages[0].device_name << " " << messages[0].serial_number << std::endl;
 
-            const ximu3::TcpConnectionConfig config(messages[0]);
-
-            run(config);
+            run(*config);
         } else {
             const ximu3::TcpConnectionConfig config("192.168.1.1", 7000); // replace with actual connection config
 

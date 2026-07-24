@@ -17,13 +17,18 @@ pub fn run() {
         let messages = network_announcement.get_messages_after_short_delay();
 
         let Some(message) = messages.first() else {
+            println!("No network connections available");
+            return;
+        };
+
+        let Some(config) = Option::<UdpConnectionConfig>::from(message) else {
             println!("No UDP connections available");
             return;
         };
 
         println!("Found {} {}", message.device_name, message.serial_number);
 
-        let config = &ConnectionConfig::UdpConnectionConfig(message.into());
+        let config = &ConnectionConfig::UdpConnectionConfig(config);
 
         connection::run(config);
     } else {

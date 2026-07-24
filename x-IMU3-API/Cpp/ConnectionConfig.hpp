@@ -68,7 +68,14 @@ namespace ximu3 {
         explicit TcpConnectionConfig(const XIMU3_TcpConnectionConfig &config) : XIMU3_TcpConnectionConfig(config) {
         }
 
-        explicit TcpConnectionConfig(const XIMU3_NetworkAnnouncementMessage &message) : XIMU3_TcpConnectionConfig(XIMU3_network_announcement_message_to_tcp_connection_config(message)) {
+        static std::shared_ptr<TcpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
+            const auto config = XIMU3_network_announcement_message_to_tcp_connection_config(message);
+
+            if (std::strlen(config.ip_address) == 0) {
+                return {};
+            }
+
+            return std::make_shared<TcpConnectionConfig>(config);
         }
 
         std::string toString() const override {
@@ -87,7 +94,14 @@ namespace ximu3 {
         explicit UdpConnectionConfig(const XIMU3_UdpConnectionConfig &config) : XIMU3_UdpConnectionConfig(config) {
         }
 
-        explicit UdpConnectionConfig(const XIMU3_NetworkAnnouncementMessage &message) : XIMU3_UdpConnectionConfig(XIMU3_network_announcement_message_to_udp_connection_config(message)) {
+        static std::shared_ptr<UdpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
+            const auto config = XIMU3_network_announcement_message_to_udp_connection_config(message);
+
+            if (std::strlen(config.ip_address) == 0) {
+                return {};
+            }
+
+            return std::make_shared<UdpConnectionConfig>(config);
         }
 
         std::string toString() const override {

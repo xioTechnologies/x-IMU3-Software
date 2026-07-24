@@ -6,11 +6,14 @@ if helpers.yes_or_no("Connect automatically?"):
     messages = ximu3.NetworkAnnouncement().get_messages_after_short_delay()
 
     if not messages:
+        raise Exception("No network connections available")
+
+    config = messages[0].to_udp_connection_config()
+
+    if not config:
         raise Exception("No UDP connections available")
 
     print(f"Found {messages[0].device_name} {messages[0].serial_number}")
-
-    config = messages[0].to_udp_connection_config()
 
     connection.run(config)
 else:
