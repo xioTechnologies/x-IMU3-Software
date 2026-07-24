@@ -388,7 +388,10 @@ namespace Ximu3
             public XIMU3_ConnectionType connection_type;
             public XIMU3_UsbConnectionConfig usb_connection_config;
             public XIMU3_SerialConnectionConfig serial_connection_config;
+            public XIMU3_TcpConnectionConfig tcp_connection_config;
+            public XIMU3_UdpConnectionConfig udp_connection_config;
             public XIMU3_BluetoothConnectionConfig bluetooth_connection_config;
+            public XIMU3_FileConnectionConfig file_connection_config;
             public IntPtr mux_connection_config;
         }
 

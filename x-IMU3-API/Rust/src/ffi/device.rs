@@ -13,7 +13,10 @@ pub struct DeviceC {
     connection_type: ConnectionType,
     usb_connection_config: UsbConnectionConfigC,
     serial_connection_config: SerialConnectionConfigC,
+    tcp_connection_config: TcpConnectionConfigC,
+    udp_connection_config: UdpConnectionConfigC,
     bluetooth_connection_config: BluetoothConnectionConfigC,
+    file_connection_config: FileConnectionConfigC,
     mux_connection_config: *mut MuxConnectionConfig,
 }
 
@@ -25,7 +28,10 @@ impl Default for DeviceC {
             connection_type: ConnectionType::Usb,
             usb_connection_config: Default::default(),
             serial_connection_config: Default::default(),
+            tcp_connection_config: Default::default(),
+            udp_connection_config: Default::default(),
             bluetooth_connection_config: Default::default(),
+            file_connection_config: Default::default(),
             mux_connection_config: Default::default(),
         }
     }
@@ -47,15 +53,26 @@ impl From<&Device> for DeviceC {
                 device_c.connection_type = ConnectionType::Serial;
                 device_c.serial_connection_config = config.into();
             }
+            ConnectionConfig::TcpConnectionConfig(config) => {
+                device_c.connection_type = ConnectionType::Tcp;
+                device_c.tcp_connection_config = config.into();
+            }
+            ConnectionConfig::UdpConnectionConfig(config) => {
+                device_c.connection_type = ConnectionType::Udp;
+                device_c.udp_connection_config = config.into();
+            }
             ConnectionConfig::BluetoothConnectionConfig(config) => {
                 device_c.connection_type = ConnectionType::Bluetooth;
                 device_c.bluetooth_connection_config = config.into();
+            }
+            ConnectionConfig::FileConnectionConfig(config) => {
+                device_c.connection_type = ConnectionType::File;
+                device_c.file_connection_config = config.into();
             }
             ConnectionConfig::MuxConnectionConfig(config) => {
                 device_c.connection_type = ConnectionType::Mux;
                 device_c.mux_connection_config = config.into();
             }
-            _ => {}
         }
         device_c
     }
@@ -69,9 +86,11 @@ impl From<DeviceC> for Device {
             connection_config: match device.connection_type {
                 ConnectionType::Usb => ConnectionConfig::UsbConnectionConfig(device.usb_connection_config.into()),
                 ConnectionType::Serial => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
+                ConnectionType::Tcp => ConnectionConfig::TcpConnectionConfig(device.tcp_connection_config.into()),
+                ConnectionType::Udp => ConnectionConfig::UdpConnectionConfig(device.udp_connection_config.into()),
                 ConnectionType::Bluetooth => ConnectionConfig::BluetoothConnectionConfig(device.bluetooth_connection_config.into()),
+                ConnectionType::File => ConnectionConfig::FileConnectionConfig(device.file_connection_config.into()),
                 ConnectionType::Mux => ConnectionConfig::MuxConnectionConfig(device.mux_connection_config.into()),
-                _ => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),
             },
         }
     }
