@@ -1,5 +1,6 @@
 use crate::charging_status::*;
 use crate::connection_config::*;
+use crate::device::*;
 use serde_json;
 use std::fmt;
 use std::net::{Ipv4Addr, UdpSocket};
@@ -37,6 +38,17 @@ impl From<&NetworkAnnouncementMessage> for UdpConnectionConfig {
             send_port: message.udp_receive, // swap send and receive ports
             receive_port: message.udp_send,
         }
+    }
+}
+
+impl From<&NetworkAnnouncementMessage> for Vec<Device> {
+    fn from(message: &NetworkAnnouncementMessage) -> Self {
+        let device = |connection_config| Device {
+            device_name: message.device_name.clone(),
+            serial_number: message.serial_number.clone(),
+            connection_config,
+        };
+        vec![device(ConnectionConfig::UdpConnectionConfig(message.into())), device(ConnectionConfig::TcpConnectionConfig(message.into()))]
     }
 }
 

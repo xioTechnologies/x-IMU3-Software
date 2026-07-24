@@ -2,6 +2,7 @@
 #define NETWORK_ANNOUNCEMENT_MESSAGE_H
 
 #include "../../../C/Ximu3.h"
+#include "Device.h"
 #include <Python.h>
 
 typedef struct {
@@ -67,6 +68,12 @@ static PyObject *network_announcement_message_to_udp_connection_config(NetworkAn
     return udp_connection_config_from(&config);
 }
 
+static PyObject *network_announcement_message_to_devices(NetworkAnnouncementMessage *self) {
+    const XIMU3_Devices devices = XIMU3_network_announcement_message_to_devices(self->wrapped);
+
+    return devices_to_list_and_free(devices);
+}
+
 static PyGetSetDef network_announcement_message_get_set[] = {
     {"device_name", (getter) network_announcement_message_get_device_name, NULL, "", NULL},
     {"serial_number", (getter) network_announcement_message_get_serial_number, NULL, "", NULL},
@@ -83,6 +90,7 @@ static PyGetSetDef network_announcement_message_get_set[] = {
 static PyMethodDef network_announcement_message_methods[] = {
     {"to_tcp_connection_config", (PyCFunction) network_announcement_message_to_tcp_connection_config, METH_NOARGS, ""},
     {"to_udp_connection_config", (PyCFunction) network_announcement_message_to_udp_connection_config, METH_NOARGS, ""},
+    {"to_devices", (PyCFunction) network_announcement_message_to_devices, METH_NOARGS, ""},
     {NULL} /* sentinel */
 };
 

@@ -915,6 +915,9 @@ namespace Ximu3
         public static extern XIMU3_UdpConnectionConfig XIMU3_network_announcement_message_to_udp_connection_config(XIMU3_NetworkAnnouncementMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Devices XIMU3_network_announcement_message_to_devices(XIMU3_NetworkAnnouncementMessage message);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_network_announcement_message_to_string(XIMU3_NetworkAnnouncementMessage message);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]

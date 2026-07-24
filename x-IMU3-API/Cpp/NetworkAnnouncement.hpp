@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../C/Ximu3.h"
+#include "Device.hpp"
 #include <functional>
 #include "Helpers.hpp"
 #include <string>
@@ -35,6 +36,10 @@ namespace ximu3 {
 
         std::vector<XIMU3_NetworkAnnouncementMessage> getMessagesAfterShortDelay() {
             return toVectorAndFree(XIMU3_network_announcement_get_messages_after_short_delay(wrapped));
+        }
+
+        static std::vector<ximu3::Device> toDevices(const XIMU3_NetworkAnnouncementMessage &message) {
+            return Helpers::toVectorAndFree(XIMU3_network_announcement_message_to_devices(message));
         }
 
     private:

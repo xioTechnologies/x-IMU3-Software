@@ -735,6 +735,8 @@ struct XIMU3_TcpConnectionConfig XIMU3_network_announcement_message_to_tcp_conne
 
 struct XIMU3_UdpConnectionConfig XIMU3_network_announcement_message_to_udp_connection_config(struct XIMU3_NetworkAnnouncementMessage message);
 
+struct XIMU3_Devices XIMU3_network_announcement_message_to_devices(struct XIMU3_NetworkAnnouncementMessage message);
+
 const char *XIMU3_network_announcement_message_to_string(struct XIMU3_NetworkAnnouncementMessage message);
 
 void XIMU3_network_announcement_messages_free(struct XIMU3_NetworkAnnouncementMessages messages);
