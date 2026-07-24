@@ -22,6 +22,7 @@ pub struct NetworkAnnouncementMessage {
     pub(crate) time: std::time::Instant,
 }
 
+// TODO: impl for Option<TcpConnectionConfig>
 impl From<&NetworkAnnouncementMessage> for TcpConnectionConfig {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         TcpConnectionConfig {
@@ -31,6 +32,7 @@ impl From<&NetworkAnnouncementMessage> for TcpConnectionConfig {
     }
 }
 
+// TODO: impl for Option<TcpConnectionConfig>
 impl From<&NetworkAnnouncementMessage> for UdpConnectionConfig {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         UdpConnectionConfig {
@@ -43,11 +45,14 @@ impl From<&NetworkAnnouncementMessage> for UdpConnectionConfig {
 
 impl From<&NetworkAnnouncementMessage> for Vec<Device> {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
+        // TODO: create Option<Device>
         let device = |connection_config| Device {
             device_name: message.device_name.clone(),
             serial_number: message.serial_number.clone(),
             connection_config,
         };
+
+        // TODO: only append if Some
         vec![device(ConnectionConfig::UdpConnectionConfig(message.into())), device(ConnectionConfig::TcpConnectionConfig(message.into()))]
     }
 }
