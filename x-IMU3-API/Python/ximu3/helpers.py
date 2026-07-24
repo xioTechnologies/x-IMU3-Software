@@ -25,8 +25,14 @@ class Connection(ximu3.Connection):
         self._keep_open = None  # TODO: this line may return before ximu3.KeepOpen Drop impl
 
 
+# TODO: connect (calls connect_list with number_of_connections=1)
+# TODO: connect_list
+# TODO: connect_dict
+
+
 def connect(
     name: str = "*",
+    keep_open: bool = True,  # TODO
     timeout: int = 2,
 ) -> Connection:
     port_scanner = ximu3.PortScanner()
@@ -182,6 +188,11 @@ def mux_scanner(
         raise RuntimeError(f"Found {len(devices)} mux channel(s) when {number_of_channels} expected")
 
     return devices
+
+
+# TODO: mux_connect (calls connect_list with number_of_channels=1)
+# TODO: mux_connect_list
+# TODO: mux_connect_dict
 
 
 def mux_connect(
