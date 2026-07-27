@@ -975,6 +975,12 @@ namespace Ximu3
         public static extern IntPtr XIMU3_result_to_string(XIMU3_Result result);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Result XIMU3_settings_backup(IntPtr file_path, IntPtr connection);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Result XIMU3_settings_restore(IntPtr file_path, IntPtr connection);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_statistics_to_string(XIMU3_Statistics statistics);
 
     }

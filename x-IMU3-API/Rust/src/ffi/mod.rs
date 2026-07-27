@@ -19,4 +19,5 @@ mod ping_response;
 mod port_scanner;
 mod receive_error;
 mod result;
+mod settings;
 mod statistics;
