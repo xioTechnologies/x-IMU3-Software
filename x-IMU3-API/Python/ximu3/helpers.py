@@ -95,16 +95,16 @@ def send_command(
     json: str | None = None,
     retries: int = ximu3.DEFAULT_RETRIES,
     timeout: int = ximu3.DEFAULT_TIMEOUT,
-) -> str | None:
+) -> Any:
     command = json or f"{{{_json.dumps(key)}:{_json.dumps(value)}}}"
 
     response = connection.send_command(command, retries, timeout)
 
     if not response:
-        raise RuntimeError(f"{command} failed for {connection.get_config()}. No response.")
+        raise RuntimeError(f"No response to {command} for {connection.get_config()}")
 
     if response.error:
-        raise RuntimeError(f"{command} failed for {connection.get_config()}. {response.error}.")
+        raise RuntimeError(f"Error response to {command} for {connection.get_config()}: {response.error}")
 
     return _json.loads(response.value)
 
@@ -117,7 +117,7 @@ class DataLogger:
         destination: str | None = None,
         seconds: int | None = None,
         overwrite: bool = False,
-    ):
+    ) -> None:
         if isinstance(connections, ximu3.Connection):
             connections = (connections,)
 
@@ -128,10 +128,10 @@ class DataLogger:
         self._destination = Path(destination).absolute() if destination else main_path.parent
 
         if not self._destination.exists():
-            raise FileNotFoundError(f"Destination does not exist. {self._destination}")
+            raise FileNotFoundError(f"Destination does not exist: {self._destination}")
 
         if not self._destination.is_dir():
-            raise NotADirectoryError(f"Destination is not a directory. {self._destination}")
+            raise NotADirectoryError(f"Destination is not a directory: {self._destination}")
 
         self._path = self._destination / self._name
 
@@ -139,7 +139,7 @@ class DataLogger:
             self.delete()
 
         if self._path.exists():
-            raise FileExistsError(f"Directory already exists. {self._path}")
+            raise FileExistsError(f"Directory already exists: {self._path}")
 
         if seconds is None:
             self._wrapped = ximu3.DataLogger(str(self._destination), self._name, connections)
@@ -181,7 +181,9 @@ def mux_scanner(
         raise RuntimeError("No mux connections found")
 
     if number_of_channels and (number_of_channels != len(devices)):
-        raise RuntimeError(f"Found {len(devices)} mux channel(s) when {number_of_channels} expected")
+        devices_string = "\n".join(str(d) for d in devices)
+
+        raise RuntimeError(f"Found {len(devices)} mux channel(s) when {number_of_channels} expected:\n{devices_string}")
 
     return devices
 
@@ -203,10 +205,12 @@ def mux_connect_dict(
 ) -> dict[str, ximu3.Connection]:
     devices = mux_scanner(connection, number_of_channels, retries, timeout)
 
-    duplicates = [name for name, count in Counter(d.device_name for d in devices).items() if count > 1]
+    duplicates = [d for d in devices if Counter(d.device_name for d in devices)[d.device_name] > 1]
 
     if duplicates:
-        raise RuntimeError(f"Duplicate device name(s) {duplicates}")
+        duplicates_string = "\n".join(str(d) for d in duplicates)
+
+        raise RuntimeError(f"Duplicate device name(s):\n{duplicates_string}")
 
     return {d.device_name: ximu3.Connection(d.connection_config).open() for d in devices}
 
