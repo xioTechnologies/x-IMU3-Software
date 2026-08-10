@@ -17,22 +17,6 @@ settings_types = []
 for setting in json.loads(Path("../DeviceSettings/Settings.json").read_text())["settings"]:
     name = helpers.snake_case(setting["name"])
 
-    if name in (
-        "calibration_date",
-        "gyroscope_misalignment",
-        "gyroscope_sensitivity",
-        "gyroscope_offset",
-        "accelerometer_misalignment",
-        "accelerometer_sensitivity",
-        "accelerometer_offset",
-        "soft_iron_matrix",
-        "hard_iron_offset",
-        "high_g_accelerometer_misalignment",
-        "high_g_accelerometer_sensitivity",
-        "high_g_accelerometer_offset",
-    ):
-        continue
-
     settings_keys.append(name)
 
     declaration = setting["declaration"]
@@ -49,27 +33,40 @@ for setting in json.loads(Path("../DeviceSettings/Settings.json").read_text())["
 fixed_commands = "\n".join(
     f'    <Command key="{k}" type="{t}"/>'
     for k, t in [
+        ("ping", NULL),
         ("default", NULL),
         ("apply", NULL),
         ("save", NULL),
         ("time", STRING),
-        ("ping", NULL),
-        ("reset", NULL),
-        ("shutdown", NULL),
-        ("blink", NULL),
-        ("strobe", NULL),
-        ("colour", STRING),
+        ("format", NULL),
+        ("capacity", NULL),
         ("start", STRING),
         ("stop", NULL),
         ("delete", STRING),
-        ("initialise", NULL),
+        ("restart", NULL),
         ("heading", NUMBER),
+        ("anchor_start", NUMBER),
+        ("anchor_progress", NULL),
+        ("anchor_complete", NULL),
+        ("anchor_abort", NULL),
+        ("bias_start", NUMBER),
+        ("bias_progress", NULL),
+        ("bias_complete", NULL),
+        ("bias_abort", NULL),
+        ("hard_iron_start", NUMBER),
+        ("hard_iron_progress", NULL),
+        ("hard_iron_complete", NULL),
+        ("hard_iron_abort", NULL),
         ("accessory", STRING),
         ("note", STRING),
         ("timestamp", NUMBER),
-        ("format", NULL),
-        ("test", NULL),
+        ("blink", NULL),
+        ("strobe", NULL),
+        ("colour", STRING),
+        ("reset", NULL),
+        ("shutdown", NULL),
         ("bootloader", NULL),
+        ("test", NULL),
     ]
 )
 
