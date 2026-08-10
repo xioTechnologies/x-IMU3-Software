@@ -1,19 +1,20 @@
 <DeviceSettings>
     <Settings>
         <Group name="Device Information" expand="false">
-            <Setting key="device_name" name="Device Name" type="string"/>
+            <Setting key="model" name="Model" type="string" readOnly="true"/>
             <Setting key="serial_number" name="Serial Number" type="string" readOnly="true"/>
-            <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
-            <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
             <Setting key="hardware_version" name="Hardware Version" type="string" readOnly="true"/>
+            <Setting key="bootloader_version" name="Bootloader Version" type="string" readOnly="true"/>
+            <Setting key="firmware_version" name="Firmware Version" type="string" readOnly="true"/>
+            <Setting key="device_name" name="Device Name" type="string"/>
         </Group>
         <Group name="Serial" expand="false">
             <Setting key="serial_mode" name="Mode" type="SerialMode"/>
-            <Setting key="serial_baud_rate" name="Baud Rate" type="number" hideKey="serial_mode" hideValues="0"/>
-            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" hideKey="serial_mode" hideValues="0"/>
-            <Group name="Accessory Send Conditions" hideKey="serial_mode" hideValues="0 1">
+            <Setting key="serial_baud_rate" name="Baud Rate" type="number" hideKey="serial_mode" hideValues="0 4 5"/>
+            <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" hideKey="serial_mode" hideValues="0 4 5"/>
+            <Group name="Accessory Send Conditions" hideKey="serial_mode" hideValues="0 1 3 4 5">
                 <Setting key="serial_accessory_number_of_bytes" name="Number of Bytes" type="number"/>
-                <Setting key="serial_accessory_termination_byte" name="Termination Byte" type="number"/>
+                <Setting key="serial_accessory_termination_byte" name="Termination" type="number"/>
                 <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
             </Group>
         </Group>
@@ -63,43 +64,56 @@
                 <Setting key="bluetooth_paired_link_key" name="Paired Link Key" type="string" readOnly="true"/>
             </Group>
         </Group>
-        <Group name="Data Logger" expand="false">
+        <Group name="SD Card Logging" expand="false">
             <Setting key="data_logger_automatic_start_stop_enabled" name="Automatic Start Stop" type="bool"/>
-            <Setting key="data_logger_file_name_prefix" name="File Name Prefix" type="string" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
-            <Setting key="data_logger_file_name_counter_enabled" name="File Name Counter" type="bool" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
-            <Setting key="data_logger_max_file_size" name="Max File Size (MB)" type="number" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
-            <Setting key="data_logger_max_file_period" name="Max File Period (s)" type="number" hideKey="data_logger_automatic_start_stop_enabled" hideValues="0"/>
+            <Group name="File">
+                <Setting key="data_logger_file_name_prefix" name="File Name Prefix" type="SdCardManagerSettingsFilePrefix"/>
+                <Setting key="data_logger_file_name_counter_enabled" name="File Name Counter" type="bool"/>
+                <Setting key="data_logger_max_file_size" name="Max File Size (MB)" type="number"/>
+                <Setting key="data_logger_max_file_period" name="Max File Period (s)" type="number"/>
+            </Group>
         </Group>
-        <Group name="Sensor Processing" expand="false">
-            <Setting key="axes_alignment" name="Axes Alignment" type="FusionAxesAlignment"/>
-            <Setting key="gyroscope_offset_correction_enabled" name="Gyroscope Offset Correction" type="bool"/>
+        <Group name="IMU" expand="false">
+            <Setting key="axes_alignment" name="Axes Alignment" type="FusionRemapAlignment"/>
+            <Setting key="gyroscope_offset_correction_enabled" name="Bias Correction" type="bool"/>
+            <Setting key="hard_iron_correction_enabled" name="Hard-Iron Correction" type="bool"/>
             <Group name="AHRS">
                 <Setting key="ahrs_axes_convention" name="Axes Convention" type="FusionConvention"/>
                 <Setting key="ahrs_gain" name="Gain" type="number"/>
                 <Setting key="ahrs_ignore_magnetometer" name="Ignore Magnetometer" type="bool"/>
+                <Setting key="ahrs_overrange_recovery_enabled" name="Overrange Recovery" type="bool"/>
                 <Setting key="ahrs_acceleration_rejection_enabled" name="Acceleration Rejection" type="bool"/>
                 <Setting key="ahrs_magnetic_rejection_enabled" name="Magnetic Rejection" type="bool" hideKey="ahrs_ignore_magnetometer" hideValues="1"/>
+                <Setting key="ahrs_anchored_heading_enabled" name="Anchored Heading" type="bool"/>
+                <Group name="Anchor" hideKey="ahrs_anchored_heading_enabled" hideValues="0">
+                    <Setting key="ahrs_anchored_heading_cutoff" name="Cutoff (Hz)" type="number"/>
+                    <Setting key="ahrs_anchored_heading_duration" name="Duration (s)" type="number"/>
+                </Group>
             </Group>
         </Group>
         <Group name="Data Messages">
             <Setting key="binary_mode_enabled" name="Binary Mode" type="bool"/>
-            <Setting key="ahrs_message_type" name="AHRS Message Type" type="SendAhrsMessageType"/>
+            <Group name="Message Modes">
+                <Setting key="ahrs_message_type" name="Orientation"  type="SendOrientationMode"/>
+                <Setting key="acceleration_mode" name="Acceleration" type="SendAccelerationMode"/>
+            </Group>
             <Group name="Message Rates">
                 <Setting key="inertial_message_rate_divisor" name="Inertial" type="SendMessageRateDivisorInertial"/>
                 <Setting key="magnetometer_message_rate_divisor" name="Magnetometer" type="SendMessageRateDivisorMagnetometer"/>
-                <Setting key="ahrs_message_rate_divisor" name="AHRS" type="SendMessageRateDivisorAhrs"/>
                 <Setting key="high_g_accelerometer_message_rate_divisor" name="High-g Accelerometer" type="SendMessageRateDivisorHighGAccelerometer"/>
+                <Setting key="ahrs_message_rate_divisor" name="Orientation" type="SendMessageRateDivisorOrientation"/>
+                <Setting key="acceleration_message_rate_divisor" name="Acceleration" type="SendMessageRateDivisorAcceleration"/>
                 <Setting key="temperature_message_rate_divisor" name="Temperature" type="SendMessageRateDivisorTemperature"/>
                 <Setting key="battery_message_rate_divisor" name="Battery" type="SendMessageRateDivisorBattery"/>
                 <Setting key="rssi_message_rate_divisor" name="RSSI" type="SendMessageRateDivisorRssi"/>
             </Group>
-            <Group name="Sending" expand="false">
+            <Group name="Interfaces" expand="false">
                 <Setting key="usb_data_messages_enabled" name="USB" type="bool"/>
                 <Setting key="serial_data_messages_enabled" name="Serial" type="bool"/>
                 <Setting key="tcp_data_messages_enabled" name="TCP" type="bool"/>
                 <Setting key="udp_data_messages_enabled" name="UDP" type="bool"/>
                 <Setting key="bluetooth_data_messages_enabled" name="Bluetooth" type="bool"/>
-                <Setting key="data_logger_data_messages_enabled" name="Data Logger" type="bool"/>
+                <Setting key="data_logger_data_messages_enabled" name="SD Card" type="bool"/>
             </Group>
         </Group>
         <Group name="Power" expand="false">
@@ -111,31 +125,31 @@
         <Margin/>
     </Settings>
     <Enums>
-        <Enum name="FusionAxesAlignment">
+        <Enum name="FusionRemapAlignment">
             <Enumerator name="+X+Y+Z" value="0"/>
-            <Enumerator name="+X-Z+Y" value="1"/>
-            <Enumerator name="+X-Y-Z" value="2"/>
-            <Enumerator name="+X+Z-Y" value="3"/>
-            <Enumerator name="-X+Y-Z" value="4"/>
-            <Enumerator name="-X+Z+Y" value="5"/>
-            <Enumerator name="-X-Y+Z" value="6"/>
-            <Enumerator name="-X-Z-Y" value="7"/>
-            <Enumerator name="+Y-X+Z" value="8"/>
-            <Enumerator name="+Y-Z-X" value="9"/>
-            <Enumerator name="+Y+X-Z" value="10"/>
-            <Enumerator name="+Y+Z+X" value="11"/>
-            <Enumerator name="-Y+X+Z" value="12"/>
-            <Enumerator name="-Y-Z+X" value="13"/>
-            <Enumerator name="-Y-X-Z" value="14"/>
-            <Enumerator name="-Y+Z-X" value="15"/>
-            <Enumerator name="+Z+Y-X" value="16"/>
-            <Enumerator name="+Z+X+Y" value="17"/>
-            <Enumerator name="+Z-Y+X" value="18"/>
-            <Enumerator name="+Z-X-Y" value="19"/>
-            <Enumerator name="-Z+Y+X" value="20"/>
-            <Enumerator name="-Z-X+Y" value="21"/>
-            <Enumerator name="-Z-Y-X" value="22"/>
-            <Enumerator name="-Z+X-Y" value="23"/>
+            <Enumerator name="+X+Z-Y" value="1"/>
+            <Enumerator name="+X-Z+Y" value="2"/>
+            <Enumerator name="+X-Y-Z" value="3"/>
+            <Enumerator name="+Y+X-Z" value="4"/>
+            <Enumerator name="+Y+Z+X" value="5"/>
+            <Enumerator name="+Y-Z-X" value="6"/>
+            <Enumerator name="+Y-X+Z" value="7"/>
+            <Enumerator name="+Z+X+Y" value="8"/>
+            <Enumerator name="+Z+Y-X" value="9"/>
+            <Enumerator name="+Z-Y+X" value="10"/>
+            <Enumerator name="+Z-X-Y" value="11"/>
+            <Enumerator name="-Z+X-Y" value="12"/>
+            <Enumerator name="-Z+Y+X" value="13"/>
+            <Enumerator name="-Z-Y-X" value="14"/>
+            <Enumerator name="-Z-X+Y" value="15"/>
+            <Enumerator name="-Y+X+Z" value="16"/>
+            <Enumerator name="-Y+Z-X" value="17"/>
+            <Enumerator name="-Y-Z+X" value="18"/>
+            <Enumerator name="-Y-X-Z" value="19"/>
+            <Enumerator name="-X+Y-Z" value="20"/>
+            <Enumerator name="-X+Z+Y" value="21"/>
+            <Enumerator name="-X-Z-Y" value="22"/>
+            <Enumerator name="-X-Y+Z" value="23"/>
         </Enum>
         <Enum name="FusionConvention">
             <Enumerator name="North-West-Up (NWU)" value="0"/>
@@ -147,14 +161,17 @@
             <Enumerator name="Europe (EU)" value="2"/>
             <Enumerator name="Japan (JP)" value="3"/>
         </Enum>
-        <Enum name="SendAhrsMessageType">
-            <Enumerator name="Quaternion" value="0"/>
-            <Enumerator name="Rotation Matrix" value="1"/>
-            <Enumerator name="Euler Angles" value="2"/>
-            <Enumerator name="Linear Acceleration" value="3"/>
-            <Enumerator name="Earth Acceleration" value="4"/>
+        <Enum name="SdCardManagerSettingsFilePrefix">
+            <Enumerator name="Disabled" value="0"/>
+            <Enumerator name="Model" value="1"/>
+            <Enumerator name="Serial Number" value="2"/>
+            <Enumerator name="Device Name" value="3"/>
         </Enum>
-        <Enum name="SendMessageRateDivisorAhrs">
+        <Enum name="SendAccelerationMode">
+            <Enumerator name="Linear" value="0"/>
+            <Enumerator name="Earth" value="1"/>
+        </Enum>
+        <Enum name="SendMessageRateDivisorAcceleration">
             <Enumerator name="Disabled" value="0"/>
             <Enumerator name="1 Hz" value="400"/>
             <Enumerator name="2 Hz" value="200"/>
@@ -231,6 +248,24 @@
             <Enumerator name="10 Hz" value="2"/>
             <Enumerator name="20 Hz" value="1"/>
         </Enum>
+        <Enum name="SendMessageRateDivisorOrientation">
+            <Enumerator name="Disabled" value="0"/>
+            <Enumerator name="1 Hz" value="400"/>
+            <Enumerator name="2 Hz" value="200"/>
+            <Enumerator name="4 Hz" value="100"/>
+            <Enumerator name="5 Hz" value="80"/>
+            <Enumerator name="8 Hz" value="50"/>
+            <Enumerator name="10 Hz" value="40"/>
+            <Enumerator name="16 Hz" value="25"/>
+            <Enumerator name="20 Hz" value="20"/>
+            <Enumerator name="25 Hz" value="16"/>
+            <Enumerator name="40 Hz" value="10"/>
+            <Enumerator name="50 Hz" value="8"/>
+            <Enumerator name="80 Hz" value="5"/>
+            <Enumerator name="100 Hz" value="4"/>
+            <Enumerator name="200 Hz" value="2"/>
+            <Enumerator name="400 Hz" value="1"/>
+        </Enum>
         <Enum name="SendMessageRateDivisorRssi">
             <Enumerator name="Disabled" value="0"/>
             <Enumerator name="1 Hz" value="1"/>
@@ -240,10 +275,18 @@
             <Enumerator name="1 Hz" value="5"/>
             <Enumerator name="5 Hz" value="1"/>
         </Enum>
+        <Enum name="SendOrientationMode">
+            <Enumerator name="Quaternion" value="0"/>
+            <Enumerator name="Rotation Matrix" value="1"/>
+            <Enumerator name="Euler Angles" value="2"/>
+        </Enum>
         <Enum name="SerialMode">
             <Enumerator name="Disabled" value="0"/>
             <Enumerator name="Normal" value="1"/>
             <Enumerator name="Accessory" value="2"/>
+            <Enumerator name="Mux" value="3"/>
+            <Enumerator name="Sync" value="4"/>
+            <Enumerator name="LTC" value="5"/>
         </Enum>
         <Enum name="WirelessBTDiscoveryMode">
             <Enumerator name="Disabled" value="0"/>
