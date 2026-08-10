@@ -1,29 +1,55 @@
 <CommandKeys>
+    <Command key="ping" type="4"/>
     <Command key="default" type="4"/>
     <Command key="apply" type="4"/>
     <Command key="save" type="4"/>
     <Command key="time" type="0"/>
-    <Command key="ping" type="4"/>
-    <Command key="reset" type="4"/>
-    <Command key="shutdown" type="4"/>
-    <Command key="blink" type="4"/>
-    <Command key="strobe" type="4"/>
-    <Command key="colour" type="0"/>
+    <Command key="format" type="4"/>
+    <Command key="capacity" type="4"/>
     <Command key="start" type="0"/>
     <Command key="stop" type="4"/>
     <Command key="delete" type="0"/>
-    <Command key="initialise" type="4"/>
+    <Command key="restart" type="4"/>
     <Command key="heading" type="1"/>
+    <Command key="anchor_start" type="1"/>
+    <Command key="anchor_progress" type="4"/>
+    <Command key="anchor_complete" type="4"/>
+    <Command key="anchor_abort" type="4"/>
+    <Command key="bias_start" type="1"/>
+    <Command key="bias_progress" type="4"/>
+    <Command key="bias_complete" type="4"/>
+    <Command key="bias_abort" type="4"/>
+    <Command key="hard_iron_start" type="1"/>
+    <Command key="hard_iron_progress" type="4"/>
+    <Command key="hard_iron_complete" type="4"/>
+    <Command key="hard_iron_abort" type="4"/>
     <Command key="accessory" type="0"/>
     <Command key="note" type="0"/>
     <Command key="timestamp" type="1"/>
-    <Command key="format" type="4"/>
-    <Command key="test" type="4"/>
+    <Command key="blink" type="4"/>
+    <Command key="strobe" type="4"/>
+    <Command key="colour" type="0"/>
+    <Command key="reset" type="4"/>
+    <Command key="shutdown" type="4"/>
     <Command key="bootloader" type="4"/>
+    <Command key="test" type="4"/>
     <Separator header="DEVICE SETTINGS"/>
     <Command key="serial_number" type="0"/>
     <Command key="hardware_version" type="0"/>
     <Command key="bootloader_version" type="0"/>
+    <Command key="calibration_date" type="0"/>
+    <Command key="gyroscope_misalignment" type="1"/>
+    <Command key="gyroscope_sensitivity" type="1"/>
+    <Command key="gyroscope_offset" type="1"/>
+    <Command key="accelerometer_misalignment" type="1"/>
+    <Command key="accelerometer_sensitivity" type="1"/>
+    <Command key="accelerometer_offset" type="1"/>
+    <Command key="soft_iron_matrix" type="1"/>
+    <Command key="hard_iron_offset" type="1"/>
+    <Command key="high_g_accelerometer_misalignment" type="1"/>
+    <Command key="high_g_accelerometer_sensitivity" type="1"/>
+    <Command key="high_g_accelerometer_offset" type="1"/>
+    <Command key="model" type="0"/>
     <Command key="firmware_version" type="0"/>
     <Command key="device_name" type="0"/>
     <Command key="serial_mode" type="1"/>
@@ -63,23 +89,32 @@
     <Command key="bluetooth_paired_address" type="0"/>
     <Command key="bluetooth_paired_link_key" type="0"/>
     <Command key="data_logger_automatic_start_stop_enabled" type="2"/>
-    <Command key="data_logger_file_name_prefix" type="0"/>
+    <Command key="data_logger_file_name_prefix" type="1"/>
     <Command key="data_logger_file_name_counter_enabled" type="2"/>
     <Command key="data_logger_max_file_size" type="1"/>
     <Command key="data_logger_max_file_period" type="1"/>
     <Command key="axes_alignment" type="1"/>
     <Command key="gyroscope_offset_correction_enabled" type="2"/>
+    <Command key="gyroscope_offset_correction_offset" type="1"/>
+    <Command key="hard_iron_correction_enabled" type="2"/>
+    <Command key="hard_iron_correction_offset" type="1"/>
     <Command key="ahrs_axes_convention" type="1"/>
     <Command key="ahrs_gain" type="1"/>
     <Command key="ahrs_ignore_magnetometer" type="2"/>
+    <Command key="ahrs_overrange_recovery_enabled" type="2"/>
     <Command key="ahrs_acceleration_rejection_enabled" type="2"/>
     <Command key="ahrs_magnetic_rejection_enabled" type="2"/>
+    <Command key="ahrs_anchored_heading_enabled" type="2"/>
+    <Command key="ahrs_anchored_heading_cutoff" type="1"/>
+    <Command key="ahrs_anchored_heading_duration" type="1"/>
     <Command key="binary_mode_enabled" type="2"/>
     <Command key="ahrs_message_type" type="1"/>
+    <Command key="acceleration_mode" type="1"/>
     <Command key="inertial_message_rate_divisor" type="1"/>
     <Command key="magnetometer_message_rate_divisor" type="1"/>
-    <Command key="ahrs_message_rate_divisor" type="1"/>
     <Command key="high_g_accelerometer_message_rate_divisor" type="1"/>
+    <Command key="ahrs_message_rate_divisor" type="1"/>
+    <Command key="acceleration_message_rate_divisor" type="1"/>
     <Command key="temperature_message_rate_divisor" type="1"/>
     <Command key="battery_message_rate_divisor" type="1"/>
     <Command key="rssi_message_rate_divisor" type="1"/>
