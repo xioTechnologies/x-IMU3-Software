@@ -34,8 +34,14 @@ static PyObject *device_get_connection_config(Device *self) {
             return usb_connection_config_from(&self->wrapped.usb_connection_config);
         case XIMU3_ConnectionTypeSerial:
             return serial_connection_config_from(&self->wrapped.serial_connection_config);
+        case XIMU3_ConnectionTypeTcp:
+            return tcp_connection_config_from(&self->wrapped.tcp_connection_config);
+        case XIMU3_ConnectionTypeUdp:
+            return udp_connection_config_from(&self->wrapped.udp_connection_config);
         case XIMU3_ConnectionTypeBluetooth:
             return bluetooth_connection_config_from(&self->wrapped.bluetooth_connection_config);
+        case XIMU3_ConnectionTypeFile:
+            return file_connection_config_from(&self->wrapped.file_connection_config);
         case XIMU3_ConnectionTypeMux:
             return mux_connection_config_from(self->wrapped.mux_connection_config);
         default:

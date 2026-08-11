@@ -156,9 +156,11 @@ namespace ximu3 {
             case XIMU3_ConnectionTypeBluetooth:
                 return std::make_shared<BluetoothConnectionConfig>(device.bluetooth_connection_config);
             case XIMU3_ConnectionTypeTcp:
+                return std::make_shared<TcpConnectionConfig>(device.tcp_connection_config);
             case XIMU3_ConnectionTypeUdp:
+                return std::make_shared<UdpConnectionConfig>(device.udp_connection_config);
             case XIMU3_ConnectionTypeFile:
-                break;
+                return std::make_shared<FileConnectionConfig>(device.file_connection_config);
             case XIMU3_ConnectionTypeMux:
                 return std::make_shared<MuxConnectionConfig>(*device.mux_connection_config);
         }
