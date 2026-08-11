@@ -1,7 +1,7 @@
 #include "CustomLookAndFeel.h"
 #include "DataLoggerSettingsDialog.h"
 
-DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings &settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start") {
+DataLoggerSettingsDialog::DataLoggerSettingsDialog(const DataLoggerSettings &settings) : Dialog(BinaryData::settings_svg, "Data Logger Settings", "Start") {
     addAndMakeVisible(destinationLabel);
     addAndMakeVisible(destinationSelector);
     addAndMakeVisible(nameLabel);
@@ -10,7 +10,7 @@ DataLoggerSettingsDialog::DataLoggerSettingsDialog(const Settings &settings) : D
     addAndMakeVisible(timeValue);
     addAndMakeVisible(timeUnit);
 
-    settings.destination.createDirectory();
+    std::ignore = settings.destination.createDirectory();
 
     destinationSelector.setFiles({settings.destination});
     nameValue.setDefaultText("Logged Data " + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H-%M-%S"));
@@ -56,12 +56,14 @@ void DataLoggerSettingsDialog::resized() {
     timeUnit.setBounds(secondsRow.removeFromLeft(columnWidth));
 }
 
-DataLoggerSettingsDialog::Settings DataLoggerSettingsDialog::getSettings() const {
-    Settings settings;
+DataLoggerSettings DataLoggerSettingsDialog::getSettings() const {
+    DataLoggerSettings settings;
     settings.destination = destinationSelector.getFiles()[0];
     settings.name = nameValue.getTextOrDefault().trim();
     settings.nameEmpty = nameValue.getText().isEmpty();
     settings.timeValue = timeValue.getText().getFloatValue();
-    settings.timeUnit = static_cast<Settings::TimeUnit>(timeUnit.getSelectedItemIndex());
+    settings.timeUnit = static_cast<DataLoggerSettings::TimeUnit>(timeUnit.getSelectedItemIndex());
+    settings.save();
+
     return settings;
 }

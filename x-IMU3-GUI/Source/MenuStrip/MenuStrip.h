@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Dialogs/ConvertFilesDialog.h"
-#include "Dialogs/DataLoggerSettingsDialog.h"
+#include "Dialogs/DataLoggerSettings.h"
 #include "Firmware/Firmware.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <optional>
@@ -61,7 +61,7 @@ private:
         {ConnectionPanelContainer::Layout::accordion, BinaryData::accordion_svg},
     };
 
-    DataLoggerSettingsDialog::Settings dataLoggerSettings;
+    DataLoggerSettings dataLoggerSettings;
     juce::String dataLoggerName;
     std::unique_ptr<ximu3::DataLogger> dataLogger;
     juce::Time dataLoggerStartTime;
