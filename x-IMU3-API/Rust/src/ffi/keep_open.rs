@@ -9,5 +9,9 @@ pub extern "C" fn XIMU3_keep_open_new(connection: *mut Connection) -> *mut KeepO
 
 #[no_mangle]
 pub extern "C" fn XIMU3_keep_open_free(keep_open: *mut KeepOpen) {
+    if keep_open.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(keep_open)) };
 }

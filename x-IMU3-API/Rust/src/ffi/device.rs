@@ -139,6 +139,10 @@ impl From<Vec<Device>> for Devices {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_devices_free(devices: Devices) {
+    if devices.array.is_null() {
+        return;
+    }
+
     let vector = unsafe { Vec::from_raw_parts(devices.array, devices.length as usize, devices.capacity as usize) };
 
     for device in vector {

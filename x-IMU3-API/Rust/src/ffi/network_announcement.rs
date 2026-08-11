@@ -100,6 +100,10 @@ impl From<Vec<NetworkAnnouncementMessage>> for NetworkAnnouncementMessages {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_messages_free(messages: NetworkAnnouncementMessages) {
+    if messages.array.is_null() {
+        return;
+    }
+
     unsafe {
         let _ = Vec::from_raw_parts(messages.array, messages.length as usize, messages.capacity as usize);
     }
@@ -118,6 +122,10 @@ pub extern "C" fn XIMU3_network_announcement_new() -> *mut NetworkAnnouncementC 
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_free(network_announcement: *mut NetworkAnnouncementC) {
+    if network_announcement.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(network_announcement)) };
 }
 

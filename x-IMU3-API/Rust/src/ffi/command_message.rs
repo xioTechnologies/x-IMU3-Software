@@ -67,6 +67,10 @@ impl From<Vec<Option<CommandMessage>>> for CommandMessages {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_command_messages_free(messages: CommandMessages) {
+    if messages.array.is_null() {
+        return;
+    }
+
     unsafe {
         let _ = Vec::from_raw_parts(messages.array, messages.length as usize, messages.capacity as usize);
     }

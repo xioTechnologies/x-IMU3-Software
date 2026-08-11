@@ -48,6 +48,10 @@ impl From<&[Vec<u8>]> for CharArrays {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_char_arrays_free(char_arrays: CharArrays) {
+    if char_arrays.array.is_null() {
+        return;
+    }
+
     unsafe {
         let _ = Vec::from_raw_parts(char_arrays.array, char_arrays.length as usize, char_arrays.capacity as usize);
     }
