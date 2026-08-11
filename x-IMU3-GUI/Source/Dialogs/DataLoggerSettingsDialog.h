@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ApplicationSettings.h"
+#include "DataLoggerSettings.h"
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/CustomComboBox.h"
@@ -11,41 +11,11 @@
 
 class DataLoggerSettingsDialog : public Dialog {
 public:
-    struct Settings {
-        juce::File destination = ApplicationSettings::getDirectory().getChildFile("Data Logger");
-        juce::String name;
-        bool nameEmpty = true;
-        float timeValue = 10.0f;
-
-        enum class TimeUnit {
-            unlimited,
-            hours,
-            minutes,
-            seconds,
-        };
-
-        TimeUnit timeUnit = TimeUnit::unlimited;
-
-        std::optional<juce::RelativeTime> getTime() const {
-            switch (timeUnit) {
-                case TimeUnit::unlimited:
-                    return {};
-                case TimeUnit::hours:
-                    return juce::RelativeTime::hours((double) timeValue);
-                case TimeUnit::minutes:
-                    return juce::RelativeTime::minutes((double) timeValue);
-                case TimeUnit::seconds:
-                    return juce::RelativeTime::seconds((double) timeValue);
-            }
-            return {};
-        }
-    };
-
-    explicit DataLoggerSettingsDialog(const Settings &settings);
+    explicit DataLoggerSettingsDialog(const DataLoggerSettings &settings);
 
     void resized() override;
 
-    Settings getSettings() const;
+    DataLoggerSettings getSettings() const;
 
 private:
     SimpleLabel destinationLabel{"Destination:"};
