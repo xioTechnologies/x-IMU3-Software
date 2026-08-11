@@ -11,6 +11,7 @@ void bluetooth_connection() {
 
         if (devices.length == 0) {
             printf("No Bluetooth connections available\n");
+            XIMU3_devices_free(devices);
             return;
         }
 
@@ -23,6 +24,8 @@ void bluetooth_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     } else {
         const XIMU3_BluetoothConnectionConfig config = (XIMU3_BluetoothConnectionConfig){
             .port_name = "COM1",
@@ -31,5 +34,7 @@ void bluetooth_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_bluetooth(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     }
 }

@@ -6,6 +6,7 @@ void get_port_names() {
 
     if (port_names.length == 0) {
         printf("No ports available\n");
+        XIMU3_char_arrays_free(port_names);
         return;
     }
 

@@ -14,6 +14,7 @@ void mux_scanner() {
 
     if (usb_devices.length == 0) {
         printf("No USB connections available\n");
+        XIMU3_devices_free(usb_devices);
         return;
     }
 

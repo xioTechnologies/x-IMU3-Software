@@ -9,4 +9,6 @@ void file_connection() {
     XIMU3_Connection *const connection = XIMU3_connection_new_file(config);
 
     run(connection);
+
+    XIMU3_connection_free(connection);
 }

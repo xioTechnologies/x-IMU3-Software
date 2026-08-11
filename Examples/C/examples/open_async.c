@@ -12,6 +12,7 @@ void open_async() {
 
     if (devices.length == 0) {
         printf("No USB connections available\n");
+        XIMU3_devices_free(devices);
         return;
     }
 
