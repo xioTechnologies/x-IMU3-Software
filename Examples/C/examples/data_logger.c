@@ -27,7 +27,7 @@ void data_logger() {
         if (result == XIMU3_ResultOk) {
             connections[number_of_connections++] = connection;
         } else {
-            printf("Unable to open %s. %s.\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
+            printf("Unable to open %s: %s\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
             XIMU3_connection_free(connection);
         }
     }
@@ -45,7 +45,7 @@ void data_logger() {
     const XIMU3_Result resultBlocking = XIMU3_data_logger_log(destination, name_blocking, connections, number_of_connections, 3);
 
     if (resultBlocking != XIMU3_ResultOk) {
-        printf("Data logger failed. %s.\n", XIMU3_result_to_string(resultBlocking));
+        printf("Data logger failed: %s\n", XIMU3_result_to_string(resultBlocking));
     }
 
     // Log data (non-blocking)
@@ -56,7 +56,7 @@ void data_logger() {
     const XIMU3_Result resultNonBlocking = XIMU3_data_logger_get_result(data_logger);
 
     if (resultNonBlocking != XIMU3_ResultOk) {
-        printf("Data logger failed. %s.\n", XIMU3_result_to_string(resultNonBlocking));
+        printf("Data logger failed: %s\n", XIMU3_result_to_string(resultNonBlocking));
     }
 
     sleep(3);

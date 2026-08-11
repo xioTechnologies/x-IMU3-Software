@@ -35,7 +35,7 @@ static void callback(const XIMU3_Result result, void *context) {
     if (result != XIMU3_ResultOk) {
         XIMU3_Connection *const connection = (XIMU3_Connection *) context;
 
-        printf("Unable to open %s. %s.\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
+        printf("Unable to open %s: %s\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
         return;
     }
 

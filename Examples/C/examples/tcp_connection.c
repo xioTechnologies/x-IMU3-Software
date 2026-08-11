@@ -10,7 +10,7 @@ void tcp_connection() {
         const XIMU3_Result result = XIMU3_network_announcement_get_result(network_announcement);
 
         if (result != XIMU3_ResultOk) {
-            printf("Network announcement failed. %s.\n", XIMU3_result_to_string(result));
+            printf("Network announcement failed: %s\n", XIMU3_result_to_string(result));
             XIMU3_network_announcement_free(network_announcement);
             return;
         }

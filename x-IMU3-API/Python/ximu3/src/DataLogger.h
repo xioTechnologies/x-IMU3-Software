@@ -35,7 +35,7 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
     const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
     if (length > CONNECTIONS_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'connections' has too many items. Cannot exceed %d.", CONNECTIONS_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'connections' length must not exceed %d", CONNECTIONS_ARRAY_LENGTH);
         return NULL;
     }
 
@@ -59,7 +59,7 @@ static PyObject *data_logger_new(PyTypeObject *subtype, PyObject *args, PyObject
     if (result != XIMU3_ResultOk) {
         const char *const result_string = XIMU3_result_to_string(result);
 
-        PyErr_SetString(PyExc_RuntimeError, result_string);
+        PyErr_Format(PyExc_RuntimeError, "Data logger failed: %s", result_string);
 
         XIMU3_data_logger_free(data_logger);
         return NULL;
@@ -109,7 +109,7 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args, PyObject *kwds)
     const uint32_t length = (uint32_t) PySequence_Size(connections_sequence);
 
     if (length > CONNECTIONS_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'connections' has too many items. Cannot exceed %d.", CONNECTIONS_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'connections' length must not exceed %d", CONNECTIONS_ARRAY_LENGTH);
         return NULL;
     }
 
@@ -131,7 +131,7 @@ static PyObject *data_logger_log(PyObject *null, PyObject *args, PyObject *kwds)
     if (result != XIMU3_ResultOk) {
         const char *const result_string = XIMU3_result_to_string(result);
 
-        PyErr_SetString(PyExc_RuntimeError, result_string);
+        PyErr_Format(PyExc_RuntimeError, "Data logger failed: %s", result_string);
         return NULL;
     }
 

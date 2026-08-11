@@ -24,7 +24,7 @@ namespace Ximu3Examples
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open " + connection.GetConfig() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                Console.WriteLine("Unable to open " + connection.GetConfig() + ": " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
                 return;
             }
 

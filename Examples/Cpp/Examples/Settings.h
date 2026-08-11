@@ -26,7 +26,7 @@ public:
         const auto result = connection.open();
 
         if (result != ximu3::XIMU3_ResultOk) {
-            std::cout << "Unable to open " << connection.getConfig()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
+            std::cout << "Unable to open " << connection.getConfig()->toString() << ": " << XIMU3_result_to_string(result) << std::endl;
             return;
         }
 
@@ -36,14 +36,14 @@ public:
         const auto resultBackup = ximu3::settings_backup(filePath, connection);
 
         if (resultBackup != ximu3::XIMU3_ResultOk) {
-            std::cout << "Backup failed. " << XIMU3_result_to_string(resultBackup) << "." << std::endl;
+            std::cout << "Backup failed: " << XIMU3_result_to_string(resultBackup) << std::endl;
         }
 
         // Restore settings
         const auto resultRestore = ximu3::settings_restore(filePath, connection);
 
         if (resultRestore != ximu3::XIMU3_ResultOk) {
-            std::cout << "Restore failed. " << XIMU3_result_to_string(resultRestore) << "." << std::endl;
+            std::cout << "Restore failed: " << XIMU3_result_to_string(resultRestore) << std::endl;
         }
 
         // Save command

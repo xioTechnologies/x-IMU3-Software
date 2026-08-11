@@ -183,14 +183,13 @@ void DeviceSettingsWindow::sendCommand(const juce::String &key, const bool silen
 
     connectionPanel.sendCommands({command}, this, [command, silent, callback](const auto &responses) {
         if (silent == false) {
-            const auto showError = [command](const std::string &error) {
-                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>(command + " command failed. " + error + (error.ends_with(".") ? "" : ".")));
-            };
-
             if (responses.front().has_value() == false) {
-                showError("No response");
-            } else if (responses.front()->error.has_value()) {
-                showError(*responses.front()->error);
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("No response to " + command));
+                return;
+            }
+
+            if (responses.front()->error.has_value()) {
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Error response to " + command + ": " + *responses.front()->error));
             }
         }
 

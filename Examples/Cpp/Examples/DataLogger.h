@@ -29,7 +29,7 @@ public:
             if (result == ximu3::XIMU3_ResultOk) {
                 connections.push_back(std::move(connection));
             } else {
-                std::cout << "Unable to open " << connection->getConfig()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
+                std::cout << "Unable to open " << connection->getConfig()->toString() << ": " << XIMU3_result_to_string(result) << std::endl;
             }
         }
 
@@ -45,7 +45,7 @@ public:
         const auto resultBlocking = ximu3::DataLogger::log(destination, nameBlocking, toRawPointers(connections), 3);
 
         if (resultBlocking != ximu3::XIMU3_ResultOk) {
-            std::cout << "Data logger failed. " << XIMU3_result_to_string(resultBlocking) << "." << std::endl;
+            std::cout << "Data logger failed: " << XIMU3_result_to_string(resultBlocking) << std::endl;
         }
 
         // Log data (non-blocking)
@@ -56,7 +56,7 @@ public:
         const auto resultNonBlocking = dataLogger->getResult();
 
         if (resultNonBlocking != ximu3::XIMU3_ResultOk) {
-            std::cout << "Data logger failed. " << XIMU3_result_to_string(resultNonBlocking) << "." << std::endl;
+            std::cout << "Data logger failed: " << XIMU3_result_to_string(resultNonBlocking) << std::endl;
         }
 
         std::this_thread::sleep_for(std::chrono::seconds(3));

@@ -36,7 +36,7 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
     const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'files' has too many items. Cannot exceed %d.", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'files' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 
@@ -100,7 +100,7 @@ static PyObject *file_converter_convert(PyObject *null, PyObject *args, PyObject
     const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'files' has too many items. Cannot exceed %d.", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'files' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 

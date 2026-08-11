@@ -13,7 +13,7 @@ pub fn run(config: &ConnectionConfig) {
 
     // Open connection
     if let Err(error) = connection.open() {
-        println!("Unable to open {}. {error}.", connection.get_config());
+        println!("Unable to open {}: {error}", connection.get_config());
         return;
     }
 

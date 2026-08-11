@@ -21,7 +21,7 @@ pub fn run() {
 
     let closure = Box::new(move |result| {
         if let Err(error) = result {
-            println!("Unable to open {config}. {error}.");
+            println!("Unable to open {config}: {error}");
             return;
         }
 
