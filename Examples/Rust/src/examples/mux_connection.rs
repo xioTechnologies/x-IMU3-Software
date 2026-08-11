@@ -22,7 +22,7 @@ pub fn run() {
     let usb_connection = Connection::new(&usb_device.connection_config);
 
     if let Err(error) = usb_connection.open() {
-        println!("Unable to open {}. {error}.", usb_connection.get_config());
+        println!("Unable to open {}: {error}", usb_connection.get_config());
         return;
     }
 

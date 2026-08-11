@@ -14,7 +14,7 @@ public:
             const auto result = networkAnnouncement.getResult();
 
             if (result != ximu3::XIMU3_ResultOk) {
-                std::cout << "Network announcement failed. " << XIMU3_result_to_string(result) << "." << std::endl;
+                std::cout << "Network announcement failed: " << XIMU3_result_to_string(result) << std::endl;
                 return;
             }
 

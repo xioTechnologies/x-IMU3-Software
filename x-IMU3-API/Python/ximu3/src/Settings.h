@@ -16,7 +16,9 @@ static PyObject *settings_backup(PyObject *self, PyObject *args) {
     const XIMU3_Result result = XIMU3_settings_backup(file_path, ((Connection *) connection)->wrapped);
 
     if (result != XIMU3_ResultOk) {
-        PyErr_Format(PyExc_RuntimeError, "Backup failed. %s.", XIMU3_result_to_string(result));
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_Format(PyExc_RuntimeError, "Backup failed: %s", result_string);
         return NULL;
     }
 
@@ -34,7 +36,9 @@ static PyObject *settings_restore(PyObject *self, PyObject *args) {
     const XIMU3_Result result = XIMU3_settings_restore(file_path, ((Connection *) connection)->wrapped);
 
     if (result != XIMU3_ResultOk) {
-        PyErr_Format(PyExc_RuntimeError, "Restore failed. %s.", XIMU3_result_to_string(result));
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_Format(PyExc_RuntimeError, "Restore failed: %s", result_string);
         return NULL;
     }
 

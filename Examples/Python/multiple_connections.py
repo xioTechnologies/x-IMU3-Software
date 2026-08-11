@@ -49,10 +49,10 @@ class Connection:
         response = self.__connection.send_command(command)
 
         if not response:
-            raise Exception(f"No response. {command} for {self.__connection.get_config()}")
+            raise RuntimeError(f"No response to {command} for {self.__connection.get_config()}")
 
         if response.error:
-            raise Exception(f"{response.error}. {command} for {self.__connection.get_config()}")
+            raise RuntimeError(f"Error response to {command} for {self.__connection.get_config()}: {response.error}")
 
         print(f'{self.__prefix} "{response.key}" : {response.value}')
 

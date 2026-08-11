@@ -77,7 +77,7 @@ static PyObject *connection_open(Connection *self, PyObject *args) {
         const char *const config = XIMU3_connection_get_config_string(self->wrapped);
         const char *const result_string = XIMU3_result_to_string(result);
 
-        PyErr_Format(PyExc_RuntimeError, "Unable to open %s. %s.", config, result_string);
+        PyErr_Format(PyExc_RuntimeError, "Unable to open %s: %s", config, result_string);
         return NULL;
     }
 
@@ -178,7 +178,7 @@ static PyObject *connection_send_commands(Connection *self, PyObject *args, PyOb
     const uint32_t length = (uint32_t) PySequence_Size(commands_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'commands' has too many items. Cannot exceed %d.", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'commands' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 
@@ -259,7 +259,7 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
     const uint32_t length = (uint32_t) PySequence_Size(commands_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'commands' has too many items. Cannot exceed %d.", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'commands' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 

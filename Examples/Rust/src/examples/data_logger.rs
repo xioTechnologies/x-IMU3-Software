@@ -16,7 +16,7 @@ pub fn run() {
         let connection = Connection::new(&device.connection_config);
 
         if let Err(error) = connection.open() {
-            println!("Unable to open {}. {error}.", connection.get_config());
+            println!("Unable to open {}: {error}", connection.get_config());
         } else {
             connections.push(connection);
         }
@@ -34,7 +34,7 @@ pub fn run() {
     let result = DataLogger::log(destination, name_blocking, connections.iter().collect(), 3);
 
     if let Err(error) = result {
-        println!("Data logger failed. {error}.");
+        println!("Data logger failed: {error}");
     }
 
     // Log data (non-blocking)
@@ -43,7 +43,7 @@ pub fn run() {
     let data_logger = DataLogger::new(destination, name_non_blocking, connections.iter().collect());
 
     if let Err(ref error) = data_logger {
-        println!("Data logger failed. {error}.");
+        println!("Data logger failed: {error}");
     }
 
     std::thread::sleep(std::time::Duration::from_secs(3));

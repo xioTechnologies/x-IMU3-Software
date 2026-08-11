@@ -19,7 +19,7 @@ pub fn run() {
     let connection = Connection::new(&device.connection_config);
 
     if let Err(error) = connection.open() {
-        println!("Unable to open {}. {error}.", connection.get_config());
+        println!("Unable to open {}: {error}", connection.get_config());
         return;
     }
 

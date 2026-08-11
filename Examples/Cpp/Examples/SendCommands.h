@@ -31,7 +31,7 @@ public:
         const auto result = connection.open();
 
         if (result != ximu3::XIMU3_ResultOk) {
-            std::cout << "Unable to open " << connection.getConfig()->toString() << ". " << XIMU3_result_to_string(result) << "." << std::endl;
+            std::cout << "Unable to open " << connection.getConfig()->toString() << ": " << XIMU3_result_to_string(result) << std::endl;
             return;
         }
 

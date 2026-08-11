@@ -24,7 +24,7 @@ namespace Ximu3Examples
 
             if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Unable to open " + connection.GetConfig() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                Console.WriteLine("Unable to open " + connection.GetConfig() + ": " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace Ximu3Examples
 
             if (resultBackup != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Backup failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultBackup)) + ".");
+                Console.WriteLine("Backup failed: " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultBackup)));
             }
 
             // Restore settings
@@ -43,7 +43,7 @@ namespace Ximu3Examples
 
             if (resultRestore != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Restore failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultRestore)) + ".");
+                Console.WriteLine("Restore failed: " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultRestore)));
             }
 
             // Save command

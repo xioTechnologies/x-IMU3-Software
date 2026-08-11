@@ -23,7 +23,7 @@ void settings() {
     const XIMU3_Result result = XIMU3_connection_open(connection);
 
     if (result != XIMU3_ResultOk) {
-        printf("Unable to open %s. %s.\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
+        printf("Unable to open %s: %s\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
         XIMU3_connection_free(connection);
         return;
     }
@@ -34,14 +34,14 @@ void settings() {
     const XIMU3_Result resultBackup = XIMU3_settings_backup(file_path, connection);
 
     if (resultBackup != XIMU3_ResultOk) {
-        printf("Backup failed. %s.\n", XIMU3_result_to_string(resultBackup));
+        printf("Backup failed: %s\n", XIMU3_result_to_string(resultBackup));
     }
 
     // Restore settings
     const XIMU3_Result resultRestore = XIMU3_settings_restore(file_path, connection);
 
     if (resultRestore != XIMU3_ResultOk) {
-        printf("Restore failed. %s.\n", XIMU3_result_to_string(resultRestore));
+        printf("Restore failed: %s\n", XIMU3_result_to_string(resultRestore));
     }
 
     // Save command

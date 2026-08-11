@@ -24,7 +24,7 @@ void mux_connection() {
     const XIMU3_Result result = XIMU3_connection_open(usb_connection);
 
     if (result != XIMU3_ResultOk) {
-        printf("Unable to open %s. %s.\n", XIMU3_connection_get_config_string(usb_connection), XIMU3_result_to_string(result));
+        printf("Unable to open %s: %s\n", XIMU3_connection_get_config_string(usb_connection), XIMU3_result_to_string(result));
         XIMU3_connection_free(usb_connection);
         return;
     }

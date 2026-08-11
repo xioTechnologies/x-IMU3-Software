@@ -22,7 +22,7 @@ static PyObject *network_announcement_new(PyTypeObject *subtype, PyObject *args,
     if (result != XIMU3_ResultOk) {
         const char *const result_string = XIMU3_result_to_string(result);
 
-        PyErr_SetString(PyExc_RuntimeError, result_string);
+        PyErr_Format(PyExc_RuntimeError, "Network announcement failed: %s", result_string);
 
         XIMU3_network_announcement_free(network_announcement);
         return NULL;

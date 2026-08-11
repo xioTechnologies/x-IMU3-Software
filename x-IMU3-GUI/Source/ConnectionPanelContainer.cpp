@@ -119,7 +119,7 @@ void ConnectionPanelContainer::updateSize() {
 void ConnectionPanelContainer::connectToDevice(const ximu3::ConnectionConfig &config, const bool keepOpen) {
     for (const auto &connectionPanel: connectionPanels) {
         if (connectionPanel->getConnection()->getConfig()->toString() == config.toString()) {
-            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists. " + config.toString() + "."));
+            DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Connection already exists: " + config.toString()));
             return;
         }
     }

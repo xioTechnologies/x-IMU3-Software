@@ -21,7 +21,7 @@ namespace Ximu3Examples
 
                 if (result != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
                 {
-                    Console.WriteLine("Unable to open " + connection.GetConfig() + ". " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)) + ".");
+                    Console.WriteLine("Unable to open " + connection.GetConfig() + ": " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(result)));
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Ximu3Examples
 
             if (resultBlocking != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultBlocking)) + ".");
+                Console.WriteLine("Data logger failed: " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultBlocking)));
             }
 
             // Log data (non-blocking)
@@ -55,7 +55,7 @@ namespace Ximu3Examples
 
             if (resultNonBlocking != Ximu3.CApi.XIMU3_Result.XIMU3_ResultOk)
             {
-                Console.WriteLine("Data logger failed. " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultNonBlocking)) + ".");
+                Console.WriteLine("Data logger failed: " + Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_result_to_string(resultNonBlocking)));
             }
 
             System.Threading.Thread.Sleep(3000);
