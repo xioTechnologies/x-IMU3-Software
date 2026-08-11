@@ -1,7 +1,7 @@
 #include "SendingCommandDialog.h"
 
 SendingCommandDialog::SendingCommandDialog(const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &command_)
-    : CommandProgressDialog("Sending " + replaceInvalidCharacters(command_), connectionPanels_),
+    : CommandProgressDialog(BinaryData::json_svg, "Sending " + replaceInvalidCharacters(command_), connectionPanels_),
       command(command_) {
     onStart(false);
 }

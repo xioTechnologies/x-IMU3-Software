@@ -9,7 +9,7 @@ class CommandProgressDialog : public Dialog {
 public:
     static constexpr int retryDelay = 250; // to improve UX
 
-    CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_ = false);
+    CommandProgressDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_ = false);
 
     void resized() override;
 

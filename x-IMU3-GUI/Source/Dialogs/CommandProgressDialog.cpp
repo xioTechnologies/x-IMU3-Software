@@ -1,8 +1,8 @@
 #include "../ApplicationSettings.h"
 #include "CommandProgressDialog.h"
 
-CommandProgressDialog::CommandProgressDialog(const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_)
-    : Dialog(BinaryData::progress_svg, dialogTitle, "OK", "Cancel", &closeWhenCompleteButton, 175, true),
+CommandProgressDialog::CommandProgressDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const bool enableCompleteButton_)
+    : Dialog(icon_, dialogTitle, "OK", "Cancel", &closeWhenCompleteButton, 175, true),
       connectionPanels(connectionPanels_),
       enableCompleteButton(enableCompleteButton_) {
     addAndMakeVisible(table);
