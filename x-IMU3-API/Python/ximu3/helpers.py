@@ -103,8 +103,10 @@ class Connection(ximu3.Connection):
 
         return self
 
-    def close(self) -> None:
+    def close(self) -> "Connection":
         self._keep_open = None  # may return before ximu3.KeepOpen Drop impl completes
+
+        return self
 
 
 def connect(
