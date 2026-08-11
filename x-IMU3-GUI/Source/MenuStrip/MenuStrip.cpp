@@ -472,7 +472,7 @@ juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("HEADING MODE"), nullptr);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("MODE"), nullptr);
     menu.addItem("Relative Heading", [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":0}"));
     });
