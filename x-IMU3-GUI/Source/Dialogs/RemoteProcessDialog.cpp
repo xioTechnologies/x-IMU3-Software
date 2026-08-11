@@ -1,8 +1,8 @@
 #include "ApplicationSettings.h"
 #include "RemoteProcessDialog.h"
 
-RemoteProcessDialog::RemoteProcessDialog(const juce::String &title, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_)
-    : CommandProgressDialog(title, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_), threadPool(threadPool_) {
+RemoteProcessDialog::RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_)
+    : CommandProgressDialog(icon_, dialogTitle, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_), threadPool(threadPool_) {
     onStart(false);
 }
 

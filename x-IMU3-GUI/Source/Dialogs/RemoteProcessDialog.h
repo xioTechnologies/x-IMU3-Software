@@ -4,7 +4,7 @@
 
 class RemoteProcessDialog : public CommandProgressDialog {
 public:
-    RemoteProcessDialog(const juce::String &title, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_);
+    RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_);
 
     ~RemoteProcessDialog() override;
 
