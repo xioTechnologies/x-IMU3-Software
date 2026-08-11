@@ -48,13 +48,13 @@ void Model::setModel(const juce::String &objFileContent, const juce::String &mtl
         auto newObject = std::make_unique<WavefrontObjFile>();
         newObject->load(objFileContent, mtlFileContent);
 
-        juce::MessageManager::callAsync([&, self, newObject = std::move(newObject)]() mutable {
+        juce::MessageManager::callAsync([&, self, newObject_ = std::move(newObject)]() mutable {
             if (self == nullptr) {
                 return;
             }
 
             std::lock_guard _(objectLock);
-            std::swap(object, newObject);
+            std::swap(object, newObject_);
             fillBuffersPending = true;
             loading = false;
         });
@@ -72,13 +72,13 @@ void Model::setModel(const juce::File &objFile_) {
         auto newObject = std::make_unique<WavefrontObjFile>();
         newObject->load(objFile_);
 
-        juce::MessageManager::callAsync([&, self, newObject = std::move(newObject)]() mutable {
+        juce::MessageManager::callAsync([&, self, newObject_ = std::move(newObject)]() mutable {
             if (self == nullptr) {
                 return;
             }
 
             std::lock_guard _(objectLock);
-            std::swap(object, newObject);
+            std::swap(object, newObject_);
             fillBuffersPending = true;
             loading = false;
         });
