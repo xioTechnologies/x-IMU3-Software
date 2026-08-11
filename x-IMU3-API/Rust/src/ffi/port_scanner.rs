@@ -16,6 +16,10 @@ pub extern "C" fn XIMU3_port_scanner_new() -> *mut PortScanner {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_free(port_scanner: *mut PortScanner) {
+    if port_scanner.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(port_scanner)) };
 }
 

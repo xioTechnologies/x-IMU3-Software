@@ -12,6 +12,10 @@ pub extern "C" fn XIMU3_mux_scanner_new(connection: *mut Connection) -> *mut Mux
 
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_scanner_free(mux_scanner: *mut MuxScanner) {
+    if mux_scanner.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(mux_scanner)) };
 }
 

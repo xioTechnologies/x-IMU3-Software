@@ -24,6 +24,10 @@ pub extern "C" fn XIMU3_file_converter_new(destination: *const c_char, name: *co
 
 #[no_mangle]
 pub extern "C" fn XIMU3_file_converter_free(file_converter: *mut FileConverter) {
+    if file_converter.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(file_converter)) };
 }
 

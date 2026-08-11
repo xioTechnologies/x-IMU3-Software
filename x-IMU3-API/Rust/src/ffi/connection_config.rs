@@ -256,6 +256,10 @@ pub extern "C" fn XIMU3_mux_connection_config_new(channel: u8, connection: *mut 
 
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_connection_config_free(config: *mut MuxConnectionConfig) {
+    if config.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(config)) };
 }
 

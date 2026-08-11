@@ -53,6 +53,10 @@ pub extern "C" fn XIMU3_connection_new_mux(config: *const MuxConnectionConfig) -
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_free(connection: *mut Connection) {
+    if connection.is_null() {
+        return;
+    }
+
     unsafe { drop(Box::from_raw(connection)) };
 }
 
