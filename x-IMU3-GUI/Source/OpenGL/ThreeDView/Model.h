@@ -27,7 +27,7 @@ private:
     juce::File objFile;
 
     std::mutex objectLock;
-    std::shared_ptr<WavefrontObjFile> object;
+    std::unique_ptr<WavefrontObjFile> object;
     bool fillBuffersPending = false;
     std::atomic<bool> loading{false};
 

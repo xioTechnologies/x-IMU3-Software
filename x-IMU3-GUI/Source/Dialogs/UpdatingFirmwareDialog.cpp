@@ -5,7 +5,7 @@
 #include "UpdatingFirmwareDialog.h"
 #include "Ximu3Bootloader.h"
 
-UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::shared_ptr<ximu3::ConnectionConfig> config_, const juce::File &hexFile_, juce::ThreadPool &threadPool)
+UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::ConnectionConfig> config_, const juce::File &hexFile_, juce::ThreadPool &threadPool)
     : Dialog(BinaryData::tools_svg, "Updating Firmware", "Cancel", ""),
       config(std::move(config_)),
       hexFile(hexFile_) {

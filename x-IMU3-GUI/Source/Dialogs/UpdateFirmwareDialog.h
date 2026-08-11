@@ -15,7 +15,7 @@ public:
 
     void resized() override;
 
-    std::shared_ptr<ximu3::ConnectionConfig> getConnectionConfig() const;
+    std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const;
 
     juce::File getHexFile() const;
 

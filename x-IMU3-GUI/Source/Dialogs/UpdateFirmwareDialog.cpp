@@ -69,7 +69,7 @@ void UpdateFirmwareDialog::resized() {
     warningLabel.setBounds(warningIcon.getRight(), warningIcon.getY(), (int) std::ceil(warningLabel.getTextWidth()), warningIcon.getHeight());
 }
 
-std::shared_ptr<ximu3::ConnectionConfig> UpdateFirmwareDialog::getConnectionConfig() const {
+std::unique_ptr<ximu3::ConnectionConfig> UpdateFirmwareDialog::getConnectionConfig() const {
     if (deviceValue.getSelectedId() == 0) {
         return nullptr;
     }
