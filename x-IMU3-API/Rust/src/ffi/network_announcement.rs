@@ -1,7 +1,9 @@
 use crate::charging_status::*;
 use crate::connection_config::*;
+use crate::device::*;
 use crate::ffi::callback::*;
 use crate::ffi::connection_config::*;
+use crate::ffi::device::*;
 use crate::ffi::helpers::*;
 use crate::ffi::result::*;
 use crate::network_announcement::*;
@@ -63,6 +65,11 @@ pub extern "C" fn XIMU3_network_announcement_message_to_tcp_connection_config(me
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_config(message: NetworkAnnouncementMessageC) -> UdpConnectionConfigC {
     UdpConnectionConfigC::from(&UdpConnectionConfig::from(&NetworkAnnouncementMessage::from(message)))
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_network_announcement_message_to_devices(message: NetworkAnnouncementMessageC) -> Devices {
+    Devices::from(Vec::<Device>::from(&NetworkAnnouncementMessage::from(message)))
 }
 
 #[no_mangle]
