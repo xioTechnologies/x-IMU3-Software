@@ -4,6 +4,7 @@
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
 #include "Dialogs/ConvertingFilesDialog.h"
+#include "Dialogs/DataLoggerSettingsDialog.h"
 #include "Dialogs/FindConnectionsDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/MessageDialog.h"
@@ -67,7 +68,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         });
     };
 
-    juce::File(dataLoggerSettings.destination).createDirectory();
+    dataLoggerSettings.load();
 
     dataLoggerStartStopButton.onClick = [&] {
         if (isTimerRunning()) {
