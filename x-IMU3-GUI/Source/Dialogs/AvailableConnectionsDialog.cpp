@@ -98,13 +98,13 @@ void AvailableConnectionsDialog::timerCallback() {
         return false;
     };
 
-    const auto addRow = [&](const auto &descriptor, const auto &config, const std::optional<int> &rssi, const std::optional<int> &battery, const std::optional<ximu3::XIMU3_ChargingStatus> &status) {
+    const auto addRow = [&](const auto &descriptor, auto &&config, const std::optional<int> &rssi, const std::optional<int> &battery, const std::optional<ximu3::XIMU3_ChargingStatus> &status) {
         if (filter(*config) == false || std::find(existingConnections.begin(), existingConnections.end(), *config) != existingConnections.end()) {
             return;
         }
 
-        rows.push_back({false, descriptor, config, rssi, battery, status, false});
         numberOfConnections[toString(*config)]++;
+        rows.push_back({false, descriptor, std::move(config), rssi, battery, status, false});
     };
 
     for (const auto &device: portScanner.getDevices()) {

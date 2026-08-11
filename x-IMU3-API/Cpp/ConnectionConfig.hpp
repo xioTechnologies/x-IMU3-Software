@@ -19,7 +19,7 @@ namespace ximu3 {
 
         virtual std::string toString() const = 0;
 
-        static std::shared_ptr<ConnectionConfig> from(const Device &device);
+        static std::unique_ptr<ConnectionConfig> from(const Device &device);
 
     protected:
         static void stringCopy(char *destination, const char *source, const size_t destinationSize) {
@@ -68,14 +68,14 @@ namespace ximu3 {
         explicit TcpConnectionConfig(const XIMU3_TcpConnectionConfig &config) : XIMU3_TcpConnectionConfig(config) {
         }
 
-        static std::shared_ptr<TcpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
+        static std::unique_ptr<TcpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
             const auto config = XIMU3_network_announcement_message_to_tcp_connection_config(message);
 
             if (std::strlen(config.ip_address) == 0) {
                 return {};
             }
 
-            return std::make_shared<TcpConnectionConfig>(config);
+            return std::make_unique<TcpConnectionConfig>(config);
         }
 
         std::string toString() const override {
@@ -94,14 +94,14 @@ namespace ximu3 {
         explicit UdpConnectionConfig(const XIMU3_UdpConnectionConfig &config) : XIMU3_UdpConnectionConfig(config) {
         }
 
-        static std::shared_ptr<UdpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
+        static std::unique_ptr<UdpConnectionConfig> from(const XIMU3_NetworkAnnouncementMessage &message) {
             const auto config = XIMU3_network_announcement_message_to_udp_connection_config(message);
 
             if (std::strlen(config.ip_address) == 0) {
                 return {};
             }
 
-            return std::make_shared<UdpConnectionConfig>(config);
+            return std::make_unique<UdpConnectionConfig>(config);
         }
 
         std::string toString() const override {
@@ -161,22 +161,22 @@ namespace ximu3 {
         friend class Connection;
     };
 
-    inline std::shared_ptr<ConnectionConfig> ConnectionConfig::from(const Device &device) {
+    inline std::unique_ptr<ConnectionConfig> ConnectionConfig::from(const Device &device) {
         switch (device.connection_type) {
             case XIMU3_ConnectionTypeUsb:
-                return std::make_shared<UsbConnectionConfig>(device.usb_connection_config);
+                return std::make_unique<UsbConnectionConfig>(device.usb_connection_config);
             case XIMU3_ConnectionTypeSerial:
-                return std::make_shared<SerialConnectionConfig>(device.serial_connection_config);
+                return std::make_unique<SerialConnectionConfig>(device.serial_connection_config);
             case XIMU3_ConnectionTypeBluetooth:
-                return std::make_shared<BluetoothConnectionConfig>(device.bluetooth_connection_config);
+                return std::make_unique<BluetoothConnectionConfig>(device.bluetooth_connection_config);
             case XIMU3_ConnectionTypeTcp:
-                return std::make_shared<TcpConnectionConfig>(device.tcp_connection_config);
+                return std::make_unique<TcpConnectionConfig>(device.tcp_connection_config);
             case XIMU3_ConnectionTypeUdp:
-                return std::make_shared<UdpConnectionConfig>(device.udp_connection_config);
+                return std::make_unique<UdpConnectionConfig>(device.udp_connection_config);
             case XIMU3_ConnectionTypeFile:
-                return std::make_shared<FileConnectionConfig>(device.file_connection_config);
+                return std::make_unique<FileConnectionConfig>(device.file_connection_config);
             case XIMU3_ConnectionTypeMux:
-                return std::make_shared<MuxConnectionConfig>(*device.mux_connection_config);
+                return std::make_unique<MuxConnectionConfig>(*device.mux_connection_config);
         }
         return {};
     }
