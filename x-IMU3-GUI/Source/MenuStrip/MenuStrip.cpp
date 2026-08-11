@@ -480,7 +480,7 @@ juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":1}"));
     });
     menu.addItem("Anchored Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Anchored Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 5, false, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Sampling Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 5, false, threadPool));
     });
 
     return menu;
@@ -521,10 +521,10 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
         });
     });
     menu.addItem("Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Bias Calibration", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Calibrating Bias", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
     });
     menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::magnet_svg, "Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::magnet_svg, "Calibrating Hard-Iron Offset", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
     });
     menu.addItem("Update Firmware", [&] {
         if (connectionPanelContainer.getConnectionPanels().size() > 0) {
