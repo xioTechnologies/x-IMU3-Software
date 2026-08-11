@@ -21,15 +21,20 @@ public:
             const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
 
             if (messages.empty()) {
+                std::cout << "No network connections available" << std::endl;
+                return;
+            }
+
+            const auto config = ximu3::UdpConnectionConfig::from(messages.front());
+
+            if (config == nullptr) {
                 std::cout << "No UDP connections available" << std::endl;
                 return;
             }
 
             std::cout << "Found " << messages[0].device_name << " " << messages[0].serial_number << std::endl;
 
-            const ximu3::UdpConnectionConfig config(messages[0]);
-
-            run(config);
+            run(*config);
         } else {
             const ximu3::UdpConnectionConfig config("192.168.1.1", 9000, 8000); // replace with actual connection config
 

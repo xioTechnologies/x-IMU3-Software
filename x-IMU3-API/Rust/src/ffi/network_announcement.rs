@@ -59,12 +59,12 @@ impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_message_to_tcp_connection_config(message: NetworkAnnouncementMessageC) -> TcpConnectionConfigC {
-    TcpConnectionConfigC::from(&TcpConnectionConfig::from(&NetworkAnnouncementMessage::from(message)))
+    Option::<TcpConnectionConfig>::from(&NetworkAnnouncementMessage::from(message)).map(|config| TcpConnectionConfigC::from(&config)).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_message_to_udp_connection_config(message: NetworkAnnouncementMessageC) -> UdpConnectionConfigC {
-    UdpConnectionConfigC::from(&UdpConnectionConfig::from(&NetworkAnnouncementMessage::from(message)))
+    Option::<UdpConnectionConfig>::from(&NetworkAnnouncementMessage::from(message)).map(|config| UdpConnectionConfigC::from(&config)).unwrap_or_default()
 }
 
 #[no_mangle]

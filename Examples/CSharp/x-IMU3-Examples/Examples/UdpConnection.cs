@@ -20,13 +20,19 @@ namespace Ximu3Examples
 
                 if (messages.Length == 0)
                 {
+                    Console.WriteLine("No network connections available");
+                    return;
+                }
+
+                var config = Ximu3.UdpConnectionConfig.From(messages[0]);
+
+                if (config == null)
+                {
                     Console.WriteLine("No UDP connections available");
                     return;
                 }
 
                 Console.WriteLine("Found " + Ximu3.Helpers.ToString(messages[0].device_name) + " " + Ximu3.Helpers.ToString(messages[0].serial_number));
-
-                var config = new Ximu3.UdpConnectionConfig(messages[0]);
 
                 Run(config);
             }

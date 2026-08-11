@@ -128,11 +128,8 @@ void AvailableConnectionsDialog::timerCallback() {
     }
 
     for (const auto &message: networkAnnouncement->getMessages()) {
-        if (message.tcp_port != 0) {
-            addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::TcpConnectionConfig>(message), message.rssi, message.battery, message.charging_status);
-        }
-        if ((message.udp_send != 0) && (message.udp_receive != 0)) {
-            addRow(juce::String(message.device_name) + " " + message.serial_number, std::make_shared<ximu3::UdpConnectionConfig>(message), message.rssi, message.battery, message.charging_status);
+        for (const auto &device: ximu3::NetworkAnnouncement::toDevices(message)) {
+            addRow(juce::String(message.device_name) + " " + message.serial_number, ximu3::ConnectionConfig::from(device), message.rssi, message.battery, message.charging_status);
         }
     }
 

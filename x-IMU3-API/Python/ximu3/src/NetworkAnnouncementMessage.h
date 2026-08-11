@@ -59,11 +59,19 @@ static PyObject *network_announcement_message_get_charging_status(NetworkAnnounc
 static PyObject *network_announcement_message_to_tcp_connection_config(NetworkAnnouncementMessage *self) {
     const XIMU3_TcpConnectionConfig config = XIMU3_network_announcement_message_to_tcp_connection_config(self->wrapped);
 
+    if (strlen(config.ip_address) == 0) {
+        Py_RETURN_NONE;
+    }
+
     return tcp_connection_config_from(&config);
 }
 
 static PyObject *network_announcement_message_to_udp_connection_config(NetworkAnnouncementMessage *self) {
     const XIMU3_UdpConnectionConfig config = XIMU3_network_announcement_message_to_udp_connection_config(self->wrapped);
+
+    if (strlen(config.ip_address) == 0) {
+        Py_RETURN_NONE;
+    }
 
     return udp_connection_config_from(&config);
 }

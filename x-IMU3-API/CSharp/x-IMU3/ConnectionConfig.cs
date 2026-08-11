@@ -83,9 +83,16 @@ namespace Ximu3
             this.wrapped = config;
         }
 
-        public TcpConnectionConfig(CApi.XIMU3_NetworkAnnouncementMessage message)
+        public static TcpConnectionConfig? From(CApi.XIMU3_NetworkAnnouncementMessage message)
         {
-            this.wrapped = CApi.XIMU3_network_announcement_message_to_tcp_connection_config(message);
+            var config = CApi.XIMU3_network_announcement_message_to_tcp_connection_config(message);
+
+            if (Helpers.ToString(config.ip_address).Length == 0)
+            {
+                return null;
+            }
+
+            return new TcpConnectionConfig(config);
         }
 
         public override string ToString()
@@ -110,9 +117,16 @@ namespace Ximu3
             this.wrapped = config;
         }
 
-        public UdpConnectionConfig(CApi.XIMU3_NetworkAnnouncementMessage message)
+        public static UdpConnectionConfig? From(CApi.XIMU3_NetworkAnnouncementMessage message)
         {
-            this.wrapped = CApi.XIMU3_network_announcement_message_to_udp_connection_config(message);
+            var config = CApi.XIMU3_network_announcement_message_to_udp_connection_config(message);
+
+            if (Helpers.ToString(config.ip_address).Length == 0)
+            {
+                return null;
+            }
+
+            return new UdpConnectionConfig(config);
         }
 
         public override string ToString()
