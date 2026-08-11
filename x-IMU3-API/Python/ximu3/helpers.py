@@ -200,7 +200,7 @@ class DataLogger:
         self,
         connections: ximu3.Connection | Sequence[ximu3.Connection],
         name: str | None = None,  # None to use main script name
-        destination: str | None = None,  # None to use main script directory
+        destination: Path | str | None = None,  # None to use main script directory
         seconds: int | None = None,  # None for non-blocking, else blocks until logging completes
         overwrite: bool = False,  # True to delete destination/name directory first
     ) -> None:
@@ -213,19 +213,7 @@ class DataLogger:
 
         self._destination = Path(destination).absolute() if destination else main_path.parent
 
-        if not self._destination.exists():
-            raise FileNotFoundError(f"Destination does not exist: {self._destination}")
-
-        if not self._destination.is_dir():
-            raise NotADirectoryError(f"Destination is not a directory: {self._destination}")
-
-        self._path = self._destination / self._name
-
-        if overwrite:
-            self.delete()
-
-        if self._path.exists():
-            raise FileExistsError(f"Directory already exists: {self._path}")
+        self._path = _verify_destination(self._destination, self._name, overwrite)
 
         if seconds is None:
             self._wrapped = ximu3.DataLogger(str(self._destination), self._name, connections)
@@ -253,6 +241,76 @@ class DataLogger:
 
     def delete(self) -> None:
         shutil.rmtree(self._path, ignore_errors=True)
+
+
+def convert(
+    file_path: Path | str,
+    name: str | None = None,  # None to use file_path name
+    destination: Path | str | None = None,  # None to use file_path directory
+    overwrite: bool = False,  # True to delete existing destination/name directory
+) -> Path:
+    file_path: Path = Path(file_path).absolute()
+
+    name = name or file_path.stem
+
+    destination = Path(destination).absolute() if destination else file_path.parent
+
+    return convert_together([file_path], name, destination, overwrite)
+
+
+def convert_together(
+    file_paths: Sequence[Path | str],
+    name: str,
+    destination: Path | str | None = None,  # None to use file_paths directory
+    overwrite: bool = False,  # True to delete existing destination/name directory
+) -> Path:
+    if not file_paths:
+        raise ValueError("No files provided")
+
+    file_paths: list[Path] = [Path(f).absolute() for f in file_paths]
+
+    for file_path in file_paths:
+        if not file_path.exists():
+            raise FileNotFoundError(f"File does not exist: {file_path}")
+
+    if destination:
+        destination = Path(destination).absolute()
+    else:
+        parents = {f.parent for f in file_paths}
+
+        if len(parents) > 1:
+            parents_string = "\n".join(str(p) for p in parents)
+
+            raise ValueError(f"Conflicting destinations:\n{parents_string}")
+
+        destination = next(iter(parents))
+
+    path = _verify_destination(destination, name, overwrite)
+
+    progress = ximu3.FileConverter.convert(str(destination), name, [str(f) for f in file_paths])
+
+    if progress.status != ximu3.FILE_CONVERTER_STATUS_COMPLETE:
+        raise RuntimeError(f"Unexpected file converter status: {ximu3.file_converter_status_to_string(progress.status)}")
+
+    return path
+
+
+def _verify_destination(destination: Path, name: str, overwrite: bool) -> Path:
+    if not destination.exists():
+        raise FileNotFoundError(f"Destination does not exist: {destination}")
+
+    if not destination.is_dir():
+        raise NotADirectoryError(f"Destination is not a directory: {destination}")
+
+    path: Path = destination / name
+
+    if overwrite:
+        shutil.rmtree(path, ignore_errors=True)
+
+    if path.exists():
+        raise FileExistsError(f"Directory already exists: {path}")
+
+    return path
 
 
 def mux_scanner(
@@ -302,7 +360,7 @@ def mux_connect_dict(
 
 def backup(
     connection: ximu3.Connection,
-    file_path: str | None = None,  # None to backup to file in main script directory, with file name containing device serial number
+    file_path: Path | str | None = None,  # None to backup to file in main script directory, with file name containing device serial number
     overwrite: bool = False,  # True to delete file_path first
 ) -> Path:
     if file_path:
@@ -329,7 +387,7 @@ def backup(
 
 def restore(
     connection: ximu3.Connection,
-    file_path: str | None = None,  # None to restore from file in main script directory, with file name containing device serial number
+    file_path: Path | str | None = None,  # None to restore from file in main script directory, with file name containing device serial number
 ) -> Path:
     if file_path:
         file_path = Path(file_path).absolute()
