@@ -21,6 +21,7 @@ void udp_connection() {
 
         if (messages.length == 0) {
             printf("No network connections available\n");
+            XIMU3_network_announcement_messages_free(messages);
             return;
         }
 
@@ -28,6 +29,7 @@ void udp_connection() {
 
         if (strlen(config.ip_address) == 0) {
             printf("No UDP connections available\n");
+            XIMU3_network_announcement_messages_free(messages);
             return;
         }
 
@@ -38,6 +40,8 @@ void udp_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_udp(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     } else {
         const XIMU3_UdpConnectionConfig config = (XIMU3_UdpConnectionConfig){
             .ip_address = "192.168.1.1",
@@ -48,5 +52,7 @@ void udp_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_udp(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     }
 }

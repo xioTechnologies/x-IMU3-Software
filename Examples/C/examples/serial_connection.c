@@ -11,6 +11,7 @@ void serial_connection() {
 
         if (devices.length == 0) {
             printf("No serial connections available\n");
+            XIMU3_devices_free(devices);
             return;
         }
 
@@ -23,6 +24,8 @@ void serial_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_serial(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     } else {
         const XIMU3_SerialConnectionConfig config = (XIMU3_SerialConnectionConfig){
             .port_name = "COM1",
@@ -33,5 +36,7 @@ void serial_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_serial(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     }
 }

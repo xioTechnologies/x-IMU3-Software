@@ -57,7 +57,6 @@ void run(XIMU3_Connection *const connection) {
 
     if (result != XIMU3_ResultOk) {
         printf("Unable to open %s: %s\n", XIMU3_connection_get_config_string(connection), XIMU3_result_to_string(result));
-        XIMU3_connection_free(connection);
         return;
     }
 
@@ -117,7 +116,6 @@ void run(XIMU3_Connection *const connection) {
 
     // Close connection
     XIMU3_connection_close(connection);
-    XIMU3_connection_free(connection);
 }
 
 void receive_error_callback(const XIMU3_ReceiveError error, void *context) {

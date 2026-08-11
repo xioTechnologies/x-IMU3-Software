@@ -21,6 +21,7 @@ void tcp_connection() {
 
         if (messages.length == 0) {
             printf("No network connections available\n");
+            XIMU3_network_announcement_messages_free(messages);
             return;
         }
 
@@ -28,6 +29,7 @@ void tcp_connection() {
 
         if (strlen(config.ip_address) == 0) {
             printf("No TCP connections available\n");
+            XIMU3_network_announcement_messages_free(messages);
             return;
         }
 
@@ -38,6 +40,8 @@ void tcp_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_tcp(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     } else {
         const XIMU3_TcpConnectionConfig config = (XIMU3_TcpConnectionConfig){
             .ip_address = "192.168.1.1",
@@ -47,5 +51,7 @@ void tcp_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_tcp(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     }
 }

@@ -11,6 +11,7 @@ void usb_connection() {
 
         if (devices.length == 0) {
             printf("No USB connections available\n");
+            XIMU3_devices_free(devices);
             return;
         }
 
@@ -23,6 +24,8 @@ void usb_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_usb(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     } else {
         const XIMU3_UsbConnectionConfig config = (XIMU3_UsbConnectionConfig){
             .port_name = "COM1",
@@ -31,5 +34,7 @@ void usb_connection() {
         XIMU3_Connection *const connection = XIMU3_connection_new_usb(config);
 
         run(connection);
+
+        XIMU3_connection_free(connection);
     }
 }

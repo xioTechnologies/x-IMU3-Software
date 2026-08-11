@@ -11,6 +11,7 @@ void mux_connection() {
 
     if (usb_devices.length == 0) {
         printf("No USB connections available\n");
+        XIMU3_devices_free(usb_devices);
         return;
     }
 
@@ -36,7 +37,9 @@ void mux_connection() {
         if (mux_devices.length == 0) {
             printf("No mux connections available\n");
             XIMU3_devices_free(mux_devices);
-            goto cleanup;
+            XIMU3_connection_close(usb_connection);
+            XIMU3_connection_free(usb_connection);
+            return;
         }
 
         printf("Found %s\n", XIMU3_device_to_string(mux_devices.array[0]));
@@ -63,7 +66,6 @@ void mux_connection() {
     }
 
     // Close connection
-cleanup:
     XIMU3_connection_close(usb_connection);
     XIMU3_connection_free(usb_connection);
 }
