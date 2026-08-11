@@ -94,12 +94,16 @@ static PyObject *connection_open_async(Connection *self, PyObject *arg) {
     Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
     XIMU3_connection_open_async(self->wrapped, result_callback, arg);
-    Py_RETURN_NONE;
+
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *connection_close(Connection *self, PyObject *args) {
     XIMU3_connection_close(self->wrapped);
-    Py_RETURN_NONE;
+
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *connection_ping(Connection *self, PyObject *args) {
@@ -121,7 +125,9 @@ static PyObject *connection_ping_async(Connection *self, PyObject *arg) {
     Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
 
     XIMU3_connection_ping_async(self->wrapped, ping_response_callback, arg);
-    Py_RETURN_NONE;
+
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *connection_send_command(Connection *self, PyObject *args, PyObject *kwds) {
@@ -222,7 +228,9 @@ static PyObject *connection_send_command_async(Connection *self, PyObject *args,
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
     XIMU3_connection_send_command_async(self->wrapped, command, (uint32_t) retries, (uint32_t) timeout, command_message_callback, callback);
-    Py_RETURN_NONE;
+
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *connection_send_commands_async(Connection *self, PyObject *args, PyObject *kwds) {
@@ -275,7 +283,9 @@ static PyObject *connection_send_commands_async(Connection *self, PyObject *args
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
     XIMU3_connection_send_commands_async(self->wrapped, commands, length, (uint32_t) retries, (uint32_t) timeout, command_messages_callback, callback);
-    Py_RETURN_NONE;
+
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *connection_get_config(Connection *self, PyObject *args) {
@@ -1064,7 +1074,8 @@ static PyObject *connection_remove_callback(Connection *self, PyObject *arg) {
         XIMU3_connection_remove_callback(self->wrapped, (uint64_t) id);
     Py_END_ALLOW_THREADS
 
-    Py_RETURN_NONE;
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyMethodDef connection_methods[] = {

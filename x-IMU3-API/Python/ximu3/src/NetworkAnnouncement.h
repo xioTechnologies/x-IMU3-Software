@@ -73,7 +73,8 @@ static PyObject *network_announcement_remove_callback(NetworkAnnouncement *self,
         XIMU3_network_announcement_remove_callback(self->wrapped, (uint64_t) id);
     Py_END_ALLOW_THREADS
 
-    Py_RETURN_NONE;
+    Py_INCREF(self);
+    return (PyObject *) self;
 }
 
 static PyObject *network_announcement_get_messages(NetworkAnnouncement *self, PyObject *args) {
