@@ -472,12 +472,12 @@ juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AHRS MODE"), nullptr);
-    menu.addItem("Magnetic Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"ahrs_mode\":0}"));
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("HEADING MODE"), nullptr);
+    menu.addItem("Relative Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":0}"));
     });
-    menu.addItem("Gyroscope Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"ahrs_mode\":1}"));
+    menu.addItem("Magnetic Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":1}"));
     });
     menu.addItem("Anchored Heading", [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Anchored Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 5, false, threadPool));
@@ -520,8 +520,8 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
             return true;
         });
     });
-    menu.addItem("Gyroscope Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Gyroscope Bias Calibration", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
+    menu.addItem("Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Bias Calibration", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
     });
     menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
