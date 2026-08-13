@@ -196,9 +196,11 @@ namespace Ximu3
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] interface_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
-            public byte[] device_name;
+            public byte[] model;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] serial_number;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
+            public byte[] device_name;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -415,9 +417,11 @@ namespace Ximu3
         public struct XIMU3_NetworkAnnouncementMessage
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
-            public byte[] device_name;
+            public byte[] model;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] serial_number;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
+            public byte[] device_name;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = XIMU3_CHAR_ARRAY_SIZE)]
             public byte[] ip_address;
             public UInt16 tcp_port;
