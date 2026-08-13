@@ -20,12 +20,16 @@ static PyObject *network_announcement_message_str(NetworkAnnouncementMessage *se
     return PyUnicode_FromString(string);
 }
 
-static PyObject *network_announcement_message_get_device_name(NetworkAnnouncementMessage *self) {
-    return PyUnicode_FromString(self->wrapped.device_name);
+static PyObject *network_announcement_message_get_model(NetworkAnnouncementMessage *self) {
+    return PyUnicode_FromString(self->wrapped.model);
 }
 
 static PyObject *network_announcement_message_get_serial_number(NetworkAnnouncementMessage *self) {
     return PyUnicode_FromString(self->wrapped.serial_number);
+}
+
+static PyObject *network_announcement_message_get_device_name(NetworkAnnouncementMessage *self) {
+    return PyUnicode_FromString(self->wrapped.device_name);
 }
 
 static PyObject *network_announcement_message_get_ip_address(NetworkAnnouncementMessage *self) {
@@ -83,8 +87,9 @@ static PyObject *network_announcement_message_to_devices(NetworkAnnouncementMess
 }
 
 static PyGetSetDef network_announcement_message_get_set[] = {
-    {"device_name", (getter) network_announcement_message_get_device_name, NULL, "", NULL},
+    {"model", (getter) network_announcement_message_get_model, NULL, "", NULL},
     {"serial_number", (getter) network_announcement_message_get_serial_number, NULL, "", NULL},
+    {"device_name", (getter) network_announcement_message_get_device_name, NULL, "", NULL},
     {"ip_address", (getter) network_announcement_message_get_ip_address, NULL, "", NULL},
     {"tcp_port", (getter) network_announcement_message_get_tcp_port, NULL, "", NULL},
     {"udp_send", (getter) network_announcement_message_get_udp_send, NULL, "", NULL},

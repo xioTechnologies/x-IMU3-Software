@@ -13,8 +13,9 @@ use std::os::raw::{c_char, c_void};
 
 #[repr(C)]
 pub struct NetworkAnnouncementMessageC {
-    device_name: [c_char; CHAR_ARRAY_SIZE],
+    model: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],
+    device_name: [c_char; CHAR_ARRAY_SIZE],
     ip_address: [c_char; CHAR_ARRAY_SIZE],
     tcp_port: u16,
     udp_send: u16,
@@ -27,8 +28,9 @@ pub struct NetworkAnnouncementMessageC {
 impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         Self {
-            device_name: str_to_char_array(&message.device_name),
+            model: str_to_char_array(&message.model),
             serial_number: str_to_char_array(&message.serial_number),
+            device_name: str_to_char_array(&message.device_name),
             ip_address: str_to_char_array(&message.ip_address.to_string()),
             tcp_port: message.tcp_port,
             udp_send: message.udp_send,
@@ -43,8 +45,9 @@ impl From<&NetworkAnnouncementMessage> for NetworkAnnouncementMessageC {
 impl From<NetworkAnnouncementMessageC> for NetworkAnnouncementMessage {
     fn from(message: NetworkAnnouncementMessageC) -> Self {
         Self {
-            device_name: unsafe { char_array_to_string(&message.device_name) },
+            model: unsafe { char_array_to_string(&message.model) },
             serial_number: unsafe { char_array_to_string(&message.serial_number) },
+            device_name: unsafe { char_array_to_string(&message.device_name) },
             ip_address: unsafe { char_array_to_string(&message.ip_address) }.parse().ok().unwrap_or_else(|| Ipv4Addr::new(0, 0, 0, 0)),
             tcp_port: message.tcp_port,
             udp_send: message.udp_send,

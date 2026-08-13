@@ -10,8 +10,9 @@ def print_message(message: ximu3.NetworkAnnouncementMessage) -> None:
     print(
         ", ".join(
             [
-                message.device_name,
+                message.model,
                 message.serial_number,
+                message.device_name,
                 str(message.ip_address),
                 str(message.tcp_port),
                 str(message.udp_send),

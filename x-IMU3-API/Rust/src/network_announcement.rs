@@ -11,8 +11,9 @@ use std::sync::{Arc, Mutex};
 
 #[derive(Clone)]
 pub struct NetworkAnnouncementMessage {
-    pub device_name: String,
+    pub model: String,
     pub serial_number: String,
+    pub device_name: String,
     pub ip_address: Ipv4Addr,
     pub tcp_port: u16,
     pub udp_send: u16,
@@ -54,8 +55,9 @@ impl From<&NetworkAnnouncementMessage> for Vec<Device> {
     fn from(message: &NetworkAnnouncementMessage) -> Self {
         let device = |config: Option<ConnectionConfig>| {
             Some(Device {
-                device_name: message.device_name.clone(),
+                model: message.model.clone(),
                 serial_number: message.serial_number.clone(),
+                device_name: message.device_name.clone(),
                 connection_config: config?,
             })
         };
@@ -73,9 +75,10 @@ impl fmt::Display for NetworkAnnouncementMessage {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(
             formatter,
-            "{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
-            self.device_name,
+            "{}, {}, {}, {}, {}, {}, {}, {}%, {}%, {}",
+            self.model,
             self.serial_number,
+            self.device_name,
             self.ip_address,
             self.tcp_port,
             self.udp_send,
@@ -90,8 +93,9 @@ impl fmt::Display for NetworkAnnouncementMessage {
 impl PartialEq for NetworkAnnouncementMessage {
     #[rustfmt::skip]
     fn eq(&self, other: &Self) -> bool { // comparison must not include rssi, battery, charging_status, expiry
-        self.device_name == other.device_name
+        self.model == other.model
             && self.serial_number == other.serial_number
+            && self.device_name == other.device_name
             && self.ip_address == other.ip_address
             && self.tcp_port == other.tcp_port
             && self.udp_send == other.udp_send
@@ -178,8 +182,9 @@ impl NetworkAnnouncement {
         let object: serde_json::Value = serde_json::from_slice(json).ok()?;
 
         Some(NetworkAnnouncementMessage {
-            device_name: object.get("name").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            model: object.get("model").and_then(|value| value.as_str()).unwrap_or("").to_string(),
             serial_number: object.get("sn").and_then(|value| value.as_str()).unwrap_or("").to_string(),
+            device_name: object.get("name").and_then(|value| value.as_str()).unwrap_or("").to_string(),
             ip_address: object.get("ip").and_then(|value| value.as_str()).and_then(|s| s.parse::<Ipv4Addr>().ok()).unwrap_or(Ipv4Addr::UNSPECIFIED),
             tcp_port: object.get("port").and_then(|value| value.as_u64()).unwrap_or(0) as u16,
             udp_send: object.get("send").and_then(|value| value.as_u64()).unwrap_or(0) as u16,

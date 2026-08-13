@@ -155,8 +155,9 @@ impl MuxScanner {
         });
 
         Some(Device {
-            device_name: response.device_name,
+            model: response.model,
             serial_number: response.serial_number,
+            device_name: response.device_name,
             connection_config,
         })
     }
