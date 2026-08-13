@@ -13,41 +13,41 @@ typedef struct {
 static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
-    PyObject *files_sequence;
+    PyObject *file_paths_sequence;
     PyObject *callback;
 
     static char *kwlist[] = {
         "destination",
         "name",
-        "files",
+        "file_paths",
         "callback",
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOO", kwlist, &destination, &name, &files_sequence, &callback) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssOO", kwlist, &destination, &name, &file_paths_sequence, &callback) == 0) {
         return NULL;
     }
 
-    if (PySequence_Check(files_sequence) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'files' must be a sequence");
+    if (PySequence_Check(file_paths_sequence) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'file_paths' must be a sequence");
         return NULL;
     }
 
-    const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
+    const uint32_t length = (uint32_t) PySequence_Size(file_paths_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'files' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'file_paths' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 
-    const char *files[CHAR_PTR_ARRAY_LENGTH];
+    const char *file_paths[CHAR_PTR_ARRAY_LENGTH];
 
     for (uint32_t index = 0; index < length; index++) {
-        PyObject *file = PySequence_GetItem(files_sequence, index); // TODO: this will never be destroyed (memory leak)
+        PyObject *file_path = PySequence_GetItem(file_paths_sequence, index); // TODO: this will never be destroyed (memory leak)
 
-        files[index] = (char *) PyUnicode_AsUTF8(file);
+        file_paths[index] = (char *) PyUnicode_AsUTF8(file_path);
 
-        if (files[index] == NULL) {
+        if (file_paths[index] == NULL) {
             return NULL;
         }
     }
@@ -65,7 +65,7 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
 
     Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    self->wrapped = XIMU3_file_converter_new(destination, name, files, length, file_converter_progress_callback, callback);
+    self->wrapped = XIMU3_file_converter_new(destination, name, file_paths, length, file_converter_progress_callback, callback);
     return (PyObject *) self;
 }
 
@@ -79,44 +79,44 @@ static void file_converter_free(FileConverter *self) {
 static PyObject *file_converter_convert(PyObject *null, PyObject *args, PyObject *kwds) {
     const char *destination;
     const char *name;
-    PyObject *files_sequence;
+    PyObject *file_paths_sequence;
 
     static char *kwlist[] = {
         "destination",
         "name",
-        "files",
+        "file_paths",
         NULL, /* sentinel */
     };
 
-    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssO", kwlist, &destination, &name, &files_sequence) == 0) {
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "ssO", kwlist, &destination, &name, &file_paths_sequence) == 0) {
         return NULL;
     }
 
-    if (PySequence_Check(files_sequence) == 0) {
-        PyErr_SetString(PyExc_TypeError, "'files' must be a sequence");
+    if (PySequence_Check(file_paths_sequence) == 0) {
+        PyErr_SetString(PyExc_TypeError, "'file_paths' must be a sequence");
         return NULL;
     }
 
-    const uint32_t length = (uint32_t) PySequence_Size(files_sequence);
+    const uint32_t length = (uint32_t) PySequence_Size(file_paths_sequence);
 
     if (length > CHAR_PTR_ARRAY_LENGTH) {
-        PyErr_Format(PyExc_ValueError, "'files' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
+        PyErr_Format(PyExc_ValueError, "'file_paths' length must not exceed %d", CHAR_PTR_ARRAY_LENGTH);
         return NULL;
     }
 
-    const char *files[CHAR_PTR_ARRAY_LENGTH];
+    const char *file_paths[CHAR_PTR_ARRAY_LENGTH];
 
     for (uint32_t index = 0; index < length; index++) {
-        PyObject *file = PySequence_GetItem(files_sequence, index); // TODO: this will never be destroyed (memory leak)
+        PyObject *file_path = PySequence_GetItem(file_paths_sequence, index); // TODO: this will never be destroyed (memory leak)
 
-        files[index] = (char *) PyUnicode_AsUTF8(file);
+        file_paths[index] = (char *) PyUnicode_AsUTF8(file_path);
 
-        if (files[index] == NULL) {
+        if (file_paths[index] == NULL) {
             return NULL;
         }
     }
 
-    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, name, files, length);
+    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, name, file_paths, length);
 
     return file_converter_progress_from(&progress);
 }

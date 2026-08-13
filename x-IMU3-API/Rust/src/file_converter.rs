@@ -136,14 +136,14 @@ impl FileConverter {
         file_converter
     }
 
-    pub fn convert(destination: &str, name: &str, files: Vec<&str>) -> FileConverterProgress {
+    pub fn convert(destination: &str, name: &str, file_paths: Vec<&str>) -> FileConverterProgress {
         let (sender, receiver) = crossbeam::channel::unbounded();
 
         let closure = Box::new(move |progress| {
             sender.send(progress).ok();
         });
 
-        let _file_converter = Self::new(destination, name, files, closure);
+        let _file_converter = Self::new(destination, name, file_paths, closure);
 
         loop {
             if let Ok(progress) = receiver.recv() {
