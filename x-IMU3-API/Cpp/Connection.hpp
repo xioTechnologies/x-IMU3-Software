@@ -73,11 +73,11 @@ namespace ximu3 {
             XIMU3_connection_close(wrapped);
         }
 
-        std::optional<XIMU3_PingResponse> ping() {
-            return toOptional(XIMU3_connection_ping(wrapped));
+        std::optional<XIMU3_PingResponse> ping(const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
+            return toOptional(XIMU3_connection_ping(wrapped, retries, timeout));
         }
 
-        void pingAsync(std::function<void(std::optional<XIMU3_PingResponse>)> callback) {
+        void pingAsync(std::function<void(std::optional<XIMU3_PingResponse>)> callback, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
             struct WrappedCallback {
                 std::function<void(std::optional<XIMU3_PingResponse>)> callback;
 
@@ -88,7 +88,7 @@ namespace ximu3 {
             };
             auto *const wrappedCallback = new WrappedCallback({callback});
 
-            return XIMU3_connection_ping_async(wrapped, Helpers::wrapCallable<XIMU3_PingResponse>(*wrappedCallback), wrappedCallback);
+            return XIMU3_connection_ping_async(wrapped, retries, timeout, Helpers::wrapCallable<XIMU3_PingResponse>(*wrappedCallback), wrappedCallback);
         }
 
         std::optional<CommandMessage> sendCommand(const std::string &command, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
