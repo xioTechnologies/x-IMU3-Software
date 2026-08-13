@@ -34,12 +34,12 @@ void ping() {
     }
 
     // Ping (blocking)
-    const XIMU3_PingResponse response = XIMU3_connection_ping(connection);
+    const XIMU3_PingResponse response = XIMU3_connection_ping(connection, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT);
 
     print_response(response);
 
     // Ping (non-blocking)
-    XIMU3_connection_ping_async(connection, callback, NULL);
+    XIMU3_connection_ping_async(connection, XIMU3_DEFAULT_RETRIES, XIMU3_DEFAULT_TIMEOUT, callback, NULL);
 
     sleep(3);
 
