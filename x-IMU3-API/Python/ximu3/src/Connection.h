@@ -106,25 +106,53 @@ static PyObject *connection_close(Connection *self, PyObject *args) {
     return (PyObject *) self;
 }
 
-static PyObject *connection_ping(Connection *self, PyObject *args) {
+static PyObject *connection_ping(Connection *self, PyObject *args, PyObject *kwds) {
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
+
+    static char *kwlist[] = {
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "|kk", kwlist, &retries, &timeout) == 0) {
+        return NULL;
+    }
+
     XIMU3_PingResponse response;
 
     Py_BEGIN_ALLOW_THREADS // avoid deadlock caused by PyGILState_Ensure in callbacks
-        response = XIMU3_connection_ping(self->wrapped);
+        response = XIMU3_connection_ping(self->wrapped, (uint32_t) retries, (uint32_t) timeout);
     Py_END_ALLOW_THREADS
 
     return ping_response_from(&response);
 }
 
-static PyObject *connection_ping_async(Connection *self, PyObject *arg) {
-    if (PyCallable_Check(arg) == 0) {
+static PyObject *connection_ping_async(Connection *self, PyObject *args, PyObject *kwds) {
+    PyObject *callback;
+    unsigned long retries = XIMU3_DEFAULT_RETRIES;
+    unsigned long timeout = XIMU3_DEFAULT_TIMEOUT;
+
+    static char *kwlist[] = {
+        "callback",
+        "retries",
+        "timeout",
+        NULL, /* sentinel */
+    };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwds, "O|kk", kwlist, &callback, &retries, &timeout) == 0) {
+        return NULL;
+    }
+
+    if (PyCallable_Check(callback) == 0) {
         PyErr_SetString(PyExc_TypeError, "'callback' must be callable");
         return NULL;
     }
 
-    Py_INCREF(arg); // TODO: this will never be destroyed (memory leak)
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    XIMU3_connection_ping_async(self->wrapped, ping_response_callback, arg);
+    XIMU3_connection_ping_async(self->wrapped, (uint32_t) retries, (uint32_t) timeout, ping_response_callback, callback);
 
     Py_INCREF(self);
     return (PyObject *) self;
@@ -1082,8 +1110,8 @@ static PyMethodDef connection_methods[] = {
     {"open", (PyCFunction) connection_open, METH_NOARGS, ""},
     {"open_async", (PyCFunction) connection_open_async, METH_O, ""},
     {"close", (PyCFunction) connection_close, METH_NOARGS, ""},
-    {"ping", (PyCFunction) connection_ping, METH_NOARGS, ""},
-    {"ping_async", (PyCFunction) connection_ping_async, METH_O, ""},
+    {"ping", (PyCFunction) connection_ping, METH_VARARGS | METH_KEYWORDS, ""},
+    {"ping_async", (PyCFunction) connection_ping_async, METH_VARARGS | METH_KEYWORDS, ""},
     {"send_command", (PyCFunction) connection_send_command, METH_VARARGS | METH_KEYWORDS, ""},
     {"send_commands", (PyCFunction) connection_send_commands, METH_VARARGS | METH_KEYWORDS, ""},
     {"send_command_async", (PyCFunction) connection_send_command_async, METH_VARARGS | METH_KEYWORDS, ""},
