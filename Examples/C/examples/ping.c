@@ -58,6 +58,6 @@ static void print_response(const XIMU3_PingResponse response) {
         return;
     }
 
-    printf("%s, %s, %s\n", response.interface, response.device_name, response.serial_number);
+    printf("%s, %s, %s, %s\n", response.interface, response.model, response.serial_number, response.device_name);
     // printf("%s\n", XIMU3_ping_response_to_string(response)); // alternative to above
 }

@@ -44,7 +44,7 @@ pub fn run() {
 fn print_response(response: Option<PingResponse>) {
     match response {
         Some(response) => {
-            println!("{}, {}, {}", response.interface, response.device_name, response.serial_number);
+            println!("{}, {}, {}, {}", response.interface, response.model, response.serial_number, response.device_name);
             // println!("{response}"); // alternative to above
         }
         None => println!("No response"),

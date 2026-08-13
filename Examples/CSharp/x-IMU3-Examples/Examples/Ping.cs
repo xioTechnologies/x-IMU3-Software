@@ -57,8 +57,9 @@ namespace Ximu3Examples
 
             Console.WriteLine(
                 Ximu3.Helpers.ToString(response.Value.interface_) + ", " +
-                Ximu3.Helpers.ToString(response.Value.device_name) + ", " +
-                Ximu3.Helpers.ToString(response.Value.serial_number)
+                Ximu3.Helpers.ToString(response.Value.model) + ", " +
+                Ximu3.Helpers.ToString(response.Value.serial_number) + ", " +
+                Ximu3.Helpers.ToString(response.Value.device_name)
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ping_response_to_string(response.Value))); // alternative to above
         }

@@ -8,8 +8,9 @@ use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct DeviceC {
-    device_name: [c_char; CHAR_ARRAY_SIZE],
+    model: [c_char; CHAR_ARRAY_SIZE],
     serial_number: [c_char; CHAR_ARRAY_SIZE],
+    device_name: [c_char; CHAR_ARRAY_SIZE],
     connection_type: ConnectionType,
     usb_connection_config: UsbConnectionConfigC,
     serial_connection_config: SerialConnectionConfigC,
@@ -23,8 +24,9 @@ pub struct DeviceC {
 impl Default for DeviceC {
     fn default() -> Self {
         Self {
-            device_name: EMPTY_CHAR_ARRAY,
+            model: EMPTY_CHAR_ARRAY,
             serial_number: EMPTY_CHAR_ARRAY,
+            device_name: EMPTY_CHAR_ARRAY,
             connection_type: ConnectionType::Usb,
             usb_connection_config: Default::default(),
             serial_connection_config: Default::default(),
@@ -41,8 +43,9 @@ impl From<&Device> for DeviceC {
     fn from(device: &Device) -> Self {
         let mut device_c: Self = Default::default();
 
-        device_c.device_name = str_to_char_array(&device.device_name);
+        device_c.model = str_to_char_array(&device.model);
         device_c.serial_number = str_to_char_array(&device.serial_number);
+        device_c.device_name = str_to_char_array(&device.device_name);
 
         match &device.connection_config {
             ConnectionConfig::UsbConnectionConfig(config) => {
@@ -82,8 +85,9 @@ impl From<&Device> for DeviceC {
 impl From<DeviceC> for Device {
     fn from(device: DeviceC) -> Self {
         Self {
-            device_name: unsafe { char_array_to_string(&device.device_name) },
+            model: unsafe { char_array_to_string(&device.model) },
             serial_number: unsafe { char_array_to_string(&device.serial_number) },
+            device_name: unsafe { char_array_to_string(&device.device_name) },
             connection_config: match device.connection_type {
                 ConnectionType::Usb => ConnectionConfig::UsbConnectionConfig(device.usb_connection_config.into()),
                 ConnectionType::Serial => ConnectionConfig::SerialConnectionConfig(device.serial_connection_config.into()),

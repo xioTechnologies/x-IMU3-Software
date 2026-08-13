@@ -20,12 +20,16 @@ static PyObject *device_str(Device *self) {
     return PyUnicode_FromString(string);
 }
 
-static PyObject *device_get_device_name(Device *self) {
-    return PyUnicode_FromString(self->wrapped.device_name);
+static PyObject *device_get_model(Device *self) {
+    return PyUnicode_FromString(self->wrapped.model);
 }
 
 static PyObject *device_get_serial_number(Device *self) {
     return PyUnicode_FromString(self->wrapped.serial_number);
+}
+
+static PyObject *device_get_device_name(Device *self) {
+    return PyUnicode_FromString(self->wrapped.device_name);
 }
 
 static PyObject *device_get_connection_config(Device *self) {
@@ -50,8 +54,9 @@ static PyObject *device_get_connection_config(Device *self) {
 }
 
 static PyGetSetDef device_get_set[] = {
-    {"device_name", (getter) device_get_device_name, NULL, "", NULL},
+    {"model", (getter) device_get_model, NULL, "", NULL},
     {"serial_number", (getter) device_get_serial_number, NULL, "", NULL},
+    {"device_name", (getter) device_get_device_name, NULL, "", NULL},
     {"connection_config", (getter) device_get_connection_config, NULL, "", NULL},
     {NULL} /* sentinel */
 };

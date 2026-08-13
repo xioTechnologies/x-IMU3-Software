@@ -46,7 +46,7 @@ fn print_devices(devices: Vec<Device>) {
     println!("{} device(s) found", devices.len());
 
     for device in devices {
-        println!("{}, {}, {}", device.device_name, device.serial_number, device.connection_config);
+        println!("{}, {}, {}, {}", device.model, device.serial_number, device.device_name, device.connection_config);
         // println!("{device}"); // alternative to above
     }
 }

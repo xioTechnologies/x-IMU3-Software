@@ -29,8 +29,9 @@ namespace Ximu3Examples
             foreach (var device in devices)
             {
                 Console.WriteLine(
-                    Ximu3.Helpers.ToString(device.wrapped.device_name) + ", " +
+                    Ximu3.Helpers.ToString(device.wrapped.model) + ", " +
                     Ximu3.Helpers.ToString(device.wrapped.serial_number) + ", " +
+                    Ximu3.Helpers.ToString(device.wrapped.device_name) + ", " +
                     Ximu3.ConnectionConfig.From(device)
                 );
                 // Console.WriteLine(device.ToString()); // alternative to above

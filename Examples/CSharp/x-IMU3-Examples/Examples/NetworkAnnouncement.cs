@@ -34,8 +34,9 @@ namespace Ximu3Examples
         private static void PrintMessage(Ximu3.CApi.XIMU3_NetworkAnnouncementMessage message)
         {
             Console.WriteLine(
-                Ximu3.Helpers.ToString(message.device_name) + ", " +
+                Ximu3.Helpers.ToString(message.model) + ", " +
                 Ximu3.Helpers.ToString(message.serial_number) + ", " +
+                Ximu3.Helpers.ToString(message.device_name) + ", " +
                 Ximu3.Helpers.ToString(message.ip_address) + ", " +
                 message.tcp_port + ", " +
                 message.udp_send + ", " +

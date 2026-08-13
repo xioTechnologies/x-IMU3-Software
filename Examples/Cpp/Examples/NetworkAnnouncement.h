@@ -35,8 +35,9 @@ private:
     };
 
     static void printMessage(const ximu3::XIMU3_NetworkAnnouncementMessage &message) {
-        std::cout << message.device_name << ", " <<
+        std::cout << message.model << ", " <<
                 message.serial_number << ", " <<
+                message.device_name << ", " <<
                 message.ip_address << ", " <<
                 message.tcp_port << ", " <<
                 message.udp_send << ", " <<

@@ -21,7 +21,7 @@ def print_devices(devices: list[ximu3.Device]) -> None:
     print(f"{len(devices)} device(s) found")
 
     for device in devices:
-        print(", ".join([device.device_name, device.serial_number, str(device.connection_config)]))
+        print(", ".join([device.model, device.serial_number, device.device_name, str(device.connection_config)]))
         # print(device)  # alternative to above
 
 

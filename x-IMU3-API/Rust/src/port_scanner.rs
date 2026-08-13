@@ -111,8 +111,9 @@ impl PortScanner {
         };
 
         let device = Device {
-            device_name: response.device_name,
+            model: response.model,
             serial_number: response.serial_number,
+            device_name: response.device_name,
             connection_config: match response.interface.as_str() {
                 "USB" => ConnectionConfig::UsbConnectionConfig(config.into()),
                 "Serial" => ConnectionConfig::SerialConnectionConfig(config),

@@ -52,7 +52,7 @@ static void print_devices(const XIMU3_Devices devices) {
                 break;
         }
 
-        printf("%s, %s, %s\n", device->device_name, device->serial_number, connection_config);
+        printf("%s, %s, %s, %s\n", device->model, device->serial_number, device->device_name, connection_config);
         // printf("%s\n", XIMU3_device_to_string(*device)); // alternative to above
     }
 }
