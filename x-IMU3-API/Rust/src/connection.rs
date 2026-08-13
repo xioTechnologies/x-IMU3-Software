@@ -92,16 +92,16 @@ impl Connection {
         self.internal.lock().unwrap().close();
     }
 
-    pub fn ping(&self) -> Option<PingResponse> {
-        Self::ping_internal(&self.internal)
+    pub fn ping(&self, retries: u32, timeout: u32) -> Option<PingResponse> {
+        Self::ping_internal(&self.internal, retries, timeout)
     }
 
-    pub fn ping_async(&self, closure: Box<dyn FnOnce(Option<PingResponse>) + Send>) {
+    pub fn ping_async(&self, retries: u32, timeout: u32, closure: Box<dyn FnOnce(Option<PingResponse>) + Send>) {
         let internal = self.internal.clone();
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let response = Self::ping_internal(&internal);
+            let response = Self::ping_internal(&internal, retries, timeout);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -112,8 +112,8 @@ impl Connection {
         });
     }
 
-    pub(crate) fn ping_internal(internal: &InternalConnection) -> Option<PingResponse> {
-        let responses = Self::send_commands_internal(internal, vec!["{\"ping\":null}".into()], 4, 200);
+    pub(crate) fn ping_internal(internal: &InternalConnection, retries: u32, timeout: u32) -> Option<PingResponse> {
+        let responses = Self::send_commands_internal(internal, vec!["{\"ping\":null}".into()], retries, timeout);
 
         PingResponse::parse(&responses.first()?.as_ref()?.json)
     }
