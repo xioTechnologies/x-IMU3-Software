@@ -167,8 +167,12 @@ def _unique(devices: list[ximu3.Device]) -> list[ximu3.Device]:
     return devices
 
 
-def ping(connection: ximu3.Connection) -> ximu3.PingResponse:
-    response = connection.ping()
+def ping(
+    connection: ximu3.Connection,
+    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.Connection.ping parameter
+    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.Connection.ping parameter
+) -> ximu3.PingResponse:
+    response = connection.ping(retries, timeout)
 
     if not response:
         raise RuntimeError(f"No ping response for {connection.get_config()}")

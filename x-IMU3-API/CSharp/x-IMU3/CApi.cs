@@ -575,10 +575,10 @@ namespace Ximu3
         public static extern void XIMU3_connection_close(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_PingResponse XIMU3_connection_ping(IntPtr connection);
+        public static extern XIMU3_PingResponse XIMU3_connection_ping(IntPtr connection, UInt32 retries, UInt32 timeout);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void XIMU3_connection_ping_async(IntPtr connection, XIMU3_CallbackPingResponseC callback, IntPtr context);
+        public static extern void XIMU3_connection_ping_async(IntPtr connection, UInt32 retries, UInt32 timeout, XIMU3_CallbackPingResponseC callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_CommandMessage XIMU3_connection_send_command(IntPtr connection, IntPtr command, UInt32 retries, UInt32 timeout);

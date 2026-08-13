@@ -24,7 +24,7 @@ pub fn run() {
     }
 
     // Ping (blocking)
-    let response = connection.ping();
+    let response = connection.ping(DEFAULT_RETRIES, DEFAULT_TIMEOUT);
 
     print_response(response);
 
@@ -33,7 +33,7 @@ pub fn run() {
         print_response(response);
     });
 
-    connection.ping_async(closure);
+    connection.ping_async(DEFAULT_RETRIES, DEFAULT_TIMEOUT, closure);
 
     std::thread::sleep(std::time::Duration::from_secs(3));
 

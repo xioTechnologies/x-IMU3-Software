@@ -72,9 +72,9 @@ namespace Ximu3
             CApi.XIMU3_connection_close(wrapped);
         }
 
-        public CApi.XIMU3_PingResponse Ping()
+        public CApi.XIMU3_PingResponse Ping(UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            return CApi.XIMU3_connection_ping(wrapped);
+            return CApi.XIMU3_connection_ping(wrapped, retries, timeout);
         }
 
         public delegate void PingAsyncCallback(CApi.XIMU3_PingResponse? response);
@@ -90,9 +90,9 @@ namespace Ximu3
             Marshal.GetDelegateForFunctionPointer<PingAsyncCallback>(context)(response);
         }
 
-        public void PingAsync(PingAsyncCallback callback)
+        public void PingAsync(PingAsyncCallback callback, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)
         {
-            CApi.XIMU3_connection_ping_async(wrapped, PingAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
+            CApi.XIMU3_connection_ping_async(wrapped, retries, timeout, PingAsyncCallbackInternal, Marshal.GetFunctionPointerForDelegate(callback));
         }
 
         public CommandMessage? SendCommand(string command, UInt32 retries = CApi.XIMU3_DEFAULT_RETRIES, UInt32 timeout = CApi.XIMU3_DEFAULT_TIMEOUT)

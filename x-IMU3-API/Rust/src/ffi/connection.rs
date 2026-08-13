@@ -84,19 +84,19 @@ pub extern "C" fn XIMU3_connection_close(connection: *mut Connection) {
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResponseC {
+pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection, retries: u32, timeout: u32) -> PingResponseC {
     let connection = unsafe { &*connection };
 
-    connection.ping().into()
+    connection.ping(retries, timeout).into()
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callback: Callback<PingResponseC>, context: *mut c_void) {
+pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, retries: u32, timeout: u32, callback: Callback<PingResponseC>, context: *mut c_void) {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     let closure = Box::new(move |response: Option<PingResponse>| callback(response.into(), void_ptr.0));
-
-    connection.ping_async(closure);
+    
+    connection.ping_async(retries, timeout, closure);
 }
 
 #[no_mangle]

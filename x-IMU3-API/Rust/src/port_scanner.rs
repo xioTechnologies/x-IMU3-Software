@@ -106,7 +106,7 @@ impl PortScanner {
             return;
         }
 
-        let Some(response) = connection.ping() else {
+        let Some(response) = connection.ping(DEFAULT_RETRIES, DEFAULT_TIMEOUT) else {
             return;
         };
 
