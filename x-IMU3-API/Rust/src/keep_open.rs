@@ -53,7 +53,7 @@ impl KeepOpen {
                     if *dropped {
                         return;
                     }
-                    Connection::ping_internal(&connection);
+                    Connection::ping_internal(&connection, DEFAULT_RETRIES, DEFAULT_TIMEOUT);
                 }
 
                 if connection.lock().unwrap().get_receiver().lock().unwrap().statistics.data_total > data_total {

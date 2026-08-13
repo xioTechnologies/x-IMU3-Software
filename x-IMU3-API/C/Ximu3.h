@@ -508,9 +508,9 @@ void XIMU3_connection_open_async(struct XIMU3_Connection *connection, XIMU3_Call
 
 void XIMU3_connection_close(struct XIMU3_Connection *connection);
 
-struct XIMU3_PingResponse XIMU3_connection_ping(struct XIMU3_Connection *connection);
+struct XIMU3_PingResponse XIMU3_connection_ping(struct XIMU3_Connection *connection, uint32_t retries, uint32_t timeout);
 
-void XIMU3_connection_ping_async(struct XIMU3_Connection *connection, XIMU3_CallbackPingResponseC callback, void *context);
+void XIMU3_connection_ping_async(struct XIMU3_Connection *connection, uint32_t retries, uint32_t timeout, XIMU3_CallbackPingResponseC callback, void *context);
 
 struct XIMU3_CommandMessage XIMU3_connection_send_command(struct XIMU3_Connection *connection, const char *command, uint32_t retries, uint32_t timeout);
 
