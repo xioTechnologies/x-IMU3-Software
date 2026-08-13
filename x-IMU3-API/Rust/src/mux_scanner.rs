@@ -67,7 +67,7 @@ impl MuxScanner {
                 let now = std::time::Instant::now();
 
                 if now >= next_ping {
-                    mux_connection.send_command("{\"ping\":null}".into(), 0, 0);
+                    mux_connection.ping(0, 0);
                     next_ping = now + default_timeout;
                 }
 
@@ -121,7 +121,7 @@ impl MuxScanner {
         mux_connection.open().ok();
 
         'outer: for _ in 0..(1 + retries) {
-            mux_connection.send_command("{\"ping\":null}".into(), 0, 0);
+            mux_connection.ping(0, 0);
 
             let start_time = std::time::Instant::now();
 
