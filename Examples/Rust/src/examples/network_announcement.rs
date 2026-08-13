@@ -24,9 +24,10 @@ pub fn run() {
 
 fn print_message(message: NetworkAnnouncementMessage) {
     #[rustfmt::skip]
-    println!("{}, {}, {}, {}, {}, {}, {}%, {}%, {}",
-             message.device_name,
+    println!("{}, {}, {}, {}, {}, {}, {}, {}%, {}%, {}",
+             message.model,
              message.serial_number,
+             message.device_name,
              message.ip_address,
              message.tcp_port,
              message.udp_send,

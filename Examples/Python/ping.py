@@ -21,7 +21,7 @@ def print_response(response: ximu3.PingResponse | None) -> None:
     if not response:
         raise Exception("No response")
 
-    print(", ".join([response.interface, response.device_name, response.serial_number]))
+    print(", ".join([response.interface, response.model, response.serial_number, response.device_name]))
     # print(response)  # alternative to above
 
 

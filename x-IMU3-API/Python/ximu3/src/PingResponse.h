@@ -23,18 +23,23 @@ static PyObject *ping_response_get_interface(PingResponse *self) {
     return PyUnicode_FromString(self->wrapped.interface);
 }
 
-static PyObject *ping_response_get_device_name(PingResponse *self) {
-    return PyUnicode_FromString(self->wrapped.device_name);
+static PyObject *ping_response_get_model(PingResponse *self) {
+    return PyUnicode_FromString(self->wrapped.model);
 }
 
 static PyObject *ping_response_get_serial_number(PingResponse *self) {
     return PyUnicode_FromString(self->wrapped.serial_number);
 }
 
+static PyObject *ping_response_get_device_name(PingResponse *self) {
+    return PyUnicode_FromString(self->wrapped.device_name);
+}
+
 static PyGetSetDef ping_response_get_set[] = {
     {"interface", (getter) ping_response_get_interface, NULL, "", NULL},
-    {"device_name", (getter) ping_response_get_device_name, NULL, "", NULL},
+    {"model", (getter) ping_response_get_model, NULL, "", NULL},
     {"serial_number", (getter) ping_response_get_serial_number, NULL, "", NULL},
+    {"device_name", (getter) ping_response_get_device_name, NULL, "", NULL},
     {NULL} /* sentinel */
 };
 
