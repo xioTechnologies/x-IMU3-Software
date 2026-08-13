@@ -40,9 +40,10 @@ static void callback(const XIMU3_NetworkAnnouncementMessage message, void *conte
 }
 
 static void print_message(const XIMU3_NetworkAnnouncementMessage message) {
-    printf("%s, %s, %s, %" PRIu16 ", %" PRIu16 ", %" PRIu16 ", %d%%, %d%%, %s\n",
-           message.device_name,
+    printf("%s, %s, %s, %s, %" PRIu16 ", %" PRIu16 ", %" PRIu16 ", %d%%, %d%%, %s\n",
+           message.model,
            message.serial_number,
+           message.device_name,
            message.ip_address,
            message.tcp_port,
            message.udp_send,

@@ -211,8 +211,9 @@ typedef void (*XIMU3_CallbackResult)(enum XIMU3_Result data, void *context);
 typedef struct XIMU3_PingResponse
 {
     char interface[XIMU3_CHAR_ARRAY_SIZE];
-    char device_name[XIMU3_CHAR_ARRAY_SIZE];
+    char model[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
+    char device_name[XIMU3_CHAR_ARRAY_SIZE];
 } XIMU3_PingResponse;
 
 typedef void (*XIMU3_CallbackPingResponseC)(struct XIMU3_PingResponse data, void *context);
@@ -450,8 +451,9 @@ typedef void (*XIMU3_CallbackDevices)(struct XIMU3_Devices data, void *context);
 
 typedef struct XIMU3_NetworkAnnouncementMessage
 {
-    char device_name[XIMU3_CHAR_ARRAY_SIZE];
+    char model[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
+    char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char ip_address[XIMU3_CHAR_ARRAY_SIZE];
     uint16_t tcp_port;
     uint16_t udp_send;
