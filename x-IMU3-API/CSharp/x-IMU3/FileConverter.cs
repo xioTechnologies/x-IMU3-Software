@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Ximu3
 {
-    public class FileConverter(string destination, string name, string[] files, FileConverter.Callback callback) : IDisposable
+    public class FileConverter(string destination, string name, string[] filePaths, FileConverter.Callback callback) : IDisposable
     {
         public delegate void Callback(CApi.XIMU3_FileConverterProgress progress);
 
@@ -26,21 +26,21 @@ namespace Ximu3
             GC.SuppressFinalize(this);
         }
 
-        public static CApi.XIMU3_FileConverterProgress Convert(string destination, string name, string[] files)
+        public static CApi.XIMU3_FileConverterProgress Convert(string destination, string name, string[] filePaths)
         {
             return CApi.XIMU3_file_converter_convert(
                 Helpers.ToPointer(destination),
                 Helpers.ToPointer(name),
-                Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(files), 0),
-                (UInt32)files.Length
+                Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(filePaths), 0),
+                (UInt32)filePaths.Length
             );
         }
 
         private IntPtr wrapped = CApi.XIMU3_file_converter_new(
             Helpers.ToPointer(destination),
             Helpers.ToPointer(name),
-            Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(files), 0),
-            (UInt32)files.Length,
+            Marshal.UnsafeAddrOfPinnedArrayElement(Helpers.ToPointers(filePaths), 0),
+            (UInt32)filePaths.Length,
             CallbackInternal,
             Marshal.GetFunctionPointerForDelegate(callback)
         );
