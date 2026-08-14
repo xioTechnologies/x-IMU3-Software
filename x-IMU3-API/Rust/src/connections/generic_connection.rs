@@ -1,9 +1,10 @@
 use crate::connection_config::*;
 use crate::connection_status::*;
 use crate::receiver::*;
+use std::any::Any;
 use std::sync::{Arc, Mutex};
 
-pub trait GenericConnection {
+pub trait GenericConnection: Any {
     fn open(&mut self) -> crossbeam::channel::Receiver<std::io::Result<()>>;
     fn close(&self);
     fn get_config(&self) -> ConnectionConfig;
