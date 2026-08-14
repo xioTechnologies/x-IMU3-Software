@@ -27,18 +27,21 @@ pub extern "C" fn XIMU3_port_scanner_free(port_scanner: *mut PortScanner) {
 pub extern "C" fn XIMU3_port_scanner_add_callback(port_scanner: *mut PortScanner, callback: Callback<Devices>, context: *mut c_void) -> u64 {
     let port_scanner = unsafe { &*port_scanner };
     let void_ptr = VoidPtr(context);
+
     port_scanner.add_closure(Box::new(move |devices| callback(devices.into(), void_ptr.0)))
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_remove_callback(port_scanner: *mut PortScanner, id: u64) {
     let port_scanner = unsafe { &*port_scanner };
+
     port_scanner.remove_closure(id);
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_port_scanner_get_devices(port_scanner: *mut PortScanner) -> Devices {
     let port_scanner = unsafe { &*port_scanner };
+
     port_scanner.get_devices().into()
 }
 

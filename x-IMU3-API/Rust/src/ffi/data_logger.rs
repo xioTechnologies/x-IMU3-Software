@@ -13,6 +13,7 @@ pub extern "C" fn XIMU3_data_logger_new(destination: *const c_char, name: *const
     let destination = unsafe { char_ptr_to_string(destination) };
     let name = unsafe { char_ptr_to_string(name) };
     let connections = unsafe { connection_array_to_vec(connections, length) };
+
     Box::into_raw(Box::new(DataLoggerC {
         internal: DataLogger::new(destination.as_str(), name.as_str(), connections),
     }))
@@ -30,6 +31,7 @@ pub extern "C" fn XIMU3_data_logger_free(data_logger: *mut DataLoggerC) {
 #[no_mangle]
 pub extern "C" fn XIMU3_data_logger_get_result(data_logger: *mut DataLoggerC) -> Result {
     let data_logger = unsafe { &*data_logger };
+
     Result::from(&data_logger.internal)
 }
 
@@ -38,6 +40,7 @@ pub extern "C" fn XIMU3_data_logger_log(destination: *const c_char, name: *const
     let destination = unsafe { char_ptr_to_string(destination) };
     let name = unsafe { char_ptr_to_string(name) };
     let connections = unsafe { connection_array_to_vec(connections, length) };
+
     Result::from(&DataLogger::log(destination.as_str(), name.as_str(), connections, seconds))
 }
 
@@ -50,5 +53,6 @@ pub unsafe fn connection_array_to_vec(connections: *const *mut Connection, lengt
         let connection = unsafe { &**connections.offset(index as isize) };
         vec_connections.push(connection);
     }
+
     vec_connections
 }

@@ -41,6 +41,7 @@ impl From<Option<CommandMessage>> for CommandMessageC {
 #[no_mangle]
 pub extern "C" fn XIMU3_command_message_parse(json: *const c_char) -> CommandMessageC {
     let json = unsafe { char_ptr_to_bytes(json) };
+
     CommandMessage::parse(&json).into()
 }
 
@@ -60,7 +61,9 @@ impl From<Vec<Option<CommandMessage>>> for CommandMessages {
             array: vector.as_mut_ptr(),
             capacity: vector.capacity() as u32,
         };
+
         mem::forget(vector);
+
         messages
     }
 }

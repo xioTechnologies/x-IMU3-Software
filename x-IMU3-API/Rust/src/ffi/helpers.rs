@@ -89,6 +89,7 @@ pub fn str_to_char_array(string: &str) -> [c_char; CHAR_ARRAY_SIZE] {
 /// `char_ptr` must point to a valid C string.
 pub unsafe fn char_ptr_to_string(char_ptr: *const c_char) -> String {
     let c_str = unsafe { CStr::from_ptr(char_ptr) };
+
     String::from_utf8_lossy(c_str.to_bytes()).to_string()
 }
 
@@ -96,6 +97,7 @@ pub unsafe fn char_ptr_to_string(char_ptr: *const c_char) -> String {
 /// `char_ptr` must point to a valid C string.
 pub unsafe fn char_ptr_to_bytes(char_ptr: *const c_char) -> Vec<u8> {
     let c_str = unsafe { CStr::from_ptr(char_ptr) };
+
     c_str.to_bytes().to_vec()
 }
 

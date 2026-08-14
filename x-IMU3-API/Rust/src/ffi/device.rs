@@ -74,6 +74,7 @@ impl From<&Device> for DeviceC {
                 device_c.mux_connection_config = config.into();
             }
         }
+
         device_c
     }
 }
@@ -108,6 +109,7 @@ pub extern "C" fn XIMU3_device_clone(mut device: DeviceC) -> DeviceC {
     if device.connection_type == ConnectionType::Mux {
         device.mux_connection_config = XIMU3_mux_connection_config_clone(device.mux_connection_config);
     }
+
     device
 }
 
@@ -132,7 +134,9 @@ impl From<Vec<Device>> for Devices {
             length: vector.len() as u32,
             capacity: vector.capacity() as u32,
         };
+
         mem::forget(vector);
+
         devices
     }
 }

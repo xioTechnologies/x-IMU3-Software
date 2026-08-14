@@ -251,6 +251,7 @@ impl From<*mut MuxConnectionConfig> for MuxConnectionConfig {
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_connection_config_new(channel: u8, connection: *mut Connection) -> *mut MuxConnectionConfig {
     let connection: &Connection = unsafe { &*connection };
+
     Box::into_raw(Box::new(MuxConnectionConfig::new(channel, connection)))
 }
 
@@ -271,5 +272,6 @@ pub extern "C" fn XIMU3_mux_connection_config_clone(config: *mut MuxConnectionCo
 #[no_mangle]
 pub extern "C" fn XIMU3_mux_connection_config_to_string(config: *mut MuxConnectionConfig) -> *const c_char {
     let config: &MuxConnectionConfig = unsafe { &*config };
+
     str_to_char_ptr(&config.to_string())
 }
