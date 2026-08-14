@@ -9,23 +9,14 @@
 class FindConnectionsDialog : public Dialog,
                               private juce::Timer {
 public:
-    struct ExistingConnection {
-        juce::String descriptor;
-        std::shared_ptr<ximu3::Connection> connection;
-
-        bool operator==(const ximu3::ConnectionConfig &config_) const {
-            return connection->getConfig()->toString() == config_.toString();
-        }
-    };
-
-    FindConnectionsDialog(std::vector<ExistingConnection> existingConnections_);
+    FindConnectionsDialog(std::vector<std::shared_ptr<ximu3::Connection> > existingConnections_);
 
     void resized() override;
 
     std::vector<ximu3::ConnectionConfig *> getConnectionConfigs() const;
 
 private:
-    const std::vector<ExistingConnection> existingConnections;
+    const std::vector<std::shared_ptr<ximu3::Connection> > existingConnections;
 
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
 
