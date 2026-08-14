@@ -29,13 +29,7 @@ public:
 
     juce::String getHeading() const;
 
-    void updateHeading(const std::vector<std::optional<ximu3::CommandMessage> > &responses);
-
-    void updateHeading(const juce::String &deviceName_, const juce::String &serialNumber_);
-
-    void updateHeading(const juce::String &descriptor_);
-
-    juce::String getDescriptor() const;
+    void updateHeading(const juce::String &prefix);
 
     void showRetry(std::function<void()> onClick);
 
@@ -48,7 +42,6 @@ private:
 
     juce::String deviceName, serialNumber;
     const juce::String configString = connection->getConfig()->toString();
-    juce::String descriptor;
 
     IconButton retryButton{BinaryData::retry_svg, "Retry"};
     IconButton locateButton{BinaryData::location_svg, "Locate Device (Strobe LED)"};
@@ -59,6 +52,9 @@ private:
     juce::SharedResourcePointer<ximu3::NetworkAnnouncement> networkAnnouncement;
     std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> networkAnnouncementCallback;
     std::optional<uint64_t> networkAnnouncementCallbackId;
+
+    std::function<void(ximu3::XIMU3_PingResponse)> pingCallback;
+    uint64_t pingCallbackId;
 
     std::function<void(ximu3::XIMU3_RssiMessage)> rssiCallback;
     uint64_t rssiCallbackId;
