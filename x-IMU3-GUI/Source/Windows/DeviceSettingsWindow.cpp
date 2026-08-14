@@ -41,6 +41,9 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
             readAllButton.setToggleState(keys.size() != responses.size(), juce::dontSendNotification);
 
             disableInProgress();
+
+            connectionPanel.getConnection()->pingAsync([](auto) {
+            });
         });
     };
 
@@ -219,6 +222,9 @@ void DeviceSettingsWindow::writeCommands(const std::vector<std::string> &keys, c
         sendCommand("save", false, [this] {
             sendCommand("apply", true, [this] {
                 disableInProgress();
+
+                connectionPanel.getConnection()->pingAsync([](auto) {
+                });
             });
         });
     });
