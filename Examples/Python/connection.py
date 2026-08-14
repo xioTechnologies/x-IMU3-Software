@@ -44,6 +44,19 @@ def statistics_callback(statistics: ximu3.Statistics) -> None:
     # print(statistics)  # alternative to above
 
 
+def ping_callback(response: ximu3.PingResponse) -> None:
+    print(
+        ", ".join(
+            [
+                response.interface,
+                response.device_name,
+                response.serial_number,
+            ]
+        )
+    )
+    # print(response)  # alternative to above
+
+
 def inertial_callback(message: ximu3.InertialMessage) -> None:
     print(
         "".join(
@@ -258,6 +271,7 @@ def run(config: ximu3.ConnectionConfig) -> None:
         connection.add_receive_error_callback(receive_error_callback)
         connection.add_status_callback(status_callback)
         connection.add_statistics_callback(statistics_callback)
+        connection.add_ping_callback(ping_callback)
 
         connection.add_inertial_callback(inertial_callback)
         connection.add_magnetometer_callback(magnetometer_callback)

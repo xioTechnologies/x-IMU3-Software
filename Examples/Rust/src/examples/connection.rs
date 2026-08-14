@@ -4,6 +4,7 @@ use ximu3::connection::*;
 use ximu3::connection_config::*;
 use ximu3::connection_status::*;
 use ximu3::data_messages::*;
+use ximu3::ping_response::*;
 use ximu3::receive_error::*;
 use ximu3::statistics::*;
 
@@ -25,6 +26,7 @@ pub fn run(config: &ConnectionConfig) {
         connection.add_receive_error_closure(Box::new(receive_error_closure));
         connection.add_status_closure(Box::new(status_closure));
         connection.add_statistics_closure(Box::new(statistics_closure));
+        connection.add_ping_closure(Box::new(ping_closure));
 
         connection.add_inertial_closure(Box::new(inertial_closure));
         connection.add_magnetometer_closure(Box::new(magnetometer_closure));
@@ -117,6 +119,15 @@ pub fn statistics_closure(statistics: Statistics) {
              statistics.error_total,
              statistics.error_rate);
     // println!("{statistics}"); // alternative to above
+}
+
+pub fn ping_closure(response: PingResponse) {
+    #[rustfmt::skip]
+    println!("{}, {}, {}",
+             response.interface,
+             response.device_name,
+             response.serial_number);
+    // println!("{response}"); // alternative to above
 }
 
 pub fn inertial_closure(message: InertialMessage) {

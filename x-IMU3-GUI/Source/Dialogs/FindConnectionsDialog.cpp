@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
 #include "FindConnectionsDialog.h"
 
-FindConnectionsDialog::FindConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
+FindConnectionsDialog::FindConnectionsDialog(std::vector<std::shared_ptr<ximu3::Connection> > existingConnections_)
     : Dialog(BinaryData::find_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
       existingConnections(existingConnections_) {
     addAndMakeVisible(table);
@@ -76,7 +76,7 @@ void FindConnectionsDialog::timerCallback() {
     };
 
     for (const auto &connection: existingConnections) {
-        numberOfConnections[toString(*connection.connection->getConfig())]++;
+        numberOfConnections[toString(*connection->getConfig())]++;
     }
 
     static const auto filter = [](const ximu3::ConnectionConfig &config) {
@@ -103,7 +103,9 @@ void FindConnectionsDialog::timerCallback() {
     };
 
     const auto addRow = [&](const auto &descriptor, auto &&config, const std::optional<int> &rssi, const std::optional<int> &battery, const std::optional<ximu3::XIMU3_ChargingStatus> &status) {
-        if (filter(*config) == false || std::find(existingConnections.begin(), existingConnections.end(), *config) != existingConnections.end()) {
+        if (filter(*config) == false || std::ranges::any_of(existingConnections, [&](const auto &connection) {
+            return connection->getConfig()->toString() == config->toString();
+        })) {
             return;
         }
 
@@ -118,7 +120,7 @@ void FindConnectionsDialog::timerCallback() {
     if (ApplicationSettings::getSingleton().findConnections.mux) {
         if (muxScanners.empty()) {
             for (const auto &connection: existingConnections) {
-                muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection.connection));
+                muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection));
             }
         }
 
@@ -138,7 +140,12 @@ void FindConnectionsDialog::timerCallback() {
     }
 
     for (const auto &existingConnection: existingConnections) {
-        rows.push_back({true, existingConnection.descriptor, existingConnection.connection->getConfig(), {}, {}, {}, true});
+        juce::String descriptor;
+        if (auto response = existingConnection->getPingResponse()) {
+            descriptor = juce::String(response->device_name) + " " + juce::String(response->serial_number);
+        }
+
+        rows.push_back({true, descriptor, existingConnection->getConfig(), {}, {}, {}, true});
     }
 
     table.setRows(rows);

@@ -15,6 +15,8 @@ void status_callback(const XIMU3_ConnectionStatus status, void *context);
 
 void statistics_callback(const XIMU3_Statistics statistics, void *context);
 
+void ping_callback(const XIMU3_PingResponse response, void *context);
+
 void inertial_callback(const XIMU3_InertialMessage message, void *context);
 
 void magnetometer_callback(const XIMU3_MagnetometerMessage message, void *context);
@@ -68,6 +70,7 @@ void run(XIMU3_Connection *const connection) {
         XIMU3_connection_add_receive_error_callback(connection, receive_error_callback, NULL);
         XIMU3_connection_add_status_callback(connection, status_callback, NULL);
         XIMU3_connection_add_statistics_callback(connection, statistics_callback, NULL);
+        XIMU3_connection_add_ping_callback(connection, ping_callback, NULL);
 
         XIMU3_connection_add_inertial_callback(connection, inertial_callback, NULL);
         XIMU3_connection_add_magnetometer_callback(connection, magnetometer_callback, NULL);
@@ -135,6 +138,14 @@ void statistics_callback(const XIMU3_Statistics statistics, void *context) {
            statistics.error_total,
            statistics.error_rate);
     // printf("%s\n", XIMU3_statistics_to_string(statistics)); // alternative to above
+}
+
+void ping_callback(const XIMU3_PingResponse response, void *context) {
+    printf("%s, %s, %s\n",
+           response.interface,
+           response.device_name,
+           response.serial_number);
+    // printf("%s\n", XIMU3_ping_response_to_string(response)); // alternative to above
 }
 
 void inertial_callback(const XIMU3_InertialMessage message, void *context) {

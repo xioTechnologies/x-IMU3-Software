@@ -2,7 +2,6 @@
 #include "ConnectionPanelContainer.h"
 #include "ConnectionPanelHeader.h"
 #include "Dialogs/SendingCommandDialog.h"
-#include "KeyCompare.h"
 
 ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, ConnectionPanelContainer &connectionPanelContainer_)
     : connectionPanel(connectionPanel_),
@@ -39,6 +38,16 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
         addNetworkAnnouncementCallback(udpConnectionConfig->ip_address);
     }
 
+    pingCallbackId = connectionPanel.getConnection()->addPingCallback(pingCallback = [&](auto response) {
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this), response] {
+            if (self == nullptr) {
+                return;
+            }
+
+            updateHeading(juce::String(response.device_name) + " " + juce::String(response.serial_number));
+        });
+    });
+
     rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
         rssiIcon.update((int) message.percentage);
     });
@@ -56,6 +65,7 @@ ConnectionPanelHeader::~ConnectionPanelHeader() {
         networkAnnouncement->removeCallback(*networkAnnouncementCallbackId);
     }
 
+    connectionPanel.getConnection()->removeCallback(pingCallbackId);
     connectionPanel.getConnection()->removeCallback(rssiCallbackId);
     connectionPanel.getConnection()->removeCallback(batteryCallbackId);
 }
@@ -122,37 +132,8 @@ juce::String ConnectionPanelHeader::getHeading() const {
     return headingLabel.getText();
 }
 
-void ConnectionPanelHeader::updateHeading(const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-    for (const auto &response: responses) {
-        if (response.has_value() == false || response->error.has_value()) {
-            continue;
-        }
-
-        auto trimQuotes = [](const std::string &string) {
-            return string.substr(1, string.size() - 2);
-        };
-
-        if (KeyCompare::compare(response->key, "device_name")) {
-            updateHeading(trimQuotes(response->value), serialNumber);
-        } else if (KeyCompare::compare(response->key, "serial_number")) {
-            updateHeading(deviceName, trimQuotes(response->value));
-        }
-    }
-}
-
-void ConnectionPanelHeader::updateHeading(const juce::String &deviceName_, const juce::String &serialNumber_) {
-    deviceName = deviceName_;
-    serialNumber = serialNumber_;
-    updateHeading(deviceName + " " + serialNumber);
-}
-
-void ConnectionPanelHeader::updateHeading(const juce::String &descriptor_) {
-    descriptor = descriptor_;
-    headingLabel.setText(descriptor + "    " + configString);
-}
-
-juce::String ConnectionPanelHeader::getDescriptor() const {
-    return descriptor;
+void ConnectionPanelHeader::updateHeading(const juce::String &prefix) {
+    headingLabel.setText(prefix + "    " + configString);
 }
 
 void ConnectionPanelHeader::showRetry(std::function<void()> onClick) {

@@ -37,6 +37,7 @@ protected:
             connection.addReceiveErrorCallback(receiveErrorCallback);
             connection.addStatusCallback(statusCallback);
             connection.addStatisticsCallback(statisticsCallback);
+            connection.addPingCallback(pingCallback);
 
             connection.addInertialCallback(inertialCallback);
             connection.addMagnetometerCallback(magnetometerCallback);
@@ -111,6 +112,11 @@ private:
                statistics.error_total,
                statistics.error_rate);
         // std::cout << ximu3::XIMU3_statistics_to_string(statistics) << std::endl; // alternative to above
+    };
+
+    std::function<void(ximu3::XIMU3_PingResponse response)> pingCallback = [](auto response) {
+        std::cout << response.interface << ", " << response.device_name << ", " << response.serial_number << std::endl;
+        // std::cout << ximu3::XIMU3_ping_response_to_string(response) << std::endl; // alternative to above
     };
 
     std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message) {

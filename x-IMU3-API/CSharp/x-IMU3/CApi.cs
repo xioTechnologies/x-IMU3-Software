@@ -632,6 +632,9 @@ namespace Ximu3
         public static extern XIMU3_Statistics XIMU3_connection_get_statistics(IntPtr connection);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_PingResponse XIMU3_connection_get_ping_response(IntPtr connection);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern XIMU3_InertialMessage XIMU3_connection_get_inertial_message(IntPtr connection, bool consume);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
@@ -693,6 +696,9 @@ namespace Ximu3
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_statistics_callback(IntPtr connection, XIMU3_CallbackStatistics callback, IntPtr context);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 XIMU3_connection_add_ping_callback(IntPtr connection, XIMU3_CallbackPingResponseC callback, IntPtr context);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 XIMU3_connection_add_inertial_callback(IntPtr connection, XIMU3_CallbackInertialMessage callback, IntPtr context);
