@@ -217,6 +217,7 @@ insert(
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_$name_snake_case$_message(connection: *mut Connection, consume: bool) -> $name_pascal_case$Message {
     let connection = unsafe { &*connection };
+
     connection.get_$name_snake_case$_message(consume).unwrap_or_default()
 }\n\n""",
 )
@@ -229,6 +230,7 @@ insert(
 pub extern "C" fn XIMU3_connection_add_$name_snake_case$_callback(connection: *mut Connection, callback: Callback<$name_pascal_case$Message>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_$name_snake_case$_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }\n\n""",
 )
