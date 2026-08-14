@@ -12,6 +12,7 @@ build = "build.rs"
 crate-type = ["rlib", "staticlib", "dylib"]
 
 [dependencies]
+chrono = "0.4.45"
 crossbeam = "0.8.5"
 libc = "0.2.190"
 scan_fmt = "0.2.6"
