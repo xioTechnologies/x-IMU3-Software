@@ -1,3 +1,4 @@
+use crate::command_message::*;
 use serde_json;
 use std::fmt;
 
@@ -8,10 +9,12 @@ pub struct PingResponse {
 }
 
 impl PingResponse {
-    pub(crate) fn parse(json: &[u8]) -> Option<Self> {
-        let object: serde_json::Value = serde_json::from_slice(json).ok()?;
+    pub(crate) fn parse(response: &CommandMessage) -> Option<Self> {
+        if response.key != b"ping" {
+            return None;
+        }
 
-        let ping = object.get("ping")?;
+        let ping: serde_json::Value = serde_json::from_slice(&response.value).ok()?;
 
         if ping.is_object() == false {
             return Some(Self {
