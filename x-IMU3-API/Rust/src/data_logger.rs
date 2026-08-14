@@ -1,3 +1,4 @@
+use crate::command_message::*;
 use crate::connection::*;
 use crate::ping_response::*;
 use serde_json;
@@ -116,7 +117,7 @@ impl DataLogger {
                 };
 
                 for element in array {
-                    if let Some(response) = PingResponse::parse(element.to_string().as_bytes()) {
+                    if let Some(response) = CommandMessage::parse(element.to_string().as_bytes()).and_then(|command| PingResponse::parse(&command)) {
                         let new_path = Path::new(&root).join(format!("{} {} ({})", response.device_name, response.serial_number, response.interface));
                         std::fs::rename(path, new_path).ok();
                         break;
