@@ -1,12 +1,9 @@
-use crate::command_message::*;
 use crate::connection::*;
-use crate::ping_response::*;
-use serde_json;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Seek, SeekFrom, Write};
 use std::ops::Drop;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 pub struct DataLogger {
@@ -16,30 +13,15 @@ pub struct DataLogger {
 
 impl DataLogger {
     pub fn new(destination: &str, name: &str, connections: Vec<&Connection>) -> std::io::Result<Self> {
-        // Create root directory
-        Path::new(destination).read_dir()?;
+        let paths = Self::create_directory(destination, name, &connections)?;
 
-        let root = Path::new(destination).join(name);
-
-        std::fs::create_dir(&root)?;
-
-        // Initialise structure
         let mut data_logger = Self {
             connections: connections.iter().map(|connection| (connection.internal.clone(), Vec::new())).collect(),
-            in_progress: Arc::new(Mutex::new(false)),
+            in_progress: Arc::new(Mutex::new(true)),
         };
 
-        // Create connection directories
-        let mut paths = Vec::new();
-
-        for (index, _) in data_logger.connections.iter().enumerate() {
-            let path = Path::new(&root).join(format!("Connection {index}"));
-            std::fs::create_dir_all(&path)?;
-            paths.push(path);
-        }
-
-        // Add closures
         let (sender, receiver) = crossbeam::channel::unbounded();
+
         const COMMAND_FILE_NAME: &str = "Command.json";
 
         for (index, (connection, closure_ids)) in data_logger.connections.iter_mut().enumerate() {
@@ -71,8 +53,6 @@ impl DataLogger {
             })));
         }
 
-        // Spawn thread
-        *data_logger.in_progress.lock().unwrap() = true;
         let in_progress = data_logger.in_progress.clone();
 
         std::thread::spawn(move || {
@@ -102,38 +82,66 @@ impl DataLogger {
 
             drop(files);
 
-            // TODO: This renaming can cause the last parts of files to be lost. Flush and sync do not solve this.
-
-            // Rename connection directories
-            for path in &paths {
-                let json = match std::fs::read_to_string(path.join(COMMAND_FILE_NAME)) {
-                    Ok(json) => json,
-                    Err(_) => continue,
-                };
-
-                let array = match serde_json::from_str::<Vec<serde_json::Value>>(&json) {
-                    Ok(array) => array,
-                    Err(_) => continue,
-                };
-
-                for element in array {
-                    if let Some(response) = CommandMessage::parse(element.to_string().as_bytes()).and_then(|command| PingResponse::parse(&command)) {
-                        let new_path = Path::new(&root).join(format!("{} {} ({})", response.device_name, response.serial_number, response.interface));
-                        std::fs::rename(path, new_path).ok();
-                        break;
-                    }
-                }
-            }
-
             *in_progress.lock().unwrap() = false;
         });
 
-        // Send commands
-        for connection in &connections {
-            connection.send_commands_async(vec!["{\"ping\":null}".into(), "{\"time\":null}".into()], 4, 200, Box::new(|_| {}));
+        Ok(data_logger)
+    }
+
+    fn create_directory(destination: &str, name: &str, connections: &[&Connection]) -> std::io::Result<Vec<PathBuf>> {
+        Path::new(destination).read_dir()?;
+
+        let root = Path::new(destination).join(name);
+
+        std::fs::create_dir(&root)?;
+
+        let directories = connections
+            .iter()
+            .map(|connection| {
+                let ping_response = connection.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ping_response.lock().unwrap().clone();
+                let config = connection.internal.lock().unwrap().get_config();
+
+                let directory = match ping_response {
+                    Some(ping_response) => format!("{} {} ({})", ping_response.device_name, ping_response.serial_number, ping_response.interface),
+                    None => config.to_string(),
+                };
+
+                directory
+                    .chars()
+                    .map(|c| match c {
+                        '<' | '>' | ':' | '"' | '/' | '\\' | '|' | '?' | '*' => '_',
+                        c => c,
+                    })
+                    .collect::<String>()
+            })
+            .collect::<Vec<_>>();
+
+        let metadata = serde_json::json!({
+            "name": name,
+            "time": std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs().to_string(), // TODO: use YYYY-MM-DD hh:mm:ss
+            "connections": connections.iter().zip(directories.iter()).map(|(connection, directory)| {
+                let ping_response = connection.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.ping_response.lock().unwrap().clone();
+                let config = connection.internal.lock().unwrap().get_config();
+
+                serde_json::json!({
+                    "model": "", // TODO: use model from ping_response
+                    "serial_number": ping_response.as_ref().map(|ping_response| ping_response.serial_number.clone()).unwrap_or_default(),
+                    "device_name": ping_response.as_ref().map(|ping_response| ping_response.device_name.clone()).unwrap_or_default(),
+                    "config": config.to_string(),
+                    "directory": directory,
+                })
+            }).collect::<Vec<_>>(),
+        });
+
+        std::fs::write(root.join("metadata.json"), serde_json::to_string_pretty(&metadata).unwrap())?;
+
+        let paths = directories.iter().map(|directory| root.join(directory)).collect::<Vec<_>>();
+
+        for path in &paths {
+            std::fs::create_dir_all(path)?;
         }
 
-        Ok(data_logger)
+        Ok(paths)
     }
 
     pub fn log(destination: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> std::io::Result<()> {
