@@ -1,7 +1,9 @@
 use crate::connection::*;
 use crate::connection_config::*;
 use crate::connection_status::*;
+use crate::connections::*;
 use crate::data_logger::*;
+use std::any::Any;
 use std::fmt;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
@@ -62,6 +64,24 @@ impl FileConverter {
                 }))
             })
             .collect();
+
+        for connection in connections.iter() {
+            if let Some(file_connection) = (&mut **connection.internal.lock().unwrap() as &mut dyn Any).downcast_mut::<FileConnection>() {
+                file_connection.set_limit(Some(1024));
+            }
+        }
+
+        connections.iter().try_for_each(|connection| connection.open())?;
+
+        while connections.iter().any(|connection| connection.get_status() != ConnectionStatus::Disconnected) {
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+
+        for connection in connections.iter() {
+            if let Some(file_connection) = (&mut **connection.internal.lock().unwrap() as &mut dyn Any).downcast_mut::<FileConnection>() {
+                file_connection.set_limit(None);
+            }
+        }
 
         let data_logger = DataLogger::new(&destination, &name, connections.iter().collect())?;
 
