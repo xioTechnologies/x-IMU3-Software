@@ -5,8 +5,6 @@
 
 static void callback(const XIMU3_FileConverterProgress progress, void *context);
 
-static void print_progress(const XIMU3_FileConverterProgress progress);
-
 void file_converter() {
     // Blocking
     const char *destination = "C:/Users/Public/";
@@ -14,14 +12,22 @@ void file_converter() {
     const char *file_paths[] = {"C:/Users/Public/x-IMU3 Example File.ximu3"}; // replace with actual file path
     const int number_of_files = sizeof(file_paths) / sizeof(file_paths[0]);
 
-    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, nameBlocking, file_paths, number_of_files);
+    const XIMU3_Result result = XIMU3_file_converter_convert(destination, nameBlocking, file_paths, number_of_files);
 
-    print_progress(progress);
+    if (result != XIMU3_ResultOk) {
+        printf("File converter failed: %s\n", XIMU3_result_to_string(result));
+    }
 
     // Non-blocking
     const char *nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
 
     XIMU3_FileConverter *const file_converter = XIMU3_file_converter_new(destination, nameNonBlocking, file_paths, number_of_files, callback, NULL);
+
+    const XIMU3_Result resultNonBlocking = XIMU3_file_converter_get_result(file_converter);
+
+    if (resultNonBlocking != XIMU3_ResultOk) {
+        printf("File converter failed: %s\n", XIMU3_result_to_string(resultNonBlocking));
+    }
 
     sleep(60);
 
@@ -29,10 +35,6 @@ void file_converter() {
 }
 
 static void callback(const XIMU3_FileConverterProgress progress, void *context) {
-    print_progress(progress);
-}
-
-static void print_progress(const XIMU3_FileConverterProgress progress) {
     printf("%s, %0.1f%%, %" PRIu64 " of %" PRIu64 " bytes\n",
            XIMU3_file_converter_status_to_string(progress.status),
            progress.percentage,

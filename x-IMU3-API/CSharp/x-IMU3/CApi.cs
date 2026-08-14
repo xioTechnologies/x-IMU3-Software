@@ -882,7 +882,10 @@ namespace Ximu3
         public static extern void XIMU3_file_converter_free(IntPtr file_converter);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
-        public static extern XIMU3_FileConverterProgress XIMU3_file_converter_convert(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length);
+        public static extern XIMU3_Result XIMU3_file_converter_get_result(IntPtr file_converter);
+
+        [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
+        public static extern XIMU3_Result XIMU3_file_converter_convert(IntPtr destination, IntPtr name, IntPtr file_paths, UInt32 length);
 
         [DllImport("ximu3", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr XIMU3_keep_open_new(IntPtr connection);

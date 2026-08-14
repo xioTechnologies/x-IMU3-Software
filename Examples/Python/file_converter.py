@@ -3,7 +3,7 @@ import time
 import ximu3
 
 
-def print_progress(progress: ximu3.FileConverterProgress) -> None:
+def callback(progress: ximu3.FileConverterProgress) -> None:
     print(
         ", ".join(
             [
@@ -16,18 +16,12 @@ def print_progress(progress: ximu3.FileConverterProgress) -> None:
     # print(progress)  # alternative to above
 
 
-def callback(progress: ximu3.FileConverterProgress) -> None:
-    print_progress(progress)
-
-
 # Blocking
 destination = "C:/Users/Public/"
 name_blocking = "x-IMU3 File Conversion Example Blocking"
 file_paths = ["C:/Users/Public/x-IMU3 Example File.ximu3"]  # replace with actual file path
 
-progress = ximu3.FileConverter.convert(destination, name_blocking, file_paths)
-
-print_progress(progress)
+ximu3.FileConverter.convert(destination, name_blocking, file_paths)
 
 # Non-blocking
 name_non_blocking = "x-IMU3 File Conversion Example Non-Blocking"

@@ -713,7 +713,9 @@ struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, co
 
 void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
-struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
+enum XIMU3_Result XIMU3_file_converter_get_result(struct XIMU3_FileConverter *file_converter);
+
+enum XIMU3_Result XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
 
 struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection);
 

@@ -1,5 +1,6 @@
 use crate::ffi::callback::*;
 use crate::ffi::helpers::*;
+use crate::ffi::result::*;
 use crate::file_converter::*;
 use std::os::raw::{c_char, c_void};
 
@@ -13,17 +14,23 @@ pub extern "C" fn XIMU3_file_converter_progress_to_string(progress: FileConverte
     str_to_char_ptr(&progress.to_string())
 }
 
+pub struct FileConverterC {
+    internal: std::io::Result<FileConverter>,
+}
+
 #[no_mangle]
-pub extern "C" fn XIMU3_file_converter_new(destination: *const c_char, name: *const c_char, file_paths: *const *const c_char, length: u32, callback: Callback<FileConverterProgress>, context: *mut c_void) -> *mut FileConverter {
+pub extern "C" fn XIMU3_file_converter_new(destination: *const c_char, name: *const c_char, file_paths: *const *const c_char, length: u32, callback: Callback<FileConverterProgress>, context: *mut c_void) -> *mut FileConverterC {
     let destination = unsafe { char_ptr_to_string(destination) };
     let name = unsafe { char_ptr_to_string(name) };
     let file_paths = unsafe { char_ptr_array_to_vec_string(file_paths, length) };
     let void_ptr = VoidPtr(context);
-    Box::into_raw(Box::new(FileConverter::new(destination.as_str(), name.as_str(), file_paths.iter().map(|s| s.as_str()).collect(), Box::new(move |progress| callback(progress, void_ptr.0)))))
+    Box::into_raw(Box::new(FileConverterC {
+        internal: FileConverter::new(destination.as_str(), name.as_str(), file_paths.iter().map(|s| s.as_str()).collect(), Box::new(move |progress| callback(progress, void_ptr.0))),
+    }))
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_file_converter_free(file_converter: *mut FileConverter) {
+pub extern "C" fn XIMU3_file_converter_free(file_converter: *mut FileConverterC) {
     if file_converter.is_null() {
         return;
     }
@@ -32,9 +39,15 @@ pub extern "C" fn XIMU3_file_converter_free(file_converter: *mut FileConverter) 
 }
 
 #[no_mangle]
-pub extern "C" fn XIMU3_file_converter_convert(destination: *const c_char, name: *const c_char, file_paths: *const *const c_char, length: u32) -> FileConverterProgress {
+pub extern "C" fn XIMU3_file_converter_get_result(file_converter: *mut FileConverterC) -> Result {
+    let file_converter = unsafe { &*file_converter };
+    Result::from(&file_converter.internal)
+}
+
+#[no_mangle]
+pub extern "C" fn XIMU3_file_converter_convert(destination: *const c_char, name: *const c_char, file_paths: *const *const c_char, length: u32) -> Result {
     let destination = unsafe { char_ptr_to_string(destination) };
     let name = unsafe { char_ptr_to_string(name) };
     let file_paths = unsafe { char_ptr_array_to_vec_string(file_paths, length) };
-    FileConverter::convert(destination.as_str(), name.as_str(), file_paths.iter().map(|s| s.as_str()).collect())
+    Result::from(&FileConverter::convert(destination.as_str(), name.as_str(), file_paths.iter().map(|s| s.as_str()).collect()))
 }

@@ -57,15 +57,29 @@ static PyObject *file_converter_new(PyTypeObject *subtype, PyObject *args, PyObj
         return NULL;
     }
 
-    FileConverter *const self = (FileConverter *) subtype->tp_alloc(subtype, 0);
+    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
 
-    if (self == NULL) {
+    XIMU3_FileConverter *const file_converter = XIMU3_file_converter_new(destination, name, file_paths, length, file_converter_progress_callback, callback);
+
+    const XIMU3_Result result = XIMU3_file_converter_get_result(file_converter);
+
+    if (result != XIMU3_ResultOk) {
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_Format(PyExc_RuntimeError, "File converter failed: %s", result_string);
+
+        XIMU3_file_converter_free(file_converter);
         return NULL;
     }
 
-    Py_INCREF(callback); // TODO: this will never be destroyed (memory leak)
+    FileConverter *const self = (FileConverter *) subtype->tp_alloc(subtype, 0);
 
-    self->wrapped = XIMU3_file_converter_new(destination, name, file_paths, length, file_converter_progress_callback, callback);
+    if (self == NULL) {
+        XIMU3_file_converter_free(file_converter);
+        return NULL;
+    }
+
+    self->wrapped = file_converter;
     return (PyObject *) self;
 }
 
@@ -116,9 +130,16 @@ static PyObject *file_converter_convert(PyObject *null, PyObject *args, PyObject
         }
     }
 
-    const XIMU3_FileConverterProgress progress = XIMU3_file_converter_convert(destination, name, file_paths, length);
+    const XIMU3_Result result = XIMU3_file_converter_convert(destination, name, file_paths, length);
 
-    return file_converter_progress_from(&progress);
+    if (result != XIMU3_ResultOk) {
+        const char *const result_string = XIMU3_result_to_string(result);
+
+        PyErr_Format(PyExc_RuntimeError, "File converter failed: %s", result_string);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
 }
 
 static PyMethodDef file_converter_methods[] = {
