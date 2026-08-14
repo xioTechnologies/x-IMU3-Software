@@ -14,6 +14,7 @@ pub struct FileConnection {
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<crossbeam::channel::Sender<()>>,
     thread: Option<std::thread::JoinHandle<()>>,
+    limit: Option<u64>,
 }
 
 impl FileConnection {
@@ -24,7 +25,12 @@ impl FileConnection {
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             thread: None,
+            limit: None,
         }
+    }
+
+    pub(crate) fn set_limit(&mut self, limit: Option<u64>) {
+        self.limit = limit;
     }
 }
 
@@ -44,6 +50,8 @@ impl GenericConnection for FileConnection {
         let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
+
+        let limit = self.limit;
 
         self.close_sender = Some(close_sender);
 
@@ -69,6 +77,12 @@ impl GenericConnection for FileConnection {
                         break;
                     }
                     receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
+                }
+
+                if let Some(limit) = limit {
+                    if receiver.lock().unwrap().statistics.data_total >= limit {
+                        break;
+                    }
                 }
             }
 
