@@ -1,12 +1,18 @@
 use ximu3::connection::*;
 use ximu3::data_logger::*;
+use ximu3::device::*;
+use ximu3::network_announcement::*;
 use ximu3::port_scanner::*;
 
 pub fn run() {
     // Open all USB connections
     let mut connections = vec![];
 
-    let devices = PortScanner::scan_filter(PortType::Usb);
+    let mut devices = PortScanner::scan_filter(PortType::Usb);
+
+    if let Ok(network_announcement) = NetworkAnnouncement::new() {
+        devices.extend(network_announcement.get_messages_after_short_delay().iter().flat_map(Vec::<Device>::from));
+    }
 
     std::thread::sleep(std::time::Duration::from_secs(1)); // wait for OS to release port
 
@@ -26,6 +32,10 @@ pub fn run() {
         println!("No USB connections available");
         return;
     }
+
+    // for connection in &connections {
+    //     connection.ping();
+    // }
 
     // Log data (blocking)
     let destination = "C:/Users/Public/";
