@@ -542,6 +542,8 @@ enum XIMU3_ConnectionStatus XIMU3_connection_get_status(struct XIMU3_Connection 
 
 struct XIMU3_Statistics XIMU3_connection_get_statistics(struct XIMU3_Connection *connection);
 
+struct XIMU3_PingResponse XIMU3_connection_get_ping_response(struct XIMU3_Connection *connection);
+
 struct XIMU3_InertialMessage XIMU3_connection_get_inertial_message(struct XIMU3_Connection *connection, bool consume);
 
 struct XIMU3_MagnetometerMessage XIMU3_connection_get_magnetometer_message(struct XIMU3_Connection *connection, bool consume);
@@ -583,6 +585,8 @@ uint64_t XIMU3_connection_add_receive_error_callback(struct XIMU3_Connection *co
 uint64_t XIMU3_connection_add_status_callback(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
 
 uint64_t XIMU3_connection_add_statistics_callback(struct XIMU3_Connection *connection, XIMU3_CallbackStatistics callback, void *context);
+
+uint64_t XIMU3_connection_add_ping_callback(struct XIMU3_Connection *connection, XIMU3_CallbackPingResponseC callback, void *context);
 
 uint64_t XIMU3_connection_add_inertial_callback(struct XIMU3_Connection *connection, XIMU3_CallbackInertialMessage callback, void *context);
 

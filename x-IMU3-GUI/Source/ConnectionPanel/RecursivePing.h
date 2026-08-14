@@ -2,9 +2,7 @@
 
 class RecursivePing {
 public:
-    using Callback = std::function<void(const juce::String &deviceName, const juce::String &serialNumber)>;
-
-    RecursivePing(std::shared_ptr<ximu3::Connection> connection_, Callback callback_) : connection(connection_), callback(callback_) {
+    RecursivePing(std::shared_ptr<ximu3::Connection> connection_) : connection(connection_) {
         ping();
     }
 
@@ -17,19 +15,15 @@ public:
                     return;
                 }
 
-                if (response.has_value()) {
-                    callback(response->device_name, response->serial_number);
-                    return;
+                if (response.has_value() == false) {
+                    ping();
                 }
-
-                ping();
             });
         });
     }
 
 private:
-    std::shared_ptr<ximu3::Connection> connection;
-    const Callback callback;
+    const std::shared_ptr<ximu3::Connection> connection;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(RecursivePing)
 };

@@ -73,8 +73,6 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection() {
 void ConnectionPanel::sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback) {
     connection->sendCommandsAsync(commands, [&, callbackOwner, callback](const auto &responses) {
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses] {
-            header.updateHeading(responses);
-
             if (callbackOwner != nullptr && callback != nullptr) {
                 callback(responses);
             }
@@ -169,10 +167,6 @@ juce::String ConnectionPanel::getHeading() const {
     return header.getHeading();
 }
 
-juce::String ConnectionPanel::getDescriptor() const {
-    return header.getDescriptor();
-}
-
 ConnectionPanelContainer &ConnectionPanel::getConnectionPanelContainer() {
     return connectionPanelContainer;
 }
@@ -240,9 +234,7 @@ void ConnectionPanel::connected() {
 
     header.showLocate();
 
-    recursivePing = std::make_unique<RecursivePing>(connection, [&](const juce::String &deviceName, const juce::String &serialNumber) {
-        header.updateHeading(deviceName, serialNumber);
-    });
+    recursivePing = std::make_unique<RecursivePing>(connection);
 }
 
 void ConnectionPanel::handleAsyncUpdate() {
