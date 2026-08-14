@@ -193,10 +193,7 @@ insert(
     0,
     """\
     pub fn get_$name_snake_case$_message(&self, consume: bool) -> Option<$name_pascal_case$Message> {
-        if consume {
-            return self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.$name_snake_case$_message.lock().unwrap().take();
-        }
-        self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.$name_snake_case$_message.lock().unwrap().clone()
+        Self::take_or_clone(self.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.$name_snake_case$_message.lock().unwrap(), consume)
     }\n\n""",
 )
 
