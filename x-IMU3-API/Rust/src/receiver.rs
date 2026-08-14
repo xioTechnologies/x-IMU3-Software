@@ -60,13 +60,15 @@ impl Receiver {
     }
 
     fn receive_command_message(&self) -> Result<(), ReceiveError> {
-        let command = CommandMessage::parse(&self.buffer[..self.index]).ok_or(ReceiveError::InvalidJson)?;
-        self.dispatcher.sender.send(DispatcherData::Command(command)).ok();
+        let response = CommandMessage::parse(&self.buffer[..self.index]).ok_or(ReceiveError::InvalidJson)?;
+
+        self.dispatcher.sender.send(DispatcherData::Command(response)).ok();
         Ok(())
     }
 
     fn receive_mux_message(&self) -> Result<(), ReceiveError> {
         let message = MuxMessage::parse(&self.buffer[..self.index])?;
+
         self.dispatcher.sender.send(DispatcherData::Mux(message)).ok();
         Ok(())
     }
