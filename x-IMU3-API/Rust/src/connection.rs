@@ -115,7 +115,7 @@ impl Connection {
     pub(crate) fn ping_internal(internal: &InternalConnection) -> Option<PingResponse> {
         let responses = Self::send_commands_internal(internal, vec!["{\"ping\":null}".into()], 4, 200);
 
-        PingResponse::parse(&responses.first()?.as_ref()?.json)
+        PingResponse::parse(responses.first()?.as_ref()?)
     }
 
     pub fn send_command(&self, command: Vec<u8>, retries: u32, timeout: u32) -> Option<CommandMessage> {
