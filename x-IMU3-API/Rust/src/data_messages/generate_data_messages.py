@@ -292,7 +292,7 @@ insert(
                     *$name_snake_case$_message.lock().unwrap() = Some(message);
                     data_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(Box::new(message)));
                     $name_snake_case$_closures.lock().unwrap().iter().for_each(|(closure, _)| closure(message));
-                }\n""",
+                }\n\n""",
 )
 
 insert(
