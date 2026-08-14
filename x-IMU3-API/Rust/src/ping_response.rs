@@ -10,7 +10,8 @@ pub struct PingResponse {
 impl PingResponse {
     pub(crate) fn parse(json: &[u8]) -> Option<Self> {
         let object: serde_json::Value = serde_json::from_slice(json).ok()?;
-        let ping = &object["ping"];
+
+        let ping = object.get("ping")?;
 
         if ping.is_object() == false {
             return Some(Self {
