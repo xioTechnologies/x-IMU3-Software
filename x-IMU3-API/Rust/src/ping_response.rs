@@ -2,6 +2,7 @@ use crate::command_message::*;
 use serde_json;
 use std::fmt;
 
+#[derive(Clone)]
 pub struct PingResponse {
     pub interface: String,
     pub device_name: String,
