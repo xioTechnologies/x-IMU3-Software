@@ -25,6 +25,7 @@ namespace Ximu3Examples
                 connection.AddReceiveErrorCallback(ReceiveErrorCallback);
                 connection.AddStatusCallback(StatusCallback);
                 connection.AddStatisticsCallback(StatisticsCallback);
+                connection.AddPingCallback(PingCallback);
 
                 connection.AddInertialCallback(InertialCallback);
                 connection.AddMagnetometerCallback(MagnetometerCallback);
@@ -132,6 +133,16 @@ namespace Ximu3Examples
                 IntFormat(statistics.error_rate) + " errors/s"
             );
             // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_statistics_to_string(statistics))); // alternative to above
+        }
+
+        private static void PingCallback(Ximu3.CApi.XIMU3_PingResponse response)
+        {
+            Console.WriteLine(
+                Ximu3.Helpers.ToString(response.interface_) + ", " +
+                Ximu3.Helpers.ToString(response.device_name) + ", " +
+                Ximu3.Helpers.ToString(response.serial_number)
+            );
+            // Console.WriteLine(Ximu3.Helpers.ToString(Ximu3.CApi.XIMU3_ping_response_to_string(response))); // alternative to above
         }
 
         private static void InertialCallback(Ximu3.CApi.XIMU3_InertialMessage message)
