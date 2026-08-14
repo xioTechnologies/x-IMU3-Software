@@ -1,3 +1,4 @@
+use crate::command_message::*;
 use crate::connection::*;
 use crate::connection_config::*;
 use crate::device::*;
@@ -147,7 +148,8 @@ impl MuxScanner {
     }
 
     fn parse_mux_message(message: MuxMessage, connection: &InternalConnection) -> Option<Device> {
-        let response = PingResponse::parse(&message.message)?;
+        let response = CommandMessage::parse(&message.message)?;
+        let response = PingResponse::parse(&response)?;
 
         let connection_config = ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig {
             channel: message.channel,
