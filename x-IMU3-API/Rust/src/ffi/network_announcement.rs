@@ -93,7 +93,9 @@ impl From<Vec<NetworkAnnouncementMessage>> for NetworkAnnouncementMessages {
             array: vector.as_mut_ptr(),
             capacity: vector.capacity() as u32,
         };
+
         mem::forget(vector);
+
         messages
     }
 }
@@ -132,6 +134,7 @@ pub extern "C" fn XIMU3_network_announcement_free(network_announcement: *mut Net
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_result(network_announcement: *mut NetworkAnnouncementC) -> Result {
     let network_announcement: &NetworkAnnouncementC = unsafe { &*network_announcement };
+
     Result::from(&network_announcement.internal)
 }
 
@@ -139,6 +142,7 @@ pub extern "C" fn XIMU3_network_announcement_get_result(network_announcement: *m
 pub extern "C" fn XIMU3_network_announcement_add_callback(network_announcement: *mut NetworkAnnouncementC, callback: Callback<NetworkAnnouncementMessageC>, context: *mut c_void) -> u64 {
     let network_announcement = unsafe { &*network_announcement };
     let void_ptr = VoidPtr(context);
+
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.add_closure(Box::new(move |message| callback((&message).into(), void_ptr.0)))
     } else {
@@ -149,6 +153,7 @@ pub extern "C" fn XIMU3_network_announcement_add_callback(network_announcement: 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcement: *mut NetworkAnnouncementC, id: u64) {
     let network_announcement = unsafe { &*network_announcement };
+
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.remove_closure(id);
     }
@@ -157,6 +162,7 @@ pub extern "C" fn XIMU3_network_announcement_remove_callback(network_announcemen
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_messages(network_announcement: *mut NetworkAnnouncementC) -> NetworkAnnouncementMessages {
     let network_announcement = unsafe { &*network_announcement };
+
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.get_messages().into()
     } else {
@@ -167,6 +173,7 @@ pub extern "C" fn XIMU3_network_announcement_get_messages(network_announcement: 
 #[no_mangle]
 pub extern "C" fn XIMU3_network_announcement_get_messages_after_short_delay(network_announcement: *mut NetworkAnnouncementC) -> NetworkAnnouncementMessages {
     let network_announcement = unsafe { &*network_announcement };
+
     if let Ok(network_announcement) = &network_announcement.internal {
         network_announcement.get_messages_after_short_delay().into()
     } else {

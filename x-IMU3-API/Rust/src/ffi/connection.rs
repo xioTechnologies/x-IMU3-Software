@@ -48,6 +48,7 @@ pub extern "C" fn XIMU3_connection_new_file(config: FileConnectionConfigC) -> *m
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_new_mux(config: *const MuxConnectionConfig) -> *mut Connection {
     let config: &MuxConnectionConfig = unsafe { &*config };
+
     Box::into_raw(Box::new(Connection::new(&ConnectionConfig::MuxConnectionConfig(config.clone()))))
 }
 
@@ -63,6 +64,7 @@ pub extern "C" fn XIMU3_connection_free(connection: *mut Connection) {
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_open(connection: *mut Connection) -> Result {
     let connection = unsafe { &*connection };
+
     Result::from(&connection.open())
 }
 
@@ -70,18 +72,21 @@ pub extern "C" fn XIMU3_connection_open(connection: *mut Connection) -> Result {
 pub extern "C" fn XIMU3_connection_open_async(connection: *mut Connection, callback: Callback<Result>, context: *mut c_void) {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.open_async(Box::new(move |result| callback(Result::from(&result), void_ptr.0)));
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_close(connection: *mut Connection) {
     let connection = unsafe { &*connection };
+
     connection.close();
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_ping(connection: *mut Connection) -> PingResponseC {
     let connection = unsafe { &*connection };
+
     connection.ping().into()
 }
 
@@ -90,6 +95,7 @@ pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callb
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
     let closure = Box::new(move |response: Option<PingResponse>| callback(response.into(), void_ptr.0));
+
     connection.ping_async(closure);
 }
 
@@ -97,6 +103,7 @@ pub extern "C" fn XIMU3_connection_ping_async(connection: *mut Connection, callb
 pub extern "C" fn XIMU3_connection_send_command(connection: *mut Connection, command: *const c_char, retries: u32, timeout: u32) -> CommandMessageC {
     let connection = unsafe { &*connection };
     let command = unsafe { char_ptr_to_bytes(command) };
+
     connection.send_command(command, retries, timeout).into()
 }
 
@@ -104,6 +111,7 @@ pub extern "C" fn XIMU3_connection_send_command(connection: *mut Connection, com
 pub extern "C" fn XIMU3_connection_send_commands(connection: *mut Connection, commands: *const *const c_char, length: u32, retries: u32, timeout: u32) -> CommandMessages {
     let connection = unsafe { &*connection };
     let commands = unsafe { char_ptr_array_to_vec_bytes(commands, length) };
+
     connection.send_commands(commands, retries, timeout).into()
 }
 
@@ -113,6 +121,7 @@ pub extern "C" fn XIMU3_connection_send_command_async(connection: *mut Connectio
     let command = unsafe { char_ptr_to_bytes(command) };
     let void_ptr = VoidPtr(context);
     let closure = Box::new(move |response: Option<CommandMessage>| callback(response.into(), void_ptr.0));
+
     connection.send_command_async(command, retries, timeout, closure);
 }
 
@@ -122,18 +131,21 @@ pub extern "C" fn XIMU3_connection_send_commands_async(connection: *mut Connecti
     let commands = unsafe { char_ptr_array_to_vec_bytes(commands, length) };
     let void_ptr = VoidPtr(context);
     let closure = Box::new(move |responses: Vec<Option<CommandMessage>>| callback(responses.into(), void_ptr.0));
+
     connection.send_commands_async(commands, retries, timeout, closure);
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_type(connection: *mut Connection) -> ConnectionType {
     let connection = unsafe { &*connection };
+
     ConnectionType::from(&connection.get_config())
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_usb(connection: *mut Connection) -> UsbConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::UsbConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -143,6 +155,7 @@ pub extern "C" fn XIMU3_connection_get_config_usb(connection: *mut Connection) -
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_serial(connection: *mut Connection) -> SerialConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::SerialConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -152,6 +165,7 @@ pub extern "C" fn XIMU3_connection_get_config_serial(connection: *mut Connection
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_tcp(connection: *mut Connection) -> TcpConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::TcpConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -161,6 +175,7 @@ pub extern "C" fn XIMU3_connection_get_config_tcp(connection: *mut Connection) -
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_udp(connection: *mut Connection) -> UdpConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::UdpConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -170,6 +185,7 @@ pub extern "C" fn XIMU3_connection_get_config_udp(connection: *mut Connection) -
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_bluetooth(connection: *mut Connection) -> BluetoothConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::BluetoothConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -179,6 +195,7 @@ pub extern "C" fn XIMU3_connection_get_config_bluetooth(connection: *mut Connect
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_file(connection: *mut Connection) -> FileConnectionConfigC {
     let connection = unsafe { &*connection };
+
     match &connection.get_config() {
         ConnectionConfig::FileConnectionConfig(config) => config.into(),
         _ => Default::default(),
@@ -188,6 +205,7 @@ pub extern "C" fn XIMU3_connection_get_config_file(connection: *mut Connection) 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_mux(connection: *mut Connection) -> *mut MuxConnectionConfig {
     let connection: &Connection = unsafe { &*connection };
+
     match connection.get_config() {
         ConnectionConfig::MuxConnectionConfig(config) => Box::into_raw(Box::new(config)),
         _ => panic!("ConnectionConfig is not MuxConnectionConfig"),
@@ -197,18 +215,21 @@ pub extern "C" fn XIMU3_connection_get_config_mux(connection: *mut Connection) -
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_config_string(connection: *mut Connection) -> *const c_char {
     let connection: &Connection = unsafe { &*connection };
+
     str_to_char_ptr(&connection.get_config().to_string())
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_status(connection: *mut Connection) -> ConnectionStatus {
     let connection: &Connection = unsafe { &*connection };
+
     connection.get_status()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_statistics(connection: *mut Connection) -> Statistics {
     let connection = unsafe { &*connection };
+
     connection.get_statistics()
 }
 
@@ -217,108 +238,126 @@ pub extern "C" fn XIMU3_connection_get_statistics(connection: *mut Connection) -
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_inertial_message(connection: *mut Connection, consume: bool) -> InertialMessage {
     let connection = unsafe { &*connection };
+
     connection.get_inertial_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_magnetometer_message(connection: *mut Connection, consume: bool) -> MagnetometerMessage {
     let connection = unsafe { &*connection };
+
     connection.get_magnetometer_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_high_g_accelerometer_message(connection: *mut Connection, consume: bool) -> HighGAccelerometerMessage {
     let connection = unsafe { &*connection };
+
     connection.get_high_g_accelerometer_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_quaternion_message(connection: *mut Connection, consume: bool) -> QuaternionMessage {
     let connection = unsafe { &*connection };
+
     connection.get_quaternion_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_rotation_matrix_message(connection: *mut Connection, consume: bool) -> RotationMatrixMessage {
     let connection = unsafe { &*connection };
+
     connection.get_rotation_matrix_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_euler_angles_message(connection: *mut Connection, consume: bool) -> EulerAnglesMessage {
     let connection = unsafe { &*connection };
+
     connection.get_euler_angles_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_linear_acceleration_message(connection: *mut Connection, consume: bool) -> LinearAccelerationMessage {
     let connection = unsafe { &*connection };
+
     connection.get_linear_acceleration_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_earth_acceleration_message(connection: *mut Connection, consume: bool) -> EarthAccelerationMessage {
     let connection = unsafe { &*connection };
+
     connection.get_earth_acceleration_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_ahrs_status_message(connection: *mut Connection, consume: bool) -> AhrsStatusMessage {
     let connection = unsafe { &*connection };
+
     connection.get_ahrs_status_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_serial_accessory_message(connection: *mut Connection, consume: bool) -> SerialAccessoryMessage {
     let connection = unsafe { &*connection };
+
     connection.get_serial_accessory_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_sync_message(connection: *mut Connection, consume: bool) -> SyncMessage {
     let connection = unsafe { &*connection };
+
     connection.get_sync_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_ltc_message(connection: *mut Connection, consume: bool) -> LtcMessage {
     let connection = unsafe { &*connection };
+
     connection.get_ltc_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_temperature_message(connection: *mut Connection, consume: bool) -> TemperatureMessage {
     let connection = unsafe { &*connection };
+
     connection.get_temperature_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_battery_message(connection: *mut Connection, consume: bool) -> BatteryMessage {
     let connection = unsafe { &*connection };
+
     connection.get_battery_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_rssi_message(connection: *mut Connection, consume: bool) -> RssiMessage {
     let connection = unsafe { &*connection };
+
     connection.get_rssi_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_button_message(connection: *mut Connection, consume: bool) -> ButtonMessage {
     let connection = unsafe { &*connection };
+
     connection.get_button_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_notification_message(connection: *mut Connection, consume: bool) -> NotificationMessage {
     let connection = unsafe { &*connection };
+
     connection.get_notification_message(consume).unwrap_or_default()
 }
 
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_get_error_message(connection: *mut Connection, consume: bool) -> ErrorMessage {
     let connection = unsafe { &*connection };
+
     connection.get_error_message(consume).unwrap_or_default()
 }
 
@@ -328,6 +367,7 @@ pub extern "C" fn XIMU3_connection_get_error_message(connection: *mut Connection
 pub extern "C" fn XIMU3_connection_add_receive_error_callback(connection: *mut Connection, callback: Callback<ReceiveError>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_receive_error_closure(Box::new(move |receive_error| callback(receive_error, void_ptr.0)))
 }
 
@@ -335,6 +375,7 @@ pub extern "C" fn XIMU3_connection_add_receive_error_callback(connection: *mut C
 pub extern "C" fn XIMU3_connection_add_status_callback(connection: *mut Connection, callback: Callback<ConnectionStatus>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_status_closure(Box::new(move |status| callback(status, void_ptr.0)))
 }
 
@@ -342,6 +383,7 @@ pub extern "C" fn XIMU3_connection_add_status_callback(connection: *mut Connecti
 pub extern "C" fn XIMU3_connection_add_statistics_callback(connection: *mut Connection, callback: Callback<Statistics>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_statistics_closure(Box::new(move |statistics| callback(statistics, void_ptr.0)))
 }
 
@@ -351,6 +393,7 @@ pub extern "C" fn XIMU3_connection_add_statistics_callback(connection: *mut Conn
 pub extern "C" fn XIMU3_connection_add_inertial_callback(connection: *mut Connection, callback: Callback<InertialMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_inertial_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -358,6 +401,7 @@ pub extern "C" fn XIMU3_connection_add_inertial_callback(connection: *mut Connec
 pub extern "C" fn XIMU3_connection_add_magnetometer_callback(connection: *mut Connection, callback: Callback<MagnetometerMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_magnetometer_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -365,6 +409,7 @@ pub extern "C" fn XIMU3_connection_add_magnetometer_callback(connection: *mut Co
 pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection: *mut Connection, callback: Callback<HighGAccelerometerMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_high_g_accelerometer_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -372,6 +417,7 @@ pub extern "C" fn XIMU3_connection_add_high_g_accelerometer_callback(connection:
 pub extern "C" fn XIMU3_connection_add_quaternion_callback(connection: *mut Connection, callback: Callback<QuaternionMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_quaternion_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -379,6 +425,7 @@ pub extern "C" fn XIMU3_connection_add_quaternion_callback(connection: *mut Conn
 pub extern "C" fn XIMU3_connection_add_rotation_matrix_callback(connection: *mut Connection, callback: Callback<RotationMatrixMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_rotation_matrix_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -386,6 +433,7 @@ pub extern "C" fn XIMU3_connection_add_rotation_matrix_callback(connection: *mut
 pub extern "C" fn XIMU3_connection_add_euler_angles_callback(connection: *mut Connection, callback: Callback<EulerAnglesMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_euler_angles_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -393,6 +441,7 @@ pub extern "C" fn XIMU3_connection_add_euler_angles_callback(connection: *mut Co
 pub extern "C" fn XIMU3_connection_add_linear_acceleration_callback(connection: *mut Connection, callback: Callback<LinearAccelerationMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_linear_acceleration_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -400,6 +449,7 @@ pub extern "C" fn XIMU3_connection_add_linear_acceleration_callback(connection: 
 pub extern "C" fn XIMU3_connection_add_earth_acceleration_callback(connection: *mut Connection, callback: Callback<EarthAccelerationMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_earth_acceleration_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -407,6 +457,7 @@ pub extern "C" fn XIMU3_connection_add_earth_acceleration_callback(connection: *
 pub extern "C" fn XIMU3_connection_add_ahrs_status_callback(connection: *mut Connection, callback: Callback<AhrsStatusMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_ahrs_status_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -414,6 +465,7 @@ pub extern "C" fn XIMU3_connection_add_ahrs_status_callback(connection: *mut Con
 pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mut Connection, callback: Callback<SerialAccessoryMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_serial_accessory_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -421,6 +473,7 @@ pub extern "C" fn XIMU3_connection_add_serial_accessory_callback(connection: *mu
 pub extern "C" fn XIMU3_connection_add_sync_callback(connection: *mut Connection, callback: Callback<SyncMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_sync_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -428,6 +481,7 @@ pub extern "C" fn XIMU3_connection_add_sync_callback(connection: *mut Connection
 pub extern "C" fn XIMU3_connection_add_ltc_callback(connection: *mut Connection, callback: Callback<LtcMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_ltc_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -435,6 +489,7 @@ pub extern "C" fn XIMU3_connection_add_ltc_callback(connection: *mut Connection,
 pub extern "C" fn XIMU3_connection_add_temperature_callback(connection: *mut Connection, callback: Callback<TemperatureMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_temperature_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -442,6 +497,7 @@ pub extern "C" fn XIMU3_connection_add_temperature_callback(connection: *mut Con
 pub extern "C" fn XIMU3_connection_add_battery_callback(connection: *mut Connection, callback: Callback<BatteryMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_battery_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -449,6 +505,7 @@ pub extern "C" fn XIMU3_connection_add_battery_callback(connection: *mut Connect
 pub extern "C" fn XIMU3_connection_add_rssi_callback(connection: *mut Connection, callback: Callback<RssiMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_rssi_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -456,6 +513,7 @@ pub extern "C" fn XIMU3_connection_add_rssi_callback(connection: *mut Connection
 pub extern "C" fn XIMU3_connection_add_button_callback(connection: *mut Connection, callback: Callback<ButtonMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_button_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -463,6 +521,7 @@ pub extern "C" fn XIMU3_connection_add_button_callback(connection: *mut Connecti
 pub extern "C" fn XIMU3_connection_add_notification_callback(connection: *mut Connection, callback: Callback<NotificationMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_notification_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -470,6 +529,7 @@ pub extern "C" fn XIMU3_connection_add_notification_callback(connection: *mut Co
 pub extern "C" fn XIMU3_connection_add_error_callback(connection: *mut Connection, callback: Callback<ErrorMessage>, context: *mut c_void) -> u64 {
     let connection = unsafe { &*connection };
     let void_ptr = VoidPtr(context);
+
     connection.add_error_closure(Box::new(move |message| callback(message, void_ptr.0)))
 }
 
@@ -478,5 +538,6 @@ pub extern "C" fn XIMU3_connection_add_error_callback(connection: *mut Connectio
 #[no_mangle]
 pub extern "C" fn XIMU3_connection_remove_callback(connection: *mut Connection, id: u64) {
     let connection = unsafe { &*connection };
+
     connection.remove_closure(id);
 }
