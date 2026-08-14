@@ -14,6 +14,7 @@ pub struct FileConnection {
     status: Arc<AtomicI32>,
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<Sender<()>>,
+    limit: Option<u64>,
 }
 
 impl FileConnection {
@@ -23,7 +24,12 @@ impl FileConnection {
             status: Arc::new(AtomicI32::new(ConnectionStatus::Disconnected as i32)),
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
+            limit: None,
         }
+    }
+
+    pub(crate) fn set_limit(&mut self, limit: Option<u64>) {
+        self.limit = limit;
     }
 }
 
@@ -36,6 +42,8 @@ impl GenericConnection for FileConnection {
         let receiver = self.receiver.clone();
 
         let (close_sender, close_receiver) = crossbeam::channel::bounded(1);
+
+        let limit = self.limit;
 
         self.close_sender = Some(close_sender);
 
@@ -51,6 +59,12 @@ impl GenericConnection for FileConnection {
                         break;
                     }
                     receiver.lock().unwrap().receive_bytes(&buffer[..number_of_bytes]);
+                }
+
+                if let Some(limit) = limit {
+                    if receiver.lock().unwrap().statistics.data_total >= limit {
+                        break;
+                    }
                 }
             }
 
