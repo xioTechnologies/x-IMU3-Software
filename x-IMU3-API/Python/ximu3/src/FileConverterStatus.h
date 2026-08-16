@@ -6,9 +6,8 @@
 
 static int file_converter_status_from(XIMU3_FileConverterStatus *const status, const int status_int) {
     switch (status_int) {
-        case XIMU3_FileConverterStatusComplete:
-        case XIMU3_FileConverterStatusFailed:
         case XIMU3_FileConverterStatusInProgress:
+        case XIMU3_FileConverterStatusComplete:
             *status = (XIMU3_FileConverterStatus) status_int;
             return 0;
     }

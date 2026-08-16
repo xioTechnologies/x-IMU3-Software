@@ -9,17 +9,15 @@ use std::sync::{Arc, Mutex};
 #[repr(C)]
 #[derive(Clone, PartialEq)]
 pub enum FileConverterStatus {
-    Complete,
-    Failed,
     InProgress,
+    Complete,
 }
 
 impl fmt::Display for FileConverterStatus {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Self::Complete => write!(formatter, "Complete"),
-            Self::Failed => write!(formatter, "Failed"),
             Self::InProgress => write!(formatter, "In progress"),
+            Self::Complete => write!(formatter, "Complete"),
         }
     }
 }
@@ -50,15 +48,11 @@ impl FileConverter {
         };
 
         let mut progress = FileConverterProgress {
-            status: FileConverterStatus::Failed,
+            status: FileConverterStatus::InProgress,
             percentage: 0.0,
             bytes_processed: 0,
             bytes_total: file_paths.iter().map(|file_path| std::fs::metadata(file_path).map(|metadata| metadata.len())).sum::<std::io::Result<u64>>()?,
         };
-
-        let dropped = file_converter.dropped.clone();
-        let destination = destination.to_owned();
-        let name = name.to_owned();
 
         let connections: Vec<Connection> = file_paths
             .iter()
@@ -69,32 +63,13 @@ impl FileConverter {
             })
             .collect();
 
+        let data_logger = DataLogger::new(&destination, &name, connections.iter().collect())?;
+
+        connections.iter().try_for_each(|connection| connection.open())?;
+
+        let dropped = file_converter.dropped.clone();
+
         std::thread::spawn(move || {
-            let data_logger = match DataLogger::new(&destination, &name, connections.iter().collect()) {
-                Ok(data_logger) => data_logger,
-                Err(_) => {
-                    if let Ok(dropped) = dropped.lock() {
-                        if *dropped == false {
-                            closure(progress.clone());
-                        }
-                    }
-                    return;
-                }
-            };
-
-            for connection in connections.iter() {
-                if connection.open().is_err() {
-                    if let Ok(dropped) = dropped.lock() {
-                        if *dropped == false {
-                            closure(progress.clone());
-                        }
-                    }
-                    return;
-                }
-            }
-
-            progress.status = FileConverterStatus::InProgress;
-
             loop {
                 progress.bytes_processed = connections.iter().map(|connection| connection.get_statistics().data_total).sum();
                 progress.percentage = 100.0 * ((progress.bytes_processed as f64) / (progress.bytes_total as f64)) as f32;
@@ -140,9 +115,8 @@ impl FileConverter {
         loop {
             if let Ok(progress) = receiver.recv() {
                 match progress.status {
-                    FileConverterStatus::Complete => return Ok(()),
-                    FileConverterStatus::Failed => return Err(std::io::ErrorKind::Other.into()),
                     FileConverterStatus::InProgress => continue,
+                    FileConverterStatus::Complete => return Ok(()),
                 }
             }
         }

@@ -558,14 +558,25 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
             if (const auto *const dialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
                 convertFilesSettings = dialog->getSettings();
 
+                const auto startConverting = [&] {
+                    auto convertingFilesDialog = std::make_unique<ConvertingFilesDialog>(convertFilesSettings.files, convertFilesSettings.destination, convertFilesSettings.name);
+
+                    if (const auto result = convertingFilesDialog->getResult(); result != ximu3::XIMU3_ResultOk) {
+                        DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>("File converter failed: " + juce::String(ximu3::XIMU3_result_to_string(result))));
+                        return;
+                    }
+
+                    DialogQueue::getSingleton().pushBack(std::move(convertingFilesDialog));
+                };
+
                 if (const auto directory = convertFilesSettings.destination.getChildFile(convertFilesSettings.name); directory.exists()) {
-                    DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(convertFilesSettings.name), [&, directory] {
+                    DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(convertFilesSettings.name), [&, directory, startConverting] {
                         directory.deleteRecursively();
-                        DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFilesDialog>(convertFilesSettings.files, convertFilesSettings.destination, convertFilesSettings.name));
+                        startConverting();
                         return true;
                     });
                 } else {
-                    DialogQueue::getSingleton().pushBack(std::make_unique<ConvertingFilesDialog>(convertFilesSettings.files, convertFilesSettings.destination, convertFilesSettings.name));
+                    startConverting();
                 }
             }
             return true;
