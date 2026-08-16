@@ -9,21 +9,21 @@ use std::sync::{Arc, Mutex};
 
 pub const MAX_NUMBER_OF_MUX_CHANNELS: u32 = 254; // '\n' and '^' are reserved
 
-pub struct MuxScanner<'a> {
+pub struct MuxScanner {
     dropped: Arc<Mutex<bool>>,
-    connection: &'a Connection,
+    connection: InternalConnection,
     closure_id: u64,
     closure_counter: AtomicU64,
     closures: Arc<Mutex<Vec<(Box<dyn Fn(Vec<Device>) + Send>, u64)>>>,
     devices: Arc<Mutex<Vec<Device>>>,
 }
 
-impl<'a> MuxScanner<'a> {
-    pub fn new(connection: &'a Connection) -> Self {
+impl MuxScanner {
+    pub fn new(connection: &Connection) -> Self {
         let devices = Arc::new(Mutex::new(Vec::new()));
         let updated = Arc::new(AtomicBool::new(false));
 
-        let closure_id = connection.add_mux_closure(Box::new({
+        let closure_id = connection.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_mux_closure(Box::new({
             let connection = connection.internal.clone();
             let devices = devices.clone();
             let updated = updated.clone();
@@ -41,7 +41,7 @@ impl<'a> MuxScanner<'a> {
 
         let mux_scanner = Self {
             dropped: Arc::new(Mutex::new(false)),
-            connection,
+            connection: connection.internal.clone(),
             closure_id,
             closure_counter: AtomicU64::new(0),
             closures: Arc::new(Mutex::new(Vec::new())),
@@ -50,7 +50,7 @@ impl<'a> MuxScanner<'a> {
 
         let dropped = mux_scanner.dropped.clone();
         let closures = mux_scanner.closures.clone();
-        let connection = connection.internal.clone();
+        let connection = mux_scanner.connection.clone();
 
         std::thread::spawn(move || {
             let mux_connection = Connection::new(&ConnectionConfig::MuxConnectionConfig(MuxConnectionConfig {
@@ -105,7 +105,7 @@ impl<'a> MuxScanner<'a> {
     pub fn scan(connection: &Connection, number_of_channels: u32, retries: u32, timeout: u32) -> Vec<Device> {
         let devices = Arc::new(Mutex::new(Vec::new()));
 
-        let closure_id = connection.add_mux_closure(Box::new({
+        let closure_id = connection.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_mux_closure(Box::new({
             let connection = connection.internal.clone();
             let devices = devices.clone();
 
@@ -134,7 +134,7 @@ impl<'a> MuxScanner<'a> {
             }
         }
 
-        connection.remove_closure(closure_id);
+        connection.internal.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_closure(closure_id);
 
         let mut devices = devices.lock().unwrap();
 
@@ -184,9 +184,9 @@ impl<'a> MuxScanner<'a> {
     }
 }
 
-impl Drop for MuxScanner<'_> {
+impl Drop for MuxScanner {
     fn drop(&mut self) {
         *self.dropped.lock().unwrap() = true;
-        self.connection.remove_closure(self.closure_id);
+        self.connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_closure(self.closure_id);
     }
 }

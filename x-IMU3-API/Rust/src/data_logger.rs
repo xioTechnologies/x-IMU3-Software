@@ -8,13 +8,13 @@ use std::ops::Drop;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
-pub struct DataLogger<'a> {
-    connections: Vec<(&'a Connection, Vec<u64>)>,
+pub struct DataLogger {
+    connections: Vec<(InternalConnection, Vec<u64>)>,
     in_progress: Arc<Mutex<bool>>,
 }
 
-impl<'a> DataLogger<'a> {
-    pub fn new(destination: &str, name: &str, connections: Vec<&'a Connection>) -> std::io::Result<Self> {
+impl DataLogger {
+    pub fn new(destination: &str, name: &str, connections: Vec<&Connection>) -> std::io::Result<Self> {
         // Create root directory
         Path::new(destination).read_dir()?;
 
@@ -24,7 +24,7 @@ impl<'a> DataLogger<'a> {
 
         // Initialise structure
         let mut data_logger = Self {
-            connections: connections.into_iter().map(|connection| (connection, Vec::new())).collect(),
+            connections: connections.iter().map(|connection| (connection.internal.clone(), Vec::new())).collect(),
             in_progress: Arc::new(Mutex::new(false)),
         };
 
@@ -42,7 +42,7 @@ impl<'a> DataLogger<'a> {
         const COMMAND_FILE_NAME: &str = "Command.json";
 
         for (index, (connection, closure_ids)) in data_logger.connections.iter_mut().enumerate() {
-            closure_ids.push(connection.add_receive_error_closure(Box::new({
+            closure_ids.push(connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_receive_error_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -51,7 +51,7 @@ impl<'a> DataLogger<'a> {
                 }
             })));
 
-            closure_ids.push(connection.add_command_closure(Box::new({
+            closure_ids.push(connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_command_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -60,7 +60,7 @@ impl<'a> DataLogger<'a> {
                 }
             })));
 
-            closure_ids.push(connection.add_data_closure(Box::new({
+            closure_ids.push(connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.add_data_closure(Box::new({
                 let sender = sender.clone();
                 let path = paths[index].clone();
 
@@ -128,14 +128,14 @@ impl<'a> DataLogger<'a> {
         });
 
         // Send commands
-        for (connection, _) in data_logger.connections.iter() {
+        for connection in &connections {
             connection.send_commands_async(vec!["{\"ping\":null}".into(), "{\"time\":null}".into()], 4, 200, Box::new(|_| {}));
         }
 
         Ok(data_logger)
     }
 
-    pub fn log(destination: &str, name: &str, connections: Vec<&'a Connection>, seconds: u32) -> std::io::Result<()> {
+    pub fn log(destination: &str, name: &str, connections: Vec<&Connection>, seconds: u32) -> std::io::Result<()> {
         let data_logger = Self::new(destination, name, connections)?;
 
         std::thread::sleep(std::time::Duration::from_secs(seconds as u64));
@@ -146,11 +146,11 @@ impl<'a> DataLogger<'a> {
     }
 }
 
-impl Drop for DataLogger<'_> {
+impl Drop for DataLogger {
     fn drop(&mut self) {
         for (connection, closure_ids) in &self.connections {
             for closure_id in closure_ids {
-                connection.remove_closure(*closure_id);
+                connection.lock().unwrap().get_receiver().lock().unwrap().dispatcher.remove_closure(*closure_id);
             }
         }
 

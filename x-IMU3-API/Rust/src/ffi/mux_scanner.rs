@@ -5,7 +5,7 @@ use crate::mux_scanner::*;
 use std::os::raw::c_void;
 
 #[no_mangle]
-pub extern "C" fn XIMU3_mux_scanner_new(connection: *mut Connection) -> *mut MuxScanner<'static> {
+pub extern "C" fn XIMU3_mux_scanner_new(connection: *mut Connection) -> *mut MuxScanner {
     let connection = unsafe { &*connection };
 
     Box::into_raw(Box::new(MuxScanner::new(connection)))
