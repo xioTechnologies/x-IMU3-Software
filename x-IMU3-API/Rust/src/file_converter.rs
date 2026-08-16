@@ -116,10 +116,12 @@ impl FileConverter {
             drop(data_logger);
 
             progress.status = FileConverterStatus::Complete;
+
             if let Ok(dropped) = dropped.lock() {
-                if *dropped == false {
-                    closure(progress.clone());
+                if *dropped {
+                    return;
                 }
+                closure(progress.clone());
             }
         });
 
