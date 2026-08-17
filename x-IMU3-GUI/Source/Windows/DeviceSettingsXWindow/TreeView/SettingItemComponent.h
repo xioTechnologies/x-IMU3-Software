@@ -1,16 +1,45 @@
 #pragma once
 
 #include "Widgets/SimpleLabel.h"
-#include "../Values/SettingValue.h"
+#include "../Values/BooleanValue.h"
+#include "../Values/EnumValue.h"
+#include "../Values/NumberValue.h"
+#include "../Values/ValueBase.h"
+#include "../Values/StringValue.h"
 
-class SettingComponent : public juce::Component {
+class SettingItemComponent : public juce::Component {
 public:
     static constexpr int rowMargin = 4;
 
-    SettingComponent(SettingX &setting_) : setting(setting_) {
+    SettingItemComponent(SettingX &setting_) : setting(setting_) {
         addAndMakeVisible(nameLabel);
         addAndMakeVisible(statusLabel);
+
+        switch (setting.type) {
+            case SettingX::Type::string:
+                value = std::make_unique<StringValue>(setting);
+                break;
+
+            case SettingX::Type::number:
+                if (setting.numberEnum.empty()) {
+                    value = std::make_unique<NumberValue>(setting);
+                } else {
+                    value = std::make_unique<EnumValue>(setting);
+                }
+                break;
+
+            case SettingX::Type::boolean:
+                value = std::make_unique<BooleanValue>(setting);
+                break;
+        }
+
         addAndMakeVisible(value.get());
+
+        setting.onRefresh = [&, self = SafePointer<juce::Component>(this)] {
+            if (self) {
+                refresh();
+            }
+        };
 
         refresh();
     }
@@ -23,9 +52,10 @@ public:
         if (const auto *const treeview = findParentComponentOfClass<juce::TreeView>()) {
             auto valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
             valueBounds.removeFromRight(2);
-            valueBounds.reduce(0, juce::roundToInt(rowMargin * 0.5));
 
-            value->setBounds(valueBounds);
+            if (value) {
+                value->setBounds(valueBounds);
+            }
         }
 
         nameLabel.setBounds(bounds);
@@ -52,7 +82,9 @@ public:
             case SettingX::Status::confirmed:
                 statusLabel.setText("Confirmed");
 
-                value->refresh();
+                if (value) {
+                    value->refresh();
+                }
                 break;
         }
     }
@@ -60,6 +92,6 @@ public:
 private:
     SettingX &setting;
     SimpleLabel nameLabel{setting.name};
-    const std::unique_ptr<SettingValue> value = SettingValue::create(setting);
+    std::unique_ptr<ValueBase> value;
     SimpleLabel statusLabel;
 };

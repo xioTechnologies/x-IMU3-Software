@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SettingComponent.h"
+#include "SettingItemComponent.h"
 
 class SettingItem : public juce::TreeViewItem
 {
@@ -12,23 +12,14 @@ public:
     bool mightContainSubItems() override { return false; }
 
     std::unique_ptr<juce::Component> createItemComponent() override {
-        auto result = std::make_unique<SettingComponent>(setting);;
-        component = result.get();
-        return result;
+        return std::make_unique<SettingItemComponent>(setting);;
     }
 
     int getItemHeight() const override
     {
-        return UILayout::textComponentHeight + SettingComponent::rowMargin;
-    }
-
-    void refresh() {
-        if (component) {
-            component->refresh();
-        }
+        return UILayout::textComponentHeight + SettingItemComponent::rowMargin;
     }
 
 private:
     SettingX& setting;
-    juce::Component::SafePointer<SettingComponent> component;
 };

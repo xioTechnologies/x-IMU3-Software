@@ -5,7 +5,6 @@
 #include "Schema/Group.h"
 #include "Schema/SettingX.h"
 #include "TreeView/GroupItem.h"
-#include "TreeView/SettingComponent.h"
 
 class DeviceSettingsXWindow : public Window {
 public:
@@ -17,22 +16,20 @@ public:
 
 private:
     struct Tree {
-        Tree(Group rootGroup_) : rootGroup(rootGroup_) {
+        Tree(Group rootGroup_) : rootGroup(std::move(rootGroup_)) {
             treeView.setRootItem(&rootGroupItem);
-            settingItems = rootGroupItem.flatten(treeView);
+            treeView.setRootItemVisible(false);
         }
 
         Group rootGroup;
+        const std::vector<SettingX*> settings = rootGroup.flatten();
         GroupItem rootGroupItem { rootGroup };
-        std::vector<SettingX*> settings = rootGroup.flatten();
-        std::vector<SettingItem*> settingItems;
         juce::TreeView treeView;
     };
 
     std::unique_ptr<Tree> tree;
 
-    IconButton readAllButton{BinaryData::download_svg, "Read Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Read Settings from Device (Failed)"};
-    IconButton writeAllButton{BinaryData::upload_svg, "Write Settings to Device", nullptr, false, BinaryData::upload_warning_svg, "Write Settings to Device (Failed)"};
+    IconButton syncButton{BinaryData::download_svg, "Sync Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Sync Settings from Device (Failed)"};
 
     void setGroup(Group group);
 

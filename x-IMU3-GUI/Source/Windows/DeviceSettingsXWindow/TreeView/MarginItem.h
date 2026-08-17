@@ -1,8 +1,8 @@
 #pragma once
 
-class MarginItem : public juce::TreeViewItem {
-public:
-    bool mightContainSubItems() override { return false; }
-    int getItemHeight() const override { return SettingComponent::rowMargin / 2; }
-};
+#include <juce_gui_basics/juce_gui_basics.h>
 
+struct MarginItem : juce::TreeViewItem {
+    bool mightContainSubItems() override { return false; }
+    int getItemHeight() const override { return SettingItemComponent::rowMargin / 2; }
+};

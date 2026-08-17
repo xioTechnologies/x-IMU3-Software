@@ -94,7 +94,7 @@ void Setting::updateIcon() {
             }
         }
         return status;
-    };
+    }; 
     updateIcons(statusFrom(getStatus(tree)[DeviceSettingsIds::status]), getStatus(tree)[DeviceSettingsIds::statusTooltip]);
 }
 

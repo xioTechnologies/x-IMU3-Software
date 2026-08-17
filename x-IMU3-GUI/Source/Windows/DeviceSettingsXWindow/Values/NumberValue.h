@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Widgets/CustomTextEditor.h"
-#include "SettingValue.h"
+#include "ValueBase.h"
 
-class NumberTextValue : public SettingValue {
+class NumberValue : public ValueBase {
 public:
-    NumberTextValue(SettingX &setting_) : SettingValue(setting_) {
+    NumberValue(SettingX &setting_) : ValueBase(setting_) {
         addAndMakeVisible(editor);
         editor.onTextChange = [&] {
-            setting.uiValue = editor.getText().toStdString();
+            // TODO: Send and go to unknown state
         };
     }
 
@@ -17,7 +17,7 @@ public:
     }
 
     void refresh() override {
-        editor.setText(setting.value);
+        editor.setText(setting.value, false);
     }
 
 private:

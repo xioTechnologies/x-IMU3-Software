@@ -1,12 +1,12 @@
 #include "DeviceSettingsXWindow.h"
 #include "ConnectionPanel/ConnectionPanel.h"
+#include "DeviceSettings/Setting/Setting.h"
 
 DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu") {
-    addAndMakeVisible(readAllButton);
-    addAndMakeVisible(writeAllButton);
+    addAndMakeVisible(syncButton);
 
-    readAllButton.onClick = [&] {
+    syncButton.onClick = [&] {
         std::vector<std::string> commands;
         for (const auto &setting: tree->settings) {
             commands.push_back(setting->readCommand());
@@ -15,21 +15,7 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
         connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
             for (size_t index = 0; index < responses.size(); index++) {
                 tree->settings[index]->receiveResponse(responses[index]);
-                tree->settingItems[index]->refresh();
-            }
-        });
-    };
-
-    writeAllButton.onClick = [&] {
-        std::vector<std::string> commands;
-        for (size_t index = 0; index < tree->settings.size(); index++) {
-            commands.push_back(tree->settings[index]->writeCommand());
-        }
-
-        connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-            for (size_t index = 0; index < responses.size(); index++) {
-                tree->settings[index]->receiveResponse(responses[index]);
-                tree->settingItems[index]->refresh();
+                juce::NullCheckedInvocation::invoke(tree->settings[index]->onRefresh);
             }
         });
     };
@@ -70,8 +56,7 @@ void DeviceSettingsXWindow::resized() {
     auto bounds = getContentBounds();
 
     auto footer = bounds.removeFromBottom(25);
-    readAllButton.setBounds(footer.removeFromLeft(footer.getWidth() / 2));
-    writeAllButton.setBounds(footer);
+    syncButton.setBounds(footer.removeFromLeft(footer.getWidth() / 2));
 
     tree->treeView.setBounds(bounds);
 }
@@ -79,6 +64,14 @@ void DeviceSettingsXWindow::resized() {
 void DeviceSettingsXWindow::setGroup(Group group) {
     tree = std::make_unique<Tree>(group);
     addAndMakeVisible(tree->treeView);
+    for (auto* setting : tree->settings) {
+        setting->onWrite = [&, setting] (auto& json) {
+            connectionPanel.sendCommands({json}, this, [&, setting](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+                setting->receiveResponse(responses.front());
+                juce::NullCheckedInvocation::invoke(setting->onRefresh);
+            });
+        };
+    }
     resized();
 }
 

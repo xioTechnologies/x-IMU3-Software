@@ -32,7 +32,8 @@ struct SettingX {
     std::string error {};
     Status status = Status::unknown;
 
-    std::string uiValue {};
+    std::function<void()> onRefresh {};
+    std::function<void(const std::string& command)> onWrite {};
 
     static std::optional<Type> checkType(const std::string& value) {
         if (value == "true" || value == "false") {
@@ -61,7 +62,6 @@ struct SettingX {
         }
 
         value = response->value;
-        uiValue = response->value;
 
         if (response->error.has_value()) {
             error = response->error.value();
@@ -88,12 +88,12 @@ struct SettingX {
         return "{\"" + key + "\":null}";
     }
 
-    std::string writeCommand() const {
+    std::string writeCommand(const std::string& value_) const {
         if (readOnly) {
             return readCommand();
         }
 
-        const std::string command = "{\"" + key + "\":" + uiValue + "}";
+        const std::string command = "{\"" + key + "\":" + value_ + "}";
 
         if (ximu3::CommandMessage::parse(command).has_value() == false) {
             return readCommand();
