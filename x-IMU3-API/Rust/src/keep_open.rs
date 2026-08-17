@@ -3,20 +3,20 @@ use crate::connection_status::*;
 use std::ops::Drop;
 use std::sync::{Arc, Mutex};
 
-pub struct KeepOpen<'a> {
+pub struct KeepOpen {
     dropped: Arc<Mutex<bool>>,
-    connection: &'a Connection,
+    connection: InternalConnection,
 }
 
-impl<'a> KeepOpen<'a> {
-    pub fn new(connection: &'a Connection) -> Self {
+impl KeepOpen {
+    pub fn new(connection: &Connection) -> Self {
         let keep_open = Self {
             dropped: Arc::new(Mutex::new(false)),
-            connection,
+            connection: connection.internal.clone(),
         };
 
         let dropped = keep_open.dropped.clone();
-        let connection = connection.internal.clone();
+        let connection = keep_open.connection.clone();
 
         std::thread::spawn(move || loop {
             loop {
@@ -69,9 +69,9 @@ impl<'a> KeepOpen<'a> {
     }
 }
 
-impl Drop for KeepOpen<'_> {
+impl Drop for KeepOpen {
     fn drop(&mut self) {
         *self.dropped.lock().unwrap() = true;
-        self.connection.close();
+        self.connection.lock().unwrap().close();
     }
 }
