@@ -58,9 +58,8 @@ PyMODINIT_FUNC PyInit__core() {
         (PyModule_AddIntConstant(module, "CONNECTION_STATUS_DISCONNECTED", XIMU3_ConnectionStatusDisconnected) == 0) &&
         (PyModule_AddIntConstant(module, "DEFAULT_RETRIES", XIMU3_DEFAULT_RETRIES) == 0) &&
         (PyModule_AddIntConstant(module, "DEFAULT_TIMEOUT", XIMU3_DEFAULT_TIMEOUT) == 0) &&
-        (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
-        (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_FAILED", XIMU3_FileConverterStatusFailed) == 0) &&
         (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_IN_PROGRESS", XIMU3_FileConverterStatusInProgress) == 0) &&
+        (PyModule_AddIntConstant(module, "FILE_CONVERTER_STATUS_COMPLETE", XIMU3_FileConverterStatusComplete) == 0) &&
         (PyModule_AddIntConstant(module, "JSON_TYPE_STRING", XIMU3_JsonTypeString) == 0) &&
         (PyModule_AddIntConstant(module, "JSON_TYPE_NUMBER", XIMU3_JsonTypeNumber) == 0) &&
         (PyModule_AddIntConstant(module, "JSON_TYPE_BOOLEAN", XIMU3_JsonTypeBoolean) == 0) &&

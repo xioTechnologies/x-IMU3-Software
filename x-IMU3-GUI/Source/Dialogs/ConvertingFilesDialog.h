@@ -2,7 +2,6 @@
 
 #include "Dialog.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Widgets/SimpleLabel.h"
 #include "Ximu3.hpp"
 
 class ConvertingFilesDialog : public Dialog, private juce::Timer {
@@ -10,6 +9,8 @@ public:
     ConvertingFilesDialog(const juce::Array<juce::File> &files, const juce::File &destination_, const juce::String &name_);
 
     void resized() override;
+
+    ximu3::XIMU3_Result getResult();
 
 private:
     const juce::File destination;

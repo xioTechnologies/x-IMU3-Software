@@ -121,9 +121,8 @@ typedef enum XIMU3_ReceiveError
 
 typedef enum XIMU3_FileConverterStatus
 {
-    XIMU3_FileConverterStatusComplete,
-    XIMU3_FileConverterStatusFailed,
     XIMU3_FileConverterStatusInProgress,
+    XIMU3_FileConverterStatusComplete,
 } XIMU3_FileConverterStatus;
 
 typedef enum XIMU3_PortType

@@ -102,9 +102,8 @@ namespace Ximu3
 
         public enum XIMU3_FileConverterStatus
         {
-            XIMU3_FileConverterStatusComplete,
-            XIMU3_FileConverterStatusFailed,
             XIMU3_FileConverterStatusInProgress,
+            XIMU3_FileConverterStatusComplete,
         }
 
         public enum XIMU3_PortType
