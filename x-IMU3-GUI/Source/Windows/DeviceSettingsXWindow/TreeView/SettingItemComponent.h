@@ -4,7 +4,7 @@
 #include "../Values/BooleanValue.h"
 #include "../Values/EnumValue.h"
 #include "../Values/NumberValue.h"
-#include "../Values/ValueBase.h"
+#include "../Values/Value.h"
 #include "../Values/StringValue.h"
 
 class SettingItemComponent : public juce::Component {
@@ -92,6 +92,6 @@ public:
 private:
     SettingX &setting;
     SimpleLabel nameLabel{setting.name};
-    std::unique_ptr<ValueBase> value;
+    std::unique_ptr<Value> value;
     SimpleLabel statusLabel;
 };

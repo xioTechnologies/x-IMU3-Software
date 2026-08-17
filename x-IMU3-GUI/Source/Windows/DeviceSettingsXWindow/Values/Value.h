@@ -2,9 +2,9 @@
 
 #include "../Schema/SettingX.h"
 
-class ValueBase : public juce::Component {
+class Value : public juce::Component {
 public:
-    ValueBase(SettingX &setting_) : setting(setting_) {
+    Value(SettingX &setting_) : setting(setting_) {
     }
 
     virtual void refresh() = 0;

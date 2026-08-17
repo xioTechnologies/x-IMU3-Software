@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Widgets/CustomTextEditor.h"
-#include "ValueBase.h"
+#include "Value.h"
 
-class NumberValue : public ValueBase {
+class NumberValue : public Value {
 public:
-    NumberValue(SettingX &setting_) : ValueBase(setting_) {
+    NumberValue(SettingX &setting_) : Value(setting_) {
         addAndMakeVisible(editor);
         editor.onTextChange = [&] {
             // TODO: Send and go to unknown state

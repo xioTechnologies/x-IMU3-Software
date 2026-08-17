@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Widgets/CustomComboBox.h"
-#include "ValueBase.h"
+#include "Value.h"
 
-class EnumValue : public ValueBase {
+class EnumValue : public Value {
 public:
-    EnumValue(SettingX &setting_) : ValueBase(setting_) {
+    EnumValue(SettingX &setting_) : Value(setting_) {
         addAndMakeVisible(combo);
         for (auto it: setting.numberEnum) {
             combo.addItem(it.second, 1 + combo.getNumItems());

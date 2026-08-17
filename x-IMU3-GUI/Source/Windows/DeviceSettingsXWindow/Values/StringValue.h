@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Widgets/CustomTextEditor.h"
-#include "ValueBase.h"
+#include "Value.h"
 
-class StringValue : public ValueBase {
+class StringValue : public Value {
 public:
-    StringValue(SettingX &setting_) : ValueBase(setting_) {
+    StringValue(SettingX &setting_, std::function<void(std::string)> write) : Value(setting_) {
         addAndMakeVisible(editor);
-        editor.onReturnKey = [&] {
-            setting.onWrite(setting.writeCommand(('"' + editor.getText() + '"').toStdString()));
-            editor.setText("", false);
+        editor.onReturnKey = [&, write] {
+            setting.clear();
+
+            write(setting.writeCommand(('"' + editor.getText() + '"').toStdString()));
         };
     }
 
@@ -18,6 +19,8 @@ public:
     }
 
     void refresh() override {
+        // TODO: Clear when status unknown
+
         if (setting.value.size() >= 2 && setting.value.front() == '"' && setting.value.back() == '"') {
             editor.setText(setting.value.substr(1, setting.value.size() - 2), false);
             return;

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Widgets/CustomComboBox.h"
-#include "ValueBase.h"
+#include "Value.h"
 
-class BooleanValue : public ValueBase {
+class BooleanValue : public Value {
 public:
-    BooleanValue(SettingX &setting_) : ValueBase(setting_) {
+    BooleanValue(SettingX &setting_) : Value(setting_) {
         addAndMakeVisible(combo);
         combo.addItemList({"false", "true"}, 1);
         combo.onChange = [&] {

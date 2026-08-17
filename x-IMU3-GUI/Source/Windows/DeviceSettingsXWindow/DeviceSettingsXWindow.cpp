@@ -15,6 +15,12 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
         connectionPanel.sendCommands(commands, this, [&, commands](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
             for (size_t index = 0; index < responses.size(); index++) {
                 tree->settings[index]->receiveResponse(responses[index]);
+
+                // TODO: Find "Value" for this setting and invoke refresh()
+
+
+
+
                 juce::NullCheckedInvocation::invoke(tree->settings[index]->onRefresh);
             }
         });

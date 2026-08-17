@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-struct SettingX {
+struct SettingX : juce::ChangeBroadcaster {
     enum class Type {
         string,
         number,
@@ -25,33 +25,42 @@ struct SettingX {
     std::string name;
     std::string key;
     Type type;
-    std::vector<std::pair<int, std::string>> numberEnum {};
+    std::vector<std::pair<int, std::string> > numberEnum{};
     bool readOnly{false};
 
-    std::string value {};
-    std::string error {};
+    std::string value{};
+    std::string error{};
     Status status = Status::unknown;
 
-    std::function<void()> onRefresh {};
-    std::function<void(const std::string& command)> onWrite {};
+    void clear() {
+        sendChangeMessage();
 
-    static std::optional<Type> checkType(const std::string& value) {
-        if (value == "true" || value == "false") {
-            return Type::boolean;
-        }
-
-        if (value.length() >= 2 && value.front() == '"' && value.back() == '"') {
-            return Type::string;
-        }
-
-        if (value.length() > 0) { // TODO
-            return Type::number;
-        }
-
-        return {}; // no type
+        value = "";
+        error = "";
+        status = Status::unknown;
     }
 
-    void receiveResponse(const std::optional<ximu3::CommandMessage> &response) {
+    std::string getRead() const {
+        return "{\"" + key + "\":null}";
+    }
+
+    std::string getWrite(const std::string &value_) const {
+        if (readOnly) {
+            return getRead();
+        }
+
+        const std::string command = "{\"" + key + "\":" + value_ + "}";
+
+        if (ximu3::CommandMessage::parse(command).has_value() == false) {
+            return getRead();
+        }
+
+        return command;
+    }
+
+    void receive(const std::optional<ximu3::CommandMessage> &response) {
+        sendChangeMessage();
+
         if (response.has_value() == false) {
             status = Status::noResponse;
             return;
@@ -68,12 +77,12 @@ struct SettingX {
             status = Status::errorResponse;
             return;
         }
-
-        if (checkType(value) != type) {
-            // TODO: Check type
-            status = Status::invalidResponse;
-            return;
-        }
+        //
+        // if (checkType(value) != type) {
+        //     // TODO: Check type
+        //     status = Status::invalidResponse;
+        //     return;
+        // }
 
         if (false) {
             // TODO: Check map
@@ -82,23 +91,5 @@ struct SettingX {
         }
 
         status = Status::confirmed;
-    }
-
-    std::string readCommand() const {
-        return "{\"" + key + "\":null}";
-    }
-
-    std::string writeCommand(const std::string& value_) const {
-        if (readOnly) {
-            return readCommand();
-        }
-
-        const std::string command = "{\"" + key + "\":" + value_ + "}";
-
-        if (ximu3::CommandMessage::parse(command).has_value() == false) {
-            return readCommand();
-        }
-
-        return command;
     }
 };
