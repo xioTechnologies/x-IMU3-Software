@@ -2,9 +2,8 @@
 
 #include "../Window.h"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Schema/Group.h"
-#include "Schema/SettingX.h"
-#include "TreeView/GroupItem.h"
+#include "Schema.h"
+#include "TreeView/TreeView.h"
 
 class DeviceSettingsXWindow : public Window {
 public:
@@ -15,23 +14,10 @@ public:
     void resized() override;
 
 private:
-    struct Tree {
-        Tree(Group rootGroup_) : rootGroup(std::move(rootGroup_)) {
-            treeView.setRootItem(&rootGroupItem);
-            treeView.setRootItemVisible(false);
-        }
-
-        Group rootGroup;
-        const std::vector<SettingX*> settings = rootGroup.flatten();
-        GroupItem rootGroupItem { rootGroup };
-        juce::TreeView treeView;
-    };
-
-    std::unique_ptr<Tree> tree;
-
+    std::unique_ptr<TreeView> treeView;
     IconButton syncButton{BinaryData::download_svg, "Sync Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Sync Settings from Device (Failed)"};
 
-    void setGroup(Group group);
+    void load(Schema::Group group);
 
     juce::PopupMenu getMenu() override;
 

@@ -1,25 +1,39 @@
 #pragma once
 
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "../Schema.h"
 #include "Widgets/CustomTextEditor.h"
-#include "Value.h"
 
-class NumberValue : public Value {
+class NumberValue : public CustomTextEditor,
+                    private juce::ChangeListener {
 public:
-    NumberValue(SettingX &setting_) : Value(setting_) {
-        addAndMakeVisible(editor);
-        editor.onTextChange = [&] {
-            // TODO: Send and go to unknown state
+    NumberValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
+        setReadOnly(setting.readOnly);
+        setDefaultText(setting.emptyString);
+        onReturnKey = onEscapeKey = onFocusLost = [&, write] {
+            setting.clear();
+            write(setting, setting.getWrite(getText().toStdString()));
         };
+
+        setting.addChangeListener(this);
+        changeListenerCallback({});
     }
 
-    void resized() override {
-        editor.setBounds(getLocalBounds());
-    }
-
-    void refresh() override {
-        editor.setText(setting.value, false);
+    ~NumberValue() override {
+        setting.removeChangeListener(this);
     }
 
 private:
-    CustomTextEditor editor;
+    Schema::Setting &setting;
+
+    void changeListenerCallback(juce::ChangeBroadcaster *) override {
+        if (setting.status != Schema::Setting::Status::confirmed) {
+            setText({}, false);
+            return;
+        }
+
+        setText(setting.value, false);
+    }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NumberValue)
 };

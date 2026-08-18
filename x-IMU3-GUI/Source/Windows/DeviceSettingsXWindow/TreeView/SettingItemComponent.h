@@ -4,44 +4,43 @@
 #include "../Values/BooleanValue.h"
 #include "../Values/EnumValue.h"
 #include "../Values/NumberValue.h"
-#include "../Values/Value.h"
 #include "../Values/StringValue.h"
 
-class SettingItemComponent : public juce::Component {
+class SettingItemComponent : public juce::Component,
+                             private juce::ChangeListener {
 public:
     static constexpr int rowMargin = 4;
 
-    SettingItemComponent(SettingX &setting_) : setting(setting_) {
+    SettingItemComponent(Schema::Setting &setting_, const std::function<void(Schema::Setting &setting, const std::string &command)> &write) : setting(setting_) {
         addAndMakeVisible(nameLabel);
         addAndMakeVisible(statusLabel);
 
         switch (setting.type) {
-            case SettingX::Type::string:
-                value = std::make_unique<StringValue>(setting);
+            case Schema::Setting::Type::string:
+                value = std::make_unique<StringValue>(setting, write);
                 break;
 
-            case SettingX::Type::number:
-                if (setting.numberEnum.empty()) {
-                    value = std::make_unique<NumberValue>(setting);
-                } else {
-                    value = std::make_unique<EnumValue>(setting);
-                }
+            case Schema::Setting::Type::number:
+                value = std::make_unique<NumberValue>(setting, write);
                 break;
 
-            case SettingX::Type::boolean:
-                value = std::make_unique<BooleanValue>(setting);
+            case Schema::Setting::Type::enumeration:
+                value = std::make_unique<EnumValue>(setting, write);
+                break;
+
+            case Schema::Setting::Type::boolean:
+                value = std::make_unique<BooleanValue>(setting, write);
                 break;
         }
 
-        addAndMakeVisible(value.get());
+        addAndMakeVisible(*value);
 
-        setting.onRefresh = [&, self = SafePointer<juce::Component>(this)] {
-            if (self) {
-                refresh();
-            }
-        };
+        setting.addChangeListener(this);
+        changeListenerCallback({});
+    }
 
-        refresh();
+    ~SettingItemComponent() override {
+        setting.removeChangeListener(this);
     }
 
     void resized() override {
@@ -53,45 +52,43 @@ public:
             auto valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
             valueBounds.removeFromRight(2);
 
-            if (value) {
-                value->setBounds(valueBounds);
-            }
+            value->setBounds(valueBounds);
         }
 
         nameLabel.setBounds(bounds);
     }
 
-    void refresh() {
+private:
+    Schema::Setting &setting;
+    SimpleLabel nameLabel{setting.name};
+    std::unique_ptr<juce::Component> value;
+    SimpleLabel statusLabel;
+
+    void changeListenerCallback(juce::ChangeBroadcaster *) override {
         switch (setting.status) {
-            case SettingX::Status::unknown:
+            case Schema::Setting::Status::unknown:
                 statusLabel.setText("Unknown");
                 break;
 
-            case SettingX::Status::noResponse:
+            case Schema::Setting::Status::noResponse:
                 statusLabel.setText("No Response");
                 break;
 
-            case SettingX::Status::errorResponse:
+            case Schema::Setting::Status::errorResponse:
                 statusLabel.setText("Error Response");
                 break;
 
-            case SettingX::Status::invalidResponse:
+            case Schema::Setting::Status::invalidResponse:
                 statusLabel.setText("Invalid Response");
                 break;
 
-            case SettingX::Status::confirmed:
+            case Schema::Setting::Status::confirmed:
                 statusLabel.setText("Confirmed");
-
-                if (value) {
-                    value->refresh();
-                }
                 break;
         }
+
+        statusLabel.setTooltip(setting.error);
     }
 
-private:
-    SettingX &setting;
-    SimpleLabel nameLabel{setting.name};
-    std::unique_ptr<Value> value;
-    SimpleLabel statusLabel;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingItemComponent)
 };

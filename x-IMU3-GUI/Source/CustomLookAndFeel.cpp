@@ -159,10 +159,6 @@ void CustomLookAndFeel::drawTreeviewPlusMinusBox(juce::Graphics &g, const juce::
     icon->drawWithin(g, area.withSizeKeepingCentre(5.0f, 5.0f), juce::RectanglePlacement::centred | juce::RectanglePlacement::fillDestination, 1.0f);
 }
 
-bool CustomLookAndFeel::areLinesDrawnForTreeView(juce::TreeView &) {
-    return true;
-}
-
 int CustomLookAndFeel::getTreeViewIndentSize(juce::TreeView &) {
     return 15;
 }

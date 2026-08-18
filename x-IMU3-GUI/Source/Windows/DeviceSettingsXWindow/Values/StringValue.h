@@ -1,32 +1,40 @@
 #pragma once
 
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "../Schema.h"
 #include "Widgets/CustomTextEditor.h"
-#include "Value.h"
 
-class StringValue : public Value {
+class StringValue : public CustomTextEditor,
+                    private juce::ChangeListener {
 public:
-    StringValue(SettingX &setting_, std::function<void(std::string)> write) : Value(setting_) {
-        addAndMakeVisible(editor);
-        editor.onReturnKey = [&, write] {
+    StringValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
+        setReadOnly(setting.readOnly);
+        setDefaultText(setting.emptyString);
+        onReturnKey = onEscapeKey = onFocusLost = [&, write] {
             setting.clear();
-
-            write(setting.writeCommand(('"' + editor.getText() + '"').toStdString()));
+            write(setting, setting.getWrite("\"" + getText().toStdString() + "\""));
         };
+
+        setting.addChangeListener(this);
+        changeListenerCallback({});
     }
 
-    void resized() override {
-        editor.setBounds(getLocalBounds());
-    }
-
-    void refresh() override {
-        // TODO: Clear when status unknown
-
-        if (setting.value.size() >= 2 && setting.value.front() == '"' && setting.value.back() == '"') {
-            editor.setText(setting.value.substr(1, setting.value.size() - 2), false);
-            return;
-        }
+    ~StringValue() override {
+        setting.removeChangeListener(this);
     }
 
 private:
-    CustomTextEditor editor;
+    Schema::Setting &setting;
+
+    void changeListenerCallback(juce::ChangeBroadcaster *) override {
+        if (setting.status != Schema::Setting::Status::confirmed) {
+            setText({}, false);
+            return;
+        }
+
+        // TODO: Check length?
+        setText(setting.value.substr(1, setting.value.size() - 2), false);
+    }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringValue)
 };
