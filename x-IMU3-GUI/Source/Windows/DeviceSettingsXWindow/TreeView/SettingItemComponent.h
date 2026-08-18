@@ -2,7 +2,7 @@
 
 #include "Widgets/SimpleLabel.h"
 #include "../Values/BooleanValue.h"
-#include "../Values/EnumValue.h"
+#include "../Values/EnumerationValue.h"
 #include "../Values/NumberValue.h"
 #include "../Values/StringValue.h"
 
@@ -25,7 +25,7 @@ public:
                 break;
 
             case Schema::Setting::Type::enumeration:
-                value = std::make_unique<EnumValue>(setting, write);
+                value = std::make_unique<EnumerationValue>(setting, write);
                 break;
 
             case Schema::Setting::Type::boolean:

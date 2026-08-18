@@ -4,10 +4,10 @@
 #include "../Schema.h"
 #include "Widgets/CustomComboBox.h"
 
-class EnumValue : public CustomComboBox,
+class EnumerationValue : public CustomComboBox,
                   private juce::ChangeListener {
 public:
-    EnumValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
+    EnumerationValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
         for (const auto &enumerator: setting.enumeration) {
             addItem(enumerator.second, 1 + getNumItems());
         }
@@ -21,7 +21,7 @@ public:
         changeListenerCallback({});
     }
 
-    ~EnumValue() override {
+    ~EnumerationValue() override {
         setting.removeChangeListener(this);
     }
 
@@ -42,5 +42,5 @@ private:
         }
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnumValue)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnumerationValue)
 };
