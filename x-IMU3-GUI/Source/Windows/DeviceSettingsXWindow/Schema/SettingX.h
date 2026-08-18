@@ -11,8 +11,23 @@ struct SettingX : juce::ChangeBroadcaster {
     enum class Type {
         string,
         number,
+        enumeration,
         boolean,
     };
+
+    static ximu3::XIMU3_JsonType jsonTypeFrom(const Type type_) {
+        switch (type_) {
+            case Type::string:
+                return ximu3::XIMU3_JsonTypeString;
+            case Type::number:
+            case Type::enumeration:
+                return ximu3::XIMU3_JsonTypeNumber;
+            case Type::boolean:
+                return ximu3::XIMU3_JsonTypeBoolean;
+        }
+
+        return {}; // avoid compiler warning
+    }
 
     enum class Status {
         unknown,
@@ -22,21 +37,25 @@ struct SettingX : juce::ChangeBroadcaster {
         confirmed,
     };
 
-    std::string name;
-    std::string key;
-    Type type;
-    std::vector<std::pair<int, std::string> > numberEnum{};
-    bool readOnly{false};
+    const std::string key{};
+    const Type type{};
+    const std::vector<std::pair<int, std::string> > enumeration{};
+    const bool readOnly{};
 
     std::string value{};
     std::string error{};
     Status status = Status::unknown;
 
+    const std::string name{};
+    const std::string emptyString{};
+    const std::string dependsOnKey{};
+    const std::vector<std::string> dependsOnValues{};
+
     void clear() {
         sendChangeMessage();
 
-        value = "";
-        error = "";
+        value = {};
+        error = {};
         status = Status::unknown;
     }
 
@@ -67,22 +86,19 @@ struct SettingX : juce::ChangeBroadcaster {
         }
 
         if (response->key != key) {
-            return;
+            return; // TODO: Delete this?
         }
-
-        value = response->value;
 
         if (response->error.has_value()) {
             error = response->error.value();
             status = Status::errorResponse;
             return;
         }
-        //
-        // if (checkType(value) != type) {
-        //     // TODO: Check type
-        //     status = Status::invalidResponse;
-        //     return;
-        // }
+
+        if (jsonTypeFrom(type) != response->valueType) {
+            status = Status::invalidResponse;
+            return;
+        }
 
         if (false) {
             // TODO: Check map
@@ -90,6 +106,7 @@ struct SettingX : juce::ChangeBroadcaster {
             return;
         }
 
+        value = response->value;
         status = Status::confirmed;
     }
 };

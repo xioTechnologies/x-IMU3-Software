@@ -6,6 +6,7 @@
 struct Group
 {
     juce::String name;
+    bool expand = true;
 
     std::vector<std::variant<Group, SettingX, Margin>> items;
 
