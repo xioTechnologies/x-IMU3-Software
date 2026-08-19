@@ -35,7 +35,7 @@ private:
 
     ConnectionsTable table;
 
-    IconButton filterButton{BinaryData::filter_svg, "Filter", std::bind(&AvailableConnectionsDialog::getFilterMenu, this)};
+    IconButton filterButton{BinaryData::checklist_svg, "Filter", std::bind(&AvailableConnectionsDialog::getFilterMenu, this)};
 
     juce::PopupMenu getFilterMenu();
 
