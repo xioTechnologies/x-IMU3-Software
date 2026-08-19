@@ -18,13 +18,13 @@ def callback(progress: ximu3.FileConverterProgress) -> None:
 
 # Blocking
 destination = "C:/Users/Public/"
-name_blocking = "x-IMU3 File Conversion Example Blocking"
+name_blocking = "x-IMU3 File Converter Example Blocking"
 file_paths = ["C:/Users/Public/x-IMU3 Example File.ximu3"]  # replace with actual file path
 
 ximu3.FileConverter.convert(destination, name_blocking, file_paths)
 
 # Non-blocking
-name_non_blocking = "x-IMU3 File Conversion Example Non-Blocking"
+name_non_blocking = "x-IMU3 File Converter Example Non-Blocking"
 
 _ = ximu3.FileConverter(destination, name_non_blocking, file_paths, callback)
 

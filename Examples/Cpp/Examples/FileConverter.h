@@ -13,7 +13,7 @@ public:
     FileConverter() {
         // Blocking
         const auto destination = "C:/Users/Public/";
-        const auto nameBlocking = "x-IMU3 File Conversion Example Blocking";
+        const auto nameBlocking = "x-IMU3 File Converter Example Blocking";
         const std::vector<std::string> filePaths = {"C:/Users/Public/x-IMU3 Example File.ximu3"}; // replace with actual file path
 
         const auto resultBlocking = ximu3::FileConverter::convert(destination, nameBlocking, filePaths);
@@ -23,7 +23,7 @@ public:
         }
 
         // Non-blocking
-        const auto nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+        const auto nameNonBlocking = "x-IMU3 File Converter Example Non-Blocking";
 
         ximu3::FileConverter fileConverter(destination, nameNonBlocking, filePaths, callback);
 
