@@ -6,7 +6,7 @@ namespace Ximu3Examples
         {
             // Blocking
             var destination = "C:/Users/Public/";
-            var nameBlocking = "x-IMU3 File Conversion Example Blocking";
+            var nameBlocking = "x-IMU3 File Converter Example Blocking";
             string[] filePaths = ["C:/Users/Public/x-IMU3 Example File.ximu3"]; // replace with actual file path
 
             var resultBlocking = Ximu3.FileConverter.Convert(destination, nameBlocking, filePaths);
@@ -17,7 +17,7 @@ namespace Ximu3Examples
             }
 
             // Non-blocking
-            var nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+            var nameNonBlocking = "x-IMU3 File Converter Example Non-Blocking";
 
             using var fileConverter = new Ximu3.FileConverter(destination, nameNonBlocking, filePaths, Callback);
 

@@ -8,7 +8,7 @@ static void callback(const XIMU3_FileConverterProgress progress, void *context);
 void file_converter() {
     // Blocking
     const char *destination = "C:/Users/Public/";
-    const char *nameBlocking = "x-IMU3 File Conversion Example Blocking";
+    const char *nameBlocking = "x-IMU3 File Converter Example Blocking";
     const char *file_paths[] = {"C:/Users/Public/x-IMU3 Example File.ximu3"}; // replace with actual file path
     const int number_of_files = sizeof(file_paths) / sizeof(file_paths[0]);
 
@@ -19,7 +19,7 @@ void file_converter() {
     }
 
     // Non-blocking
-    const char *nameNonBlocking = "x-IMU3 File Conversion Example Non-Blocking";
+    const char *nameNonBlocking = "x-IMU3 File Converter Example Non-Blocking";
 
     XIMU3_FileConverter *const file_converter = XIMU3_file_converter_new(destination, nameNonBlocking, file_paths, number_of_files, callback, NULL);
 
