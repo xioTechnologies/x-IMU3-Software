@@ -19,6 +19,15 @@ private:
     IconButton syncButton{BinaryData::download_svg, "Sync Settings from Device", nullptr, false, BinaryData::download_warning_svg, "Sync Settings from Device (Failed)"};
     DisabledOverlay disabledOverlay;
 
+    struct Settings {
+        bool hideUnusedSettings = true;
+        bool syncSettingsWhenWindowOpens = true;
+    };
+
+    void writeToValueTree(const Settings &settings);
+
+    Settings readFromValueTree();
+
     void load(std::unique_ptr<Schema::Group> group);
 
     juce::PopupMenu getMenu() override;

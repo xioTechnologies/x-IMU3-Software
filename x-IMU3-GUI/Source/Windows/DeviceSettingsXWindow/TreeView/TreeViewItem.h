@@ -7,8 +7,10 @@
 class TreeViewItem : public juce::TreeViewItem,
                      private juce::ChangeListener {
 public:
-    TreeViewItem(Schema::Setting *const dependsOn_, std::vector<std::string> dependsOnValues_) : dependsOn(dependsOn_),
-                                                                                                 dependsOnValues(std::move(dependsOnValues_)) {
+    TreeViewItem(Schema::Setting *const dependsOn_, std::vector<std::string> dependsOnValues_, std::function<bool()> hideUnusedSettings_)
+        : dependsOn(dependsOn_),
+          dependsOnValues(std::move(dependsOnValues_)),
+          hideUnusedSettings(hideUnusedSettings_) {
         if (dependsOn != nullptr) {
             dependsOn->addChangeListener(this);
         }
@@ -25,7 +27,7 @@ public:
             return 0;
         }
 
-        if (hide) {
+        if (hide && hideUnusedSettings()) {
             return 0;
         }
 
@@ -35,6 +37,8 @@ public:
 private:
     Schema::Setting *const dependsOn;
     const std::vector<std::string> dependsOnValues;
+    std::function<bool()> hideUnusedSettings;
+
     bool hide = false;
 
     void changeListenerCallback(juce::ChangeBroadcaster *) override {

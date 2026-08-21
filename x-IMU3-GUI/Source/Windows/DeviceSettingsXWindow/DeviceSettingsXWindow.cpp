@@ -1,5 +1,6 @@
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsXWindow.h"
+#include "Widgets/PopupMenuHeader.h"
 
 DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu") {
@@ -28,6 +29,10 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
 
     load(Schema::load(juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml)));
 
+    if (readFromValueTree().syncSettingsWhenWindowOpens) {
+        syncButton.onClick();
+    }
+
     setOpaque(true);
 }
 
@@ -49,6 +54,19 @@ void DeviceSettingsXWindow::resized() {
     }
 }
 
+
+void DeviceSettingsXWindow::writeToValueTree(const Settings &settings) {
+    settingsTree.setProperty("hideUnusedSettings", settings.hideUnusedSettings, nullptr);
+    settingsTree.setProperty("syncSettingsWhenWindowOpens", settings.syncSettingsWhenWindowOpens, nullptr);
+}
+
+DeviceSettingsXWindow::Settings DeviceSettingsXWindow::readFromValueTree() {
+    Settings settings;
+    settings.hideUnusedSettings = settingsTree.getProperty("hideUnusedSettings", settings.hideUnusedSettings);
+    settings.syncSettingsWhenWindowOpens = settingsTree.getProperty("syncSettingsWhenWindowOpens", settings.syncSettingsWhenWindowOpens);
+    return settings;
+}
+
 void DeviceSettingsXWindow::load(std::unique_ptr<Schema::Group> group) {
     treeView = std::make_unique<TreeView>(std::move(group), [this](Schema::Setting &setting, const std::string &command) {
         connectionPanel.sendCommands({command}, this, [this, &setting](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
@@ -56,13 +74,29 @@ void DeviceSettingsXWindow::load(std::unique_ptr<Schema::Group> group) {
 
             treeView->getRootGroup().refreshWarning();
         });
-    });
+    }, [this] { return readFromValueTree().hideUnusedSettings; });
     addAndMakeVisible(*treeView);
     resized();
 }
 
 juce::PopupMenu DeviceSettingsXWindow::getMenu() {
     juce::PopupMenu menu = Window::getMenu();
+
+    menu.addItem("Sync Settings When Window Opens", true, readFromValueTree().syncSettingsWhenWindowOpens, [&] {
+        auto settings = readFromValueTree();
+        settings.syncSettingsWhenWindowOpens = !settings.syncSettingsWhenWindowOpens;
+        writeToValueTree(settings);
+    });
+
+    menu.addSeparator();
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
+    menu.addItem("Hide Unused Settings", true, readFromValueTree().hideUnusedSettings, [&] {
+        auto settings = readFromValueTree();
+        settings.hideUnusedSettings = !settings.hideUnusedSettings;
+        writeToValueTree(settings);
+
+        treeView->getRootItem()->treeHasChanged();
+    });
 
     // menu.addItem("Enumerate", [&] {
     //     juce::Thread::launch([this, self = SafePointer<juce::Component>(this)] {
