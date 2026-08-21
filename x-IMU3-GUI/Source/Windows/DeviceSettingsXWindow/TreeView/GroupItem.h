@@ -32,6 +32,12 @@ public:
         return std::make_unique<SimpleLabel>(group.name);
     }
 
+    void itemClicked (const juce::MouseEvent&) override {
+        setOpen(isOpen() == false);
+    }
+    
+    void itemDoubleClicked(const juce::MouseEvent &) override {}
+
 private:
     const Schema::Group &group;
 
