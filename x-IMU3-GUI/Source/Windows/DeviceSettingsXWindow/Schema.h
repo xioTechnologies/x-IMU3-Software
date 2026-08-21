@@ -57,22 +57,26 @@ public:
         static Type typeFrom(const juce::String &type);
     };
 
-    struct Group {
+    struct Group : juce::ChangeBroadcaster {
         std::string name;
         bool expand;
         std::string dependsOnKey;
         std::vector<std::string> dependsOnValues;
 
-        std::vector<std::variant<Group, std::unique_ptr<Setting> >> items;
+        std::vector<std::variant<std::unique_ptr<Group>, std::unique_ptr<Setting> >> items;
+
+        bool warning;
 
         Group(const juce::ValueTree &tree, const juce::ValueTree &enums);
+
+        void refreshWarning();
 
         std::vector<Setting *> flatten() const;
 
         Setting *find(const std::string &key) const;
     };
 
-    static Group load(const juce::ValueTree &tree);
+    static std::unique_ptr<Schema::Group> load(const juce::ValueTree &tree);
 
 private:
     static std::vector<std::string> vectorFrom(const juce::String& string);

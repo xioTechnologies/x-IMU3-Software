@@ -110,9 +110,9 @@ Schema::Group::Group(const juce::ValueTree &tree, const juce::ValueTree &enums) 
     dependsOnKey = tree["dependsOnKey"].toString().toStdString();
     dependsOnValues = vectorFrom(tree["dependsOnValues"]);
 
-    for (auto child : tree) {
+    for (auto child: tree) {
         if (child.getType().toString() == "Group") {
-            items.push_back(Group{child, enums});
+            items.push_back(std::make_unique<Group>(child, enums));
             continue;
         }
 
@@ -122,12 +122,42 @@ Schema::Group::Group(const juce::ValueTree &tree, const juce::ValueTree &enums) 
     }
 }
 
+void Schema::Group::refreshWarning() {
+    bool warning_ = false;
+
+    for (const auto &item: items) {
+        if (const auto *const group = std::get_if<std::unique_ptr<Group> >(&item)) {
+            group->get()->refreshWarning();
+            warning_ = warning_ || group->get()->warning;
+            continue;
+        }
+
+        if (const auto *const setting = std::get_if<std::unique_ptr<Setting> >(&item)) {
+            switch (setting->get()->status) {
+                case Setting::Status::noResponse:
+                case Setting::Status::errorResponse:
+                case Setting::Status::invalidResponse:
+                    warning_ = true;
+
+                case Setting::Status::unknown:
+                case Setting::Status::confirmed:
+                    break;
+            }
+        }
+    }
+
+    if (warning != warning_) {
+        warning = warning_;
+        sendChangeMessage();
+    }
+}
+
 std::vector<Schema::Setting *> Schema::Group::flatten() const {
     std::vector<Setting *> settings;
 
     for (const auto &item: items) {
-        if (const auto *const group = std::get_if<Group>(&item)) {
-            const auto flattened = group->flatten();
+        if (const auto *const group = std::get_if<std::unique_ptr<Group> >(&item)) {
+            const auto flattened = group->get()->flatten();
             settings.insert(settings.end(), flattened.begin(), flattened.end());
             continue;
         }
@@ -150,14 +180,14 @@ Schema::Setting *Schema::Group::find(const std::string &key) const {
     return nullptr;
 }
 
-Schema::Group Schema::load(const juce::ValueTree &tree) {
-    return { tree.getChildWithName("Settings"), tree.getChildWithName("Enums") };
+std::unique_ptr<Schema::Group> Schema::load(const juce::ValueTree &tree) {
+    return std::make_unique<Group>(tree.getChildWithName("Settings"), tree.getChildWithName("Enums"));
 }
 
-std::vector<std::string> Schema::vectorFrom(const juce::String& string) {
+std::vector<std::string> Schema::vectorFrom(const juce::String &string) {
     std::vector<std::string> vector;
 
-    for (const auto& string_ : juce::StringArray::fromTokens(string, " ", {})) {
+    for (const auto &string_: juce::StringArray::fromTokens(string, " ", {})) {
         vector.push_back(string_.toStdString());
     }
 

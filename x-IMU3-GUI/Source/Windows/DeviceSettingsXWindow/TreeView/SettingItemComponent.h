@@ -1,43 +1,34 @@
 #pragma once
 
-#include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "Widgets/Icon.h"
-#include "Widgets/SimpleLabel.h"
 #include "../Values/BooleanValue.h"
 #include "../Values/EnumerationValue.h"
 #include "../Values/NumberValue.h"
 #include "../Values/StringValue.h"
+#include "ItemComponent.h"
 
-class SettingItemComponent : public juce::Component,
-                             private juce::ChangeListener {
+class SettingItemComponent final : public ItemComponent,
+                                   private juce::ChangeListener {
 public:
-    static constexpr int rowMargin = 4;
+    SettingItemComponent(Schema::Setting &setting_, const std::function<void(Schema::Setting &setting, const std::string &command)> &write)
+        : ItemComponent(setting_.name, std::invoke([&]() -> std::unique_ptr<juce::Component> {
+              switch (setting_.type) {
+                  case Schema::Setting::Type::string:
+                      return std::make_unique<StringValue>(setting_, write);
 
-    SettingItemComponent(Schema::Setting &setting_, const std::function<void(Schema::Setting &setting, const std::string &command)> &write) : setting(setting_) {
-        addAndMakeVisible(nameLabel);
-        addChildComponent(warningIcon);
+                  case Schema::Setting::Type::number:
+                      return std::make_unique<NumberValue>(setting_, write);
 
-        switch (setting.type) {
-            case Schema::Setting::Type::string:
-                value = std::make_unique<StringValue>(setting, write);
-                break;
+                  case Schema::Setting::Type::enumeration:
+                      return std::make_unique<EnumerationValue>(setting_, write);
 
-            case Schema::Setting::Type::number:
-                value = std::make_unique<NumberValue>(setting, write);
-                break;
+                  case Schema::Setting::Type::boolean:
+                      return std::make_unique<BooleanValue>(setting_, write);
+              }
 
-            case Schema::Setting::Type::enumeration:
-                value = std::make_unique<EnumerationValue>(setting, write);
-                break;
-
-            case Schema::Setting::Type::boolean:
-                value = std::make_unique<BooleanValue>(setting, write);
-                break;
-        }
-
-        addAndMakeVisible(*value);
-
+              return {};
+          })),
+          setting(setting_) {
         setting.addChangeListener(this);
         changeListenerCallback({});
     }
@@ -46,47 +37,26 @@ public:
         setting.removeChangeListener(this);
     }
 
-    void resized() override {
-        auto bounds = getLocalBounds().reduced(0, rowMargin / 2);
-
-        warningIcon.setBounds(bounds.removeFromRight(25).reduced(5));
-
-        if (const auto *const treeview = findParentComponentOfClass<juce::TreeView>()) {
-            auto valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
-            valueBounds.removeFromRight(2);
-
-            value->setBounds(valueBounds);
-        }
-
-        nameLabel.setBounds(bounds);
-    }
-
 private:
     Schema::Setting &setting;
-    SimpleLabel nameLabel{setting.name};
-    std::unique_ptr<juce::Component> value;
-    Icon warningIcon{BinaryData::warning_orange_svg, {}};
 
     void changeListenerCallback(juce::ChangeBroadcaster *) override {
         switch (setting.status) {
             case Schema::Setting::Status::unknown:
             case Schema::Setting::Status::confirmed:
-                warningIcon.setVisible(false);
+                showWarning(false, {});
                 return;
 
             case Schema::Setting::Status::noResponse:
-                warningIcon.setTooltip("No Response");
-                warningIcon.setVisible(true);
+                showWarning(true, "No Response");
                 break;
 
             case Schema::Setting::Status::errorResponse:
-                warningIcon.setTooltip("Error Response: " + setting.error);
-                warningIcon.setVisible(true);
+                showWarning(true, "Error Response: " + setting.error);
                 break;
 
             case Schema::Setting::Status::invalidResponse:
-                warningIcon.setTooltip("Invalid Response");
-                warningIcon.setVisible(true);
+                showWarning(true, "Invalid Response");
                 break;
         }
     }

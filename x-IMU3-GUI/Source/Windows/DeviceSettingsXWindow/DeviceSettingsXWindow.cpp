@@ -10,7 +10,6 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
         disabledOverlay.setVisible(true);
 
         std::vector<std::string> commands;
-
         for (auto *const setting: treeView->getSettings()) {
             setting->clear();
             commands.push_back(setting->getRead());
@@ -19,13 +18,11 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
         connectionPanel.sendCommands(commands, this, [&](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
             disabledOverlay.setVisible(false);
 
-            if (responses.size() != treeView->getSettings().size()) {
-                return;
-            }
-
             for (size_t index = 0; index < responses.size(); index++) {
                 treeView->getSettings()[index]->receive(responses[index]);
             }
+
+            treeView->getRootGroup().refreshWarning();
         });
     };
 
@@ -52,10 +49,12 @@ void DeviceSettingsXWindow::resized() {
     }
 }
 
-void DeviceSettingsXWindow::load(Schema::Group group) {
+void DeviceSettingsXWindow::load(std::unique_ptr<Schema::Group> group) {
     treeView = std::make_unique<TreeView>(std::move(group), [this](Schema::Setting &setting, const std::string &command) {
-        connectionPanel.sendCommands({command}, this, [&setting](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+        connectionPanel.sendCommands({command}, this, [this, &setting](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
             setting.receive(responses.front());
+
+            treeView->getRootGroup().refreshWarning();
         });
     });
     addAndMakeVisible(*treeView);

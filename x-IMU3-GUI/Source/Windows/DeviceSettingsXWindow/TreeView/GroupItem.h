@@ -2,17 +2,17 @@
 
 #include "../Schema.h"
 #include "SettingItem.h"
-#include "Widgets/SimpleLabel.h"
+#include "GroupItemComponent.h"
 
 class GroupItem : public TreeViewItem {
 public:
-    GroupItem(const Schema::Group &group_, const Schema::Group &rootGroup, const std::function<void(Schema::Setting &setting, const std::string &command)> &write) : TreeViewItem(rootGroup.find(group_.dependsOnKey), group_.dependsOnValues),
-                                                                                                                                                                     group(group_) {
+    GroupItem(Schema::Group &group_, const Schema::Group &rootGroup, const std::function<void(Schema::Setting &setting, const std::string &command)> &write) : TreeViewItem(rootGroup.find(group_.dependsOnKey), group_.dependsOnValues),
+                                                                                                                                                               group(group_) {
         setLinesDrawnForSubItems(false);
 
         for (const auto &item: group.items) {
-            if (const auto *const subGroup = std::get_if<Schema::Group>(&item)) {
-                addSubItem(new GroupItem(*subGroup, rootGroup, write));
+            if (const auto *const subGroup = std::get_if<std::unique_ptr<Schema::Group> >(&item)) {
+                addSubItem(new GroupItem(*subGroup->get(), rootGroup, write));
                 continue;
             }
 
@@ -28,18 +28,28 @@ public:
         return true;
     }
 
-    std::unique_ptr<juce::Component> createItemComponent() override {
-        return std::make_unique<SimpleLabel>(group.name);
+    void itemOpennessChanged(bool) override {
+        if (component) {
+            component->refreshWarning();
+        }
     }
 
-    void itemClicked (const juce::MouseEvent&) override {
+    std::unique_ptr<juce::Component> createItemComponent() override {
+        auto component_ = std::make_unique<GroupItemComponent>(group, *this);
+        component = component_.get();
+        return component_;
+    }
+
+    void itemClicked(const juce::MouseEvent &) override {
         setOpen(isOpen() == false);
     }
-    
-    void itemDoubleClicked(const juce::MouseEvent &) override {}
+
+    void itemDoubleClicked(const juce::MouseEvent &) override {
+    }
 
 private:
-    const Schema::Group &group;
+    Schema::Group &group;
+    juce::Component::SafePointer<GroupItemComponent> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GroupItem)
 };
