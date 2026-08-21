@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SettingItemComponent.h"
 #include "TreeViewItem.h"
 
 class SettingItem : public TreeViewItem {

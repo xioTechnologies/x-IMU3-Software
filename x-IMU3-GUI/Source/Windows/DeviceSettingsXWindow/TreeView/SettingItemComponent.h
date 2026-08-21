@@ -1,5 +1,8 @@
 #pragma once
 
+#include <BinaryData.h>
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "Widgets/Icon.h"
 #include "Widgets/SimpleLabel.h"
 #include "../Values/BooleanValue.h"
 #include "../Values/EnumerationValue.h"
@@ -13,7 +16,7 @@ public:
 
     SettingItemComponent(Schema::Setting &setting_, const std::function<void(Schema::Setting &setting, const std::string &command)> &write) : setting(setting_) {
         addAndMakeVisible(nameLabel);
-        addAndMakeVisible(statusLabel);
+        addChildComponent(warningIcon);
 
         switch (setting.type) {
             case Schema::Setting::Type::string:
@@ -46,7 +49,7 @@ public:
     void resized() override {
         auto bounds = getLocalBounds().reduced(0, rowMargin / 2);
 
-        statusLabel.setBounds(bounds.removeFromRight(75));
+        warningIcon.setBounds(bounds.removeFromRight(25).reduced(5));
 
         if (const auto *const treeview = findParentComponentOfClass<juce::TreeView>()) {
             auto valueBounds = bounds.removeFromRight(juce::jmax(treeview->getWidth() / 3, treeview->getWidth() - 270));
@@ -62,32 +65,30 @@ private:
     Schema::Setting &setting;
     SimpleLabel nameLabel{setting.name};
     std::unique_ptr<juce::Component> value;
-    SimpleLabel statusLabel;
+    Icon warningIcon{BinaryData::warning_orange_svg, {}};
 
     void changeListenerCallback(juce::ChangeBroadcaster *) override {
         switch (setting.status) {
             case Schema::Setting::Status::unknown:
-                statusLabel.setText("Unknown");
-                break;
+            case Schema::Setting::Status::confirmed:
+                warningIcon.setVisible(false);
+                return;
 
             case Schema::Setting::Status::noResponse:
-                statusLabel.setText("No Response");
+                warningIcon.setTooltip("No Response");
+                warningIcon.setVisible(true);
                 break;
 
             case Schema::Setting::Status::errorResponse:
-                statusLabel.setText("Error Response");
+                warningIcon.setTooltip("Error Response: " + setting.error);
+                warningIcon.setVisible(true);
                 break;
 
             case Schema::Setting::Status::invalidResponse:
-                statusLabel.setText("Invalid Response");
-                break;
-
-            case Schema::Setting::Status::confirmed:
-                statusLabel.setText("Confirmed");
+                warningIcon.setTooltip("Invalid Response");
+                warningIcon.setVisible(true);
                 break;
         }
-
-        statusLabel.setTooltip(setting.error);
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingItemComponent)

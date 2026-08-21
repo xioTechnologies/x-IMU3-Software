@@ -2,6 +2,7 @@
 
 #include "../Schema.h"
 #include "SettingItem.h"
+#include "Widgets/SimpleLabel.h"
 
 class GroupItem : public TreeViewItem {
 public:
