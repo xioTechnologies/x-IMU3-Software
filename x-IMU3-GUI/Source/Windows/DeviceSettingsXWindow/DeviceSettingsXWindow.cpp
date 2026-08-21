@@ -4,8 +4,11 @@
 DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu") {
     addAndMakeVisible(syncButton);
+    addChildComponent(disabledOverlay);
 
     syncButton.onClick = [&] {
+        disabledOverlay.setVisible(true);
+
         std::vector<std::string> commands;
 
         for (auto *const setting: treeView->getSettings()) {
@@ -14,6 +17,8 @@ DeviceSettingsXWindow::DeviceSettingsXWindow(const juce::ValueTree &windowLayout
         }
 
         connectionPanel.sendCommands(commands, this, [&](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+            disabledOverlay.setVisible(false);
+
             if (responses.size() != treeView->getSettings().size()) {
                 return;
             }
@@ -37,6 +42,7 @@ void DeviceSettingsXWindow::resized() {
     Window::resized();
 
     auto bounds = getContentBounds();
+    disabledOverlay.setBounds(bounds);
 
     auto footer = bounds.removeFromBottom(25);
     syncButton.setBounds(footer.removeFromLeft(footer.getWidth() / 2));
