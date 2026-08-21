@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
 #include "RemoteProcessDialog.h"
 
-RemoteProcessDialog::RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const int timeout_, const bool saveOnComplete_, juce::ThreadPool &threadPool_)
+RemoteProcessDialog::RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const std::optional<int> timeout_, const bool saveOnComplete_, juce::ThreadPool &threadPool_)
     : CommandProgressDialog(icon_, dialogTitle, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_), threadPool(threadPool_) {
     onStart(false);
 }
@@ -22,7 +22,7 @@ void RemoteProcessDialog::onStart(const bool retry) {
                 return;
             }
 
-            connectionPanels[(size_t) index]->sendCommands({"{\"" + prefix + "_start\":" + (timeout == 0 ? "null" : std::to_string(timeout)) + "}"}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+            connectionPanels[(size_t) index]->sendCommands({"{\"" + prefix + "_start\":" + (timeout ? std::to_string(*timeout) : "null") + "}"}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
                 const auto &response = responses.front();
 
                 if (response.has_value() == false) {

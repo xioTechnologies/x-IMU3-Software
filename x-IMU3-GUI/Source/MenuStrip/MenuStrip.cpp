@@ -480,7 +480,7 @@ juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"relative\":null}"));
     });
     menu.addItem("Anchored Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Sampling Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 0, false, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Sampling Heading", connectionPanelContainer.getConnectionPanels(), "anchor", std::nullopt, false, threadPool));
     });
 
     return menu;
@@ -521,7 +521,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
         });
     });
     menu.addItem("Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Calibrating Bias", connectionPanelContainer.getConnectionPanels(), "bias", 0, true, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Calibrating Bias", connectionPanelContainer.getConnectionPanels(), "bias", std::nullopt, true, threadPool));
     });
     menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::magnet_svg, "Calibrating Hard-Iron Offset", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
