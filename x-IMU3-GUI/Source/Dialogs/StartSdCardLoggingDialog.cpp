@@ -2,7 +2,7 @@
 #include "StartSdCardLoggingDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-StartSdCardLoggingDialog::StartSdCardLoggingDialog() : Dialog(BinaryData::microSD_svg, "Start SD Card Logging", "Start", "Cancel", &useDeviceSettingsButton, 175) {
+StartSdCardLoggingDialog::StartSdCardLoggingDialog() : Dialog(BinaryData::sd_card_svg, "Start SD Card Logging", "Start", "Cancel", &useDeviceSettingsButton, 175) {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
     addChildComponent(emptyValue);

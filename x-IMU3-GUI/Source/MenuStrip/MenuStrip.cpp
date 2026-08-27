@@ -473,14 +473,14 @@ juce::PopupMenu MenuStrip::getAhrsHeadingMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("MODE"), nullptr);
-    menu.addItem("Relative Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":0}"));
-    });
     menu.addItem("Magnetic Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"heading_mode\":1}"));
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"magnetic\":null}"));
+    });
+    menu.addItem("Relative Heading", [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"relative\":null}"));
     });
     menu.addItem("Anchored Heading", [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Sampling Heading", connectionPanelContainer.getConnectionPanels(), "anchor", 5, false, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::heading_svg, "Sampling Heading", connectionPanelContainer.getConnectionPanels(), "anchor", std::nullopt, false, threadPool));
     });
 
     return menu;
@@ -521,7 +521,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
         });
     });
     menu.addItem("Bias Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Calibrating Bias", connectionPanelContainer.getConnectionPanels(), "bias", 30, true, threadPool));
+        DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::bias_svg, "Calibrating Bias", connectionPanelContainer.getConnectionPanels(), "bias", std::nullopt, true, threadPool));
     });
     menu.addItem("Hard-Iron Calibration", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<RemoteProcessDialog>(BinaryData::magnet_svg, "Calibrating Hard-Iron Offset", connectionPanelContainer.getConnectionPanels(), "hard_iron", 60, true, threadPool));
@@ -553,7 +553,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
     menu.addItem("Stop SD Card Logging", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"stop\":null}"));
     });
-    menu.addItem("Convert .ximu3 Files", true, false, [&] {
+    menu.addItem("Convert SD Card Files", true, false, [&] {
         DialogQueue::getSingleton().pushFront(std::make_unique<ConvertFilesDialog>(convertFilesSettings), [&] {
             if (const auto *const dialog = dynamic_cast<ConvertFilesDialog *>(DialogQueue::getSingleton().getActive())) {
                 convertFilesSettings = dialog->getSettings();

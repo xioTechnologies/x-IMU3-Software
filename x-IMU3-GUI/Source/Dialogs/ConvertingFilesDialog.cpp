@@ -3,7 +3,7 @@
 #include "MessageDialog.h"
 
 ConvertingFilesDialog::ConvertingFilesDialog(const juce::Array<juce::File> &files, const juce::File &destination_, const juce::String &name_)
-    : Dialog(BinaryData::tools_svg, "Converting Files", "Cancel", ""),
+    : Dialog(BinaryData::sd_card_svg, "Converting Files", "Cancel", ""),
       destination(destination_),
       name(name_),
       fileConverter(juce::File::addTrailingSeparator(destination.getFullPathName()).toStdString(), name.toStdString(), [&] {

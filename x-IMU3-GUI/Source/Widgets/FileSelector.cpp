@@ -2,7 +2,7 @@
 #include "FileSelector.h"
 #include <filesystem>
 
-FileSelector::FileSelector(const juce::String &tooltip, const std::optional<juce::String> &extension_) : extension(extension_), button(BinaryData::open_svg, tooltip) {
+FileSelector::FileSelector(const juce::String &tooltip, const std::optional<juce::String> &extension_) : extension(extension_), button(BinaryData::folder_svg, tooltip) {
     addAndMakeVisible(textEditor);
     addAndMakeVisible(button);
     textEditor.onTextChange = [&] {

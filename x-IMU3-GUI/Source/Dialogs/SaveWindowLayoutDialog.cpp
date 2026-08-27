@@ -1,7 +1,7 @@
 #include <BinaryData.h>
 #include "SaveWindowLayoutDialog.h"
 
-SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::save_svg, "Save Window Layout", "Save") {
+SaveWindowLayoutDialog::SaveWindowLayoutDialog() : Dialog(BinaryData::window_svg, "Save Window Layout", "Save") {
     addAndMakeVisible(nameLabel);
     addAndMakeVisible(nameValue);
 

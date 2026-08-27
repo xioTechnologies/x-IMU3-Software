@@ -50,7 +50,7 @@ private:
     const juce::String configString = connection->getConfig()->toString();
     juce::String descriptor;
 
-    IconButton retryButton{BinaryData::refresh_svg, "Retry"};
+    IconButton retryButton{BinaryData::retry_svg, "Retry"};
     IconButton locateButton{BinaryData::location_svg, "Locate Device (Strobe LED)"};
     SimpleLabel headingLabel;
     RssiIconAndText rssiIcon;

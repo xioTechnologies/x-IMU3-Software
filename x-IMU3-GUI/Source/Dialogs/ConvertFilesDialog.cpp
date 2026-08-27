@@ -1,6 +1,6 @@
 #include "ConvertFilesDialog.h"
 
-ConvertFilesDialog::ConvertFilesDialog(const Settings &settings) : Dialog(BinaryData::tools_svg, "Convert .ximu3 Files", "Convert") {
+ConvertFilesDialog::ConvertFilesDialog(const Settings &settings) : Dialog(BinaryData::sd_card_svg, "Convert SD Card Files", "Convert") {
     addAndMakeVisible(filesLabel);
     addAndMakeVisible(filesSelector);
     addAndMakeVisible(destinationLabel);
