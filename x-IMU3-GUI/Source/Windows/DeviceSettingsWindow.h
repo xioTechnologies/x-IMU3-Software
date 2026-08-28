@@ -35,7 +35,7 @@ private:
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
-    const juce::File customSchemasDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Schemas");
+    const juce::File schemasDirectory = ApplicationSettings::getDirectory().getChildFile("Schemas");
 
     struct Settings {
         bool hideUnusedSettings = true;

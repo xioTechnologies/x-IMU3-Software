@@ -18,10 +18,10 @@ private:
     SimpleLabel label{"Note:"};
     CustomTextEditor value;
 
-    IconButton previousNotesButton{BinaryData::history_svg, "Previous Notes", std::bind(&SendNoteDialog::getPreviousNotesMenu, this)};
+    IconButton historyButton{BinaryData::history_svg, "History", std::bind(&SendNoteDialog::getPreviousNotesMenu, this)};
 
     juce::ValueTree previousNotes;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Notes.xml");
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Notes.xml");
 
     juce::PopupMenu getPreviousNotesMenu();
 

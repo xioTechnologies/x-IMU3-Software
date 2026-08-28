@@ -70,7 +70,7 @@ private:
 
     juce::String latestVersion;
 
-    juce::File previousWindowLayout = ApplicationSettings::getDirectory().getChildFile("Previous Windows Layout.xml");
+    juce::File previousWindowLayout = ApplicationSettings::getDirectory().getChildFile("Window Layout.xml");
 
     void openMuxDialog(const std::pair<std::uint8_t, std::uint8_t> channels);
 

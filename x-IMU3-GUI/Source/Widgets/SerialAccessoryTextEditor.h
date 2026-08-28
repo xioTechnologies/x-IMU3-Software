@@ -11,7 +11,7 @@ public:
 
 private:
     juce::ValueTree previousData;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Serial Accessory Data.xml");
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Serial Accessory Data.xml");
     int index = 0;
 
     void loadPrevious();

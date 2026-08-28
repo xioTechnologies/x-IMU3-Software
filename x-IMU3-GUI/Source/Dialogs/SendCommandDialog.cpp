@@ -4,7 +4,7 @@
 SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const std::optional<juce::Colour> &colourTag_) : Dialog(BinaryData::json_svg, dialogTitle, "Send", "Cancel", &previousCommandsButton, iconButtonWidth, false, colourTag_) {
     addAndMakeVisible(keyLabel);
     addAndMakeVisible(keyValue);
-    addAndMakeVisible(commandKeysButton);
+    addAndMakeVisible(dictionaryButton);
     addAndMakeVisible(valueLabel);
     addAndMakeVisible(typeValue);
     addAndMakeVisible(stringValue);
@@ -46,7 +46,7 @@ void SendCommandDialog::resized() {
 
     auto keyRow = bounds.removeFromTop(UILayout::textComponentHeight);
     keyLabel.setBounds(keyRow.removeFromLeft(columnWidth));
-    commandKeysButton.setBounds(keyRow.removeFromRight(iconButtonWidth));
+    dictionaryButton.setBounds(keyRow.removeFromRight(iconButtonWidth));
     keyValue.setBounds(keyRow.withTrimmedRight(margin));
 
     bounds.removeFromTop(Dialog::margin);
@@ -141,7 +141,7 @@ void SendCommandDialog::selectCommand(const juce::ValueTree command) {
     keyValue.onTextChange();
 }
 
-juce::PopupMenu SendCommandDialog::getCommandKeysMenu() {
+juce::PopupMenu SendCommandDialog::getDictionaryMenu() {
     juce::PopupMenu menu;
     for (const auto command: commandKeys) {
         if (command.hasType("Command")) {
