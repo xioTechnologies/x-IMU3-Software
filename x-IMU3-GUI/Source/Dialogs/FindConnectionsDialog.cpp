@@ -1,7 +1,7 @@
 #include "ApplicationSettings.h"
-#include "AvailableConnectionsDialog.h"
+#include "FindConnectionsDialog.h"
 
-AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
+FindConnectionsDialog::FindConnectionsDialog(std::vector<ExistingConnection> existingConnections_)
     : Dialog(BinaryData::find_svg, "", "Connect", "Cancel", &filterButton, iconButtonWidth, true),
       existingConnections(existingConnections_) {
     addAndMakeVisible(table);
@@ -15,12 +15,12 @@ AvailableConnectionsDialog::AvailableConnectionsDialog(std::vector<ExistingConne
     timerCallback();
 }
 
-void AvailableConnectionsDialog::resized() {
+void FindConnectionsDialog::resized() {
     Dialog::resized();
     table.setBounds(getContentBounds(true));
 }
 
-std::vector<ximu3::ConnectionConfig *> AvailableConnectionsDialog::getConnectionConfigs() const {
+std::vector<ximu3::ConnectionConfig *> FindConnectionsDialog::getConnectionConfigs() const {
     std::vector<ximu3::ConnectionConfig *> configs;
 
     for (auto &row: table.getRows()) {
@@ -32,23 +32,23 @@ std::vector<ximu3::ConnectionConfig *> AvailableConnectionsDialog::getConnection
     return configs;
 }
 
-juce::PopupMenu AvailableConnectionsDialog::getFilterMenu() {
+juce::PopupMenu FindConnectionsDialog::getFilterMenu() {
     juce::PopupMenu menu;
     const auto addFilterItem = [&](const auto &name, juce::CachedValue<bool> &value) {
         menu.addItem(name, true, value, [&value] {
             value = !value;
         });
     };
-    addFilterItem("USB", ApplicationSettings::getSingleton().availableConnections.usb);
-    addFilterItem("Serial", ApplicationSettings::getSingleton().availableConnections.serial);
-    addFilterItem("TCP", ApplicationSettings::getSingleton().availableConnections.tcp);
-    addFilterItem("UDP", ApplicationSettings::getSingleton().availableConnections.udp);
-    addFilterItem("Bluetooth", ApplicationSettings::getSingleton().availableConnections.bluetooth);
-    addFilterItem("Mux", ApplicationSettings::getSingleton().availableConnections.mux);
+    addFilterItem("USB", ApplicationSettings::getSingleton().findConnections.usb);
+    addFilterItem("Serial", ApplicationSettings::getSingleton().findConnections.serial);
+    addFilterItem("TCP", ApplicationSettings::getSingleton().findConnections.tcp);
+    addFilterItem("UDP", ApplicationSettings::getSingleton().findConnections.udp);
+    addFilterItem("Bluetooth", ApplicationSettings::getSingleton().findConnections.bluetooth);
+    addFilterItem("Mux", ApplicationSettings::getSingleton().findConnections.mux);
     return menu;
 }
 
-void AvailableConnectionsDialog::timerCallback() {
+void FindConnectionsDialog::timerCallback() {
     std::vector<ConnectionsTable::Row> rows;
     std::map<juce::String, int> numberOfConnections;
 
@@ -75,24 +75,28 @@ void AvailableConnectionsDialog::timerCallback() {
         return "";
     };
 
+    for (const auto &connection: existingConnections) {
+        numberOfConnections[toString(*connection.connection->getConfig())]++;
+    }
+
     static const auto filter = [](const ximu3::ConnectionConfig &config) {
         if (dynamic_cast<const ximu3::UsbConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.usb;
+            return *ApplicationSettings::getSingleton().findConnections.usb;
         }
         if (dynamic_cast<const ximu3::SerialConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.serial;
+            return *ApplicationSettings::getSingleton().findConnections.serial;
         }
         if (dynamic_cast<const ximu3::TcpConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.tcp;
+            return *ApplicationSettings::getSingleton().findConnections.tcp;
         }
         if (dynamic_cast<const ximu3::UdpConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.udp;
+            return *ApplicationSettings::getSingleton().findConnections.udp;
         }
         if (dynamic_cast<const ximu3::BluetoothConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.bluetooth;
+            return *ApplicationSettings::getSingleton().findConnections.bluetooth;
         }
         if (dynamic_cast<const ximu3::MuxConnectionConfig *>(&config) != nullptr) {
-            return *ApplicationSettings::getSingleton().availableConnections.mux;
+            return *ApplicationSettings::getSingleton().findConnections.mux;
         }
         jassertfalse;
         return false;
@@ -111,7 +115,7 @@ void AvailableConnectionsDialog::timerCallback() {
         addRow(juce::String(device.device_name) + " " + device.serial_number, ximu3::ConnectionConfig::from(device), {}, {}, {});
     }
 
-    if (ApplicationSettings::getSingleton().availableConnections.mux) {
+    if (ApplicationSettings::getSingleton().findConnections.mux) {
         if (muxScanners.empty()) {
             for (const auto &connection: existingConnections) {
                 muxScanners.push_back(std::make_unique<ximu3::MuxScanner>(*connection.connection));
@@ -143,7 +147,7 @@ void AvailableConnectionsDialog::timerCallback() {
     for (const auto &pair: numberOfConnections) {
         numberOfConnectionsText += juce::String(pair.second) + " " + juce::String(pair.first) + ", ";
     }
-    getTopLevelComponent()->setName("Available Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
+    getTopLevelComponent()->setName("Find Connections" + (numberOfConnectionsText.isEmpty() ? "" : (" (" + numberOfConnectionsText.dropLastCharacters(2) + ")")));
 
     setOkButton(getConnectionConfigs().empty() == false);
 }

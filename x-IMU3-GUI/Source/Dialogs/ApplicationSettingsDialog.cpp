@@ -32,6 +32,6 @@ void ApplicationSettingsDialog::resized() {
 }
 
 void ApplicationSettingsDialog::initialiseGroups() {
-    addAndMakeVisible(*groups.emplace_back(std::make_unique<AvailableConnectionsGroup>()));
+    addAndMakeVisible(*groups.emplace_back(std::make_unique<FindConnectionsGroup>()));
     addAndMakeVisible(*groups.emplace_back(std::make_unique<CommandsGroup>()));
 }

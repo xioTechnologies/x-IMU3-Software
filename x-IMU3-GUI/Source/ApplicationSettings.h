@@ -16,7 +16,7 @@ public:
         juce::CachedValue<bool> udp{tree, "udp", nullptr, true};
         juce::CachedValue<bool> bluetooth{tree, "bluetooth", nullptr, true};
         juce::CachedValue<bool> mux{tree, "mux", nullptr, false};
-    } availableConnections{tree.getOrCreateChildWithName("AvailableConnections", nullptr)};
+    } findConnections{tree.getOrCreateChildWithName("FindConnections", nullptr)};
 
     struct {
         juce::ValueTree tree;
@@ -51,7 +51,7 @@ private:
         tree.removeListener(this);
 
         auto rootTree = juce::ValueTree::fromXml(file.loadFileAsString());
-        availableConnections.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(availableConnections.tree.getType(), nullptr), nullptr);
+        findConnections.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(findConnections.tree.getType(), nullptr), nullptr);
         commands.tree.copyPropertiesFrom(rootTree.getOrCreateChildWithName(commands.tree.getType(), nullptr), nullptr);
 
         tree.addListener(this);

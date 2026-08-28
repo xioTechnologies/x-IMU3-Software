@@ -21,9 +21,9 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ApplicationSettingsGroup)
 };
 
-class AvailableConnectionsGroup : public ApplicationSettingsGroup {
+class FindConnectionsGroup : public ApplicationSettingsGroup {
 public:
-    AvailableConnectionsGroup();
+    FindConnectionsGroup();
 
     void resized() override;
 
@@ -36,7 +36,7 @@ private:
     CustomToggleButton bluetoothToggle{"Bluetooth"};
     CustomToggleButton muxToggle{"Mux"};
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AvailableConnectionsGroup)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FindConnectionsGroup)
 };
 
 class CommandsGroup : public ApplicationSettingsGroup {

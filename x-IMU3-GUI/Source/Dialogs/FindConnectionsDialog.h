@@ -6,8 +6,8 @@
 #include "Widgets/IconButton.h"
 #include "Ximu3.hpp"
 
-class AvailableConnectionsDialog : public Dialog,
-                                   private juce::Timer {
+class FindConnectionsDialog : public Dialog,
+                              private juce::Timer {
 public:
     struct ExistingConnection {
         juce::String descriptor;
@@ -18,7 +18,7 @@ public:
         }
     };
 
-    AvailableConnectionsDialog(std::vector<ExistingConnection> existingConnections_);
+    FindConnectionsDialog(std::vector<ExistingConnection> existingConnections_);
 
     void resized() override;
 
@@ -31,15 +31,15 @@ private:
 
     ximu3::PortScanner portScanner;
 
-    std::vector<std::unique_ptr<ximu3::MuxScanner>> muxScanners;
+    std::vector<std::unique_ptr<ximu3::MuxScanner> > muxScanners;
 
     ConnectionsTable table;
 
-    IconButton filterButton{BinaryData::checklist_svg, "Filter", std::bind(&AvailableConnectionsDialog::getFilterMenu, this)};
+    IconButton filterButton{BinaryData::checklist_svg, "Filter", std::bind(&FindConnectionsDialog::getFilterMenu, this)};
 
     juce::PopupMenu getFilterMenu();
 
     void timerCallback() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AvailableConnectionsDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FindConnectionsDialog)
 };

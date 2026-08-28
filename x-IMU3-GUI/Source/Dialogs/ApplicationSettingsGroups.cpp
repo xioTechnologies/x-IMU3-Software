@@ -9,7 +9,7 @@ juce::Rectangle<int> ApplicationSettingsGroup::getContentBounds() const {
     return getLocalBounds().reduced(10, verticalMargin).withTrimmedTop(topExtraMargin);
 }
 
-AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGroup("Available Connections", 3) {
+FindConnectionsGroup::FindConnectionsGroup() : ApplicationSettingsGroup("Find Connections", 3) {
     addAndMakeVisible(showOnStartupToggle);
     addAndMakeVisible(usbToggle);
     addAndMakeVisible(serialToggle);
@@ -19,43 +19,43 @@ AvailableConnectionsGroup::AvailableConnectionsGroup() : ApplicationSettingsGrou
     addAndMakeVisible(muxToggle);
 
     showOnStartupToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.showOnStartup = showOnStartupToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.showOnStartup = showOnStartupToggle.getToggleState();
     };
 
     usbToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.usb = usbToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.usb = usbToggle.getToggleState();
     };
 
     serialToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.serial = serialToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.serial = serialToggle.getToggleState();
     };
 
     tcpToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.tcp = tcpToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.tcp = tcpToggle.getToggleState();
     };
 
     udpToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.udp = udpToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.udp = udpToggle.getToggleState();
     };
 
     bluetoothToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.bluetooth = bluetoothToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.bluetooth = bluetoothToggle.getToggleState();
     };
 
     muxToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().availableConnections.mux = muxToggle.getToggleState();
+        ApplicationSettings::getSingleton().findConnections.mux = muxToggle.getToggleState();
     };
 
-    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.showOnStartup, juce::dontSendNotification);
-    usbToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.usb, juce::dontSendNotification);
-    serialToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.serial, juce::dontSendNotification);
-    tcpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.tcp, juce::dontSendNotification);
-    udpToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.udp, juce::dontSendNotification);
-    bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.bluetooth, juce::dontSendNotification);
-    muxToggle.setToggleState(ApplicationSettings::getSingleton().availableConnections.mux, juce::dontSendNotification);
+    showOnStartupToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.showOnStartup, juce::dontSendNotification);
+    usbToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.usb, juce::dontSendNotification);
+    serialToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.serial, juce::dontSendNotification);
+    tcpToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.tcp, juce::dontSendNotification);
+    udpToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.udp, juce::dontSendNotification);
+    bluetoothToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.bluetooth, juce::dontSendNotification);
+    muxToggle.setToggleState(ApplicationSettings::getSingleton().findConnections.mux, juce::dontSendNotification);
 }
 
-void AvailableConnectionsGroup::resized() {
+void FindConnectionsGroup::resized() {
     auto bounds = getContentBounds();
 
     showOnStartupToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
