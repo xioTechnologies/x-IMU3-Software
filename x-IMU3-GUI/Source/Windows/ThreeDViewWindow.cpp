@@ -267,10 +267,10 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
             const auto objFileOriginal = fileChooser->getResult();
             const auto mtlFileOriginal = objFileOriginal.withFileExtension(".mtl");
 
-            const auto objFileCopy = customModelsDirectory.getChildFile(objFileOriginal.getFileName());
-            const auto mtlFileCopy = customModelsDirectory.getChildFile(mtlFileOriginal.getFileName());
+            const auto objFileCopy = modelsDirectory.getChildFile(objFileOriginal.getFileName());
+            const auto mtlFileCopy = modelsDirectory.getChildFile(mtlFileOriginal.getFileName());
 
-            customModelsDirectory.createDirectory();
+            modelsDirectory.createDirectory();
             objFileOriginal.copyFileTo(objFileCopy);
             mtlFileCopy.deleteFile();
             mtlFileOriginal.copyFileTo(mtlFileCopy);
@@ -281,10 +281,10 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
             writeToValueTree(settings);
         });
     });
-    if (const auto customModels = customModelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); customModels.isEmpty() == false) {
+    if (const auto models = modelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); models.isEmpty() == false) {
         customModelsMenu.addSeparator();
         customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
-        for (const auto &file: customModels) {
+        for (const auto &file: models) {
             const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
             customModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file] {
                 auto settings = threeDView.getSettings();

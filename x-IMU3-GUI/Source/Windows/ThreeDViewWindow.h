@@ -66,7 +66,7 @@ private:
 
     SimpleLabel axesConventionLabel{"", UIFonts::getDefaultFont(), juce::Justification::topRight};
 
-    const juce::File customModelsDirectory = ApplicationSettings::getDirectory().getChildFile("Custom Models");
+    const juce::File modelsDirectory = ApplicationSettings::getDirectory().getChildFile("Models");
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 

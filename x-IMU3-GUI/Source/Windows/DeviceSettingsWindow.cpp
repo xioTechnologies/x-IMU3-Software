@@ -285,8 +285,8 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
                 return;
             }
 
-            const auto customSchema = customSchemasDirectory.getChildFile(fileChooser->getResult().getFileName());
-            customSchemasDirectory.createDirectory();
+            const auto customSchema = schemasDirectory.getChildFile(fileChooser->getResult().getFileName());
+            schemasDirectory.createDirectory();
             fileChooser->getResult().copyFileTo(customSchema);
 
             if (readFromValueTree().customSchema == customSchema) {
@@ -298,7 +298,7 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
             }
         });
     });
-    if (const auto files = customSchemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false) {
+    if (const auto files = schemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false) {
         customSchemasMenu.addSeparator();
         customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto &file: files) {

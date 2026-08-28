@@ -42,7 +42,7 @@ private:
 
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
-    IconButton commandKeysButton{BinaryData::dictionary_svg, "Command Keys", std::bind(&SendCommandDialog::getCommandKeysMenu, this)};
+    IconButton dictionaryButton{BinaryData::dictionary_svg, "Dictionary", std::bind(&SendCommandDialog::getDictionaryMenu, this)};
 
     SimpleLabel valueLabel{"Value:"};
     CustomComboBox typeValue;
@@ -52,12 +52,12 @@ private:
     SimpleLabel commandLabel{"Command:"};
     CustomTextEditor commandValue;
 
-    IconButton previousCommandsButton{BinaryData::history_svg, "Previous Commands", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this)};
+    IconButton previousCommandsButton{BinaryData::history_svg, "History", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this)};
 
     const juce::ValueTree commandKeys = juce::ValueTree::fromXml(BinaryData::CommandKeys_xml);
 
     juce::ValueTree previousCommands;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Commands.xml");
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");
 
     static juce::String toString(const Type type);
 
@@ -65,7 +65,7 @@ private:
 
     void selectCommand(const juce::ValueTree command);
 
-    juce::PopupMenu getCommandKeysMenu();
+    juce::PopupMenu getDictionaryMenu();
 
     juce::PopupMenu getPreviousCommandsMenu();
 

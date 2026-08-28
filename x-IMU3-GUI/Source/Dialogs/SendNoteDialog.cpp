@@ -1,10 +1,10 @@
 #include "SendNoteDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::pin_svg, "Send Note", "Send", "Cancel", &previousNotesButton, iconButtonWidth) {
+SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::pin_svg, "Send Note", "Send", "Cancel", &historyButton, iconButtonWidth) {
     addAndMakeVisible(label);
     addAndMakeVisible(value);
-    addAndMakeVisible(previousNotesButton);
+    addAndMakeVisible(historyButton);
 
     previousNotes = juce::ValueTree::fromXml(file.loadFileAsString());
     if (!previousNotes.isValid()) {
@@ -18,7 +18,7 @@ SendNoteDialog::SendNoteDialog() : Dialog(BinaryData::pin_svg, "Send Note", "Sen
 
     value.setText(previousNotes.getChild(0)["note"], juce::sendNotification);
 
-    previousNotesButton.setWantsKeyboardFocus(false);
+    historyButton.setWantsKeyboardFocus(false);
 
     setSize(600, calculateHeight(1));
 }

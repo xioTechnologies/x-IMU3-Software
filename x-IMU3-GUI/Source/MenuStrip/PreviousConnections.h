@@ -16,7 +16,7 @@ public:
 
 private:
     juce::ValueTree connections;
-    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Previous Connections.xml");
+    const juce::File file = ApplicationSettings::getDirectory().getChildFile("Connections.xml");
 
     void update(juce::ValueTree newChild);
 
