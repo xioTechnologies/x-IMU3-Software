@@ -30,7 +30,7 @@ private:
     juce::ThreadPool &threadPool;
     ConnectionPanelContainer &connectionPanelContainer;
 
-    IconButton availableConnectionsButton{BinaryData::find_svg, "Available Connections"};
+    IconButton findConnectionsButton{BinaryData::find_svg, "Find Connections"};
     IconButton manualConnectionButton{BinaryData::manual_svg, "Manual Connection", std::bind(&MenuStrip::getManualConnectionMenu, this)};
     IconButton disconnectButton{BinaryData::close_svg, "Disconnect", std::bind(&MenuStrip::getDisconnectMenu, this)};
     IconButton connectionLayoutButton{BinaryData::grid_svg, "Connection Layout", std::bind(&MenuStrip::getConnectionLayoutMenu, this)};
@@ -46,7 +46,7 @@ private:
     IconButton aboutButton{BinaryData::xio_icon_svg, "About", nullptr, false, BinaryData::xio_icon_update_svg, "About (Update Available)"};
 
     const std::vector<std::vector<juce::Button *> > buttonGroups{
-        {&availableConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton},
+        {&findConnectionsButton, &manualConnectionButton, &disconnectButton, &connectionLayoutButton},
         {&windowsButton},
         {&shutdownAllDevicesButton, &ahrsHeadingButton, &sendNoteButton, &sendCommandButton},
         {&dataLoggerStartStopButton, &dataLoggerTime},

@@ -3,8 +3,8 @@
 #include "CustomLookAndFeel.h"
 #include "Dialogs/AboutDialog.h"
 #include "Dialogs/ApplicationSettingsDialog.h"
-#include "Dialogs/AvailableConnectionsDialog.h"
 #include "Dialogs/ConvertingFilesDialog.h"
+#include "Dialogs/FindConnectionsDialog.h"
 #include "Dialogs/ManualConnectionDialog.h"
 #include "Dialogs/MessageDialog.h"
 #include "Dialogs/RemoteProcessDialog.h"
@@ -31,14 +31,14 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         }
     }
 
-    availableConnectionsButton.onClick = [this] {
-        std::vector<AvailableConnectionsDialog::ExistingConnection> existingConnections;
+    findConnectionsButton.onClick = [this] {
+        std::vector<FindConnectionsDialog::ExistingConnection> existingConnections;
         for (auto *const connectionPanel: connectionPanelContainer.getConnectionPanels()) {
             existingConnections.push_back({connectionPanel->getDescriptor(), connectionPanel->getConnection()});
         }
 
-        DialogQueue::getSingleton().pushFront(std::make_unique<AvailableConnectionsDialog>(std::move(existingConnections)), [this] {
-            if (auto *dialog = dynamic_cast<AvailableConnectionsDialog *>(DialogQueue::getSingleton().getActive())) {
+        DialogQueue::getSingleton().pushFront(std::make_unique<FindConnectionsDialog>(std::move(existingConnections)), [this] {
+            if (auto *dialog = dynamic_cast<FindConnectionsDialog *>(DialogQueue::getSingleton().getActive())) {
                 for (const auto &config: dialog->getConnectionConfigs()) {
                     connectionPanelContainer.connectToDevice(*config, dynamic_cast<ximu3::MuxConnectionConfig *>(config) == nullptr);
                 }
@@ -47,8 +47,8 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
         });
     };
 
-    if (ApplicationSettings::getSingleton().availableConnections.showOnStartup) {
-        availableConnectionsButton.triggerClick();
+    if (ApplicationSettings::getSingleton().findConnections.showOnStartup) {
+        findConnectionsButton.triggerClick();
     }
 
     shutdownAllDevicesButton.onClick = [this] {
