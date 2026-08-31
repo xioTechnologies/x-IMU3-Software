@@ -257,8 +257,8 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
     });
 
     juce::PopupMenu customModelsMenu;
-    customModelsMenu.addItem("Load .obj File", [&] {
-        fileChooser = std::make_unique<juce::FileChooser>("Select Model", juce::File(), "*.obj");
+    customModelsMenu.addItem("Load 3D Model", [&] {
+        fileChooser = std::make_unique<juce::FileChooser>("Select 3D Model", juce::File(), "*.obj");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
@@ -286,7 +286,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
         customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto &file: models) {
             const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
-            customModelsMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file] {
+            customModelsMenu.addItem(file.getFileName(), true, ticked, [&, file] {
                 auto settings = threeDView.getSettings();
                 settings.model = ThreeDView::Model::custom;
                 settings.customModel = file;
@@ -295,22 +295,22 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
         }
     }
 
-    const auto suffix = (threeDView.getSettings().model == ThreeDView::Model::custom) ? (" (" + threeDView.getSettings().customModel.getFileNameWithoutExtension() + ")") : "";
+    const auto suffix = (threeDView.getSettings().model == ThreeDView::Model::custom) ? (" (" + threeDView.getSettings().customModel.getFileName() + ")") : "";
     menu.addSubMenu("Custom" + suffix, customModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::custom);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);
-    menu.addItem("North-West-Up (NWU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::nwu, [&] {
+    menu.addItem("North, West, Up (NWU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::nwu, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::nwu;
         writeToValueTree(settings);
     });
-    menu.addItem("East-North-Up (ENU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::enu, [&] {
+    menu.addItem("East, North, Up (ENU)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::enu, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::enu;
         writeToValueTree(settings);
     });
-    menu.addItem("North-East-Down (NED)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::ned, [&] {
+    menu.addItem("North, East, Down (NED)", true, threeDView.getSettings().axesConvention == ThreeDView::AxesConvention::ned, [&] {
         auto settings = threeDView.getSettings();
         settings.axesConvention = ThreeDView::AxesConvention::ned;
         writeToValueTree(settings);

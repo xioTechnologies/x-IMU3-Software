@@ -59,7 +59,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
             fileName += " " + serialNumber;
         }
 
-        fileChooser = std::make_unique<juce::FileChooser>("Save Device Settings", directory.getChildFile(fileName), "*.json");
+        fileChooser = std::make_unique<juce::FileChooser>("Save Settings File", directory.getChildFile(fileName), "*.json");
         fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&](const auto &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
@@ -89,7 +89,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
             }
         }
 
-        fileChooser = std::make_unique<juce::FileChooser>("Load Device Settings", defaultFile.value_or(directory), "*.json");
+        fileChooser = std::make_unique<juce::FileChooser>("Select Settings File", defaultFile.value_or(directory), "*.json");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
@@ -278,7 +278,7 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
         writeToValueTree(settings);
     });
     juce::PopupMenu customSchemasMenu;
-    customSchemasMenu.addItem("Load .xml File", [&] {
+    customSchemasMenu.addItem("Load Schema", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select Schema", juce::File(), "*.xml");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
             if (fileChooser->getResult() == juce::File()) {
@@ -303,7 +303,7 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
         customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto &file: files) {
             const auto ticked = readFromValueTree().customSchema == file.getFullPathName();
-            customSchemasMenu.addItem(file.getFileNameWithoutExtension(), true, ticked, [&, file] {
+            customSchemasMenu.addItem(file.getFileName(), true, ticked, [&, file] {
                 auto settings = readFromValueTree();
                 settings.customSchema = file;
                 writeToValueTree(settings);
@@ -311,7 +311,7 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
         }
     }
 
-    const auto suffix = readFromValueTree().customSchema != juce::File() ? (" (" + juce::File(readFromValueTree().customSchema).getFileNameWithoutExtension() + ")") : "";
+    const auto suffix = readFromValueTree().customSchema != juce::File() ? (" (" + juce::File(readFromValueTree().customSchema).getFileName() + ")") : "";
     menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, readFromValueTree().customSchema != juce::File());
 
     return menu;
