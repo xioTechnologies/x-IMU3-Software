@@ -17,7 +17,7 @@ public:
 
     std::unique_ptr<ximu3::ConnectionConfig> getConnectionConfig() const;
 
-    juce::File getHexFile() const;
+    juce::File getFirmware() const;
 
     static void launch(juce::ThreadPool &threadPool);
 
@@ -29,8 +29,8 @@ private:
     SimpleLabel deviceLabel{"Device:"};
     CustomComboBox deviceValue{"No Devices Found"};
 
-    SimpleLabel hexFileLabel{"Hex File:"};
-    FileSelector hexFileSelector{"Select Firmware File", ".hex"};
+    SimpleLabel firmwareLabel{"Firmware:"};
+    FileSelector firmwareSelector{"Select Firmware", ".hex"};
 
     Icon warningIcon{BinaryData::warning_white_svg, "", 0.7f};
     SimpleLabel warningLabel{"Updating firmware will restore default settings"};

@@ -22,10 +22,10 @@ public:
     Settings getSettings() const;
 
 private:
-    SimpleLabel filesLabel{".ximu3 Files:"};
-    FileSelector filesSelector{"Select .ximu3 Files", ".ximu3"};
+    SimpleLabel filesLabel{"Files:"};
+    FileSelector filesSelector{"Select SD Card Files", ".ximu3"};
     SimpleLabel destinationLabel{"Destination:"};
-    FileSelector destinationSelector{"Select Destination Directory", {}};
+    FileSelector destinationSelector{"Select Destination", {}};
     SimpleLabel nameLabel{"Name:"};
     CustomTextEditor nameValue;
 
