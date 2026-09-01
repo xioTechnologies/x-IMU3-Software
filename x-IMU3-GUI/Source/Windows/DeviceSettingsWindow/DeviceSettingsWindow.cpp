@@ -3,6 +3,12 @@
 #include "Dialogs/MessageDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
+const std::vector<std::pair<juce::String, const char *> > DeviceSettingsWindow::defaultSchemas
+{
+    {"x-IMU3", BinaryData::xIMU3_Schema_xml},
+    {"x-IMU4", BinaryData::xIMU4_Schema_xml},
+};
+
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, juce::ThreadPool &threadPool_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu"),
       threadPool(threadPool_) {
@@ -13,7 +19,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     addChildComponent(disabledOverlay);
 
     syncButton.onClick = [&] {
-        if (getSchema() == "enumerate") {
+        if (getSchema() == "Enumerate") {
             handleAsyncUpdate();
             return;
         }
@@ -161,11 +167,21 @@ bool DeviceSettingsWindow::hideUnusedSettings() const {
 juce::String DeviceSettingsWindow::getSchema() const {
     const juce::String schema = settingsTree["schema"];
 
-    if (schema == "ximu3" || schema == "enumerate" || (juce::File::isAbsolutePath(schema) && juce::File(schema).existsAsFile())) {
+    if (schema == "Enumerate") {
         return schema;
     }
 
-    return "ximu3";
+    for (auto schema_: defaultSchemas) {
+        if (schema == schema_.first) {
+            return schema;
+        }
+    }
+
+    if (juce::File::isAbsolutePath(schema) && juce::File(schema).existsAsFile()) {
+        return schema;
+    }
+
+    return defaultSchemas.front().first;
 }
 
 void DeviceSettingsWindow::syncSettings() {
@@ -269,12 +285,15 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCHEMA"), nullptr);
-    menu.addItem("Enumerate", true, getSchema() == "enumerate", [&] {
-        settingsTree.setProperty("schema", "enumerate", nullptr);
+    menu.addItem("Enumerate", true, getSchema() == "Enumerate", [&] {
+        settingsTree.setProperty("schema", "Enumerate", nullptr);
     });
-    menu.addItem("x-IMU3", true, getSchema() == "ximu3", [&] {
-        settingsTree.setProperty("schema", "ximu3", nullptr);
-    });
+    for (auto schema: defaultSchemas) {
+        menu.addItem(schema.first, true, getSchema() == schema.first, [&, schema] {
+            settingsTree.setProperty("schema", schema.first, nullptr);
+        });
+    }
+
     juce::PopupMenu customSchemasMenu;
     customSchemasMenu.addItem("Load Schema", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select Schema", juce::File(), "*.xml");
@@ -327,7 +346,7 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
     enumerationError = {};
     repaint();
 
-    if (getSchema() == "enumerate") {
+    if (getSchema() == "Enumerate") {
         disabledOverlay.setVisible(true);
 
         threadPool.addJob([this, self = SafePointer<juce::Component>(this)] {
@@ -360,9 +379,11 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
         return;
     }
 
-    if (getSchema() == "ximu3") {
-        loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml)));
-        return;
+    for (auto schema: defaultSchemas) {
+        if (getSchema() == schema.first) {
+            loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(schema.second)));
+            return;
+        }
     }
 
     loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(juce::File(getSchema()).loadFileAsString())));

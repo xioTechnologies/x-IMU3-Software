@@ -32,6 +32,8 @@ private:
     const juce::File schemasDirectory = ApplicationSettings::getDirectory().getChildFile("Schemas");
     const juce::File deviceSettingsDirectory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 
+    static const std::vector<std::pair<juce::String, const char*>> defaultSchemas;
+
     bool syncWhenWindowOpens() const;
 
     bool hideUnusedSettings() const;
