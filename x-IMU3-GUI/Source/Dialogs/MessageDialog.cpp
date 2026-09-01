@@ -14,10 +14,10 @@ void MessageDialog::paint(juce::Graphics &g) {
     textLayout.draw(g, getContentBounds().toFloat());
 }
 
-AreYouSureDialog::AreYouSureDialog(const juce::String &text) : MessageDialog(BinaryData::warning_white_svg, "Are You Sure?", text, "Yes", "Cancel") {
+ConfirmDialog::ConfirmDialog(const juce::String &text) : MessageDialog(BinaryData::warning_white_svg, "Confirm", text, "Yes", "Cancel") {
 }
 
-DoYouWantToReplaceItDialog::DoYouWantToReplaceItDialog(const juce::String &name) : AreYouSureDialog(name + " already exists. Do you want to replace it?") {
+ConfirmReplaceDialog::ConfirmReplaceDialog(const juce::String &name) : ConfirmDialog(name + " already exists. Do you want to replace it?") {
 }
 
 ErrorDialog::ErrorDialog(const juce::String &error) : MessageDialog(BinaryData::warning_white_svg, "Error", error, "OK", "") {

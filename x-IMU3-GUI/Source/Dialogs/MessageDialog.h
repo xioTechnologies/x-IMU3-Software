@@ -19,20 +19,20 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MessageDialog)
 };
 
-class AreYouSureDialog : public MessageDialog {
+class ConfirmDialog : public MessageDialog {
 public:
-    explicit AreYouSureDialog(const juce::String &text = "Are you sure?");
+    explicit ConfirmDialog(const juce::String &text);
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AreYouSureDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConfirmDialog)
 };
 
-class DoYouWantToReplaceItDialog : public AreYouSureDialog {
+class ConfirmReplaceDialog : public ConfirmDialog {
 public:
-    explicit DoYouWantToReplaceItDialog(const juce::String &name);
+    explicit ConfirmReplaceDialog(const juce::String &name);
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DoYouWantToReplaceItDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConfirmReplaceDialog)
 };
 
 class ErrorDialog : public MessageDialog {
