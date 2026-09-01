@@ -16,12 +16,6 @@ public:
     void resized() override;
 
 private:
-    enum class SchemaType {
-        enumerate,
-        ximu3,
-        custom,
-    };
-
     juce::ThreadPool &threadPool;
 
     std::unique_ptr<TreeView> treeView;
@@ -38,19 +32,13 @@ private:
     const juce::File schemasDirectory = ApplicationSettings::getDirectory().getChildFile("Schemas");
     const juce::File deviceSettingsDirectory = ApplicationSettings::getDirectory().getChildFile("Device Settings");
 
-    static SchemaType schemaTypeFrom(const int schema);
-
-    void syncSettings();
-
-    SchemaType getSchemaType() const;
-
-    juce::File getCustomSchema() const;
-
-    void setCustomSchema(const juce::File &customSchema);
-
-    bool syncWhenWindowOpens();
+    bool syncWhenWindowOpens() const;
 
     bool hideUnusedSettings() const;
+
+    juce::String getSchema() const;
+
+    void syncSettings();
 
     void loadSchema(std::unique_ptr<Schema::Group> group);
 

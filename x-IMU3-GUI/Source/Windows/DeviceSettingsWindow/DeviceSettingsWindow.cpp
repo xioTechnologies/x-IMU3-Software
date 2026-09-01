@@ -13,7 +13,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     addChildComponent(disabledOverlay);
 
     syncButton.onClick = [&] {
-        if (getSchemaType() == SchemaType::enumerate) {
+        if (getSchema() == "enumerate") {
             handleAsyncUpdate();
             return;
         }
@@ -150,15 +150,22 @@ void DeviceSettingsWindow::resized() {
     }
 }
 
-DeviceSettingsWindow::SchemaType DeviceSettingsWindow::schemaTypeFrom(const int schema) {
-    switch (static_cast<SchemaType>(schema)) {
-        case SchemaType::ximu3:
-        case SchemaType::enumerate:
-        case SchemaType::custom:
-            return static_cast<SchemaType>(schema);
+bool DeviceSettingsWindow::syncWhenWindowOpens() const {
+    return settingsTree.getProperty("syncWhenWindowOpens", true);
+}
+
+bool DeviceSettingsWindow::hideUnusedSettings() const {
+    return settingsTree.getProperty("hideUnusedSettings", true);
+}
+
+juce::String DeviceSettingsWindow::getSchema() const {
+    const juce::String schema = settingsTree["schema"];
+
+    if (schema == "ximu3" || schema == "enumerate" || (juce::File::isAbsolutePath(schema) && juce::File(schema).existsAsFile())) {
+        return schema;
     }
 
-    return SchemaType::ximu3;
+    return "ximu3";
 }
 
 void DeviceSettingsWindow::syncSettings() {
@@ -188,28 +195,6 @@ void DeviceSettingsWindow::syncSettings() {
         connectionPanel.getConnection()->pingAsync([](auto) {
         });
     });
-}
-
-DeviceSettingsWindow::SchemaType DeviceSettingsWindow::getSchemaType() const {
-    return schemaTypeFrom(settingsTree["schema"]);
-}
-
-juce::File DeviceSettingsWindow::getCustomSchema() const {
-    return juce::File{settingsTree.getProperty("customSchema")};
-}
-
-void DeviceSettingsWindow::setCustomSchema(const juce::File &customSchema) {
-    settingsTree.setProperty("schema", static_cast<int>(SchemaType::custom), nullptr);
-    settingsTree.setProperty("customSchema", customSchema.getFullPathName(), nullptr);
-    settingsTree.sendPropertyChangeMessage("customSchema");
-}
-
-bool DeviceSettingsWindow::syncWhenWindowOpens() {
-    return settingsTree.getProperty("syncWhenWindowOpens", true);
-}
-
-bool DeviceSettingsWindow::hideUnusedSettings() const {
-    return settingsTree.getProperty("hideUnusedSettings", true);
 }
 
 void DeviceSettingsWindow::loadSchema(std::unique_ptr<Schema::Group> group) {
@@ -284,11 +269,11 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCHEMA"), nullptr);
-    menu.addItem("Enumerate", true, getSchemaType() == SchemaType::enumerate, [&] {
-        settingsTree.setProperty("schema", static_cast<int>(SchemaType::enumerate), nullptr);
+    menu.addItem("Enumerate", true, getSchema() == "enumerate", [&] {
+        settingsTree.setProperty("schema", "enumerate", nullptr);
     });
-    menu.addItem("x-IMU3", true, getSchemaType() == SchemaType::ximu3, [&] {
-        settingsTree.setProperty("schema", static_cast<int>(SchemaType::ximu3), nullptr);
+    menu.addItem("x-IMU3", true, getSchema() == "ximu3", [&] {
+        settingsTree.setProperty("schema", "ximu3", nullptr);
     });
     juce::PopupMenu customSchemasMenu;
     customSchemasMenu.addItem("Load Schema", [&] {
@@ -301,22 +286,22 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
             const auto customSchema = schemasDirectory.getChildFile(fileChooser->getResult().getFileName());
             std::ignore = schemasDirectory.createDirectory();
             std::ignore = fileChooser->getResult().copyFileTo(customSchema);
-            setCustomSchema(customSchema);
+            settingsTree.setProperty("schema", customSchema.getFullPathName(), nullptr);
         });
     });
     if (const auto files = schemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false) {
         customSchemasMenu.addSeparator();
         customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
         for (const auto &file: files) {
-            const auto ticked = getSchemaType() == SchemaType::custom && getCustomSchema() == file;
-            customSchemasMenu.addItem(file.getFileName(), true, ticked, [&, file] {
-                setCustomSchema(file);
+            customSchemasMenu.addItem(file.getFileName(), true, file.getFullPathName() == getSchema(), [&, file] {
+                settingsTree.setProperty("schema", file.getFullPathName(), nullptr);
             });
         }
     }
 
-    const auto suffix = getSchemaType() == SchemaType::custom ? (" (" + getCustomSchema().getFileName() + ")") : "";
-    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, getSchemaType() == SchemaType::custom);
+    const auto ticked = juce::File::isAbsolutePath(getSchema());
+    const auto suffix = ticked ? (" (" + juce::File(getSchema()).getFileName() + ")") : "";
+    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, ticked);
 
     return menu;
 }
@@ -326,7 +311,7 @@ void DeviceSettingsWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePr
         return;
     }
 
-    if (property.toString() == "schema" || property.toString() == "customSchema") {
+    if (property.toString() == "schema") {
         triggerAsyncUpdate();
         return;
     }
@@ -342,45 +327,43 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
     enumerationError = {};
     repaint();
 
-    switch (getSchemaType()) {
-        case SchemaType::ximu3:
-            loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml)));
-            break;
+    if (getSchema() == "enumerate") {
+        disabledOverlay.setVisible(true);
 
-        case SchemaType::enumerate:
-            disabledOverlay.setVisible(true);
+        threadPool.addJob([this, self = SafePointer<juce::Component>(this)] {
+            try {
+                juce::MessageManager::callAsync([this, self, schema = Schema::loadSchema(connectionPanel.getConnection())]() mutable {
+                    if (self == nullptr) {
+                        return;
+                    }
 
-            threadPool.addJob([this, self = SafePointer<juce::Component>(this)] {
-                try {
-                    juce::MessageManager::callAsync([this, self, schema = Schema::loadSchema(connectionPanel.getConnection())]() mutable {
-                        if (self == nullptr) {
-                            return;
-                        }
+                    disabledOverlay.setVisible(false);
+                    loadSchema(std::move(schema));
+                });
+            } catch (const std::exception &e) {
+                juce::MessageManager::callAsync([this, self, error = e.what()] {
+                    if (self == nullptr) {
+                        return;
+                    }
 
-                        disabledOverlay.setVisible(false);
-                        loadSchema(std::move(schema));
-                    });
-                } catch (const std::exception &e) {
-                    juce::MessageManager::callAsync([this, self, error = e.what()] {
-                        if (self == nullptr) {
-                            return;
-                        }
+                    enumerationError.setJustification(juce::Justification::centred);
+                    enumerationError.append("Enumeration Failed\n", UIColours::foreground);
+                    enumerationError.append(error, juce::Colours::grey);
+                    enumerationError.setFont(UIFonts::getDefaultFont());
+                    repaint();
 
-                        enumerationError.setJustification(juce::Justification::centred);
-                        enumerationError.append("Enumeration Failed\n", UIColours::foreground);
-                        enumerationError.append(error, juce::Colours::grey);
-                        enumerationError.setFont(UIFonts::getDefaultFont());
-                        repaint();
-
-                        disabledOverlay.setVisible(false);
-                        loadSchema({});
-                    });
-                }
-            });
-            break;
-
-        case SchemaType::custom:
-            loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(getCustomSchema().loadFileAsString())));
-            break;
+                    disabledOverlay.setVisible(false);
+                    loadSchema({});
+                });
+            }
+        });
+        return;
     }
+
+    if (getSchema() == "ximu3") {
+        loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(BinaryData::DeviceSettings_xml)));
+        return;
+    }
+
+    loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(juce::File(getSchema()).loadFileAsString())));
 }
