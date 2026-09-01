@@ -52,7 +52,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     }
 
     shutdownAllDevicesButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Are you sure you want to shutdown all devices?"), [this] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Shutdown all devices?"), [this] {
             DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"shutdown\":null}"));
             return true;
         });
