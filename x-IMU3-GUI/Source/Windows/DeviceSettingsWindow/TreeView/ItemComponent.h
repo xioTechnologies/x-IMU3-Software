@@ -9,7 +9,7 @@ class ItemComponent : public juce::Component {
 public:
     static constexpr int rowMargin = 4;
 
-    ItemComponent(const Schema::Item& item_, const juce::String& name, std::unique_ptr<juce::Component> value_) : item(item_), nameLabel(name), value(std::move(value_)) {
+    ItemComponent(const Schema::Item &item_, const juce::String &name, std::unique_ptr<juce::Component> value_) : item(item_), nameLabel(name), value(std::move(value_)) {
         addAndMakeVisible(nameLabel);
         addAndMakeVisible(value.get());
         addChildComponent(warningIcon);
@@ -52,7 +52,7 @@ protected:
     virtual bool hideWarningIcon() const { return false; }
 
 private:
-    const Schema::Item& item;
+    const Schema::Item &item;
     SimpleLabel nameLabel;
     std::unique_ptr<juce::Component> value;
     Icon warningIcon{BinaryData::warning_orange_svg, {}};

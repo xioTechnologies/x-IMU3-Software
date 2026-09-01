@@ -358,7 +358,7 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
 
                     disabledOverlay.setVisible(false);
 
-                    if (! schema) {
+                    if (!schema) {
                         enumerationError.setJustification(juce::Justification::centred);
                         enumerationError.append("Enumeration Failed\n", UIColours::foreground);
                         enumerationError.append(schema.error(), juce::Colours::grey);

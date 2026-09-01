@@ -5,7 +5,7 @@
 
 class SettingItem : public TreeViewItem {
 public:
-    SettingItem(Schema::Setting &setting_, Schema::Setting *const dependsOn_, std::function<void(Schema::Setting &setting, const std::string &command)> write_, std::function<bool()> hideUnusedSettings_)
+    SettingItem(Schema::Setting &setting_, Schema::Setting *const dependsOn_, std::function<void(Schema::Setting & setting, const std::string & command)> write_, std::function<bool()> hideUnusedSettings_)
         : TreeViewItem(setting_, dependsOn_, setting_.dependsOnValues, hideUnusedSettings_),
           setting(setting_),
           write(std::move(write_)) {
@@ -31,7 +31,7 @@ public:
 
 private:
     Schema::Setting &setting;
-    const std::function<void(Schema::Setting &setting, const std::string &command)> write;
+    const std::function<void(Schema::Setting & setting, const std::string & command)> write;
     juce::Component::SafePointer<SettingItemComponent> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingItem)

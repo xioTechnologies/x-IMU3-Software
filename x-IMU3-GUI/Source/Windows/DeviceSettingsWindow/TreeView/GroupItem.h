@@ -6,18 +6,18 @@
 
 class GroupItem : public TreeViewItem {
 public:
-    GroupItem(Schema::Group &group_, const Schema::Group &rootGroup, const std::function<void(Schema::Setting &setting, const std::string &command)> &write, std::function<bool()> hideUnusedSettings_)
+    GroupItem(Schema::Group &group_, const Schema::Group &rootGroup, const std::function<void(Schema::Setting & setting, const std::string & command)> &write, std::function<bool()> hideUnusedSettings_)
         : TreeViewItem(group_, rootGroup.find(group_.dependsOnKey), group_.dependsOnValues, hideUnusedSettings_),
           group(group_) {
         setLinesDrawnForSubItems(false);
 
         for (const auto &item_: group.items) {
-            if (auto *const subGroup = dynamic_cast<Schema::Group*>(item_.get())) {
+            if (auto *const subGroup = dynamic_cast<Schema::Group *>(item_.get())) {
                 addSubItem(new GroupItem(*subGroup, rootGroup, write, hideUnusedSettings_));
                 continue;
             }
 
-            if (auto *const setting = dynamic_cast<Schema::Setting*>(item_.get())) {
+            if (auto *const setting = dynamic_cast<Schema::Setting *>(item_.get())) {
                 addSubItem(new SettingItem(*setting, rootGroup.find(setting->dependsOnKey), write, hideUnusedSettings_));
             }
         }

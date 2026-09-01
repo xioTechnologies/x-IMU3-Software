@@ -6,7 +6,7 @@
 
 class TreeViewItem : public juce::TreeViewItem {
 public:
-    TreeViewItem(const Schema::Item& item_, Schema::Setting *const dependsOn_, std::vector<std::string> dependsOnValues_, std::function<bool()> hideUnusedSettings_)
+    TreeViewItem(const Schema::Item &item_, Schema::Setting *const dependsOn_, std::vector<std::string> dependsOnValues_, std::function<bool()> hideUnusedSettings_)
         : item(item_),
           dependsOn(dependsOn_),
           dependsOnValues(std::move(dependsOnValues_)),
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    const Schema::Item& item;
+    const Schema::Item &item;
     Schema::Setting *const dependsOn;
     const std::vector<std::string> dependsOnValues;
     std::function<bool()> hideUnusedSettings;

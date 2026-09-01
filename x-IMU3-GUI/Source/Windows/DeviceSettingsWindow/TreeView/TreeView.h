@@ -6,7 +6,7 @@
 
 class TreeView : public juce::TreeView {
 public:
-    TreeView(std::unique_ptr<Schema::Group> rootGroup_, const std::function<void(Schema::Setting &setting, const std::string &command)> &write, std::function<bool()> hideUnusedSettings)
+    TreeView(std::unique_ptr<Schema::Group> rootGroup_, const std::function<void(Schema::Setting & setting, const std::string & command)> &write, std::function<bool()> hideUnusedSettings)
         : rootGroup(std::move(rootGroup_)),
           rootGroupItem(*rootGroup, *rootGroup, write, hideUnusedSettings) {
         setRootItem(&rootGroupItem);

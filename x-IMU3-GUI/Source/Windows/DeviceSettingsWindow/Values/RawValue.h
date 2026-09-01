@@ -6,7 +6,7 @@
 #include "Widgets/CustomTextEditor.h"
 
 class RawValue final : public CustomTextEditor,
-                          public Value {
+                       public Value {
 public:
     RawValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
         setReadOnly(setting.readOnly);
