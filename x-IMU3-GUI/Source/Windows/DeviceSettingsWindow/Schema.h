@@ -1,5 +1,6 @@
 #pragma once
 
+#include <expected>
 #include <juce_data_structures/juce_data_structures.h>
 #include <memory>
 #include <optional>
@@ -91,5 +92,5 @@ namespace Schema {
 
     std::unique_ptr<Group> loadSchema(const juce::ValueTree &tree);
 
-    std::unique_ptr<Group> loadSchema(std::shared_ptr<ximu3::Connection>);
+    std::expected<std::unique_ptr<Group>, std::string> loadSchema(std::shared_ptr<ximu3::Connection>);
 }

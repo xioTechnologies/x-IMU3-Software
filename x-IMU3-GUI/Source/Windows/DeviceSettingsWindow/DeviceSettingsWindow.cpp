@@ -11,7 +11,6 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     addAndMakeVisible(restoreButton);
     addAndMakeVisible(defaultsButton);
     addChildComponent(disabledOverlay);
-    addChildComponent(enumerationFailedLabel);
 
     syncButton.onClick = [&] {
         if (getSchemaType() == SchemaType::enumerate) {
@@ -129,6 +128,8 @@ void DeviceSettingsWindow::paint(juce::Graphics &g) {
 
     g.setColour(UIColours::backgroundDark);
     g.fillRect(juce::Rectangle{0, syncButton.getY(), getWidth(), syncButton.getHeight()});
+
+    enumerationError.draw(g, getContentBounds().toFloat());
 }
 
 void DeviceSettingsWindow::resized() {
@@ -136,7 +137,6 @@ void DeviceSettingsWindow::resized() {
 
     auto bounds = getContentBounds();
     disabledOverlay.setBounds(bounds);
-    enumerationFailedLabel.setBounds(bounds);
 
     auto footer = bounds.removeFromBottom(25);
     const auto buttonWidth = footer.getWidth() / 4;
@@ -213,6 +213,11 @@ bool DeviceSettingsWindow::hideUnusedSettings() const {
 }
 
 void DeviceSettingsWindow::loadSchema(std::unique_ptr<Schema::Group> group) {
+    if (group == nullptr) {
+        treeView.reset();
+        return;
+    }
+
     const auto write = [this](Schema::Setting &setting, const std::string &command) {
         treeView->refresh();
 
@@ -334,7 +339,8 @@ void DeviceSettingsWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePr
 }
 
 void DeviceSettingsWindow::handleAsyncUpdate() {
-    enumerationFailedLabel.setVisible(false);
+    enumerationError = {};
+    repaint();
 
     switch (getSchemaType()) {
         case SchemaType::ximu3:
@@ -345,21 +351,24 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
             disabledOverlay.setVisible(true);
 
             threadPool.addJob([this, self = SafePointer<juce::Component>(this)] {
-                auto group = Schema::loadSchema(connectionPanel.getConnection());
-
-                juce::MessageManager::callAsync([this, self, group_ = std::move(group)]() mutable {
+                juce::MessageManager::callAsync([this, self, schema = Schema::loadSchema(connectionPanel.getConnection())]() mutable {
                     if (self == nullptr) {
                         return;
                     }
 
-                    if (!group_) {
-                        enumerationFailedLabel.setVisible(true);
-                        group_ = std::make_unique<Schema::Group>(std::vector<std::unique_ptr<Schema::Item> >{});
-                        // TODO
+                    disabledOverlay.setVisible(false);
+
+                    if (! schema) {
+                        enumerationError.setJustification(juce::Justification::centred);
+                        enumerationError.append("Enumeration Failed\n", UIColours::foreground);
+                        enumerationError.append(schema.error(), juce::Colours::grey);
+                        enumerationError.setFont(UIFonts::getDefaultFont());
+                        repaint();
+                        loadSchema({});
+                        return;
                     }
 
-                    disabledOverlay.setVisible(false);
-                    loadSchema(std::move(group_));
+                    loadSchema(std::move(*schema));
                 });
             });
             break;

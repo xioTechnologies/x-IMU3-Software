@@ -205,18 +205,19 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(const juce::ValueTree &tree) {
     return std::make_unique<Group>(tree.getChildWithName(SchemaIds::Settings), tree.getChildWithName(SchemaIds::Enums));
 }
 
-std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connection> connection) {
+std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(std::shared_ptr<ximu3::Connection> connection) {
     std::vector<std::unique_ptr<Item> > settings;
 
     for (int index = 0; ; index++) {
-        const auto response = connection->sendCommand({"{\"enumerate " + std::to_string(index) + "\": null}"});
+        const auto command = "{\"enumerate " + std::to_string(index) + "\":null}";
+        const auto response = connection->sendCommand({command});
 
         if (response.has_value() == false) {
-            return {}; // TODO: No response to {"enumerate 0":null}
+            return std::unexpected("No response to " + command);
         }
 
         if (response->error.has_value()) {
-            return {}; // TODO: Error response to {"enumerate 0":null}: Unknown command
+            return std::unexpected("Error response to " + command + ": " + *response->error);
         }
 
         if (response->value == "null") {
@@ -226,7 +227,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
         const auto value = ximu3::CommandMessage::parse(response->value);
 
         if (value.has_value() == false) {
-            return {}; // TODO: Invalid response to {"enumerate 0":null}
+            return std::unexpected("Invalid response to " + command);
         }
 
         switch (value->valueType) {
@@ -245,7 +246,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
             case ximu3::XIMU3_JsonTypeNull:
             case ximu3::XIMU3_JsonTypeObject:
             case ximu3::XIMU3_JsonTypeArray:
-                break; // TODO: Invalid response to {"enumerate 0":null}
+                break;
         }
     }
 

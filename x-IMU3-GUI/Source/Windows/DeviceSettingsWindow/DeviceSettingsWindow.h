@@ -30,7 +30,8 @@ private:
     IconButton restoreButton{BinaryData::upload_svg, "Restore Settings"};
     IconButton defaultsButton{BinaryData::default_svg, "Restore Defaults"};
     DisabledOverlay disabledOverlay;
-    SimpleLabel enumerationFailedLabel{"Enumeration Failed", UIFonts::getDefaultFont(), juce::Justification::centred};
+
+    juce::AttributedString enumerationError;
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
