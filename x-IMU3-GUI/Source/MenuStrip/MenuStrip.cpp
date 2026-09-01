@@ -52,7 +52,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
     }
 
     shutdownAllDevicesButton.onClick = [this] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Shutdown all devices?"), [this] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmDialog>("Are you sure you want to shutdown all devices?"), [this] {
             DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"shutdown\":null}"));
             return true;
         });
@@ -106,7 +106,7 @@ MenuStrip::MenuStrip(juce::ValueTree &windowLayout_, juce::ThreadPool &threadPoo
 
                 const auto directory = juce::File(dataLoggerSettings.destination).getChildFile(dataLoggerName);
                 if (directory.exists()) {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(dataLoggerName), [directory, startDataLogger] {
+                    DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmReplaceDialog>(dataLoggerName), [directory, startDataLogger] {
                         directory.deleteRecursively();
                         startDataLogger();
                         return true;
@@ -378,7 +378,7 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
                 };
 
                 if (WindowLayouts().exists(layoutName)) {
-                    DialogQueue::getSingleton().pushFront(std::make_unique<DoYouWantToReplaceItDialog>(layoutName), save);
+                    DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmReplaceDialog>(layoutName), save);
                 } else {
                     save();
                 }
@@ -515,7 +515,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
     juce::PopupMenu menu;
 
     menu.addItem("Set Date and Time", connectionPanelContainer.getConnectionPanels().size() > 0, false, [&] {
-        DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("Do you want to set the date and time on all devices to match the computer?"), [&] {
+        DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmDialog>("Do you want to set the date and time on all devices to match the computer?"), [&] {
             DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(connectionPanelContainer.getConnectionPanels(), "{\"time\":\"" + juce::Time::getCurrentTime().formatted("%Y-%m-%d %H:%M:%S").toStdString() + "\"}"));
             return true;
         });
@@ -528,7 +528,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
     });
     menu.addItem("Update Firmware", [&] {
         if (connectionPanelContainer.getConnectionPanels().size() > 0) {
-            DialogQueue::getSingleton().pushFront(std::make_unique<AreYouSureDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&] {
+            DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmDialog>("All connections must be closed before updating the firmware. Do you want to continue?"), [&] {
                 disconnect(nullptr);
                 UpdateFirmwareDialog::launch(threadPool);
                 return true;
@@ -570,7 +570,7 @@ juce::PopupMenu MenuStrip::getToolsMenu() {
                 };
 
                 if (const auto directory = convertFilesSettings.destination.getChildFile(convertFilesSettings.name); directory.exists()) {
-                    DialogQueue::getSingleton().pushBack(std::make_unique<DoYouWantToReplaceItDialog>(convertFilesSettings.name), [&, directory, startConverting] {
+                    DialogQueue::getSingleton().pushBack(std::make_unique<ConfirmReplaceDialog>(convertFilesSettings.name), [&, directory, startConverting] {
                         directory.deleteRecursively();
                         startConverting();
                         return true;
