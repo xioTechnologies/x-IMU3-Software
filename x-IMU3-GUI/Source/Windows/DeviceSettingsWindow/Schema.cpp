@@ -37,7 +37,7 @@ Schema::Setting::Setting(const std::string &key_, const Type type_)
       type(type_) {
 }
 
-std::optional<std::string> Schema::Setting::getWarning() const {
+std::optional<std::string> Schema::Setting::getError() const {
     switch (status) {
         case Status::unknown:
         case Status::confirmed:
@@ -62,19 +62,19 @@ void Schema::Setting::clear() {
     status = Status::unknown;
 }
 
-std::string Schema::Setting::getRead() const {
+std::string Schema::Setting::getReadCommand() const {
     return "{\"" + key + "\":null}";
 }
 
-std::string Schema::Setting::getWrite(const std::string &value_) const {
+std::string Schema::Setting::getWriteCommand(const std::string &value_) const {
     if (readOnly) {
-        return getRead();
+        return getReadCommand();
     }
 
     const std::string command = "{\"" + key + "\":" + value_ + "}";
 
     if (ximu3::CommandMessage::parse(command).has_value() == false) {
-        return getRead();
+        return getReadCommand();
     }
 
     return command;
@@ -147,11 +147,11 @@ Schema::Group::Group(const juce::ValueTree &tree, const juce::ValueTree &enums) 
     }
 }
 
-std::optional<std::string> Schema::Group::getWarning() const {
+std::optional<std::string> Schema::Group::getError() const {
     for (const auto &item: items) {
         if (auto *const group = dynamic_cast<const Group *>(item.get())) {
-            if (auto warning = group->getWarning()) {
-                return warning;
+            if (auto error = group->getError()) {
+                return error;
             }
             continue;
         }

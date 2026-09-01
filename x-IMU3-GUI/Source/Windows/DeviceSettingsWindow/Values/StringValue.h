@@ -22,7 +22,7 @@ public:
             }
 
             setting.clear();
-            write(setting, setting.getWrite(value));
+            write(setting, setting.getWriteCommand(value));
         };
 
         refresh();

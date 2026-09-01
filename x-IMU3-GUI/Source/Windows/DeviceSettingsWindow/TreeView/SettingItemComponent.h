@@ -19,11 +19,11 @@ public:
                   case Schema::Setting::Type::number:
                       return std::make_unique<NumberValue>(setting_, write);
 
-                  case Schema::Setting::Type::enumeration:
-                      return std::make_unique<EnumerationValue>(setting_, write);
-
                   case Schema::Setting::Type::boolean:
                       return std::make_unique<BooleanValue>(setting_, write);
+
+                  case Schema::Setting::Type::enumeration:
+                      return std::make_unique<EnumerationValue>(setting_, write);
               }
 
               return {};

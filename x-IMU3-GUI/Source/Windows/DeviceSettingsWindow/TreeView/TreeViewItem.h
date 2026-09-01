@@ -30,7 +30,7 @@ public:
     }
 
     virtual void refresh() {
-        if (item.getWarning().has_value()) {
+        if (item.getError().has_value()) {
             unused = false;
             return;
         }

@@ -171,7 +171,7 @@ void DeviceSettingsWindow::syncSettings() {
     std::vector<std::string> commands;
     for (auto *const setting: treeView->getSettings()) {
         setting->clear();
-        commands.push_back(setting->getRead());
+        commands.push_back(setting->getReadCommand());
     }
 
     treeView->refresh();

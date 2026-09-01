@@ -13,7 +13,7 @@ public:
         setEnabled(setting.readOnly == false);
         onChange = [&, write] {
             setting.clear();
-            write(setting, setting.getWrite(getSelectedItemIndex() == 1 ? "true" : "false"));
+            write(setting, setting.getWriteCommand(getSelectedItemIndex() == 1 ? "true" : "false"));
         };
 
         refresh();

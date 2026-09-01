@@ -15,7 +15,7 @@ public:
         setEnabled(setting.readOnly == false);
         onChange = [&, write] {
             setting.clear();
-            write(setting, setting.getWrite(std::to_string(setting.enumeration[(size_t) getSelectedItemIndex()].first)));
+            write(setting, setting.getWriteCommand(std::to_string(setting.enumeration[(size_t) getSelectedItemIndex()].first)));
         };
 
         refresh();

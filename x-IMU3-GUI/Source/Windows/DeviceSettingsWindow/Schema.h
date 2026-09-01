@@ -18,7 +18,7 @@ namespace Schema {
 
         virtual ~Item() = default;
 
-        virtual std::optional<std::string> getWarning() const = 0; // TODO: rename to error
+        virtual std::optional<std::string> getError() const = 0;
 
         std::string name{};
         std::string dependsOnKey{};
@@ -30,16 +30,16 @@ namespace Schema {
         enum class Type {
             string,
             number,
-            enumeration, // TODO: put at end so that ordering is consistent with typically if/else implementations
             boolean,
+            enumeration,
         };
 
         enum class Status {
             unknown,
+            confirmed,
             noResponse,
             errorResponse,
             invalidResponse,
-            confirmed, // TODO: reorder so this is after unknown and all errors appear at end
         };
 
         std::string key{};
@@ -57,13 +57,13 @@ namespace Schema {
 
         Setting(const std::string &key_, const Type type_);
 
-        std::optional<std::string> getWarning() const override;
+        std::optional<std::string> getError() const override;
 
         void clear();
 
-        std::string getRead() const; // TODO: getReadCommand
+        std::string getReadCommand() const;
 
-        std::string getWrite(const std::string &value_) const; // TODO: getWriteCommand
+        std::string getWriteCommand(const std::string &value_) const;
 
         void receive(const std::optional<ximu3::CommandMessage> &response);
 
@@ -83,7 +83,7 @@ namespace Schema {
 
         Group(std::vector<std::unique_ptr<Item> > settings);
 
-        std::optional<std::string> getWarning() const override;
+        std::optional<std::string> getError() const override;
 
         std::vector<Setting *> flatten() const;
 

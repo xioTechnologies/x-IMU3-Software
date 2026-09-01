@@ -37,15 +37,15 @@ public:
             value_->refresh();
         }
 
-        const auto warning = item.getWarning();
+        const auto error = item.getError();
 
-        if (warning.has_value() == false || hideWarningIcon()) {
+        if (error.has_value() == false || hideWarningIcon()) {
             warningIcon.setVisible(false);
             return;
         }
 
         warningIcon.setVisible(true);
-        warningIcon.setTooltip(*warning);
+        warningIcon.setTooltip(*error);
     }
 
 protected:

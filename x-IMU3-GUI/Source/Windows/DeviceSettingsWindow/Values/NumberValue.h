@@ -17,7 +17,7 @@ public:
             }
 
             setting.clear();
-            write(setting, setting.getWrite(getText().toStdString()));
+            write(setting, setting.getWriteCommand(getText().toStdString()));
         };
 
         refresh();
