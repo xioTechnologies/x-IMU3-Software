@@ -351,25 +351,31 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
             disabledOverlay.setVisible(true);
 
             threadPool.addJob([this, self = SafePointer<juce::Component>(this)] {
-                juce::MessageManager::callAsync([this, self, schema = Schema::loadSchema(connectionPanel.getConnection())]() mutable {
-                    if (self == nullptr) {
-                        return;
-                    }
+                try {
+                    juce::MessageManager::callAsync([this, self, schema = Schema::loadSchema(connectionPanel.getConnection())]() mutable {
+                        if (self == nullptr) {
+                            return;
+                        }
 
-                    disabledOverlay.setVisible(false);
+                        disabledOverlay.setVisible(false);
+                        loadSchema(std::move(schema));
+                    });
+                } catch (const std::exception &e) {
+                    juce::MessageManager::callAsync([this, self, error = e.what()] {
+                        if (self == nullptr) {
+                            return;
+                        }
 
-                    if (!schema) {
                         enumerationError.setJustification(juce::Justification::centred);
                         enumerationError.append("Enumeration Failed\n", UIColours::foreground);
-                        enumerationError.append(schema.error(), juce::Colours::grey);
+                        enumerationError.append(error, juce::Colours::grey);
                         enumerationError.setFont(UIFonts::getDefaultFont());
                         repaint();
-                        loadSchema({});
-                        return;
-                    }
 
-                    loadSchema(std::move(*schema));
-                });
+                        disabledOverlay.setVisible(false);
+                        loadSchema({});
+                    });
+                }
             });
             break;
 

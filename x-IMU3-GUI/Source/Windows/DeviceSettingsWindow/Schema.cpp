@@ -220,7 +220,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(const juce::ValueTree &tree) {
     return std::make_unique<Group>(tree.getChildWithName(SchemaIds::Settings), tree.getChildWithName(SchemaIds::Enums));
 }
 
-std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(std::shared_ptr<ximu3::Connection> connection) {
+std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connection> connection) {
     std::vector<std::unique_ptr<Item> > settings;
 
     for (int index = 0; ; index++) {
@@ -228,11 +228,11 @@ std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(st
         const auto response = connection->sendCommand({command});
 
         if (response.has_value() == false) {
-            return std::unexpected("No response to " + command);
+            throw std::runtime_error("No response to " + command);
         }
 
         if (response->error.has_value()) {
-            return std::unexpected("Error response to " + command + ": " + *response->error);
+            throw std::runtime_error("Error response to " + command + ": " + *response->error);
         }
 
         if (response->value == "null") {
@@ -242,7 +242,7 @@ std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(st
         const auto value = ximu3::CommandMessage::parse(response->value);
 
         if (value.has_value() == false) {
-            return std::unexpected("Invalid response to " + command);
+            throw std::runtime_error("Invalid response to " + command);
         }
 
         switch (value->valueType) {
@@ -259,7 +259,7 @@ std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(st
                 break;
 
             case ximu3::XIMU3_JsonTypeNull:
-                return std::unexpected("Invalid response to " + command);
+                throw std::runtime_error("Invalid response to " + command);
 
             case ximu3::XIMU3_JsonTypeObject:
             case ximu3::XIMU3_JsonTypeArray:
