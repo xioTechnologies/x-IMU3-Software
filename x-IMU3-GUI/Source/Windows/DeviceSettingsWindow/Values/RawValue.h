@@ -5,19 +5,24 @@
 #include "Value.h"
 #include "Widgets/CustomTextEditor.h"
 
-class NumberValue final : public CustomTextEditor,
+class RawValue final : public CustomTextEditor,
                           public Value {
 public:
-    NumberValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
+    RawValue(Schema::Setting &setting_, std::function<void(Schema::Setting &setting, const std::string &command)> write) : setting(setting_) {
         setReadOnly(setting.readOnly);
         setDefaultText(setting.emptyString);
-        onReturnKey = onEscapeKey = onFocusLost = [&, write] {
-            if (setting.readOnly) {
+        onReturnKey = onEscapeKey = [&] {
+            giveAwayKeyboardFocus();
+        };
+        onFocusLost = [&, write] {
+            const auto value = getText().toStdString();
+
+            if (setting.value == value && setting.status == Schema::Setting::Status::confirmed) {
                 return;
             }
 
             setting.clear();
-            write(setting, setting.getWriteCommand(getText().toStdString()));
+            write(setting, setting.getWriteCommand(value));
         };
 
         refresh();
@@ -35,5 +40,5 @@ public:
 private:
     Schema::Setting &setting;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NumberValue)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RawValue)
 };

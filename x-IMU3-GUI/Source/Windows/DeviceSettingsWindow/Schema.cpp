@@ -15,7 +15,9 @@ Schema::Item::Item(const juce::ValueTree &tree) {
 
 Schema::Setting::Setting(const juce::ValueTree &tree, const juce::ValueTree &enums) : Item(tree) {
     key = tree[SchemaIds::key].toString().toStdString();
-    if (tree[SchemaIds::type] == "string") {
+    if (tree[SchemaIds::type] == "raw") {
+        type = Type::raw;
+    } else if (tree[SchemaIds::type] == "string") {
         type = Type::string;
     } else if (tree[SchemaIds::type] == "number") {
         type = Type::number;
@@ -92,32 +94,45 @@ void Schema::Setting::receive(const std::optional<ximu3::CommandMessage> &respon
         return;
     }
 
-    if (jsonTypeFrom(type) != response->valueType) {
-        status = Status::invalidResponse;
-        return;
-    }
+    switch (type) {
+        case Type::raw:
+            break;
 
-    if (type == Type::enumeration && std::ranges::any_of(enumeration, [=](const auto &enumerator) { return std::to_string(enumerator.first) == response->value; }) == false) {
-        status = Status::invalidResponse;
-        return;
+        case Type::string:
+            if (response->valueType != ximu3::XIMU3_JsonTypeString) {
+                status = Status::invalidResponse;
+                return;
+            }
+            break;
+
+        case Type::number:
+            if (response->valueType != ximu3::XIMU3_JsonTypeNumber) {
+                status = Status::invalidResponse;
+                return;
+            }
+            break;
+
+        case Type::boolean:
+            if (response->valueType != ximu3::XIMU3_JsonTypeBoolean) {
+                status = Status::invalidResponse;
+                return;
+            }
+            break;
+
+        case Type::enumeration:
+            if (response->valueType != ximu3::XIMU3_JsonTypeNumber) {
+                status = Status::invalidResponse;
+                return;
+            }
+            if (std::ranges::any_of(enumeration, [=](const auto &enumerator) { return std::to_string(enumerator.first) == response->value; }) == false) {
+                status = Status::invalidResponse;
+                return;
+            }
+            break;
     }
 
     value = response->value;
     status = Status::confirmed;
-}
-
-ximu3::XIMU3_JsonType Schema::Setting::jsonTypeFrom(const Type type_) {
-    switch (type_) {
-        case Type::string:
-            return ximu3::XIMU3_JsonTypeString;
-        case Type::number:
-        case Type::enumeration:
-            return ximu3::XIMU3_JsonTypeNumber;
-        case Type::boolean:
-            return ximu3::XIMU3_JsonTypeBoolean;
-    }
-
-    return {}; // avoid compiler warning
 }
 
 std::string Schema::Setting::getStringValue() const {
@@ -244,8 +259,11 @@ std::expected<std::unique_ptr<Schema::Group>, std::string> Schema::loadSchema(st
                 break;
 
             case ximu3::XIMU3_JsonTypeNull:
+                return std::unexpected("Invalid response to " + command);
+
             case ximu3::XIMU3_JsonTypeObject:
             case ximu3::XIMU3_JsonTypeArray:
+                settings.push_back(std::make_unique<Setting>(value->key, Setting::Type::raw));
                 break;
         }
     }

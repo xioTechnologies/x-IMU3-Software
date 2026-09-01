@@ -28,6 +28,7 @@ namespace Schema {
     class Setting : public Item {
     public:
         enum class Type {
+            raw,
             string,
             number,
             boolean,
@@ -68,9 +69,6 @@ namespace Schema {
         void receive(const std::optional<ximu3::CommandMessage> &response);
 
         std::string getStringValue() const;
-
-    private:
-        static ximu3::XIMU3_JsonType jsonTypeFrom(const Type type_);
     };
 
     class Group : public Item {
