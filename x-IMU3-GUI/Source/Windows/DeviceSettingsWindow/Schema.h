@@ -17,7 +17,7 @@ namespace Schema {
 
         virtual ~Item() = default;
 
-        virtual std::optional<std::string> getWarning() const = 0;
+        virtual std::optional<std::string> getWarning() const = 0; // TODO: rename to error
 
         std::string name{};
         std::string dependsOnKey{};
@@ -29,7 +29,7 @@ namespace Schema {
         enum class Type {
             string,
             number,
-            enumeration,
+            enumeration, // TODO: put at end so that ordering is consistent with typically if/else implementations
             boolean,
         };
 
@@ -38,7 +38,7 @@ namespace Schema {
             noResponse,
             errorResponse,
             invalidResponse,
-            confirmed,
+            confirmed, // TODO: reorder so this is after unknown and all errors appear at end
         };
 
         std::string key{};
@@ -60,9 +60,9 @@ namespace Schema {
 
         void clear();
 
-        std::string getRead() const;
+        std::string getRead() const; // TODO: getReadCommand
 
-        std::string getWrite(const std::string &value_) const;
+        std::string getWrite(const std::string &value_) const; // TODO: getWriteCommand
 
         void receive(const std::optional<ximu3::CommandMessage> &response);
 

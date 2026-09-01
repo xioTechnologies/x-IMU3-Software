@@ -212,11 +212,11 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
         const auto response = connection->sendCommand({"{\"enumerate " + std::to_string(index) + "\": null}"});
 
         if (response.has_value() == false) {
-            return {}; // TODO: handle error
+            return {}; // TODO: No response to {"enumerate 0":null}
         }
 
         if (response->error.has_value()) {
-            return {}; // TODO: handle error
+            return {}; // TODO: Error response to {"enumerate 0":null}: Unknown command
         }
 
         if (response->value == "null") {
@@ -226,7 +226,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
         const auto value = ximu3::CommandMessage::parse(response->value);
 
         if (value.has_value() == false) {
-            return {}; // TODO: handle error
+            return {}; // TODO: Invalid response to {"enumerate 0":null}
         }
 
         switch (value->valueType) {
@@ -245,7 +245,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
             case ximu3::XIMU3_JsonTypeNull:
             case ximu3::XIMU3_JsonTypeObject:
             case ximu3::XIMU3_JsonTypeArray:
-                break; // TODO
+                break; // TODO: Invalid response to {"enumerate 0":null}
         }
     }
 
