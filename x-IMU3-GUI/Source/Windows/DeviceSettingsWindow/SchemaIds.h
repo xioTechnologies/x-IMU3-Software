@@ -12,6 +12,7 @@ namespace SchemaIds {
 
     DECLARE_ID(key)
     DECLARE_ID(name)
+    DECLARE_ID(model)
     DECLARE_ID(type)
     DECLARE_ID(readOnly)
     DECLARE_ID(emptyString)
