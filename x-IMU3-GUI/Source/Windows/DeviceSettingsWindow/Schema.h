@@ -90,4 +90,18 @@ namespace Schema {
     std::unique_ptr<Group> loadSchema(const juce::ValueTree &tree);
 
     std::unique_ptr<Group> loadSchema(std::shared_ptr<ximu3::Connection>);
+
+    juce::File getSchemasDirectory();
+
+    void copyBuiltInSchemas();
+
+    std::vector<juce::File> getSchemaFiles();
+
+    juce::File findSchemaFileMatching(const juce::String &model);
+
+    juce::File getFallbackSchemaFile();
+
+    juce::String getSchemaName(const juce::File &file);
+
+    juce::String getSchemaModel(const juce::File &file);
 }

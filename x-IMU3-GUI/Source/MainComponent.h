@@ -8,11 +8,14 @@
 #include "MenuStrip/MenuStrip.h"
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Widgets/DisabledOverlay.h"
+#include "Windows/DeviceSettingsWindow/Schema.h"
 #include "Windows/WindowIds.h"
 
 class MainComponent : public juce::Component, private juce::ChangeListener {
 public:
     MainComponent() {
+        Schema::copyBuiltInSchemas();
+
         addAndMakeVisible(menuStrip);
         addAndMakeVisible(connectionPanelViewport);
         addChildComponent(disabledOverlay);
