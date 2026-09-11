@@ -1,6 +1,8 @@
-#include "SchemaIds.h"
-#include "Schema.h"
 #include <algorithm>
+#include "ApplicationSettings.h"
+#include <BinaryData.h>
+#include "Schema.h"
+#include "SchemaIds.h"
 
 Schema::Item::Item(const std::string &name_) : name(name_) {
 }
@@ -269,4 +271,78 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
     }
 
     return std::make_unique<Group>(std::move(settings));
+}
+
+static const std::vector<std::pair<juce::String, juce::MemoryBlock> > builtInSchemas
+{
+    {"x-IMU3 Schema.xml", {BinaryData::xIMU3_Schema_xml, (size_t) BinaryData::xIMU3_Schema_xmlSize}},
+    {"x-IMU4 Schema.xml", {BinaryData::xIMU4_Schema_xml, (size_t) BinaryData::xIMU4_Schema_xmlSize}},
+};
+
+juce::File Schema::getSchemasDirectory() {
+    return ApplicationSettings::getDirectory().getChildFile("Schemas");
+}
+
+void Schema::copyBuiltInSchemas() {
+    std::ignore = getSchemasDirectory().createDirectory();
+
+    for (const auto &[fileName, data]: builtInSchemas) {
+        std::ignore = getSchemasDirectory().getChildFile(fileName).replaceWithData(data.getData(), data.getSize());
+    }
+}
+
+std::vector<juce::File> Schema::getSchemaFiles() {
+    std::vector<juce::File> files;
+
+    for (const auto &file: getSchemasDirectory().findChildFiles(juce::File::findFiles, false, "*.xml")) {
+        files.push_back(file);
+    }
+
+    std::sort(files.begin(), files.end(), [](const auto &fileA, const auto &fileB) {
+        return fileA.getFileName().compareNatural(fileB.getFileName()) < 0;
+    });
+
+    return files;
+}
+
+juce::File Schema::findSchemaFileMatching(const juce::String &model) {
+    const auto files = getSchemaFiles();
+
+    if (model.isNotEmpty()) {
+        for (const auto &file: files) {
+            if (getSchemaModel(file).equalsIgnoreCase(model)) {
+                return file;
+            }
+        }
+
+        for (const auto &file: files) {
+            if (getSchemaName(file).equalsIgnoreCase(model)) {
+                return file;
+            }
+        }
+
+        for (const auto &file: files) {
+            if (file.getFileName().containsIgnoreCase(model)) {
+                return file;
+            }
+        }
+    }
+
+    return getFallbackSchemaFile();
+}
+
+juce::File Schema::getFallbackSchemaFile() {
+    return getSchemasDirectory().getChildFile(builtInSchemas.front().first);
+}
+
+juce::String Schema::getSchemaName(const juce::File &file) {
+    if (const auto name = juce::ValueTree::fromXml(file.loadFileAsString())[SchemaIds::name].toString(); name.isNotEmpty()) {
+        return name;
+    }
+
+    return file.getFileName();
+}
+
+juce::String Schema::getSchemaModel(const juce::File &file) {
+    return juce::ValueTree::fromXml(file.loadFileAsString())[SchemaIds::model].toString();
 }

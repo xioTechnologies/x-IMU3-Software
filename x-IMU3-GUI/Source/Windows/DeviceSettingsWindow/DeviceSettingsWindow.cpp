@@ -3,12 +3,6 @@
 #include "Dialogs/MessageDialog.h"
 #include "Widgets/PopupMenuHeader.h"
 
-const std::vector<std::pair<juce::String, const char *> > DeviceSettingsWindow::defaultSchemas
-{
-    {"x-IMU3", BinaryData::xIMU3_Schema_xml},
-    {"x-IMU4", BinaryData::xIMU4_Schema_xml},
-};
-
 DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, juce::ThreadPool &threadPool_)
     : Window(windowLayout_, type_, connectionPanel_, "Device Settings Menu"),
       threadPool(threadPool_) {
@@ -129,9 +123,31 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
         });
     };
 
+    pingCallbackId = connectionPanel.getConnection()->addPingCallback(pingCallback = [&, model = juce::String()](auto response) mutable {
+        if (model == juce::String(response.device_name)) {
+            return;
+        }
+
+        model = response.device_name;
+
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this)] {
+            if (self == nullptr) {
+                return;
+            }
+
+            if (getSchema() == "auto") {
+                triggerAsyncUpdate();
+            }
+        });
+    });
+
     handleAsyncUpdate();
 
     setOpaque(true);
+}
+
+DeviceSettingsWindow::~DeviceSettingsWindow() {
+    connectionPanel.getConnection()->removeCallback(pingCallbackId);
 }
 
 void DeviceSettingsWindow::paint(juce::Graphics &g) {
@@ -172,21 +188,28 @@ bool DeviceSettingsWindow::hideUnusedSettings() const {
 juce::String DeviceSettingsWindow::getSchema() const {
     const juce::String schema = settingsTree["schema"];
 
-    if (schema == "enumerate") {
+    if (schema == "auto" || schema == "enumerate") {
         return schema;
     }
 
-    for (auto schema_: defaultSchemas) {
-        if (schema == schema_.first) {
-            return schema;
-        }
-    }
-
-    if (juce::File::isAbsolutePath(schema) && juce::File(schema).existsAsFile()) {
+    if (Schema::getSchemasDirectory().getChildFile(schema).existsAsFile()) {
         return schema;
     }
 
-    return defaultSchemas.front().first;
+    return "auto";
+}
+
+void DeviceSettingsWindow::setSchema(const juce::String &schema) {
+    settingsTree.setProperty("schema", schema, nullptr);
+    settingsTree.sendPropertyChangeMessage("schema");
+}
+
+juce::String DeviceSettingsWindow::getModel() const {
+    if (const auto response = connectionPanel.getConnection()->getPingResponse()) {
+        return juce::String(response->device_name);
+    }
+
+    return {};
 }
 
 void DeviceSettingsWindow::syncSettings() {
@@ -204,7 +227,7 @@ void DeviceSettingsWindow::syncSettings() {
 
     treeView->refresh();
 
-    connectionPanel.sendCommands(commands, this, [&](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+    connectionPanel.sendCommands(commands, treeView.get(), [&](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         disabledOverlay.setVisible(false);
 
         for (size_t index = 0; index < responses.size(); index++) {
@@ -313,44 +336,34 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCHEMA"), nullptr);
-    menu.addItem("Enumerate", true, getSchema() == "enumerate", [&] {
-        settingsTree.setProperty("schema", "enumerate", nullptr);
+    menu.addItem("Auto (" + Schema::getSchemaName(Schema::findSchemaFileMatching(getModel())) + ")", true, getSchema() == "auto", [&] {
+        setSchema("auto");
     });
-    for (auto schema: defaultSchemas) {
-        menu.addItem(schema.first, true, getSchema() == schema.first, [&, schema] {
-            settingsTree.setProperty("schema", schema.first, nullptr);
+    menu.addItem("Enumerate", true, getSchema() == "enumerate", [&] {
+        setSchema("enumerate");
+    });
+    for (const auto &file: Schema::getSchemaFiles()) {
+        menu.addItem(Schema::getSchemaName(file), true, getSchema() == file.getFileName(), [&, file] {
+            setSchema(file.getFileName());
         });
     }
-
-    juce::PopupMenu customSchemasMenu;
-    customSchemasMenu.addItem("Load Schema", [&] {
+    menu.addItem("Add Schema...", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select Schema", juce::File(), "*.xml");
         fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
             }
 
-            const auto customSchema = schemasDirectory.getChildFile(fileChooser->getResult().getFileName());
-            std::ignore = schemasDirectory.createDirectory();
-            std::ignore = fileChooser->getResult().copyFileTo(customSchema);
-            settingsTree.setProperty("schema", customSchema.getFullPathName(), nullptr);
-            settingsTree.sendPropertyChangeMessage("schema");
+            const auto file = Schema::getSchemasDirectory().getChildFile(fileChooser->getResult().getFileName());
+
+            if (file != fileChooser->getResult()) {
+                std::ignore = Schema::getSchemasDirectory().createDirectory();
+                std::ignore = fileChooser->getResult().copyFileTo(file);
+            }
+
+            setSchema(file.getFileName());
         });
     });
-    if (const auto files = schemasDirectory.findChildFiles(juce::File::findFiles, false, "*.xml"); files.isEmpty() == false) {
-        customSchemasMenu.addSeparator();
-        customSchemasMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
-        for (const auto &file: files) {
-            customSchemasMenu.addItem(file.getFileName(), true, file.getFullPathName() == getSchema(), [&, file] {
-                settingsTree.setProperty("schema", file.getFullPathName(), nullptr);
-                settingsTree.sendPropertyChangeMessage("schema");
-            });
-        }
-    }
-
-    const auto ticked = juce::File::isAbsolutePath(getSchema());
-    const auto suffix = ticked ? (" (" + juce::File(getSchema()).getFileName() + ")") : "";
-    menu.addSubMenu("Custom" + suffix, customSchemasMenu, true, nullptr, ticked);
 
     return menu;
 }
@@ -409,12 +422,7 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
         return;
     }
 
-    for (auto schema: defaultSchemas) {
-        if (getSchema() == schema.first) {
-            loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(schema.second)));
-            return;
-        }
-    }
+    const auto file = getSchema() == "auto" ? Schema::findSchemaFileMatching(getModel()) : Schema::getSchemasDirectory().getChildFile(getSchema());
 
-    loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(juce::File(getSchema()).loadFileAsString())));
+    loadSchema(Schema::loadSchema(juce::ValueTree::fromXml(file.loadFileAsString())));
 }

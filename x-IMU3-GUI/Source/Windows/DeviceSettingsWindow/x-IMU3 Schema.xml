@@ -1,4 +1,4 @@
-<Schema>
+<Schema name="x-IMU3" model="x-IMU3">
     <Settings>
         <Group name="Device Information" expand="false">
             <Setting key="model" name="Model" type="string" readOnly="true"/>
