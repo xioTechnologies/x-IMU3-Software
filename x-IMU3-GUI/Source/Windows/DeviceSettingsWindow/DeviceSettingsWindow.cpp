@@ -403,7 +403,7 @@ void DeviceSettingsWindow::handleAsyncUpdate() {
                     loadSchema(std::move(schema));
                 });
             } catch (const std::exception &e) {
-                juce::MessageManager::callAsync([this, self, error = e.what()] {
+                juce::MessageManager::callAsync([this, self, error = juce::String(e.what())] {
                     if (self == nullptr) {
                         return;
                     }
