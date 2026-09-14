@@ -3,7 +3,7 @@ use serde_json::value::RawValue;
 use std::fmt;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum JsonType {
     String,
     Number,
