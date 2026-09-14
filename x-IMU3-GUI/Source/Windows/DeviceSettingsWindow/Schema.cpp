@@ -237,7 +237,7 @@ std::unique_ptr<Schema::Group> Schema::loadSchema(std::shared_ptr<ximu3::Connect
             throw std::runtime_error("Error response to " + command + ": " + *response->error);
         }
 
-        if (response->value == "null") {
+        if (response->value == "null") { // TODO: use valueType
             break;
         }
 
