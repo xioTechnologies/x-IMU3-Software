@@ -53,6 +53,20 @@ CommandProgressTable::Status CommandProgressDialog::getStatus(const int rowIndex
     return table.getStatus(rowIndex);
 }
 
+std::string CommandProgressDialog::replaceInvalidCharacters(const std::string &input) {
+    std::string output;
+
+    for (char character: input) {
+        if ((unsigned char) character > 0x7E) {
+            output += "?";
+            continue;
+        }
+        output += character;
+    }
+
+    return output;
+}
+
 void CommandProgressDialog::statusChanged() {
     switch (table.getStatus()) {
         case CommandProgressTable::Status::inProgress:

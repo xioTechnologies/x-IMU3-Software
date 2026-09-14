@@ -32,6 +32,8 @@ protected:
 
     virtual void onCancel() = 0;
 
+    static std::string replaceInvalidCharacters(const std::string &input);
+
 private:
     const bool enableCompleteButton;
 
