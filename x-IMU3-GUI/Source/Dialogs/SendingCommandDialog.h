@@ -15,6 +15,4 @@ protected:
 
 private:
     const std::string command;
-
-    static std::string replaceInvalidCharacters(const std::string &input);
 };

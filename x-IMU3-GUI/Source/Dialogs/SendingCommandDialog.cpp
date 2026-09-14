@@ -32,12 +32,11 @@ void SendingCommandDialog::onStart(const bool retry) {
                     return;
                 }
 
-                if (response->value == "null") {
+                if (response->valueType == ximu3::XIMU3_JsonTypeNull) {
                     setComplete(index);
-                    return;
+                } else {
+                    setComplete(index, replaceInvalidCharacters(responses.front()->value));
                 }
-
-                setComplete(index, replaceInvalidCharacters(responses.front()->value));
             });
         });
     }
@@ -47,18 +46,4 @@ void SendingCommandDialog::onComplete() {
 }
 
 void SendingCommandDialog::onCancel() {
-}
-
-std::string SendingCommandDialog::replaceInvalidCharacters(const std::string &input) {
-    std::string output;
-
-    for (char character: input) {
-        if ((unsigned char) character > 0x7E) {
-            output += "?";
-            continue;
-        }
-        output += character;
-    }
-
-    return output;
 }

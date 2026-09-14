@@ -92,7 +92,7 @@ int CommandProgressTable::getNumRows() {
     return (int) rows.size();
 }
 
-void CommandProgressTable::paintRowBackground(juce::Graphics& g, int rowIndex, int, int height, bool) {
+void CommandProgressTable::paintRowBackground(juce::Graphics &g, int rowIndex, int, int height, bool) {
     if (auto *row = getRow(rowIndex)) {
         g.setColour(row->colourTag);
         g.fillRect(0, 0, UILayout::colourTagWidth, height);
@@ -129,11 +129,9 @@ juce::Component *CommandProgressTable::refreshComponentForCell(int rowIndex, int
                                 break;
 
                             case Status::complete:
-                                if (row.response != "null") {
-                                    addAndMakeVisible(responseLabel);
-                                    responseLabel.setText(row.response);
-                                    responseLabel.setColour(juce::Label::textColourId, UIColours::success);
-                                }
+                                addAndMakeVisible(responseLabel);
+                                responseLabel.setText(row.response);
+                                responseLabel.setColour(juce::Label::textColourId, UIColours::success);
                                 break;
 
                             case Status::failed:

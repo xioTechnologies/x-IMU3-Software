@@ -4,7 +4,14 @@
 
 class RemoteProcessDialog : public CommandProgressDialog {
 public:
-    RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const std::optional<int> timeout_, const bool saveOnComplete_, juce::ThreadPool& threadPool_);
+    RemoteProcessDialog(const juce::String &icon_,
+                        const juce::String &dialogTitle,
+                        const std::vector<ConnectionPanel *> &connectionPanels_,
+                        juce::ThreadPool &threadPool_,
+                        const std::string &prefix_,
+                        const std::optional<int> timeout_,
+                        const bool showCompleteValue_,
+                        const bool saveOnComplete_);
 
     ~RemoteProcessDialog() override;
 
@@ -18,8 +25,9 @@ protected:
 private:
     const std::string prefix; // "<prefix>_start", "<prefix>_progress", "<prefix>_complete", "<prefix>_complete"
     const std::optional<int> timeout;
+    const bool showCompleteValue;
     const bool saveOnComplete;
-    juce::ThreadPool& threadPool;
+    juce::ThreadPool &threadPool;
     std::shared_ptr<std::atomic<bool> > stopPolling = std::make_shared<std::atomic<bool> >(false);
 
     void startPolling(const int index);

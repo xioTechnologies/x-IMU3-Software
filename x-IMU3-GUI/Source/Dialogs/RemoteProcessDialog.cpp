@@ -1,8 +1,20 @@
 #include "ApplicationSettings.h"
 #include "RemoteProcessDialog.h"
 
-RemoteProcessDialog::RemoteProcessDialog(const juce::String &icon_, const juce::String &dialogTitle, const std::vector<ConnectionPanel *> &connectionPanels_, const std::string &prefix_, const std::optional<int> timeout_, const bool saveOnComplete_, juce::ThreadPool &threadPool_)
-    : CommandProgressDialog(icon_, dialogTitle, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion), prefix(prefix_), timeout(timeout_), saveOnComplete(saveOnComplete_), threadPool(threadPool_) {
+RemoteProcessDialog::RemoteProcessDialog(const juce::String &icon_,
+                                         const juce::String &dialogTitle,
+                                         const std::vector<ConnectionPanel *> &connectionPanels_,
+                                         juce::ThreadPool &threadPool_,
+                                         const std::string &prefix_,
+                                         const std::optional<int> timeout_,
+                                         const bool showCompleteValue_,
+                                         const bool saveOnComplete_)
+    : CommandProgressDialog(icon_, dialogTitle, connectionPanels_, ApplicationSettings::getSingleton().commands.allowEarlyCompletion),
+      prefix(prefix_),
+      timeout(timeout_),
+      showCompleteValue(showCompleteValue_),
+      saveOnComplete(saveOnComplete_),
+      threadPool(threadPool_) {
     onStart(false);
 }
 
@@ -22,7 +34,9 @@ void RemoteProcessDialog::onStart(const bool retry) {
                 return;
             }
 
-            connectionPanels[(size_t) index]->sendCommands({"{\"" + prefix + "_start\":" + (timeout ? std::to_string(*timeout) : "null") + "}"}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
+            const std::string command = "{\"" + prefix + "_start\":" + (timeout ? std::to_string(*timeout) : "null") + "}";
+
+            connectionPanels[(size_t) index]->sendCommands({command}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
                 const auto &response = responses.front();
 
                 if (response.has_value() == false) {
@@ -82,24 +96,29 @@ void RemoteProcessDialog::startPolling(const int index) {
                     callAsync([=, this] {
                         setFailed(index, *response->error);
                     });
-                    return;
+                    break;
                 }
 
-                if (response->valueType == ximu3::XIMU3_JsonTypeString) {
+                if (response->valueType == ximu3::XIMU3_JsonTypeNumber) {
                     callAsync([=, this] {
-                        if (saveOnComplete) {
-                            save(index);
-                            return;
-                        }
-
-                        setComplete(index);
+                        setInProgress(index, juce::String(response->value).getIntValue());
                     });
-                    return;
+                    continue;
                 }
 
                 callAsync([=, this] {
-                    setInProgress(index, juce::String(response->value).getIntValue());
+                    if (saveOnComplete) {
+                        save(index);
+                        return;
+                    }
+
+                    if (showCompleteValue && (response->valueType != ximu3::XIMU3_JsonTypeNull)) {
+                        setComplete(index, replaceInvalidCharacters(response->value));
+                    } else {
+                        setComplete(index);
+                    }
                 });
+                break;
             }
         }
     );
