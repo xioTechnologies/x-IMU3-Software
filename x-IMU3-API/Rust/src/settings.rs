@@ -1,3 +1,4 @@
+use crate::command_message::*;
 use crate::connection::*;
 use std::fs::File;
 use std::io::Write;
@@ -24,7 +25,7 @@ pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
             return Err(std::io::ErrorKind::Other.into());
         }
 
-        if response.value == b"null" {
+        if response.value_type == JsonType::Null {
             break;
         }
 
