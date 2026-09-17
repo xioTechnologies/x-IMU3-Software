@@ -1,461 +1,515 @@
 {
-  "includes": [
-    "\"Send/Send.h\"",
-    "\"Send/SendMessageRateDivisor.h\"",
-    "\"Sensors/Fusion/Fusion.h\"",
-    "\"Serial/Serial.h\"",
-    "<stdbool.h>",
-    "<stdint.h>",
-    "\"Wireless/RS9116/RS9116BDAddress.h\"",
-    "\"Wireless/RS9116/RS9116IPAddress.h\"",
-    "\"Wireless/RS9116/RS9116LinkKey.h\"",
-    "\"Wireless/RS9116/RS9116MacAddress.h\"",
-    "\"Wireless/Wireless.h\"",
-    "\"Wireless/WirelessBT.h\"",
-    "\"Wireless/WirelessWlan.h\""
-  ],
-  "settings": [
-    {
-      "name": "Serial number",
-      "declaration": "char name[16]",
-      "default": "{\"Unknown\"}",
-      "preserved": true
-    },
-    {
-      "name": "Hardware version",
-      "declaration": "char name[32]",
-      "default": "{\"Unknown\"}",
-      "preserved": true
-    },
-    {
-      "name": "Bootloader version",
-      "declaration": "char name[32]",
-      "default": "{\"Unknown\"}",
-      "preserved": true
-    },
-    {
-      "name": "Calibration date",
-      "declaration": "char name[32]",
-      "default": "{\"Unknown\"}",
-      "preserved": true
-    },
-    {
-      "name": "Gyroscope misalignment",
-      "declaration": "FusionMatrix name",
-      "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
-      "preserved": true
-    },
-    {
-      "name": "Gyroscope sensitivity",
-      "declaration": "FusionVector name",
-      "default": "{{1.0f, 1.0f, 1.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "Gyroscope offset",
-      "declaration": "FusionVector name",
-      "default": "{{0.0f, 0.0f, 0.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "Accelerometer misalignment",
-      "declaration": "FusionMatrix name",
-      "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
-      "preserved": true
-    },
-    {
-      "name": "Accelerometer sensitivity",
-      "declaration": "FusionVector name",
-      "default": "{{1.0f, 1.0f, 1.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "Accelerometer offset",
-      "declaration": "FusionVector name",
-      "default": "{{0.0f, 0.0f, 0.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "Soft iron matrix",
-      "declaration": "FusionMatrix name",
-      "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
-      "preserved": true
-    },
-    {
-      "name": "Hard iron offset",
-      "declaration": "FusionVector name",
-      "default": "{{0.0f, 0.0f, 0.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "High-g accelerometer misalignment",
-      "declaration": "FusionMatrix name",
-      "default": "{{{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}}}",
-      "preserved": true
-    },
-    {
-      "name": "High-g accelerometer sensitivity",
-      "declaration": "FusionVector name",
-      "default": "{{1.0f, 1.0f, 1.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "High-g accelerometer offset",
-      "declaration": "FusionVector name",
-      "default": "{{0.0f, 0.0f, 0.0f}}",
-      "preserved": true
-    },
-    {
-      "name": "Firmware version",
-      "declaration": "char name[32]",
-      "default": "{\"Unknown\"}",
-      "read-only": true
-    },
-    {
-      "name": "Device name",
-      "declaration": "char name[32]",
-      "default": "{\"x-IMU3\"}"
-    },
-    {
-      "name": "Serial mode",
-      "declaration": "SerialMode name",
-      "default": "{SerialModeDisabled}"
-    },
-    {
-      "name": "Serial baud rate",
-      "declaration": "uint32_t name",
-      "default": "{115200}"
-    },
-    {
-      "name": "Serial RTS/CTS enabled",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Serial accessory number of bytes",
-      "declaration": "uint32_t name",
-      "default": "{1024}"
-    },
-    {
-      "name": "Serial accessory termination byte",
-      "declaration": "int32_t name",
-      "default": "{10}"
-    },
-    {
-      "name": "Serial accessory timeout",
-      "declaration": "uint32_t name",
-      "default": "{100}"
-    },
-    {
-      "name": "Wireless mode",
-      "declaration": "WirelessMode name",
-      "default": "{WirelessModeWlanAP}"
-    },
-    {
-      "name": "Wireless firmware version",
-      "declaration": "char name[32]",
-      "default": "{\"Unknown\"}",
-      "read-only": true
-    },
-    {
-      "name": "External antennae enabled",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Wi-Fi region",
-      "declaration": "RS9116WlanCommandRegion name",
-      "default": "{RS9116WlanCommandRegionEurope}"
-    },
-    {
-      "name": "Wi-Fi MAC address",
-      "declaration": "RS9116MacAddress name",
-      "default": "{0}",
-      "read-only": true
-    },
-    {
-      "name": "Wi-Fi IP address",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x00000000}",
-      "read-only": true
-    },
-    {
-      "name": "Wi-Fi client SSID",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Wi-Fi client key",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Wi-Fi client channel",
-      "declaration": "WirelessWlanClientChannel name",
-      "default": "{WirelessWlanClientChannelAll}"
-    },
-    {
-      "name": "Wi-Fi client DHCP enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Wi-Fi client IP address",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x0201A8C0}"
-    },
-    {
-      "name": "Wi-Fi client netmask",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x00FFFFFF}"
-    },
-    {
-      "name": "Wi-Fi client gateway",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x0101A8C0}"
-    },
-    {
-      "name": "Wi-Fi AP SSID",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Wi-Fi AP key",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Wi-Fi AP channel",
-      "declaration": "WirelessWlanAPChannel name",
-      "default": "{WirelessWlanAPChannel36}"
-    },
-    {
-      "name": "Wi-Fi AP IP address",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x0101A9C0}"
-    },
-    {
-      "name": "TCP port",
-      "declaration": "uint16_t name",
-      "default": "{7000}"
-    },
-    {
-      "name": "UDP IP address",
-      "declaration": "RS9116IPAddress name",
-      "default": "{0x00000000}"
-    },
-    {
-      "name": "UDP send port",
-      "declaration": "uint16_t name",
-      "default": "{0}"
-    },
-    {
-      "name": "UDP receive port",
-      "declaration": "uint16_t name",
-      "default": "{9000}"
-    },
-    {
-      "name": "UDP low latency",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Synchronisation enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Synchronisation network latency",
-      "declaration": "uint32_t name",
-      "default": "{1500}"
-    },
-    {
-      "name": "Bluetooth address",
-      "declaration": "RS9116BDAddress name",
-      "default": "{0}",
-      "read-only": true
-    },
-    {
-      "name": "Bluetooth name",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Bluetooth pin code",
-      "declaration": "char name[16]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Bluetooth discovery mode",
-      "declaration": "WirelessBTDiscoveryMode name",
-      "default": "{WirelessBTDiscoveryModeLimited}"
-    },
-    {
-      "name": "Bluetooth paired address",
-      "declaration": "RS9116BDAddress name",
-      "default": "{0}",
-      "read-only": true
-    },
-    {
-      "name": "Bluetooth paired link key",
-      "declaration": "RS9116LinkKey name",
-      "default": "{0}",
-      "read-only": true
-    },
-    {
-      "name": "Data logger automatic start stop enabled",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Data logger file name prefix",
-      "declaration": "char name[32]",
-      "default": "{\"\"}"
-    },
-    {
-      "name": "Data logger file name counter enabled",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Data logger max file size",
-      "declaration": "uint32_t name",
-      "default": "{0}"
-    },
-    {
-      "name": "Data logger max file period",
-      "declaration": "uint32_t name",
-      "default": "{0}"
-    },
-    {
-      "name": "Axes alignment",
-      "declaration": "FusionAxesAlignment name",
-      "default": "{FusionAxesAlignmentPXPYPZ}"
-    },
-    {
-      "name": "Gyroscope offset correction enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "AHRS axes convention",
-      "declaration": "FusionConvention name",
-      "default": "{FusionConventionNwu}"
-    },
-    {
-      "name": "AHRS gain",
-      "declaration": "float name",
-      "default": "{0.5f}"
-    },
-    {
-      "name": "AHRS ignore magnetometer",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "AHRS acceleration rejection enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "AHRS magnetic rejection enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Binary mode enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "AHRS message type",
-      "declaration": "SendAhrsMessageType name",
-      "default": "{SendAhrsMessageTypeQuaternion}"
-    },
-    {
-      "name": "Inertial message rate divisor",
-      "declaration": "SendMessageRateDivisorInertial name",
-      "default": "{8}"
-    },
-    {
-      "name": "Magnetometer message rate divisor",
-      "declaration": "SendMessageRateDivisorMagnetometer name",
-      "default": "{1}"
-    },
-    {
-      "name": "AHRS message rate divisor",
-      "declaration": "SendMessageRateDivisorAhrs name",
-      "default": "{8}"
-    },
-    {
-      "name": "High-g accelerometer message rate divisor",
-      "declaration": "SendMessageRateDivisorHighGAccelerometer name",
-      "default": "{64}"
-    },
-    {
-      "name": "Temperature message rate divisor",
-      "declaration": "SendMessageRateDivisorTemperature name",
-      "default": "{5}"
-    },
-    {
-      "name": "Battery message rate divisor",
-      "declaration": "SendMessageRateDivisorBattery name",
-      "default": "{5}"
-    },
-    {
-      "name": "RSSI message rate divisor",
-      "declaration": "SendMessageRateDivisorRssi name",
-      "default": "{1}"
-    },
-    {
-      "name": "USB data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Serial data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "TCP data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "UDP data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Bluetooth data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Data logger data messages enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "USB power on enabled",
-      "declaration": "bool name",
-      "default": "{true}"
-    },
-    {
-      "name": "Shipping mode enabled",
-      "declaration": "bool name",
-      "default": "{false}"
-    },
-    {
-      "name": "Battery max charging temperature",
-      "declaration": "float name",
-      "default": "{45.0f}"
-    },
-    {
-      "name": "Battery max discharging temperature",
-      "declaration": "float name",
-      "default": "{60.0f}"
-    }
-  ]
+    "includes": [
+        "\"SdCardManager/SdCardManager.h\"",
+        "\"Send/Send.h\"",
+        "\"Send/SendMessageRateDivisor.h\"",
+        "\"Sensors/Fusion/Fusion.h\"",
+        "\"Sensors/Sensors.h\"",
+        "\"Serial/Serial.h\"",
+        "<stdbool.h>",
+        "<stdint.h>",
+        "\"Wireless/RS9116/RS9116BDAddress.h\"",
+        "\"Wireless/RS9116/RS9116IPAddress.h\"",
+        "\"Wireless/RS9116/RS9116LinkKey.h\"",
+        "\"Wireless/RS9116/RS9116MacAddress.h\"",
+        "\"Wireless/RS9116/RS9116WlanCommand.h\"",
+        "\"Wireless/Wireless.h\"",
+        "\"Wireless/WirelessBT.h\"",
+        "\"Wireless/WirelessWlan.h\""
+    ],
+    "settings": [
+        {
+            "name": "Serial Number",
+            "declaration": "char name[16]",
+            "default": "{\"Unknown\"}",
+            "preserved": true
+        },
+        {
+            "name": "Hardware Version",
+            "declaration": "char name[32]",
+            "default": "{\"Unknown\"}",
+            "preserved": true
+        },
+        {
+            "name": "Bootloader Version",
+            "declaration": "char name[32]",
+            "default": "{\"Unknown\"}",
+            "preserved": true
+        },
+        {
+            "name": "Calibration Date",
+            "declaration": "char name[32]",
+            "default": "{\"Unknown\"}",
+            "preserved": true
+        },
+        {
+            "name": "Gyroscope Misalignment",
+            "declaration": "FusionMatrix name",
+            "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Gyroscope Sensitivity",
+            "declaration": "FusionVector name",
+            "default": "{{1.0f, 1.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Gyroscope Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Accelerometer Misalignment",
+            "declaration": "FusionMatrix name",
+            "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Accelerometer Sensitivity",
+            "declaration": "FusionVector name",
+            "default": "{{1.0f, 1.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Accelerometer Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Soft-Iron Matrix",
+            "declaration": "FusionMatrix name",
+            "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Hard-Iron Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "High-g Accelerometer Misalignment",
+            "declaration": "FusionMatrix name",
+            "default": "{{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "High-g Accelerometer Sensitivity",
+            "declaration": "FusionVector name",
+            "default": "{{1.0f, 1.0f, 1.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "High-g Accelerometer Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}",
+            "preserved": true
+        },
+        {
+            "name": "Model",
+            "declaration": "char name[32]",
+            "default": "{\"x-IMU3\"}",
+            "read-only": true
+        },
+        {
+            "name": "Firmware Version",
+            "declaration": "char name[32]",
+            "default": "{\"Unknown\"}",
+            "read-only": true
+        },
+        {
+            "name": "Device Name",
+            "declaration": "char name[32]",
+            "default": "{\"x-IMU3\"}"
+        },
+        {
+            "name": "Serial Mode",
+            "declaration": "SerialMode name",
+            "default": "{SerialModeDisabled}"
+        },
+        {
+            "name": "Serial Baud Rate",
+            "declaration": "uint32_t name",
+            "default": "{115200}"
+        },
+        {
+            "name": "Serial RTS/CTS Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Serial Accessory Number of Bytes",
+            "declaration": "uint32_t name",
+            "default": "{255}"
+        },
+        {
+            "name": "Serial Accessory Termination Byte",
+            "declaration": "int32_t name",
+            "default": "{10}"
+        },
+        {
+            "name": "Serial Accessory Timeout",
+            "declaration": "uint32_t name",
+            "default": "{100}"
+        },
+        {
+            "name": "Wireless Mode",
+            "declaration": "WirelessMode name",
+            "default": "{WirelessModeWlanAP}"
+        },
+        {
+            "name": "Wireless Firmware Version",
+            "declaration": "char name[32]",
+            "default": "{\"Unknown\"}",
+            "read-only": true
+        },
+        {
+            "name": "External Antennae Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Wi-Fi Region",
+            "declaration": "RS9116WlanCommandRegion name",
+            "default": "{RS9116WlanCommandRegionEurope}"
+        },
+        {
+            "name": "Wi-Fi MAC Address",
+            "declaration": "RS9116MacAddress name",
+            "default": "{0}",
+            "read-only": true
+        },
+        {
+            "name": "Wi-Fi IP Address",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x00000000}",
+            "read-only": true
+        },
+        {
+            "name": "Wi-Fi Client SSID",
+            "declaration": "char name[32]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Wi-Fi Client Key",
+            "declaration": "char name[32]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Wi-Fi Client Channel",
+            "declaration": "WirelessWlanClientChannel name",
+            "default": "{WirelessWlanClientChannelAll}"
+        },
+        {
+            "name": "Wi-Fi Client DHCP Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Wi-Fi Client IP Address",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x0201A8C0}"
+        },
+        {
+            "name": "Wi-Fi Client Netmask",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x00FFFFFF}"
+        },
+        {
+            "name": "Wi-Fi Client Gateway",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x0101A8C0}"
+        },
+        {
+            "name": "Wi-Fi AP SSID",
+            "declaration": "char name[32]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Wi-Fi AP Key",
+            "declaration": "char name[32]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Wi-Fi AP Channel",
+            "declaration": "WirelessWlanAPChannel name",
+            "default": "{WirelessWlanAPChannel36}"
+        },
+        {
+            "name": "Wi-Fi AP IP Address",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x0101A9C0}"
+        },
+        {
+            "name": "TCP Port",
+            "declaration": "uint16_t name",
+            "default": "{7000}"
+        },
+        {
+            "name": "UDP IP Address",
+            "declaration": "RS9116IPAddress name",
+            "default": "{0x00000000}"
+        },
+        {
+            "name": "UDP Send Port",
+            "declaration": "uint16_t name",
+            "default": "{0}"
+        },
+        {
+            "name": "UDP Receive Port",
+            "declaration": "uint16_t name",
+            "default": "{9000}"
+        },
+        {
+            "name": "UDP Low Latency",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Synchronisation Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Synchronisation Network Latency",
+            "declaration": "uint32_t name",
+            "default": "{1500}"
+        },
+        {
+            "name": "Bluetooth Address",
+            "declaration": "RS9116BDAddress name",
+            "default": "{0}",
+            "read-only": true
+        },
+        {
+            "name": "Bluetooth Name",
+            "declaration": "char name[32]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Bluetooth Pin Code",
+            "declaration": "char name[16]",
+            "default": "{\"\"}"
+        },
+        {
+            "name": "Bluetooth Discovery Mode",
+            "declaration": "WirelessBTDiscoveryMode name",
+            "default": "{WirelessBTDiscoveryModeLimited}"
+        },
+        {
+            "name": "Bluetooth Paired Address",
+            "declaration": "RS9116BDAddress name",
+            "default": "{0}",
+            "read-only": true
+        },
+        {
+            "name": "Bluetooth Paired Link Key",
+            "declaration": "RS9116LinkKey name",
+            "default": "{0}",
+            "read-only": true
+        },
+        {
+            "name": "Data Logger Automatic Start Stop Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Data Logger File Name Prefix",
+            "declaration": "SdCardManagerSettingsFilePrefix name",
+            "default": "{SdCardManagerSettingsFilePrefixSerialNumber}"
+        },
+        {
+            "name": "Data Logger File Name Counter Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Data Logger Max File Size",
+            "declaration": "uint32_t name",
+            "default": "{0}"
+        },
+        {
+            "name": "Data Logger Max File Period",
+            "declaration": "uint32_t name",
+            "default": "{0}"
+        },
+        {
+            "name": "Axes Alignment",
+            "declaration": "FusionRemapAlignment name",
+            "default": "{FusionRemapAlignmentPXPYPZ}"
+        },
+        {
+            "name": "Gyroscope Offset Correction Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Gyroscope Offset Correction Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}"
+        },
+        {
+            "name": "Hard-Iron Correction Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Hard-Iron Correction Offset",
+            "declaration": "FusionVector name",
+            "default": "{{0.0f, 0.0f, 0.0f}}"
+        },
+        {
+            "name": "AHRS Axes Convention",
+            "declaration": "FusionConvention name",
+            "default": "{FusionConventionNwu}"
+        },
+        {
+            "name": "AHRS Gain",
+            "declaration": "float name",
+            "default": "{0.5f}"
+        },
+        {
+            "name": "AHRS Ignore Magnetometer",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "AHRS Overrange Recovery Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "AHRS Acceleration Rejection Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "AHRS Magnetic Rejection Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "AHRS Anchored Heading Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "AHRS Anchored Heading Cutoff",
+            "declaration": "float name",
+            "default": "{0.02f}"
+        },
+        {
+            "name": "AHRS Anchored Heading Duration",
+            "declaration": "float name",
+            "default": "{10.0f}"
+        },
+        {
+            "name": "Binary Mode Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "AHRS Message Type",
+            "declaration": "SendOrientationMode name",
+            "default": "{SendOrientationModeQuaternion}"
+        },
+        {
+            "name": "Acceleration Mode",
+            "declaration": "SendAccelerationMode name",
+            "default": "{SendAccelerationModeLinear}"
+        },
+        {
+            "name": "Inertial Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorInertial name",
+            "default": "{8}"
+        },
+        {
+            "name": "Magnetometer Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorMagnetometer name",
+            "default": "{1}"
+        },
+        {
+            "name": "High-g Accelerometer Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorHighGAccelerometer name",
+            "default": "{64}"
+        },
+        {
+            "name": "AHRS Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorOrientation name",
+            "default": "{8}"
+        },
+        {
+            "name": "Acceleration Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorAcceleration name",
+            "default": "{0}"
+        },
+        {
+            "name": "Temperature Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorTemperature name",
+            "default": "{5}"
+        },
+        {
+            "name": "Battery Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorBattery name",
+            "default": "{5}"
+        },
+        {
+            "name": "RSSI Message Rate Divisor",
+            "declaration": "SendMessageRateDivisorRssi name",
+            "default": "{1}"
+        },
+        {
+            "name": "USB Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Serial Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "TCP Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "UDP Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Bluetooth Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Data Logger Data Messages Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "USB Power On Enabled",
+            "declaration": "bool name",
+            "default": "{true}"
+        },
+        {
+            "name": "Shipping Mode Enabled",
+            "declaration": "bool name",
+            "default": "{false}"
+        },
+        {
+            "name": "Battery Max Charging Temperature",
+            "declaration": "float name",
+            "default": "{45.0f}"
+        },
+        {
+            "name": "Battery Max Discharging Temperature",
+            "declaration": "float name",
+            "default": "{60.0f}"
+        }
+    ]
 }
