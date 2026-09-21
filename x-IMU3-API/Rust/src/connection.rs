@@ -150,7 +150,7 @@ impl Connection {
         let receiver = internal.lock().unwrap().get_receiver();
 
         let Some(write_sender) = internal.lock().unwrap().get_write_sender() else {
-            return Vec::new();
+            return vec![None; commands.len()];
         };
 
         struct Transaction {
