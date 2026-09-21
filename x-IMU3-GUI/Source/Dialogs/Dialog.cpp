@@ -43,8 +43,6 @@ Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const
             DialogQueue::getSingleton().pop();
         }
     };
-
-    timer.startTimerHz(25);
 }
 
 Dialog::~Dialog() {
