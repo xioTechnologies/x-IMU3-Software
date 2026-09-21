@@ -56,13 +56,6 @@ private:
 
     int minimumWidth = 0;
 
-    juce::TimedCallback timer
-    {
-        [&] {
-            getTopLevelComponent()->setAlwaysOnTop(juce::Process::isForegroundProcess());
-        }
-    };
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dialog)
 };
 
