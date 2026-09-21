@@ -10,7 +10,11 @@
     <Command key="stop" type="4"/>
     <Command key="delete" type="0"/>
     <Command key="restart" type="4"/>
+    <Command key="initialise" type="4"/>
+    <Command key="initialize" type="4"/>
     <Command key="heading" type="1"/>
+    <Command key="magnetic" type="4"/>
+    <Command key="relative" type="4"/>
     <Command key="anchor_start" type="1"/>
     <Command key="anchor_progress" type="4"/>
     <Command key="anchor_complete" type="4"/>
@@ -29,6 +33,7 @@
     <Command key="blink" type="4"/>
     <Command key="strobe" type="4"/>
     <Command key="colour" type="0"/>
+    <Command key="color" type="0"/>
     <Command key="reset" type="4"/>
     <Command key="shutdown" type="4"/>
     <Command key="bootloader" type="4"/>
