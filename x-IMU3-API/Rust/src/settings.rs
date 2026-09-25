@@ -7,9 +7,7 @@ use std::path::Path;
 pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
     let file_path = Path::new(file_path).with_extension("json");
 
-    let mut file = File::create_new(file_path)?;
-
-    file.write_all(b"[\n")?;
+    let mut json = b"[\n".to_vec();
 
     for index in 0.. {
         let command = format!("{{\"enumerate {index}\":null}}").into_bytes();
@@ -30,16 +28,16 @@ pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
         }
 
         if index > 0 {
-            file.write_all(b",\n")?;
+            json.extend_from_slice(b",\n");
         }
 
-        file.write_all(b"    ")?;
-        file.write_all(&response.value)?;
+        json.extend_from_slice(b"    ");
+        json.extend_from_slice(&response.value);
     }
 
-    file.write_all(b"\n]\n")?;
+    json.extend_from_slice(b"\n]\n");
 
-    Ok(())
+    File::create_new(file_path)?.write_all(&json)
 }
 
 pub fn restore(file_path: &str, connection: &Connection) -> std::io::Result<()> {
