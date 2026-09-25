@@ -24,21 +24,14 @@ private:
         null,
     };
 
-    static Type typeFrom(const int integer) {
-        switch (static_cast<Type>(integer)) {
-            case Type::string:
-                return Type::string;
-            case Type::number:
-                return Type::number;
-            case Type::true_:
-                return Type::true_;
-            case Type::false_:
-                return Type::false_;
-            case Type::null:
-                return Type::null;
-        }
-        return Type::string;
-    }
+    static const inline std::map<Type, juce::String> typeStringMap
+    {
+        {Type::string, "string"},
+        {Type::number, "number"},
+        {Type::true_, "true"},
+        {Type::false_, "false"},
+        {Type::null, "null"},
+    };
 
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
@@ -59,7 +52,7 @@ private:
     juce::ValueTree previousCommands;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");
 
-    static juce::String toString(const Type type);
+    static Type typeFromString(const juce::String &string);
 
     static juce::String createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number);
 
