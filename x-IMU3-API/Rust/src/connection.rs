@@ -174,7 +174,9 @@ impl Connection {
 
         'outer: for _ in 0..(1 + retries) {
             for command in transactions.iter().filter_map(|transaction| transaction.command.clone()) {
-                write_sender.send([command.json.as_slice(), &[b'\n']].concat()).ok();
+                if write_sender.send([command.json.as_slice(), &[b'\n']].concat()).is_err() {
+                    break 'outer;
+                }
             }
 
             let start_time = std::time::Instant::now();
