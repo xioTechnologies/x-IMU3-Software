@@ -50,6 +50,8 @@ pub struct CommandMessage {
 
 impl CommandMessage {
     pub fn parse(json: &[u8]) -> Option<Self> {
+        let json = json.strip_suffix(b"\n").unwrap_or(json);
+
         let map: std::collections::HashMap<String, &RawValue> = serde_json::from_slice(json).ok()?;
 
         if map.len() != 1 {
