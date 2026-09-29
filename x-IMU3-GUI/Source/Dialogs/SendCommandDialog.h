@@ -45,7 +45,7 @@ private:
     juce::ValueTree previousCommands;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");
 
-    static Type typeFromString(const juce::String &string);
+    static Type typeFrom(const juce::String &string);
 
     static juce::String createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number);
 
