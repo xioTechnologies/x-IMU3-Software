@@ -8,7 +8,7 @@ use std::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct QuaternionMessage {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     pub w: f32,
     pub x: f32,
     pub y: f32,

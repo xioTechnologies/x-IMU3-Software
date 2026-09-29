@@ -8,7 +8,7 @@ use std::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct EulerAnglesMessage {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     pub roll: f32,
     pub pitch: f32,
     pub yaw: f32,

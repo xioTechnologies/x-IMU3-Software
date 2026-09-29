@@ -6,7 +6,7 @@ use std::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct $name_pascal_case$Message {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     $arguments_struct_declare$
 }
 

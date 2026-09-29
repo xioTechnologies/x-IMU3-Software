@@ -10,7 +10,7 @@ pub extern "C" fn XIMU3_json_type_to_string(json_type: JsonType) -> *const c_cha
 
 #[repr(C)]
 pub struct CommandMessageC {
-    pub json: [c_char; CHAR_ARRAY_SIZE],
+    pub json: [c_char; CHAR_ARRAY_SIZE], // strlen(json) == 0 indicates the struct is None
     pub key: [c_char; CHAR_ARRAY_SIZE],
     pub value: [c_char; CHAR_ARRAY_SIZE],
     pub value_type: JsonType,

@@ -10,7 +10,7 @@ use std::os::raw::c_char;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct NotificationMessage {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     pub char_array: [c_char; DATA_MESSAGE_CHAR_ARRAY_SIZE],
     pub number_of_bytes: size_t,
 }

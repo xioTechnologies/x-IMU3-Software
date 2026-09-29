@@ -8,7 +8,7 @@ use std::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct InertialMessage {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     pub gyroscope_x: f32,
     pub gyroscope_y: f32,
     pub gyroscope_z: f32,

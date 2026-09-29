@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 
 #[repr(C)]
 pub struct PingResponseC {
-    pub interface: [c_char; CHAR_ARRAY_SIZE],
+    pub interface: [c_char; CHAR_ARRAY_SIZE], // strlen(interface) == 0 indicates the struct is None
     pub device_name: [c_char; CHAR_ARRAY_SIZE],
     pub serial_number: [c_char; CHAR_ARRAY_SIZE],
 }

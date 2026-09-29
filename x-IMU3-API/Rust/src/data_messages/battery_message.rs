@@ -8,7 +8,7 @@ use std::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct BatteryMessage {
-    pub timestamp: u64,
+    pub timestamp: u64, // timestamp == 0 indicates the struct is None
     pub percentage: f32,
     pub voltage: f32,
     pub charging_status: f32,
