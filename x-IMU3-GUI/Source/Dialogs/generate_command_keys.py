@@ -6,10 +6,10 @@ sys.path.append(str(Path("../../..")))  # location of helpers.py
 
 import helpers
 
-STRING = "0"
-NUMBER = "1"
-TRUE = "2"
-NULL = "4"
+STRING = "string"
+NUMBER = "number"
+TRUE = "true"
+NULL = "null"
 
 settings_keys = []
 settings_types = []

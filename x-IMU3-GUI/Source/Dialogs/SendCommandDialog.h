@@ -24,14 +24,7 @@ private:
         null,
     };
 
-    static const inline std::map<Type, juce::String> typeStringMap
-    {
-        {Type::string, "string"},
-        {Type::number, "number"},
-        {Type::true_, "true"},
-        {Type::false_, "false"},
-        {Type::null, "null"},
-    };
+    static const inline juce::StringArray typeStrings{"string", "number", "true", "false", "null"};
 
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;

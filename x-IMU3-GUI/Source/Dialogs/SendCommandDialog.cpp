@@ -16,10 +16,10 @@ SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const std:
     previousCommands = juce::ValueTree::fromXml(file.loadFileAsString());
     if (!previousCommands.isValid()) {
         previousCommands = juce::ValueTree("Commands");
-        previousCommands.appendChild({"Command", {{"key", "ping"}, {"type", typeStringMap.at(Type::null)}}}, nullptr);
+        previousCommands.appendChild({"Command", {{"key", "ping"}, {"type", typeStrings[static_cast<int>(Type::null)]}}}, nullptr);
     }
 
-    typeValue.addItemList({typeStringMap.at(Type::string), typeStringMap.at(Type::number), typeStringMap.at(Type::true_), typeStringMap.at(Type::false_), typeStringMap.at(Type::null)}, 1);
+    typeValue.addItemList(typeStrings, 1);
 
     keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberValue.onTextChange = [&] {
         const auto type = static_cast<Type>(typeValue.getSelectedItemIndex());
@@ -66,7 +66,7 @@ void SendCommandDialog::resized() {
 }
 
 std::string SendCommandDialog::getCommand() {
-    juce::ValueTree newCommand{"Command", {{"key", keyValue.getText()}, {"type", typeStringMap.at(static_cast<Type>(typeValue.getSelectedItemIndex()))}}};
+    juce::ValueTree newCommand{"Command", {{"key", keyValue.getText()}, {"type", typeStrings[typeValue.getSelectedItemIndex()]}}};
     switch (static_cast<Type>(typeValue.getSelectedItemIndex())) {
         case Type::string:
             newCommand.setProperty("value", stringValue.getText(), nullptr);
@@ -100,13 +100,13 @@ std::string SendCommandDialog::getCommand() {
 }
 
 SendCommandDialog::Type SendCommandDialog::typeFromString(const juce::String &string) {
-    for (const auto &it: typeStringMap) {
-        if (it.second == string) {
-            return it.first;
-        }
+    const auto index = typeStrings.indexOf(string);
+
+    if (index == -1) {
+        return Type::null;
     }
 
-    return Type::null;
+    return static_cast<Type>(index);
 }
 
 juce::String SendCommandDialog::createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number) {
@@ -121,7 +121,7 @@ juce::String SendCommandDialog::createCommand(const juce::String &key, const Typ
         case Type::true_:
         case Type::false_:
         case Type::null:
-            text += typeStringMap.at(type);
+            text += typeStrings[static_cast<int>(type)];
             break;
     }
     return text + "}";
@@ -130,8 +130,8 @@ juce::String SendCommandDialog::createCommand(const juce::String &key, const Typ
 void SendCommandDialog::selectCommand(const juce::ValueTree command) {
     keyValue.setText(command["key"], false);
     typeValue.setSelectedItemIndex(static_cast<int>(typeFromString(command["type"])), juce::dontSendNotification);
-    stringValue.setText(command["type"] == typeStringMap.at(Type::string) ? command["value"] : "", false);
-    numberValue.setText(command["type"] == typeStringMap.at(Type::number) ? command["value"] : "", false);
+    stringValue.setText(typeFromString(command["type"]) == Type::string ? command["value"] : "", false);
+    numberValue.setText(typeFromString(command["type"]) == Type::number ? command["value"] : "", false);
     keyValue.onTextChange();
 }
 
