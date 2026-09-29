@@ -60,8 +60,7 @@ static PyObject *port_scanner_remove_callback(PortScanner *self, PyObject *arg) 
         XIMU3_port_scanner_remove_callback(self->wrapped, (uint64_t) id);
     Py_END_ALLOW_THREADS
 
-    Py_INCREF(self);
-    return (PyObject *) self;
+    return Py_NewRef(self);
 }
 
 static PyObject *port_scanner_get_devices(PortScanner *self, PyObject *args) {

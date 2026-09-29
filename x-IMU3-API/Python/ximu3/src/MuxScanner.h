@@ -66,8 +66,7 @@ static PyObject *mux_scanner_remove_callback(MuxScanner *self, PyObject *arg) {
         XIMU3_mux_scanner_remove_callback(self->wrapped, (uint64_t) id);
     Py_END_ALLOW_THREADS
 
-    Py_INCREF(self);
-    return (PyObject *) self;
+    return Py_NewRef(self);
 }
 
 static PyObject *mux_scanner_get_devices(MuxScanner *self, PyObject *args) {
