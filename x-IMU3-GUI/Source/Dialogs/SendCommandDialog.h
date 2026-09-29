@@ -24,21 +24,7 @@ private:
         null,
     };
 
-    static Type typeFrom(const int integer) {
-        switch (static_cast<Type>(integer)) {
-            case Type::string:
-                return Type::string;
-            case Type::number:
-                return Type::number;
-            case Type::true_:
-                return Type::true_;
-            case Type::false_:
-                return Type::false_;
-            case Type::null:
-                return Type::null;
-        }
-        return Type::string;
-    }
+    static const inline juce::StringArray typeStrings{"string", "number", "true", "false", "null"};
 
     SimpleLabel keyLabel{"Key:"};
     CustomTextEditor keyValue;
@@ -59,7 +45,7 @@ private:
     juce::ValueTree previousCommands;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");
 
-    static juce::String toString(const Type type);
+    static Type typeFrom(const juce::String &string);
 
     static juce::String createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number);
 
