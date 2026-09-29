@@ -82,7 +82,7 @@ pub extern "C" fn XIMU3_serial_connection_config_to_string(config: SerialConnect
 
 #[repr(C)]
 pub struct TcpConnectionConfigC {
-    pub ip_address: [c_char; CHAR_ARRAY_SIZE],
+    pub ip_address: [c_char; CHAR_ARRAY_SIZE], // strlen(ip_address) == 0 indicates the struct is None
     pub port: u16,
 }
 
@@ -120,7 +120,7 @@ pub extern "C" fn XIMU3_tcp_connection_config_to_string(config: TcpConnectionCon
 
 #[repr(C)]
 pub struct UdpConnectionConfigC {
-    pub ip_address: [c_char; CHAR_ARRAY_SIZE],
+    pub ip_address: [c_char; CHAR_ARRAY_SIZE], // strlen(ip_address) == 0 indicates the struct is None
     pub send_port: u16,
     pub receive_port: u16,
 }
