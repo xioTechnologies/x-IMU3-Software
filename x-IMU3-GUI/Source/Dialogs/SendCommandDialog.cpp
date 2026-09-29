@@ -67,31 +67,50 @@ SendCommandDialog::SendCommandDialog(const juce::String &dialogTitle, const Dict
     addAndMakeVisible(valueLabel);
     addAndMakeVisible(typeValue);
     addAndMakeVisible(stringValue);
-    addAndMakeVisible(numberValue);
+    addAndMakeVisible(numberRawValue);
     addAndMakeVisible(commandLabel);
     addAndMakeVisible(commandValue);
     addAndMakeVisible(previousCommandsButton);
 
     dictionaryButton.setEnabled(dictionary.error.has_value() == false);
 
-    previousCommands = juce::ValueTree::fromXml(file.loadFileAsString());
-    if (!previousCommands.isValid()) {
-        previousCommands = juce::ValueTree("Commands");
-        previousCommands.appendChild({"Command", {{"key", "ping"}, {"type", typeStrings[static_cast<int>(Type::null)]}}}, nullptr);
+    for (const auto child: juce::ValueTree::fromXml(file.loadFileAsString())) {
+        if (const auto command = ximu3::CommandMessage::parse(child["json"].toString().toStdString())) {
+            previousCommands.push_back(*command);
+        }
+    }
+
+    if (previousCommands.empty()) {
+        if (const auto command = ximu3::CommandMessage::parse("{\"ping\":null}")) {
+            previousCommands.push_back(*command);
+        }
     }
 
     typeValue.addItemList(typeStrings, 1);
 
-    keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberValue.onTextChange = [&] {
+    keyValue.onTextChange = typeValue.onChange = stringValue.onTextChange = numberRawValue.onTextChange = [&] {
         const auto type = static_cast<Type>(typeValue.getSelectedItemIndex());
-        commandValue.setText(createCommand(keyValue.getText(), type, stringValue.getText(), numberValue.getText()), false);
+        const auto value = [&]() -> juce::String {
+            switch (type) {
+                case Type::string:
+                    return "\"" + stringValue.getText() + "\"";
+                case Type::numberRaw:
+                    return numberRawValue.getText();
+                case Type::true_:
+                case Type::false_:
+                case Type::null:
+                    return typeStrings[static_cast<int>(type)];
+            }
+            return ""; // avoid compiler warning
+        }();
+        commandValue.setText("{\"" + keyValue.getText() + "\":" + value + "}", false);
         stringValue.setVisible(type == Type::string);
-        numberValue.setVisible(type == Type::number);
+        numberRawValue.setVisible(type == Type::numberRaw);
 
         setOkButton((keyValue.isEmpty() == false) && ximu3::CommandMessage::parse(commandValue.getText().toStdString()).has_value());
     };
 
-    selectCommand(previousCommands.getChild(0));
+    selectCommand(previousCommands.front());
 
     commandValue.setReadOnly(true);
 
@@ -114,10 +133,10 @@ void SendCommandDialog::resized() {
 
     auto valueRow = bounds.removeFromTop(UILayout::textComponentHeight);
     valueLabel.setBounds(valueRow.removeFromLeft(columnWidth));
-    typeValue.setBounds(valueRow.removeFromLeft(columnWidth));
+    typeValue.setBounds(valueRow.removeFromLeft(125));
     valueRow.removeFromLeft(Dialog::margin);
     stringValue.setBounds(valueRow);
-    numberValue.setBounds(valueRow);
+    numberRawValue.setBounds(valueRow);
 
     bounds.removeFromTop(Dialog::margin);
 
@@ -127,72 +146,54 @@ void SendCommandDialog::resized() {
 }
 
 std::string SendCommandDialog::getCommand() {
-    juce::ValueTree newCommand{"Command", {{"key", keyValue.getText()}, {"type", typeStrings[typeValue.getSelectedItemIndex()]}}};
-    switch (static_cast<Type>(typeValue.getSelectedItemIndex())) {
-        case Type::string:
-            newCommand.setProperty("value", stringValue.getText(), nullptr);
-            break;
+    if (const auto command = ximu3::CommandMessage::parse(commandValue.getText().toStdString())) {
+        std::erase_if(previousCommands, [&](const auto &previousCommand) {
+            return previousCommand.json == command->json;
+        });
 
-        case Type::number:
-            newCommand.setProperty("value", numberValue.getText(), nullptr);
-            break;
+        previousCommands.insert(previousCommands.begin(), *command);
 
-        case Type::true_:
-        case Type::false_:
-        case Type::null:
-            break;
-    }
-
-    for (const auto command: previousCommands) {
-        if (command.isEquivalentTo(newCommand)) {
-            previousCommands.removeChild(command, nullptr);
-            break;
+        if (previousCommands.size() > 18) {
+            previousCommands.resize(18);
         }
-    }
 
-    while (previousCommands.getNumChildren() >= 18) {
-        previousCommands.removeChild(previousCommands.getChild(previousCommands.getNumChildren() - 1), nullptr);
+        juce::ValueTree tree("Commands");
+        for (const auto &previousCommand: previousCommands) {
+            tree.appendChild({"Command", {{"json", juce::String(previousCommand.json)}}}, nullptr);
+        }
+        file.replaceWithText(tree.toXmlString());
     }
-
-    previousCommands.addChild(newCommand, 0, nullptr);
-    file.replaceWithText(previousCommands.toXmlString());
 
     return commandValue.getText().toStdString();
 }
 
-SendCommandDialog::Type SendCommandDialog::typeFrom(const juce::String &string) {
-    const auto index = typeStrings.indexOf(string);
+void SendCommandDialog::selectCommand(const ximu3::CommandMessage &command) {
+    keyValue.setText(command.key, false);
+    stringValue.setText("", false);
+    numberRawValue.setText("", false);
 
-    if (index == -1) {
-        return Type::null;
+    switch (command.valueType) {
+        case ximu3::XIMU3_JsonTypeString:
+            typeValue.setSelectedItemIndex(static_cast<int>(Type::string), juce::dontSendNotification);
+            stringValue.setText(command.value.substr(1, command.value.size() - 2), false);
+            break;
+
+        case ximu3::XIMU3_JsonTypeNumber:
+        case ximu3::XIMU3_JsonTypeObject:
+        case ximu3::XIMU3_JsonTypeArray:
+            typeValue.setSelectedItemIndex(static_cast<int>(Type::numberRaw), juce::dontSendNotification);
+            numberRawValue.setText(command.value, false);
+            break;
+
+        case ximu3::XIMU3_JsonTypeBoolean:
+            typeValue.setSelectedItemIndex(static_cast<int>(command.value == "true" ? Type::true_ : Type::false_), juce::dontSendNotification);
+            break;
+
+        case ximu3::XIMU3_JsonTypeNull:
+            typeValue.setSelectedItemIndex(static_cast<int>(Type::null), juce::dontSendNotification);
+            break;
     }
 
-    return static_cast<Type>(index);
-}
-
-juce::String SendCommandDialog::createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number) {
-    juce::String text = "{\"" + key + "\":";
-    switch (type) {
-        case Type::string:
-            text += "\"" + string + "\"";
-            break;
-        case Type::number:
-            text += number;
-            break;
-        case Type::true_:
-        case Type::false_:
-        case Type::null:
-            text += typeStrings[static_cast<int>(type)];
-            break;
-    }
-    return text + "}";
-}
-
-void SendCommandDialog::selectCommand(const juce::ValueTree command) {
-    keyValue.setText(command["key"], false);
-    typeValue.setSelectedItemIndex(static_cast<int>(typeFrom(command["type"])), juce::dontSendNotification);
-    stringValue.setText(typeFrom(command["type"]) == Type::string ? command["value"] : "", false);
-    numberValue.setText(typeFrom(command["type"]) == Type::number ? command["value"] : "", false);
     keyValue.onTextChange();
 }
 
@@ -204,7 +205,7 @@ juce::PopupMenu SendCommandDialog::getDictionaryMenu() {
             keyValue.setText(key, juce::sendNotification);
             typeValue.setSelectedItemIndex(static_cast<int>(Type::null), juce::sendNotification);
             stringValue.setText({}, juce::sendNotification);
-            numberValue.setText({}, juce::sendNotification);
+            numberRawValue.setText({}, juce::sendNotification);
         });
     };
 
@@ -224,8 +225,8 @@ juce::PopupMenu SendCommandDialog::getDictionaryMenu() {
 
 juce::PopupMenu SendCommandDialog::getPreviousCommandsMenu() {
     juce::PopupMenu menu;
-    for (const auto command: previousCommands) {
-        menu.addItem(createCommand(command["key"], typeFrom(command["type"]), command["value"], command["value"]), [&, command] {
+    for (const auto &command: previousCommands) {
+        menu.addItem(command.json, [&, command] {
             selectCommand(command);
         });
     }
