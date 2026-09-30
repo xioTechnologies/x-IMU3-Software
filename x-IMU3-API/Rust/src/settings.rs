@@ -20,7 +20,7 @@ pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
         };
 
         if response.error.is_some() {
-            return Err(std::io::ErrorKind::Other.into());
+            return Err(std::io::ErrorKind::Unsupported.into());
         }
 
         if response.value_type == JsonType::Null {
