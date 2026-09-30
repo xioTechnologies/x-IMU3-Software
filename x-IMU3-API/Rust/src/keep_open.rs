@@ -24,8 +24,8 @@ impl KeepOpen {
                     if *dropped {
                         return;
                     }
-                    let mut connection = connection.lock().unwrap();
-                    if connection.get_status() == ConnectionStatus::Connected || connection.open().is_ok() {
+                    let status = connection.lock().unwrap().get_status();
+                    if status == ConnectionStatus::Connected || Connection::open_internal(&connection).is_ok() {
                         break;
                     }
                 }
