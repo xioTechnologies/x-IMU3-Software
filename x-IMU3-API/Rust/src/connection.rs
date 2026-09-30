@@ -69,7 +69,7 @@ impl Connection {
     }
 
     pub fn open(&self) -> std::io::Result<()> {
-        self.internal.lock().unwrap().open()
+        Self::open_internal(&self.internal)
     }
 
     pub fn open_async(&self, closure: Box<dyn FnOnce(std::io::Result<()>) + Send>) {
@@ -77,7 +77,7 @@ impl Connection {
         let dropped = self.dropped.clone();
 
         std::thread::spawn(move || {
-            let result = internal.lock().unwrap().open();
+            let result = Self::open_internal(&internal);
 
             if let Ok(dropped) = dropped.lock() {
                 if *dropped {
@@ -86,6 +86,11 @@ impl Connection {
                 closure(result);
             }
         });
+    }
+
+    pub(crate) fn open_internal(internal: &InternalConnection) -> std::io::Result<()> {
+        let receiver = internal.lock().unwrap().open();
+        receiver.recv().unwrap_or_else(|_| Err(std::io::ErrorKind::Other.into()))
     }
 
     pub fn close(&self) {

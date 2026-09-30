@@ -13,6 +13,7 @@ pub struct MuxConnection {
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<crossbeam::channel::Sender<()>>,
     write_sender: Option<crossbeam::channel::Sender<Vec<u8>>>,
+    thread: Option<std::thread::JoinHandle<()>>,
 }
 
 impl MuxConnection {
@@ -23,12 +24,20 @@ impl MuxConnection {
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
+            thread: None,
         }
     }
 }
 
 impl GenericConnection for MuxConnection {
-    fn open(&mut self) -> std::io::Result<()> {
+    fn open(&mut self) -> crossbeam::channel::Receiver<std::io::Result<()>> {
+        let (result_sender, result_receiver) = crossbeam::channel::bounded(1);
+
+        if self.thread.as_ref().is_some_and(|thread| thread.is_finished() == false) {
+            result_sender.send(Err(std::io::ErrorKind::AlreadyExists.into())).ok();
+            return result_receiver;
+        }
+
         let channel = self.config.channel;
         let connection = self.config.connection.clone();
 
@@ -42,10 +51,7 @@ impl GenericConnection for MuxConnection {
         self.close_sender = Some(close_sender);
         self.write_sender = Some(write_sender);
 
-        self.status.store(ConnectionStatus::Connected as i32, Ordering::SeqCst);
-        self.receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Connected)).ok();
-
-        std::thread::spawn(move || {
+        self.thread = Some(std::thread::spawn(move || {
             let closure_id = {
                 let receiver = receiver.clone();
 
@@ -55,6 +61,11 @@ impl GenericConnection for MuxConnection {
                     }
                 }))
             };
+
+            status.store(ConnectionStatus::Connected as i32, Ordering::SeqCst);
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Connected)).ok();
+
+            result_sender.send(Ok(())).ok();
 
             while close_receiver.try_recv().is_err() {
                 while let Ok(data) = write_receiver.try_recv() {
@@ -74,14 +85,14 @@ impl GenericConnection for MuxConnection {
 
             status.store(ConnectionStatus::Disconnected as i32, Ordering::SeqCst);
             receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Disconnected)).ok();
-        });
+        }));
 
-        Ok(())
+        result_receiver
     }
 
     fn close(&self) {
         if let Some(close_sender) = &self.close_sender {
-            close_sender.send(()).ok();
+            close_sender.try_send(()).ok();
         }
     }
 

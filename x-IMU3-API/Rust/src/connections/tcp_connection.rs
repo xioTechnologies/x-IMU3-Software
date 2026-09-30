@@ -14,6 +14,7 @@ pub struct TcpConnection {
     receiver: Arc<Mutex<Receiver>>,
     close_sender: Option<crossbeam::channel::Sender<()>>,
     write_sender: Option<crossbeam::channel::Sender<Vec<u8>>>,
+    thread: Option<std::thread::JoinHandle<()>>,
 }
 
 impl TcpConnection {
@@ -24,15 +25,21 @@ impl TcpConnection {
             receiver: Arc::new(Mutex::new(Receiver::new())),
             close_sender: None,
             write_sender: None,
+            thread: None,
         }
     }
 }
 
 impl GenericConnection for TcpConnection {
-    fn open(&mut self) -> std::io::Result<()> {
-        let mut stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(self.config.ip_address), self.config.port), std::time::Duration::new(3, 0))?;
+    fn open(&mut self) -> crossbeam::channel::Receiver<std::io::Result<()>> {
+        let (result_sender, result_receiver) = crossbeam::channel::bounded(1);
 
-        stream.set_nonblocking(true)?;
+        if self.thread.as_ref().is_some_and(|thread| thread.is_finished() == false) {
+            result_sender.send(Err(std::io::ErrorKind::AlreadyExists.into())).ok();
+            return result_receiver;
+        }
+
+        let config = self.config.clone();
 
         let status = self.status.clone();
 
@@ -44,10 +51,26 @@ impl GenericConnection for TcpConnection {
         self.close_sender = Some(close_sender);
         self.write_sender = Some(write_sender);
 
-        self.status.store(ConnectionStatus::Connected as i32, Ordering::SeqCst);
-        self.receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Connected)).ok();
+        self.thread = Some(std::thread::spawn(move || {
+            let connect = || -> std::io::Result<TcpStream> {
+                let stream = TcpStream::connect_timeout(&SocketAddr::new(IpAddr::V4(config.ip_address), config.port), std::time::Duration::new(3, 0))?;
+                stream.set_nonblocking(true)?;
+                Ok(stream)
+            };
 
-        std::thread::spawn(move || {
+            let mut stream = match connect() {
+                Ok(stream) => stream,
+                Err(error) => {
+                    result_sender.send(Err(error)).ok();
+                    return;
+                }
+            };
+
+            status.store(ConnectionStatus::Connected as i32, Ordering::SeqCst);
+            receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Connected)).ok();
+
+            result_sender.send(Ok(())).ok();
+
             let mut buffer = [0u8; 2048];
 
             while close_receiver.try_recv().is_err() {
@@ -67,14 +90,14 @@ impl GenericConnection for TcpConnection {
 
             status.store(ConnectionStatus::Disconnected as i32, Ordering::SeqCst);
             receiver.lock().unwrap().dispatcher.sender.send(DispatcherData::Status(ConnectionStatus::Disconnected)).ok();
-        });
+        }));
 
-        Ok(())
+        result_receiver
     }
 
     fn close(&self) {
         if let Some(close_sender) = &self.close_sender {
-            close_sender.send(()).ok();
+            close_sender.try_send(()).ok();
         }
     }
 
