@@ -2,7 +2,6 @@ use crate::connection_config::*;
 use crate::connection_status::*;
 use crate::connections::*;
 use crate::receiver::*;
-use crossbeam::channel::Sender;
 use std::sync::{Arc, Mutex};
 
 pub struct UsbConnection {
@@ -48,7 +47,7 @@ impl GenericConnection for UsbConnection {
         self.serial_connection.get_receiver()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
+    fn get_write_sender(&self) -> Option<crossbeam::channel::Sender<Vec<u8>>> {
         self.serial_connection.get_write_sender()
     }
 }

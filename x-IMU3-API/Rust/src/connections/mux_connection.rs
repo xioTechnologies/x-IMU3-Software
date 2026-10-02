@@ -4,7 +4,6 @@ use crate::connections::*;
 use crate::dispatcher::*;
 use crate::mux_message::*;
 use crate::receiver::*;
-use crossbeam::channel::Sender;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, Mutex};
 
@@ -12,8 +11,8 @@ pub struct MuxConnection {
     config: MuxConnectionConfig,
     status: Arc<AtomicI32>,
     receiver: Arc<Mutex<Receiver>>,
-    close_sender: Option<Sender<()>>,
-    write_sender: Option<Sender<Vec<u8>>>,
+    close_sender: Option<crossbeam::channel::Sender<()>>,
+    write_sender: Option<crossbeam::channel::Sender<Vec<u8>>>,
 }
 
 impl MuxConnection {
@@ -98,7 +97,7 @@ impl GenericConnection for MuxConnection {
         self.receiver.clone()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
+    fn get_write_sender(&self) -> Option<crossbeam::channel::Sender<Vec<u8>>> {
         self.write_sender.clone()
     }
 }
