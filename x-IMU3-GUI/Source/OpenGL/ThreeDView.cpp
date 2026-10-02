@@ -74,8 +74,16 @@ void ThreeDView::render() {
 void ThreeDView::setSettings(Settings settings_) {
     std::scoped_lock _(settingsMutex);
     settings = settings_;
+}
 
-    renderer.getResources().custom.setModel(settings.customModel);
+void ThreeDView::setModel(const juce::File &modelFile_) {
+    std::scoped_lock _(settingsMutex);
+    modelFile = modelFile_;
+}
+
+juce::File ThreeDView::getModel() const {
+    std::scoped_lock _(settingsMutex);
+    return modelFile;
 }
 
 ThreeDView::Settings ThreeDView::getSettings() const {
@@ -84,15 +92,7 @@ ThreeDView::Settings ThreeDView::getSettings() const {
 }
 
 bool ThreeDView::isLoading() const {
-    switch (settings.model) {
-        case Model::board:
-            return renderer.getResources().board.isLoading();
-        case Model::housing:
-            return renderer.getResources().housing.isLoading();
-        case Model::custom:
-            return renderer.getResources().custom.isLoading();
-    }
-    return false;
+    return renderer.getResources().getModel(getModel()).isLoading();
 }
 
 void ThreeDView::setHudEnabled(const bool enabled) {
@@ -123,17 +123,7 @@ void ThreeDView::renderModel(const glm::mat4 &projectionMatrix, const glm::mat4 
     threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
     threeDViewShader.lightIntensity.set(1.0f);
 
-    switch (settings.model) {
-        case Model::board:
-            renderer.getResources().board.renderWithMaterials(threeDViewShader);
-            break;
-        case Model::housing:
-            renderer.getResources().housing.renderWithMaterials(threeDViewShader);
-            break;
-        case Model::custom:
-            renderer.getResources().custom.renderWithMaterials(threeDViewShader);
-            break;
-    }
+    renderer.getResources().getModel(modelFile).renderWithMaterials(threeDViewShader);
 }
 
 void ThreeDView::renderWorld(const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, const glm::mat4 &axesConventionRotation, const float floorHeight) const {

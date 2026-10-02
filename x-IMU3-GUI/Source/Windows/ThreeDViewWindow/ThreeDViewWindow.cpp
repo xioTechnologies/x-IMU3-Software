@@ -1,6 +1,6 @@
-#include "../ConnectionPanelContainer.h"
-#include "../Widgets/PopupMenuHeader.h"
+#include "ConnectionPanelContainer.h"
 #include "ThreeDViewWindow.h"
+#include "Widgets/PopupMenuHeader.h"
 
 ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer)
     : Window(windowLayout_, type_, connectionPanel_, "3D View Menu"),
@@ -15,7 +15,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
     addAndMakeVisible(yawValue);
     addAndMakeVisible(ahrsStatusLabel);
     addAndMakeVisible(axesConventionLabel);
-    addAndMakeVisible(loadingLabel);
+    addAndMakeVisible(infoLabel);
 
     quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
         threeDView.update(message.x, message.y, message.z, message.w);
@@ -50,10 +50,26 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
         });
     });
 
-    threeDView.setSettings(readFromValueTree());
+    pingCallbackId = connectionPanel.getConnection()->addPingCallback(pingCallback = [&, model = std::optional<juce::String>()](auto response) mutable {
+        if (model == juce::String(response.device_name)) {
+            return;
+        }
 
-    startTimerHz(25);
-    timerCallback();
+        model = response.device_name;
+
+        juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this)] {
+            if (self == nullptr) {
+                return;
+            }
+
+            updateModel();
+        });
+    });
+
+    threeDView.setSettings(readFromValueTree());
+    updateModel();
+
+    rollPitchYawTimer.startTimerHz(25);
 }
 
 ThreeDViewWindow::~ThreeDViewWindow() {
@@ -61,6 +77,7 @@ ThreeDViewWindow::~ThreeDViewWindow() {
     connectionPanel.getConnection()->removeCallback(rotationMatrixCallbackId);
     connectionPanel.getConnection()->removeCallback(eulerAnglesCallbackId);
     connectionPanel.getConnection()->removeCallback(ahrsStatusMessageCallbackId);
+    connectionPanel.getConnection()->removeCallback(pingCallbackId);
 }
 
 void ThreeDViewWindow::resized() {
@@ -91,7 +108,7 @@ void ThreeDViewWindow::resized() {
     setRow(pitchLabel, pitchValue);
     setRow(yawLabel, yawValue);
 
-    loadingLabel.setBounds(bounds.removeFromRight(100).removeFromBottom(20));
+    infoLabel.setBounds(bounds.removeFromBottom(20));
 }
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent &mouseEvent) {
@@ -163,8 +180,6 @@ void ThreeDViewWindow::writeToValueTree(const ThreeDView::Settings &settings) {
     settingsTree.setProperty("modelEnabled", settings.modelEnabled, nullptr);
     settingsTree.setProperty("axesEnabled", settings.axesEnabled, nullptr);
     settingsTree.setProperty("compassEnabled", settings.compassEnabled, nullptr);
-    settingsTree.setProperty("model", static_cast<int>(settings.model), nullptr);
-    settingsTree.setProperty("customModel", settings.customModel.getFullPathName(), nullptr);
     settingsTree.setProperty("axesConvention", static_cast<int>(settings.axesConvention), nullptr);
 }
 
@@ -177,10 +192,48 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const {
     settings.modelEnabled = settingsTree.getProperty("modelEnabled", settings.modelEnabled);
     settings.axesEnabled = settingsTree.getProperty("axesEnabled", settings.axesEnabled);
     settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.axesEnabled);
-    settings.model = ThreeDView::modelFrom(settingsTree.getProperty("model", static_cast<int>(settings.model)));
-    settings.customModel = settingsTree["customModel"];
     settings.axesConvention = ThreeDView::axesConventionFrom(settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
     return settings;
+}
+
+void ThreeDViewWindow::updateModel() {
+    const auto showModel = [&] (const juce::File& file) {
+        threeDView.setModel(file);
+        infoLabel.setText("Loading...");
+        loadingTimer.startTimerHz(5);
+    };
+
+    const auto showInfo = [&] (const juce::String& info) {
+        threeDView.setModel({});
+        infoLabel.setText(info);
+        loadingTimer.stopTimer();
+    };
+
+    if (const auto file = Models::get(settingsTree["model"])) {
+        currentModel = file->getFileName();
+        showModel(*file);
+        return;
+    }
+
+    currentModel = "auto";
+
+    const auto response = connectionPanel.getConnection()->getPingResponse();
+
+    if (response.has_value() == false) {
+        showInfo("Waiting for ping response");
+        return;
+    }
+
+    const juce::String model = response->device_name; // TODO: Use model
+
+    const auto file = Models::find(model);
+
+    if (file.has_value() == false) {
+        showInfo("3D model not found for " + model);
+        return;
+    }
+
+    showModel(*file);
 }
 
 void ThreeDViewWindow::updateEulerAnglesVisibilities() {
@@ -221,7 +274,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
         settings.worldEnabled = !settings.worldEnabled;
         writeToValueTree(settings);
     });
-    menu.addItem("Model", true, threeDView.getSettings().modelEnabled, [&] {
+    menu.addItem("3D Model", true, threeDView.getSettings().modelEnabled, [&] {
         auto settings = threeDView.getSettings();
         settings.modelEnabled = !settings.modelEnabled;
         writeToValueTree(settings);
@@ -244,59 +297,25 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("MODEL"), nullptr);
-    menu.addItem("Board", true, threeDView.getSettings().model == ThreeDView::Model::board, [&] {
-        auto settings = threeDView.getSettings();
-        settings.model = ThreeDView::Model::board;
-        writeToValueTree(settings);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("3D MODEL"), nullptr);
+
+    juce::String autoText = "Auto";
+    if (currentModel == "auto" && threeDView.getModel() != juce::File()) {
+        autoText += " (" + threeDView.getModel().getFileNameWithoutExtension() + ")";
+    }
+    menu.addItem(autoText, true, currentModel == "auto", [&] {
+        settingsTree.setProperty("model", "auto", nullptr);
     });
-    menu.addItem("Housing", true, threeDView.getSettings().model == ThreeDView::Model::housing, [&] {
-        auto settings = threeDView.getSettings();
-        settings.model = ThreeDView::Model::housing;
-        writeToValueTree(settings);
-    });
-
-    juce::PopupMenu customModelsMenu;
-    customModelsMenu.addItem("Load 3D Model", [&] {
-        fileChooser = std::make_unique<juce::FileChooser>("Select 3D Model", juce::File(), "*.obj");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
-            if (fileChooser->getResult() == juce::File()) {
-                return;
-            }
-
-            const auto objFileOriginal = fileChooser->getResult();
-            const auto mtlFileOriginal = objFileOriginal.withFileExtension(".mtl");
-
-            const auto objFileCopy = modelsDirectory.getChildFile(objFileOriginal.getFileName());
-            const auto mtlFileCopy = modelsDirectory.getChildFile(mtlFileOriginal.getFileName());
-
-            modelsDirectory.createDirectory();
-            objFileOriginal.copyFileTo(objFileCopy);
-            mtlFileCopy.deleteFile();
-            mtlFileOriginal.copyFileTo(mtlFileCopy);
-
-            auto settings = threeDView.getSettings();
-            settings.model = ThreeDView::Model::custom;
-            settings.customModel = objFileCopy;
-            writeToValueTree(settings);
+    for (const auto &model: Models::getAll()) {
+        menu.addItem(model.getFileNameWithoutExtension(), true, currentModel == model.getFileName(), [&, model] {
+            settingsTree.setProperty("model", model.getFileName(), nullptr);
+        });
+    }
+    menu.addItem("Add 3D Model...", [&] {
+        fileChooser = Models::add([&](const auto &file) {
+            settingsTree.setProperty("model", file.getFileName(), nullptr);
         });
     });
-    if (const auto models = modelsDirectory.findChildFiles(juce::File::findFiles, false, "*.obj"); models.isEmpty() == false) {
-        customModelsMenu.addSeparator();
-        customModelsMenu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("PREVIOUS"), nullptr);
-        for (const auto &file: models) {
-            const auto ticked = (threeDView.getSettings().model == ThreeDView::Model::custom) && (threeDView.getSettings().customModel == file);
-            customModelsMenu.addItem(file.getFileName(), true, ticked, [&, file] {
-                auto settings = threeDView.getSettings();
-                settings.model = ThreeDView::Model::custom;
-                settings.customModel = file;
-                writeToValueTree(settings);
-            });
-        }
-    }
-
-    const auto suffix = (threeDView.getSettings().model == ThreeDView::Model::custom) ? (" (" + threeDView.getSettings().customModel.getFileName() + ")") : "";
-    menu.addSubMenu("Custom" + suffix, customModelsMenu, true, nullptr, threeDView.getSettings().model == ThreeDView::Model::custom);
 
     menu.addSeparator();
     menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("AXES CONVENTION"), nullptr);
@@ -319,27 +338,13 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
     return menu;
 }
 
-void ThreeDViewWindow::timerCallback() {
-    static const auto formatAngle = [](const float angle) {
-        auto text = juce::String(angle, 1);
-
-        if (text == "-0.0") {
-            text = "0.0";
-        } else if (text == "-180.0") {
-            text = "180.0";
-        }
-
-        return text + "°";
-    };
-    rollValue.setText(formatAngle(roll));
-    pitchValue.setText(formatAngle(pitch));
-    yawValue.setText(formatAngle(yaw));
-
-    loadingLabel.setText(threeDView.isLoading() ? "Loading..." : "");
-}
-
-void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &) {
+void ThreeDViewWindow::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property) {
     if (treeWhosePropertyHasChanged != settingsTree) {
+        return;
+    }
+
+    if (property.toString() == "model") {
+        updateModel();
         return;
     }
 

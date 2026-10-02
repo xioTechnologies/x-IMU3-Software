@@ -1,29 +1,8 @@
 #include "OpenGLResources.h"
 
-OpenGLResources::OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool &threadPool) : context(context_),
-                                                                                                arrow(context, threadPool),
-                                                                                                board(context, threadPool),
-                                                                                                housing(context, threadPool),
-                                                                                                custom(context, threadPool) {
-    auto unzipObjAndMtl = [](const char *data, const int size, const juce::String &internalFileName) {
-        juce::MemoryInputStream stream(data, (size_t) size, false);
-        auto zipFile = juce::ZipFile(stream);
-
-        auto *objFile = zipFile.getEntry(internalFileName + ".obj");
-        auto *mtlFile = zipFile.getEntry(internalFileName + ".mtl");
-
-        juce::String objectString = objFile ? std::unique_ptr<juce::InputStream>(zipFile.createStreamForEntry(*objFile))->readEntireStreamAsString() : "";
-        juce::String materialString = mtlFile ? std::unique_ptr<juce::InputStream>(zipFile.createStreamForEntry(*mtlFile))->readEntireStreamAsString() : "";
-
-        return std::tuple<juce::String, juce::String>{objectString, materialString};
-    };
-
-    const auto &[boardObj, boardMtl] = unzipObjAndMtl(BinaryData::xIMU3_Board_zip, BinaryData::xIMU3_Board_zipSize, "x-IMU3 Board");
-    board.setModel(boardObj, boardMtl);
-
-    const auto &[housingObj, housingMtl] = unzipObjAndMtl(BinaryData::xIMU3_Housing_zip, BinaryData::xIMU3_Housing_zipSize, "x-IMU3 Housing");
-    housing.setModel(housingObj, housingMtl);
-
+OpenGLResources::OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool &threadPool_) : context(context_),
+                                                                                                 threadPool(threadPool_),
+                                                                                                 arrow(context, threadPool) {
     arrow.setModel(BinaryData::Arrow_obj, "");
 
     compassTexture.loadImage(juce::ImageFileFormat::loadFrom(BinaryData::Compass_png, BinaryData::Compass_pngSize));
@@ -31,6 +10,19 @@ OpenGLResources::OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool
     const std::unordered_set<unsigned char> charactersToLoad = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'e', 'X', 'Y', 'Z', 't'};
     graphTickText = std::make_unique<Text>(charactersToLoad);
     threeDViewAxesText = std::make_unique<Text>(charactersToLoad);
+}
+
+Model &OpenGLResources::getModel(const juce::File &file) {
+    std::lock_guard _(modelsLock);
+
+    auto &model = models[file];
+
+    if (model == nullptr) {
+        model = std::make_unique<Model>(context, threadPool);
+        model->setModel(file);
+    }
+
+    return *model;
 }
 
 Text &OpenGLResources::getGraphTickText() {

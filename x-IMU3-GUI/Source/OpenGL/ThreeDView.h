@@ -9,24 +9,6 @@
 
 class ThreeDView : public OpenGLComponent {
 public:
-    enum class Model {
-        board,
-        housing,
-        custom,
-    };
-
-    static Model modelFrom(const int integer) {
-        switch (static_cast<Model>(integer)) {
-            case Model::board:
-                return Model::board;
-            case Model::housing:
-                return Model::housing;
-            case Model::custom:
-                return Model::custom;
-        }
-        return Model::board;
-    }
-
     enum class AxesConvention {
         nwu,
         enu,
@@ -54,8 +36,6 @@ public:
         bool modelEnabled = true;
         bool axesEnabled = true;
         bool compassEnabled = true;
-        Model model{Model::housing};
-        juce::File customModel;
         AxesConvention axesConvention{AxesConvention::nwu};
     };
 
@@ -69,6 +49,10 @@ public:
 
     Settings getSettings() const;
 
+    void setModel(const juce::File &modelFile_);
+
+    juce::File getModel() const;
+
     bool isLoading() const;
 
     void setHudEnabled(const bool enabled);
@@ -80,6 +64,7 @@ private:
 
     mutable std::mutex settingsMutex;
     Settings settings;
+    juce::File modelFile;
 
     std::atomic<float> quaternionX{0.0f}, quaternionY{0.0f}, quaternionZ{0.0f}, quaternionW{1.0f};
 

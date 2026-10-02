@@ -1,16 +1,15 @@
 #pragma once
 
-#include "ApplicationSettings.h"
+#include "../Window.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "Models.h"
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "OpenGL/ThreeDView.h"
 #include "Widgets/SimpleLabel.h"
-#include "Window.h"
 #include "Ximu3.hpp"
 
-class ThreeDViewWindow : public Window,
-                         private juce::Timer {
+class ThreeDViewWindow : public Window {
 public:
     ThreeDViewWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
@@ -35,10 +34,35 @@ private:
             pitchValue{"", UIFonts::getDefaultFont(), juce::Justification::topLeft},
             yawLabel{"Yaw:", UIFonts::getDefaultFont(), juce::Justification::topLeft},
             yawValue{"", UIFonts::getDefaultFont(), juce::Justification::topLeft};
-
     std::atomic<float> roll{0.0f}, pitch{0.0f}, yaw{0.0f};
+    juce::TimedCallback rollPitchYawTimer{
+        [&] {
+            const auto formatAngle = [](const float angle) {
+                auto text = juce::String(angle, 1);
 
-    SimpleLabel loadingLabel{"", UIFonts::getDefaultFont(), juce::Justification::bottomRight};
+                if (text == "-0.0") {
+                    text = "0.0";
+                } else if (text == "-180.0") {
+                    text = "180.0";
+                }
+
+                return text + "°";
+            };
+            rollValue.setText(formatAngle(roll));
+            pitchValue.setText(formatAngle(pitch));
+            yawValue.setText(formatAngle(yaw));
+        }
+    };
+
+    SimpleLabel infoLabel{"", UIFonts::getDefaultFont(), juce::Justification::bottomRight};
+    juce::TimedCallback loadingTimer{
+        [&] {
+            if (threeDView.isLoading() == false) {
+                infoLabel.setText("");
+                loadingTimer.stopTimer();
+            }
+        }
+    };
 
     juce::Point<int> lastMousePosition;
 
@@ -54,21 +78,24 @@ private:
     std::function<void(ximu3::XIMU3_AhrsStatusMessage)> ahrsStatusMessageCallback;
     uint64_t ahrsStatusMessageCallbackId;
 
+    std::function<void(ximu3::XIMU3_PingResponse)> pingCallback;
+    uint64_t pingCallbackId;
+
     bool compactView = false;
 
     SimpleLabel ahrsStatusLabel { "", UIFonts::getDefaultFont(), juce::Justification::centredTop };
     juce::TimedCallback ahrsStatusLabelTimer{
         [&] {
             ahrsStatusLabel.setText("");
-            stopTimer();
+            ahrsStatusLabelTimer.stopTimer();
         }
     };
 
     SimpleLabel axesConventionLabel{"", UIFonts::getDefaultFont(), juce::Justification::topRight};
 
-    const juce::File modelsDirectory = ApplicationSettings::getDirectory().getChildFile("Models");
-
     std::unique_ptr<juce::FileChooser> fileChooser;
+
+    juce::String currentModel;
 
     static float wrapAngle(float angle);
 
@@ -78,6 +105,8 @@ private:
 
     ThreeDView::Settings readFromValueTree() const;
 
+    void updateModel();
+
     void updateEulerAnglesVisibilities();
 
     void updateAhrsStatusVisibility();
@@ -85,8 +114,6 @@ private:
     void updateAxesConventionLabel();
 
     juce::PopupMenu getMenu() override;
-
-    void timerCallback() override;
 
     void valueTreePropertyChanged(juce::ValueTree &, const juce::Identifier &property) override;
 
