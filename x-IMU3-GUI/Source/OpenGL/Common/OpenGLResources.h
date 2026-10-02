@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <map>
 #include <memory>
 #include "OpenGL/Graph/LineBuffer.h"
 #include "OpenGL/Shaders/GraphDataShader.h"
@@ -18,11 +19,14 @@
 
 class OpenGLResources {
     juce::OpenGLContext &context;
+    juce::ThreadPool &threadPool;
 
 public:
     static constexpr int graphBufferSize = 1 << 16;
 
-    OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool &threadPool);
+    OpenGLResources(juce::OpenGLContext &context_, juce::ThreadPool &threadPool_);
+
+    Model &getModel(const juce::File &file, bool reload);
 
     // Text
     Text &getGraphTickText();
@@ -31,9 +35,6 @@ public:
 
     // Geometry
     Model arrow;
-    Model board;
-    Model housing;
-    Model custom;
     PlaneModel plane;
     TextQuad textQuad;
     LineBuffer graphGridBuffer{true};
@@ -54,6 +55,8 @@ public:
     OrbitCamera orbitCamera;
 
 private:
+    std::map<juce::File, std::unique_ptr<Model> > models;
+
     std::unique_ptr<Text> graphTickText;
     std::unique_ptr<Text> threeDViewAxesText;
 

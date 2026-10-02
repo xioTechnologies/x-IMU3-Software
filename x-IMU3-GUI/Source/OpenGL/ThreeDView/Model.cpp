@@ -1,15 +1,34 @@
 #include "Model.h"
-#include "OpenGL/Common/OpenGLResources.h"
 
-Model::Model(juce::OpenGLContext &context_, juce::ThreadPool &threadPool_) : context(context_), threadPool(threadPool_) {
+Model::Model(juce::ThreadPool &threadPool, const juce::String &objFileContent, const juce::String &mtlFileContent) {
+    threadPool.addJob([state_ = state, objFileContent, mtlFileContent] {
+        auto object = std::make_unique<WavefrontObjFile>();
+        object->load(objFileContent, mtlFileContent);
+
+        state_->object = std::move(object);
+        state_->loaded = true;
+    });
+}
+
+Model::Model(juce::ThreadPool &threadPool, const juce::File &objFile) {
+    threadPool.addJob([state_ = state, objFile] {
+        auto object = std::make_unique<WavefrontObjFile>();
+        object->load(objFile);
+
+        state_->object = std::move(object);
+        state_->loaded = true;
+    });
 }
 
 void Model::render() {
-    // Initialize buffers if they have not yet been initialized
-    std::lock_guard _(objectLock);
-    if (object != nullptr && fillBuffersPending) {
-        fillBuffers();
-        fillBuffersPending = false;
+    if (state->loaded == false) {
+        return;
+    }
+
+    if (glBuffers.empty()) {
+        for (const auto &shape: state->object->shapes) {
+            glBuffers.push_back(std::make_unique<GLBuffer>(*shape));
+        }
     }
 
     // Render all OpenGL buffers
@@ -22,11 +41,14 @@ void Model::render() {
 }
 
 void Model::renderWithMaterials(const LitShader &shader) {
-    // Initialize buffers if they have not yet been initialized
-    std::lock_guard _(objectLock);
-    if (object != nullptr && fillBuffersPending) {
-        fillBuffers();
-        fillBuffersPending = false;
+    if (state->loaded == false) {
+        return;
+    }
+
+    if (glBuffers.empty()) {
+        for (const auto &shape: state->object->shapes) {
+            glBuffers.push_back(std::make_unique<GLBuffer>(*shape));
+        }
     }
 
     // Render all OpenGL buffers
@@ -42,60 +64,8 @@ void Model::renderWithMaterials(const LitShader &shader) {
     }
 }
 
-void Model::setModel(const juce::String &objFileContent, const juce::String &mtlFileContent) {
-    loading = true;
-    threadPool.addJob([&, self = juce::WeakReference(this), objFileContent, mtlFileContent] {
-        auto newObject = std::make_unique<WavefrontObjFile>();
-        newObject->load(objFileContent, mtlFileContent);
-
-        juce::MessageManager::callAsync([&, self, newObject_ = std::move(newObject)]() mutable {
-            if (self == nullptr) {
-                return;
-            }
-
-            std::lock_guard _(objectLock);
-            std::swap(object, newObject_);
-            fillBuffersPending = true;
-            loading = false;
-        });
-    });
-}
-
-void Model::setModel(const juce::File &objFile_) {
-    if (objFile_ == juce::File() || objFile == objFile_) {
-        return;
-    }
-    objFile = objFile_;
-
-    loading = true;
-    threadPool.addJob([&, self = juce::WeakReference(this), objFile_] {
-        auto newObject = std::make_unique<WavefrontObjFile>();
-        newObject->load(objFile_);
-
-        juce::MessageManager::callAsync([&, self, newObject_ = std::move(newObject)]() mutable {
-            if (self == nullptr) {
-                return;
-            }
-
-            std::lock_guard _(objectLock);
-            std::swap(object, newObject_);
-            fillBuffersPending = true;
-            loading = false;
-        });
-    });
-}
-
 bool Model::isLoading() const {
-    return loading;
-}
-
-void Model::fillBuffers() {
-    glBuffers.clear();
-
-    for (const auto &shape: object->shapes) {
-        auto glBuffer = std::make_unique<GLBuffer>(*shape);
-        glBuffers.push_back(std::move(glBuffer));
-    }
+    return state->loaded == false;
 }
 
 Model::GLBuffer::GLBuffer(const WavefrontObjFile::Shape &shape) : associatedShape(shape) {

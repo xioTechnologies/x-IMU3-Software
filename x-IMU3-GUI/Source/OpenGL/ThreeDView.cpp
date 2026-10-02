@@ -1,7 +1,7 @@
 #include "CustomLookAndFeel.h"
 #include "ThreeDView.h"
 
-ThreeDView::ThreeDView(OpenGLRenderer &renderer_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_) {
+ThreeDView::ThreeDView(OpenGLRenderer &renderer_, std::function<void(bool loading)> onLoading_) : OpenGLComponent(renderer_.getContext()), renderer(renderer_), onLoading(std::move(onLoading_)) {
     renderer.addComponent(*this);
 }
 
@@ -10,7 +10,7 @@ ThreeDView::~ThreeDView() {
 }
 
 void ThreeDView::render() {
-    std::scoped_lock lock(settingsMutex);
+    std::scoped_lock lock(renderMutex);
 
     const auto bounds = toOpenGLBounds(getBoundsInMainWindow());
     auto &camera = renderer.getResources().orbitCamera;
@@ -49,6 +49,15 @@ void ThreeDView::render() {
     OpenGLHelpers::viewportAndScissor(bounds); // clip drawing to bounds
     juce::OpenGLHelpers::clear(UIColours::backgroundDark);
 
+    if (model) {
+        if (const auto loading_ = renderer.getResources().getModel(*model, reload).isLoading(); loading != loading_) {
+            loading = loading_;
+            triggerAsyncUpdate();
+        }
+    }
+
+    reload = false;
+
     const bool renderModelBehindWorldAndCompass = camera.getPosition().y < floorHeight; // depth sorting required by compass
     if (renderModelBehindWorldAndCompass && settings.modelEnabled) {
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
@@ -62,7 +71,7 @@ void ThreeDView::render() {
         renderCompass(projectionMatrix, viewMatrix, floorHeight);
     }
 
-    if (!renderModelBehindWorldAndCompass && settings.modelEnabled) {
+    if (!renderModelBehindWorldAndCompass && settings.modelEnabled && model.has_value()) {
         renderModel(projectionMatrix, viewMatrix, deviceRotation, axesConventionRotation, modelScale);
     }
 
@@ -71,28 +80,29 @@ void ThreeDView::render() {
     }
 }
 
-void ThreeDView::setSettings(Settings settings_) {
-    std::scoped_lock _(settingsMutex);
+void ThreeDView::setSettings(const Settings &settings_) {
+    std::scoped_lock _(renderMutex);
     settings = settings_;
-
-    renderer.getResources().custom.setModel(settings.customModel);
 }
 
 ThreeDView::Settings ThreeDView::getSettings() const {
-    std::scoped_lock _(settingsMutex);
     return settings;
 }
 
-bool ThreeDView::isLoading() const {
-    switch (settings.model) {
-        case Model::board:
-            return renderer.getResources().board.isLoading();
-        case Model::housing:
-            return renderer.getResources().housing.isLoading();
-        case Model::custom:
-            return renderer.getResources().custom.isLoading();
-    }
-    return false;
+void ThreeDView::setModel(const std::optional<juce::File> &model_) {
+    std::scoped_lock _(renderMutex);
+    model = model_;
+    loading = true;
+    cancelPendingUpdate();
+}
+
+std::optional<juce::File> ThreeDView::getModel() const {
+    return model;
+}
+
+void ThreeDView::reloadModel() {
+    std::scoped_lock _(renderMutex);
+    reload = true;
 }
 
 void ThreeDView::setHudEnabled(const bool enabled) {
@@ -123,16 +133,8 @@ void ThreeDView::renderModel(const glm::mat4 &projectionMatrix, const glm::mat4 
     threeDViewShader.lightPosition.set(glm::vec3(glm::vec4(-4.0f, 8.0f, 8.0f, 1.0f) * camera.getRotationMatrix())); // light positions further away increase darkness of shadows
     threeDViewShader.lightIntensity.set(1.0f);
 
-    switch (settings.model) {
-        case Model::board:
-            renderer.getResources().board.renderWithMaterials(threeDViewShader);
-            break;
-        case Model::housing:
-            renderer.getResources().housing.renderWithMaterials(threeDViewShader);
-            break;
-        case Model::custom:
-            renderer.getResources().custom.renderWithMaterials(threeDViewShader);
-            break;
+    if (model) {
+        renderer.getResources().getModel(*model, false).renderWithMaterials(threeDViewShader);
     }
 }
 
@@ -258,4 +260,8 @@ void ThreeDView::renderAxesForWorldOrientation(const glm::mat4 &axesConventionRo
     const auto ndcMat = glm::translate(glm::mat4(1.0f), glm::vec3(topRightNDC - pixelOffsetNDC, 0.0f));
 
     renderAxesInstance(axesConventionRotation, ndcMat * renderer.getResources().orbitCamera.getOrthogonalProjectionMatrix());
+}
+
+void ThreeDView::handleAsyncUpdate() {
+    juce::NullCheckedInvocation::invoke(onLoading, loading.load());
 }
