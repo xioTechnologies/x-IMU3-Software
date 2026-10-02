@@ -3,7 +3,6 @@ use crate::connection_status::*;
 use crate::connections::*;
 use crate::dispatcher::*;
 use crate::receiver::*;
-use crossbeam::channel::Sender;
 use std::fs::OpenOptions;
 use std::io::Read;
 use std::sync::atomic::{AtomicI32, Ordering};
@@ -13,7 +12,7 @@ pub struct FileConnection {
     config: FileConnectionConfig,
     status: Arc<AtomicI32>,
     receiver: Arc<Mutex<Receiver>>,
-    close_sender: Option<Sender<()>>,
+    close_sender: Option<crossbeam::channel::Sender<()>>,
 }
 
 impl FileConnection {
@@ -83,7 +82,7 @@ impl GenericConnection for FileConnection {
         self.receiver.clone()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
+    fn get_write_sender(&self) -> Option<crossbeam::channel::Sender<Vec<u8>>> {
         None
     }
 }

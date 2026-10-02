@@ -1,7 +1,6 @@
 use crate::connection::*;
 use crate::connection_config::*;
 use crate::device::*;
-use crossbeam::channel::Sender;
 use std::fmt;
 use std::ops::Drop;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -93,7 +92,7 @@ impl PortScanner {
         port_scanner
     }
 
-    fn ping_port(port_name: &str, devices: &Arc<Mutex<Vec<Device>>>, sender: Sender<()>) {
+    fn ping_port(port_name: &str, devices: &Arc<Mutex<Vec<Device>>>, sender: crossbeam::channel::Sender<()>) {
         let config = SerialConnectionConfig {
             port_name: port_name.to_string(),
             baud_rate: 115200,

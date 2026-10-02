@@ -3,7 +3,6 @@ use crate::connection_status::*;
 use crate::connections::*;
 use crate::dispatcher::*;
 use crate::receiver::*;
-use crossbeam::channel::Sender;
 use std::io::{Read, Write};
 use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::sync::atomic::{AtomicI32, Ordering};
@@ -13,8 +12,8 @@ pub struct TcpConnection {
     config: TcpConnectionConfig,
     status: Arc<AtomicI32>,
     receiver: Arc<Mutex<Receiver>>,
-    close_sender: Option<Sender<()>>,
-    write_sender: Option<Sender<Vec<u8>>>,
+    close_sender: Option<crossbeam::channel::Sender<()>>,
+    write_sender: Option<crossbeam::channel::Sender<Vec<u8>>>,
 }
 
 impl TcpConnection {
@@ -91,7 +90,7 @@ impl GenericConnection for TcpConnection {
         self.receiver.clone()
     }
 
-    fn get_write_sender(&self) -> Option<Sender<Vec<u8>>> {
+    fn get_write_sender(&self) -> Option<crossbeam::channel::Sender<Vec<u8>>> {
         self.write_sender.clone()
     }
 }
