@@ -31,8 +31,8 @@ print_devices(mux_devices)
 
 
 # Mux scanner (non-blocking)
-def callback(mux_devices: list[ximu3.Device]) -> None:
-    print_devices(mux_devices)
+def callback(devices: list[ximu3.Device]) -> None:
+    print_devices(devices)
 
 
 mux_scanner = ximu3.MuxScanner(usb_connection)

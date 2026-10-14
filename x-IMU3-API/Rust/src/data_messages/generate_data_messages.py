@@ -142,7 +142,7 @@ for message in messages:
             ("$arguments_scan_fmt$", "".join("{f}," for _ in message.argument_names).rstrip(",")),
             ("$arguments_types$", "".join("f32, " for _ in message.argument_names).rstrip(", ")),
             ("$arguments_scan_result$", "".join(helpers.snake_case(n) + ", " for n in message.argument_names).rstrip(", ")),
-            ("$arguments_struct_asign$", "".join(helpers.snake_case(n) + ",\n                " for n in message.argument_names).rstrip()),
+            ("$arguments_struct_assign$", "".join(helpers.snake_case(n) + ",\n                " for n in message.argument_names).rstrip()),
             ("$arguments_packed_struct$", "".join(helpers.snake_case(n) + ": f32,\n            " for n in message.argument_names).rstrip()),
             ("$arguments_assign_struct$", "".join(helpers.snake_case(n) + ": binary_message." + helpers.snake_case(n) + ",\n            " for n in message.argument_names).rstrip()),
             ("$arguments_csv_format$", "".join("{:.6}," for _ in message.argument_names).rstrip(",")),

@@ -7,7 +7,7 @@
 
 class SerialAccessoryTerminalWindow : public Window {
 public:
-    SerialAccessoryTerminalWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_);
+    SerialAccessoryTerminalWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_);
 
     ~SerialAccessoryTerminalWindow() override;
 

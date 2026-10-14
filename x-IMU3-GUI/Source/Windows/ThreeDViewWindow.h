@@ -12,7 +12,7 @@
 class ThreeDViewWindow : public Window,
                          private juce::Timer {
 public:
-    ThreeDViewWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
+    ThreeDViewWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_, OpenGLRenderer &openGLRenderer);
 
     ~ThreeDViewWindow() override;
 

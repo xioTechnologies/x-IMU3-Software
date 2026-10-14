@@ -28,7 +28,7 @@ impl DataMessage for $name_pascal_case$Message {
         match scan_fmt!(message, "{},{d},$arguments_scan_fmt$\n", char, u64, $arguments_types$) {
             Ok((_, timestamp, $arguments_scan_result$)) => Ok(Self {
                 timestamp,
-                $arguments_struct_asign$
+                $arguments_struct_assign$
             }),
             Err(_) => Err(ReceiveError::UnableToParseAsciiMessage),
         }
