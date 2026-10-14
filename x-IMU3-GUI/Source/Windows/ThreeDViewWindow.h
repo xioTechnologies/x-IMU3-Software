@@ -60,7 +60,7 @@ private:
     juce::TimedCallback ahrsStatusLabelTimer{
         [&] {
             ahrsStatusLabel.setText("");
-            stopTimer();
+            ahrsStatusLabelTimer.stopTimer();
         }
     };
 

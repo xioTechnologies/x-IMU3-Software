@@ -43,6 +43,10 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
 
     ahrsStatusMessageCallbackId = connectionPanel.getConnection()->addAhrsStatusCallback(ahrsStatusMessageCallback = [&](ximu3::XIMU3_AhrsStatusMessage message) {
         juce::MessageManager::callAsync([&, self = SafePointer(this), message] {
+            if (self == nullptr) {
+                return;
+            }
+
             ahrsStatusLabel.setText(juce::String::createStringFromData(message.char_array, (int) message.number_of_bytes));
             resized();
 
