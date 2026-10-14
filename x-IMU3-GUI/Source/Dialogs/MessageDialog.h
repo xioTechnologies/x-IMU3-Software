@@ -37,7 +37,7 @@ private:
 
 class ErrorDialog : public MessageDialog {
 public:
-    explicit ErrorDialog(const juce::String &error);
+    explicit ErrorDialog(const juce::String &error, const juce::String &okButtonText = "OK");
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ErrorDialog)

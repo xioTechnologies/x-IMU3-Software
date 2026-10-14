@@ -20,5 +20,5 @@ ConfirmDialog::ConfirmDialog(const juce::String &text) : MessageDialog(BinaryDat
 ConfirmReplaceDialog::ConfirmReplaceDialog(const juce::String &name) : ConfirmDialog(name + " already exists. Do you want to replace it?") {
 }
 
-ErrorDialog::ErrorDialog(const juce::String &error) : MessageDialog(BinaryData::warning_white_svg, "Error", error, "OK", "") {
+ErrorDialog::ErrorDialog(const juce::String &error, const juce::String &okButtonText) : MessageDialog(BinaryData::warning_white_svg, "Error", error, okButtonText, "") {
 }
