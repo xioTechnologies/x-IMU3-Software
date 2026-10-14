@@ -1,3 +1,4 @@
+#include "ApplicationSettings.h"
 #include "ConnectionPanel/ConnectionPanel.h"
 #include "DeviceSettingsWindow.h"
 #include "Dialogs/MessageDialog.h"
@@ -60,18 +61,24 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
 
         treeView->refresh();
 
-        connectionPanel.sendCommands(commands, treeView, [this, treeView](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-            disabledOverlay.setVisible(false);
+        connectionPanel.getConnection()->sendCommandsAsync(commands, [this, treeView_ = SafePointer<TreeView>(treeView)](const auto &responses) {
+            juce::MessageManager::callAsync([this, treeView_, responses] {
+                if (treeView_ == nullptr) {
+                    return;
+                }
 
-            for (size_t index = 0; index < responses.size(); index++) {
-                treeView->getSettings()[index]->receive(responses[index]);
-            }
+                disabledOverlay.setVisible(false);
 
-            treeView->refresh();
+                for (size_t index = 0; index < responses.size(); index++) {
+                    treeView_->getSettings()[index]->receive(responses[index]);
+                }
 
-            connectionPanel.getConnection()->pingAsync([](std::optional<ximu3::XIMU3_PingResponse>) {
+                treeView_->refresh();
+
+                connectionPanel.getConnection()->pingAsync([](std::optional<ximu3::XIMU3_PingResponse>) {
+                });
             });
-        });
+        }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
     };
 
     backupButton.onClick = [this] {
@@ -256,8 +263,8 @@ void DeviceSettingsWindow::showSchema(std::unique_ptr<SettingsSchema::Group> gro
 
         disabledOverlay.setVisible(true);
 
-        connectionPanel.sendCommands({command}, treeView, [this, treeView, &setting](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-            setting.receive(responses.front());
+        connectionPanel.sendCommand(command, treeView, [this, treeView, &setting](const std::optional<ximu3::CommandMessage> &response) {
+            setting.receive(response);
 
             treeView->refresh();
 
@@ -291,16 +298,16 @@ void DeviceSettingsWindow::sendCommandSequence(std::vector<CommandSequenceItem> 
 
     const auto command = "{\"" + sequence.front().key + "\":null}";
 
-    connectionPanel.sendCommands({command}, this, [this, sequence, epilogue, command](const std::vector<std::optional<ximu3::CommandMessage> > &responses) mutable {
+    connectionPanel.sendCommand(command, this, [this, sequence, epilogue, command](const std::optional<ximu3::CommandMessage> &response) mutable {
         if (sequence.front().handleError) {
-            if (responses.front().has_value() == false) {
+            if (response.has_value() == false) {
                 DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("No response to " + command));
                 epilogue();
                 return;
             }
 
-            if (responses.front()->error.has_value()) {
-                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Error response to " + command + ": " + *responses.front()->error));
+            if (response->error.has_value()) {
+                DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("Error response to " + command + ": " + *response->error));
                 epilogue();
                 return;
             }

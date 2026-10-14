@@ -33,8 +33,7 @@ public:
 
     std::shared_ptr<ximu3::Connection> getConnection();
 
-    // TODO: Change to singular
-    void sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback = nullptr);
+    void sendCommand(const std::string &command, SafePointer<juce::Component> callbackOwner = nullptr, std::function<void(const std::optional<ximu3::CommandMessage> &response)> callback = nullptr);
 
     const juce::Colour &getColourTag() const;
 

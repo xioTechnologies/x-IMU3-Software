@@ -19,9 +19,7 @@ void SendingCommandDialog::onStart(const bool retry) {
                 return;
             }
 
-            connectionPanels[(size_t) index]->sendCommands({command}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-                const auto &response = responses.front();
-
+            connectionPanels[(size_t) index]->sendCommand(command, this, [&, index](const std::optional<ximu3::CommandMessage> &response) {
                 if (response.has_value() == false) {
                     setFailed(index, "No response");
                     return;
@@ -35,7 +33,7 @@ void SendingCommandDialog::onStart(const bool retry) {
                 if (response->valueType == ximu3::XIMU3_JsonTypeNull) {
                     setComplete(index);
                 } else {
-                    setComplete(index, replaceInvalidCharacters(responses.front()->value));
+                    setComplete(index, replaceInvalidCharacters(response->value));
                 }
             });
         });
