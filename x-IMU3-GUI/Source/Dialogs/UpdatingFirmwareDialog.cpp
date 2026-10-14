@@ -79,7 +79,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
         for (const auto &portName: portNames) {
             updateProgress("Attempting Upload on " + portName);
 
-            if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", firmware.getFullPathName().toRawUTF8(), portName.data()) == 0) {
+            if (XIMU3_upload_firmware(hardwareIsV2 ? "PIC32MZ2048EFG100" : "PIC32MZ2048EFG124", firmware.getFullPathName().toRawUTF8(), portName.c_str()) == 0) {
                 updateProgress("Update Complete", true);
                 juce::Timer::callAfterDelay(1000, [&] {
                     DialogQueue::getSingleton().pop();

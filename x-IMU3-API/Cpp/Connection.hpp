@@ -92,7 +92,7 @@ namespace ximu3 {
         }
 
         std::optional<CommandMessage> sendCommand(const std::string &command, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
-            return CommandMessage::from(XIMU3_connection_send_command(wrapped, command.data(), retries, timeout));
+            return CommandMessage::from(XIMU3_connection_send_command(wrapped, command.c_str(), retries, timeout));
         }
 
         std::vector<std::optional<CommandMessage> > sendCommands(const std::vector<std::string> &commands, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
@@ -111,7 +111,7 @@ namespace ximu3 {
             };
             auto *const wrappedCallback = new WrappedCallback({callback});
 
-            XIMU3_connection_send_command_async(wrapped, command.data(), retries, timeout, Helpers::wrapCallable<XIMU3_CommandMessage>(*wrappedCallback), wrappedCallback);
+            XIMU3_connection_send_command_async(wrapped, command.c_str(), retries, timeout, Helpers::wrapCallable<XIMU3_CommandMessage>(*wrappedCallback), wrappedCallback);
         }
 
         void sendCommandsAsync(const std::vector<std::string> &commands, std::function<void(const std::vector<std::optional<CommandMessage> > &)> callback, const uint32_t retries = XIMU3_DEFAULT_RETRIES, const uint32_t timeout = XIMU3_DEFAULT_TIMEOUT) {
