@@ -7,7 +7,7 @@ IconButton::IconButton(const juce::String &icon, const juce::String &tooltip_,
     : juce::DrawableButton("", ImageOnButtonBackground),
       tooltip(tooltip_), tooltipOn(tooltipOn_.isNotEmpty() ? tooltipOn_ : tooltip_),
       getPopup(std::move(getPopup_)),
-      popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg)) : nullptr) {
+      popupArrow((getPopup != nullptr && showPopupArrow) ? juce::Drawable::createFromSVGString(BinaryData::arrow_down_white_svg) : nullptr) {
     setWantsKeyboardFocus(false);
 
     setColour(juce::TextButton::buttonColourId, {});
@@ -55,7 +55,7 @@ juce::String IconButton::getTooltip() {
 }
 
 void IconButton::setIcon(const juce::String &icon, const juce::String &iconOn) {
-    const auto normal = juce::Drawable::createFromSVG(*juce::XmlDocument::parse(icon));
-    const auto normalOn = iconOn.isNotEmpty() ? juce::Drawable::createFromSVG(*juce::XmlDocument::parse(iconOn)) : normal->createCopy();
+    const auto normal = juce::Drawable::createFromSVGString(icon);
+    const auto normalOn = iconOn.isNotEmpty() ? juce::Drawable::createFromSVGString(iconOn) : normal->createCopy();
     setImages(normal.get(), nullptr, nullptr, nullptr, normalOn.get());
 }

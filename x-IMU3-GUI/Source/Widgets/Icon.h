@@ -24,9 +24,7 @@ public:
         if (icon != icon_) {
             icon = icon_;
 
-            if (auto xml = juce::XmlDocument::parse(icon_)) {
-                drawable = juce::Drawable::createFromSVG(*xml);
-            }
+            drawable = juce::Drawable::createFromSVGString(icon_);
 
             repaint();
         }
