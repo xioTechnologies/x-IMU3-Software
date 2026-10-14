@@ -71,7 +71,7 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection() {
 }
 
 void ConnectionPanel::sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback) {
-    connection->sendCommandsAsync(commands, [&, callbackOwner, callback](const auto &responses) {
+    connection->sendCommandsAsync(commands, [&, callbackOwner, callback](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         juce::MessageManager::callAsync([&, callbackOwner, callback, responses] {
             header.updateHeading(responses);
 
@@ -211,7 +211,7 @@ void ConnectionPanel::connect() {
 
         keepOpen = std::make_unique<ximu3::KeepOpen>(*connection);
     } else {
-        connection->openAsync([&, weakReference](auto result) {
+        connection->openAsync([&, weakReference](ximu3::XIMU3_Result result) {
             juce::MessageManager::callAsync([&, weakReference, result] {
                 if (weakReference == nullptr) {
                     return;

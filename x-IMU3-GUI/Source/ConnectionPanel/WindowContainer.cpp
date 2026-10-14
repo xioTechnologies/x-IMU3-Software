@@ -76,7 +76,7 @@ void WindowContainer::resized() {
 
     totalWindowSize = juce::jmax(1, (isVertical ? getHeight() : getWidth()) - (int) (UILayout::panelMargin * resizeBars.size()));
 
-    const auto sizeProportionsSum = std::accumulate(layoutTree.begin(), layoutTree.end(), 0.0f, [](float sum, auto child) {
+    const auto sizeProportionsSum = std::accumulate(layoutTree.begin(), layoutTree.end(), 0.0f, [](float sum, juce::ValueTree child) {
         return sum + (float) child.getProperty(WindowIds::size, 1.0f);
     });
 

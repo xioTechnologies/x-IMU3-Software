@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<ximu3::Device> &)> callback = [](const auto &devices) {
+    std::function<void(const std::vector<ximu3::Device> &)> callback = [](const std::vector<ximu3::Device> &devices) {
         printDevices(devices);
     };
 

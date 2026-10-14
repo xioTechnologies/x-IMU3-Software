@@ -5,7 +5,7 @@
 ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel &connectionPanel_) : connectionPanel(connectionPanel_) {
     addAndMakeVisible(statisticsLabel);
 
-    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+    statisticsCallback = [&, self = SafePointer<juce::Component>(this)](ximu3::XIMU3_Statistics message) {
         juce::MessageManager::callAsync([&, self, message] {
             if (self == nullptr) {
                 return;
@@ -39,7 +39,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel &connectionPanel_) 
         });
     };
 
-    notificationCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+    notificationCallback = [&, self = SafePointer<juce::Component>(this)](ximu3::XIMU3_NotificationMessage message) {
         juce::MessageManager::callAsync([&, self, message] {
             if (self == nullptr) {
                 return;
@@ -52,7 +52,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel &connectionPanel_) 
     };
     notificationCallbackId = connectionPanel.getConnection()->addNotificationCallback(notificationCallback);
 
-    errorCallback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+    errorCallback = [&, self = SafePointer<juce::Component>(this)](ximu3::XIMU3_ErrorMessage message) {
         juce::MessageManager::callAsync([&, self, message] {
             if (self == nullptr) {
                 return;
@@ -104,7 +104,7 @@ void ConnectionPanelFooter::resized() {
 }
 
 void ConnectionPanelFooter::messagesChanged() {
-    const auto getCountText = [&](const auto type) {
+    const auto getCountText = [&](const NotificationsAndErrorsDialog::Message::Type type) {
         int count = 0;
         for (const auto &message: messages) {
             if ((message.type == type) && message.unread && (++count >= 100)) {

@@ -94,15 +94,15 @@ protected:
     }
 
 private:
-    std::function<void(ximu3::XIMU3_ReceiveError error)> receiveErrorCallback = [](auto error) {
+    std::function<void(ximu3::XIMU3_ReceiveError error)> receiveErrorCallback = [](ximu3::XIMU3_ReceiveError error) {
         std::cout << ximu3::XIMU3_receive_error_to_string(error) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_ConnectionStatus error)> statusCallback = [](auto status) {
+    std::function<void(ximu3::XIMU3_ConnectionStatus error)> statusCallback = [](ximu3::XIMU3_ConnectionStatus status) {
         std::cout << ximu3::XIMU3_connection_status_to_string(status) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](auto statistics) {
+    std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback = [](ximu3::XIMU3_Statistics statistics) {
         printf(UINT64_FORMAT " bytes" UINT32_FORMAT " bytes/s" UINT64_FORMAT " messages" UINT32_FORMAT " messages/s" UINT64_FORMAT " errors" UINT32_FORMAT " errors/s\n",
                statistics.data_total,
                statistics.data_rate,
@@ -113,7 +113,7 @@ private:
         // std::cout << ximu3::XIMU3_statistics_to_string(statistics) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](ximu3::XIMU3_InertialMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
                message.gyroscope_x,
@@ -125,7 +125,7 @@ private:
         // std::cout << ximu3::XIMU3_inertial_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback = [](ximu3::XIMU3_MagnetometerMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " a.u." FLOAT_FORMAT " a.u." FLOAT_FORMAT " a.u.\n",
                message.timestamp,
                message.x,
@@ -134,7 +134,7 @@ private:
         // std::cout << ximu3::XIMU3_magnetometer_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_HighGAccelerometerMessage message)> highGAccelerometerCallback = [](ximu3::XIMU3_HighGAccelerometerMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
                message.x,
@@ -143,7 +143,7 @@ private:
         // std::cout << ximu3::XIMU3_high_g_accelerometer_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_QuaternionMessage message)> quaternionCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_QuaternionMessage message)> quaternionCallback = [](ximu3::XIMU3_QuaternionMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
                message.timestamp,
                message.w,
@@ -154,7 +154,7 @@ private:
         std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_quaternion_message_to_euler_angles_message(message)) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_RotationMatrixMessage message)> rotationMatrixCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_RotationMatrixMessage message)> rotationMatrixCallback = [](ximu3::XIMU3_RotationMatrixMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT FLOAT_FORMAT "\n",
                message.timestamp,
                message.xx,
@@ -170,7 +170,7 @@ private:
         std::cout << ximu3::XIMU3_euler_angles_message_to_string(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_EulerAnglesMessage message)> eulerAnglesCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_EulerAnglesMessage message)> eulerAnglesCallback = [](ximu3::XIMU3_EulerAnglesMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " deg" FLOAT_FORMAT " deg" FLOAT_FORMAT " deg\n",
                message.timestamp,
                message.roll,
@@ -180,7 +180,7 @@ private:
         std::cout << ximu3::XIMU3_quaternion_message_to_string(ximu3::XIMU3_euler_angles_message_to_quaternion_message(message)) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_LinearAccelerationMessage message)> linearAccelerationCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_LinearAccelerationMessage message)> linearAccelerationCallback = [](ximu3::XIMU3_LinearAccelerationMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
                message.x,
@@ -189,7 +189,7 @@ private:
         // std::cout << ximu3::XIMU3_linear_acceleration_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_EarthAccelerationMessage message)> earthAccelerationCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_EarthAccelerationMessage message)> earthAccelerationCallback = [](ximu3::XIMU3_EarthAccelerationMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
                message.timestamp,
                message.x,
@@ -198,42 +198,42 @@ private:
         // std::cout << ximu3::XIMU3_earth_acceleration_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_AhrsStatusMessage message)> ahrsStatusCallback = [](ximu3::XIMU3_AhrsStatusMessage message) {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
         // std::cout << ximu3::XIMU3_ahrs_status_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_SerialAccessoryMessage message)> serialAccessoryCallback = [](ximu3::XIMU3_SerialAccessoryMessage message) {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
         // std::cout << ximu3::XIMU3_serial_accessory_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_SyncMessage message)> syncCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_SyncMessage message)> syncCallback = [](ximu3::XIMU3_SyncMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
                message.timestamp,
                message.edge);
         // std::cout << ximu3::XIMU3_sync_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_LtcMessage message)> ltcCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_LtcMessage message)> ltcCallback = [](ximu3::XIMU3_LtcMessage message) {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
         // std::cout << ximu3::XIMU3_ltc_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_TemperatureMessage message)> temperatureCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_TemperatureMessage message)> temperatureCallback = [](ximu3::XIMU3_TemperatureMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " degC\n",
                message.timestamp,
                message.temperature);
         // std::cout << ximu3::XIMU3_temperature_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_BatteryMessage message)> batteryCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_BatteryMessage message)> batteryCallback = [](ximu3::XIMU3_BatteryMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " V" FLOAT_FORMAT " (%s)\n",
                message.timestamp,
                message.percentage,
@@ -243,7 +243,7 @@ private:
         // std::cout << ximu3::XIMU3_battery_message_to_string(message) << " (" << ximu3::XIMU3_charging_status_to_string(ximu3::XIMU3_charging_status_from_float(message.charging_status)) << ")" << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_RssiMessage message)> rssiCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_RssiMessage message)> rssiCallback = [](ximu3::XIMU3_RssiMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " %%" FLOAT_FORMAT " dBm\n",
                message.timestamp,
                message.percentage,
@@ -251,21 +251,21 @@ private:
         // std::cout << ximu3::XIMU3_rssi_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_ButtonMessage message)> buttonCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_ButtonMessage message)> buttonCallback = [](ximu3::XIMU3_ButtonMessage message) {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT "\n",
                message.timestamp,
                message.state);
         // std::cout << ximu3::XIMU3_button_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_NotificationMessage message)> notificationCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_NotificationMessage message)> notificationCallback = [](ximu3::XIMU3_NotificationMessage message) {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);
         // std::cout << ximu3::XIMU3_notification_message_to_string(message) << std::endl; // alternative to above
     };
 
-    std::function<void(ximu3::XIMU3_ErrorMessage message)> errorCallback = [](auto message) {
+    std::function<void(ximu3::XIMU3_ErrorMessage message)> errorCallback = [](ximu3::XIMU3_ErrorMessage message) {
         printf(TIMESTAMP_FORMAT STRING_FORMAT "\n",
                message.timestamp,
                message.char_array);

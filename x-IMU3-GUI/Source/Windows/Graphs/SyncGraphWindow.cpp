@@ -11,7 +11,7 @@ SyncGraphWindow::SyncGraphWindow(const juce::ValueTree &windowLayout_, const juc
                   {UIColours::graphChannel1},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&, previous = std::optional<bool>()](auto message) mutable {
+    callbackIds.push_back(connectionPanel.getConnection()->addSyncCallback(syncCallback = [&, previous = std::optional<bool>()](ximu3::XIMU3_SyncMessage message) mutable {
         const auto edge = message.edge > 0.0f;
 
         if (previous && *previous != edge) {

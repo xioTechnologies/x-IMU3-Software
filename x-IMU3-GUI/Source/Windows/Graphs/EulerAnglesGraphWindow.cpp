@@ -11,17 +11,17 @@ EulerAnglesGraphWindow::EulerAnglesGraphWindow(const juce::ValueTree &windowLayo
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](ximu3::XIMU3_QuaternionMessage message) {
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
         update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](ximu3::XIMU3_RotationMatrixMessage message) {
         const auto eulerAngles = ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message);
         update(message.timestamp, {eulerAngles.roll, eulerAngles.pitch, eulerAngles.yaw});
     }));
 
-    callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](ximu3::XIMU3_EulerAnglesMessage message) {
         update(message.timestamp, {message.roll, message.pitch, message.yaw});
     }));
 }

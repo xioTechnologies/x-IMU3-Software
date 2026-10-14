@@ -5,7 +5,7 @@
 
 namespace KeyCompare {
     inline bool compare(const juce::String &first, const juce::String &second) {
-        const auto normalise = [](auto key) {
+        const auto normalise = [](const juce::String &key) {
             return std::regex_replace(key.toLowerCase().toStdString(), std::regex("[^0-9a-z]"), "");
         };
 

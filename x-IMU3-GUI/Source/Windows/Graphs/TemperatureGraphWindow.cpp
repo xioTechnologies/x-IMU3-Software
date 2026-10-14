@@ -11,7 +11,7 @@ TemperatureGraphWindow::TemperatureGraphWindow(const juce::ValueTree &windowLayo
                   {UIColours::graphChannel1},
                   true,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addTemperatureCallback(temperatureCallback = [&](ximu3::XIMU3_TemperatureMessage message) {
         update(message.timestamp, {message.temperature});
     }));
 }

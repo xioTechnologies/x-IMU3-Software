@@ -7,7 +7,7 @@ LtcWindow::LtcWindow(const juce::ValueTree &windowLayout_, const juce::Identifie
 
     terminal.addMouseListener(this, true);
 
-    callbackId = connectionPanel.getConnection()->addLtcCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+    callbackId = connectionPanel.getConnection()->addLtcCallback(callback = [&, self = SafePointer<juce::Component>(this)](ximu3::XIMU3_LtcMessage message) {
         juce::MessageManager::callAsync([&, self, message] {
             if (self == nullptr) {
                 return;

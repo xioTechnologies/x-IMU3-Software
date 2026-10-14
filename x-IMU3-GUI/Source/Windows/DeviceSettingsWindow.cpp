@@ -18,7 +18,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     readAllButton.onClick = [this] {
         enableInProgress(deviceSettings->getReadKeys());
 
-        connectionPanel.sendCommands(deviceSettings->getReadCommands(), this, [&, keys = deviceSettings->getReadKeys()](const auto &responses) {
+        connectionPanel.sendCommands(deviceSettings->getReadCommands(), this, [&, keys = deviceSettings->getReadKeys()](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
             for (size_t index = 0; index < responses.size(); index++) {
                 const auto key = keys[index];
                 const auto &response = responses[index];
@@ -60,7 +60,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
         }
 
         fileChooser = std::make_unique<juce::FileChooser>("Save Settings File", directory.getChildFile(fileName), "*.json");
-        fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&](const auto &) {
+        fileChooser->launchAsync(juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::warnAboutOverwriting, [&](const juce::FileChooser &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
             }
@@ -90,7 +90,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
         }
 
         fileChooser = std::make_unique<juce::FileChooser>("Select Settings File", defaultFile.value_or(directory), "*.json");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const juce::FileChooser &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
             }
@@ -181,7 +181,7 @@ DeviceSettingsWindow::Settings DeviceSettingsWindow::readFromValueTree() {
 void DeviceSettingsWindow::sendCommand(const juce::String &key, const bool silent, std::function<void()> callback) {
     const std::string command = "{\"" + key.toStdString() + "\":null}";
 
-    connectionPanel.sendCommands({command}, this, [command, silent, callback](const auto &responses) {
+    connectionPanel.sendCommands({command}, this, [command, silent, callback](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         if (silent == false) {
             if (responses.front().has_value() == false) {
                 DialogQueue::getSingleton().pushBack(std::make_unique<ErrorDialog>("No response to " + command));
@@ -200,7 +200,7 @@ void DeviceSettingsWindow::sendCommand(const juce::String &key, const bool silen
 void DeviceSettingsWindow::writeCommands(const std::vector<std::string> &keys, const std::vector<std::string> &commands) {
     enableInProgress(keys);
 
-    connectionPanel.sendCommands(commands, this, [&, keys, commands](const auto &responses) {
+    connectionPanel.sendCommands(commands, this, [&, keys, commands](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         for (size_t index = 0; index < responses.size(); index++) {
             const auto key = keys[index];
             const auto &response = responses[index];
@@ -280,7 +280,7 @@ juce::PopupMenu DeviceSettingsWindow::getMenu() {
     juce::PopupMenu customSchemasMenu;
     customSchemasMenu.addItem("Load Schema", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select Schema", juce::File(), "*.xml");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const juce::FileChooser &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
             }

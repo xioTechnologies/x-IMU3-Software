@@ -19,7 +19,7 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
     };
 
     const auto addNetworkAnnouncementCallback = [&](const std::string &ipAddress) {
-        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](auto message) {
+        networkAnnouncementCallbackId = networkAnnouncement->addCallback(networkAnnouncementCallback = [&, ipAddress](ximu3::XIMU3_NetworkAnnouncementMessage message) {
             if (std::string(message.ip_address) == ipAddress) {
                 if (message.rssi != -1) {
                     rssiIcon.update(message.rssi);
@@ -39,11 +39,11 @@ ConnectionPanelHeader::ConnectionPanelHeader(ConnectionPanel &connectionPanel_, 
         addNetworkAnnouncementCallback(udpConnectionConfig->ip_address);
     }
 
-    rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+    rssiCallbackId = connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](ximu3::XIMU3_RssiMessage message) {
         rssiIcon.update((int) message.percentage);
     });
 
-    batteryCallbackId = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
+    batteryCallbackId = connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](ximu3::XIMU3_BatteryMessage message) {
         batteryIcon.update((int) message.percentage, ximu3::XIMU3_charging_status_from_float(message.charging_status));
     });
 

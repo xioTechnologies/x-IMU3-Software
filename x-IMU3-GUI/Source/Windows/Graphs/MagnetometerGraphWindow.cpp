@@ -11,7 +11,7 @@ MagnetometerGraphWindow::MagnetometerGraphWindow(const juce::ValueTree &windowLa
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addMagnetometerCallback(magnetometerCallback = [&](ximu3::XIMU3_MagnetometerMessage message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));
 }

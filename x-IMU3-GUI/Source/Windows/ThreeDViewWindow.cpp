@@ -17,7 +17,7 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
     addAndMakeVisible(axesConventionLabel);
     addAndMakeVisible(loadingLabel);
 
-    quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](auto message) {
+    quaternionCallbackId = connectionPanel.getConnection()->addQuaternionCallback(quaternionCallback = [&](ximu3::XIMU3_QuaternionMessage message) {
         threeDView.update(message.x, message.y, message.z, message.w);
 
         const auto eulerAngles = ximu3::XIMU3_quaternion_message_to_euler_angles_message(message);
@@ -27,11 +27,11 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
         yaw = eulerAngles.yaw;
     });
 
-    rotationMatrixCallbackId = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](auto message) {
+    rotationMatrixCallbackId = connectionPanel.getConnection()->addRotationMatrixCallback(rotationMatrixCallback = [&](ximu3::XIMU3_RotationMatrixMessage message) {
         quaternionCallback(ximu3::XIMU3_euler_angles_message_to_quaternion_message(ximu3::XIMU3_rotation_matrix_message_to_euler_angles_message(message)));
     });
 
-    eulerAnglesCallbackId = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](auto message) {
+    eulerAnglesCallbackId = connectionPanel.getConnection()->addEulerAnglesCallback(eulerAnglesCallback = [&](ximu3::XIMU3_EulerAnglesMessage message) {
         const auto quaternion = ximu3::XIMU3_euler_angles_message_to_quaternion_message(message);
 
         threeDView.update(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
@@ -85,7 +85,7 @@ void ThreeDViewWindow::resized() {
     ahrsStatusLabel.setBounds(bounds.reduced(100, 0));
     axesConventionLabel.setBounds(bounds);
 
-    const auto setRow = [&](auto &label, auto &value) {
+    const auto setRow = [&](SimpleLabel &label, SimpleLabel &value) {
         auto row = bounds.removeFromTop(20);
         label.setBounds(row.removeFromLeft(50));
         value.setBounds(row);
@@ -263,7 +263,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
     juce::PopupMenu customModelsMenu;
     customModelsMenu.addItem("Load 3D Model", [&] {
         fileChooser = std::make_unique<juce::FileChooser>("Select 3D Model", juce::File(), "*.obj");
-        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const auto &) {
+        fileChooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&](const juce::FileChooser &) {
             if (fileChooser->getResult() == juce::File()) {
                 return;
             }

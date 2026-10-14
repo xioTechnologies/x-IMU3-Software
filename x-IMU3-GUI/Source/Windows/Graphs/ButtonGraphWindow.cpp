@@ -11,7 +11,7 @@ ButtonGraphWindow::ButtonGraphWindow(const juce::ValueTree &windowLayout_, const
                   {UIColours::graphChannel1},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&, previous = std::optional<bool>()](auto message) mutable {
+    callbackIds.push_back(connectionPanel.getConnection()->addButtonCallback(buttonCallback = [&, previous = std::optional<bool>()](ximu3::XIMU3_ButtonMessage message) mutable {
         const auto state = message.state > 0.0f;
 
         if (previous && *previous != state) {

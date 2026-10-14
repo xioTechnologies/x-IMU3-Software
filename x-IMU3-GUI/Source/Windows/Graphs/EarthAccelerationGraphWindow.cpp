@@ -11,7 +11,7 @@ EarthAccelerationGraphWindow::EarthAccelerationGraphWindow(const juce::ValueTree
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addEarthAccelerationCallback(earthAccelerationCallback = [&](ximu3::XIMU3_EarthAccelerationMessage message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));
 }

@@ -11,7 +11,7 @@ LinearAccelerationGraphWindow::LinearAccelerationGraphWindow(const juce::ValueTr
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addLinearAccelerationCallback(linearAccelerationCallback = [&](ximu3::XIMU3_LinearAccelerationMessage message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));
 }

@@ -313,7 +313,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu() {
     menu.addItem("Disconnect All (" + juce::String(connectionPanelContainer.getConnectionPanels().size()) + ")", [this] {
         disconnect(nullptr);
     });
-    addDevices(menu, [&](auto &connectionPanel) {
+    addDevices(menu, [&](ConnectionPanel &connectionPanel) {
         disconnect(&connectionPanel);
     });
 
@@ -323,7 +323,7 @@ juce::PopupMenu MenuStrip::getDisconnectMenu() {
 juce::PopupMenu MenuStrip::getConnectionLayoutMenu() {
     juce::PopupMenu menu;
 
-    const auto addItem = [&](const auto layout, const auto &text) {
+    const auto addItem = [&](const ConnectionPanelContainer::Layout layout, const juce::String &text) {
         int _, height;
         getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
 
@@ -400,7 +400,7 @@ juce::PopupMenu MenuStrip::getWindowMenu() {
 
     menu.addSubMenu("Arrange", arrangeMenu);
 
-    const auto addWindows = [&](auto title, const std::vector<juce::Identifier> &ids) {
+    const auto addWindows = [&](juce::String title, const std::vector<juce::Identifier> &ids) {
         menu.addSeparator();
         menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>(title), nullptr);
 
@@ -499,7 +499,7 @@ juce::PopupMenu MenuStrip::getSendCommandMenu() {
         });
     });
 
-    addDevices(menu, [&](auto &connectionPanel) {
+    addDevices(menu, [&](ConnectionPanel &connectionPanel) {
         DialogQueue::getSingleton().pushFront(std::make_unique<SendCommandDialog>("Send Command to " + connectionPanel.getHeading(), connectionPanel.getColourTag()), [&, connectionPanel_ = &connectionPanel] {
             if (auto *dialog = dynamic_cast<SendCommandDialog *>(DialogQueue::getSingleton().getActive())) {
                 DialogQueue::getSingleton().pushFront(std::make_unique<SendingCommandDialog>(std::vector<ConnectionPanel *>({connectionPanel_}), dialog->getCommand()));

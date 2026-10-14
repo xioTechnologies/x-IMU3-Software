@@ -105,7 +105,7 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
 void CommandsGroup::resized() {
     auto bounds = getContentBounds();
 
-    const auto setTextSettingBounds = [&](auto &label, auto &value) {
+    const auto setTextSettingBounds = [&](SimpleLabel &label, CustomTextEditor &value) {
         auto row = bounds.removeFromTop(UILayout::textComponentHeight).withTrimmedLeft(6); // align with toggle checkbox, from CustomToggleButtonLookAndFeel
         label.setBounds(row.removeFromLeft(100));
         row.removeFromLeft(15);

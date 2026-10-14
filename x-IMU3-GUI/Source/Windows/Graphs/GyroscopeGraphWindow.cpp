@@ -11,7 +11,7 @@ GyroscopeGraphWindow::GyroscopeGraphWindow(const juce::ValueTree &windowLayout_,
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](ximu3::XIMU3_InertialMessage message) {
         update(message.timestamp, {message.gyroscope_x, message.gyroscope_y, message.gyroscope_z});
     }));
 }

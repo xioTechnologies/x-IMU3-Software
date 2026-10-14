@@ -37,7 +37,7 @@ public:
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_FileConverterProgress)> callback = [](const auto &progress) {
+    std::function<void(const ximu3::XIMU3_FileConverterProgress)> callback = [](const ximu3::XIMU3_FileConverterProgress &progress) {
         printf("%s, %0.1f%%, %" PRIu64 " of %" PRIu64 " bytes\n",
                ximu3::XIMU3_file_converter_status_to_string(progress.status),
                progress.percentage,

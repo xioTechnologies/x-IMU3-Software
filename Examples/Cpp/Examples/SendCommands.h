@@ -58,7 +58,7 @@ public:
     }
 
 private:
-    std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &)> callback = [](const auto &responses) {
+    std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &)> callback = [](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
         printResponses(responses);
     };
 

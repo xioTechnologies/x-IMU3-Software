@@ -28,7 +28,7 @@ public:
         }
         mostRecentTimestamp = timestamp;
 
-        juce::AbstractFifo::ScopedWrite(fifo, 1).forEach([&](auto index) {
+        juce::AbstractFifo::ScopedWrite(fifo, 1).forEach([&](int index) {
             fifoData[(size_t) index] = {timestamp, values};
             fifoData[(size_t) index].values.resize(channelBuffers.size());
         });
@@ -75,7 +75,7 @@ private:
 
         // Copy new data
         auto writeIndex = std::min(OpenGLResources::graphBufferSize - fifoNumReady, numberAvailable);
-        juce::AbstractFifo::ScopedRead(fifo, (int) fifoNumReady).forEach([&](auto fifoIndex) {
+        juce::AbstractFifo::ScopedRead(fifo, (int) fifoNumReady).forEach([&](int fifoIndex) {
             timestamps[(size_t) writeIndex] = fifoData[(size_t) fifoIndex].timestamp;
 
             for (size_t lineIndex = 0; lineIndex < channelBuffers.size(); lineIndex++) {

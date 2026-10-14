@@ -11,7 +11,7 @@ HighGAccelerometerGraphWindow::HighGAccelerometerGraphWindow(const juce::ValueTr
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addHighGAccelerometerCallback(highGAccelerometerCallback = [&](ximu3::XIMU3_HighGAccelerometerMessage message) {
         update(message.timestamp, {message.x, message.y, message.z});
     }));
 }
