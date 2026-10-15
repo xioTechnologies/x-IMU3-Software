@@ -57,7 +57,7 @@ private:
         std::cout << devices.size() << " device(s) found" << std::endl;
 
         for (const auto &device: devices) {
-            std::cout << device.device_name << ", " << device.serial_number << ", " << ximu3::ConnectionConfig::from(device)->toString() << std::endl;
+            std::cout << device.model << ", " << device.serial_number << ", " << device.device_name << ", " << ximu3::ConnectionConfig::from(device)->toString() << std::endl;
             // std::cout << device.toString() << std::endl; // alternative to above
         }
     }

@@ -58,7 +58,7 @@ private:
             return;
         }
 
-        std::cout << response->interface << ", " << response->device_name << ", " << response->serial_number << std::endl;
+        std::cout << response->interface << ", " << response->model << ", " << response->serial_number << ", " << response->device_name << std::endl;
         // std::cout << ximu3::XIMU3_ping_response_to_string(*response) << std::endl; // alternative to above
     }
 };
