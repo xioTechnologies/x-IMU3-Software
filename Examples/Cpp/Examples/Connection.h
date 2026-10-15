@@ -98,7 +98,7 @@ private:
         std::cout << ximu3::XIMU3_receive_error_to_string(error) << std::endl;
     };
 
-    std::function<void(ximu3::XIMU3_ConnectionStatus error)> statusCallback = [](ximu3::XIMU3_ConnectionStatus status) {
+    std::function<void(ximu3::XIMU3_ConnectionStatus status)> statusCallback = [](ximu3::XIMU3_ConnectionStatus status) {
         std::cout << ximu3::XIMU3_connection_status_to_string(status) << std::endl;
     };
 

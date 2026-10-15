@@ -16,7 +16,7 @@ public:
 
     void setModel(const juce::String &objFileContent, const juce::String &mtlFileContent);
 
-    void setModel(const juce::File &objFile);
+    void setModel(const juce::File &objFile_);
 
     bool isLoading() const;
 

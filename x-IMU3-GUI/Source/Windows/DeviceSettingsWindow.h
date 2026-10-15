@@ -10,7 +10,7 @@
 
 class DeviceSettingsWindow : public Window {
 public:
-    DeviceSettingsWindow(const juce::ValueTree &windowLayout, const juce::Identifier &type, ConnectionPanel &connectionPanel_);
+    DeviceSettingsWindow(const juce::ValueTree &windowLayout_, const juce::Identifier &type_, ConnectionPanel &connectionPanel_);
 
     void paint(juce::Graphics &g) override;
 

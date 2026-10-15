@@ -23,7 +23,7 @@ public:
                     std::shared_ptr<ximu3::Connection> connection_,
                     OpenGLRenderer &openGLRenderer_,
                     ConnectionPanelContainer &connectionPanelContainer_,
-                    const juce::Colour &tag_,
+                    const juce::Colour &colourTag_,
                     const bool keepOpenEnabled_);
 
     ~ConnectionPanel() override;

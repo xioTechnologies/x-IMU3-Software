@@ -31,7 +31,7 @@ print_response(response)
 
 
 # Ping (non-blocking)
-def callback(response: ximu3.PingResponse) -> None:
+def callback(response: ximu3.PingResponse | None) -> None:
     print_response(response)
 
 
