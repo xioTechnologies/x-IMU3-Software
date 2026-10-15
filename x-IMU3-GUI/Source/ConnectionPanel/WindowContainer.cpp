@@ -48,7 +48,7 @@ private:
     void updateTreeState() {
         for (size_t i = 0; i < parent.childComponents.size(); i++) {
             const auto componentSize = parent.isVertical ? parent.childComponents[i]->getHeight() : parent.childComponents[i]->getWidth();
-            const auto sizeProportion = componentSize / (float) parent.totalWindowSize;
+            const auto sizeProportion = (float) componentSize / (float) parent.totalWindowSize;
             parent.layoutTree.getChild((int) i).setPropertyExcludingListener(&parent, WindowIds::size, sizeProportion, nullptr);
         }
     }
@@ -84,7 +84,7 @@ void WindowContainer::resized() {
     for (int i = 0; i < (int) (childComponents.size() + resizeBars.size()) - 1; i++) {
         if (i % 2 == 0) {
             const auto index = i / 2;
-            const auto size = juce::roundToInt(totalWindowSize * (float) layoutTree.getChild(index).getProperty(WindowIds::size, 1.0f) / sizeProportionsSum);
+            const auto size = juce::roundToInt((float) totalWindowSize * (float) layoutTree.getChild(index).getProperty(WindowIds::size, 1.0f) / sizeProportionsSum);
             if (isVertical) {
                 childComponents[(size_t) index]->setBounds(0, position, getWidth(), size);
             } else {

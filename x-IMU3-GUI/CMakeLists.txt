@@ -90,6 +90,10 @@ target_link_libraries(x-IMU3-GUI
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_options(x-IMU3-GUI PRIVATE $<$<CONFIG:Release>:-flto=auto>) # parallel LTRANS jobs instead of serial compilation
+endif ()
+
 target_include_directories(x-IMU3-GUI
         PRIVATE
         "Source"

@@ -44,8 +44,8 @@ void ConnectionPanelContainer::resized() {
     }
 
     auto panelsBounds = getLocalBounds().toFloat();
-    const auto columnWidth = (panelsBounds.getWidth() - (numberOfColumns - 1) * UILayout::panelMargin) / numberOfColumns;
-    const auto rowHeight = (panelsBounds.getHeight() - (numberOfRows - 1) * UILayout::panelMargin) / numberOfRows;
+    const auto columnWidth = (panelsBounds.getWidth() - (float) ((numberOfColumns - 1) * UILayout::panelMargin)) / (float) numberOfColumns;
+    const auto rowHeight = (panelsBounds.getHeight() - (float) ((numberOfRows - 1) * UILayout::panelMargin)) / (float) numberOfRows;
 
     size_t connectionPanelIndex = 0;
     int top = 0;
