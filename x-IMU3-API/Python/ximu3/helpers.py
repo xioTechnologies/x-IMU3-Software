@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from enum import Flag, auto
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any
+from typing import Any, Self
 
 from . import _core as ximu3
 
@@ -96,14 +96,14 @@ def scanner(
 
 
 class Connection(ximu3.Connection):
-    def open(self) -> "Connection":
+    def open(self) -> Self:
         super().open()
 
         self._keep_open = ximu3.KeepOpen(self)
 
         return self
 
-    def close(self) -> "Connection":
+    def close(self) -> Self:
         self._keep_open = None  # may return before ximu3.KeepOpen Drop impl completes
 
         return self

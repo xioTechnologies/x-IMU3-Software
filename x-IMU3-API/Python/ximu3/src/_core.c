@@ -36,14 +36,7 @@ bool add_object(PyObject *const module, PyTypeObject *const type_object, const c
         return false;
     }
 
-    Py_INCREF(type_object);
-
-    if (PyModule_AddObject(module, name, (PyObject *) type_object) == 0) {
-        return true;
-    }
-
-    Py_DECREF(type_object);
-    return false;
+    return PyModule_AddObjectRef(module, name, (PyObject *) type_object) == 0;
 }
 
 PyMODINIT_FUNC PyInit__core() {
