@@ -35,13 +35,13 @@ public:
 private:
     enum class Type {
         string,
-        number,
+        numberRaw,
         true_,
         false_,
         null,
     };
 
-    static const inline juce::StringArray typeStrings{"string", "number", "true", "false", "null"};
+    static const inline juce::StringArray typeStrings{"String", "Number/Raw", "true", "false", "null"};
 
     const Dictionary dictionary;
 
@@ -52,21 +52,17 @@ private:
     SimpleLabel valueLabel{"Value:"};
     CustomComboBox typeValue;
     CustomTextEditor stringValue;
-    CustomTextEditor numberValue;
+    CustomTextEditor numberRawValue;
 
     SimpleLabel commandLabel{"Command:"};
     CustomTextEditor commandValue;
 
     IconButton previousCommandsButton{BinaryData::history_svg, "History", std::bind(&SendCommandDialog::getPreviousCommandsMenu, this)};
 
-    juce::ValueTree previousCommands;
+    std::vector<ximu3::CommandMessage> previousCommands;
     const juce::File file = ApplicationSettings::getDirectory().getChildFile("Commands.xml");
 
-    static Type typeFrom(const juce::String &string);
-
-    static juce::String createCommand(const juce::String &key, const Type type, const juce::String &string, const juce::String &number);
-
-    void selectCommand(const juce::ValueTree command);
+    void selectCommand(const ximu3::CommandMessage &command);
 
     juce::PopupMenu getDictionaryMenu();
 
