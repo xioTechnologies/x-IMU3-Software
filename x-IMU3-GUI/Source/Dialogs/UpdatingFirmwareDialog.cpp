@@ -18,7 +18,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
     threadPool.addJob([&, &threadPool_ = threadPool] {
         const auto showError = [&](const juce::String &error, const bool tryAgain = true) {
             juce::MessageManager::callAsync([&, error, tryAgain] {
-                DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>(error + (tryAgain ? ". Please try again." : "")));
+                DialogQueue::getSingleton().pushFront(std::make_unique<ErrorDialog>(error, tryAgain ? "Try Again" : "OK"));
                 DialogQueue::getSingleton().pop();
                 if (tryAgain) {
                     UpdateFirmwareDialog::launch(threadPool_);
@@ -41,13 +41,28 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
             return;
         }
 
+        const auto readSetting = [&](const std::string &key) {
+            const auto response = connection->sendCommand("{\"" + key + "\":null}", ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
+
+            if (response.has_value() == false) {
+                throw std::runtime_error("No response");
+            }
+
+            if (response->error.has_value()) {
+                throw std::runtime_error(*response->error);
+            }
+
+            return response->value;
+        };
+
         // Read hardware version
-        const auto responses = connection->sendCommands({"{\"hardware_version\":null}"}, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);
-        if (responses.front().has_value() == false || responses.front()->error.has_value()) {
-            showError("Unable to read hardware version");
+        std::string hardwareVersion;
+        try {
+            hardwareVersion = readSetting("hardware_version");
+        } catch (const std::exception &e) {
+            showError("Unable to read hardware version: " + juce::String(e.what()));
             return;
         }
-        const auto hardwareVersion = responses.front()->value;
 
         // Check compatibility
         const auto firmwareIsV2 = firmware.getFileName().startsWith("x-IMU3-Firmware-v2.");
@@ -59,8 +74,10 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
 
         // Send bootloader command
         updateProgress("Sending Bootloader Command");
-        if (connection->sendCommands({"{\"bootloader\":null}"}, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout).empty()) {
-            showError("Unable to confirm bootloader command");
+        try {
+            readSetting("bootloader");
+        } catch (const std::exception &e) {
+            showError("Unable to confirm bootloader command: " + juce::String(e.what()));
             return;
         }
 
