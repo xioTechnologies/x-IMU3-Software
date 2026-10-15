@@ -5,28 +5,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <optional>
 #include "OpenGLComponent.h"
 
-class ThreeDView : public OpenGLComponent {
+class ThreeDView : public OpenGLComponent,
+                   private juce::AsyncUpdater {
 public:
-    enum class Model {
-        board,
-        housing,
-        custom,
-    };
-
-    static Model modelFrom(const int integer) {
-        switch (static_cast<Model>(integer)) {
-            case Model::board:
-                return Model::board;
-            case Model::housing:
-                return Model::housing;
-            case Model::custom:
-                return Model::custom;
-        }
-        return Model::board;
-    }
-
     enum class AxesConvention {
         nwu,
         enu,
@@ -54,22 +38,24 @@ public:
         bool modelEnabled = true;
         bool axesEnabled = true;
         bool compassEnabled = true;
-        Model model{Model::housing};
-        juce::File customModel;
         AxesConvention axesConvention{AxesConvention::nwu};
     };
 
-    explicit ThreeDView(OpenGLRenderer &renderer_);
+    ThreeDView(OpenGLRenderer &renderer_, std::function<void(bool loading)> onLoading_);
 
     ~ThreeDView() override;
 
     void render() override;
 
-    void setSettings(Settings settings_);
+    void setSettings(const Settings& settings_);
 
     Settings getSettings() const;
 
-    bool isLoading() const;
+    void setModel(const std::optional<juce::File> &model_);
+
+    std::optional<juce::File> getModel() const;
+
+    void reloadModel();
 
     void setHudEnabled(const bool enabled);
 
@@ -77,9 +63,14 @@ public:
 
 private:
     OpenGLRenderer &renderer;
+    const std::function<void(bool loading)> onLoading;
 
-    mutable std::mutex settingsMutex;
+    mutable std::mutex renderMutex;
+
     Settings settings;
+    std::optional<juce::File> model;
+    bool reload { false };
+    std::atomic<bool> loading{true};
 
     std::atomic<float> quaternionX{0.0f}, quaternionY{0.0f}, quaternionZ{0.0f}, quaternionW{1.0f};
 
@@ -98,6 +89,8 @@ private:
     void renderAxesForDeviceOrientation(const glm::mat4 &deviceRotation, const glm::mat4 &axesConventionRotation) const;
 
     void renderAxesForWorldOrientation(const glm::mat4 &axesConventionRotation) const;
+
+    void handleAsyncUpdate() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThreeDView)
 };

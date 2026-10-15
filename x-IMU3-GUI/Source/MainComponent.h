@@ -9,11 +9,13 @@
 #include "OpenGL/Common/OpenGLRenderer.h"
 #include "Schema/Schema.h"
 #include "Widgets/DisabledOverlay.h"
+#include "Windows/ThreeDViewWindow/Models.h"
 #include "Windows/WindowIds.h"
 
 class MainComponent : public juce::Component, private juce::ChangeListener {
 public:
     MainComponent() {
+        Models::copyDefaultModels();
         Schema::copyDefaultSchemas();
 
         addAndMakeVisible(menuStrip);
