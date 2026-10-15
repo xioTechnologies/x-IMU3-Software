@@ -2,6 +2,7 @@ use crate::command_message::*;
 use crate::data_messages::*;
 use crate::dispatcher::*;
 use crate::mux_message::*;
+use crate::ping_response::*;
 use crate::receive_error::*;
 use crate::statistics::*;
 
@@ -61,6 +62,10 @@ impl Receiver {
 
     fn receive_command_message(&self) -> Result<(), ReceiveError> {
         let response = CommandMessage::parse(&self.buffer[..self.index]).ok_or(ReceiveError::InvalidJson)?;
+
+        if let Some(ping_response) = PingResponse::parse(&response) {
+            self.dispatcher.sender.send(DispatcherData::Ping(ping_response)).ok();
+        }
 
         self.dispatcher.sender.send(DispatcherData::Command(response)).ok();
         Ok(())
