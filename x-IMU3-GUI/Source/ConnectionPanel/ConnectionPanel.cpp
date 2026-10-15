@@ -72,11 +72,11 @@ std::shared_ptr<ximu3::Connection> ConnectionPanel::getConnection() {
     return connection;
 }
 
-void ConnectionPanel::sendCommands(const std::vector<std::string> &commands, SafePointer<juce::Component> callbackOwner, std::function<void(const std::vector<std::optional<ximu3::CommandMessage> > &responses)> callback) {
-    connection->sendCommandsAsync(commands, [&, callbackOwner, callback](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-        juce::MessageManager::callAsync([&, callbackOwner, callback, responses] {
+void ConnectionPanel::sendCommand(const std::string &command, SafePointer<juce::Component> callbackOwner, std::function<void(const std::optional<ximu3::CommandMessage> &response)> callback) {
+    connection->sendCommandAsync(command, [callbackOwner, callback](const std::optional<ximu3::CommandMessage> &response) {
+        juce::MessageManager::callAsync([callbackOwner, callback, response] {
             if (callbackOwner != nullptr && callback != nullptr) {
-                callback(responses);
+                callback(response);
             }
         });
     }, ApplicationSettings::getSingleton().commands.retries, ApplicationSettings::getSingleton().commands.timeout);

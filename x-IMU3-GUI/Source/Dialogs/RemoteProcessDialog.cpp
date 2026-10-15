@@ -36,9 +36,7 @@ void RemoteProcessDialog::onStart(const bool retry) {
 
             const std::string command = "{\"" + prefix + "_start\":" + (timeout ? std::to_string(*timeout) : "null") + "}";
 
-            connectionPanels[(size_t) index]->sendCommands({command}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-                const auto &response = responses.front();
-
+            connectionPanels[(size_t) index]->sendCommand(command, this, [&, index](const std::optional<ximu3::CommandMessage> &response) {
                 if (response.has_value() == false) {
                     setFailed(index, "No response");
                     return;
@@ -58,13 +56,13 @@ void RemoteProcessDialog::onStart(const bool retry) {
 
 void RemoteProcessDialog::onComplete() {
     for (auto &connectionPanel: connectionPanels) {
-        connectionPanel->sendCommands({"{\"" + prefix + "_complete\":null}"});
+        connectionPanel->sendCommand("{\"" + prefix + "_complete\":null}");
     };
 }
 
 void RemoteProcessDialog::onCancel() {
     for (auto &connectionPanel: connectionPanels) {
-        connectionPanel->sendCommands({"{\"" + prefix + "_abort\":null}"});
+        connectionPanel->sendCommand("{\"" + prefix + "_abort\":null}");
     };
 }
 
@@ -125,9 +123,7 @@ void RemoteProcessDialog::startPolling(const int index) {
 }
 
 void RemoteProcessDialog::save(const int index) {
-    connectionPanels[(size_t) index]->sendCommands({"{\"save\":null}"}, this, [&, index](const std::vector<std::optional<ximu3::CommandMessage> > &responses) {
-        const auto &response = responses.front();
-
+    connectionPanels[(size_t) index]->sendCommand("{\"save\":null}", this, [&, index](const std::optional<ximu3::CommandMessage> &response) {
         if (response.has_value() == false) {
             setFailed(index, "No response");
             return;
