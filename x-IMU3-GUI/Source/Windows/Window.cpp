@@ -49,7 +49,7 @@ void Window::closeWindow(const juce::Identifier &type_) {
 
 void Window::valueTreeChildAdded(juce::ValueTree &, juce::ValueTree &) {
     const auto newSettingsTree = findWindow(windowLayout, type);
-    if (newSettingsTree.isValid() == false) {
+    if (newSettingsTree.isValid() == false || newSettingsTree == settingsTree) {
         return;
     }
 
