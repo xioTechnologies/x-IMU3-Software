@@ -27,7 +27,7 @@ impl UsbConnection {
 }
 
 impl GenericConnection for UsbConnection {
-    fn open(&mut self) -> std::io::Result<()> {
+    fn open(&mut self) -> crossbeam::channel::Receiver<std::io::Result<()>> {
         self.serial_connection.open()
     }
 
