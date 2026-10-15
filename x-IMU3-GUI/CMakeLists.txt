@@ -10,15 +10,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(JUCE)
 
-Set(CMAKE_DISABLE_FIND_PACKAGE_ZLIB TRUE)
-Set(CMAKE_DISABLE_FIND_PACKAGE_PNG TRUE)
-Set(CMAKE_DISABLE_FIND_PACKAGE_BZip2 TRUE)
-Set(CMAKE_DISABLE_FIND_PACKAGE_BrotliDec TRUE)
-Set(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz TRUE)
+Set(FT_DISABLE_ZLIB TRUE) # use FreeType's internal zlib
+Set(FT_DISABLE_BZIP2 TRUE)
+Set(FT_DISABLE_PNG TRUE)
+Set(FT_DISABLE_HARFBUZZ TRUE)
+Set(FT_DISABLE_BROTLI TRUE)
+Set(FT_DISABLE_HVF TRUE)
 FetchContent_Declare(
         freetype
         GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-        GIT_TAG VER-2-14-1
+        GIT_TAG VER-2-15-0
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE
 )
