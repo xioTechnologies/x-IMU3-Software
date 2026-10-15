@@ -11,7 +11,7 @@ BatteryPercentageGraphWindow::BatteryPercentageGraphWindow(const juce::ValueTree
                   {UIColours::graphChannel1},
                   true,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addBatteryCallback(batteryCallback = [&](ximu3::XIMU3_BatteryMessage message) {
         update(message.timestamp, {message.percentage});
     }));
 }

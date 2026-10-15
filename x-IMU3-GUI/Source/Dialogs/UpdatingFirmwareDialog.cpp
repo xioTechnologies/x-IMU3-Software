@@ -26,7 +26,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
             });
         };
 
-        const auto updateProgress = [&](const auto &text, bool completed = false) {
+        const auto updateProgress = [&](const juce::String &text, bool completed = false) {
             juce::MessageManager::callAsync([&, text, completed] {
                 progressBarValue = completed ? 1.0 : (progressBarValue + (1.0 - progressBarValue) / 5);
                 progressBar.setTextToDisplay(text);
@@ -89,7 +89,7 @@ UpdatingFirmwareDialog::UpdatingFirmwareDialog(std::unique_ptr<ximu3::Connection
         juce::Thread::sleep(5000);
 
         auto portNames = ximu3::PortScanner::getPortNames();
-        std::stable_partition(portNames.begin(), portNames.end(), [](const auto &portName) {
+        std::stable_partition(portNames.begin(), portNames.end(), [](const std::string &portName) {
             return juce::String(portName).containsIgnoreCase("usb");
         }); // reorder for USB ports first
 

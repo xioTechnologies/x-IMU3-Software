@@ -11,7 +11,7 @@ AccelerometerGraphWindow::AccelerometerGraphWindow(const juce::ValueTree &window
                   {UIColours::graphX, UIColours::graphY, UIColours::graphZ},
                   false,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addInertialCallback(inertialCallback = [&](ximu3::XIMU3_InertialMessage message) {
         update(message.timestamp, {message.accelerometer_x, message.accelerometer_y, message.accelerometer_z});
     }));
 }

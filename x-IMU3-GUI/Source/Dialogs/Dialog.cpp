@@ -7,7 +7,7 @@ Dialog::Dialog(const juce::String &icon_, const juce::String &dialogTitle, const
       bottomLeftComponent(bottomLeftComponent_),
       bottomLeftComponentWidth(bottomLeftComponentWidth_),
       resizable(resizable_) {
-    auto initButton = [this](auto &button, auto visible, const auto &buttonText, auto toggleState) {
+    auto initButton = [this](juce::TextButton &button, bool visible, const juce::String &buttonText, bool toggleState) {
         addChildComponent(&button);
         button.setToggleState(toggleState, juce::dontSendNotification);
         button.setWantsKeyboardFocus(false);

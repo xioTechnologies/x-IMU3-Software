@@ -68,7 +68,7 @@ void Setting::setValue(const juce::var &value) {
 }
 
 void Setting::updateIcon() {
-    auto updateIcons = [&](auto status, auto tooltip) {
+    auto updateIcons = [&](Status status, const juce::var &tooltip) {
         modifiedIcon.setVisible(status == Status::modified);
         warningIcon.setVisible(status == Status::warning);
         modifiedIcon.setTooltip(tooltip);
@@ -86,7 +86,7 @@ void Setting::updateIcon() {
         return;
     }
 
-    const std::function<juce::ValueTree(juce::ValueTree)> getStatus = [&](auto settings) {
+    const std::function<juce::ValueTree(juce::ValueTree)> getStatus = [&](juce::ValueTree settings) {
         juce::ValueTree status = settings;
         for (const auto setting: settings) {
             if (getStatus(setting)[DeviceSettingsIds::status] > status[DeviceSettingsIds::status]) {

@@ -34,7 +34,7 @@ public:
     }
 
 private:
-    std::function<void(const ximu3::XIMU3_ConnectionStatus)> callback = [](const auto status) {
+    std::function<void(const ximu3::XIMU3_ConnectionStatus)> callback = [](const ximu3::XIMU3_ConnectionStatus status) {
         switch (status) {
             case ximu3::XIMU3_ConnectionStatusConnected:
                 std::cout << "Connected" << std::endl;

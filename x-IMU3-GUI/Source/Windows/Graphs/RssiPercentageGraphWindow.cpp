@@ -11,7 +11,7 @@ RssiPercentageGraphWindow::RssiPercentageGraphWindow(const juce::ValueTree &wind
                   {UIColours::graphChannel1},
                   true,
                   true) {
-    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addRssiCallback(rssiCallback = [&](ximu3::XIMU3_RssiMessage message) {
         update(message.timestamp, {message.percentage});
     }));
 }

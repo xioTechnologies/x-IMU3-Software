@@ -24,7 +24,7 @@ SerialAccessoryTerminalWindow::SerialAccessoryTerminalWindow(const juce::ValueTr
         terminal.addLine(line);
     };
 
-    callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](auto message) {
+    callbackId = connectionPanel.getConnection()->addSerialAccessoryCallback(callback = [&, self = SafePointer<juce::Component>(this)](ximu3::XIMU3_SerialAccessoryMessage message) {
         juce::MessageManager::callAsync([&, self, message] {
             if (self == nullptr) {
                 return;

@@ -218,7 +218,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int> &plotBounds, con
 
     // Collect only text labels from std::vector<Tick>
     auto labelsToDraw = ticks;
-    labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto &tick) {
+    labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](const Tick &tick) {
         return tick.label.isEmpty();
     }), labelsToDraw.end());
 
@@ -232,7 +232,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int> &plotBounds, con
         };
 
         // Remove any tick text which would extend past the edges of the drawing bounds
-        labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto &tick) {
+        labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](const Tick &tick) {
             const auto [leftEdgeX, rightEdgeX] = getLabelEdges(tick);
             return leftEdgeX < (float) glDrawBounds.getX() || rightEdgeX > (float) glDrawBounds.getRight();
         }), labelsToDraw.end());
@@ -256,7 +256,7 @@ void Graph::drawTicks(bool isXTicks, const juce::Rectangle<int> &plotBounds, con
             const auto halvingCount = static_cast<int>(std::ceil(std::log2(labelsToDraw.size())));
             for (int i = 0; (i < halvingCount) && areAnyLabelsTooClose(); i++) {
                 // Erase every other element (odd indices), except for "0" or "t" if it is displayed
-                labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](auto &tick) {
+                labelsToDraw.erase(std::remove_if(labelsToDraw.begin(), labelsToDraw.end(), [&](const Tick &tick) {
                     return ((&tick - &*labelsToDraw.begin()) % 2) && tick.label != "0" && tick.label != "t";
                 }), labelsToDraw.end());
             }

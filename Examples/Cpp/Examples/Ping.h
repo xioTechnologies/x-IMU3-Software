@@ -48,7 +48,7 @@ public:
     }
 
 private:
-    std::function<void(std::optional<ximu3::XIMU3_PingResponse>)> callback = [](const auto response) {
+    std::function<void(std::optional<ximu3::XIMU3_PingResponse>)> callback = [](const std::optional<ximu3::XIMU3_PingResponse> response) {
         printResponse(response);
     };
 

@@ -24,7 +24,7 @@ public:
         // Open connection
         ximu3::Connection connection(*ximu3::ConnectionConfig::from(devices[0]));
 
-        const auto callback = [&connection](const auto result) {
+        const auto callback = [&connection](const ximu3::XIMU3_Result result) {
             if (result != ximu3::XIMU3_ResultOk) {
                 std::cout << "Unable to open " << connection.getConfig()->toString() << ": " << XIMU3_result_to_string(result) << std::endl;
                 return;

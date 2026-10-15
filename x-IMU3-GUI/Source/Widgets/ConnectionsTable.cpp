@@ -44,7 +44,7 @@ void ConnectionsTable::resized() {
 }
 
 void ConnectionsTable::setRows(std::vector<Row> rows_) {
-    static const auto find = [](auto &vector, const auto &value) {
+    static const auto find = [](std::vector<Row> &vector, const Row &value) {
         auto it = std::find(vector.begin(), vector.end(), value);
         return it != vector.end() ? &*it : nullptr;
     };
@@ -62,7 +62,7 @@ void ConnectionsTable::setRows(std::vector<Row> rows_) {
         }
     }
 
-    std::stable_partition(rows.rbegin(), rows.rend(), [](const auto &row) {
+    std::stable_partition(rows.rbegin(), rows.rend(), [](const Row &row) {
         return row.unavailable;
     });
 

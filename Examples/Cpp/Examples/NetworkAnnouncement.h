@@ -30,7 +30,7 @@ public:
     }
 
 private:
-    std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> callback = [](const auto &message) {
+    std::function<void(ximu3::XIMU3_NetworkAnnouncementMessage)> callback = [](const ximu3::XIMU3_NetworkAnnouncementMessage &message) {
         printMessage(message);
     };
 

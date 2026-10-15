@@ -11,7 +11,7 @@ ReceivedDataRateGraphWindow::ReceivedDataRateGraphWindow(const juce::ValueTree &
                   {UIColours::graphChannel1},
                   true,
                   false) {
-    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](auto message) {
+    callbackIds.push_back(connectionPanel.getConnection()->addStatisticsCallback(statisticsCallback = [&](ximu3::XIMU3_Statistics message) {
         update(static_cast<uint64_t>(juce::Time::getMillisecondCounterHiRes() * 1000.0), {(float) message.data_rate / 1000.0f});
     }));
 }

@@ -34,7 +34,7 @@ std::vector<ximu3::ConnectionConfig *> FindConnectionsDialog::getConnectionConfi
 
 juce::PopupMenu FindConnectionsDialog::getFilterMenu() {
     juce::PopupMenu menu;
-    const auto addFilterItem = [&](const auto &name, juce::CachedValue<bool> &value) {
+    const auto addFilterItem = [&](const juce::String &name, juce::CachedValue<bool> &value) {
         menu.addItem(name, true, value, [&value] {
             value = !value;
         });
@@ -102,7 +102,7 @@ void FindConnectionsDialog::timerCallback() {
         return false;
     };
 
-    const auto addRow = [&](const auto &descriptor, auto &&config, const std::optional<int> &rssi, const std::optional<int> &battery, const std::optional<ximu3::XIMU3_ChargingStatus> &status) {
+    const auto addRow = [&](const juce::String &descriptor, std::unique_ptr<ximu3::ConnectionConfig> &&config, const std::optional<int> &rssi, const std::optional<int> &battery, const std::optional<ximu3::XIMU3_ChargingStatus> &status) {
         if (filter(*config) == false || std::find(existingConnections.begin(), existingConnections.end(), *config) != existingConnections.end()) {
             return;
         }
