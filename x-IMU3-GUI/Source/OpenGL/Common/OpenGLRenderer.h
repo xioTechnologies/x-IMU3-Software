@@ -21,8 +21,8 @@ public:
 
 private:
     juce::ThreadPool &threadPool;
-
     juce::OpenGLContext context;
+    const juce::VBlankAttachment vBlankAttachment;
 
     // Synchronize access to data shared between the JUCE Message thread and the OpenGL thread such as the components list.
     std::mutex sharedGLDataLock;
