@@ -1,11 +1,11 @@
 #include "CustomLookAndFeel.h"
 #include "OpenGLRenderer.h"
 
-OpenGLRenderer::OpenGLRenderer(juce::Component &attachTo, juce::ThreadPool &threadPool_) : threadPool(threadPool_) {
+OpenGLRenderer::OpenGLRenderer(juce::Component &attachTo, juce::ThreadPool &threadPool_) : threadPool(threadPool_),
+                                                                                            vBlankAttachment(&attachTo, [&] { context.triggerRepaint(); }) {
     context.setPreferredVersion({3, 2});
     context.setPreferredProfile(juce::OpenGLProfile::core);
     context.setRenderer(this);
-    context.setContinuousRepainting(true);
     context.attachTo(attachTo);
 }
 
