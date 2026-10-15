@@ -150,7 +150,7 @@ void DialogQueue::pop() {
         juce::Image iconImage(juce::Image::ARGB, 2 * 50, 2 * Dialog::titleBarHeight, true);
         juce::Graphics g(iconImage);
         const auto bounds = juce::Rectangle<float>((float) iconImage.getWidth(), (float) iconImage.getHeight()).withCentre(iconImage.getBounds().getCentre().toFloat());
-        juce::Drawable::createFromSVG(*juce::XmlDocument::parse(queue.front()->icon))->drawWithin(g, bounds, juce::RectanglePlacement::centred, 1.0f);
+        juce::Drawable::createFromSVGString(queue.front()->icon)->drawWithin(g, bounds, juce::RectanglePlacement::centred, 1.0f);
         active->setIcon(iconImage);
 
         active->enterModalState(true);

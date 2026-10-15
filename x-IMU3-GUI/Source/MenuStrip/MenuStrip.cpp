@@ -327,8 +327,8 @@ juce::PopupMenu MenuStrip::getConnectionLayoutMenu() {
         int _, height;
         getLookAndFeel().getIdealPopupMenuItemSize({}, false, {}, _, height);
 
-        auto image = juce::Drawable::createFromSVG(*juce::XmlDocument::parse(layoutIcons.at(layout)));
-        image->setTransformToFit(juce::Rectangle<float>(0.0f, 0.0f, 35.0f, (float) height).reduced(0.0f, 3.0f), juce::RectanglePlacement::centred);
+        auto image = juce::Drawable::createFromSVGString(layoutIcons.at(layout));
+        image->setDrawableTransformToFit(juce::Rectangle<float>(0.0f, 0.0f, 30.0f, (float) height).reduced(0.0f, 3.0f), juce::RectanglePlacement::centred);
 
         menu.addItem(juce::PopupMenu::Item{text}.setAction([&, layout] {
             connectionPanelContainer.setLayout(layout);

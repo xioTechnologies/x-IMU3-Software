@@ -150,10 +150,10 @@ void CustomLookAndFeel::fillTextEditorBackground(juce::Graphics &g, int width, i
 }
 
 void CustomLookAndFeel::drawTreeviewPlusMinusBox(juce::Graphics &g, const juce::Rectangle<float> &area, juce::Colour, bool isOpen, bool isMouseOver) {
-    static const std::unique_ptr<juce::Drawable> arrowDownWhite{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_white_svg))};
-    static const std::unique_ptr<juce::Drawable> arrowDownGrey{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg))};
-    static const std::unique_ptr<juce::Drawable> arrowRightWhite{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_white_svg))};
-    static const std::unique_ptr<juce::Drawable> arrowRightGrey{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_right_grey_svg))};
+    static const std::unique_ptr<juce::Drawable> arrowDownWhite{juce::Drawable::createFromSVGString(BinaryData::arrow_down_white_svg)};
+    static const std::unique_ptr<juce::Drawable> arrowDownGrey{juce::Drawable::createFromSVGString(BinaryData::arrow_down_grey_svg)};
+    static const std::unique_ptr<juce::Drawable> arrowRightWhite{juce::Drawable::createFromSVGString(BinaryData::arrow_right_white_svg)};
+    static const std::unique_ptr<juce::Drawable> arrowRightGrey{juce::Drawable::createFromSVGString(BinaryData::arrow_right_grey_svg)};
 
     const auto *const icon = (isOpen ? (isMouseOver ? arrowDownWhite : arrowDownGrey) : (isMouseOver ? arrowRightWhite : arrowRightGrey)).get();
     icon->drawWithin(g, area.withSizeKeepingCentre(5.0f, 5.0f), juce::RectanglePlacement::centred | juce::RectanglePlacement::fillDestination, 1.0f);
@@ -218,15 +218,14 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics &g, const juce::Rectang
 
         auto iconArea = r.removeFromLeft(juce::roundToInt(maxFontHeight)).toFloat();
 
-        // Adjustment: Move icon to left
-        iconArea.translate(-(maxFontHeight / 5), 0);
-
         if (icon != nullptr) {
-            // Adjustment: Change icon position to position the colour tags in disconnect menu correctly
-            iconArea = icon->getDrawableBounds().withPosition(0, 0);
+            iconArea = icon->getDrawableBounds();
             icon->drawWithin(g, iconArea, juce::RectanglePlacement::centred | juce::RectanglePlacement::onlyReduceInSize, 1.0f);
             r.removeFromLeft(juce::roundToInt(maxFontHeight * 0.5f));
         } else if (isTicked) {
+            // Adjustment: Move to left
+            iconArea.translate(-(maxFontHeight / 5), 0);
+
             auto tick = getTickShape(1.0f);
 
             // Adjustment: Change tick target bounds
@@ -303,7 +302,7 @@ void CustomLookAndFeel::drawComboBox(juce::Graphics &g, int width, int height, b
     g.setColour(box.findColour(juce::ComboBox::arrowColourId).withAlpha((box.isEnabled() ? 0.9f : 0.2f)));
     const auto arrowZone = boxBounds.removeFromRight(boxBounds.getHeight()).reduced(boxBounds.getHeight() / 3);
 
-    static const std::unique_ptr<juce::Drawable> arrow{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::arrow_down_grey_svg))};
+    static const std::unique_ptr<juce::Drawable> arrow{juce::Drawable::createFromSVGString(BinaryData::arrow_down_grey_svg)};
     arrow->drawWithin(g, arrowZone.toFloat(), juce::RectanglePlacement::centred, 1.0f);
 }
 
@@ -424,7 +423,7 @@ void CustomLookAndFeel::drawGroupComponentOutline(juce::Graphics &g, int width, 
 }
 
 juce::Path CustomLookAndFeel::getTickShape(float height) {
-    static const std::unique_ptr<juce::Drawable> icon{juce::Drawable::createFromSVG(*juce::XmlDocument::parse(BinaryData::tick_white_svg))};
+    static const std::unique_ptr<juce::Drawable> icon{juce::Drawable::createFromSVGString(BinaryData::tick_white_svg)};
 
     juce::Path path(icon->getOutlineAsPath());
     path.scaleToFit(0, 0, height * 2.0f, height, true);
