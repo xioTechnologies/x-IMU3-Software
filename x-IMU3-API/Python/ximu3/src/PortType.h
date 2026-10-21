@@ -1,8 +1,8 @@
 #ifndef PORT_TYPE_H
 #define PORT_TYPE_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int port_type_from(XIMU3_PortType *const port_type, const int port_type_int) {
     switch (port_type_int) {

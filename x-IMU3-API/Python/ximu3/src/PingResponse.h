@@ -1,8 +1,8 @@
 #ifndef PING_RESPONSE_H
 #define PING_RESPONSE_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 typedef struct {
     PyObject_HEAD

@@ -1,11 +1,11 @@
 #pragma once
 
+#include "../SettingsSchema.h"
+#include "../Values/Value.h"
 #include <BinaryData.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Widgets/Icon.h"
 #include "Widgets/SimpleLabel.h"
-#include "../SettingsSchema.h"
-#include "../Values/Value.h"
 
 class ItemComponent : public juce::Component {
 public:

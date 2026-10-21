@@ -1,9 +1,9 @@
 #ifndef MUX_SCANNER_H
 #define MUX_SCANNER_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "Device.h"
-#include <Python.h>
 
 typedef struct {
     PyObject_HEAD

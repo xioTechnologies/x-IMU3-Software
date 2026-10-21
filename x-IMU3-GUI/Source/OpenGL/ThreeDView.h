@@ -5,8 +5,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <optional>
 #include "OpenGLComponent.h"
+#include <optional>
 
 class ThreeDView : public OpenGLComponent,
                    private juce::AsyncUpdater {

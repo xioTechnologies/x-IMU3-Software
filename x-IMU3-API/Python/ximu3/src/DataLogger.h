@@ -1,8 +1,8 @@
 #ifndef DATA_LOGGER_H
 #define DATA_LOGGER_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 #define CONNECTIONS_ARRAY_LENGTH 256
 

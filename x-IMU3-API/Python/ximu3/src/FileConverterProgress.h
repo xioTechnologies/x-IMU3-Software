@@ -1,8 +1,8 @@
 #ifndef FILE_CONVERTER_PROGRESS_H
 #define FILE_CONVERTER_PROGRESS_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 typedef struct {
     PyObject_HEAD

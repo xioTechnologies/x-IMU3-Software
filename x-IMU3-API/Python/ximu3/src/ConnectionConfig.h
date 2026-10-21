@@ -1,8 +1,8 @@
 #ifndef CONNECTION_CONFIG_H
 #define CONNECTION_CONFIG_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 typedef struct {
     PyObject_HEAD

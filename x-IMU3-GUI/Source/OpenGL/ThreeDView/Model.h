@@ -1,8 +1,8 @@
 #pragma once
 
+#include <atomic>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <memory>
-#include <atomic>
 #include "OpenGL/Shaders/LitShader.h"
 #include "OpenGL/ThreeDView/WavefrontObjFile.h"
 
