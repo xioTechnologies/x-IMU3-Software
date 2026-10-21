@@ -15,4 +15,8 @@ protected:
 
 private:
     const std::string command;
+
+    void send();
+
+    void handleResponse(const int index, const std::optional<ximu3::CommandMessage> &response);
 };

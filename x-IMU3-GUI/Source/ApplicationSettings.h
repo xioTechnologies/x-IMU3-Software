@@ -24,6 +24,7 @@ public:
         juce::CachedValue<uint32_t> timeout{tree, "timeout", nullptr, XIMU3_DEFAULT_TIMEOUT};
         juce::CachedValue<bool> closeWhenComplete{tree, "closeWhenComplete", nullptr, true};
         juce::CachedValue<bool> allowEarlyCompletion{tree, "allowEarlyCompletion", nullptr, false};
+        juce::CachedValue<bool> sendConsecutively{tree, "sendConsecutively", nullptr, false};
     } commands{tree.getOrCreateChildWithName("Commands", nullptr)};
 
     static ApplicationSettings &getSingleton() {
