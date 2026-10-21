@@ -51,7 +51,7 @@ public:
     }
 
     int getMinimumHeight() const {
-        return juce::roundToInt(menuStrip.getMinimumWidth() / (1024.0f / 768.0f));
+        return juce::roundToInt((float) menuStrip.getMinimumWidth() / (1024.0f / 768.0f));
     }
 
 private:

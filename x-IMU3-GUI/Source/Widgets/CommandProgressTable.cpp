@@ -121,7 +121,7 @@ juce::Component *CommandProgressTable::refreshComponentForCell(int rowIndex, int
                             case Status::inProgress:
                                 if (row.percentage) {
                                     addAndMakeVisible(progressBar);
-                                    progressBar.setProgress(row.percentage.value() / 100.0f);
+                                    progressBar.setProgress((float) row.percentage.value() / 100.0f);
 
                                     addAndMakeVisible(percentageLabel);
                                     percentageLabel.setText(juce::String(*row.percentage) + "%");

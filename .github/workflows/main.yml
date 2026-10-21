@@ -409,8 +409,8 @@ jobs:
 
       - name: Install dependencies # https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md
         run: |
-          sudo apt update
-          sudo apt install -y libasound2-dev libjack-jackd2-dev \
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libjack-jackd2-dev \
           ladspa-sdk \
           libcurl4-openssl-dev  \
           libfreetype-dev libfontconfig1-dev \
