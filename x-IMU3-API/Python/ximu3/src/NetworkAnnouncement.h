@@ -1,9 +1,9 @@
 #ifndef NETWORK_ANNOUNCEMENT_H
 #define NETWORK_ANNOUNCEMENT_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "NetworkAnnouncementMessage.h"
-#include <Python.h>
 
 typedef struct {
     PyObject_HEAD

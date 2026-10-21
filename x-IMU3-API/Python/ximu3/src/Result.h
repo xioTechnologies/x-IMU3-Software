@@ -1,8 +1,8 @@
 #ifndef RESULT_H
 #define RESULT_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int result_from(XIMU3_Result *const result, const int result_int) {
     switch (result_int) {

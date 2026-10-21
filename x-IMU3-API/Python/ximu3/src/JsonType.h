@@ -1,8 +1,8 @@
 #ifndef JSON_TYPE_H
 #define JSON_TYPE_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int json_type_from(XIMU3_JsonType *const json_type, const int json_type_int) {
     switch (json_type_int) {

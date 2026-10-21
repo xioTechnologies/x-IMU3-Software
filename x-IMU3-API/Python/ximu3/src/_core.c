@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "ChargingStatus.h"
 #include "CommandMessage.h"
@@ -18,7 +19,6 @@
 #include "PingResponse.h"
 #include "PortScanner.h"
 #include "PortType.h"
-#include <Python.h>
 #include "ReceiveError.h"
 #include "Result.h"
 #include "Settings.h"

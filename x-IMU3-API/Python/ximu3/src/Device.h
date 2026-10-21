@@ -1,8 +1,8 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 typedef struct {
     PyObject_HEAD

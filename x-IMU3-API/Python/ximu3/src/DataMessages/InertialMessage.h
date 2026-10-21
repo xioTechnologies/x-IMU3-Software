@@ -3,8 +3,8 @@
 #ifndef INERTIAL_MESSAGE_H
 #define INERTIAL_MESSAGE_H
 
-#include "../../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../../C/Ximu3.h"
 
 typedef struct {
     PyObject_HEAD

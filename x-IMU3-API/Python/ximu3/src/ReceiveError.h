@@ -1,8 +1,8 @@
 #ifndef RECEIVE_ERROR_CALLBACK_H
 #define RECEIVE_ERROR_CALLBACK_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int receive_error_from(XIMU3_ReceiveError *const error, const int error_int) {
     switch (error_int) {
