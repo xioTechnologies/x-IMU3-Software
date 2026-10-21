@@ -8,7 +8,7 @@ SendingCommandDialog::SendingCommandDialog(const std::vector<ConnectionPanel *> 
 
 void SendingCommandDialog::onStart(const bool retry) {
     for (int index = 0; index < (int) connectionPanels.size(); index++) {
-        if (getStatus(index) == CommandProgressTable::Status::complete) {
+        if (getStatus(index) == CommandProgressRow::Status::complete) {
             continue;
         }
 
