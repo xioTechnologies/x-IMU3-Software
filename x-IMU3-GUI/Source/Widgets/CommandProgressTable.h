@@ -1,16 +1,13 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "CommandProgressRow.h"
 
-class CommandProgressTable : public juce::Component, private juce::TableListBoxModel {
+class CommandProgressTable : public juce::Viewport {
 public:
-    enum class Status {
-        inProgress,
-        complete,
-        failed,
-    };
-
     CommandProgressTable();
+
+    void paint(juce::Graphics &g) override;
 
     void resized() override;
 
@@ -24,38 +21,17 @@ public:
 
     void setFailed(int rowIndex, const juce::String &error);
 
-    Status getStatus() const;
+    CommandProgressRow::Status getStatus() const;
 
-    Status getStatus(const int rowIndex) const;
+    CommandProgressRow::Status getStatus(const int rowIndex) const;
 
 private:
-    struct Row {
-        juce::Colour colourTag;
-        juce::String connection;
-        Status status;
-        std::optional<int> percentage;
-        juce::String response;
-    };
+    static constexpr int rowHeight = 22;
 
-    std::vector<Row> rows;
+    juce::Component content;
+    std::vector<std::unique_ptr<CommandProgressRow>> rows;
 
-    enum class ColumnId {
-        tag = 1,
-        body,
-        icon,
-    };
+    CommandProgressRow *getRow(int index) const;
 
-    juce::TableListBox table{"", this};
-
-    Row *getRow(int index);
-
-    const Row *getRow(int index) const;
-
-    int getNumRows() override;
-
-    void paintRowBackground(juce::Graphics &, int rowIndex, int, int height, bool) override;
-
-    void paintCell(juce::Graphics &, int, int, int, int, bool) override;
-
-    juce::Component *refreshComponentForCell(int rowIndex, int columnId, bool, juce::Component *existingComponentToUpdate) override;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandProgressTable)
 };
