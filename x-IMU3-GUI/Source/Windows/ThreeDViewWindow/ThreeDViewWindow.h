@@ -2,6 +2,7 @@
 
 #include "../Window.h"
 #include "ConnectionPanel/ConnectionPanel.h"
+#include "InfoLabel.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Models.h"
 #include "OpenGL/Common/OpenGLRenderer.h"
@@ -54,7 +55,7 @@ private:
         }
     };
 
-    SimpleLabel infoLabel{"", UIFonts::getDefaultFont(), juce::Justification::bottomRight};
+    InfoLabel infoLabel;
 
     juce::Point<int> lastMousePosition;
 
