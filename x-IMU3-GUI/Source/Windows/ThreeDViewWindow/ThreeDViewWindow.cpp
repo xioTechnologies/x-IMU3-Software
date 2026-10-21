@@ -267,7 +267,7 @@ juce::PopupMenu ThreeDViewWindow::getMenu() {
     });
 
     menu.addSeparator();
-    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("VIEW"), nullptr);
+    menu.addCustomItem(-1, std::make_unique<PopupMenuHeader>("SCENE"), nullptr);
     menu.addItem("World", true, threeDView.getSettings().worldEnabled, [&] {
         auto settings = threeDView.getSettings();
         settings.worldEnabled = !settings.worldEnabled;
