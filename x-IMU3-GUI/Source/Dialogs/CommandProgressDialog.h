@@ -19,9 +19,9 @@ public:
 
     void setFailed(int rowIndex, const juce::String &error);
 
-    CommandProgressTable::Status getStatus() const;
+    CommandProgressRow::Status getStatus() const;
 
-    CommandProgressTable::Status getStatus(const int rowIndex) const;
+    CommandProgressRow::Status getStatus(const int rowIndex) const;
 
 protected:
     const std::vector<ConnectionPanel *> connectionPanels;

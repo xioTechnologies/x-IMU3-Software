@@ -45,11 +45,11 @@ void CommandProgressDialog::setFailed(int rowIndex, const juce::String &error) {
     statusChanged();
 }
 
-CommandProgressTable::Status CommandProgressDialog::getStatus() const {
+CommandProgressRow::Status CommandProgressDialog::getStatus() const {
     return table.getStatus();
 }
 
-CommandProgressTable::Status CommandProgressDialog::getStatus(const int rowIndex) const {
+CommandProgressRow::Status CommandProgressDialog::getStatus(const int rowIndex) const {
     return table.getStatus(rowIndex);
 }
 
@@ -69,7 +69,7 @@ std::string CommandProgressDialog::replaceInvalidCharacters(const std::string &i
 
 void CommandProgressDialog::statusChanged() {
     switch (table.getStatus()) {
-        case CommandProgressTable::Status::inProgress:
+        case CommandProgressRow::Status::inProgress:
             setCancelButton(true, "Cancel");
 
             if (enableCompleteButton) {
@@ -83,7 +83,7 @@ void CommandProgressDialog::statusChanged() {
             }
             break;
 
-        case CommandProgressTable::Status::complete:
+        case CommandProgressRow::Status::complete:
             setCancelButton(false, "Cancel");
             setOkButton(true, "Close");
 
@@ -96,7 +96,7 @@ void CommandProgressDialog::statusChanged() {
             });
             break;
 
-        case CommandProgressTable::Status::failed:
+        case CommandProgressRow::Status::failed:
             setCancelButton(true, "Cancel");
             setOkButton(true, "Retry");
 
