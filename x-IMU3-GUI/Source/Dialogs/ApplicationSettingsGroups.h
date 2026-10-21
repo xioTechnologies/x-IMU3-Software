@@ -53,8 +53,8 @@ private:
     CustomTextEditor timeoutValue;
 
     CustomToggleButton closeWhenCompleteToggle{"Close When Complete"};
-
     CustomToggleButton allowEarlyCompletionToggle{"Allow Early Completion"};
+    CustomToggleButton sendInParallelToggle{"Send in Parallel"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };
