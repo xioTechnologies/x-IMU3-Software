@@ -52,9 +52,9 @@ private:
     SimpleLabel timeoutLabel{"Timeout (ms)"};
     CustomTextEditor timeoutValue;
 
-    CustomToggleButton closeWhenCompleteToggle{"Close When Complete"};
-
+    CustomToggleButton sendInParallelToggle{"Send in Parallel"};
     CustomToggleButton allowEarlyCompletionToggle{"Allow Early Completion"};
+    CustomToggleButton closeWhenCompleteToggle{"Close When Complete"};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandsGroup)
 };
