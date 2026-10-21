@@ -112,7 +112,7 @@ void ThreeDViewWindow::resized() {
     setRow(pitchLabel, pitchValue);
     setRow(yawLabel, yawValue);
 
-    infoLabel.setBounds(bounds.removeFromBottom(20));
+    infoLabel.setBounds(getContentBounds());
 }
 
 void ThreeDViewWindow::mouseDown(const juce::MouseEvent &mouseEvent) {
