@@ -1,10 +1,10 @@
 #ifndef KEEP_OPEN_H
 #define KEEP_OPEN_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "Connection.h"
 #include "ConnectionStatus.h"
-#include <Python.h>
 
 typedef struct {
     PyObject_HEAD

@@ -1,10 +1,10 @@
 #ifndef PORT_SCANNER_H
 #define PORT_SCANNER_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "Device.h"
 #include "PortType.h"
-#include <Python.h>
 
 typedef struct {
     PyObject_HEAD
