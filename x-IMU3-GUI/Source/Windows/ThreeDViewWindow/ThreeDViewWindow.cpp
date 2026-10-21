@@ -131,8 +131,8 @@ void ThreeDViewWindow::mouseDrag(const juce::MouseEvent &mouseEvent) {
     const auto scale = 0.5f;
 
     auto settings = threeDView.getSettings();
-    settings.cameraAzimuth = wrapAngle(settings.cameraAzimuth + (scale * (mouseEvent.getPosition().getX() - lastMousePosition.getX())));
-    settings.cameraElevation = wrapAngle(settings.cameraElevation + (scale * (mouseEvent.getPosition().getY() - lastMousePosition.getY())));
+    settings.cameraAzimuth = wrapAngle(settings.cameraAzimuth + (scale * (float) (mouseEvent.getPosition().getX() - lastMousePosition.getX())));
+    settings.cameraElevation = wrapAngle(settings.cameraElevation + (scale * (float) (mouseEvent.getPosition().getY() - lastMousePosition.getY())));
     writeToValueTree(settings);
 
     lastMousePosition = mouseEvent.getPosition();

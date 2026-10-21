@@ -47,10 +47,10 @@ void WindowHeader::mouseDrag(const juce::MouseEvent &mouseEvent) {
                 }
 
                 const auto positionRelative = mouseEvent.getScreenPosition() - targetWindow->getScreenPosition();
-                const auto proportionToTop = positionRelative.y / (float) targetWindow->getHeight();
-                const auto proportionToRight = 1.0f - positionRelative.x / (float) targetWindow->getWidth();
-                const auto proportionToBottom = 1.0f - positionRelative.y / (float) targetWindow->getHeight();
-                const auto proportionToLeft = positionRelative.x / (float) targetWindow->getWidth();
+                const auto proportionToTop = (float) positionRelative.y / (float) targetWindow->getHeight();
+                const auto proportionToRight = 1.0f - (float) positionRelative.x / (float) targetWindow->getWidth();
+                const auto proportionToBottom = 1.0f - (float) positionRelative.y / (float) targetWindow->getHeight();
+                const auto proportionToLeft = (float) positionRelative.x / (float) targetWindow->getWidth();
 
                 const auto min = juce::jmin(proportionToTop, proportionToRight, proportionToBottom, proportionToLeft);
                 if (juce::exactlyEqual(proportionToTop, min)) {

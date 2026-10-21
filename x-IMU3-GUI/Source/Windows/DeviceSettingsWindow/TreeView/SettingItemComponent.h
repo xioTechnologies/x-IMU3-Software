@@ -10,31 +10,28 @@
 
 class SettingItemComponent final : public ItemComponent {
 public:
-    SettingItemComponent(SettingsSchema::Setting &setting_, const std::function<void(SettingsSchema::Setting &setting, const std::string &command)> &write)
-        : ItemComponent(setting_, setting_.name, std::invoke([&]() -> std::unique_ptr<juce::Component> {
-              switch (setting_.type) {
+    SettingItemComponent(SettingsSchema::Setting &setting, const std::function<void(SettingsSchema::Setting &setting, const std::string &command)> &write)
+        : ItemComponent(setting, setting.name, std::invoke([&]() -> std::unique_ptr<juce::Component> {
+              switch (setting.type) {
                   case SettingsSchema::Setting::Type::string:
-                      return std::make_unique<StringValue>(setting_, write);
+                      return std::make_unique<StringValue>(setting, write);
 
                   case SettingsSchema::Setting::Type::number:
                   case SettingsSchema::Setting::Type::raw:
-                      return std::make_unique<RawValue>(setting_, write);
+                      return std::make_unique<RawValue>(setting, write);
 
                   case SettingsSchema::Setting::Type::boolean:
-                      return std::make_unique<BooleanValue>(setting_, write);
+                      return std::make_unique<BooleanValue>(setting, write);
 
                   case SettingsSchema::Setting::Type::enumeration:
-                      return std::make_unique<EnumerationValue>(setting_, write);
+                      return std::make_unique<EnumerationValue>(setting, write);
               }
 
               return {};
-          })),
-          setting(setting_) {
+          })) {
         refresh();
     }
 
 private:
-    SettingsSchema::Setting &setting;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingItemComponent)
 };

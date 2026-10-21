@@ -181,7 +181,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics &g, const juce::Rectang
         auto r = area;
 
         // Adjustment: Decrease amount that is stripped of
-        r.removeFromTop(juce::roundToInt((r.getHeight() * 0.4f) - 0.5f));
+        r.removeFromTop(juce::roundToInt(((float) r.getHeight() * 0.4f) - 0.5f));
 
         // Adjustment: Change colour
         g.setColour(UIColours::backgroundLightest);
@@ -204,7 +204,7 @@ void CustomLookAndFeel::drawPopupMenuItem(juce::Graphics &g, const juce::Rectang
 
         auto font = getPopupMenuFont();
 
-        auto maxFontHeight = r.getHeight() / 1.3f;
+        auto maxFontHeight = (float) r.getHeight() / 1.3f;
 
         if (font.getHeight() > maxFontHeight) {
             font.setHeight(maxFontHeight);
@@ -261,7 +261,7 @@ void CustomLookAndFeel::drawPopupMenuSectionHeader(juce::Graphics &g, const juce
     g.setFont(getPopupMenuFont());
     g.setColour(findColour(juce::PopupMenu::headerTextColourId));
     g.drawFittedText(sectionName,
-                     area.getX() + 19, area.getY(), area.getWidth() - 16, juce::roundToInt((area.getHeight() * 0.8f)),
+                     area.getX() + 19, area.getY(), area.getWidth() - 16, juce::roundToInt((float) area.getHeight() * 0.8f),
                      juce::Justification::centredLeft, 1);
 }
 

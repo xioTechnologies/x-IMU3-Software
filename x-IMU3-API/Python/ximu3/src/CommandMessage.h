@@ -33,7 +33,7 @@ static PyObject *command_message_get_error(CommandMessage *self) {
     return PyUnicode_FromString(self->wrapped.error);
 }
 
-PyObject *command_message_parse(PyObject *null, PyObject *arg);
+static PyObject *command_message_parse(PyObject *null, PyObject *arg);
 
 static PyGetSetDef command_message_get_set[] = {
     {"json", (getter) command_message_get_json, NULL, "", NULL},
@@ -74,7 +74,7 @@ static PyObject *command_message_from(const XIMU3_CommandMessage *const message)
     return (PyObject *) self;
 }
 
-inline PyObject *command_message_parse(PyObject *null, PyObject *arg) {
+static PyObject *command_message_parse(PyObject *null, PyObject *arg) {
     const char *const json = PyUnicode_AsUTF8(arg);
 
     if (json == NULL) {

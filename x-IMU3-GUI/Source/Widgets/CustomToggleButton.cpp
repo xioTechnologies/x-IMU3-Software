@@ -11,7 +11,7 @@ public:
         const auto fontSize = font.getHeight();
         const auto tickWidth = fontSize * 1.1f;
 
-        drawTickBox(g, button, 4.0f, (button.getHeight() - tickWidth) * 0.5f,
+        drawTickBox(g, button, 4.0f, ((float) button.getHeight() - tickWidth) * 0.5f,
                     tickWidth, tickWidth,
                     button.getToggleState(),
                     button.isEnabled(),

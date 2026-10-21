@@ -178,17 +178,17 @@ void MenuStrip::resized() {
             }();
 
             button->setSize(buttonWidth, buttonHeight);
-            groupMargin -= button->getWidth();
+            groupMargin -= (float) button->getWidth();
         }
     }
-    groupMargin /= buttonGroups.size();
+    groupMargin /= (float) buttonGroups.size();
 
     // Set bounds
     auto x = groupMargin / 2;
     for (const auto &buttonGroup: buttonGroups) {
         for (auto *const button: buttonGroup) {
             button->setBounds((int) x, getHeight() / 2 - button->getHeight() / 2, button->getWidth(), button->getHeight());
-            x += button->getWidth();
+            x += (float) button->getWidth();
         }
         x += groupMargin;
     }

@@ -24,8 +24,8 @@ void Terminal::mouseWheelMove(const juce::MouseEvent &mouseEvent, const juce::Mo
 
 void Terminal::resized() {
     scrollbar.setBounds(getLocalBounds().removeFromRight(10));
-    numberOfLinesOnScreen = getHeight() / font.getHeight();
-    numberOfCharactersPerLine = std::max(1, (int) std::floor(scrollbar.getX() / juce::GlyphArrangement::getStringWidth(font, "0")));
+    numberOfLinesOnScreen = (float) getHeight() / font.getHeight();
+    numberOfCharactersPerLine = std::max(1, (int) std::floor((float) scrollbar.getX() / juce::GlyphArrangement::getStringWidth(font, "0")));
 
     wrappedLines.clear();
     for (const auto &line: lines) {

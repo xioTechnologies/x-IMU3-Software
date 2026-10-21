@@ -22,8 +22,13 @@ classifiers = [
 Repository = "https://github.com/xioTechnologies/x-IMU3-Software"
 
 [tool.setuptools]
+include-package-data = false # exclude _core.c
 packages = ["ximu3"]
 package-dir = { "ximu3" = "x-IMU3-API/Python/ximu3" }
 
 [tool.setuptools.package-data]
 ximu3 = ["py.typed", "*.pyi"]
+
+[[tool.cibuildwheel.overrides]]
+select = "cp311-macosx_x86_64"
+environment = { MACOSX_DEPLOYMENT_TARGET = "10.12" } # match Rust minimum

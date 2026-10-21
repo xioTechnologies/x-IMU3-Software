@@ -13,7 +13,7 @@ ConnectionPanelFooter::ConnectionPanelFooter(ConnectionPanel &connectionPanel_) 
 
             std::ostringstream text;
             text << " " << message.message_rate << " messages/s";
-            text << " (" << std::fixed << std::setprecision(2) << message.data_rate / 1000.0f << " kB/s) ";
+            text << " (" << std::fixed << std::setprecision(2) << (float) message.data_rate / 1000.0f << " kB/s) ";
             statisticsLabel.setText(text.str());
             resized();
         });
