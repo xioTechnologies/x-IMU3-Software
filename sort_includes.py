@@ -28,7 +28,6 @@ for path in paths:
         '"atomic"',
         '"cassert"',
         '"chrono"',
-        '"cmath"',
         '"cstring"',
         '"ctype.h"',
         '"filesystem"',
@@ -36,15 +35,11 @@ for path in paths:
         '"inttypes.h"',
         '"iomanip"',
         '"iostream"',
-        '"iostream.h"',
-        '"limits"',
-        '"list"',
         '"map"',
         '"memory"',
         '"mutex"',
         '"numeric"',
         '"optional"',
-        '"ranges"',
         '"regex"',
         '"span"',
         '"sstream"',
@@ -61,19 +56,17 @@ for path in paths:
         '"unordered_map"',
         '"unordered_set"',
         '"utility"',
-        '"variant"',
         '"vector"',
     ]
 
     standard_libraries.extend(
         [
-            "BinaryData.h",
-            "juce_core/juce_core.h",
-            "juce_data_structures/juce_data_structures.h",
-            "juce_gui_basics/juce_gui_basics.h",
-            "juce_gui_extra/juce_gui_extra.h",
-            "juce_opengl/juce_opengl",
-            "Python.h",
+            '"BinaryData.h"',
+            '"juce_core/juce_core.h"',
+            '"juce_data_structures/juce_data_structures.h"',
+            '"juce_gui_basics/juce_gui_basics.h"',
+            '"juce_opengl/juce_opengl.h"',
+            '"Python.h"',
         ]
     )
 
