@@ -1,30 +1,22 @@
-import os
 import re
+from pathlib import Path
 
 version = "1.9.1"
 
 
-def replace(file_path, string):
-    with open(file_path) as file:
-        lines = file.readlines()
-
-    with open(file_path, "w") as file:
-        for line in lines:
-            file.write(re.sub(string, string.replace("\\", "").replace(".*", version), line))
+def replace(path, string):
+    path.write_text(re.sub(string, string.replace("\\", "").replace(".*", version), path.read_text()))
 
 
-for root, _, files in os.walk(os.path.dirname(os.path.realpath(__file__))):
-    for file in files:
-        file_path = os.path.join(root, file)
+for path in Path(__file__).resolve().parent.rglob("*"):
+    if path.name == "Cargo.toml":
+        replace(path, 'version = ".*"\n')
 
-        if file == "Cargo.toml":
-            replace(file_path, 'version = ".*"\n')
+    if path.name == "pyproject.toml":
+        replace(path, 'version = ".*"')
 
-        if file == "pyproject.toml":
-            replace(file_path, 'version = ".*"')
+    if path.name == "CMakeLists.txt":
+        replace(path, "project\\(x-IMU3-Software VERSION .*\\)")
 
-        if file == "CMakeLists.txt":
-            replace(file_path, "project\\(x-IMU3-Software VERSION .*\\)")
-
-        if file == "WindowsInstaller.iss":
-            replace(file_path, "AppVersion=.*\n")
+    if path.name == "WindowsInstaller.iss":
+        replace(path, "AppVersion=.*\n")
