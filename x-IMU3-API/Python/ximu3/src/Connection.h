@@ -1,13 +1,13 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "CommandMessage.h"
 #include "ConnectionConfig.h"
 #include "ConnectionStatus.h"
 #include "DataMessages/DataMessages.h"
 #include "PingResponse.h"
-#include <Python.h>
 #include "ReceiveError.h"
 #include "Result.h"
 #include "Statistics.h"

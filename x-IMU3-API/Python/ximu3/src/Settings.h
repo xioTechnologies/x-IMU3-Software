@@ -1,9 +1,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <Python.h>
 #include "../../../C/Ximu3.h"
 #include "Connection.h"
-#include <Python.h>
 
 static PyObject *settings_backup(PyObject *self, PyObject *args) {
     const char *file_path;

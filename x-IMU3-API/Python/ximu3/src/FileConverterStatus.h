@@ -1,8 +1,8 @@
 #ifndef FILE_CONVERTER_STATUS_H
 #define FILE_CONVERTER_STATUS_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int file_converter_status_from(XIMU3_FileConverterStatus *const status, const int status_int) {
     switch (status_int) {

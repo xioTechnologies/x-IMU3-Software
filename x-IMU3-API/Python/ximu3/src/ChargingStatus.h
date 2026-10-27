@@ -1,8 +1,8 @@
 #ifndef CHARGING_STATUS_H
 #define CHARGING_STATUS_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static PyObject *charging_status_from_float(PyObject *self, PyObject *arg) {
     const float status_float = (float) PyFloat_AsDouble(arg);

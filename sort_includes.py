@@ -1,22 +1,12 @@
-import os
 from itertools import dropwhile, takewhile
+from pathlib import Path
 
-paths = []
+paths = [path for path in Path(__file__).resolve().parent.rglob("*") if path.suffix in (".h", ".hpp", ".c", ".cpp")]
 
-for root, _, file_names in os.walk(os.path.dirname(os.path.realpath(__file__))):
-    if "cmake-build-" in root:
-        continue
-
-    for file_name in file_names:
-        _, extension = os.path.splitext(file_name)
-
-        if extension in (".h", ".hpp", ".c", ".cpp"):
-            paths.append(os.path.join(root, file_name))
-
+paths = [path for path in paths if not any("cmake-build-" in part for part in path.parts)]
 
 for path in paths:
-    with open(path) as file:
-        lines = file.readlines()
+    lines = path.read_text().splitlines(keepends=True)
 
     lines = [l.rstrip() + "\n" for l in lines]
 
@@ -31,10 +21,11 @@ for path in paths:
     for index, include_line in enumerate(include_lines):
         include_lines[index] = str(include_line.lstrip()).replace("<", '"').replace(">", '"')
 
-    include_lines.sort(key=lambda line: line.upper())
+    include_lines.sort(key=lambda line: ("Python.h" not in line, line.upper()))  # Python.h must be first
 
     standard_libraries = [
         '"algorithm"',
+        '"atomic"',
         '"cassert"',
         '"chrono"',
         '"cmath"',
@@ -53,7 +44,6 @@ for path in paths:
         '"mutex"',
         '"numeric"',
         '"optional"',
-        '"Python.h"',
         '"ranges"',
         '"regex"',
         '"span"',
@@ -78,9 +68,12 @@ for path in paths:
     standard_libraries.extend(
         [
             "BinaryData.h",
+            "juce_core/juce_core.h",
+            "juce_data_structures/juce_data_structures.h",
             "juce_gui_basics/juce_gui_basics.h",
             "juce_gui_extra/juce_gui_extra.h",
             "juce_opengl/juce_opengl",
+            "Python.h",
         ]
     )
 
@@ -88,10 +81,4 @@ for path in paths:
         if any(s in include_line for s in standard_libraries):
             include_lines[index] = include_line.replace('"', ">").replace(" >", " <")
 
-    with open(path, "w") as file:
-        for line in lines_before_first_include:
-            file.write(line)
-        for line in include_lines:
-            file.write(line)
-        for line in lines_from_first_include:
-            file.write(line)
+    path.write_text("".join(lines_before_first_include + include_lines + lines_from_first_include))

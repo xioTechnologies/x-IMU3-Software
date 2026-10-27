@@ -1,8 +1,8 @@
 #ifndef CONNECTION_STATUS_H
 #define CONNECTION_STATUS_H
 
-#include "../../../C/Ximu3.h"
 #include <Python.h>
+#include "../../../C/Ximu3.h"
 
 static int connection_status_from(XIMU3_ConnectionStatus *const status, const int status_int) {
     switch (status_int) {
