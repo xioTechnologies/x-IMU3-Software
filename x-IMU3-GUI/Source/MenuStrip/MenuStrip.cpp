@@ -243,15 +243,34 @@ void MenuStrip::addDevices(juce::PopupMenu &menu, std::function<void(ConnectionP
     }
 }
 
-void MenuStrip::disconnect(const ConnectionPanel *const connectionPanel) {
+void MenuStrip::disconnect(ConnectionPanel *const connectionPanel) {
     dataLoggerTime.setTime(juce::RelativeTime());
     dataLoggerStartStopButton.setToggleState(false, juce::sendNotificationSync);
 
-    if (connectionPanel != nullptr) {
-        connectionPanelContainer.removePanel(*connectionPanel);
-    } else {
+    if (connectionPanel == nullptr) {
         connectionPanelContainer.removeAllPanels();
+        return;
     }
+
+    std::vector<ConnectionPanel *> muxes;
+    for (auto *const panel: connectionPanelContainer.getConnectionPanels()) {
+        if (panel->getConnection()->getConfig()->toString().ends_with(", " + connectionPanel->getConnection()->getConfig()->toString())) {
+            muxes.push_back(panel);
+        }
+    }
+
+    if (muxes.empty()) {
+        connectionPanelContainer.removePanel(*connectionPanel);
+        return;
+    }
+
+    DialogQueue::getSingleton().pushFront(std::make_unique<ConfirmDialog>("This connection owns mux connections. Do you want to disconnect all?"), [this, connectionPanel, muxes] {
+        for (auto *const mux: muxes) {
+            connectionPanelContainer.removePanel(*mux);
+        }
+        connectionPanelContainer.removePanel(*connectionPanel);
+        return true;
+    });
 }
 
 juce::PopupMenu MenuStrip::getManualConnectionMenu() {
