@@ -76,7 +76,7 @@ private:
 
     void addDevices(juce::PopupMenu &menu, std::function<void(ConnectionPanel &)> action);
 
-    void disconnect(const ConnectionPanel *const);
+    void disconnect(ConnectionPanel *const connectionPanel);
 
     juce::PopupMenu getManualConnectionMenu();
 
