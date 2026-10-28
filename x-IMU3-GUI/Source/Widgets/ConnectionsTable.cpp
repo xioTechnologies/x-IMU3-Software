@@ -1,36 +1,29 @@
 #include "ConnectionsTable.h"
-#include "Widgets/Icon.h"
 
 ConnectionsTable::ConnectionsTable() {
     addAndMakeVisible(selectAllButton);
     addAndMakeVisible(selectAllLabel);
-    addAndMakeVisible(table);
+    addAndMakeVisible(viewport);
     addAndMakeVisible(noConnectionsFoundLabel);
 
     selectAllButton.setToggleState(true, juce::dontSendNotification);
     selectAllButton.onClick = [&] {
-        for (size_t index = 0; index < rows.size(); index++) {
-            if (rows[index].unavailable) {
-                continue;
+        for (auto &row: rows) {
+            if (row->getData().unavailable == false) {
+                auto data = row->getData();
+                data.selected = selectAllButton.getToggleState();
+                row->setData(data);
             }
-
-            if (auto *const toggle = dynamic_cast<CustomToggleButton *>(table.getCellComponent(static_cast<int>(ColumnId::selected), (int) index))) {
-                toggle->setToggleState(selectAllButton.getToggleState(), juce::dontSendNotification);
-            }
-            rows[index].selected = selectAllButton.getToggleState();
         }
     };
 
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::selected), 40, 40, 40);
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::descriptor), 1);
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::connection), 140);
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::rssi), 25, 25, 25);
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::battery), 25, 25, 25);
-    table.getHeader().addColumn("", static_cast<int>(ColumnId::margin), 5, 5, 5);
-    table.getHeader().setStretchToFitActive(true);
-    table.setHeaderHeight(0);
-    table.getViewport()->setScrollBarsShown(true, false);
-    table.setWantsKeyboardFocus(false);
+    viewport.setViewedComponent(&content, false);
+    viewport.setWantsKeyboardFocus(false);
+}
+
+void ConnectionsTable::paint(juce::Graphics &g) {
+    g.setColour(UIColours::backgroundDark);
+    g.fillRect(viewport.getBounds());
 }
 
 void ConnectionsTable::resized() {
@@ -38,125 +31,61 @@ void ConnectionsTable::resized() {
 
     auto bounds = getLocalBounds();
     selectAllButton.setBounds(bounds.removeFromTop(headerHeight));
-    selectAllLabel.setBounds(selectAllButton.getBounds().withLeft(table.getHeader().getColumnPosition((static_cast<int>(ColumnId::descriptor) - 1)).getX()));
-    table.setBounds(bounds);
+    selectAllLabel.setBounds(selectAllButton.getBounds().withTrimmedLeft(ConnectionsRow::toggleWidth));
+    viewport.setBounds(bounds);
     noConnectionsFoundLabel.setBounds(bounds);
+
+    const auto contentHeight = (int) rows.size() * rowHeight;
+    const auto scrollBarWidth = contentHeight > viewport.getHeight() ? viewport.getScrollBarThickness() : 0;
+    content.setSize(viewport.getWidth() - scrollBarWidth, contentHeight);
+
+    for (size_t index = 0; index < rows.size(); index++) {
+        rows[index]->setBounds(0, (int) index * rowHeight, content.getWidth(), rowHeight);
+    }
 }
 
-void ConnectionsTable::setRows(std::vector<Row> rows_) {
-    static const auto find = [](std::vector<Row> &vector, const Row &value) {
-        auto it = std::find(vector.begin(), vector.end(), value);
-        return it != vector.end() ? &*it : nullptr;
-    };
-
-    for (auto &previousRow: std::vector<Row>(std::move(rows))) {
-        if (auto *const newRow = find(rows_, previousRow)) {
-            newRow->selected = previousRow.selected;
-            rows.push_back(*newRow);
-        }
-    }
-
-    for (auto &row: rows_) {
-        if (find(rows, row) == nullptr) {
-            rows.push_back(std::move(row));
-        }
-    }
-
-    std::stable_partition(rows.rbegin(), rows.rend(), [](const Row &row) {
-        return row.unavailable;
+void ConnectionsTable::setRows(std::vector<ConnectionsRow::Data> rows_) {
+    std::erase_if(rows, [&](const std::unique_ptr<ConnectionsRow> &row) {
+        return std::ranges::find(rows_, row->getData()) == rows_.end();
     });
 
     for (auto &row: rows) {
-        row.selected = row.selected || selectAllButton.getToggleState();
+        auto data = *std::ranges::find(rows_, row->getData());
+        data.selected = row->getData().selected;
+        row->setData(data);
     }
 
-    table.updateContent();
+    for (auto &data: rows_) {
+        if (std::ranges::any_of(rows, [&](const std::unique_ptr<ConnectionsRow> &row) { return row->getData() == data; })) {
+            continue;
+        }
+
+        data.selected = data.selected || selectAllButton.getToggleState();
+
+        auto &row = *rows.emplace_back(std::make_unique<ConnectionsRow>([this](bool selected) {
+            selectAllButton.setToggleState(selectAllButton.getToggleState() && selected, juce::dontSendNotification);
+        }));
+        row.setData(data);
+        content.addAndMakeVisible(row);
+    }
+
+    std::stable_partition(rows.rbegin(), rows.rend(), [](const std::unique_ptr<ConnectionsRow> &row) {
+        return row->getData().unavailable;
+    });
+
+    resized();
 
     noConnectionsFoundLabel.setVisible(rows.empty());
 }
 
-const std::vector<ConnectionsTable::Row> &ConnectionsTable::getRows() const {
-    return rows;
-}
+std::vector<ximu3::ConnectionConfig *> ConnectionsTable::getConnectionConfigs() const {
+    std::vector<ximu3::ConnectionConfig *> configs;
 
-int ConnectionsTable::getNumRows() {
-    return (int) rows.size();
-}
-
-juce::Component *ConnectionsTable::refreshComponentForCell(int rowNumber, int columnId, bool, juce::Component *existingComponentToUpdate) {
-    if (rowNumber >= (int) rows.size()) {
-        return existingComponentToUpdate; // index may exceed size on Windows if display scaling >100%
-    }
-
-    switch (static_cast<ColumnId>(columnId)) {
-        case ColumnId::selected: {
-            if (existingComponentToUpdate == nullptr) {
-                existingComponentToUpdate = new CustomToggleButton("");
-            }
-
-            auto *toggle = static_cast<CustomToggleButton *>(existingComponentToUpdate);
-            toggle->setToggleState(rows[(size_t) rowNumber].selected, juce::dontSendNotification);
-            toggle->onClick = [this, rowNumber, toggle] {
-                rows[(size_t) rowNumber].selected = toggle->getToggleState();
-                selectAllButton.setToggleState(selectAllButton.getToggleState() && toggle->getToggleState(), juce::dontSendNotification);
-            };
-            break;
-        }
-
-        case ColumnId::descriptor:
-            if (existingComponentToUpdate == nullptr) {
-                existingComponentToUpdate = new SimpleLabel();
-            }
-
-            static_cast<SimpleLabel *>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].descriptor);
-            break;
-
-        case ColumnId::connection:
-            if (existingComponentToUpdate == nullptr) {
-                existingComponentToUpdate = new SimpleLabel();
-            }
-
-            static_cast<SimpleLabel *>(existingComponentToUpdate)->setText(rows[(size_t) rowNumber].config->toString());
-            break;
-
-        case ColumnId::rssi:
-            if (existingComponentToUpdate == nullptr) {
-                existingComponentToUpdate = new RssiIcon(0.65f);
-            }
-
-            if (const auto percentage = rows[(size_t) rowNumber].rssiPercentage; percentage.has_value() && (percentage != -1)) {
-                static_cast<RssiIcon *>(existingComponentToUpdate)->update(*percentage);
-            } else {
-                static_cast<RssiIcon *>(existingComponentToUpdate)->unavailable();
-            }
-            break;
-
-        case ColumnId::battery:
-            if (existingComponentToUpdate == nullptr) {
-                existingComponentToUpdate = new BatteryIcon(0.65f);
-            }
-
-            if (const auto percentage = rows[(size_t) rowNumber].batteryPercentage; percentage.has_value() && (percentage != -1)) {
-                static_cast<BatteryIcon *>(existingComponentToUpdate)->update(*percentage, *rows[(size_t) rowNumber].batteryStatus);
-            } else {
-                static_cast<BatteryIcon *>(existingComponentToUpdate)->unavailable();
-            }
-            break;
-
-        case ColumnId::margin:
-            break;
-    }
-
-    if (existingComponentToUpdate != nullptr) {
-        existingComponentToUpdate->setEnabled(rows[(size_t) rowNumber].unavailable == false);
-    }
-    return existingComponentToUpdate;
-}
-
-void ConnectionsTable::cellClicked(int rowNumber, int, const juce::MouseEvent &) {
-    if (auto *toggle = dynamic_cast<CustomToggleButton *>(table.getCellComponent(static_cast<int>(ColumnId::selected), rowNumber))) {
-        if (rows[(size_t) rowNumber].unavailable == false) {
-            toggle->setToggleState(!rows[(size_t) rowNumber].selected, juce::sendNotificationSync);
+    for (const auto &row: rows) {
+        if (row->getData().selected && row->getData().unavailable == false) {
+            configs.push_back(row->getData().config.get());
         }
     }
+
+    return configs;
 }

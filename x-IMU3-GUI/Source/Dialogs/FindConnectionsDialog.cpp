@@ -21,15 +21,7 @@ void FindConnectionsDialog::resized() {
 }
 
 std::vector<ximu3::ConnectionConfig *> FindConnectionsDialog::getConnectionConfigs() const {
-    std::vector<ximu3::ConnectionConfig *> configs;
-
-    for (auto &row: table.getRows()) {
-        if (row.selected && row.unavailable == false) {
-            configs.push_back(row.config.get());
-        }
-    }
-
-    return configs;
+    return table.getConnectionConfigs();
 }
 
 juce::PopupMenu FindConnectionsDialog::getFilterMenu() {
@@ -49,7 +41,7 @@ juce::PopupMenu FindConnectionsDialog::getFilterMenu() {
 }
 
 void FindConnectionsDialog::timerCallback() {
-    std::vector<ConnectionsTable::Row> rows;
+    std::vector<ConnectionsRow::Data> rows;
     std::map<juce::String, int> numberOfConnections;
 
     static const auto toString = [](const ximu3::ConnectionConfig &config) {
