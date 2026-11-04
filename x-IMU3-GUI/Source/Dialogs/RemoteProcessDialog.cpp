@@ -57,13 +57,13 @@ void RemoteProcessDialog::onStart(const bool retry) {
 void RemoteProcessDialog::onComplete() {
     for (auto &connectionPanel: connectionPanels) {
         connectionPanel->sendCommand("{\"" + prefix + "_complete\":null}");
-    };
+    }
 }
 
 void RemoteProcessDialog::onCancel() {
     for (auto &connectionPanel: connectionPanels) {
         connectionPanel->sendCommand("{\"" + prefix + "_abort\":null}");
-    };
+    }
 }
 
 void RemoteProcessDialog::startPolling(const int index) {

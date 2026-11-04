@@ -56,7 +56,7 @@ std::optional<std::string> SettingsSchema::Setting::getError() const {
             return "Invalid Response";
     }
 
-    return {}; // fix compiler warning
+    return {}; // avoid compiler warning
 }
 
 void SettingsSchema::Setting::clear() {
