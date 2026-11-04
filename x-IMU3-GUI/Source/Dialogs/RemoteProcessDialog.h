@@ -23,7 +23,7 @@ protected:
     void onCancel() override;
 
 private:
-    const std::string prefix; // "<prefix>_start", "<prefix>_progress", "<prefix>_complete", "<prefix>_complete"
+    const std::string prefix; // "<prefix>_start", "<prefix>_progress", "<prefix>_complete", "<prefix>_abort"
     const std::optional<int> timeout;
     const bool showCompleteValue;
     const bool saveOnComplete;

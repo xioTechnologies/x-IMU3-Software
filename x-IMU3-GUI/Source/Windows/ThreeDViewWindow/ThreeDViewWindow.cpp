@@ -195,7 +195,7 @@ ThreeDView::Settings ThreeDViewWindow::readFromValueTree() const {
     settings.worldEnabled = settingsTree.getProperty("worldEnabled", settings.worldEnabled);
     settings.modelEnabled = settingsTree.getProperty("modelEnabled", settings.modelEnabled);
     settings.axesEnabled = settingsTree.getProperty("axesEnabled", settings.axesEnabled);
-    settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.axesEnabled);
+    settings.compassEnabled = settingsTree.getProperty("compassEnabled", settings.compassEnabled);
     settings.axesConvention = ThreeDView::axesConventionFrom(settingsTree.getProperty("axesConvention", static_cast<int>(settings.axesConvention)));
     return settings;
 }
