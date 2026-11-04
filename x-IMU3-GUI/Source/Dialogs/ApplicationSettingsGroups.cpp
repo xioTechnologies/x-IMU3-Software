@@ -72,13 +72,14 @@ void FindConnectionsGroup::resized() {
     bluetoothToggle.setBounds(bounds);
 }
 
-CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
+CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 5) {
     addAndMakeVisible(retriesLabel);
     addAndMakeVisible(retriesValue);
     addAndMakeVisible(timeoutLabel);
     addAndMakeVisible(timeoutValue);
-    addAndMakeVisible(closeWhenCompleteToggle);
+    addAndMakeVisible(sendInParallelToggle);
     addAndMakeVisible(allowEarlyCompletionToggle);
+    addAndMakeVisible(closeWhenCompleteToggle);
 
     retriesValue.onTextChange = [this] {
         ApplicationSettings::getSingleton().commands.retries = (uint32_t) retriesValue.getText().getIntValue();
@@ -88,18 +89,23 @@ CommandsGroup::CommandsGroup() : ApplicationSettingsGroup("Commands", 4) {
         ApplicationSettings::getSingleton().commands.timeout = (uint32_t) timeoutValue.getText().getIntValue();
     };
 
-    closeWhenCompleteToggle.onClick = [this] {
-        ApplicationSettings::getSingleton().commands.closeWhenComplete = closeWhenCompleteToggle.getToggleState();
+    sendInParallelToggle.onClick = [this] {
+        ApplicationSettings::getSingleton().commands.sendInParallel = sendInParallelToggle.getToggleState();
     };
 
     allowEarlyCompletionToggle.onClick = [this] {
         ApplicationSettings::getSingleton().commands.allowEarlyCompletion = allowEarlyCompletionToggle.getToggleState();
     };
 
+    closeWhenCompleteToggle.onClick = [this] {
+        ApplicationSettings::getSingleton().commands.closeWhenComplete = closeWhenCompleteToggle.getToggleState();
+    };
+
     retriesValue.setText(juce::String(ApplicationSettings::getSingleton().commands.retries.get()), juce::dontSendNotification);
     timeoutValue.setText(juce::String(ApplicationSettings::getSingleton().commands.timeout.get()), juce::dontSendNotification);
-    closeWhenCompleteToggle.setToggleState(ApplicationSettings::getSingleton().commands.closeWhenComplete, juce::dontSendNotification);
+    sendInParallelToggle.setToggleState(ApplicationSettings::getSingleton().commands.sendInParallel, juce::dontSendNotification);
     allowEarlyCompletionToggle.setToggleState(ApplicationSettings::getSingleton().commands.allowEarlyCompletion, juce::dontSendNotification);
+    closeWhenCompleteToggle.setToggleState(ApplicationSettings::getSingleton().commands.closeWhenComplete, juce::dontSendNotification);
 }
 
 void CommandsGroup::resized() {
@@ -116,8 +122,11 @@ void CommandsGroup::resized() {
     setTextSettingBounds(retriesLabel, retriesValue);
     setTextSettingBounds(timeoutLabel, timeoutValue);
 
-    closeWhenCompleteToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    sendInParallelToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
     bounds.removeFromTop(rowMargin);
 
     allowEarlyCompletionToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
+    bounds.removeFromTop(rowMargin);
+
+    closeWhenCompleteToggle.setBounds(bounds.removeFromTop(UILayout::textComponentHeight));
 }
