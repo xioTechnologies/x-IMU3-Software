@@ -125,6 +125,8 @@ public:
 
     juce::Path getTickShape(float height) override;
 
+    std::unique_ptr<juce::DropShadower> createDropShadowerForComponent(juce::Component &) override;
+
 private:
     static juce::TextLayout layoutTooltipText(const juce::String &text, const juce::Colour &colour);
 

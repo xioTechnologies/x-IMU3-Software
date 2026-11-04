@@ -426,6 +426,10 @@ juce::Path CustomLookAndFeel::getTickShape(float height) {
     return path;
 }
 
+std::unique_ptr<juce::DropShadower> CustomLookAndFeel::createDropShadowerForComponent(juce::Component &) {
+    return nullptr;
+}
+
 juce::TextLayout CustomLookAndFeel::layoutTooltipText(const juce::String &text, const juce::Colour &colour) {
     const int maxToolTipWidth = 400;
 
