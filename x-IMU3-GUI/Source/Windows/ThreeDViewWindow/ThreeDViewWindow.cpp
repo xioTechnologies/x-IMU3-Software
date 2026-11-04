@@ -54,19 +54,21 @@ ThreeDViewWindow::ThreeDViewWindow(const juce::ValueTree &windowLayout_, const j
         });
     });
 
-    pingCallbackId = connectionPanel.getConnection()->addPingCallback(pingCallback = [&, model = std::optional<juce::String>()](auto response) mutable {
-        if (model == juce::String(response.device_name)) {
+    pingCallbackId = connectionPanel.getConnection()->addPingCallback(pingCallback = [&, previous = connectionPanel.getConnection()->getPingResponse()](auto response) mutable {
+        if (previous.has_value() && juce::String(previous->model) == juce::String(response.model)) {
             return;
         }
 
-        model = response.device_name;
+        previous = response;
 
         juce::MessageManager::callAsync([&, self = SafePointer<juce::Component>(this)] {
             if (self == nullptr) {
                 return;
             }
 
-            updateModel();
+            if (currentModel == "auto") {
+                updateModel();
+            }
         });
     });
 
