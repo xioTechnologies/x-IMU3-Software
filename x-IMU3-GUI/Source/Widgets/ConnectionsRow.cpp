@@ -23,7 +23,8 @@ void ConnectionsRow::resized() {
     rssiIcon.setBounds(bounds.removeFromRight(25));
 
     bounds.removeFromLeft(toggleWidth);
-    descriptorLabel.setBounds(bounds.removeFromLeft(bounds.getWidth() / 3));
+    const auto level = (int) std::ranges::count(juce::StringArray::fromTokens(data.config->toString(), ", ", ""), juce::String("Mux"));
+    descriptorLabel.setBounds(bounds.removeFromLeft(bounds.getWidth() / 3).withTrimmedLeft(level * 10));
     connectionLabel.setBounds(bounds);
 }
 

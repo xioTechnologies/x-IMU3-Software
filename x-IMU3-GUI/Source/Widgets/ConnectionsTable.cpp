@@ -73,6 +73,45 @@ void ConnectionsTable::setRows(std::vector<ConnectionsRow::Data> rows_) {
         return row->getData().unavailable;
     });
 
+    std::vector<std::unique_ptr<ConnectionsRow> > sorted;
+
+    const auto getParent = [](const juce::String &config) -> juce::String {
+        if (config.startsWith("Mux")) {
+            return config.fromFirstOccurrenceOf(", ", false, false);
+        }
+        return {};
+    };
+
+    const auto getChildOf = [&](const juce::String &parent, juce::String config) -> juce::String {
+        for (; config.isNotEmpty(); config = getParent(config)) {
+            if (getParent(config) == parent) {
+                return config;
+            }
+        }
+        return {};
+    };
+
+    const std::function<void(const juce::String &)> addChildren = [&](const juce::String &parent) {
+        for (auto &row: rows) {
+            if (row == nullptr) {
+                continue;
+            }
+
+            const auto child = getChildOf(parent, row->getData().config->toString());
+            const auto match = std::ranges::find_if(rows, [&](const std::unique_ptr<ConnectionsRow> &other) {
+                return other != nullptr && other->getData().config->toString() == child;
+            });
+
+            if (match != rows.end()) {
+                sorted.push_back(std::move(*match));
+                addChildren(child);
+            }
+        }
+    };
+
+    addChildren({});
+    rows = std::move(sorted);
+
     resized();
 
     noConnectionsFoundLabel.setVisible(rows.empty());
