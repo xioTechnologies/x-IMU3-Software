@@ -11,8 +11,6 @@
         <Command key="stop"/>
         <Command key="delete"/>
         <Command key="restart"/>
-        <Command key="initialise"/>
-        <Command key="initialize"/>
         <Command key="heading"/>
         <Command key="magnetic"/>
         <Command key="relative"/>
@@ -34,7 +32,6 @@
         <Command key="blink"/>
         <Command key="strobe"/>
         <Command key="colour"/>
-        <Command key="color"/>
         <Command key="reset"/>
         <Command key="shutdown"/>
         <Command key="bootloader"/>
@@ -60,7 +57,7 @@
             </Setting>
             <Setting key="serial_baud_rate" name="Baud Rate" type="number" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
             <Setting key="serial_rts_cts_enabled" name="RTS/CTS" type="bool" dependsOnKey="serial_mode" dependsOnValues="1 2 3"/>
-            <Group name="Accessory Send Conditions" dependsOnKey="serial_mode" dependsOnValues="2">
+            <Group name="Accessory Receive" dependsOnKey="serial_mode" dependsOnValues="2">
                 <Setting key="serial_accessory_number_of_bytes" name="Number of Bytes" type="number"/>
                 <Setting key="serial_accessory_termination_byte" name="Termination" type="number"/>
                 <Setting key="serial_accessory_timeout" name="Timeout (ms)" type="number"/>
@@ -177,9 +174,9 @@
                 </Group>
             </Group>
             <Group name="Bluetooth" dependsOnKey="wireless_mode" dependsOnValues="3">
-                <Setting key="bluetooth_address" name="Bluetooth Address" type="string" readOnly="true"/>
+                <Setting key="bluetooth_address" name="Address" type="string" readOnly="true"/>
                 <Setting key="bluetooth_name" name="Name" type="string" emptyString="x-IMU3"/>
-                <Setting key="bluetooth_pin_code" name="Pin Code" type="string" emptyString="1234"/>
+                <Setting key="bluetooth_pin_code" name="PIN Code" type="string" emptyString="1234"/>
                 <Setting key="bluetooth_discovery_mode" name="Discovery Mode" type="enum">
                     <Enum name="Disabled" value="0"/>
                     <Enum name="Enabled" value="1"/>
@@ -190,7 +187,7 @@
             </Group>
         </Group>
         <Group name="SD Card Logging" expand="false">
-            <Setting key="data_logger_automatic_start_stop_enabled" name="Automatic Start Stop" type="bool"/>
+            <Setting key="data_logger_automatic_start_stop_enabled" name="Automatic Start/Stop" type="bool"/>
             <Group name="File">
                 <Setting key="data_logger_file_name_prefix" name="File Name Prefix" type="enum">
                     <Enum name="Disabled" value="0"/>
