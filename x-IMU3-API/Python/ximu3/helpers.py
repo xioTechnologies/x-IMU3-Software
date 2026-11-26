@@ -17,6 +17,8 @@ _LOOP_SLEEP = 0.01
 
 
 class ConnectionType(Flag):
+    """Connection types to match when scanning."""
+
     USB = auto()
     SERIAL = auto()
     TCP = auto()
@@ -44,11 +46,34 @@ class ConnectionType(Flag):
 
 
 def scanner(
-    device_name: str = "*",  # device names that do not match (using fnmatch) will be ignored
-    connection_type: ConnectionType = ConnectionType.ALL,  # connection types that do not match will be ignored
-    number_of_connections: int | None = None,  # scan will end as soon as number_of_connections is found, else scan will end after timeout
+    device_name: str = "*",
+    connection_type: ConnectionType = ConnectionType.ALL,
+    number_of_connections: int | None = None,
     timeout: int = _DEFAULT_TIMEOUT,
 ) -> list[ximu3.Device]:
+    """Scan for connections.
+
+    The scan ends as soon as `number_of_connections` are found, otherwise
+    after `timeout`.
+
+    Parameters
+    ----------
+    device_name
+        Device name pattern, matched using fnmatch. Connections that do not
+        match are ignored.
+    connection_type
+        Connection types to match. Connections that do not match are
+        ignored.
+    number_of_connections
+        Number of connections expected, or None for all connections found.
+    timeout
+        Timeout (s).
+
+    Returns
+    -------
+    list[ximu3.Device]
+        Connections found.
+    """
     port_scanner = ximu3.PortScanner() if connection_type & (ConnectionType.USB | ConnectionType.SERIAL | ConnectionType.BLUETOOTH) else None
 
     network_announcement = ximu3.NetworkAnnouncement() if connection_type & (ConnectionType.TCP | ConnectionType.UDP) else None
@@ -96,7 +121,16 @@ def scanner(
 
 
 class Connection(ximu3.Connection):
+    """Connection that reconnects automatically if no data is received."""
+
     def open(self) -> Self:
+        """Open the connection and keep it open.
+
+        Returns
+        -------
+        Connection
+            This connection.
+        """
         super().open()
 
         self._keep_open = ximu3.KeepOpen(self)
@@ -104,34 +138,103 @@ class Connection(ximu3.Connection):
         return self
 
     def close(self) -> Self:
+        """Close the connection.
+
+        Returns
+        -------
+        Connection
+            This connection.
+        """
         self._keep_open = None  # may return before ximu3.KeepOpen Drop impl completes
 
         return self
 
 
 def connect(
-    device_name: str = "*",  # device names that do not match (using fnmatch) will be ignored
-    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,  # connection types that do not match will be ignored
-    timeout: int = _DEFAULT_TIMEOUT,  # timeout for scan and open
+    device_name: str = "*",
+    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,
+    timeout: int = _DEFAULT_TIMEOUT,
 ) -> Connection:
+    """Connect to a single device.
+
+    Exactly one matching connection must be found.
+
+    Parameters
+    ----------
+    device_name
+        Device name pattern, matched using fnmatch. Connections that do not
+        match are ignored.
+    connection_type
+        Connection types to match. Connections that do not match are
+        ignored.
+    timeout
+        Timeout (s) of each of the scan and the open.
+
+    Returns
+    -------
+    Connection
+        Open connection.
+    """
     return _open(scanner(device_name, connection_type, 1, timeout)[0], timeout)
 
 
 def connect_list(
-    device_name: str = "*",  # device names that do not match (using fnmatch) will be ignored
-    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,  # connection types that do not match will be ignored
-    number_of_connections: int | None = None,  # None to open all matching connections, else number_of_connections will be enforced
-    timeout: int = _DEFAULT_TIMEOUT,  # timeout for scan and open
+    device_name: str = "*",
+    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,
+    number_of_connections: int | None = None,
+    timeout: int = _DEFAULT_TIMEOUT,
 ) -> list[Connection]:
+    """Connect to multiple devices.
+
+    Parameters
+    ----------
+    device_name
+        Device name pattern, matched using fnmatch. Connections that do not
+        match are ignored.
+    connection_type
+        Connection types to match. Connections that do not match are
+        ignored.
+    number_of_connections
+        Number of connections expected, or None for all connections found.
+    timeout
+        Timeout (s) of each of the scan and the open.
+
+    Returns
+    -------
+    list[Connection]
+        Open connections.
+    """
     return [_open(d, timeout) for d in scanner(device_name, connection_type, number_of_connections, timeout)]
 
 
 def connect_dict(
-    device_name: str = "*",  # device names that do not match (using fnmatch) will be ignored
-    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,  # connection types that do not match will be ignored
-    number_of_connections: int | None = None,  # None to open all matching connections, else number_of_connections will be enforced
-    timeout: int = _DEFAULT_TIMEOUT,  # timeout for scan and open
+    device_name: str = "*",
+    connection_type: ConnectionType = ConnectionType.ALL_EXCEPT_TCP,
+    number_of_connections: int | None = None,
+    timeout: int = _DEFAULT_TIMEOUT,
 ) -> dict[str, Connection]:
+    """Connect to multiple devices, keyed by device name.
+
+    Device names must be unique.
+
+    Parameters
+    ----------
+    device_name
+        Device name pattern, matched using fnmatch. Connections that do not
+        match are ignored.
+    connection_type
+        Connection types to match. Connections that do not match are
+        ignored.
+    number_of_connections
+        Number of connections expected, or None for all connections found.
+    timeout
+        Timeout (s) of each of the scan and the open.
+
+    Returns
+    -------
+    dict[str, Connection]
+        Open connections, keyed by device name.
+    """
     return {d.device_name: _open(d, timeout) for d in _unique(scanner(device_name, connection_type, number_of_connections, timeout))}
 
 
@@ -168,6 +271,18 @@ def _unique(devices: list[ximu3.Device]) -> list[ximu3.Device]:
 
 
 def ping(connection: ximu3.Connection) -> ximu3.PingResponse:
+    """Ping a device.
+
+    Parameters
+    ----------
+    connection
+        Connection to the device.
+
+    Returns
+    -------
+    ximu3.PingResponse
+        Ping response.
+    """
     response = connection.ping()
 
     if not response:
@@ -180,10 +295,35 @@ def send_command(
     connection: ximu3.Connection,
     key: str | None = None,
     value: Any = None,
-    json: str | None = None,  # None to create from key and value, else key and value will be ignored
-    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.Connection.send_command parameter
-    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.Connection.send_command parameter
+    json: str | None = None,
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> Any:
+    """Send a command.
+
+    The command is created from `key` and `value`, unless `json` is given.
+
+    Parameters
+    ----------
+    connection
+        Connection to the device.
+    key
+        Command key.
+    value
+        Command value.
+    json
+        Command as JSON, or None to create the command from `key` and
+        `value`.
+    retries
+        Number of retries.
+    timeout
+        Timeout (ms) of each attempt.
+
+    Returns
+    -------
+    Any
+        Response value, decoded from JSON.
+    """
     command = json or f"{{{_json.dumps(key)}:{_json.dumps(value)}}}"
 
     response = connection.send_command(command, retries, timeout)
@@ -198,13 +338,40 @@ def send_command(
 
 
 class DataLogger:
+    """Data logger for one or more connections.
+
+    If `seconds` is given, logging blocks for that duration. Otherwise,
+    logging is non-blocking and continues until `stop` is called.
+
+    Parameters
+    ----------
+    connections
+        Connection or connections to log.
+    name
+        Name of the log directory, or None to use the name of the main
+        script.
+    destination
+        Directory in which to create the log directory, or None to use the
+        directory of the main script.
+    seconds
+        Duration (s) to log for, or None to log until `stop` is called.
+    overwrite
+        True to delete an existing log directory first.
+
+    Attributes
+    ----------
+    name
+    destination
+    path
+    """
+
     def __init__(
         self,
         connections: ximu3.Connection | Sequence[ximu3.Connection],
-        name: str | None = None,  # None to use main script name
-        destination: Path | str | None = None,  # None to use main script directory
-        seconds: int | None = None,  # None for non-blocking, else blocks until logging completes
-        overwrite: bool = False,  # True to delete destination/name directory first
+        name: str | None = None,
+        destination: Path | str | None = None,
+        seconds: int | None = None,
+        overwrite: bool = False,
     ) -> None:
         if isinstance(connections, ximu3.Connection):
             connections = (connections,)
@@ -225,32 +392,57 @@ class DataLogger:
 
     @property
     def name(self) -> str:
+        """Name of the log directory."""
         return self._name
 
     @property
     def destination(self) -> Path:
+        """Directory containing the log directory."""
         return self._destination
 
     @property
     def path(self) -> Path:
+        """Path of the log directory."""
         return self._path
 
     def stop(self) -> None:
+        """Stop logging."""
         if self._wrapped is None:
             raise RuntimeError("Data logger already stopped")
 
         self._wrapped = None  # may return before ximu3.DataLogger Drop impl completes
 
     def delete(self) -> None:
+        """Delete the log directory."""
         shutil.rmtree(self._path, ignore_errors=True)
 
 
 def convert(
     file_path: Path | str,
-    name: str | None = None,  # None to use file_path name
-    destination: Path | str | None = None,  # None to use file_path directory
-    overwrite: bool = False,  # True to delete existing destination/name directory
+    name: str | None = None,
+    destination: Path | str | None = None,
+    overwrite: bool = False,
 ) -> Path:
+    """Convert a .ximu3 file to a log directory.
+
+    Parameters
+    ----------
+    file_path
+        Path of the .ximu3 file.
+    name
+        Name of the log directory, or None to use the name of the file
+        without its suffix.
+    destination
+        Directory in which to create the log directory, or None to use the
+        directory of the file.
+    overwrite
+        True to delete an existing log directory first.
+
+    Returns
+    -------
+    Path
+        Path of the log directory.
+    """
     file_path: Path = Path(file_path).absolute()
 
     name = name or file_path.stem
@@ -263,9 +455,31 @@ def convert(
 def convert_together(
     file_paths: Sequence[Path | str],
     name: str,
-    destination: Path | str | None = None,  # None to use file_paths directory
-    overwrite: bool = False,  # True to delete existing destination/name directory
+    destination: Path | str | None = None,
+    overwrite: bool = False,
 ) -> Path:
+    """Convert multiple .ximu3 files to one log directory.
+
+    Each file is converted as one connection, as if logged together by
+    `DataLogger`.
+
+    Parameters
+    ----------
+    file_paths
+        Paths of the .ximu3 files.
+    name
+        Name of the log directory.
+    destination
+        Directory in which to create the log directory, or None to use the
+        directory of the files, which must be the same for all files.
+    overwrite
+        True to delete an existing log directory first.
+
+    Returns
+    -------
+    Path
+        Path of the log directory.
+    """
     if not file_paths:
         raise ValueError("No files provided")
 
@@ -273,7 +487,7 @@ def convert_together(
 
     for file_path in file_paths:
         if not file_path.exists():
-            raise FileNotFoundError(f"File does not exist: {file_path}")
+            raise FileNotFoundError(f"File not found: {file_path}")
 
     if destination:
         destination = Path(destination).absolute()
@@ -296,10 +510,10 @@ def convert_together(
 
 def _verify_destination(destination: Path, name: str, overwrite: bool) -> Path:
     if not destination.exists():
-        raise FileNotFoundError(f"Destination does not exist: {destination}")
+        raise FileNotFoundError(f"Directory not found: {destination}")
 
     if not destination.is_dir():
-        raise NotADirectoryError(f"Destination is not a directory: {destination}")
+        raise NotADirectoryError(f"Not a directory: {destination}")
 
     path: Path = destination / name
 
@@ -314,10 +528,31 @@ def _verify_destination(destination: Path, name: str, overwrite: bool) -> Path:
 
 def mux_scanner(
     connection: ximu3.Connection,
-    number_of_channels: int | None = None,  # scan will end as soon as number_of_channels is found, else scan will end after timeout
-    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.MuxScanner.scan parameter
-    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.MuxScanner.scan parameter
+    number_of_channels: int | None = None,
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> list[ximu3.Device]:
+    """Scan for mux connections.
+
+    The scan ends as soon as `number_of_channels` are found, otherwise
+    after all attempts.
+
+    Parameters
+    ----------
+    connection
+        Connection hosting the mux connections.
+    number_of_channels
+        Number of channels expected, or None for all channels found.
+    retries
+        Number of retries.
+    timeout
+        Timeout (ms) of each attempt.
+
+    Returns
+    -------
+    list[ximu3.Device]
+        Connections found.
+    """
     devices = ximu3.MuxScanner.scan(connection, number_of_channels or ximu3.MAX_NUMBER_OF_MUX_CHANNELS, retries, timeout)
 
     if not devices:
@@ -333,35 +568,109 @@ def mux_scanner(
 
 def mux_connect(
     connection: ximu3.Connection,
-    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.MuxScanner.scan parameter
-    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.MuxScanner.scan parameter
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> ximu3.Connection:
+    """Connect to a single device through a mux.
+
+    Exactly one channel must be found.
+
+    Parameters
+    ----------
+    connection
+        Connection hosting the mux connections.
+    retries
+        Number of retries.
+    timeout
+        Timeout (ms) of each attempt.
+
+    Returns
+    -------
+    ximu3.Connection
+        Open connection.
+    """
     return ximu3.Connection(mux_scanner(connection, 1, retries, timeout)[0].connection_config).open()
 
 
 def mux_connect_list(
     connection: ximu3.Connection,
-    number_of_channels: int | None = None,  # None to open all channels, else number_of_channels will be enforced
-    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.MuxScanner.scan parameter
-    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.MuxScanner.scan parameter
+    number_of_channels: int | None = None,
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> list[ximu3.Connection]:
+    """Connect to multiple devices through a mux.
+
+    Parameters
+    ----------
+    connection
+        Connection hosting the mux connections.
+    number_of_channels
+        Number of channels expected, or None for all channels found.
+    retries
+        Number of retries.
+    timeout
+        Timeout (ms) of each attempt.
+
+    Returns
+    -------
+    list[ximu3.Connection]
+        Open connections.
+    """
     return [ximu3.Connection(d.connection_config).open() for d in mux_scanner(connection, number_of_channels, retries, timeout)]
 
 
 def mux_connect_dict(
     connection: ximu3.Connection,
-    number_of_channels: int | None = None,  # None to open all channels, else number_of_channels will be enforced
-    retries: int = ximu3.DEFAULT_RETRIES,  # ximu3.MuxScanner.scan parameter
-    timeout: int = ximu3.DEFAULT_TIMEOUT,  # ximu3.MuxScanner.scan parameter
+    number_of_channels: int | None = None,
+    retries: int = ximu3.DEFAULT_RETRIES,
+    timeout: int = ximu3.DEFAULT_TIMEOUT,
 ) -> dict[str, ximu3.Connection]:
+    """Connect to multiple devices through a mux, keyed by device name.
+
+    Device names must be unique.
+
+    Parameters
+    ----------
+    connection
+        Connection hosting the mux connections.
+    number_of_channels
+        Number of channels expected, or None for all channels found.
+    retries
+        Number of retries.
+    timeout
+        Timeout (ms) of each attempt.
+
+    Returns
+    -------
+    dict[str, ximu3.Connection]
+        Open connections, keyed by device name.
+    """
     return {d.device_name: ximu3.Connection(d.connection_config).open() for d in _unique(mux_scanner(connection, number_of_channels, retries, timeout))}
 
 
 def backup(
     connection: ximu3.Connection,
-    file_path: Path | str | None = None,  # None to backup to file in main script directory, with file name containing device serial number
-    overwrite: bool = False,  # True to delete file_path first
+    file_path: Path | str | None = None,
+    overwrite: bool = False,
 ) -> Path:
+    """Back up device settings to a file.
+
+    Parameters
+    ----------
+    connection
+        Connection to the device.
+    file_path
+        Path of the backup file, or None to name the file automatically
+        using the device serial number, in the directory of the main
+        script.
+    overwrite
+        True to delete an existing backup file first.
+
+    Returns
+    -------
+    Path
+        Path of the backup file.
+    """
     if file_path:
         file_path = Path(file_path).absolute()
     else:
@@ -386,8 +695,23 @@ def backup(
 
 def restore(
     connection: ximu3.Connection,
-    file_path: Path | str | None = None,  # None to restore from file in main script directory, with file name containing device serial number
+    file_path: Path | str | None = None,
 ) -> Path:
+    """Restore device settings from a file.
+
+    Parameters
+    ----------
+    connection
+        Connection to the device.
+    file_path
+        Path of the backup file, or None to find the file by device serial
+        number, in the directory of the main script.
+
+    Returns
+    -------
+    Path
+        Path of the backup file.
+    """
     if file_path:
         file_path = Path(file_path).absolute()
     else:
@@ -410,7 +734,7 @@ def restore(
     file_path = _with_json_suffix(file_path)
 
     if not file_path.exists():
-        raise FileNotFoundError(f"File does not exist: {file_path}")
+        raise FileNotFoundError(f"File not found: {file_path}")
 
     ximu3.settings_restore(str(file_path), connection)
 
