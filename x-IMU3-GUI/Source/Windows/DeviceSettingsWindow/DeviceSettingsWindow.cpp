@@ -84,7 +84,7 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
     backupButton.onClick = [this] {
         juce::String fileName = "Unknown Device";
         if (auto response = connectionPanel.getConnection()->getPingResponse()) {
-            fileName = juce::String(response->device_name) + " " + juce::String(response->serial_number);
+            fileName = juce::String(response->device_name) + " (" + juce::String(response->model) + " " + juce::String(response->serial_number) + ")";
         }
 
         std::ignore = deviceSettingsDirectory.createDirectory();
@@ -94,7 +94,12 @@ DeviceSettingsWindow::DeviceSettingsWindow(const juce::ValueTree &windowLayout_,
                 return;
             }
 
-            const auto file = fileChooser->getResult().withFileExtension("json");
+            auto file = fileChooser->getResult();
+
+            if (file.hasFileExtension("json") == false) {
+                file = juce::File(file.getFullPathName() + ".json");
+            }
+
             std::ignore = file.deleteFile();
 
             disabledOverlay.setVisible(true);

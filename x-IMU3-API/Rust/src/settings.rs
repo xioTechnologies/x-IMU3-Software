@@ -2,10 +2,9 @@ use crate::command_message::*;
 use crate::connection::*;
 use std::fs::File;
 use std::io::Write;
-use std::path::Path;
 
 pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
-    let file_path = Path::new(file_path).with_extension("json");
+    let file_path = with_json_extension(file_path);
 
     let mut json = b"[\n".to_vec();
 
@@ -41,7 +40,7 @@ pub fn backup(file_path: &str, connection: &Connection) -> std::io::Result<()> {
 }
 
 pub fn restore(file_path: &str, connection: &Connection) -> std::io::Result<()> {
-    let file_path = Path::new(file_path).with_extension("json");
+    let file_path = with_json_extension(file_path);
 
     let bytes = std::fs::read(&file_path)?;
 
@@ -54,4 +53,12 @@ pub fn restore(file_path: &str, connection: &Connection) -> std::io::Result<()> 
     }
 
     Ok(())
+}
+
+fn with_json_extension(file_path: &str) -> String {
+    if file_path.ends_with(".json") {
+        return file_path.to_owned();
+    }
+
+    format!("{file_path}.json")
 }

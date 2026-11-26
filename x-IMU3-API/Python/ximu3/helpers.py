@@ -369,9 +369,9 @@ def backup(
 
         directory = Path(sys.modules["__main__"].__file__).parent
 
-        file_path = directory / f"{response.device_name} {response.serial_number}"
+        file_path = directory / f"{response.device_name} ({response.model} {response.serial_number})"
 
-    file_path: Path = file_path.with_suffix(".json")
+    file_path = _with_json_suffix(file_path)
 
     if overwrite:
         file_path.unlink(missing_ok=True)
@@ -407,7 +407,7 @@ def restore(
 
         file_path: Path = backups[0]
 
-    file_path = file_path.with_suffix(".json")
+    file_path = _with_json_suffix(file_path)
 
     if not file_path.exists():
         raise FileNotFoundError(f"File does not exist: {file_path}")
@@ -415,3 +415,10 @@ def restore(
     ximu3.settings_restore(str(file_path), connection)
 
     return file_path
+
+
+def _with_json_suffix(file_path: Path) -> Path:
+    if file_path.suffix == ".json":
+        return file_path
+
+    return file_path.with_name(f"{file_path.name}.json")
